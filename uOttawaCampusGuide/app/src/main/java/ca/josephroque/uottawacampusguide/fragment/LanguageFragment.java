@@ -11,6 +11,10 @@ import android.widget.RelativeLayout;
 import ca.josephroque.uottawacampusguide.R;
 
 /**
+ * Created by Joseph Roque on 15-05-09
+ *
+ * Provides UI and methods for the user to select a language preference.
+ *
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link LanguageFragment.OnLanguageSelectListener} interface

@@ -3,8 +3,7 @@ package ca.josephroque.uottawacampusguide;
 /**
  * Created by josephroque on 15-05-07.
  * <p/>
- * Location ca.josephroque.uottawacampusguide
- * in project uOttawa Campus Guide
+ * Provides constant values which must be accessible across the application.
  */
 public class Constants
 {

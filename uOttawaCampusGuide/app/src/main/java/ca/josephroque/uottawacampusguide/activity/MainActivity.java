@@ -20,6 +20,11 @@ import android.widget.TextView;
 
 import ca.josephroque.uottawacampusguide.R;
 
+/**
+ * Created by Joseph Roque on 15-05-09
+ * <p/>
+ * Handles most of the app interaction and UI
+ */
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {

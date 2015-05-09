@@ -10,6 +10,12 @@ import ca.josephroque.uottawacampusguide.Constants;
 import ca.josephroque.uottawacampusguide.R;
 import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
 
+/**
+ * Created by Joseph Roque on 15-05-09
+ * <p/>
+ * Handles first time interactions with the application, provides UI to allow the user to
+ * select a language and explore the functionality of the app
+ */
 
 public class IntroActivity extends ActionBarActivity
     implements LanguageFragment.OnLanguageSelectListener
