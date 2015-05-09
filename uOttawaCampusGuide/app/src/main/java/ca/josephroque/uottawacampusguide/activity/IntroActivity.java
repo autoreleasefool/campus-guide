@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import ca.josephroque.uottawacampusguide.Constants;
 import ca.josephroque.uottawacampusguide.R;
+import ca.josephroque.uottawacampusguide.fragment.FeatureFragment;
 import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
 
 /**
@@ -33,7 +34,12 @@ public class IntroActivity extends ActionBarActivity
             startActivity(mainMenuIntent);
             finish();
         }
-
+        else
+        {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fl_intro_container, LanguageFragment.newInstance(), Constants.FRAGMENT_LANGUAGE)
+                    .commit();
+        }
         setContentView(R.layout.activity_intro);
     }
 
@@ -66,10 +72,6 @@ public class IntroActivity extends ActionBarActivity
     protected void onResume()
     {
         super.onResume();
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fl_intro_container, LanguageFragment.newInstance())
-                .commit();
     }
 
     @Override
@@ -80,5 +82,9 @@ public class IntroActivity extends ActionBarActivity
                 .putBoolean(Constants.PREF_LANG, isEnglish)
                 .apply();
 
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fl_intro_container, FeatureFragment.newInstance((byte)0), Constants.FRAGMENT_FEATURE)
+                .addToBackStack(Constants.FRAGMENT_LANGUAGE)
+                .commit();
     }
 }
