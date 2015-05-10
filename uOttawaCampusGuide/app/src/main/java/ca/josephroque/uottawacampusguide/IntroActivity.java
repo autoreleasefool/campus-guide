@@ -30,6 +30,9 @@ public class IntroActivity extends ActionBarActivity
     implements LanguageFragment.OnLanguageSelectListener
 {
 
+    private static final String ARG_CURRENT_PAGE = "ACP";
+    private static final String ARG_SELECTING_LANGUAGE = "ASL";
+
     private PagerAdapter mPagerAdapter;
 
     private RelativeLayout mRelativeLayoutToolbar;
@@ -54,6 +57,12 @@ public class IntroActivity extends ActionBarActivity
         }
         else
         {
+            if (savedInstanceState != null)
+            {
+                mCurrentFeaturePage = savedInstanceState.getByte(ARG_CURRENT_PAGE);
+                mIsSelectingLanguage = savedInstanceState.getBoolean(ARG_SELECTING_LANGUAGE);
+            }
+
             setContentView(R.layout.activity_intro);
 
             ViewPager viewPager = (ViewPager)findViewById(R.id.vp_intro);
@@ -84,7 +93,7 @@ public class IntroActivity extends ActionBarActivity
                 @Override
                 public void onClick(View v)
                 {
-                    Toast.makeText(IntroActivity.this, "Continued", Toast.LENGTH_SHORT).show();
+                    //TODO: open main activity
                 }
             });
 
@@ -117,9 +126,12 @@ public class IntroActivity extends ActionBarActivity
     }
 
     @Override
-    protected void onResume()
+    public void onSaveInstanceState(Bundle outState)
     {
-        super.onResume();
+        super.onSaveInstanceState(outState);
+
+        outState.putByte(ARG_CURRENT_PAGE, mCurrentFeaturePage);
+        outState.putBoolean(ARG_SELECTING_LANGUAGE, mIsSelectingLanguage);
     }
 
     @Override
