@@ -1,6 +1,7 @@
 package ca.josephroque.uottawacampusguide.fragment;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -62,29 +63,8 @@ public class FeatureFragment extends Fragment
     {
         // Inflate the layout for this fragment
         RelativeLayout rootView = (RelativeLayout)inflater.inflate(R.layout.fragment_feature, container, false);
-        RelativeLayout.LayoutParams layoutParams;
 
-        TextView text = new TextView(getActivity());
-        text.setText("Hello, " + feature + "!");
-        rootView.addView(text);
-
-        switch(feature)
-        {
-            case 0:
-
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            default:
-                throw new IllegalStateException(this.toString() + ": feature must be 0-"
-                        + (getMaxFeatures() - 1) + "(inclusive)");
-        }
+        ((TextView)rootView.findViewById(R.id.tv_temp)).setText("Hello, " + feature);
 
         return rootView;
     }
@@ -101,6 +81,12 @@ public class FeatureFragment extends Fragment
             throw new ClassCastException(activity.toString()
                     + " must implement OnFeatureClosedListener");
         }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
     }
 
     @Override
@@ -127,7 +113,7 @@ public class FeatureFragment extends Fragment
      */
     public interface OnFeatureClosedListener
     {
-        public void onFeatureClosed();
+        void onFeatureClosed();
     }
 
 }

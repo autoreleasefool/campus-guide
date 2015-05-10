@@ -1,6 +1,7 @@
 package ca.josephroque.uottawacampusguide;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -10,6 +11,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import ca.josephroque.uottawacampusguide.fragment.FeatureFragment;
 import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
@@ -29,15 +33,20 @@ public class IntroActivity extends ActionBarActivity
     private ViewPager mViewPager;
     private PagerAdapter mPagerAdapter;
 
-    private boolean isSelectingLanguage = true;
-    private boolean ignoreSelectingLanguage = false;
+    private RelativeLayout mRelativeLayoutToolbar;
+    private View[] mViewPositionIndicator;
+
+    private boolean mIsSelectingLanguage = true;
+    private boolean mIgnoreSelectingLanguage = false;
+    private byte mCurrentFeaturePage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        boolean languageSelected = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE).getBoolean(Constants.PREF_LANG, false);
+        //TODO: uncomment line below to skip opening activity if language was selected
+        boolean languageSelected = false;//getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE).getBoolean(Constants.PREF_LANG, false);
         if (languageSelected)
         {
             Intent mainMenuIntent = new Intent(this, MainActivity.class);
@@ -51,6 +60,35 @@ public class IntroActivity extends ActionBarActivity
             mViewPager = (ViewPager)findViewById(R.id.vp_intro);
             mPagerAdapter = new IntroPagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(mPagerAdapter);
+
+            mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
+            {
+                @Override
+                public void onPageSelected(int position)
+                {
+                    updateIndicatorPosition(position);
+                }
+            });
+
+            mRelativeLayoutToolbar = (RelativeLayout)findViewById(R.id.rl_intro_toolbar);
+            mRelativeLayoutToolbar.setVisibility(View.GONE);
+
+            mViewPositionIndicator = new View[5];
+            mViewPositionIndicator[0] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_0);
+            mViewPositionIndicator[1] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_1);
+            mViewPositionIndicator[2] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_2);
+            mViewPositionIndicator[3] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_3);
+            mViewPositionIndicator[4] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_4);
+
+            mRelativeLayoutToolbar.findViewById(R.id.tv_intro_continue).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    Toast.makeText(IntroActivity.this, "Continued", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
 
@@ -93,8 +131,10 @@ public class IntroActivity extends ActionBarActivity
                 .putBoolean(Constants.PREF_LANG, isEnglish)
                 .commit();
 
-        isSelectingLanguage = false;
-        ignoreSelectingLanguage = true;
+        mIsSelectingLanguage = false;
+        mIgnoreSelectingLanguage = true;
+        updateIndicatorPosition(0);
+        mRelativeLayoutToolbar.setVisibility(View.VISIBLE);
         mPagerAdapter.notifyDataSetChanged();
     }
 
@@ -102,6 +142,18 @@ public class IntroActivity extends ActionBarActivity
     public void onFeatureClosed()
     {
 
+    }
+
+    private void updateIndicatorPosition(int position)
+    {
+        //Changes which page indicator is 'highlighted'
+        Drawable inactiveDrawable = getResources().getDrawable(R.drawable.position_indicator_inactive);
+        Drawable activeDrawable = getResources().getDrawable(R.drawable.position_indicator_active);
+
+        mViewPositionIndicator[mCurrentFeaturePage].setBackgroundDrawable(inactiveDrawable);
+        mViewPositionIndicator[position].setBackgroundDrawable(activeDrawable);
+
+        mCurrentFeaturePage = (byte)position;
     }
 
     private class IntroPagerAdapter extends FragmentStatePagerAdapter
@@ -114,7 +166,7 @@ public class IntroActivity extends ActionBarActivity
         @Override
         public Fragment getItem(int position)
         {
-            if (isSelectingLanguage)
+            if (mIsSelectingLanguage)
                 return LanguageFragment.newInstance();
             else
                 return FeatureFragment.newInstance((byte)position);
@@ -123,7 +175,7 @@ public class IntroActivity extends ActionBarActivity
         @Override
         public int getCount()
         {
-            if (isSelectingLanguage)
+            if (mIsSelectingLanguage)
                 return 1;
             else
                 return FeatureFragment.getMaxFeatures();
@@ -132,9 +184,9 @@ public class IntroActivity extends ActionBarActivity
         @Override
         public int getItemPosition(Object item)
         {
-            if (isSelectingLanguage || ignoreSelectingLanguage)
+            if (mIsSelectingLanguage || mIgnoreSelectingLanguage)
             {
-                ignoreSelectingLanguage = false;
+                mIgnoreSelectingLanguage = false;
                 return POSITION_NONE;
             }
             else
