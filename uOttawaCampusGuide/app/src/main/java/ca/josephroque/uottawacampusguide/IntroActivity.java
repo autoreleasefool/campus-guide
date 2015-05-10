@@ -1,13 +1,16 @@
-package ca.josephroque.uottawacampusguide.activity;
+package ca.josephroque.uottawacampusguide;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import ca.josephroque.uottawacampusguide.Constants;
-import ca.josephroque.uottawacampusguide.R;
 import ca.josephroque.uottawacampusguide.fragment.FeatureFragment;
 import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
 
@@ -19,8 +22,15 @@ import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
  */
 
 public class IntroActivity extends ActionBarActivity
-    implements LanguageFragment.OnLanguageSelectListener
+    implements LanguageFragment.OnLanguageSelectListener,
+        FeatureFragment.OnFeatureClosedListener
 {
+
+    private ViewPager mViewPager;
+    private PagerAdapter mPagerAdapter;
+
+    private boolean isSelectingLanguage = true;
+    private boolean ignoreSelectingLanguage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,11 +46,12 @@ public class IntroActivity extends ActionBarActivity
         }
         else
         {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fl_intro_container, LanguageFragment.newInstance(), Constants.FRAGMENT_LANGUAGE)
-                    .commit();
+            setContentView(R.layout.activity_intro);
+
+            mViewPager = (ViewPager)findViewById(R.id.vp_intro);
+            mPagerAdapter = new IntroPagerAdapter(getSupportFragmentManager());
+            mViewPager.setAdapter(mPagerAdapter);
         }
-        setContentView(R.layout.activity_intro);
     }
 
     @Override
@@ -80,11 +91,54 @@ public class IntroActivity extends ActionBarActivity
         getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
                 .edit()
                 .putBoolean(Constants.PREF_LANG, isEnglish)
-                .apply();
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fl_intro_container, FeatureFragment.newInstance((byte)0), Constants.FRAGMENT_FEATURE)
-                .addToBackStack(Constants.FRAGMENT_LANGUAGE)
                 .commit();
+
+        isSelectingLanguage = false;
+        ignoreSelectingLanguage = true;
+        mPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFeatureClosed()
+    {
+
+    }
+
+    private class IntroPagerAdapter extends FragmentStatePagerAdapter
+    {
+        public IntroPagerAdapter(FragmentManager fm)
+        {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position)
+        {
+            if (isSelectingLanguage)
+                return LanguageFragment.newInstance();
+            else
+                return FeatureFragment.newInstance((byte)position);
+        }
+
+        @Override
+        public int getCount()
+        {
+            if (isSelectingLanguage)
+                return 1;
+            else
+                return FeatureFragment.getMaxFeatures();
+        }
+
+        @Override
+        public int getItemPosition(Object item)
+        {
+            if (isSelectingLanguage || ignoreSelectingLanguage)
+            {
+                ignoreSelectingLanguage = false;
+                return POSITION_NONE;
+            }
+            else
+                return super.getItemPosition(item);
+        }
     }
 }

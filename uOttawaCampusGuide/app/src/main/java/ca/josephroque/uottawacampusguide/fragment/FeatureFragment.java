@@ -2,10 +2,12 @@ package ca.josephroque.uottawacampusguide.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import ca.josephroque.uottawacampusguide.R;
 
@@ -20,6 +22,7 @@ import ca.josephroque.uottawacampusguide.R;
 public class FeatureFragment extends Fragment
 {
     private static final String ARG_FEATURE = "feature";
+    private static final byte MAX_FEATURES = 5;
 
     private OnFeatureClosedListener mListener;
 
@@ -58,7 +61,32 @@ public class FeatureFragment extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_feature, container, false);
+        RelativeLayout rootView = (RelativeLayout)inflater.inflate(R.layout.fragment_feature, container, false);
+        RelativeLayout.LayoutParams layoutParams;
+
+        TextView text = new TextView(getActivity());
+        text.setText("Hello, " + feature + "!");
+        rootView.addView(text);
+
+        switch(feature)
+        {
+            case 0:
+
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            default:
+                throw new IllegalStateException(this.toString() + ": feature must be 0-"
+                        + (getMaxFeatures() - 1) + "(inclusive)");
+        }
+
+        return rootView;
     }
 
     @Override
@@ -76,11 +104,20 @@ public class FeatureFragment extends Fragment
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putByte(ARG_FEATURE, feature);
+    }
+
+    @Override
     public void onDetach()
     {
         super.onDetach();
         mListener = null;
     }
+
+    public static byte getMaxFeatures() {return MAX_FEATURES;}
 
     /**
      * This interface must be implemented by activities that contain this
