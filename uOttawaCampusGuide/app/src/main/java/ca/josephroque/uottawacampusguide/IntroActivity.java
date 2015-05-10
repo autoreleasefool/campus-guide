@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import ca.josephroque.uottawacampusguide.fragment.FeatureFragment;
 import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
+import ca.josephroque.uottawacampusguide.utility.Compatibility;
 
 /**
  * Created by Joseph Roque on 15-05-09
@@ -26,11 +27,9 @@ import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
  */
 
 public class IntroActivity extends ActionBarActivity
-    implements LanguageFragment.OnLanguageSelectListener,
-        FeatureFragment.OnFeatureClosedListener
+    implements LanguageFragment.OnLanguageSelectListener
 {
 
-    private ViewPager mViewPager;
     private PagerAdapter mPagerAdapter;
 
     private RelativeLayout mRelativeLayoutToolbar;
@@ -57,11 +56,11 @@ public class IntroActivity extends ActionBarActivity
         {
             setContentView(R.layout.activity_intro);
 
-            mViewPager = (ViewPager)findViewById(R.id.vp_intro);
+            ViewPager viewPager = (ViewPager)findViewById(R.id.vp_intro);
             mPagerAdapter = new IntroPagerAdapter(getSupportFragmentManager());
-            mViewPager.setAdapter(mPagerAdapter);
+            viewPager.setAdapter(mPagerAdapter);
 
-            mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
+            viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
             {
                 @Override
                 public void onPageSelected(int position)
@@ -138,24 +137,27 @@ public class IntroActivity extends ActionBarActivity
         mPagerAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onFeatureClosed()
-    {
-
-    }
-
+    /**
+     * Changes the color of views which indicate user's navigation in the view pager. Unhighlights
+     * the last position, then highlights the new position.
+     *
+     * @param position new position to be highlighted
+     */
     private void updateIndicatorPosition(int position)
     {
         //Changes which page indicator is 'highlighted'
         Drawable inactiveDrawable = getResources().getDrawable(R.drawable.position_indicator_inactive);
         Drawable activeDrawable = getResources().getDrawable(R.drawable.position_indicator_active);
 
-        mViewPositionIndicator[mCurrentFeaturePage].setBackgroundDrawable(inactiveDrawable);
-        mViewPositionIndicator[position].setBackgroundDrawable(activeDrawable);
+        Compatibility.setViewBackgroundDrawable(mViewPositionIndicator[mCurrentFeaturePage], inactiveDrawable);
+        Compatibility.setViewBackgroundDrawable(mViewPositionIndicator[position], activeDrawable);
 
         mCurrentFeaturePage = (byte)position;
     }
 
+    /**
+     * Manages which fragments will be displayed in the activity's view pager
+     */
     private class IntroPagerAdapter extends FragmentStatePagerAdapter
     {
         public IntroPagerAdapter(FragmentManager fm)
@@ -166,6 +168,7 @@ public class IntroActivity extends ActionBarActivity
         @Override
         public Fragment getItem(int position)
         {
+            //Once the user has selected a language, the screen should be inaccessible
             if (mIsSelectingLanguage)
                 return LanguageFragment.newInstance();
             else
@@ -186,6 +189,7 @@ public class IntroActivity extends ActionBarActivity
         {
             if (mIsSelectingLanguage || mIgnoreSelectingLanguage)
             {
+                //Causes the language select fragment to be removed if the adapter is refreshed
                 mIgnoreSelectingLanguage = false;
                 return POSITION_NONE;
             }

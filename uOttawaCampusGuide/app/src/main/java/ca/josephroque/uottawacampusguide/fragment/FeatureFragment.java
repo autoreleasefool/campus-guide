@@ -1,7 +1,5 @@
 package ca.josephroque.uottawacampusguide.fragment;
 
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,9 +12,6 @@ import ca.josephroque.uottawacampusguide.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FeatureFragment.OnFeatureClosedListener} interface
- * to handle interaction events.
  * Use the {@link FeatureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -24,8 +19,6 @@ public class FeatureFragment extends Fragment
 {
     private static final String ARG_FEATURE = "feature";
     private static final byte MAX_FEATURES = 5;
-
-    private OnFeatureClosedListener mListener;
 
     private byte feature;
 
@@ -70,20 +63,6 @@ public class FeatureFragment extends Fragment
     }
 
     @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        try
-        {
-            mListener = (OnFeatureClosedListener) activity;
-        } catch (ClassCastException e)
-        {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFeatureClosedListener");
-        }
-    }
-
-    @Override
     public void onResume()
     {
         super.onResume();
@@ -96,24 +75,5 @@ public class FeatureFragment extends Fragment
         outState.putByte(ARG_FEATURE, feature);
     }
 
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
-    }
-
     public static byte getMaxFeatures() {return MAX_FEATURES;}
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface OnFeatureClosedListener
-    {
-        void onFeatureClosed();
-    }
-
 }
