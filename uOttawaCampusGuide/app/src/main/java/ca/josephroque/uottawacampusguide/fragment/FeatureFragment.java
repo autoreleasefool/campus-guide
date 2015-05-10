@@ -17,9 +17,12 @@ import ca.josephroque.uottawacampusguide.R;
  */
 public class FeatureFragment extends Fragment
 {
+    /** Identifies feature which the fragment highlights */
     private static final String ARG_FEATURE = "feature";
-    private static final byte MAX_FEATURES = 5;
+    /** Total number of possible features this fragment may highlight */
+    public static final byte MAX_FEATURES = 5;
 
+    /** The feature being highlighted by this instance */
     private byte feature;
 
     /**
@@ -57,7 +60,12 @@ public class FeatureFragment extends Fragment
         // Inflate the layout for this fragment
         RelativeLayout rootView = (RelativeLayout)inflater.inflate(R.layout.fragment_feature, container, false);
 
-        ((TextView)rootView.findViewById(R.id.tv_temp)).setText("Hello, " + feature);
+        // TODO: create layout for each feature
+        // 1 - navigation
+        // 2 - scheduling
+        // 3 - bus information
+        // 4 - accessibility
+        // 5 - useful links
 
         return rootView;
     }
@@ -74,6 +82,4 @@ public class FeatureFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putByte(ARG_FEATURE, feature);
     }
-
-    public static byte getMaxFeatures() {return MAX_FEATURES;}
 }

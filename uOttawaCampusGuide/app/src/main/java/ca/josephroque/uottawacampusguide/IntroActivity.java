@@ -30,16 +30,24 @@ public class IntroActivity extends ActionBarActivity
     implements LanguageFragment.OnLanguageSelectListener
 {
 
+    /** Identifier for the current feature page being displayed */
     private static final String ARG_CURRENT_PAGE = "ACP";
+    /** Identifier for whether the user is selecting a language or not */
     private static final String ARG_SELECTING_LANGUAGE = "ASL";
 
+    /** Adapter to manage fragments displayed by this activity */
     private PagerAdapter mPagerAdapter;
 
+    /** Displays input feedback to user, offers interactive elements */
     private RelativeLayout mRelativeLayoutToolbar;
+    /** Provide feedback on user's navigation in app */
     private View[] mViewPositionIndicator;
 
+    /** Indicates if the user is select a language*/
     private boolean mIsSelectingLanguage = true;
+    /** Indicates the application should refresh the view pager fragments */
     private boolean mIgnoreSelectingLanguage = false;
+    /** Current page of view pager displayed to user */
     private byte mCurrentFeaturePage = 0;
 
     @Override
@@ -47,6 +55,11 @@ public class IntroActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
 
+        /*
+         * If the user has already selected a language and been shown the welcome menu,
+         * they are immediately sent to the main menu. Otherwise, the language fragment
+         * is inflated and displayed.
+         */
         //TODO: uncomment line below to skip opening activity if language was selected
         boolean languageSelected = false;//getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE).getBoolean(Constants.PREF_LANG, false);
         if (languageSelected)
@@ -65,6 +78,7 @@ public class IntroActivity extends ActionBarActivity
 
             setContentView(R.layout.activity_intro);
 
+            //Getting references to objects, creating listeners
             ViewPager viewPager = (ViewPager)findViewById(R.id.vp_intro);
             mPagerAdapter = new IntroPagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(mPagerAdapter);
@@ -100,31 +114,6 @@ public class IntroActivity extends ActionBarActivity
             });
 
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_intro, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-        {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -195,7 +184,7 @@ public class IntroActivity extends ActionBarActivity
             if (mIsSelectingLanguage)
                 return 1;
             else
-                return FeatureFragment.getMaxFeatures();
+                return FeatureFragment.MAX_FEATURES;
         }
 
         @Override
