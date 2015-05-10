@@ -93,7 +93,9 @@ public class IntroActivity extends ActionBarActivity
                 @Override
                 public void onClick(View v)
                 {
-                    //TODO: open main activity
+                    Intent mainMenuIntent = new Intent(IntroActivity.this, MainActivity.class);
+                    startActivity(mainMenuIntent);
+                    finish();
                 }
             });
 
