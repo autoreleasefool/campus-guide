@@ -1,23 +1,17 @@
 package ca.josephroque.uottawacampusguide;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.SparseArray;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
-import java.lang.ref.WeakReference;
 
 import ca.josephroque.uottawacampusguide.fragment.FeatureFragment;
 import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
-import ca.josephroque.uottawacampusguide.utility.Compatibility;
 
 /**
  * Created by Joseph Roque on 15-05-09
@@ -100,7 +94,7 @@ public class IntroActivity extends ActionBarActivity
             });
 
             mRelativeLayoutToolbar = (RelativeLayout)findViewById(R.id.rl_intro_toolbar);
-            mRelativeLayoutToolbar.setVisibility(View.GONE);
+            mRelativeLayoutToolbar.setVisibility(View.INVISIBLE);
 
             mViewPositionIndicator = new View[5];
             mViewPositionIndicator[0] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_0);

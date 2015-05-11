@@ -4,15 +4,19 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import ca.josephroque.uottawacampusguide.R;
+import ca.josephroque.uottawacampusguide.utility.DataFormatter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +25,8 @@ import ca.josephroque.uottawacampusguide.R;
  */
 public class FeatureFragment extends Fragment
 {
+    private static final String TAG = "FeatureFragment";
+
     /** Identifies feature which the fragment highlights */
     private static final String ARG_FEATURE = "feature";
     /** Total number of possible features this fragment may highlight */
@@ -69,21 +75,57 @@ public class FeatureFragment extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
+        RelativeLayout rootView = (RelativeLayout)inflater.inflate(R.layout.fragment_feature, container, false);
+        RelativeLayout.LayoutParams layoutParams;
 
-        //TODO: textview in inverted shows up beneath indicators. Need to move up.
-        RelativeLayout rootView;
+        //Density of screen to set proper width/height of views
+        final float screenDensity = getResources().getDisplayMetrics().density;
+
+        mImageViewFeature = new ImageView(getActivity());
+        mImageViewFeature.setId(R.id.iv_feature);
+        mImageViewFeature.setAdjustViewBounds(true);
+        mImageViewFeature.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        final int dp_16 = DataFormatter.getPixelsFromDP(screenDensity, 16);
+        mTextViewFeatureDescription = new TextView(getActivity());
+        mTextViewFeatureDescription.setId(R.id.tv_feature);
+        mTextViewFeatureDescription.setPadding(dp_16, dp_16, dp_16, dp_16);
+        mTextViewFeatureDescription.setGravity(Gravity.CENTER_HORIZONTAL);
+        mTextViewFeatureDescription.setTextAppearance(getActivity(), android.R.style.TextAppearance_Large);
+        mTextViewFeatureDescription.setTextColor(getResources().getColor(R.color.primary_text));
+
         if (mFeature % 2 == 0)
-            rootView = (RelativeLayout)inflater.inflate(R.layout.fragment_feature, container, false);
+        {
+            rootView.setBackgroundColor(getResources().getColor(R.color.primary_garnet));
+
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            rootView.addView(mTextViewFeatureDescription, layoutParams);
+
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.BELOW, R.id.tv_feature);
+            rootView.addView(mImageViewFeature, layoutParams);
+        }
         else
-            rootView = (RelativeLayout)inflater.inflate(R.layout.fragment_feature_inverted, container, false);
+        {
+            rootView.setBackgroundColor(getResources().getColor(R.color.primary_gray));
 
-        rootView.setBackgroundColor(getResources().getColor(
-                (mFeature % 2 == 0)
-                ? R.color.primary_garnet
-                : R.color.primary_gray));
+            Space emptySpace = new Space(getActivity());
+            emptySpace.setId(R.id.space_feature);
+            layoutParams = new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    getActivity().findViewById(R.id.rl_intro_toolbar).getHeight());
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            rootView.addView(emptySpace, layoutParams);
 
-        mImageViewFeature = (ImageView)rootView.findViewById(R.id.iv_feature);
-        mTextViewFeatureDescription = (TextView)rootView.findViewById(R.id.tv_feature);
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.space_feature);
+            rootView.addView(mTextViewFeatureDescription, layoutParams);
+
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.tv_feature);
+            rootView.addView(mImageViewFeature, layoutParams);
+        }
 
         // TODO: create layout for each feature
         // 1 - navigation

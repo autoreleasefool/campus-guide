@@ -4,25 +4,4 @@
     android:id="@+id/rl_feature"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ca.josephroque.uottawacampusguide.fragment.FeatureFragment">
-
-    <TextView
-        android:id="@+id/tv_feature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/primary_text"/>
-
-    <!-- TODO: add content description reason for ignore -->
-    <ImageView
-        android:id="@+id/iv_feature"
-        android:scaleType="fitXY"
-        android:adjustViewBounds="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_feature"/>
-
-</RelativeLayout>
+    tools:context="ca.josephroque.uottawacampusguide.fragment.FeatureFragment" />
