@@ -7,6 +7,5 @@
     <color name="primary_text">#cdcdcd</color>
 
     <!-- Indicators -->
-    <color name="indicator_inactive">#cdcdcd</color>
-    <color name="indicator_active">#9a9a9a</color>
+    <color name="indicator">#000000</color>
 </resources>

@@ -4,6 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ca.josephroque.uottawacampusguide.IntroActivity" >
+
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/vp_intro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     
     <RelativeLayout
         android:id="@+id/rl_intro_toolbar"
@@ -21,7 +27,7 @@
             android:layout_height="@dimen/indicator_height"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/indicator_width"
-            android:background="@drawable/position_indicator_inactive" />
+            android:background="@drawable/position_indicator" />
 
         <View
             android:id="@+id/view_indicator_1"
@@ -30,7 +36,7 @@
             android:layout_toLeftOf="@id/view_indicator_2"
             android:layout_toStartOf="@id/view_indicator_2"
             android:layout_margin="@dimen/indicator_width"
-            android:background="@drawable/position_indicator_inactive" />
+            android:background="@drawable/position_indicator" />
 
         <View
             android:id="@+id/view_indicator_0"
@@ -39,7 +45,7 @@
             android:layout_toLeftOf="@id/view_indicator_1"
             android:layout_toStartOf="@id/view_indicator_1"
             android:layout_margin="@dimen/indicator_width"
-            android:background="@drawable/position_indicator_inactive" />
+            android:background="@drawable/position_indicator" />
 
         <View
             android:id="@+id/view_indicator_3"
@@ -48,7 +54,7 @@
             android:layout_toEndOf="@id/view_indicator_2"
             android:layout_toRightOf="@id/view_indicator_2"
             android:layout_margin="@dimen/indicator_width"
-            android:background="@drawable/position_indicator_inactive" />
+            android:background="@drawable/position_indicator" />
 
         <View
             android:id="@+id/view_indicator_4"
@@ -57,7 +63,7 @@
             android:layout_toEndOf="@id/view_indicator_3"
             android:layout_toRightOf="@id/view_indicator_3"
             android:layout_margin="@dimen/indicator_width"
-            android:background="@drawable/position_indicator_inactive" />
+            android:background="@drawable/position_indicator" />
 
         <TextView
             android:id="@+id/tv_intro_continue"
@@ -70,13 +76,5 @@
             android:textColor="@color/primary_text" />
 
     </RelativeLayout>
-
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/vp_intro"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/rl_intro_toolbar" />
 
 </RelativeLayout>

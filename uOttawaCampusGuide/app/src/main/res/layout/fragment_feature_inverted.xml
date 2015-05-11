@@ -10,7 +10,7 @@
         android:id="@+id/tv_feature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:padding="@dimen/activity_horizontal_margin"
         android:gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -23,6 +23,6 @@
         android:adjustViewBounds="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_feature"/>
+        android:layout_above="@id/tv_feature"/>
 
 </RelativeLayout>

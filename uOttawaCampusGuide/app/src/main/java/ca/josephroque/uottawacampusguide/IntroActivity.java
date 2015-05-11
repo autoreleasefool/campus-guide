@@ -5,15 +5,15 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+
+import java.lang.ref.WeakReference;
 
 import ca.josephroque.uottawacampusguide.fragment.FeatureFragment;
 import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
@@ -35,8 +35,12 @@ public class IntroActivity extends ActionBarActivity
     /** Identifier for whether the user is selecting a language or not */
     private static final String ARG_SELECTING_LANGUAGE = "ASL";
 
+    //TODO: documentation
+    private static final float INDICATOR_ACTIVE = 0.75f;
+    private static final float INDICATOR_INACTIVE = 0.25f;
+
     /** Adapter to manage fragments displayed by this activity */
-    private PagerAdapter mPagerAdapter;
+    private IntroPagerAdapter mPagerAdapter;
 
     /** Displays input feedback to user, offers interactive elements */
     private RelativeLayout mRelativeLayoutToolbar;
@@ -88,7 +92,10 @@ public class IntroActivity extends ActionBarActivity
                 @Override
                 public void onPageSelected(int position)
                 {
-                    updateIndicatorPosition(position);
+                    if (!mIsSelectingLanguage)
+                    {
+                        updateIndicatorPosition(position);
+                    }
                 }
             });
 
@@ -101,6 +108,8 @@ public class IntroActivity extends ActionBarActivity
             mViewPositionIndicator[2] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_2);
             mViewPositionIndicator[3] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_3);
             mViewPositionIndicator[4] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_4);
+            for (View v : mViewPositionIndicator)
+                v.setAlpha(INDICATOR_INACTIVE);
 
             mRelativeLayoutToolbar.findViewById(R.id.tv_intro_continue).setOnClickListener(new View.OnClickListener()
             {
@@ -149,11 +158,8 @@ public class IntroActivity extends ActionBarActivity
     private void updateIndicatorPosition(int position)
     {
         //Changes which page indicator is 'highlighted'
-        Drawable inactiveDrawable = getResources().getDrawable(R.drawable.position_indicator_inactive);
-        Drawable activeDrawable = getResources().getDrawable(R.drawable.position_indicator_active);
-
-        Compatibility.setViewBackgroundDrawable(mViewPositionIndicator[mCurrentFeaturePage], inactiveDrawable);
-        Compatibility.setViewBackgroundDrawable(mViewPositionIndicator[position], activeDrawable);
+        mViewPositionIndicator[mCurrentFeaturePage].setAlpha(INDICATOR_INACTIVE);
+        mViewPositionIndicator[position].setAlpha(INDICATOR_ACTIVE);
 
         mCurrentFeaturePage = (byte)position;
     }
@@ -163,6 +169,11 @@ public class IntroActivity extends ActionBarActivity
      */
     private class IntroPagerAdapter extends FragmentStatePagerAdapter
     {
+        /**
+         * Default constructor
+         *
+         * @param fm fragment manager
+         */
         public IntroPagerAdapter(FragmentManager fm)
         {
             super(fm);
