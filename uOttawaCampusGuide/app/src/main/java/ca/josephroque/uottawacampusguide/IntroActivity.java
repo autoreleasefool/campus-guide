@@ -7,8 +7,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import java.lang.ref.WeakReference;
 
 import ca.josephroque.uottawacampusguide.fragment.FeatureFragment;
 import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
@@ -89,6 +93,8 @@ public class IntroActivity extends ActionBarActivity
                     if (!mIsSelectingLanguage)
                     {
                         updateIndicatorPosition(position);
+                        ((FeatureFragment)mPagerAdapter.getRegisteredFragment(position))
+                                .startAnimation();
                     }
                 }
             });
@@ -163,6 +169,8 @@ public class IntroActivity extends ActionBarActivity
      */
     private class IntroPagerAdapter extends FragmentStatePagerAdapter
     {
+        SparseArray<WeakReference<Fragment>> registeredFragments = new SparseArray<>();
+
         /**
          * Default constructor
          *
@@ -181,6 +189,21 @@ public class IntroActivity extends ActionBarActivity
                 return LanguageFragment.newInstance();
             else
                 return FeatureFragment.newInstance((byte)position);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position)
+        {
+            Fragment fragment = (Fragment)super.instantiateItem(container, position);
+            registeredFragments.put(position, new WeakReference<>(fragment));
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object item)
+        {
+            super.destroyItem(container, position, item);
+            registeredFragments.remove(position);
         }
 
         @Override
@@ -203,6 +226,16 @@ public class IntroActivity extends ActionBarActivity
             }
             else
                 return super.getItemPosition(item);
+        }
+
+        /**
+         * Gets the fragment from the {@link SparseArray} at {@code position}
+         * @param position key for the fragment
+         * @return fragment at {@code position}
+         */
+        private Fragment getRegisteredFragment(int position)
+        {
+            return registeredFragments.get(position).get();
         }
     }
 }

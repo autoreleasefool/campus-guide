@@ -38,6 +38,8 @@ public class FeatureFragment extends Fragment
     /** The feature being highlighted by this instance */
     private byte mFeature;
 
+    private boolean mAnimationCompleted;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -134,14 +136,14 @@ public class FeatureFragment extends Fragment
         // 4 - accessibility
         // 5 - useful links
 
+        mImageViewFeature.setVisibility(View.INVISIBLE);
+        mTextViewFeatureDescription.setVisibility(View.INVISIBLE);
+
         switch(mFeature)
         {
             case 0:
                 mImageViewFeature.setImageResource(R.drawable.googlemaps_campus);
-                mImageViewFeature.setVisibility(View.INVISIBLE);
-
                 mTextViewFeatureDescription.setText(R.string.text_feature_description_0);
-                mTextViewFeatureDescription.setVisibility(View.INVISIBLE);
                 break;
             case 1:
                 mTextViewFeatureDescription.setText(R.string.text_feature_description_1);
@@ -168,7 +170,7 @@ public class FeatureFragment extends Fragment
     {
         super.onResume();
 
-        if (FeatureFragment.this.isVisible())
+        if (FeatureFragment.this.isVisible() && mFeature == 0)
             startAnimation();
     }
 
@@ -181,33 +183,34 @@ public class FeatureFragment extends Fragment
 
     public void startAnimation()
     {
+        if (mAnimationCompleted)
+            return;
+
         final int longAnimDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
-        switch(mFeature)
-        {
-            case 0:
-                mTextViewFeatureDescription.setAlpha(0f);
-                mTextViewFeatureDescription.setVisibility(View.VISIBLE);
-                mTextViewFeatureDescription.animate()
-                        .alpha(1f)
-                        .setDuration(longAnimDuration)
-                        .setListener(new AnimatorListenerAdapter()
-                        {
-                            @Override
-                            public void onAnimationEnd(Animator animation)
-                            {
-                                mImageViewFeature.setAlpha(0f);
-                                mImageViewFeature.setVisibility(View.VISIBLE);
-                                mImageViewFeature.setY(mImageViewFeature.getY() + 50);
-                                mImageViewFeature.animate()
-                                        .alpha(1f)
-                                        .yBy(-50)
-                                        .setDuration(longAnimDuration)
-                                        .setInterpolator(new DecelerateInterpolator())
-                                        .start();
-                            }
-                        })
-                        .start();
-                break;
-        }
+        mAnimationCompleted = true;
+
+        mTextViewFeatureDescription.setAlpha(0f);
+        mTextViewFeatureDescription.setVisibility(View.VISIBLE);
+        mTextViewFeatureDescription.animate()
+                .alpha(1f)
+                .setDuration(longAnimDuration)
+                .setListener(new AnimatorListenerAdapter()
+                {
+                    @Override
+                    public void onAnimationEnd(Animator animation)
+                    {
+                        mImageViewFeature.setAlpha(0f);
+                        mImageViewFeature.setVisibility(View.VISIBLE);
+                        mImageViewFeature.setY(mImageViewFeature.getY()
+                                + 50 * (mFeature % 2 == 0 ? 1 : -1));
+                        mImageViewFeature.animate()
+                                .alpha(1f)
+                                .yBy(50 * (mFeature % 2 == 0 ? -1 : 1))
+                                .setDuration(longAnimDuration)
+                                .setInterpolator(new DecelerateInterpolator())
+                                .start();
+                    }
+                })
+                .start();
     }
 }
