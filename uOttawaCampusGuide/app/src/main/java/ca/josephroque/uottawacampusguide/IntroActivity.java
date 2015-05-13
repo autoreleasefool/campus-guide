@@ -33,8 +33,9 @@ public class IntroActivity extends ActionBarActivity
     /** Identifier for whether the user is selecting a language or not */
     private static final String ARG_SELECTING_LANGUAGE = "ASL";
 
-    //TODO: documentation
+    /** Alpha value for an active indicator dot */
     private static final float INDICATOR_ACTIVE = 0.75f;
+    /** Alpha value for an inactive indicator dot */
     private static final float INDICATOR_INACTIVE = 0.25f;
 
     /** Adapter to manage fragments displayed by this activity */
@@ -62,8 +63,7 @@ public class IntroActivity extends ActionBarActivity
          * they are immediately sent to the main menu. Otherwise, the language fragment
          * is inflated and displayed.
          */
-        //TODO: uncomment line below to skip opening activity if language was selected
-        boolean languageSelected = false;//getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE).getBoolean(Constants.PREF_LANG, false);
+        boolean languageSelected = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE).getBoolean(Constants.PREF_LANG, false);
         if (languageSelected)
         {
             Intent mainMenuIntent = new Intent(this, MainActivity.class);

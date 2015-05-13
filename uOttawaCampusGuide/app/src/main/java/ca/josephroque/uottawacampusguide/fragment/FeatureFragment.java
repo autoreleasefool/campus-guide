@@ -37,7 +37,7 @@ public class FeatureFragment extends Fragment
 
     /** The feature being highlighted by this instance */
     private byte mFeature;
-
+    /** Indicates if the animation for the fragment has been completed already, so it isn't run again */
     private boolean mAnimationCompleted;
 
     /**
@@ -96,6 +96,8 @@ public class FeatureFragment extends Fragment
         mTextViewFeatureDescription.setTextAppearance(getActivity(), android.R.style.TextAppearance_Large);
         mTextViewFeatureDescription.setTextColor(getResources().getColor(R.color.primary_text));
 
+        // Adds two views to the fragment, an ImageView and a TextView
+        // Alternates between placing ImageView above TextView and vice versa
         if (mFeature % 2 == 0)
         {
             rootView.setBackgroundColor(getResources().getColor(R.color.primary_garnet));
