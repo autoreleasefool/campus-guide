@@ -14,8 +14,8 @@ import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
 
-import ca.josephroque.uottawacampusguide.fragment.FeatureFragment;
-import ca.josephroque.uottawacampusguide.fragment.LanguageFragment;
+import ca.josephroque.uottawacampusguide.fragment.intro.FeatureFragment;
+import ca.josephroque.uottawacampusguide.fragment.intro.LanguageFragment;
 
 /**
  * Created by Joseph Roque on 15-05-09

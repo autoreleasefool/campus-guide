@@ -20,7 +20,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import ca.josephroque.uottawacampusguide.R;
 
@@ -43,6 +44,8 @@ public class NavigationDrawerFragment extends Fragment
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
+    private static final String ARG_NAVIGATION_ITEMS = "ANI";
+
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -53,22 +56,23 @@ public class NavigationDrawerFragment extends Fragment
      */
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private ArrayList<CharSequence> mNavigationItems;
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
+    private ArrayAdapter<CharSequence> mDrawerArrayAdapter;
 
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    public NavigationDrawerFragment()
-    {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        mNavigationItems = new ArrayList<>();
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
@@ -78,6 +82,7 @@ public class NavigationDrawerFragment extends Fragment
         if (savedInstanceState != null)
         {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mNavigationItems = savedInstanceState.getCharSequenceArrayList(ARG_NAVIGATION_ITEMS);
             mFromSavedInstanceState = true;
         }
 
@@ -107,16 +112,15 @@ public class NavigationDrawerFragment extends Fragment
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+
+        mDrawerArrayAdapter = new ArrayAdapter<CharSequence>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                new String[]{
-                        "Hello, 1",
-                        "Hello, 2",
-                        "Hello, 3"
-                }));
+                mNavigationItems);
+        mDrawerListView.setAdapter(mDrawerArrayAdapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
         return mDrawerListView;
     }
 
@@ -251,6 +255,7 @@ public class NavigationDrawerFragment extends Fragment
     {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        outState.putCharSequenceArrayList(ARG_NAVIGATION_ITEMS, mNavigationItems);
     }
 
     @Override
@@ -285,27 +290,22 @@ public class NavigationDrawerFragment extends Fragment
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Per the navigation drawer design guidelines, updates the action bar to show the global app
-     * 'context', rather than just what's in the current screen.
-     */
-    private void showGlobalContextActionBar()
-    {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(R.string.app_name);
-    }
-
     private ActionBar getActionBar()
     {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
+    public void setDrawerItems(ArrayList<CharSequence> items)
+    {
+        mNavigationItems.clear();
+        mNavigationItems.addAll(items);
+        mDrawerArrayAdapter.notifyDataSetChanged();
+    }
+
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks
+    public interface NavigationDrawerCallbacks
     {
         /**
          * Called when an item in the navigation drawer is selected.

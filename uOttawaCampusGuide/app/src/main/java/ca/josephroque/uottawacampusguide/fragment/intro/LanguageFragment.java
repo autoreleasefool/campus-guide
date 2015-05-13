@@ -1,4 +1,4 @@
-package ca.josephroque.uottawacampusguide.fragment;
+package ca.josephroque.uottawacampusguide.fragment.intro;
 
 import android.app.Activity;
 import android.os.Bundle;

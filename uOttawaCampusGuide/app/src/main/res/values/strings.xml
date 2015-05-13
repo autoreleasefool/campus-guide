@@ -22,4 +22,7 @@
     <!-- TODO: Translate to French -->
     <string name="text_lang_continue_fr">Continuer en FRANCAIS</string>
     <string name="text_lang_intro_fr">We will only ask you once, but feel free to switch at any time by going to the settings.</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
