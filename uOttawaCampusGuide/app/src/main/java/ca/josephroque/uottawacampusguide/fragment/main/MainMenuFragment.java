@@ -12,7 +12,7 @@ import ca.josephroque.uottawacampusguide.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MainMenuFragment.OnMainMenuItemSelected} interface
+ * {@link MainMenuFragment.MainMenuCallbacks} interface
  * to handle interaction events.
  * Use the {@link MainMenuFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -20,7 +20,7 @@ import ca.josephroque.uottawacampusguide.R;
 public class MainMenuFragment extends Fragment
 {
 
-    private OnMainMenuItemSelected mListener;
+    private MainMenuCallbacks mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -58,11 +58,11 @@ public class MainMenuFragment extends Fragment
         super.onAttach(activity);
         try
         {
-            mListener = (OnMainMenuItemSelected) activity;
+            mListener = (MainMenuCallbacks) activity;
         } catch (ClassCastException e)
         {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnMainMenuItemSelected");
+                    + " must implement MainMenuCallbacks");
         }
     }
 
@@ -79,7 +79,7 @@ public class MainMenuFragment extends Fragment
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    public interface OnMainMenuItemSelected
+    public interface MainMenuCallbacks
     {
     }
 }

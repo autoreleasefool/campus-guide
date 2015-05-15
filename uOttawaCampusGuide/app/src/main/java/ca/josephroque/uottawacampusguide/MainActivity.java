@@ -19,7 +19,8 @@ import ca.josephroque.uottawacampusguide.fragment.main.MainMenuFragment;
  * Handles most of the app interaction and UI
  */
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        MainMenuFragment.MainMenuCallbacks
 {
 
     /**
