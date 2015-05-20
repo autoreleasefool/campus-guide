@@ -1,12 +1,11 @@
 package ca.josephroque.uottawacampusguide;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import ca.josephroque.uottawacampusguide.fragment.intro.LanguageFragment;
  * select a language and explore the functionality of the app
  */
 
-public class IntroActivity extends ActionBarActivity
+public class IntroActivity extends AppCompatActivity
     implements LanguageFragment.OnLanguageSelectListener
 {
 
@@ -66,9 +65,9 @@ public class IntroActivity extends ActionBarActivity
         boolean languageSelected = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE).getBoolean(Constants.PREF_LANG, false);
         if (languageSelected)
         {
-            Intent mainMenuIntent = new Intent(this, MainActivity.class);
-            startActivity(mainMenuIntent);
-            finish();
+            //Intent mainMenuIntent = new Intent(this, MainActivity.class);
+            //startActivity(mainMenuIntent);
+            //finish();
         }
         else
         {
@@ -116,9 +115,9 @@ public class IntroActivity extends ActionBarActivity
                 @Override
                 public void onClick(View v)
                 {
-                    Intent mainMenuIntent = new Intent(IntroActivity.this, MainActivity.class);
-                    startActivity(mainMenuIntent);
-                    finish();
+                    //Intent mainMenuIntent = new Intent(IntroActivity.this, MainActivity.class);
+                    //startActivity(mainMenuIntent);
+                    //finish();
                 }
             });
 
