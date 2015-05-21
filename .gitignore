@@ -28,3 +28,6 @@ proguard/
 
 # Admob id
 *strings_ads.xml
+
+# Application design files
+Design/*
