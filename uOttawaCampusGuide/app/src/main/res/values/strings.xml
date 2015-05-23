@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">uOttawa Campus Guide</string>
+    <string name="app_name">uOttawa Campus Navigator</string>
     <string name="title_activity_intro">Select a Language</string>
+    <string name="title_activity_main">Campus Navigator</string>
+
+    <string name="campus_navigator">Campus\nNavigator</string>
 
     <string name="action_settings">Settings</string>
 
@@ -21,4 +24,5 @@
     <!-- TODO: Translate to French -->
     <string name="text_lang_continue_fr">Continuer en FRANCAIS</string>
     <string name="text_lang_intro_fr">We will only ask you once, but feel free to switch at any time by going to the settings.</string>
+
 </resources>
