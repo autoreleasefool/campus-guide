@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Primary theme -->
+    <color name="primary_garnet">#8a001f</color>
+    <color name="primary_gray">#2d2d2d</color>
+    <color name="primary_text">#cdcdcd</color>
+
+    <!-- Indicators -->
+    <color name="indicator">#000000</color>
+</resources>
