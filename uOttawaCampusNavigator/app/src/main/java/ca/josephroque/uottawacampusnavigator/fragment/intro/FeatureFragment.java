@@ -1,4 +1,4 @@
-package ca.josephroque.uottawacampusnavigator.fragment;
+package ca.josephroque.uottawacampusnavigator.fragment.intro;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

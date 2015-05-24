@@ -1,4 +1,4 @@
-package ca.josephroque.uottawacampusnavigator.fragment;
+package ca.josephroque.uottawacampusnavigator.fragment.intro;
 
 import android.app.Activity;
 import android.os.Bundle;

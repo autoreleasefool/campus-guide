@@ -1,6 +1,5 @@
 package ca.josephroque.uottawacampusnavigator;
 
-import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,8 +16,8 @@ import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
 
-import ca.josephroque.uottawacampusnavigator.fragment.FeatureFragment;
-import ca.josephroque.uottawacampusnavigator.fragment.LanguageFragment;
+import ca.josephroque.uottawacampusnavigator.fragment.intro.FeatureFragment;
+import ca.josephroque.uottawacampusnavigator.fragment.intro.LanguageFragment;
 
 
 public class IntroActivity extends FragmentActivity
