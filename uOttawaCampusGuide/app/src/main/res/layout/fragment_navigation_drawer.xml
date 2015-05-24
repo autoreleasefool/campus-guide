@@ -6,6 +6,7 @@
     tools:context="ca.josephroque.uottawacampusguide.fragment.NavigationDrawerFragment">
 
     <RelativeLayout
+        android:id="@+id/rl_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -51,6 +52,7 @@
         android:id="@+id/rv_navigation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/rl_navigation"
         android:scrollbars="vertical"/>
 
 </RelativeLayout>

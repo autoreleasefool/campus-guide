@@ -1,5 +1,6 @@
 package ca.josephroque.uottawacampusguide;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -65,9 +66,9 @@ public class IntroActivity extends AppCompatActivity
         boolean languageSelected = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE).getBoolean(Constants.PREF_LANG, false);
         if (languageSelected)
         {
-            //Intent mainMenuIntent = new Intent(this, MainActivity.class);
-            //startActivity(mainMenuIntent);
-            //finish();
+            Intent mainMenuIntent = new Intent(this, MainActivity.class);
+            startActivity(mainMenuIntent);
+            finish();
         }
         else
         {

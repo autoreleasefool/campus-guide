@@ -36,6 +36,7 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="left"
+        tools:layout="@layout/fragment_navigation_drawer"
         tools:ignore="RtlHardcoded"/>
 
 </android.support.v4.widget.DrawerLayout>

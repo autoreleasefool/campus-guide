@@ -11,13 +11,20 @@
         android:id="@+id/iv_drawer_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="@dimen/navigation_item_padding"
         tools:ignore="ContentDescription"/>
 
     <TextView
         android:id="@+id/tv_drawer_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/navigation_item_margin"
+        android:layout_marginBottom="@dimen/navigation_item_margin"
+        android:padding="@dimen/navigation_item_padding"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/primary_text"/>
 
 </LinearLayout>

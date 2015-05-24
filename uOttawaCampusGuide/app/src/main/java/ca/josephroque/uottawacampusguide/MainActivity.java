@@ -1,9 +1,7 @@
 package ca.josephroque.uottawacampusguide;
 
-import android.os.Build;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,12 +19,7 @@ public class MainActivity extends AppCompatActivity
         DrawerAdapter.NavigationDrawerEventHandler
 {
 
-    private DrawerLayout mDrawerLayout;
     private NavigationDrawerFragment mDrawerFragment;
-    private ActionBarDrawerToggle mDrawerToggle;
-
-    private int mDrawerTitle;
-    private int mTitle;
 
     private AdView mAdViewMainBanner;
 
@@ -36,28 +29,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
         mDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.main_navigation_fragment);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        {
-
-            @Override
-            public void onDrawerClosed(View view)
-            {
-                super.onDrawerClosed(view);
-                invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerOpened(View view)
-            {
-                super.onDrawerOpened(view);
-                invalidateOptionsMenu();
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerFragment.setup(R.id.main_navigation_fragment,
+                (DrawerLayout) findViewById(R.id.main_drawer_layout));
 
         mAdViewMainBanner = (AdView) findViewById(R.id.main_adview_bottom);
         mAdViewMainBanner.setAdListener(new AdListener()
@@ -95,11 +70,47 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if (mAdViewMainBanner != null && mAdViewMainBanner.getVisibility() == View.VISIBLE)
+            mAdViewMainBanner.resume();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        if (mAdViewMainBanner != null && mAdViewMainBanner.getVisibility() == View.VISIBLE)
+            mAdViewMainBanner.pause();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+
+        if (mAdViewMainBanner != null && mAdViewMainBanner.getVisibility() == View.VISIBLE)
+            mAdViewMainBanner.destroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        //Sets menu items visibility depending on if navigation drawer is open
+        boolean drawerOpen = mDrawerFragment.isDrawerOpen();
+        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
