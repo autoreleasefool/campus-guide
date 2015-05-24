@@ -2,14 +2,16 @@ package ca.josephroque.uottawacampusguide;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
@@ -24,7 +26,7 @@ import ca.josephroque.uottawacampusguide.fragment.intro.LanguageFragment;
  * select a language and explore the functionality of the app
  */
 
-public class IntroActivity extends AppCompatActivity
+public class IntroActivity extends FragmentActivity
     implements LanguageFragment.OnLanguageSelectListener
 {
 
@@ -72,6 +74,11 @@ public class IntroActivity extends AppCompatActivity
         }
         else
         {
+            // Setting activity to be full screen
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
             if (savedInstanceState != null)
             {
                 mCurrentFeaturePage = savedInstanceState.getByte(ARG_CURRENT_PAGE);
@@ -116,9 +123,9 @@ public class IntroActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v)
                 {
-                    //Intent mainMenuIntent = new Intent(IntroActivity.this, MainActivity.class);
-                    //startActivity(mainMenuIntent);
-                    //finish();
+                    Intent mainMenuIntent = new Intent(IntroActivity.this, MainActivity.class);
+                    startActivity(mainMenuIntent);
+                    finish();
                 }
             });
 

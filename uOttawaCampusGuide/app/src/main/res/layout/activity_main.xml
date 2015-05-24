@@ -33,7 +33,7 @@
     <fragment
         android:name="ca.josephroque.uottawacampusguide.fragment.NavigationDrawerFragment"
         android:id="@+id/main_navigation_fragment"
-        android:layout_width="240dp"
+        android:layout_width="@dimen/main_navigation_width"
         android:layout_height="match_parent"
         android:layout_gravity="left"
         tools:layout="@layout/fragment_navigation_drawer"
