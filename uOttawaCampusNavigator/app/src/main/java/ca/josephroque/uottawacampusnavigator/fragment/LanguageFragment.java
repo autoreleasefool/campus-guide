@@ -3,6 +3,7 @@ package ca.josephroque.uottawacampusnavigator.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,8 @@ public class LanguageFragment extends Fragment
 
         rootView.findViewById(R.id.rl_lang_en).setOnClickListener(this);
         rootView.findViewById(R.id.rl_lang_en).setOnClickListener(this);
+
+        Log.i("LanguageFragment", "Language Fragment created");
 
         return rootView;
     }

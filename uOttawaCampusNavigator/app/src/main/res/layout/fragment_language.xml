@@ -48,6 +48,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/view_lang_placeholder_2"
             android:gravity="center_horizontal"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -87,5 +88,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/view_lang_placeholder_3"
             android:gravity="center_horizontal"/>
+
     </RelativeLayout>
+
 </RelativeLayout>

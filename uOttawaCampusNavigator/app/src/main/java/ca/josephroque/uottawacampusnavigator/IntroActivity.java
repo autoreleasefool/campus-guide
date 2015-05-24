@@ -45,7 +45,7 @@ public class IntroActivity extends FragmentActivity
     /** Provide feedback on user's navigation in app */
     private View[] mViewPositionIndicator;
 
-    /** Indicates if the user is select a language*/
+    /** Indicates if the user is select a language */
     private boolean mIsSelectingLanguage = true;
     /** Indicates the application should refresh the view pager fragments */
     private boolean mIgnoreSelectingLanguage = false;
@@ -122,8 +122,6 @@ public class IntroActivity extends FragmentActivity
                 }
             });
         }
-
-        setContentView(R.layout.activity_intro);
     }
 
     @Override
