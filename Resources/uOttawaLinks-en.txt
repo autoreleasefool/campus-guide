@@ -1,0 +1,199 @@
+uOttawa
+	Home:http://www.uottawa.ca/en
+	uoZone:http://www.uottawa.ca/en/students
+	uoCal (Calendar of Events):http://uocal.uottawa.ca/
+	Rate My Professors:http://www.ratemyprofessors.com/campusRatings.jsp?sid=1452
+	101 Week:http://www.semaine101week.com/
+	Library:http://biblio.uottawa.ca/en
+	Emergency:http://www.emergencypreparedness.uottawa.ca/
+	Accessibility:http://www.uottawa.ca/respect/en/accessibility
+	Social Media
+		LinkedIn:http://www.linkedin.com/edu/school?id=10858
+		Twitter:https://twitter.com/uottawa
+		Facebook:https://www.facebook.com/uottawa
+		Google+:https://plus.google.com/u/0/112220131136017747263/posts
+		Instagram:http://instagram.com/uottawa
+		YouTube:http://www.youtube.com/uottawa
+		Tumblr:http://uottawa.tumblr.com/
+		Emergency:https://twitter.com/uOttawaAlert
+		News
+			Twitter: https://twitter.com/uottawa
+			RSS Feed (En):http://feeds.feedburner.com/UniversityOfOttawaNewsReleasesAndAnnouncements
+			RSS Feed (Fr):http://feeds.feedburner.com/UniversitedOttawaCommuniquesDePresseEtAnnonces
+uOttawa Faculties
+	Arts
+		Faculty of Arts:http://arts.uottawa.ca/en
+		Social Media
+			Facebook:https://www.facebook.com/arts.uottawa
+			Twitter:https://twitter.com/uottawaarts
+			YouTube:http://www.youtube.com/uOttawaArts
+		Canadian and Aboriginal Studies:http://arts.uottawa.ca/canada/en
+		Centre for Research on French Canadian Culture (Fr):http://arts.uottawa.ca/crccf/
+		Classics and Religious Studies:http://arts.uottawa.ca/cla-srs/en
+		Communication:http://arts.uottawa.ca/communication/en
+		English:http://arts.uottawa.ca/english/
+		French (Fr):http://arts.uottawa.ca/lettres/
+		Geography:http://arts.uottawa.ca/geography/
+		History:http://arts.uottawa.ca/history/
+		Information Studies:http://arts.uottawa.ca/sis/
+		Institute for Science, Society, and Policy:http://issp.uottawa.ca/en
+		Linguistics:http://arts.uottawa.ca/linguistics/
+		Modern Languages:http://arts.uottawa.ca/modernlanguages/
+		Music:http://arts.uottawa.ca/music/
+		Official Lanuages and Bilingualism Institute:http://olbi.uottawa.ca/
+		Philosophy:http://arts.uottawa.ca/philosophy/
+		Theatre:http://arts.uottawa.ca/theatre/en
+		Translation and Interpretation:http://arts.uottawa.ca/translation/
+		Visual Arts:http://arts.uottawa.ca/visualarts/
+		Other:http://arts.uottawa.ca/en/programs
+	Law
+		Faculty of Law - Civil Law:http://droitcivil.uottawa.ca/en
+		Faculty of Law - Common Law:http://commonlaw.uottawa.ca/en
+		Social Media
+			Twitter:http://twitter.com/uocommonlaw
+	Education
+		Faculty of Education:http://education.uottawa.ca/en
+		Social Media
+			Facebook:http://www.facebook.com/uOttawaEducation
+			Twitter:https://twitter.com/uottawaedu
+			YouTube:http://www.youtube.com/user/uOttawaEducation
+	Engineering
+		Faculty of Engineering:http://www.engineering.uottawa.ca/
+		Social Media
+			Facebook:https://www.facebook.com/uottawa.engineering
+			Twitter:https://twitter.com/uottawagenie
+			YouTube:http://www.youtube.com/user/FacultyofEngineering
+			Tumblr:http://engineering-uottawa-memories.tumblr.com/
+			RSS Feed (En):http://feeds2.feedburner.com/UOGenieLatestNewsEn
+			RSS Feed (Fr):http://feeds2.feedburner.com/UOGenieLatestNews
+			Flickr:http://www.flickr.com/photos/uottawa-genie-engineering/sets
+		Chemical and Biological Engineering:http://engineering.uottawa.ca/chemical/
+		Civil Engineering:http://engineering.uottawa.ca/civil/
+		Electrical Engineering and Computer Science:http://engineering.uottawa.ca/eecs/
+		Mechanical Engineering:http://engineering.uottawa.ca/mechanical/
+	Graduate and Postdoctoral Studies
+		Faculty of Graduate and Postdoctoral Studies:http://www.grad.uottawa.ca/Default.aspx?tabid=1406
+	Health Sciences
+		Faculty of Health Sciences:http://www.health.uottawa.ca/
+		Social Media
+			Facebook:https://www.facebook.com/pages/UOttawa-Facult%C3%A9-des-sciences-de-la-sant%C3%A9-Faculty-of-Health-Sciences/287243141336363
+			Twitter:https://twitter.com/uOttawaHealthSc
+			YouTube:http://www.youtube.com/user/hswebmas/videos
+			Flickr:http://www.flickr.com/photos/72431151@N03/
+		Health Sciences:http://www.health.uottawa.ca/healthsciences/
+		Human Kinetics:http://www.health.uottawa.ca/shk/
+		Nursing:http://www.health.uottawa.ca/sn/
+		Nutrition Sciences:http://www.health.uottawa.ca/nutrition/index.htm
+		Rehabilitation Sciences:http://www.health.uottawa.ca/sr/
+	Medicine
+		Faculty of Medicine:http://www.medecine.uottawa.ca/eng/
+		Undergraduate Medical Education:http://med.uottawa.ca/undergraduate/
+		Graduate and Postdoctoral Studies:http://med.uottawa.ca/graduate-postdoctoral/
+		MD/PhD Program:http://www.med.uottawa.ca/md-phd/eng/
+		Postgraduate Medical Education Program:http://www.med.uottawa.ca/Postgraduate/eng/
+		Continuing Medical Education:http://www.med.uottawa.ca/cme/eng/index.html
+		Biochemistry, Microbiology, and Immunology:http://www.med.uottawa.ca/bmi/eng/index.html
+		Cellular and Molecular Medicine:http://www.medecine.uottawa.ca/cellmed/eng/
+		Epidemiology and Community Medicine:http://med.uottawa.ca/epidemiology/
+		Anesthesia:http://www.med.uottawa.ca/anesthesia/eng/index.html
+		Emergency Medicine:http://www.emottawa.ca/eng/index.html
+		Family Medicine:http://www.familymedicine.uottawa.ca/eng/
+		Medicine:http://thinkottawamedicine.ca/
+		Obstetrics and Gynecology:http://med.uottawa.ca/obs-gyne/
+		Ophthalmology:http://www.ottawahospital.on.ca/wps/portal/Base/TheHospital/ClinicalServices/DeptPgrmCS/Programs/EyeInstitute/!ut/p/c5/jdBLU4MwFAXgX2RzQ3iEJTSBhBYbQCxl4_TJxPLQ4mjLr5eOG8cZq_cuvzlncVCJxm_X77pav-muXdeoQKX9xKgjQmkaALFwQdpAKKMGXrjW6KtvTu2cg0wCV-HEN1wT_pP2AaczkotYzHEAkkUxUYkFIOw_0hEq9aaZfGybCUwc7FqUEmradGQgaMm2xzPrvIpxlvaDD7XYGNFChppHWefxWNR3TetclH-EbUJWVcea9kFbp2JQSe3UIMMWL_XenD-H0M-mxqpo8a68UCMshzNWvQ761x3N2VTVqV0dnLgjAVpeF7y9yNUfHQ6ujz1YyJyC9FIzYRknoJzbntk_-2PGxv4pDX3BMID55bc2vTr8ch6ge9E1e5QdTuilyYthf0x5Sr1Pu7B2NA!!/dl3/d3/L0lHSkovd0RNQURrQUVnQSEhL1lCZncvZW4!/
+		Oto-rhino-laryngology:http://www.med.uottawa.ca/Otolaryngology/eng/
+		Pathology and Laboratory Medicine:http://www.med.uottawa.ca/Pathology/eng/
+		Pediatrics:http://www.pediatrics.uottawa.ca/eng/
+		Psychiatry:http://www.med.uottawa.ca/psychiatry/eng/index.html
+		Radiology:http://www.med.uottawa.ca/Radiology/eng/
+		Surgery:http://www.med.uottawa.ca/surgery/eng/index.html
+	Science
+		Faculty of Science:http://science.uottawa.ca/en
+		Social Media
+			Facebook:https://www.facebook.com/pages/uOttawa-Science/342608530150
+			Twitter:https://twitter.com/uottawascience
+		Biology:http://science.uottawa.ca/biology/programs-of-study/biomedical-science
+		Chemistry:http://science.uottawa.ca/chemistry/
+		Earth Sciences:http://science.uottawa.ca/earth/
+		Physics:http://science.uottawa.ca/physics/
+		Mathematics and Statistics:http://science.uottawa.ca/mathstat/en
+	Social Sciences:
+		Faculty of Social Sciences:http://socialsciences.uottawa.ca/
+		Social Media
+			Facebook:https://www.facebook.com/uottawafss
+			Twitter:https://twitter.com/uottawafss
+		Criminology:http://socialsciences.uottawa.ca/crm
+		Economics:http://socialsciences.uottawa.ca/eco
+		International Development and Global Studies:http://socialsciences.uottawa.ca/dvm
+		Political Studies:http://socialsciences.uottawa.ca/pol
+		Psychology:http://socialsciences.uottawa.ca/psy
+		Public and International Affairs:http://socialsciences.uottawa.ca/api
+		Social Work:http://socialsciences.uottawa.ca/svs
+		Sociological and Anthropological Studies:http://socialsciences.uottawa.ca/soc-ant
+		Feminist and Gender Studies:http://socialsciences.uottawa.ca/fem
+	Telfer School of Management
+		Telfer School of Management:http://www.telfer.uottawa.ca/en
+		Social Media
+			Facebook:https://www.facebook.com/Telfer.uOttawa
+			Twitter:https://twitter.com/telfer_uOttawa
+			RSS Feed (En):http://www.telfer.uottawa.ca/en/latest-news?format=feed&type=rss
+			RSS Feed (Fr):http://www.telfer.uottawa.ca/fr/actualites?format=feed&type=rss
+		Accounting:http://www.telfer.uottawa.ca/bcom/en/program-options/accounting
+		Entrepreneurship:http://www.telfer.uottawa.ca/bcom/en/program-options/entrepreneurship
+		Executive MBA:http://www.telfer.uottawa.ca/emba/en
+		Finance:http://www.telfer.uottawa.ca/bcom/en/program-options/finance
+		Human Resource Management:http://www.telfer.uottawa.ca/bcom/en/program-options/human-resource-management
+		International Management:http://www.telfer.uottawa.ca/bcom/en/program-options/international-management
+		Management:http://www.telfer.uottawa.ca/bcom/en/program-options/management
+		Marketing:http://www.telfer.uottawa.ca/bcom/en/program-options/marketing
+		Management Information Systems:http://www.telfer.uottawa.ca/bcom/en/program-options/mis
+		Master in Business Admin.:http://www.telfer.uottawa.ca/mba/en
+		Master of Health Admin.:http://www.telfer.uottawa.ca/mha/en
+Student Federations & Societies
+	SFUO Website:http://sfuo.ca/
+	SFUO Twitter:http://twitter.com/sfuo_feuo
+	SFUO Services
+		Bike Co-op:http://sfuo.ca/bikes
+		Bilingualism Centre:http://www.sfuo.ca/bilingualism
+		Centre for Students with Disabilities:http://www.sfuo.ca/csd
+		Food Bank:http://www.sfuo.ca/foodbank
+		Foot Patrol:http://www.sfuo.ca/footpatrol
+		International House:http://www.sfuo.ca/ihouse
+		Peer Help Centre:http://www.sfuo.ca/peerhelp
+		Pride Centre:http://www.sfuo.ca/pride
+		Student Rights Centre:http://rights.sfuo.ca/
+		Sustainable Development Centre:http://www.sfuo.ca/green
+		Women's Resource Centre:http://www.sfuo.ca/wrc
+	Faculty Student Associations
+		Students' Association of the Faculty of Arts:http://www.artsuottawa.ca/
+		Communications Students' Association:http://aeec-csa.ca/
+		Computer Science Student Association:http://cssa-aei.ca/
+		Conflict Studies and Human Rights Students' Association:http://socialsciences.uottawa.ca/api/student-association
+		Criminology Student Association:http://www.csa-aec.com/#!home/c22r0
+		Economic Student Association:http://www.ecouo.ca/
+		Engineering Students' Society:http://essaeg.ca/
+		Undergraduate English Students' Association:http://www.uesa.ca/
+		Health Sciences Student Association:http://www.hssuottawa.ca/#!__english
+		Human Kinetics Student Association:http://hksa-aeeap.ca/en/
+		International Development and Globalization Student Association:http://en.aedsa.ca/
+		Undergraduate Nursing Student Association:http://www.unsaaepsi.com/#!home/mainPage
+		Association des étudiants en nutrition:http://adenut.com/
+		International, Political and Policy Studies Students' Association:http://en.aeeippssa.ca/
+		Psychology Students' Association:http://psaep.ca/
+		Science Students' Association:http://www.ssaaes.com/
+		Telfer Student Council:http://cetsc.ca/
+Sports & Clubs
+	SFUO Clubs:http://sfuo.ca/clubs/
+	SFUO Club Listings:http://sfuo.ca/clubs/clubs-listing/
+	Gee-Gees Campus Rec:https://www.geegees.ca/en/rec/home
+	Gee-Gees Interuniversity:https://www.geegees.ca/en/sports/home
+	Gym Hours of Operation:https://www.geegees.ca/en/rec/hours-of-operation
+Emergency
+	On-Campus Emergency:613-562-5411
+	Off-Campus Emergency:911
+	Twitter:http://twitter.com/uottawaalert
+	uOttawa Emergency Preparedness:http://www.emergencypreparedness.uottawa.ca/
+	Protection Services:http://www.protection.uottawa.ca/en/index.html
+OC Transpo:http://www.octranspo1.com/
+City of Ottawa:http://ottawa.ca/en
+Ottawa Tourism:http://www.ottawatourism.ca/
