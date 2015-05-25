@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,30 +38,32 @@ public class NavigationDrawerFragment extends Fragment
     /**
      * Remember the position of the selected item.
      */
-    private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
+    private static final String ARG_STATE_SELECTED_POSITION = "arg_navigation_drawer_position";
 
     /**
      * Per the design guidelines, you should show the drawer on launch until the user manually
      * expands it. This shared preference tracks this.
      */
-    private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+    private static final String PREF_USER_LEARNED_DRAWER = "pref_navigation_drawer_learned";
 
-    /**
-     * A pointer to the current callbacks instance (the Activity).
-     */
+    /** A pointer to the current callbacks instance (the Activity). */
     private NavigationDrawerCallbacks mCallbacks;
 
-    /**
-     * Helper component that ties the action bar to the navigation drawer.
-     */
+    /** Helper component that ties the action bar to the navigation drawer. */
     private ActionBarDrawerToggle mDrawerToggle;
 
+    /** Layout for the navigation drawer */
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerListView;
-    private View mFragmentContainerView;
+    /** View which displays items in the navigation drawer */
+    private RecyclerView mRecyclerViewDrawer;
+    /** Container for fragments */
+    // TODO: private View mFragmentContainerView;
 
+    /** Current position of the navigation drawer */
     private int mCurrentSelectedPosition = 0;
+    /** Indicates whether this fragment was loaded from a saved instance state */
     private boolean mFromSavedInstanceState;
+    /** Indicates whether the user has 'learned' about the navigation drawer */
     private boolean mUserLearnedDrawer;
 
     @Override
@@ -75,7 +78,7 @@ public class NavigationDrawerFragment extends Fragment
 
         if (savedInstanceState != null)
         {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mCurrentSelectedPosition = savedInstanceState.getInt(ARG_STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
 
@@ -84,18 +87,10 @@ public class NavigationDrawerFragment extends Fragment
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        // Indicate that this fragment would like to influence the set of actions in the action bar.
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        mDrawerListView = (ListView) inflater.inflate(
+        mRecyclerViewDrawer = (RecyclerView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {

@@ -12,5 +12,5 @@ public class Constants
      * Identifier for the preference which indicates the language selected
      * - English (true) or French (false)
      */
-    public static final String PREF_LANGUAGE_SELECTED = "pref_lang_selected";
+    public static final String PREF_LANGUAGE_SELECTED = "pref_global_lang_selected";
 }

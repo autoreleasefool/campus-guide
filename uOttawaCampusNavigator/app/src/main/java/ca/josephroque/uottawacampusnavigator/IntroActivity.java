@@ -26,11 +26,11 @@ public class IntroActivity extends FragmentActivity
 {
 
     /** Identifier for the current feature page being displayed */
-    private static final String ARG_CURRENT_PAGE = "arg_cur_page";
+    private static final String ARG_CURRENT_PAGE = "arg_intro_cur_page";
     /** Identifier for whether the user is selecting a language or not */
-    private static final String ARG_SELECTING_LANGUAGE = "arg_select_lang";
+    private static final String ARG_SELECTING_LANGUAGE = "arg_intro_select_lang";
     /** Identifier for whether the user has selected a language previously */
-    private static final String PREF_IS_LANGUAGE_SELECTED = "pref_is_lang_selected";
+    private static final String PREF_IS_LANGUAGE_SELECTED = "pref_intro_is_lang_selected";
 
     /** Alpha value for an active indicator dot */
     private static final float INDICATOR_ACTIVE = 0.75f;
