@@ -1,5 +1,6 @@
 package ca.josephroque.uottawacampusnavigator;
 
+import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -60,9 +61,9 @@ public class IntroActivity extends FragmentActivity
                 .getBoolean(PREF_IS_LANGUAGE_SELECTED, false);
         if (languageSelected)
         {
-            //Intent mainMenuIntent = new Intent(this, MainActivity.class);
-            //startActivity(mainMenuIntent);
-            //finish();
+            Intent navigationIntent = new Intent(this, NavigationActivity.class);
+            startActivity(navigationIntent);
+            finish();
         }
         else
         {
@@ -115,9 +116,9 @@ public class IntroActivity extends FragmentActivity
                 @Override
                 public void onClick(View v)
                 {
-                    //Intent mainMenuIntent = new Intent(IntroActivity.this, MainActivity.class);
-                    //startActivity(mainMenuIntent);
-                    //finish();
+                    Intent navigationIntent = new Intent(IntroActivity.this, NavigationActivity.class);
+                    startActivity(navigationIntent);
+                    finish();
                 }
             });
         }
