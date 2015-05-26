@@ -1,5 +1,6 @@
 package ca.josephroque.uottawacampusnavigator;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class NavigationActivity extends AppCompatActivity
     public void onNavigationDrawerItemSelected(int position)
     {
         // TODO: navigation item clicked
+        //setActionBarTitle();
     }
 
     @Override
@@ -71,6 +73,13 @@ public class NavigationActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setActionBarTitle(int title)
+    {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null)
+            actionBar.setTitle(title);
     }
 
     /**

@@ -2,6 +2,11 @@
     <string name="app_name">uOttawa Campus Navigator</string>
     <string name="app_name_condensed">Campus Navigator</string>
     <string name="app_name_condensed_split">Campus\nNavigator</string>
+    <string name="title_activity_navigation">Campus Navigator</string>
+
+    <!-- Navigation Drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- TextView text -->
     <string name="text_intro_continue">Skip</string>
@@ -21,15 +26,5 @@
 
     <!-- Action items -->
     <string name="action_settings">Settings</string>
-    <string name="title_activity_navigation">NavigationActivity</string>
-
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_example">Example action</string>
 
 </resources>

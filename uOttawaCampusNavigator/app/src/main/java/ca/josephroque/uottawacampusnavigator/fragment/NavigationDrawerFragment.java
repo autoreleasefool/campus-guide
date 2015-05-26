@@ -14,6 +14,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -61,6 +64,13 @@ public class NavigationDrawerFragment extends Fragment
     private boolean mFromSavedInstanceState;
     /** Indicates whether the user has 'learned' about the navigation drawer. */
     private boolean mUserLearnedDrawer;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -113,6 +123,13 @@ public class NavigationDrawerFragment extends Fragment
         mRecyclerViewDrawer.setAdapter(mDrawerAdapter);
         mRecyclerViewDrawer.setLayoutManager(new LinearLayoutManager(getActivity()));
         return mRecyclerViewDrawer;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item))
+            return true;
+        return super.onOptionsItemSelected(item);
     }
 
     public boolean isDrawerOpen()
@@ -204,6 +221,7 @@ public class NavigationDrawerFragment extends Fragment
         });
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
