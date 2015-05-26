@@ -290,18 +290,12 @@ public class NavigationDrawerFragment extends Fragment
     @Override
     public void onDrawerItemClicked(int position)
     {
-        if (mCurrentSelectedPosition == position)
-            return;
         mCurrentSelectedPosition = position;
-
         if (mDrawerLayout != null)
-        {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
-        }
         if (mCallbacks != null)
-        {
-            mCallbacks.onNavigationDrawerItemSelected(mCurrentSelectedPosition);
-        }
+            mCallbacks.onNavigationDrawerItemSelected(
+					NAVIGATION_DRAWER_ITEMS[mCurrentSelectedPosition]);
     }
 	
 	@Override
@@ -327,7 +321,8 @@ public class NavigationDrawerFragment extends Fragment
     {
         /**
          * Called when an item in the navigation drawer is selected.
+		 * @param itemName name of the selected item
          */
-        void onNavigationDrawerItemSelected(int position);
+        void onNavigationDrawerItemSelected(String itemName);
     }
 }

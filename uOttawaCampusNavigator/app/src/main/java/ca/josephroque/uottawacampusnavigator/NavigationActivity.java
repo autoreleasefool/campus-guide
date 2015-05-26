@@ -41,10 +41,75 @@ public class NavigationActivity extends AppCompatActivity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position)
+    public void onNavigationDrawerItemSelected(String itemName)
     {
-        // TODO: navigation item clicked
-        //setActionBarTitle();
+		if (itemName.equals("Settings"))
+		{
+			openSettings();
+			return;
+		}
+		
+		Fragment fragment;
+		String fragmentTag;
+        setActionBarTitle(itemName);
+		switch (itemName)
+		{
+			case "Home":
+				// TODO: Open Home Fragment
+				Log.i(TAG, "TODO: Open HomeFragment");
+				fragmentTag = Constants.FRAGMENT_HOME;
+				break;
+			case "Find":
+				// TODO: Open Find Fragment
+				Log.i(TAG, "TODO: Open FindFragment");
+				fragmentTag = Constants.FRAGMENT_FIND;
+				break;
+			case "Favourites":
+				// TODO: Open FavouritesFragment
+				Log.i(TAG, "TODO: Open FavouritesFragment");
+				fragmentTag = Constants.FRAGMENT_FAVOURITES;
+				break;
+			case "Useful Links":
+				// TODO: Open LinksFragment
+				Log.i(TAG, "TODO: Open LinksFragment");
+				fragmentTag = Constants.FRAGMENT_LINKS;
+				break;
+			case "Bus Information":
+				// TODO: Open BusInfoFragment
+				Log.i(TAG, "TODO: Open BusInfoFragment");
+				fragmentTag = Constants.FRAGMENT_BUS_INFO;
+				break;
+			case "Accessibility":
+				// TODO: Open AccessibilityFragment
+				Log.i(TAG, "TODO: Open AccessibilityFragmnt");
+				fragmentTag = Constants.FRAGMENT_ACCESSIBILITY;
+				break;
+			case "Campus Hotspots":
+				// TODO: Open HotspotsFragment
+				Log.i(TAG, "TODO: Open HotspotsFragment");
+				fragmentTag = Constants.FRAGMENT_HOTSPOTS;
+				break;
+			case "Settings":
+				// unreachable
+			default:
+				throw IllegalArgumentException("Drawer item not recognized: "
+						+ itemName);
+		}
+		
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		if (fragmentManager.findFragmentByTag(fragmentTag) == null)
+		{
+			fragmentManager.popBackStackImmediate(null, 
+					FragmentManager.POP_BACK_STACK_INCLUSIVE);
+			fragmentManager.beginTransaction()
+				.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+				.replace(R.id.fl_nav_fragment_container, fragment, fragmentTag)
+				.commit();
+		}
+		else
+		{
+			fragmentManager.popBackStack(fragmentTag, 0);
+		}
     }
 
     @Override
@@ -76,12 +141,28 @@ public class NavigationActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-    private void setActionBarTitle(int title)
-    {
-        ActionBar actionBar = getActionBar();
+	
+	/**
+	 * Sets the title in the activity action bar to {@code title}.
+	 *
+	 * @param title title for activity
+	 */
+	private void setActionBarTitle(String title)
+	{
+		ActionBar actionBar = getActionBar();
         if (actionBar != null)
             actionBar.setTitle(title);
+	}
+
+	/**
+	 * Sets the title in the activity action bar to the string represented
+	 * by the given id.
+	 *
+	 * @param title id of a string resource.
+	 */
+    private void setActionBarTitle(int title)
+    {
+        setActionBarTitle(getResources().getString(title));
     }
 
     /**

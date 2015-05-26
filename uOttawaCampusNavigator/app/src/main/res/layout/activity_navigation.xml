@@ -27,7 +27,7 @@
             ads:adUnitId="@string/navigation_bottom_unit_id" />
 
         <FrameLayout
-            android:id="@+id/container"
+            android:id="@+id/fl_nav_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 			android:layout_below="@id/toolbar"

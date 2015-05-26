@@ -111,8 +111,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 							{
 								notifyItemChanged(mCallback.getCurrentPosition() + 1);
 								notifyItemChanged(position);
-								mCallback.onDrawerItemClicked(position - 1);
 							}
+							mCallback.onDrawerItemClicked(position - 1);
 						}
                     }
                 });
