@@ -8,11 +8,9 @@
     android:layout_height="match_parent"
     tools:context="ca.josephroque.uottawacampusnavigator.NavigationActivity">
 
-    <RelativeLayout>
-
-        <include
-            android:id="@+id/navigation_toolbar"
-            layout="@layout/toolbar" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/navigation_bottom_banner_ad"
