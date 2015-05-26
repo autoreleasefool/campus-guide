@@ -27,6 +27,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 
     /** Array of image ids to display as icons for drawer items. */
     private int[] mArrayItemIcons;
+	/** Array of colors to highlight selected icon */
+	private int[] mArrayItemHighlights;
     /** Array of strings to display as names for drawer items. */
     private String[] mArrayItemNames;
 
@@ -37,10 +39,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
      * @param itemIcons array of image ids
      * @param itemNames array of strings
      */
-    public DrawerAdapter(DrawerAdapterCallbacks callback, int[] itemIcons, String[] itemNames)
+    public DrawerAdapter(DrawerAdapterCallbacks callback, int[] itemIcons, int[] itemHighlights, String[] itemNames)
     {
         this.mCallback = callback;
         this.mArrayItemIcons = itemIcons;
+		this.mArrayItemHighlights = itemHighlights;
         this.mArrayItemNames = itemNames;
     }
 
@@ -71,13 +74,46 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                 break;
             case TYPE_ITEM:
                 viewHolder.mTextViewItemName.setText(mArrayItemNames[position - 1]);
-                viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - 1]);
+				
+				// Set icon to the image resource given for this position if one was provided
+				// otherwise, use a default image (settings)
+				if (mArrayItemIcons.length > position - 1)
+				{
+					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - 1]);
+				}
+				else
+				{
+					viewHolder.mImageViewItemIcon.setVisibility(View.INVISIBLE);
+					viewHolder.mImageViewItemIcon.setImageResource(R.drawable.ic_settings);
+				}
+				
+				//Highlights the image if it is the currently selected item
+				if (mArrayItemHighlights.length > position - 1 && mCallback != null
+						&& position == mCallback.getCurrentPosition() + 1)
+				{
+					viewHolder.mImageViewItemIcon.setColorFilter(mArrayItemHighlights[position - 1],
+							Mode.MULTIPLY);
+				}
+				else
+				{
+					viewHolder.mImageViewItemIcon.clearColorFilter();
+				}
+				
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                     {
-                        mCallback.onDrawerItemClicked(position - 1);
+						if (mCallback != null)
+						{
+							int lastPosition = mCallback.getCurrentPosition() + 1;
+							if (position != lastPosition)
+							{
+								notifyItemChanged(mCallback.getCurrentPosition() + 1);
+								notifyItemChanged(position);
+								mCallback.onDrawerItemClicked(position - 1);
+							}
+						}
                     }
                 });
                 break;
@@ -112,6 +148,13 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
          * @param position view which was clicked.
          */
         void onDrawerItemClicked(int position);
+		
+		/**
+		 * Should return the current item which is highlighted in the navigation drawer.
+		 
+		 * @return a value which indicates the current position in navigation.
+		 */
+		int getCurrentPosition();
     }
 
     /**

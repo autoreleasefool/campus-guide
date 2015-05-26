@@ -42,6 +42,45 @@ public class NavigationDrawerFragment extends Fragment
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "pref_navigation_drawer_learned";
+	
+	/** Icons for items which appear in the navigation drawer. */
+	private static final int NAVIGATION_DRAWER_ICONS = {
+			R.drawable.ic_home,
+			R.drawable.ic_navigation,
+			R.drawable.ic_star,
+			R.drawable.ic_link,
+			R.drawable.ic_bus,
+			R.drawable.ic_accessibility,
+			R.drawable.ic_whatshot,
+			R.drawable.ic_settings,
+	};
+	
+	/** Colors for icons when they are highlights. */
+	private static final int NAVIGATION_DRAWER_HIGHLIGHTS = {
+			R.color.nav_home_highlight,
+			R.color.nav_navigation_highlight,
+			R.color.nav_star_highlight,
+			R.color.nav_link_highlight,
+			R.color.nav_bus_highlight,
+			R.color.nav_accessibility_highlight,
+			R.color.nav_whatshot_highlight,
+			R.color.nav_settings_highlight,
+	};
+	
+	/** Items which will appear in the navigation drawer. */
+	private static final String[] NAVIGATION_DRAWER_ITEMS = {
+			"Home",
+			"Find",
+			"Favourites",
+			"Useful Links",
+			"Bus Information",
+			"Accessibility",
+			"Campus Hotspots",
+			"Settings",
+	};
+	
+	/** Indicates if the highlight colors have been converted from ids to actual color values */
+	private static boolean sHighlightsConverted = false;
 
     /** A pointer to the current callbacks instance (the Activity). */
     private NavigationDrawerCallbacks mCallbacks;
@@ -59,7 +98,7 @@ public class NavigationDrawerFragment extends Fragment
     private View mFragmentContainerView;
 
     /** Current position of the navigation drawer. */
-    private int mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedPosition = 1;
     /** Indicates whether this fragment was loaded from a saved instance state. */
     private boolean mFromSavedInstanceState;
     /** Indicates whether the user has 'learned' about the navigation drawer. */
@@ -84,12 +123,13 @@ public class NavigationDrawerFragment extends Fragment
 
         if (savedInstanceState != null)
         {
-            mCurrentSelectedPosition = savedInstanceState.getInt(ARG_STATE_SELECTED_POSITION);
+            mCurrentSelectedPosition = savedInstanceState.getInt(ARG_STATE_SELECTED_POSITION, 1);
             mFromSavedInstanceState = true;
         }
 
-        // Select either the default item (0) or the last selected item.
-        onDrawerItemClicked(mCurrentSelectedPosition);
+        // Select either the default item (1) or the last selected item.
+		// TODO: check if the following line will affect the current fragment
+        //onDrawerItemClicked(mCurrentSelectedPosition);
     }
 
     @Override
@@ -98,28 +138,15 @@ public class NavigationDrawerFragment extends Fragment
     {
         mRecyclerViewDrawer = (RecyclerView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
+				
+		if (!sHighlightsConverted)
+			convertHighlights();
 
         mDrawerAdapter = new DrawerAdapter(this,
-                new int[]{
-                        R.drawable.ic_home,
-                        R.drawable.ic_navigation,
-                        R.drawable.ic_favorite,
-                        R.drawable.ic_link,
-                        R.drawable.ic_bus,
-                        R.drawable.ic_accessibility,
-                        R.drawable.ic_whatshot,
-                        R.drawable.ic_settings,
-                },
-                new String[]{
-                        "Home",
-                        "Find",
-                        "Favourites",
-                        "Useful Links",
-                        "Bus Information",
-                        "Accessibility",
-                        "Campus Hotspots",
-                        "Settings",
-                });
+                NAVIGATION_DRAWER_ICONS,
+				NAVIGATION_DRAWER_HIGHLIGHTS,
+                NAVIGATION_DRAWER_ITEMS);
+		mDrawerAdapter.setHasStableIds(true);
         mRecyclerViewDrawer.setAdapter(mDrawerAdapter);
         mRecyclerViewDrawer.setLayoutManager(new LinearLayoutManager(getActivity()));
         return mRecyclerViewDrawer;
@@ -209,6 +236,8 @@ public class NavigationDrawerFragment extends Fragment
         {
             mDrawerLayout.openDrawer(mFragmentContainerView);
         }
+		
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         // Defer code dependent on restoration of previous instance state.
         mDrawerLayout.post(new Runnable()
@@ -220,7 +249,6 @@ public class NavigationDrawerFragment extends Fragment
             }
         });
 
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
         getActivity().invalidateOptionsMenu();
     }
 
@@ -272,9 +300,25 @@ public class NavigationDrawerFragment extends Fragment
         }
         if (mCallbacks != null)
         {
-            mCallbacks.onNavigationDrawerItemSelected(position);
+            mCallbacks.onNavigationDrawerItemSelected(mCurrentSelectedPosition);
         }
     }
+	
+	@Override
+	public int getCurrentPosition()
+	{
+		return mCurrentSelectedPosition;
+	}
+	
+	private static void convertHighlights()
+	{
+		for (int i = 0; i < NAVIGATION_DRAWER_HIGHLIGHTS.length; i++)
+		{
+			NAVIGATION_DRAWER_HIGHLIGHTS[i] =
+				getResources().getColor(NAVIGATION_DRAWER_HIGHLIGHTS[i]);
+		}
+		sHighlightsConverted = true;
+	}
 
     /**
      * Callbacks interface that all activities using this fragment must implement.
