@@ -3,10 +3,15 @@ package ca.josephroque.uottawacampusnavigator.util;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.view.Gravity;
+import android.widget.TextView;
+
+import ca.josephroque.uottawacampusnavigator.R;
 
 /**
  * Created by Joseph Roque on 15-05-27.
@@ -38,45 +43,46 @@ public class ExternalUtil
 	 * @param sourceActivity activity to open intent with
 	 * @param phoneNumber number to call
 	 */
-	public static void dialPhoneNumber(Activity sourceActivity, String phoneNumber)
+	public static void dialPhoneNumber(final Activity sourceActivity, String phoneNumber)
 	{
 		if (!isFeatureAvailable(sourceActivity, PackageManager.FEATURE_TELEPHONY))
 			return;
 		
-		phoneNumber = DataFormatter.stripNonDigits(phoneNumber);
+		final String rawPhoneNumber = DataFormatter.stripNonDigits(phoneNumber);
 		if (phoneNumber.length() != 10)
 			throw new IllegalArgumentException(
 					"Only supports calling 10-digit numbers: " + phoneNumber);
 		
 		// Prompts user before dialing number
-		TextView textMessage = new TextView(getActivity());
-		textMessage.setText(getResources().getString(text_dial_confirmation)
-				+ DataFormatter.formatPhoneNumber(phoneNumber) + "?");
+		TextView textMessage = new TextView(sourceActivity);
+		textMessage.setText(sourceActivity.getResources().getString(R.string.text_dial_confirmation)
+                + DataFormatter.formatPhoneNumber(phoneNumber) + "?");
 		textMessage.setGravity(Gravity.CENTER_HORIZONTAL);
 		
-		new AlertDialog.Builder(getActivity())
+		new AlertDialog.Builder(sourceActivity)
 				.setTitle(R.string.text_dial_number)
 				.setView(textMessage)
-				.setPositiveButton(R.string.text_dial, new DialogInterface.OnClickListener()
+				.setPositiveButton(R.string.dialog_text_dial, new DialogInterface.OnClickListener()
 				{
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 					{
 						// Creates intent to dial phone number
 						Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-						dialIntent.setData(Uri.parse("tel:" + phoneNumber));
+						dialIntent.setData(Uri.parse("tel:" + rawPhoneNumber));
 						sourceActivity.startActivity(dialIntent);
 						
 						dialog.dismiss();
 					}
 				})
-				.setNegativeButton(R.string.text_cancel, new DialogInterface.OnClickListener()
-				{
-					@Override
-					public void onClick(DialogInterface dialog, int which)
-					{
-						dialog.dismiss();
-					}
+				.setNegativeButton(R.string.dialog_text_cancel,
+                        new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
 				})
 				.create()
 				.show();

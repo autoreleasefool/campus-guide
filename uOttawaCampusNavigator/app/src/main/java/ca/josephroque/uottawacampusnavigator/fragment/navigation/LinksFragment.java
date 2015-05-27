@@ -84,7 +84,8 @@ public class LinksFragment extends Fragment
         RecyclerView recyclerView = (RecyclerView)
                 inflater.inflate(R.layout.fragment_recyclerview, container, false);
 
-        LinksAdapter linksAdapter = new LinksAdapter(this, getResources(), mLinksArray, mDepth != 0, mParentList);
+        LinksAdapter linksAdapter = new LinksAdapter(this, getResources(), mLinksArray, mDepth != 0,
+                mParentList, mListName);
         recyclerView.setAdapter(linksAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 

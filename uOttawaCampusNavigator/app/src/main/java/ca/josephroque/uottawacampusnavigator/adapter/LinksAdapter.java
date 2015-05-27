@@ -100,21 +100,25 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     @Override
     public void onBindViewHolder(final LinksViewHolder viewHolder, final int position)
     {
+        final byte positionOffset;
 		if (mHasParentList)
 		{
 			if (position == 0)
 			{
 				viewHolder.itemView.setTag(Pair.create(TYPE_RETURN, 0));
 				viewHolder.mTextViewTitle.setText(mListName);
-				viewHolder.mTextViewSubtitle.setText(
-						getResources().getString(text_return_to) + mParentList);
+				viewHolder.mTextViewSubtitle.setText(viewHolder.mTextViewSubtitle.getContext()
+                        .getResources().getString(R.string.text_return_to) + mParentList);
 				return;
 			}
 			else
-				position--;
+				positionOffset = 1;
 		}
+        else
+            positionOffset = 0;
+
 		
-        String[] itemSplit = mLinkValues[position].split("~");
+        String[] itemSplit = mLinkValues[position - positionOffset].split("~");
         viewHolder.mTextViewTitle.setText(itemSplit[0]);
 		viewHolder.itemView.setOnClickListener(this);
 		
@@ -124,8 +128,8 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
 
             // Item links to a new list of links
             viewHolder.mTextViewSubtitle.setText(R.string.text_view_links);
-            viewHolder.itemView.setTag(Pair.create(TYPE_MORE_LINKS, 
-					Pair.create(subLinksArray, mListName)));
+            viewHolder.itemView.setTag(Pair.create(TYPE_MORE_LINKS,
+                    Pair.create(subLinksArray, mListName)));
         }
         catch (NumberFormatException ex)
         {
@@ -148,7 +152,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     @Override
     public int getItemCount()
     {
-        return mLinkValues.length + ((mHasParentList) 1 : 0);
+        return mLinkValues.length + ((mHasParentList) ? 1 : 0);
     }
 
     @Override

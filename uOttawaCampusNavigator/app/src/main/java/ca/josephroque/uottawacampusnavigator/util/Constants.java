@@ -9,29 +9,29 @@ public class Constants
 {
 	
 	/** English items that appear in navigation drawer */
-	public static final String NAVIGATION_DRAWER_ITEMS_EN = {
+	public static final String[] NAVIGATION_DRAWER_ITEMS_EN = {
 			"Home",
 			"Find",
-			"Favoris",
-			"Liens utile",
-			"Informations des buses",
-			"Accessibilité",
-			"Boîte de nuit de campus",
-			"Settings",
-	};
-	
-	// TODO: translate to french
-	/** French items that appear in navigation drawer */
-	public static final String NAVIGATION_DRAWER_ITEMS_FR = {
-			"Acceuil",
-			"Chercher",
 			"Favourites",
 			"Useful Links",
 			"Bus Information",
 			"Accessibility",
 			"Campus Hotspots",
+			"Settings",
+	};
+	
+	// TODO: translate to french
+	/** French items that appear in navigation drawer */
+	public static final String[] NAVIGATION_DRAWER_ITEMS_FR = {
+			"Acceuil",
+			"Chercher",
+			"Favoris",
+			"Liens utile",
+			"Informations des buses",
+			"Accessibilité",
+			"Boîte de nuit de campus",
 			"Paramètres",
-	}
+	};
 	
 	public static final byte NAVIGATION_ITEM_HOME = 0;
 	public static final byte NAVIGATION_ITEM_FIND = 1;

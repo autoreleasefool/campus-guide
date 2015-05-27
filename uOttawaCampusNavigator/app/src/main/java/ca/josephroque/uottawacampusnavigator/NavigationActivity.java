@@ -1,7 +1,9 @@
 package ca.josephroque.uottawacampusnavigator;
 
 import android.app.ActionBar;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -51,6 +53,7 @@ public class NavigationActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
+    @SuppressWarnings("StringEquality")
     @Override
     public void onNavigationDrawerItemSelected(String itemName)
     {
@@ -59,6 +62,7 @@ public class NavigationActivity extends AppCompatActivity
 				: Constants.NAVIGATION_DRAWER_ITEMS_FR;
 		
 		if (itemName == drawerItems[Constants.NAVIGATION_ITEM_SETTINGS])
+        {
 			openSettings();
 			return;
 		}
