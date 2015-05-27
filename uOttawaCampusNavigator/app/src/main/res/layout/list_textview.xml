@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/recyclerview_padding"
     android:paddingBottom="@dimen/recyclerview_padding"
     android:background="@color/primary_gray">
 
-    <ImageView
-        android:id="@+id/iv_navigation_item_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        tools:ignore="ContentDescription" />
-    
     <TextView
-        android:id="@+id/tv_navigation_item_name"
+        android:id="@+id/tv_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:paddingTop="@dimen/recyclerview_text_padding"
-        android:textSize="@dimen/text_small"
+        android:textSize="@dimen/text_medium"
         android:textColor="@color/primary_text" />
+
+    <TextView
+        android:id="@+id/tv_item_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textSize="@dimen/text_small"
+        android:textColor="@color/primary_text_dark" />
 
 </LinearLayout>

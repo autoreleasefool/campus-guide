@@ -55,7 +55,7 @@
               android:layout_height="match_parent"
               android:layout_gravity="left"
               android:name="ca.josephroque.uottawacampusnavigator.fragment.NavigationDrawerFragment"
-              tools:layout="@layout/fragment_navigation_drawer"
+              tools:layout="@layout/fragment_recyclerview"
               tools:ignore="RtlHardcoded"/>
 
 </android.support.v4.widget.DrawerLayout>

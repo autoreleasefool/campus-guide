@@ -17,4 +17,29 @@ public class DataFormatter
     {
         return (int)(dps * scale + 0.5f);
     }
+
+    /**
+     * Removes all characters in the string which are not digits
+     *
+     * @param raw string to remove non-digits from
+     * @return string with only digits
+     */
+    public static String stripNonDigits(String raw)
+    {
+        return raw.replaceAll("\\D", "");
+    }
+
+    /**
+     * Converts a string containing 10 digits to a phone number of the format "(555) 0123-456"
+     * @param raw 10 digits to format as string
+     * @return phone number of the format "(555) 0123-456"
+     */
+    public static String formatPhoneNumber(String raw)
+    {
+        raw = stripNonDigits(raw);
+        if (raw.length() != 10)
+            throw new IllegalArgumentException("not a phone number - must be 10 digits");
+
+        return "(" + raw.substring(0, 3) + ") " + raw.substring(3, 6) + "-" + raw.substring(6);
+    }
 }

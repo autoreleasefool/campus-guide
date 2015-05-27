@@ -1,6 +1,7 @@
 package ca.josephroque.uottawacampusnavigator.fragment;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -14,8 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +43,7 @@ public class NavigationDrawerFragment extends Fragment
     private static final String PREF_USER_LEARNED_DRAWER = "pref_navigation_drawer_learned";
 	
 	/** Icons for items which appear in the navigation drawer. */
-	private static final int NAVIGATION_DRAWER_ICONS = {
+	private static final int[] NAVIGATION_DRAWER_ICONS = {
 			R.drawable.ic_home,
 			R.drawable.ic_navigation,
 			R.drawable.ic_star,
@@ -56,7 +55,7 @@ public class NavigationDrawerFragment extends Fragment
 	};
 	
 	/** Colors for icons when they are highlights. */
-	private static final int NAVIGATION_DRAWER_HIGHLIGHTS = {
+	private static final int[] NAVIGATION_DRAWER_HIGHLIGHTS = {
 			R.color.nav_home_highlight,
 			R.color.nav_navigation_highlight,
 			R.color.nav_star_highlight,
@@ -90,10 +89,6 @@ public class NavigationDrawerFragment extends Fragment
 
     /** Layout for the navigation drawer. */
     private DrawerLayout mDrawerLayout;
-    /** View which displays items in the navigation drawer. */
-    private RecyclerView mRecyclerViewDrawer;
-    /** Adapter which manages data in the navigation drawer RecyclerView. */
-    private DrawerAdapter mDrawerAdapter;
     /** Container for fragments */
     private View mFragmentContainerView;
 
@@ -136,27 +131,26 @@ public class NavigationDrawerFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        mRecyclerViewDrawer = (RecyclerView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+                R.layout.fragment_recyclerview, container, false);
 				
 		if (!sHighlightsConverted)
-			convertHighlights();
+			convertHighlights(getResources());
 
-        mDrawerAdapter = new DrawerAdapter(this,
+        DrawerAdapter mDrawerAdapter = new DrawerAdapter(this,
                 NAVIGATION_DRAWER_ICONS,
 				NAVIGATION_DRAWER_HIGHLIGHTS,
                 NAVIGATION_DRAWER_ITEMS);
 		mDrawerAdapter.setHasStableIds(true);
-        mRecyclerViewDrawer.setAdapter(mDrawerAdapter);
-        mRecyclerViewDrawer.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return mRecyclerViewDrawer;
+        recyclerView.setAdapter(mDrawerAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        return recyclerView;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item))
-            return true;
-        return super.onOptionsItemSelected(item);
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     public boolean isDrawerOpen()
@@ -304,15 +298,24 @@ public class NavigationDrawerFragment extends Fragment
 		return mCurrentSelectedPosition;
 	}
 	
-	private static void convertHighlights()
+	private static void convertHighlights(Resources resources)
 	{
 		for (int i = 0; i < NAVIGATION_DRAWER_HIGHLIGHTS.length; i++)
 		{
 			NAVIGATION_DRAWER_HIGHLIGHTS[i] =
-				getResources().getColor(NAVIGATION_DRAWER_HIGHLIGHTS[i]);
+				resources.getColor(NAVIGATION_DRAWER_HIGHLIGHTS[i]);
 		}
 		sHighlightsConverted = true;
 	}
+
+    /**
+     * Closes the navigation drawer
+     */
+    public void closeDrawer()
+    {
+        if (mDrawerLayout != null)
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
 
     /**
      * Callbacks interface that all activities using this fragment must implement.

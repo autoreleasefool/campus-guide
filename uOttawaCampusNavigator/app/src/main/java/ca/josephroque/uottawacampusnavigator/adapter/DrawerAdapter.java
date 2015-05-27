@@ -1,5 +1,6 @@
 package ca.josephroque.uottawacampusnavigator.adapter;
 
+import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +93,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 						&& position == mCallback.getCurrentPosition() + 1)
 				{
 					viewHolder.mImageViewItemIcon.setColorFilter(mArrayItemHighlights[position - 1],
-							Mode.MULTIPLY);
+							PorterDuff.Mode.MULTIPLY);
 				}
 				else
 				{

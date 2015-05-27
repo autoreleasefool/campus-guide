@@ -2,13 +2,18 @@ package ca.josephroque.uottawacampusnavigator;
 
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
 import ca.josephroque.uottawacampusnavigator.fragment.NavigationDrawerFragment;
+import ca.josephroque.uottawacampusnavigator.fragment.navigation.LinksFragment;
+import ca.josephroque.uottawacampusnavigator.utility.Constants;
 
 
 public class NavigationActivity extends AppCompatActivity
@@ -49,7 +54,7 @@ public class NavigationActivity extends AppCompatActivity
 			return;
 		}
 		
-		Fragment fragment;
+		Fragment fragment = null;
 		String fragmentTag;
         setActionBarTitle(itemName);
 		switch (itemName)
@@ -73,6 +78,7 @@ public class NavigationActivity extends AppCompatActivity
 				// TODO: Open LinksFragment
 				Log.i(TAG, "TODO: Open LinksFragment");
 				fragmentTag = Constants.FRAGMENT_LINKS;
+                fragment = LinksFragment.newInstance(0);
 				break;
 			case "Bus Information":
 				// TODO: Open BusInfoFragment
@@ -92,9 +98,12 @@ public class NavigationActivity extends AppCompatActivity
 			case "Settings":
 				// unreachable
 			default:
-				throw IllegalArgumentException("Drawer item not recognized: "
+				throw new IllegalArgumentException("Drawer item not recognized: "
 						+ itemName);
 		}
+
+		if (fragment == null)
+            return;
 		
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		if (fragmentManager.findFragmentByTag(fragmentTag) == null)
@@ -141,6 +150,15 @@ public class NavigationActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        if (mNavigationDrawerFragment.isDrawerOpen())
+            mNavigationDrawerFragment.closeDrawer();
+        else
+            super.onBackPressed();
+    }
 	
 	/**
 	 * Sets the title in the activity action bar to {@code title}.
@@ -153,17 +171,6 @@ public class NavigationActivity extends AppCompatActivity
         if (actionBar != null)
             actionBar.setTitle(title);
 	}
-
-	/**
-	 * Sets the title in the activity action bar to the string represented
-	 * by the given id.
-	 *
-	 * @param title id of a string resource.
-	 */
-    private void setActionBarTitle(int title)
-    {
-        setActionBarTitle(getResources().getString(title));
-    }
 
     /**
      * Displays the application's settings to the user

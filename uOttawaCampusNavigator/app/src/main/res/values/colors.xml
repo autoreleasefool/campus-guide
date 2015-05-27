@@ -6,6 +6,7 @@
 	<color name="primary_garnet_dark">#570014</color>
     <color name="primary_gray">#2d2d2d</color>
     <color name="primary_text">#cdcdcd</color>
+	<color name="primary_text_dark">#b4b4b4</color>
 	
 	<!-- Navigation drawer highlights -->
 	<color name="nav_home_highlight">#8a001f</color>
@@ -13,7 +14,7 @@
 	<color name="nav_favorite_highlight">#8a001f</color>
 	<color name="nav_star_highlight">#ffac33</color>
 	<color name="nav_link_highlight">#005daa</color>
-	<color name="nav_bus_highlight">FFD800</color>
+	<color name="nav_bus_highlight">#FFD800</color>
 	<color name="nav_accessibility_highlight">#005daa</color>
 	<color name="nav_whatshot_highlight">#CE2029</color>
 	<color name="nav_settings_highlight">#6699CC</color>

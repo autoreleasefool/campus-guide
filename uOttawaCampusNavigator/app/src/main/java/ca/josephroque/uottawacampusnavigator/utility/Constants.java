@@ -1,4 +1,4 @@
-package ca.josephroque.uottawacampusnavigator;
+package ca.josephroque.uottawacampusnavigator.utility;
 
 /**
  * Created by Joseph Roque on 15-05-24.
