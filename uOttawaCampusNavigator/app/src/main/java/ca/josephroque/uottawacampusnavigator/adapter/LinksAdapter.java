@@ -25,9 +25,17 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     private static final byte TYPE_PHONE_NUMBER = 1;
     /** Represents an item which is a hyperlink. */
     private static final byte TYPE_HYPERLINK = 2;
+	/** Represents an item which returns to previous list */
+	private static final byte TYPE_RETURN = 3;
 
-    /** Array of names and values which will be displayed in the recycler view */
+    /** Array of names and values which will be displayed in the recycler view. */
     private String[] mLinkValues;
+	/** Indicates if this adapter was created from a previous LinkAdapter callback .*/
+	private boolean mHasParentList;
+	/** Name of the parent list. */
+	private String mParentList;
+	/** Name of the current list. */
+	private String mListName;
 
     /** Instance of callback interface. */
     private LinkAdapterCallback mCallback;
@@ -38,7 +46,8 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
      * @param resources to retrieve string array
      * @param linksArray which useful_links array to use
      */
-    public LinksAdapter(LinkAdapterCallback callback, Resources resources, int linksArray)
+    public LinksAdapter(LinkAdapterCallback callback, Resources resources,
+			int linksArray, boolean hasParentList, String parentList, String listName)
     {
         switch(linksArray)
         {
@@ -74,6 +83,9 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
                 throw new IllegalArgumentException("Invalid links array: " + linksArray);
         }
 
+		mHasParentList = hasParentList;
+		mParentList = parentList;
+		mListName = listName;
         mCallback = callback;
     }
 
@@ -84,21 +96,35 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
                 .inflate(R.layout.list_textview, parent, false);
         return new LinksViewHolder(itemLayout);
     }
-
+	
     @Override
     public void onBindViewHolder(final LinksViewHolder viewHolder, final int position)
     {
+		if (mHasParentList)
+		{
+			if (position == 0)
+			{
+				viewHolder.itemView.setTag(Pair.create(TYPE_RETURN, 0));
+				viewHolder.mTextViewTitle.setText(mListName);
+				viewHolder.mTextViewSubtitle.setText("Return to " + mParentList);
+				return;
+			}
+			else
+				position--;
+		}
+		
         String[] itemSplit = mLinkValues[position].split("~");
         viewHolder.mTextViewTitle.setText(itemSplit[0]);
-
+		viewHolder.itemView.setOnClickListener(this);
+		
         try
         {
             int subLinksArray = Integer.valueOf(itemSplit[1]);
 
             // Item links to a new list of links
             viewHolder.mTextViewSubtitle.setText(R.string.text_view_links);
-            viewHolder.itemView.setTag(Pair.create(TYPE_MORE_LINKS, subLinksArray));
-            viewHolder.itemView.setOnClickListener(this);
+            viewHolder.itemView.setTag(Pair.create(TYPE_MORE_LINKS, 
+					Pair.create(subLinksArray, mListName)));
         }
         catch (NumberFormatException ex)
         {
@@ -108,14 +134,12 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
                 String phoneNumber = DataFormatter.formatPhoneNumber(itemSplit[1].substring(1));
                 viewHolder.mTextViewSubtitle.setText(phoneNumber);
                 viewHolder.itemView.setTag(Pair.create(TYPE_PHONE_NUMBER, phoneNumber));
-                viewHolder.itemView.setOnClickListener(this);
             }
             else
             {
                 // Item is a hyperlink
                 viewHolder.mTextViewSubtitle.setVisibility(View.GONE);
                 viewHolder.itemView.setTag(Pair.create(TYPE_HYPERLINK, itemSplit[1]));
-                viewHolder.itemView.setOnClickListener(this);
             }
         }
     }
@@ -123,7 +147,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     @Override
     public int getItemCount()
     {
-        return mLinkValues.length;
+        return mLinkValues.length + ((mHasParentList) 1 : 0);
     }
 
     @Override
@@ -137,7 +161,12 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
             {
                 case TYPE_MORE_LINKS:
                     if (mCallback != null)
-                        mCallback.openSublinks((Integer) pair.second);
+					{
+						Pair<?, ?> secondPair = (Pair) pair.second;
+						int linksArray = ((Integer)secondPair.first);
+						String listName = secondPair.second.toString();
+						mCallback.openSublinks(linksArray, listName);
+					}
                     break;
                 case TYPE_PHONE_NUMBER:
                     if (mCallback != null)
@@ -147,6 +176,10 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
                     if (mCallback != null)
                         mCallback.openHyperlink(pair.second.toString());
                     break;
+				case TYPE_RETURN:
+					if (mCallback != null)
+						mCallback.moveUpList();
+					break;
                 default:
                     throw new IllegalStateException("Type invalid");
             }
@@ -166,8 +199,9 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
          * Creates a new instance of LinksFragment with a new set of links.
          *
          * @param linksArray which useful_links array will be displayed
+		 * @param listTitle title of useful links array
          */
-        void openSublinks(int linksArray);
+        void openSublinks(int linksArray, String listTitle);
 
         /**
          * Prompts user to open a hyperlink in a browser window.
@@ -182,6 +216,11 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
          * @param phoneNumber number to call
          */
         void promptCallPhoneNumber(String phoneNumber);
+		
+		/**
+		 * Returns to previous useful_links list
+		 */
+		void moveUpList();
     }
 
     /**
