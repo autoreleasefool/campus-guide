@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import ca.josephroque.uottawacampusnavigator.R;
 import ca.josephroque.uottawacampusnavigator.adapter.LinksAdapter;
+import ca.josephroque.uottawacampusnavigator.utility.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,21 +23,25 @@ public class LinksFragment extends Fragment
 {
 
     private static final String ARG_LINKS_ARRAY = "arg_links_array";
+    private static final String ARG_DEPTH = "arg_depth";
 
     private int mLinksArray;
+    private int mDepth;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param linksArray determines useful_links array which this fragment will display
-     * @return A new instance of fragment LinksFragment.
+     * @param depth how many levels deep this fragment is
+     * @return A new instance of fragment LinksFragment
      */
-    public static LinksFragment newInstance(int linksArray)
+    public static LinksFragment newInstance(int linksArray, int depth)
     {
         LinksFragment fragment = new LinksFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_LINKS_ARRAY, linksArray);
+        args.putInt(ARG_DEPTH, depth);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,9 +51,11 @@ public class LinksFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null)
+        Bundle bundle = (savedInstanceState != null) ? savedInstanceState : getArguments();
+        if (bundle != null)
         {
-            mLinksArray = savedInstanceState.getInt(ARG_LINKS_ARRAY);
+            mLinksArray = bundle.getInt(ARG_LINKS_ARRAY);
+            mDepth = bundle.getInt(ARG_DEPTH);
         }
     }
 
@@ -78,7 +85,14 @@ public class LinksFragment extends Fragment
     @Override
     public void openSublinks(int linksArray)
     {
-        // TODO: create new instance of links fragment
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fl_nav_fragment_container,
+                        LinksFragment.newInstance(linksArray, mDepth + 1),
+                        Constants.FRAGMENT_LINKS + (mDepth + 1))
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
+                        R.anim.slide_in_left, R.anim.slide_out_right)
+                .addToBackStack(Constants.FRAGMENT_LINKS + mDepth)
+                .commit();
     }
 
     @Override

@@ -78,7 +78,7 @@ public class NavigationActivity extends AppCompatActivity
 				// TODO: Open LinksFragment
 				Log.i(TAG, "TODO: Open LinksFragment");
 				fragmentTag = Constants.FRAGMENT_LINKS;
-                fragment = LinksFragment.newInstance(0);
+                fragment = LinksFragment.newInstance(0, 0);
 				break;
 			case "Bus Information":
 				// TODO: Open BusInfoFragment
