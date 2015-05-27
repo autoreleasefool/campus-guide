@@ -1,6 +1,7 @@
 package ca.josephroque.uottawacampusnavigator.util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.FeatureInfo;
@@ -47,11 +48,38 @@ public class ExternalUtil
 			throw new IllegalArgumentException(
 					"Only supports calling 10-digit numbers: " + phoneNumber);
 		
-		// TODO: prompt user before dialing
+		// Prompts user before dialing number
+		TextView textMessage = new TextView(getActivity());
+		textMessage.setText("Do you want to dial the number\n"
+				+ DataFormatter.formatPhoneNumber(phoneNumber) + "?");
+		textMessage.setGravity(Gravity.CENTER_HORIZONTAL);
 		
-		Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-		dialIntent.setData(Uri.parse("tel:" + phoneNumber));
-		sourceActivity.startActivity(dialIntent);
+		new AlertDialog.Builder(getActivity())
+				.setTitle("Dial phone number?")
+				.setView(textMessage)
+				.setPositiveButton(R.string.text_dial, new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						// Creates intent to dial phone number
+						Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+						dialIntent.setData(Uri.parse("tel:" + phoneNumber));
+						sourceActivity.startActivity(dialIntent);
+						
+						dialog.dismiss();
+					}
+				})
+				.setNegativeButton(R.string.text_cancel, new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
+						dialog.dismiss();
+					}
+				})
+				.create()
+				.show();
 	}
 	
 	/**
