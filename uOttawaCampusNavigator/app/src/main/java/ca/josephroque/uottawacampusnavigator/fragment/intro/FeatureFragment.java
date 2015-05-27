@@ -15,7 +15,7 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import ca.josephroque.uottawacampusnavigator.R;
-import ca.josephroque.uottawacampusnavigator.utility.DataFormatter;
+import ca.josephroque.uottawacampusnavigator.util.DataFormatter;
 
 /**
  * A simple {@link Fragment} subclass.

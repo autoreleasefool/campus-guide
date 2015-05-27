@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 
 import ca.josephroque.uottawacampusnavigator.R;
 import ca.josephroque.uottawacampusnavigator.adapter.LinksAdapter;
-import ca.josephroque.uottawacampusnavigator.utility.Constants;
+import ca.josephroque.uottawacampusnavigator.util.Constants;
+import ca.josephroque.uottawacampusnavigator.util.ExternalUtil;
 
 /**
  * A simple {@link Fragment} subclass.

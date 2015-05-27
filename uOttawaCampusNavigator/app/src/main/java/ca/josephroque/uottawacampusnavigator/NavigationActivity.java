@@ -13,7 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import ca.josephroque.uottawacampusnavigator.fragment.NavigationDrawerFragment;
 import ca.josephroque.uottawacampusnavigator.fragment.navigation.LinksFragment;
-import ca.josephroque.uottawacampusnavigator.utility.Constants;
+import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 
 public class NavigationActivity extends AppCompatActivity

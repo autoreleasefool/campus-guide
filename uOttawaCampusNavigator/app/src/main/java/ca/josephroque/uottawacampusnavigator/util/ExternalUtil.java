@@ -1,5 +1,12 @@
 package ca.josephroque.uottawacampusnavigator.util;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.FeatureInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+
 /**
  * Created by Joseph Roque on 15-05-27.
  * <p/>
@@ -12,14 +19,14 @@ public class ExternalUtil
 	 * Opens link in a browser
 	 *
 	 * @param sourceActivity activity to open intent with
-	 * @param link hyperlink to open in browser
+	 * @param url hyperlink to open in browser
 	 */
-	public static void openLinkInBrowser(Activity sourceActivity, String link)
+	public static void openLinkInBrowser(Activity sourceActivity, String url)
 	{
 		if (!url.startsWith("http://") && !url.startsWith("https://"))
 			url = "http://" + url;
 
-		Uri uri = Uri.parse(link);
+		Uri uri = Uri.parse(url);
 		Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
 		sourceActivity.startActivity(browserIntent);
 	}
@@ -32,17 +39,18 @@ public class ExternalUtil
 	 */
 	public static void dialPhoneNumber(Activity sourceActivity, String phoneNumber)
 	{
-		if (!isFeatureAvailable(PackageManager.FEATURE_TELEPHONY))
+		if (!isFeatureAvailable(sourceActivity, PackageManager.FEATURE_TELEPHONY))
 			return;
 		
 		phoneNumber = DataFormatter.stripNonDigits(phoneNumber);
 		if (phoneNumber.length() != 10)
-			throw IllegalArgumentException("Only supports calling 10-digit numbers: " + phoneNumber);
+			throw new IllegalArgumentException(
+					"Only supports calling 10-digit numbers: " + phoneNumber);
 		
 		// TODO: prompt user before dialing
 		
 		Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-		intent.setData(Uri.parse("tel:" + phoneNumber));
+		dialIntent.setData(Uri.parse("tel:" + phoneNumber));
 		sourceActivity.startActivity(dialIntent);
 	}
 	

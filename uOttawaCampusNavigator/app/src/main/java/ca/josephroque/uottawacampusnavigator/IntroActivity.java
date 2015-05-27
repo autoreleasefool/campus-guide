@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
 
 import ca.josephroque.uottawacampusnavigator.fragment.intro.FeatureFragment;
 import ca.josephroque.uottawacampusnavigator.fragment.intro.LanguageFragment;
-import ca.josephroque.uottawacampusnavigator.utility.Constants;
+import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 
 public class IntroActivity extends FragmentActivity

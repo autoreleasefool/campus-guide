@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ca.josephroque.uottawacampusnavigator.R;
-import ca.josephroque.uottawacampusnavigator.utility.DataFormatter;
+import ca.josephroque.uottawacampusnavigator.util.DataFormatter;
 
 /**
  * Created by Joseph Roque on 15-05-26.
