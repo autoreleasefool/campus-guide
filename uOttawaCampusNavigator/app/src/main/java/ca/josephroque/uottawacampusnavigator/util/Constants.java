@@ -12,25 +12,25 @@ public class Constants
 	public static final String NAVIGATION_DRAWER_ITEMS_EN = {
 			"Home",
 			"Find",
-			"Favourites",
-			"Useful Links",
-			"Bus Information",
-			"Accessibility",
-			"Campus Hotspots",
+			"Favoris",
+			"Liens utile",
+			"Informations des buses",
+			"Accessibilité",
+			"Boîte de nuit de campus",
 			"Settings",
 	};
 	
 	// TODO: translate to french
 	/** French items that appear in navigation drawer */
 	public static final String NAVIGATION_DRAWER_ITEMS_FR = {
-			"Home",
-			"Find",
+			"Acceuil",
+			"Chercher",
 			"Favourites",
 			"Useful Links",
 			"Bus Information",
 			"Accessibility",
 			"Campus Hotspots",
-			"Settings",
+			"Paramètres",
 	}
 	
 	public static final byte NAVIGATION_ITEM_HOME = 0;
