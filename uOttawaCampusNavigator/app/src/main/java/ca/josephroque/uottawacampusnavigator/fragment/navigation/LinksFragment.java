@@ -80,6 +80,7 @@ public class LinksFragment extends Fragment
     {
         super.onSaveInstanceState(outState);
         outState.putInt(ARG_LINKS_ARRAY, mLinksArray);
+        outState.putInt(ARG_DEPTH, mDepth);
     }
 
     @Override
