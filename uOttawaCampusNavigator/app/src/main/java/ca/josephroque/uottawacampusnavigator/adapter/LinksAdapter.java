@@ -141,8 +141,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
                     break;
                 case TYPE_PHONE_NUMBER:
                     if (mCallback != null)
-                        mCallback.promptCallPhoneNumber(
-                                DataFormatter.stripNonDigits(pair.second.toString()));
+                        mCallback.promptCallPhoneNumber(pair.second.toString());
                     break;
                 case TYPE_HYPERLINK:
                     if (mCallback != null)

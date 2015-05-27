@@ -99,12 +99,12 @@ public class LinksFragment extends Fragment
     @Override
     public void openHyperlink(String link)
     {
-        // TODO: open link in  browser window
+        ExternalUtil.openLinkInBrowser(getActivity(), link);
     }
 
     @Override
     public void promptCallPhoneNumber(String phoneNumber)
     {
-        // TODO: prompt user to call phone number
+        ExternalUtil.dialPhoneNumber(getActivity(), phoneNumber);
     }
 }
