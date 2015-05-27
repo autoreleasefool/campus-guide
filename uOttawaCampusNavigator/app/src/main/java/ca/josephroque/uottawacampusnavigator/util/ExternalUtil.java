@@ -50,12 +50,12 @@ public class ExternalUtil
 		
 		// Prompts user before dialing number
 		TextView textMessage = new TextView(getActivity());
-		textMessage.setText("Do you want to dial the number\n"
+		textMessage.setText(getResources().getString(text_dial_confirmation)
 				+ DataFormatter.formatPhoneNumber(phoneNumber) + "?");
 		textMessage.setGravity(Gravity.CENTER_HORIZONTAL);
 		
 		new AlertDialog.Builder(getActivity())
-				.setTitle("Dial phone number?")
+				.setTitle(R.string.text_dial_number)
 				.setView(textMessage)
 				.setPositiveButton(R.string.text_dial, new DialogInterface.OnClickListener()
 				{

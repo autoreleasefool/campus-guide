@@ -106,7 +106,8 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
 			{
 				viewHolder.itemView.setTag(Pair.create(TYPE_RETURN, 0));
 				viewHolder.mTextViewTitle.setText(mListName);
-				viewHolder.mTextViewSubtitle.setText("Return to " + mParentList);
+				viewHolder.mTextViewSubtitle.setText(
+						getResources().getString(text_return_to) + mParentList);
 				return;
 			}
 			else

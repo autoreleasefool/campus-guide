@@ -7,6 +7,40 @@ package ca.josephroque.uottawacampusnavigator.util;
  */
 public class Constants
 {
+	
+	/** English items that appear in navigation drawer */
+	public static final String NAVIGATION_DRAWER_ITEMS_EN = {
+			"Home",
+			"Find",
+			"Favourites",
+			"Useful Links",
+			"Bus Information",
+			"Accessibility",
+			"Campus Hotspots",
+			"Settings",
+	};
+	
+	// TODO: translate to french
+	/** French items that appear in navigation drawer */
+	public static final String NAVIGATION_DRAWER_ITEMS_FR = {
+			"Home",
+			"Find",
+			"Favourites",
+			"Useful Links",
+			"Bus Information",
+			"Accessibility",
+			"Campus Hotspots",
+			"Settings",
+	}
+	
+	public static final byte NAVIGATION_ITEM_HOME = 0;
+	public static final byte NAVIGATION_ITEM_FIND = 1;
+	public static final byte NAVIGATION_ITEM_FAVOURITES = 2;
+	public static final byte NAVIGATION_ITEM_USEFUL_LINKS = 3;
+	public static final byte NAVIGATION_ITEM_BUS_INFO = 4;
+	public static final byte NAVIGATION_ITEM_ACCESSIBILITY = 5;
+	public static final byte NAVIGATION_ITEM_HOTSPOTS = 6;
+	public static final byte NAVIGATION_ITEM_SETTINGS = 7;
 
     /**
      * Identifier for the preference which indicates the language selected

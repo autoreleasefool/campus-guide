@@ -67,19 +67,7 @@ public class NavigationDrawerFragment extends Fragment
 	};
 	
 	/** Items which will appear in the navigation drawer. */
-	private static final String[] NAVIGATION_DRAWER_ITEMS = {
-			"Home",
-			"Find",
-			"Favourites",
-			"Useful Links",
-			"Bus Information",
-			"Accessibility",
-			"Campus Hotspots",
-			"Settings",
-	};
-	
-	/** Indicates if the highlight colors have been converted from ids to actual color values */
-	private static boolean sHighlightsConverted = false;
+	private static String[] NAVIGATION_DRAWER_ITEMS;
 
     /** A pointer to the current callbacks instance (the Activity). */
     private NavigationDrawerCallbacks mCallbacks;
@@ -115,6 +103,11 @@ public class NavigationDrawerFragment extends Fragment
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+		
+		boolean appIsEnglish = sp.getBoolean(PREF_LANGUAGE_SELECTED, true);
+		NAVIGATION_DRAWER_ITEMS = (appIsEnglish)
+				? Constants.NAVIGATION_DRAWER_ITEMS_EN
+				: Constants.NAVIGATION_DRAWER_ITEMS_FR;
 
         if (savedInstanceState != null)
         {
