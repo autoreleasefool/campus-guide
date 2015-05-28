@@ -16,6 +16,7 @@ import ca.josephroque.uottawacampusnavigator.R;
  * Manages data which will be displayed by the Navigation Drawer
  */
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerViewHolder>
+	implements View.OnClickListener
 {
 
     /** Indicates the type of the item is header. */
@@ -132,23 +133,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 					viewHolder.mImageViewItemIcon.clearColorFilter();
 				}
 				
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-						if (mCallback != null)
-						{
-							int lastPosition = mCallback.getCurrentPosition() + typeOffset;
-							if (position != lastPosition)
-							{
-								notifyItemChanged(mCallback.getCurrentPosition() + typeOffset);
-								notifyItemChanged(position);
-							}
-							mCallback.onDrawerItemClicked(position - typeOffset);
-						}
-                    }
-                });
+				viewHolder.itemView.setTag(Pair.create(position, typeOffset));
+                viewHolder.itemView.setOnClickListener(this);
                 break;
             default:
                 throw new IllegalStateException("Illegal value for view type: " + viewType);
@@ -171,6 +157,28 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
         return mArrayItemNames.length + 1;
     }
+	
+	@Override
+	public void onClick(View src)
+	{
+		Pair<Integer, Integer> pair = src.getTag();
+		if (pair == null)
+			return;
+		
+		final int position = pair.first;
+		final int typeOffset = pair.second;
+		
+		if (mCallback != null)
+		{
+			int lastPosition = mCallback.getCurrentPosition() + typeOffset;
+			if (position != lastPosition)
+			{
+				notifyItemChanged(mCallback.getCurrentPosition() + typeOffset);
+				notifyItemChanged(position);
+			}
+			mCallback.onDrawerItemClicked(position - typeOffset);
+		}
+	}
 	
 	private byte getTypeOffset(int position)
 	{
