@@ -58,6 +58,8 @@ public class NavigationDrawerFragment extends Fragment
 			R.drawable.ic_accessibility,
 			R.drawable.ic_whatshot,
 			R.drawable.ic_settings,
+			R.drawable.ic_help,
+			R.drawable.ic_language,
 	};
 	
 	/** Colors for icons when they are highlights. */
@@ -70,6 +72,8 @@ public class NavigationDrawerFragment extends Fragment
 			R.color.nav_accessibility_highlight,
 			R.color.nav_whatshot_highlight,
 			R.color.nav_settings_highlight,
+			R.color.nav_help_highlight,
+			R.color.nav_language_highlight,
 	};
 	
 	/** Items which will appear in the navigation drawer. */

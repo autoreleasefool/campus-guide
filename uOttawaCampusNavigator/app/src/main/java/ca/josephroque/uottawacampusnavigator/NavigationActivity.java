@@ -113,6 +113,19 @@ public class NavigationActivity extends AppCompatActivity
 			Log.i(TAG, "TODO: Open HotspotsFragment");
 			fragmentTag = Constants.FRAGMENT_HOTSPOTS;
 		}
+		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HELP])
+		{
+			// TODO: Open HelpFragment
+			Log.i(TAG, "TODO: Open HelpFragment");
+			fragmentTag = Constants.FRAGMENT_HELP;
+		}
+		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_LANGUAGE])
+		{
+			// TODO: Open LanguageDialog
+			Log.i(TAG, "TODO: Open LanguageDialog");
+			fragmentTag = Constants.FRAGMENT_HELP;
+			return;
+		}
 		else 
 		{
 			throw new IllegalArgumentException("Drawer item not recognized: "

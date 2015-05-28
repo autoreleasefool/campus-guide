@@ -18,6 +18,8 @@ public class Constants
 			"Accessibility",
 			"Campus Hotspots",
 			"Settings",
+			"Help & Feedback",
+			"Language",
 	};
 	
 	// TODO: translate to french
@@ -31,16 +33,30 @@ public class Constants
 			"Accessibilité",
 			"Boîte de nuit de campus",
 			"Paramètres",
+			"Aide et commentairs",
+			"Langue",
 	};
 	
+	/** Represents position of "Home" item in the navigation drawer */
 	public static final byte NAVIGATION_ITEM_HOME = 0;
+	/** Represents position of "Find" item in the navigation drawer */
 	public static final byte NAVIGATION_ITEM_FIND = 1;
+	/** Represents position of "Favourites" item in the navigation drawer */
 	public static final byte NAVIGATION_ITEM_FAVOURITES = 2;
+	/** Represents position of "Useful Links" item in the navigation drawer */
 	public static final byte NAVIGATION_ITEM_USEFUL_LINKS = 3;
+	/** Represents position of "Bus Info" item in the navigation drawer */
 	public static final byte NAVIGATION_ITEM_BUS_INFO = 4;
+	/** Represents position of "Accessibility" item in the navigation drawer */
 	public static final byte NAVIGATION_ITEM_ACCESSIBILITY = 5;
+	/** Represents position of "Hotspots" item in the navigation drawer */
 	public static final byte NAVIGATION_ITEM_HOTSPOTS = 6;
+	/** Represents position of "Settings" item in the navigation drawer */
 	public static final byte NAVIGATION_ITEM_SETTINGS = 7;
+	/** Represents position of "Help" item in the navigation drawer */
+	public static final byte NAVIGATION_ITEM_HELP = 8;
+	/** Represents position of "Language" item in the navigation drawer */
+	public static final byte NAVIGATION_ITEM_LANGUAGE = 9;
 
     /**
      * Identifier for the preference which indicates the language selected
