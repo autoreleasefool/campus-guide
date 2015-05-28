@@ -161,7 +161,16 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 	@Override
 	public void onClick(View src)
 	{
-		Pair<Integer, Integer> pair = src.getTag();
+		Pair<Integer, Integer> pair = null;
+		try
+		{
+			pair = (Pair<Integer, Integer>) src.getTag();
+		}
+		catch (ClassCastException ex)
+		{
+			throw new ClassCastException("Tag must be a pair<int, int> with a position and offset");
+		}
+		
 		if (pair == null)
 			return;
 		
