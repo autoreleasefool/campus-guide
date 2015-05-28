@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 
 import ca.josephroque.uottawacampusnavigator.R;
 import ca.josephroque.uottawacampusnavigator.adapter.DrawerAdapter;
+import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -30,6 +32,8 @@ import ca.josephroque.uottawacampusnavigator.adapter.DrawerAdapter;
 public class NavigationDrawerFragment extends Fragment
     implements DrawerAdapter.DrawerAdapterCallbacks
 {
+
+    private static final String TAG = "NavigationDrawer";
 
     /**
      * Remember the position of the selected item.
@@ -69,6 +73,9 @@ public class NavigationDrawerFragment extends Fragment
 	/** Items which will appear in the navigation drawer. */
 	private static String[] NAVIGATION_DRAWER_ITEMS;
 
+    /** Indicates if the highlights have been converted to actual colors values */
+    private static boolean sHighlightsConverted = false;
+
     /** A pointer to the current callbacks instance (the Activity). */
     private NavigationDrawerCallbacks mCallbacks;
 
@@ -81,7 +88,7 @@ public class NavigationDrawerFragment extends Fragment
     private View mFragmentContainerView;
 
     /** Current position of the navigation drawer. */
-    private int mCurrentSelectedPosition = 1;
+    private int mCurrentSelectedPosition = 0;
     /** Indicates whether this fragment was loaded from a saved instance state. */
     private boolean mFromSavedInstanceState;
     /** Indicates whether the user has 'learned' about the navigation drawer. */
@@ -104,7 +111,7 @@ public class NavigationDrawerFragment extends Fragment
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 		
-		boolean appIsEnglish = sp.getBoolean(PREF_LANGUAGE_SELECTED, true);
+		boolean appIsEnglish = sp.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
 		NAVIGATION_DRAWER_ITEMS = (appIsEnglish)
 				? Constants.NAVIGATION_DRAWER_ITEMS_EN
 				: Constants.NAVIGATION_DRAWER_ITEMS_FR;
@@ -134,7 +141,6 @@ public class NavigationDrawerFragment extends Fragment
                 NAVIGATION_DRAWER_ICONS,
 				NAVIGATION_DRAWER_HIGHLIGHTS,
                 NAVIGATION_DRAWER_ITEMS);
-		mDrawerAdapter.setHasStableIds(true);
         recyclerView.setAdapter(mDrawerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
@@ -277,6 +283,7 @@ public class NavigationDrawerFragment extends Fragment
     @Override
     public void onDrawerItemClicked(int position)
     {
+        Log.i(TAG, "Current: " + mCurrentSelectedPosition + " New: " + position);
         mCurrentSelectedPosition = position;
         if (mDrawerLayout != null)
             mDrawerLayout.closeDrawer(mFragmentContainerView);

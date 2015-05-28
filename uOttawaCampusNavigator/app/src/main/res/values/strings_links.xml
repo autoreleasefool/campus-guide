@@ -138,7 +138,7 @@
         <item>Rehabilitation Sciences~http://www.health.uottawa.ca/sr/</item>
     </string-array>
 
-    <string-array name="useful_links_15">
+    <string-array name="useful_links_15" formatted="false">
         <item>Facebook~https://www.facebook.com/pages/UOttawa-Facult%C3%A9-des-sciences-de-la-sant%C3%A9-Faculty-of-Health-Sciences/287243141336363</item>
         <item>Twitter~https://twitter.com/uOttawaHealthSc</item>
         <item>YouTube~http://www.youtube.com/user/hswebmas/videos</item>
@@ -244,7 +244,7 @@
         <item>Pride Centre~http://www.sfuo.ca/pride</item>
         <item>Student Rights Centre~http://sfuo.ca/rights/</item>
         <item>Sustainable Development Centre~http://www.sfuo.ca/green</item>
-        <item>Women's Resource Centre~http://www.sfuo.ca/wrc</item>
+        <item>Women\'s Resource Centre~http://www.sfuo.ca/wrc</item>
     </string-array>
 
     <string-array name="useful_links_25">

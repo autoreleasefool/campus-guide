@@ -90,8 +90,6 @@ public class NavigationActivity extends AppCompatActivity
 		}
 		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_USEFUL_LINKS])
 		{
-			// TODO: Open LinksFragment
-			Log.i(TAG, "TODO: Open LinksFragment");
 			fragmentTag = Constants.FRAGMENT_LINKS;
 			fragment = LinksFragment.newInstance(0, 0, null, "Master");
 		}

@@ -13,9 +13,10 @@
 
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
-    <dimen name="recyclerview_width">240dp</dimen>
+    <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="recyclerview_padding">8dp</dimen>
     <dimen name="recyclerview_text_padding">4dp</dimen>
+    <dimen name="recyclerview_subtitle_padding">12dp</dimen>
     <dimen name="navigation_drawer_header_height">178dp</dimen>
 
 	<!-- Text sizes -->

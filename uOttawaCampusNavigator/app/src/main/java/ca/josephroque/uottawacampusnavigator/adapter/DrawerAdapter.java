@@ -68,7 +68,9 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     @Override
     public void onBindViewHolder(DrawerViewHolder viewHolder, final int position)
     {
-        switch (viewHolder.mViewType)
+        int viewType = getItemViewType(position);
+
+        switch (viewType)
         {
             case TYPE_HEADER:
                 //do nothing
@@ -80,6 +82,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				// otherwise, use a default image (settings)
 				if (mArrayItemIcons.length > position - 1)
 				{
+                    viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
 					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - 1]);
 				}
 				else
@@ -119,8 +122,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                 });
                 break;
             default:
-                throw new IllegalStateException("Illegal value for view type: "
-                        + viewHolder.mViewType);
+                throw new IllegalStateException("Illegal value for view type: " + viewType);
         }
     }
 
@@ -168,8 +170,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         private ImageView mImageViewItemIcon;
         /** TextView for name of list item. */
         private TextView mTextViewItemName;
-        /** Type of the view holder */
-        private int mViewType;
 
         /**
          * Calls super constructor with {@code itemLayout} as parameter and gets references
@@ -182,7 +182,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         {
             super(itemLayout);
 
-            mViewType = viewType;
             if (viewType != TYPE_HEADER)
             {
                 mImageViewItemIcon = (ImageView) itemLayout.findViewById(R.id.iv_navigation_item_icon);

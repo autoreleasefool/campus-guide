@@ -10,7 +10,7 @@
 	
 	<!-- Navigation drawer highlights -->
 	<color name="nav_home_highlight">#8a001f</color>
-	<color name="nav_navigation_highlight">#8a001f</color>
+	<color name="nav_navigation_highlight">#364CD2</color>
 	<color name="nav_favorite_highlight">#8a001f</color>
 	<color name="nav_star_highlight">#ffac33</color>
 	<color name="nav_link_highlight">#005daa</color>
