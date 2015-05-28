@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import ca.josephroque.uottawacampusnavigator.R;
 import ca.josephroque.uottawacampusnavigator.adapter.LinksAdapter;
 import ca.josephroque.uottawacampusnavigator.util.Constants;
+import ca.josephroque.uottawacampusnavigator.util.DividerItemDecoration;
 import ca.josephroque.uottawacampusnavigator.util.ExternalUtil;
 
 /**
@@ -22,6 +25,8 @@ import ca.josephroque.uottawacampusnavigator.util.ExternalUtil;
 public class LinksFragment extends Fragment
     implements LinksAdapter.LinkAdapterCallback
 {
+
+    private static final String TAG = "LinksFragment";
 
 	/** Remembers which useful_links array is to be displayed. */
     private static final String ARG_LINKS_ARRAY = "arg_links_array";
@@ -51,6 +56,8 @@ public class LinksFragment extends Fragment
      */
     public static LinksFragment newInstance(int linksArray, int depth, String parentList, String listName)
     {
+        Log.i(TAG, "Parent: " + parentList + " Name: " + listName);
+
         LinksFragment fragment = new LinksFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_LINKS_ARRAY, linksArray);
@@ -88,6 +95,8 @@ public class LinksFragment extends Fragment
                 mParentList, mListName);
         recyclerView.setAdapter(linksAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(getActivity(), LinearLayout.VERTICAL));
 
         return recyclerView;
     }
@@ -107,11 +116,11 @@ public class LinksFragment extends Fragment
     public void openSublinks(int linksArray, String listTitle)
     {
         getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
+                        R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.fl_nav_fragment_container,
                         LinksFragment.newInstance(linksArray, mDepth + 1, mListName, listTitle),
                         Constants.FRAGMENT_LINKS + (mDepth + 1))
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
-                        R.anim.slide_in_left, R.anim.slide_out_right)
                 .addToBackStack(Constants.FRAGMENT_LINKS + mDepth)
                 .commit();
     }

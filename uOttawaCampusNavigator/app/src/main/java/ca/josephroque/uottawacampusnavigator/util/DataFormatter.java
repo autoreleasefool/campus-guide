@@ -1,5 +1,7 @@
 package ca.josephroque.uottawacampusnavigator.util;
 
+import android.util.Log;
+
 /**
  * Created by Joseph Roque on 15-05-11.
  * <p/>
@@ -7,6 +9,9 @@ package ca.josephroque.uottawacampusnavigator.util;
  */
 public class DataFormatter
 {
+
+    private static final String TAG = "DataFormatter";
+
     /**
      * Converts a dp value to pixels
      * @param scale density of screen
@@ -30,16 +35,15 @@ public class DataFormatter
     }
 
     /**
-     * Converts a string containing 10 digits to a phone number of the format "(555) 0123-456"
-     * @param raw 10 digits to format as string
-     * @return phone number of the format "(555) 0123-456"
+     * Converts a string containing to a phone number of the format "(555) 0123-456"
+     * @param raw igits to format as string
+     * @return phone number of the format "(555) 0123-456" or only digits if there are not 10
      */
     public static String formatPhoneNumber(String raw)
     {
         raw = stripNonDigits(raw);
         if (raw.length() != 10)
-            throw new IllegalArgumentException("not a phone number - must be 10 digits");
-
+            return raw;
         return "(" + raw.substring(0, 3) + ") " + raw.substring(3, 6) + "-" + raw.substring(6);
     }
 }

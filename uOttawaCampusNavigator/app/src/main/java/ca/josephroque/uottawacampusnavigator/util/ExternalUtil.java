@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ import ca.josephroque.uottawacampusnavigator.R;
  */
 public class ExternalUtil
 {
+
+    private static final String TAG = "ExternalUtil";
 
 	/**
 	 * Opens link in a browser
@@ -45,14 +48,12 @@ public class ExternalUtil
 	 */
 	public static void dialPhoneNumber(final Activity sourceActivity, String phoneNumber)
 	{
+        Log.i(TAG, "" + isFeatureAvailable(sourceActivity, PackageManager.FEATURE_TELEPHONY));
 		if (!isFeatureAvailable(sourceActivity, PackageManager.FEATURE_TELEPHONY))
 			return;
 		
 		final String rawPhoneNumber = DataFormatter.stripNonDigits(phoneNumber);
-		if (phoneNumber.length() != 10)
-			throw new IllegalArgumentException(
-					"Only supports calling 10-digit numbers: " + phoneNumber);
-		
+
 		// Prompts user before dialing number
 		TextView textMessage = new TextView(sourceActivity);
 		textMessage.setText(sourceActivity.getResources().getString(R.string.text_dial_confirmation)

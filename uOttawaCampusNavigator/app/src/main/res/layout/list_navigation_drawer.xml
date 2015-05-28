@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:paddingTop="@dimen/recyclerview_padding"
     android:paddingBottom="@dimen/recyclerview_padding"
     android:background="@color/primary_gray">
@@ -13,7 +13,7 @@
         android:id="@+id/iv_navigation_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         tools:ignore="ContentDescription" />
@@ -22,9 +22,10 @@
         android:id="@+id/tv_navigation_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:paddingTop="@dimen/recyclerview_text_padding"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/iv_navigation_item_icon"
+        android:layout_toRightOf="@id/iv_navigation_item_icon"
         android:textSize="@dimen/text_small"
         android:textColor="@color/primary_text" />
 
-</LinearLayout>
+</RelativeLayout>

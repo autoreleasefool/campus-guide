@@ -70,6 +70,7 @@ public class NavigationActivity extends AppCompatActivity
 		Fragment fragment = null;
 		String fragmentTag;
         setActionBarTitle(itemName);
+        String suffix = "";
 		if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HOME])
 		{
 			// TODO: Open Home Fragment
@@ -92,6 +93,7 @@ public class NavigationActivity extends AppCompatActivity
 		{
 			fragmentTag = Constants.FRAGMENT_LINKS;
 			fragment = LinksFragment.newInstance(0, 0, null, "Master");
+            suffix = "0";
 		}
 		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_BUS_INFO])
 		{
@@ -132,7 +134,8 @@ public class NavigationActivity extends AppCompatActivity
 		}
 		else
 		{
-			fragmentManager.popBackStack(fragmentTag, 0);
+
+			fragmentManager.popBackStack(fragmentTag + suffix, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		}
     }
 

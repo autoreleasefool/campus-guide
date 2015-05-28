@@ -6,6 +6,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ca.josephroque.uottawacampusnavigator.R;
@@ -100,13 +102,22 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     @Override
     public void onBindViewHolder(final LinksViewHolder viewHolder, final int position)
     {
+        viewHolder.itemView.setOnClickListener(this);
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams)viewHolder.mImageViewIcon.getLayoutParams();
+        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+
         final byte positionOffset;
 		if (mHasParentList)
 		{
 			if (position == 0)
-			{
-				viewHolder.itemView.setTag(Pair.create(TYPE_RETURN, 0));
-				viewHolder.mTextViewTitle.setText(mListName);
+            {
+                viewHolder.itemView.setTag(Pair.create(TYPE_RETURN, 0));
+
+                viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getContext()
+                        .getResources().getColor(R.color.primary_garnet));
+                viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_arrow_back);
+                viewHolder.mTextViewTitle.setText(mListName);
 				viewHolder.mTextViewSubtitle.setText(viewHolder.mTextViewSubtitle.getContext()
                         .getResources().getString(R.string.text_return_to) + " " + mParentList);
 				return;
@@ -120,16 +131,18 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
 		
         String[] itemSplit = mLinkValues[position - positionOffset].split("~");
         viewHolder.mTextViewTitle.setText(itemSplit[0]);
-		viewHolder.itemView.setOnClickListener(this);
-		
+        viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getContext()
+                .getResources().getColor(R.color.primary_gray));
+
         try
         {
             int subLinksArray = Integer.valueOf(itemSplit[1]);
 
             // Item links to a new list of links
+            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_folder);
             viewHolder.mTextViewSubtitle.setText(R.string.text_view_links);
             viewHolder.itemView.setTag(Pair.create(TYPE_MORE_LINKS,
-                    Pair.create(subLinksArray, mListName)));
+                    Pair.create(subLinksArray, itemSplit[0])));
         }
         catch (NumberFormatException ex)
         {
@@ -137,13 +150,15 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
             {
                 // Item is a phone number
                 String phoneNumber = DataFormatter.formatPhoneNumber(itemSplit[1].substring(1));
+                viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_call);
                 viewHolder.mTextViewSubtitle.setText(phoneNumber);
                 viewHolder.itemView.setTag(Pair.create(TYPE_PHONE_NUMBER, phoneNumber));
             }
             else
             {
                 // Item is a hyperlink
-                viewHolder.mTextViewSubtitle.setVisibility(View.GONE);
+                viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_link);
+                viewHolder.mTextViewSubtitle.setText(itemSplit[1]);
                 viewHolder.itemView.setTag(Pair.create(TYPE_HYPERLINK, itemSplit[1]));
             }
         }
@@ -238,6 +253,8 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
         private TextView mTextViewTitle;
         /** Displays subtitle of the item */
         private TextView mTextViewSubtitle;
+        /** Displays icon of the item */
+        private ImageView mImageViewIcon;
 
         /**
          * Gets references for member variables from {@code itemLayout} then passes
@@ -248,8 +265,9 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
         public LinksViewHolder(View itemLayout)
         {
             super(itemLayout);
-            mTextViewTitle = (TextView)itemLayout.findViewById(R.id.tv_item_title);
-            mTextViewSubtitle= (TextView)itemLayout.findViewById(R.id.tv_item_subtitle);
+            mTextViewTitle = (TextView) itemLayout.findViewById(R.id.tv_item_title);
+            mTextViewSubtitle = (TextView) itemLayout.findViewById(R.id.tv_item_subtitle);
+            mImageViewIcon = (ImageView) itemLayout.findViewById(R.id.iv_item_icon);
         }
     }
 }
