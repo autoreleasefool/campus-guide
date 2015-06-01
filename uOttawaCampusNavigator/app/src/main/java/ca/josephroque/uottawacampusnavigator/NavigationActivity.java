@@ -123,8 +123,7 @@ public class NavigationActivity extends AppCompatActivity
 		{
 			// TODO: Open LanguageDialog
 			Log.i(TAG, "TODO: Open LanguageDialog");
-			fragmentTag = Constants.FRAGMENT_HELP;
-			return;
+            return;
 		}
 		else 
 		{

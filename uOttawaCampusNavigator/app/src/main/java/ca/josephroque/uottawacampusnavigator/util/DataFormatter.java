@@ -1,7 +1,6 @@
 package ca.josephroque.uottawacampusnavigator.util;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 /**
  * Created by Joseph Roque on 15-05-11.

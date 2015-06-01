@@ -19,12 +19,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import ca.josephroque.uottawacampusnavigator.R;
 import ca.josephroque.uottawacampusnavigator.adapter.DrawerAdapter;
 import ca.josephroque.uottawacampusnavigator.util.Constants;
-import ca.josephroque.uottawacampusnavigator.util.DividerItemDecoration;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -127,10 +125,6 @@ public class NavigationDrawerFragment extends Fragment
             mCurrentSelectedPosition = savedInstanceState.getInt(ARG_STATE_SELECTED_POSITION, 1);
             mFromSavedInstanceState = true;
         }
-
-        // Select either the default item (1) or the last selected item.
-		// TODO: check if the following line will affect the current fragment
-        //onDrawerItemClicked(mCurrentSelectedPosition);
     }
 
     @Override

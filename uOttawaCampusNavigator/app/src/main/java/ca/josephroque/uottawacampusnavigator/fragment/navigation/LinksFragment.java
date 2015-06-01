@@ -101,7 +101,6 @@ public class LinksFragment extends Fragment
         return recyclerView;
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState)
     {

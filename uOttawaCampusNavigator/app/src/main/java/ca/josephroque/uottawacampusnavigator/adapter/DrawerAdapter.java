@@ -2,6 +2,8 @@ package ca.josephroque.uottawacampusnavigator.adapter;
 
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,9 @@ import ca.josephroque.uottawacampusnavigator.R;
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerViewHolder>
 	implements View.OnClickListener
 {
+
+    /** Identifies output from this class in Logcat */
+    private static final String TAG = "DrawerAdapter";
 
     /** Indicates the type of the item is header. */
     private static final int TYPE_HEADER = 0;
@@ -88,23 +93,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				viewHolder.mTextViewItemName.setVisibility(View.GONE);
 				viewHolder.mImageViewItemIcon.setVisibility(View.GONE);
 				
-				// Setting item padding
-				final Resources resources = viewHolder.itemView.getContext().getResources();
-				final float screenDensity = DataFormatter.getScreenDensity(resources);
-				final int padding = DataFormatter.getPixelsFromDP(screenDensity, 1);
-				viewHolder.itemView.setPadding(0, padding, 0, padding);
 				break;
             case TYPE_ITEM:
 				viewHolder.mViewSeparator.setVisibility(View.GONE);
 				viewHolder.mTextViewItemName.setVisibility(View.VISIBLE);
 				viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
-				
-				// Setting item padding
-				final Resources resources = viewHolder.itemView.getContext().getResources();
-				final float screenDensity = DataFormatter.getScreenDensity(resources);
-				final int padding = DataFormatter.getPixelsFromDP(screenDensity,
-								resources.getDimension(R.dimen.recyclerview_padding));
-				viewHolder.itemView.setPadding(0, padding, 0, padding);
 				
                 viewHolder.mTextViewItemName.setText(mArrayItemNames[position - typeOffset]);
 				
@@ -113,7 +106,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				if (mArrayItemIcons.length > position - typeOffset)
 				{
                     viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
-					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - 1]);
+					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - typeOffset]);
 				}
 				else
 				{
@@ -122,10 +115,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				}
 				
 				//Highlights the image if it is the currently selected item
+                Log.i(TAG, position + " " + (mCallback.getCurrentPosition() + typeOffset));
 				if (mArrayItemHighlights.length > position - typeOffset && mCallback != null
 						&& position == mCallback.getCurrentPosition() + typeOffset)
 				{
-					viewHolder.mImageViewItemIcon.setColorFilter(mArrayItemHighlights[position - 1],
+					viewHolder.mImageViewItemIcon.setColorFilter(mArrayItemHighlights[position - typeOffset],
 							PorterDuff.Mode.MULTIPLY);
 				}
 				else
@@ -146,7 +140,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
 		if (position == 0)
 			return TYPE_HEADER;
-		else if (position == getTypeOffset(position) + Constants.NAVIGATION_ITEM_SETTINGS - 1)
+		else if (position == 8)
 			return TYPE_SEPARATOR;
         else
 			return TYPE_ITEM;
@@ -155,27 +149,28 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     @Override
     public int getItemCount()
     {
-        return mArrayItemNames.length + 1;
+        return mArrayItemNames.length + 2;
     }
 	
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public void onClick(View src)
 	{
-		Pair<Integer, Integer> pair = null;
+		Pair<Integer, Byte> pair;
 		try
 		{
-			pair = (Pair<Integer, Integer>) src.getTag();
+            pair = (Pair<Integer, Byte>) src.getTag();
 		}
 		catch (ClassCastException ex)
 		{
-			throw new ClassCastException("Tag must be a pair<int, int> with a position and offset");
+			throw new ClassCastException("Tag must be a pair<int, byte> with a position and offset");
 		}
 		
 		if (pair == null)
 			return;
 		
 		final int position = pair.first;
-		final int typeOffset = pair.second;
+		final byte typeOffset = pair.second;
 		
 		if (mCallback != null)
 		{
@@ -188,7 +183,13 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 			mCallback.onDrawerItemClicked(position - typeOffset);
 		}
 	}
-	
+
+    /**
+     * Checks how many items before the position are not of type TYPE_ITEM
+     *
+     * @param position position to get offset of
+     * @return number of items above position not TYPE_ITEM
+     */
 	private byte getTypeOffset(int position)
 	{
 		byte typeOffset = 0;

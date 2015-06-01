@@ -80,4 +80,8 @@ public class Constants
 	public static final String FRAGMENT_ACCESSIBILITY = "frag_access";
 	/** Identifies an instance of HotspotsFragment on the fragment backstack */
 	public static final String FRAGMENT_HOTSPOTS = "frag_hot";
+	/** Identifies an instance of HelpFragment on the fragment backstack */
+	public static final String FRAGMENT_HELP = "frag_help";
+	/** Identifies an instnace of LanguageFragment on the fragment backstack */
+	public static final String FRAGMENT_LANGUAGE = "frag_lang";
 }
