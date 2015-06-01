@@ -6,33 +6,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/recyclerview_padding"
-    android:paddingBottom="@dimen/recyclerview_padding"
     android:background="@color/primary_gray">
 	
 	<View
 		android:id="@+id/view_separator"
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-		android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/recyclerview_padding"
 		android:background="@color/primary_text_light" />
 
-    <ImageView
-        android:id="@+id/iv_navigation_item_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        tools:ignore="ContentDescription" />
-    
-    <TextView
-        android:id="@+id/tv_navigation_item_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/iv_navigation_item_icon"
-        android:layout_toRightOf="@id/iv_navigation_item_icon"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/primary_text" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/view_separator">
+
+        <ImageView
+            android:id="@+id/iv_navigation_item_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_navigation_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/iv_navigation_item_icon"
+            android:layout_toRightOf="@id/iv_navigation_item_icon"
+            android:textSize="@dimen/text_small"
+            android:textColor="@color/primary_text" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

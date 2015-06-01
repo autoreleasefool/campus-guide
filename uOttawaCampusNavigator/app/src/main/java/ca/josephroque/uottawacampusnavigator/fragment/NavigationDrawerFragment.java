@@ -283,7 +283,6 @@ public class NavigationDrawerFragment extends Fragment
     @Override
     public void onDrawerItemClicked(int position)
     {
-        Log.i(TAG, "Current: " + mCurrentSelectedPosition + " New: " + position);
         mCurrentSelectedPosition = position;
         if (mDrawerLayout != null)
             mDrawerLayout.closeDrawer(mFragmentContainerView);

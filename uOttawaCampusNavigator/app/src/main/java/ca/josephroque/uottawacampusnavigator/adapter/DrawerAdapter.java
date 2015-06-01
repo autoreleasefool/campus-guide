@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ca.josephroque.uottawacampusnavigator.R;
+import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 /**
  * Created by Joseph Roque on 15-05-25.
@@ -28,8 +29,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     private static final int TYPE_HEADER = 0;
     /** Indicates the type of the item is a regular item. */
     private static final int TYPE_ITEM = 1;
-	/** Indicates the type of the item is a category separator. */
-	private static final int TYPE_SEPARATOR = 2;
+    /** Indicates the type of the item is a separator. */
+    private static final int TYPE_SEPARATOR = 2;
 
     /** Instance of callback interface for user events. */
     private DrawerAdapterCallbacks mCallback;
@@ -78,35 +79,26 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
         int viewType = getItemViewType(position);
 		
-		// Counts how many items are NOT regular items above this one
-		final byte typeOffset = getTypeOffset(position);
-
         switch (viewType)
         {
             case TYPE_HEADER:
                 //do nothing
                 break;
-			case TYPE_SEPARATOR:
+			case TYPE_SEPARATOR:case TYPE_ITEM:
 				// Creates a simple view and sets its background color to be a separator
 				// for the items
-				viewHolder.mViewSeparator.setVisibility(View.VISIBLE);
-				viewHolder.mTextViewItemName.setVisibility(View.GONE);
-				viewHolder.mImageViewItemIcon.setVisibility(View.GONE);
-				
-				break;
-            case TYPE_ITEM:
-				viewHolder.mViewSeparator.setVisibility(View.GONE);
-				viewHolder.mTextViewItemName.setVisibility(View.VISIBLE);
-				viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
-				
-                viewHolder.mTextViewItemName.setText(mArrayItemNames[position - typeOffset]);
+				viewHolder.mViewSeparator.setVisibility((viewType == TYPE_ITEM)
+                        ? View.GONE
+                        : View.VISIBLE);
+
+                viewHolder.mTextViewItemName.setText(mArrayItemNames[position - 1]);
 				
 				// Set icon to the image resource given for this position if one was provided
 				// otherwise, use a default image (settings)
-				if (mArrayItemIcons.length > position - typeOffset)
+				if (mArrayItemIcons.length > position - 1)
 				{
                     viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
-					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - typeOffset]);
+					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - 1]);
 				}
 				else
 				{
@@ -115,11 +107,10 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				}
 				
 				//Highlights the image if it is the currently selected item
-                Log.i(TAG, position + " " + (mCallback.getCurrentPosition() + typeOffset));
-				if (mArrayItemHighlights.length > position - typeOffset && mCallback != null
-						&& position == mCallback.getCurrentPosition() + typeOffset)
+				if (mArrayItemHighlights.length > position - 1 && mCallback != null
+						&& position == mCallback.getCurrentPosition() + 1)
 				{
-					viewHolder.mImageViewItemIcon.setColorFilter(mArrayItemHighlights[position - typeOffset],
+					viewHolder.mImageViewItemIcon.setColorFilter(mArrayItemHighlights[position - 1],
 							PorterDuff.Mode.MULTIPLY);
 				}
 				else
@@ -127,7 +118,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 					viewHolder.mImageViewItemIcon.clearColorFilter();
 				}
 				
-				viewHolder.itemView.setTag(Pair.create(position, typeOffset));
+				viewHolder.itemView.setTag(Pair.create(position, 1));
                 viewHolder.itemView.setOnClickListener(this);
                 break;
             default:
@@ -140,8 +131,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
 		if (position == 0)
 			return TYPE_HEADER;
-		else if (position == 8)
-			return TYPE_SEPARATOR;
+        else if (position == Constants.NAVIGATION_ITEM_SETTINGS + 1)
+            return TYPE_SEPARATOR;
         else
 			return TYPE_ITEM;
     }
@@ -149,7 +140,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     @Override
     public int getItemCount()
     {
-        return mArrayItemNames.length + 2;
+        return mArrayItemNames.length + 1;
     }
 	
 	@SuppressWarnings("unchecked")
@@ -182,23 +173,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 			}
 			mCallback.onDrawerItemClicked(position - typeOffset);
 		}
-	}
-
-    /**
-     * Checks how many items before the position are not of type TYPE_ITEM
-     *
-     * @param position position to get offset of
-     * @return number of items above position not TYPE_ITEM
-     */
-	private byte getTypeOffset(int position)
-	{
-		byte typeOffset = 0;
-		for (int ii = 0; ii < position; ii++)
-		{
-			if (getItemViewType(ii) != TYPE_ITEM)
-				typeOffset++;
-		}
-		return typeOffset;
 	}
 
     /**
