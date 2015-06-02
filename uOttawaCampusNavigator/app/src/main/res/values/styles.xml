@@ -2,8 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/primary_garnet</item>
-		<item name="colorPrimaryDark">@color/primary_garnet_dark</item>
     </style>
 
 </resources>

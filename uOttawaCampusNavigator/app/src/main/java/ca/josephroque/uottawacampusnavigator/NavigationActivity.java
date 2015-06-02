@@ -22,7 +22,7 @@ public class NavigationActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
 
-    /** Identifies this class in logcat */
+    /** Identifies this class in logcat. */
     private static final String TAG = "NavigationActivity";
 
     /**
@@ -37,13 +37,14 @@ public class NavigationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mIsAppInEnglish = preferences.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
+
         setContentView(R.layout.activity_navigation);
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		mIsAppInEnglish = preferences.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
-
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
 
@@ -66,10 +67,9 @@ public class NavigationActivity extends AppCompatActivity
 			openSettings();
 			return;
 		}
-		
+
 		Fragment fragment = null;
 		String fragmentTag;
-        setActionBarTitle(itemName);
         String suffix = "";
 		if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HOME])
 		{
@@ -133,7 +133,8 @@ public class NavigationActivity extends AppCompatActivity
 
 		if (fragment == null)
             return;
-		
+
+		setActionBarTitle(itemName);
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		if (fragmentManager.findFragmentByTag(fragmentTag) == null)
 		{
@@ -146,7 +147,6 @@ public class NavigationActivity extends AppCompatActivity
 		}
 		else
 		{
-
 			fragmentManager.popBackStack(fragmentTag + suffix, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		}
     }
@@ -203,7 +203,7 @@ public class NavigationActivity extends AppCompatActivity
 	}
 
     /**
-     * Displays the application's settings to the user
+     * Displays the application's settings to the user.
      */
     private void openSettings()
     {

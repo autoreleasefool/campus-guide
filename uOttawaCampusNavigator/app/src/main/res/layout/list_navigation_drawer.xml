@@ -12,7 +12,6 @@
 		android:id="@+id/view_separator"
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/recyclerview_padding"
 		android:background="@color/primary_text_light" />
 
     <RelativeLayout
@@ -34,10 +33,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/iv_navigation_item_icon"
-            android:layout_toRightOf="@id/iv_navigation_item_icon"
+            android:paddingLeft="@dimen/navigation_text_padding"
             android:textSize="@dimen/text_small"
-            android:textColor="@color/primary_text" />
+            android:textColor="@color/primary_text"
+            tools:ignore="RtlHardcoded,RtlSymmetry"/>
 
     </RelativeLayout>
 

@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,11 +32,10 @@ public class NavigationDrawerFragment extends Fragment
     implements DrawerAdapter.DrawerAdapterCallbacks
 {
 
+    /** Identifies this class in logcat. */
     private static final String TAG = "NavigationDrawer";
 
-    /**
-     * Remember the position of the selected item.
-     */
+    /** Remember the position of the selected item. */
     private static final String ARG_STATE_SELECTED_POSITION = "arg_navigation_drawer_position";
 
     /**
@@ -77,7 +75,7 @@ public class NavigationDrawerFragment extends Fragment
 	/** Items which will appear in the navigation drawer. */
 	private static String[] NAVIGATION_DRAWER_ITEMS;
 
-    /** Indicates if the highlights have been converted to actual colors values */
+    /** Indicates if the highlights have been converted to actual colors values. */
     private static boolean sHighlightsConverted = false;
 
     /** A pointer to the current callbacks instance (the Activity). */
@@ -88,7 +86,7 @@ public class NavigationDrawerFragment extends Fragment
 
     /** Layout for the navigation drawer. */
     private DrawerLayout mDrawerLayout;
-    /** Container for fragments */
+    /** Container for fragments. */
     private View mFragmentContainerView;
 
     /** Current position of the navigation drawer. */
@@ -122,9 +120,11 @@ public class NavigationDrawerFragment extends Fragment
 
         if (savedInstanceState != null)
         {
-            mCurrentSelectedPosition = savedInstanceState.getInt(ARG_STATE_SELECTED_POSITION, 1);
+            mCurrentSelectedPosition = savedInstanceState.getInt(ARG_STATE_SELECTED_POSITION, 0);
             mFromSavedInstanceState = true;
         }
+
+        onDrawerItemClicked(mCurrentSelectedPosition);
     }
 
     @Override
@@ -137,11 +137,12 @@ public class NavigationDrawerFragment extends Fragment
 		if (!sHighlightsConverted)
 			convertHighlights(getResources());
 
-        DrawerAdapter mDrawerAdapter = new DrawerAdapter(this,
+        DrawerAdapter drawerAdapter = new DrawerAdapter(this,
                 NAVIGATION_DRAWER_ICONS,
 				NAVIGATION_DRAWER_HIGHLIGHTS,
                 NAVIGATION_DRAWER_ITEMS);
-        recyclerView.setAdapter(mDrawerAdapter);
+        drawerAdapter.addSeparator(Constants.NAVIGATION_ITEM_SETTINGS);
+        recyclerView.setAdapter(drawerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
     }

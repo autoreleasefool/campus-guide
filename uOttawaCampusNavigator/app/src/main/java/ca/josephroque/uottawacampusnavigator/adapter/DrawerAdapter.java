@@ -10,8 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.TreeSet;
+
 import ca.josephroque.uottawacampusnavigator.R;
-import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 /**
  * Created by Joseph Roque on 15-05-25.
@@ -22,7 +23,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 	implements View.OnClickListener
 {
 
-    /** Identifies output from this class in Logcat */
+    /** Identifies output from this class in Logcat. */
     private static final String TAG = "DrawerAdapter";
 
     /** Indicates the type of the item is header. */
@@ -41,6 +42,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 	private int[] mArrayItemHighlights;
     /** Array of strings to display as names for drawer items. */
     private String[] mArrayItemNames;
+    /** Set of positions which represent separators. */
+    private TreeSet<Integer> mSetSeparators;
 
     /**
      * Assigns references to parameters
@@ -55,6 +58,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         this.mArrayItemIcons = itemIcons;
 		this.mArrayItemHighlights = itemHighlights;
         this.mArrayItemNames = itemNames;
+        mSetSeparators = new TreeSet<>();
     }
 
     @Override
@@ -78,27 +82,36 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     public void onBindViewHolder(DrawerViewHolder viewHolder, final int position)
     {
         int viewType = getItemViewType(position);
-		
+
+        final byte typeOffset = getTypeOffset(position);
+        final byte currentPosOffset = getTypeOffset(mCallback.getCurrentPosition());
+        Log.i(TAG, "Offset: " + typeOffset + " Offset2: " + currentPosOffset);
+
         switch (viewType)
         {
             case TYPE_HEADER:
                 //do nothing
                 break;
-			case TYPE_SEPARATOR:case TYPE_ITEM:
-				// Creates a simple view and sets its background color to be a separator
-				// for the items
-				viewHolder.mViewSeparator.setVisibility((viewType == TYPE_ITEM)
-                        ? View.GONE
-                        : View.VISIBLE);
 
-                viewHolder.mTextViewItemName.setText(mArrayItemNames[position - 1]);
+			case TYPE_SEPARATOR:
+                viewHolder.mViewSeparator.setVisibility(View.VISIBLE);
+                viewHolder.mImageViewItemIcon.setVisibility(View.GONE);
+                viewHolder.mTextViewItemName.setVisibility(View.GONE);
+                break;
+
+            case TYPE_ITEM:
+                viewHolder.mViewSeparator.setVisibility(View.GONE);
+                viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
+                viewHolder.mTextViewItemName.setVisibility(View.VISIBLE);
+
+                viewHolder.mTextViewItemName.setText(mArrayItemNames[position - typeOffset]);
 				
 				// Set icon to the image resource given for this position if one was provided
 				// otherwise, use a default image (settings)
-				if (mArrayItemIcons.length > position - 1)
+				if (mArrayItemIcons.length > position - typeOffset)
 				{
                     viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
-					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - 1]);
+					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - typeOffset]);
 				}
 				else
 				{
@@ -107,20 +120,21 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				}
 				
 				//Highlights the image if it is the currently selected item
-				if (mArrayItemHighlights.length > position - 1 && mCallback != null
-						&& position == mCallback.getCurrentPosition() + 1)
+				if (mArrayItemHighlights.length > position - typeOffset && mCallback != null
+						&& position == mCallback.getCurrentPosition() + currentPosOffset)
 				{
-					viewHolder.mImageViewItemIcon.setColorFilter(mArrayItemHighlights[position - 1],
-							PorterDuff.Mode.MULTIPLY);
+					viewHolder.mImageViewItemIcon.setColorFilter(
+                            mArrayItemHighlights[position - typeOffset], PorterDuff.Mode.MULTIPLY);
 				}
 				else
 				{
 					viewHolder.mImageViewItemIcon.clearColorFilter();
 				}
 				
-				viewHolder.itemView.setTag(Pair.create(position, 1));
+				viewHolder.itemView.setTag(Pair.create(position, typeOffset));
                 viewHolder.itemView.setOnClickListener(this);
                 break;
+
             default:
                 throw new IllegalStateException("Illegal value for view type: " + viewType);
         }
@@ -131,7 +145,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
 		if (position == 0)
 			return TYPE_HEADER;
-        else if (position == Constants.NAVIGATION_ITEM_SETTINGS + 1)
+        else if (mSetSeparators.contains(position))
             return TYPE_SEPARATOR;
         else
 			return TYPE_ITEM;
@@ -140,7 +154,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     @Override
     public int getItemCount()
     {
-        return mArrayItemNames.length + 1;
+        return mArrayItemNames.length + 1 + mSetSeparators.size();
     }
 	
 	@SuppressWarnings("unchecked")
@@ -174,6 +188,36 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 			mCallback.onDrawerItemClicked(position - typeOffset);
 		}
 	}
+
+    private byte getTypeOffset(int position)
+    {
+        byte offset = 0;
+        for (int i = 0; i < position; i++)
+        {
+            if (getItemViewType(i) != TYPE_ITEM)
+                offset++;
+        }
+        return offset;
+    }
+
+    /**
+     * Adds a separator to the navigation drawer.
+     * @param position position for new separator
+     */
+    public void addSeparator(int position)
+    {
+        int offset = getTypeOffset(position);
+        mSetSeparators.add(position + offset);
+    }
+
+    /**
+     * Removes a separator from the navigation drawer.
+     * @param position position to remove separator from
+     */
+    public void removeSeparator(int position)
+    {
+        mSetSeparators.remove(position);
+    }
 
     /**
      * Offers methods for sending events to the navigation drawer which uses this adapter.
