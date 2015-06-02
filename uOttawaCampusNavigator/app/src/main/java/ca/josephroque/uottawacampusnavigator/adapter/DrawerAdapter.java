@@ -83,9 +83,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
         int viewType = getItemViewType(position);
 
-        final byte typeOffset = getTypeOffset(position);
-        final byte currentPosOffset = getTypeOffset(mCallback.getCurrentPosition());
-        Log.i(TAG, "Offset: " + typeOffset + " Offset2: " + currentPosOffset);
+        final byte typeOffset = getTypeOffset(position, false);
+        final byte currentPosOffset = getTypeOffset(mCallback.getCurrentPosition(), true);
 
         switch (viewType)
         {
@@ -118,12 +117,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 					viewHolder.mImageViewItemIcon.setVisibility(View.INVISIBLE);
 					viewHolder.mImageViewItemIcon.setImageResource(R.drawable.ic_settings);
 				}
-				
-				//Highlights the image if it is the currently selected item
+
+				// Highlights the image if it is the currently selected item
 				if (mArrayItemHighlights.length > position - typeOffset && mCallback != null
 						&& position == mCallback.getCurrentPosition() + currentPosOffset)
 				{
-					viewHolder.mImageViewItemIcon.setColorFilter(
+                    viewHolder.mImageViewItemIcon.setColorFilter(
                             mArrayItemHighlights[position - typeOffset], PorterDuff.Mode.MULTIPLY);
 				}
 				else
@@ -179,20 +178,21 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 		
 		if (mCallback != null)
 		{
-			int lastPosition = mCallback.getCurrentPosition() + typeOffset;
+			int lastPosition = mCallback.getCurrentPosition();
+            lastPosition += getTypeOffset(lastPosition, true);
 			if (position != lastPosition)
 			{
-				notifyItemChanged(mCallback.getCurrentPosition() + typeOffset);
+				notifyItemChanged(lastPosition);
 				notifyItemChanged(position);
 			}
 			mCallback.onDrawerItemClicked(position - typeOffset);
 		}
 	}
 
-    private byte getTypeOffset(int position)
+    private byte getTypeOffset(int position, boolean callback)
     {
-        byte offset = 0;
-        for (int i = 0; i < position; i++)
+        byte offset = 1;
+        for (int i = 1; (i < position + offset) || (i <= position + offset && callback); i++)
         {
             if (getItemViewType(i) != TYPE_ITEM)
                 offset++;
@@ -206,7 +206,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
      */
     public void addSeparator(int position)
     {
-        int offset = getTypeOffset(position);
+        int offset = getTypeOffset(position, false);
         mSetSeparators.add(position + offset);
     }
 
