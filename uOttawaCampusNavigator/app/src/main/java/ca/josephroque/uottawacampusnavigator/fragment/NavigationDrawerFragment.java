@@ -124,7 +124,7 @@ public class NavigationDrawerFragment extends Fragment
             mFromSavedInstanceState = true;
         }
 
-        onDrawerItemClicked(mCurrentSelectedPosition);
+        onDrawerItemClicked(mCurrentSelectedPosition, false);
     }
 
     @Override
@@ -142,6 +142,9 @@ public class NavigationDrawerFragment extends Fragment
 				NAVIGATION_DRAWER_HIGHLIGHTS,
                 NAVIGATION_DRAWER_ITEMS);
         drawerAdapter.addSeparator(Constants.NAVIGATION_ITEM_SETTINGS);
+        drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_SETTINGS);
+        drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_HELP);
+        drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_LANGUAGE);
         recyclerView.setAdapter(drawerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 getActivity().getApplicationContext()));
@@ -288,9 +291,10 @@ public class NavigationDrawerFragment extends Fragment
     }
 
     @Override
-    public void onDrawerItemClicked(int position)
+    public void onDrawerItemClicked(int position, boolean updatePosition)
     {
-        mCurrentSelectedPosition = position;
+        if (updatePosition)
+            mCurrentSelectedPosition = position;
         if (mDrawerLayout != null)
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         if (mCallback != null)

@@ -2,6 +2,7 @@ package ca.josephroque.uottawacampusnavigator.adapter;
 
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     private String[] mArrayItemNames;
     /** Set of positions which represent separators. */
     private TreeSet<Integer> mSetSeparators;
+    /** Set of positions which cannot be highlighted. */
+    private TreeSet<Integer> mSetNonHighlightable;
 
     /**
      * Assigns references to parameters.
@@ -52,11 +55,19 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
      */
     public DrawerAdapter(DrawerAdapterCallbacks callback, int[] itemIcons, int[] itemHighlights, String[] itemNames)
     {
+        if (itemNames.length != itemIcons.length
+                || itemNames.length != itemHighlights.length)
+        {
+            throw new IllegalArgumentException("All array must be same size");
+
+        }
+
         this.mCallback = callback;
         this.mArrayItemIcons = itemIcons;
 		this.mArrayItemHighlights = itemHighlights;
         this.mArrayItemNames = itemNames;
         mSetSeparators = new TreeSet<>();
+        mSetNonHighlightable = new TreeSet<>();
     }
 
     @Override
@@ -116,6 +127,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				{
 					viewHolder.mImageViewItemIcon.setVisibility(View.INVISIBLE);
 				}
+
+                Log.i(TAG, "Pos: " + position + " Off: " + typeOffset + " Cur: " + mCallback.getCurrentPosition() + " CurOff: " + currentPosOffset);
 
 				// Highlights the image if it is the currently selected item
 				if (mArrayItemHighlights.length > position - typeOffset && mCallback != null
@@ -185,16 +198,20 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 		
 		if (mCallback != null)
 		{
-            // Updates highlighted drawer item and invokes callback method
-			mCallback.onDrawerItemClicked(position - typeOffset);
-
-            int lastPosition = mCallback.getCurrentPosition();
-            lastPosition += getTypeOffset(lastPosition, true);
-            if (position != lastPosition)
+            boolean isHighlightable = !mSetNonHighlightable.contains(position + typeOffset);
+            if (isHighlightable)
             {
-                notifyItemChanged(lastPosition);
-                notifyItemChanged(position);
+                int lastPosition = mCallback.getCurrentPosition();
+                lastPosition += getTypeOffset(lastPosition, true);
+                if (position != lastPosition)
+                {
+                    notifyItemChanged(lastPosition);
+                    notifyItemChanged(position);
+                }
             }
+
+            // Updates highlighted drawer item and invokes callback method
+			mCallback.onDrawerItemClicked(position - typeOffset, isHighlightable);
 		}
 	}
 
@@ -222,8 +239,29 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
      */
     public void addSeparator(int position)
     {
-        int offset = getTypeOffset(position, false);
-        mSetSeparators.add(position + offset);
+        position += getTypeOffset(position, false);
+        mSetSeparators.add(position);
+
+        if (mSetSeparators.last() != position)
+        {
+            throw new IllegalArgumentException("Separators must be added in increasing order ("
+                    + position + "<" + mSetSeparators.last()
+                    + " (may not be exact values - offset is added)");
+        }
+    }
+
+    public void setPositionNotHighlighted(int position)
+    {
+        position += getTypeOffset(position, false);
+        mSetNonHighlightable.add(position);
+        Log.i(TAG, "Nonhighlightable: " + position);
+
+        if (mSetNonHighlightable.last() != position)
+        {
+            throw new IllegalArgumentException("Non highlightable must be added in increasing order"
+                    + " (" + position + "<" + mSetNonHighlightable.last() + ")"
+                    + ". May not be exact values - offset is added.");
+        }
     }
 
     /**
@@ -235,8 +273,9 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
          * Called when an item in the drawer is clicked, so the parent fragment can handle
          * the user interaction.
          * @param position position of view which was clicked.
+         * @param updatePosition indicates if position should be saved
          */
-        void onDrawerItemClicked(int position);
+        void onDrawerItemClicked(int position, boolean updatePosition);
 		
 		/**
 		 * Should return the current item which is highlighted in the navigation drawer.
