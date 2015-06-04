@@ -23,7 +23,10 @@
 	<string name="text_dial_confirmation">Do you want to dial the number\n</string>
 	<string name="text_dial_number">Dial phone number?</string>
 	<string name="text_return_to">Return to </string>
+
+    <string name="dialog_title_select_language">Select a Language</string>
     <string name="dialog_text_dial">Dial</string>
+    <string name="dialog_text_okay">Okay</string>
     <string name="dialog_text_cancel">Cancel</string>
 
     <!-- French text -->

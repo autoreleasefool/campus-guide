@@ -1,6 +1,9 @@
 package ca.josephroque.uottawacampusnavigator;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.uottawacampusnavigator.fragment.NavigationDrawerFragment;
 import ca.josephroque.uottawacampusnavigator.fragment.navigation.LinksFragment;
@@ -120,8 +126,60 @@ public class NavigationActivity extends AppCompatActivity
 		}
 		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_LANGUAGE])
 		{
-			// TODO: Open LanguageDialog
-			Log.i(TAG, "TODO: Open LanguageDialog");
+            final SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            final boolean startingLanguage =
+                    sharedPreferences.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
+            final AtomicBoolean setLanguage = new AtomicBoolean(startingLanguage);
+            final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    dialog.dismiss();
+
+                    if (which == DialogInterface.BUTTON_POSITIVE
+                            && setLanguage.get() != startingLanguage)
+                    {
+                        Configuration config = new Configuration(
+                                getBaseContext().getResources().getConfiguration());
+                        sharedPreferences.edit()
+                                .putBoolean(Constants.PREF_LANGUAGE_SELECTED, setLanguage.get())
+                                .apply();
+
+                        String lang = (setLanguage.get()
+                                ? "en_CA"
+                                : "en_FR");
+                        if (!config.locale.getLanguage().equals(lang))
+                        {
+                            Locale locale = new Locale(lang);
+                            Locale.setDefault(locale);
+                            config.locale = locale;
+                            getBaseContext().getResources().updateConfiguration(config,
+                                    getBaseContext().getResources().getDisplayMetrics());
+                        }
+
+                        recreate();
+                    }
+                }
+            };
+
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.dialog_title_select_language)
+                    .setSingleChoiceItems(R.array.dialog_array_language,
+                            (setLanguage.get()) ? 0 : 1,
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                {
+                                    setLanguage.set(which == 0);
+                                }
+                            })
+                    .setPositiveButton(R.string.dialog_text_okay, listener)
+                    .setNegativeButton(R.string.dialog_text_cancel, listener)
+                    .create()
+                    .show();
             return;
 		}
 		else 
