@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
 
 import ca.josephroque.uottawacampusnavigator.fragment.NavigationDrawerFragment;
 import ca.josephroque.uottawacampusnavigator.fragment.navigation.LinksFragment;
@@ -44,7 +45,7 @@ public class NavigationActivity extends AppCompatActivity
 		setSupportActionBar(toolbar);
 		
         mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer_fragment);
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -62,7 +63,7 @@ public class NavigationActivity extends AppCompatActivity
 		
 		if (itemName == drawerItems[Constants.NAVIGATION_ITEM_SETTINGS])
         {
-			openSettings();
+			openSettings(null);
 			return;
 		}
 
@@ -172,7 +173,7 @@ public class NavigationActivity extends AppCompatActivity
         switch(item.getItemId())
         {
             case R.id.action_settings:
-                openSettings();
+                openSettings(null);
                 return true;
         }
 
@@ -202,9 +203,14 @@ public class NavigationActivity extends AppCompatActivity
 
     /**
      * Displays the application's settings to the user.
+     * @param src source of onClick call
      */
-    private void openSettings()
+    @SuppressWarnings("UnusedParameters")   // View parameter only required for onClick
+                                            // attribute in XML
+    public void openSettings(View src)
     {
+		if (mNavigationDrawerFragment.isDrawerOpen())
+            mNavigationDrawerFragment.closeDrawer();
         // TODO: open settings
         Log.i(TAG, "TODO: Open settings");
     }

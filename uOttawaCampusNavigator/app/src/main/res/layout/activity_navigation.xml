@@ -51,14 +51,26 @@
 
     </RelativeLayout>
 
-    <!-- The drawer is given a fixed width in dp and extends the full height of
+    <ca.josephroque.uottawacampusnavigator.util.ScrimInsetsFrameLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/navigation_drawer"
+        android:layout_width="@dimen/navigation_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:fitsSystemWindows="true"
+        app:insetForeground="#4000"
+        tools:ignore="RtlHardcoded" >
+
+        <!-- The drawer is given a fixed width in dp and extends the full height of
          the container. -->
-    <fragment android:id="@+id/navigation_drawer"
-              android:layout_width="@dimen/navigation_drawer_width"
-              android:layout_height="match_parent"
-              android:layout_gravity="left"
-              android:name="ca.josephroque.uottawacampusnavigator.fragment.NavigationDrawerFragment"
-              tools:layout="@layout/fragment_recyclerview"
-              tools:ignore="RtlHardcoded"/>
+        <fragment
+            android:id="@+id/navigation_drawer_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="ca.josephroque.uottawacampusnavigator.fragment.NavigationDrawerFragment"
+            tools:layout="@layout/fragment_recyclerview" />
+
+
+    </ca.josephroque.uottawacampusnavigator.util.ScrimInsetsFrameLayout>
 
 </android.support.v4.widget.DrawerLayout>
