@@ -16,7 +16,7 @@ import ca.josephroque.uottawacampusnavigator.util.DataFormatter;
 /**
  * Created by Joseph Roque on 15-05-26.
  * <p/>
- * Manages the data displayed in a LinkFragment
+ * Manages the data displayed in a LinkFragment.
  */
 public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHolder>
     implements View.OnClickListener
@@ -27,7 +27,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     private static final byte TYPE_PHONE_NUMBER = 1;
     /** Represents an item which is a hyperlink. */
     private static final byte TYPE_HYPERLINK = 2;
-	/** Represents an item which returns to previous list */
+	/** Represents an item which returns to previous list. */
 	private static final byte TYPE_RETURN = 3;
 
     /** Array of names and values which will be displayed in the recycler view. */
@@ -45,8 +45,12 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     /**
      * Gets an array for {@code mLinkValues} from resources based on linksArray.
      *
-     * @param resources to retrieve string array
-     * @param linksArray which useful_links array to use
+     * @param callback instance of callback interface
+     * @param resources to get string arrays
+     * @param linksArray which useful_links array will be used
+     * @param hasParentList indicates if this fragment has a parent
+     * @param parentList name of parent list or null if there isn't one
+     * @param listName name of current list
      */
     public LinksAdapter(LinkAdapterCallback callback, Resources resources,
 			int linksArray, boolean hasParentList, String parentList, String listName)
@@ -107,6 +111,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
                 (RelativeLayout.LayoutParams)viewHolder.mImageViewIcon.getLayoutParams();
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
 
+        // Adds header item to return to previous list, if there is a parent
         final byte positionOffset;
 		if (mHasParentList)
 		{
@@ -165,6 +170,13 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     }
 
     @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView)
+    {
+        super.onDetachedFromRecyclerView(recyclerView);
+        mCallback = null;
+    }
+
+    @Override
     public int getItemCount()
     {
         return mLinkValues.length + ((mHasParentList) ? 1 : 0);
@@ -182,6 +194,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
                 case TYPE_MORE_LINKS:
                     if (mCallback != null)
 					{
+                        // Invokes callback method to open next fragment
 						Pair<?, ?> secondPair = (Pair) pair.second;
 						int linksArray = ((Integer)secondPair.first);
 						String listName = secondPair.second.toString();
@@ -189,14 +202,17 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
 					}
                     break;
                 case TYPE_PHONE_NUMBER:
+                    // Invokes callback method to open phone keypad
                     if (mCallback != null)
                         mCallback.promptCallPhoneNumber(pair.second.toString());
                     break;
                 case TYPE_HYPERLINK:
+                    // Invokes callback method to open link in browser
                     if (mCallback != null)
                         mCallback.openHyperlink(pair.second.toString());
                     break;
 				case TYPE_RETURN:
+                    // Invokes callback method to return to parent list
 					if (mCallback != null)
 						mCallback.moveUpList();
 					break;
@@ -238,7 +254,7 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
         void promptCallPhoneNumber(String phoneNumber);
 		
 		/**
-		 * Returns to previous useful_links list
+		 * Returns to previous useful_links list.
 		 */
 		void moveUpList();
     }
@@ -249,11 +265,11 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
      */
     public static class LinksViewHolder extends RecyclerView.ViewHolder
     {
-        /** Displays title of the item */
+        /** Displays title of the item. */
         private TextView mTextViewTitle;
-        /** Displays subtitle of the item */
+        /** Displays subtitle of the item. */
         private TextView mTextViewSubtitle;
-        /** Displays icon of the item */
+        /** Displays icon of the item. */
         private ImageView mImageViewIcon;
 
         /**

@@ -9,12 +9,13 @@ import android.content.res.Resources;
  */
 public class DataFormatter
 {
-
+    /** Identifies output from this class in Logcat. */
     private static final String TAG = "DataFormatter";
 	
 	/**
 	 * Gets the screen density from the application resources.
 	 *
+     * @param resources to get display metrics
 	 * @return resources.getDisplayMetrics().density
 	 */
 	public static float getScreenDensity(Resources resources)
@@ -23,7 +24,8 @@ public class DataFormatter
 	}
 
     /**
-     * Converts a dp value to pixels
+     * Converts a dp value to pixels.
+     *
      * @param scale density of screen
      * @param dps value to be converted
      * @return result of conversion from dps to pixels
@@ -34,7 +36,7 @@ public class DataFormatter
     }
 
     /**
-     * Removes all characters in the string which are not digits
+     * Removes all characters in the string which are not digits.
      *
      * @param raw string to remove non-digits from
      * @return string with only digits
@@ -45,7 +47,8 @@ public class DataFormatter
     }
 
     /**
-     * Converts a string containing to a phone number of the format "(555) 0123-456"
+     * Converts a string containing to a phone number of the format "(555) 0123-456".
+     *
      * @param raw igits to format as string
      * @return phone number of the format "(555) 0123-456" or only digits if there are not 10
      */

@@ -26,31 +26,31 @@ public class IntroActivity extends FragmentActivity
     implements LanguageFragment.LanguageCallbacks
 {
 
-    /** Identifier for the current feature page being displayed */
+    /** Identifier for the current feature page being displayed. */
     private static final String ARG_CURRENT_PAGE = "arg_intro_cur_page";
-    /** Identifier for whether the user is selecting a language or not */
+    /** Identifier for whether the user is selecting a language or not. */
     private static final String ARG_SELECTING_LANGUAGE = "arg_intro_select_lang";
-    /** Identifier for whether the user has selected a language previously */
+    /** Identifier for whether the user has selected a language previously. */
     private static final String PREF_IS_LANGUAGE_SELECTED = "pref_intro_is_lang_selected";
 
-    /** Alpha value for an active indicator dot */
+    /** Alpha value for an active indicator dot. */
     private static final float INDICATOR_ACTIVE = 0.75f;
-    /** Alpha value for an inactive indicator dot */
+    /** Alpha value for an inactive indicator dot. */
     private static final float INDICATOR_INACTIVE = 0.25f;
 
-    /** Adapter to manage fragments displayed by this activity */
+    /** Adapter to manage fragments displayed by this activity. */
     private IntroPagerAdapter mPagerAdapter;
 
-    /** Displays input feedback to user, offers interactive elements */
+    /** Displays input feedback to user, offers interactive elements. */
     private RelativeLayout mRelativeLayoutToolbar;
-    /** Provide feedback on user's navigation in app */
+    /** Provide feedback on user's navigation in app. */
     private View[] mViewPositionIndicator;
 
-    /** Indicates if the user is select a language */
+    /** Indicates if the user is select a language. */
     private boolean mIsSelectingLanguage = true;
-    /** Indicates the application should refresh the view pager fragments */
+    /** Indicates the application should refresh the view pager fragments. */
     private boolean mIgnoreSelectingLanguage = false;
-    /** Current page of view pager displayed to user */
+    /** Current page of view pager displayed to user. */
     private byte mCurrentFeaturePage = 0;
 
     @Override
@@ -166,14 +166,15 @@ public class IntroActivity extends FragmentActivity
     }
 
     /**
-     * Manages which fragments will be displayed in the activity's view pager
+     * Manages which fragments will be displayed in the activity's view pager.
      */
     private class IntroPagerAdapter extends FragmentStatePagerAdapter
     {
+        /** Fragments in the view pager. */
         SparseArray<WeakReference<Fragment>> registeredFragments = new SparseArray<>();
 
         /**
-         * Default constructor
+         * Default constructor.
          *
          * @param fm fragment manager
          */
@@ -230,7 +231,7 @@ public class IntroActivity extends FragmentActivity
         }
 
         /**
-         * Gets the fragment from the {@link SparseArray} at {@code position}
+         * Gets the fragment from the {@link SparseArray} at {@code position}.
          * @param position key for the fragment
          * @return fragment at {@code position}
          */

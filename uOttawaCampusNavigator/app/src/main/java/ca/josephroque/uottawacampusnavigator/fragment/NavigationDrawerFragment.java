@@ -32,10 +32,10 @@ public class NavigationDrawerFragment extends Fragment
     implements DrawerAdapter.DrawerAdapterCallbacks
 {
 
-    /** Identifies this class in logcat. */
+    /** Identifies output from this class in Logcat. */
     private static final String TAG = "NavigationDrawer";
 
-    /** Remember the position of the selected item. */
+    /** Remember the position of the current selected item. */
     private static final String ARG_STATE_SELECTED_POSITION = "arg_navigation_drawer_position";
 
     /**
@@ -58,7 +58,7 @@ public class NavigationDrawerFragment extends Fragment
 			R.drawable.ic_language,
 	};
 	
-	/** Colors for icons when they are highlights. */
+	/** Colors for icons when they are highlighted. */
 	private static final int[] NAVIGATION_DRAWER_HIGHLIGHTS = {
 			R.color.nav_home_highlight,
 			R.color.nav_navigation_highlight,
@@ -78,8 +78,8 @@ public class NavigationDrawerFragment extends Fragment
     /** Indicates if the highlights have been converted to actual colors values. */
     private static boolean sHighlightsConverted = false;
 
-    /** A pointer to the current callbacks instance (the Activity). */
-    private NavigationDrawerCallbacks mCallbacks;
+    /** Instance of callback interface. */
+    private NavigationDrawerCallbacks mCallback;
 
     /** Helper component that ties the action bar to the navigation drawer. */
     private ActionBarDrawerToggle mDrawerToggle;
@@ -143,7 +143,8 @@ public class NavigationDrawerFragment extends Fragment
                 NAVIGATION_DRAWER_ITEMS);
         drawerAdapter.addSeparator(Constants.NAVIGATION_ITEM_SETTINGS);
         recyclerView.setAdapter(drawerAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(
+                getActivity().getApplicationContext()));
         return recyclerView;
     }
 
@@ -153,6 +154,10 @@ public class NavigationDrawerFragment extends Fragment
         return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Checks if the navigation drawer is open.
+     * @return true if the drawer is fully open, false otherwise
+     */
     public boolean isDrawerOpen()
     {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
@@ -161,8 +166,8 @@ public class NavigationDrawerFragment extends Fragment
     /**
      * Users of this fragment must call this method to set up the navigation drawer interactions.
      *
-     * @param fragmentId   The android:id of this fragment in its activity's layout.
-     * @param drawerLayout The DrawerLayout containing this fragment's UI.
+     * @param fragmentId   The android:id of this fragment in its activity's layout
+     * @param drawerLayout The DrawerLayout containing this fragment's UI
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout)
     {
@@ -252,7 +257,7 @@ public class NavigationDrawerFragment extends Fragment
         super.onAttach(activity);
         try
         {
-            mCallbacks = (NavigationDrawerCallbacks) activity;
+            mCallback = (NavigationDrawerCallbacks) activity;
         } catch (ClassCastException e)
         {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
@@ -263,7 +268,7 @@ public class NavigationDrawerFragment extends Fragment
     public void onDetach()
     {
         super.onDetach();
-        mCallbacks = null;
+        mCallback = null;
     }
 
     @Override
@@ -287,8 +292,8 @@ public class NavigationDrawerFragment extends Fragment
         mCurrentSelectedPosition = position;
         if (mDrawerLayout != null)
             mDrawerLayout.closeDrawer(mFragmentContainerView);
-        if (mCallbacks != null)
-            mCallbacks.onNavigationDrawerItemSelected(
+        if (mCallback != null)
+            mCallback.onNavigationDrawerItemSelected(
 					NAVIGATION_DRAWER_ITEMS[mCurrentSelectedPosition]);
     }
 	
@@ -297,7 +302,12 @@ public class NavigationDrawerFragment extends Fragment
 	{
 		return mCurrentSelectedPosition;
 	}
-	
+
+    /**
+     * Converts values in {@code NAVIGAION_DRAWER_HIGHLIGHTS} from color ids to their
+     * integer values.
+     * @param resources to get color represented by ids
+     */
 	private static void convertHighlights(Resources resources)
 	{
 		for (int i = 0; i < NAVIGATION_DRAWER_HIGHLIGHTS.length; i++)
@@ -309,7 +319,7 @@ public class NavigationDrawerFragment extends Fragment
 	}
 
     /**
-     * Closes the navigation drawer
+     * Closes the navigation drawer.
      */
     public void closeDrawer()
     {

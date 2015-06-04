@@ -2,7 +2,6 @@ package ca.josephroque.uottawacampusnavigator.adapter;
 
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,28 +16,27 @@ import ca.josephroque.uottawacampusnavigator.R;
 /**
  * Created by Joseph Roque on 15-05-25.
  * <p/>
- * Manages data which will be displayed by the Navigation Drawer
+ * Manages data which will be displayed by the Navigation Drawer.
  */
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerViewHolder>
 	implements View.OnClickListener
 {
-
     /** Identifies output from this class in Logcat. */
     private static final String TAG = "DrawerAdapter";
 
-    /** Indicates the type of the item is header. */
+    /** Indicates the type of the item is a header. */
     private static final int TYPE_HEADER = 0;
     /** Indicates the type of the item is a regular item. */
     private static final int TYPE_ITEM = 1;
     /** Indicates the type of the item is a separator. */
     private static final int TYPE_SEPARATOR = 2;
 
-    /** Instance of callback interface for user events. */
+    /** Instance of callback interface. */
     private DrawerAdapterCallbacks mCallback;
 
     /** Array of image ids to display as icons for drawer items. */
     private int[] mArrayItemIcons;
-	/** Array of colors to highlight selected icon */
+	/** Array of colors to highlight selected icon. */
 	private int[] mArrayItemHighlights;
     /** Array of strings to display as names for drawer items. */
     private String[] mArrayItemNames;
@@ -46,7 +44,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     private TreeSet<Integer> mSetSeparators;
 
     /**
-     * Assigns references to parameters
+     * Assigns references to parameters.
      *
      * @param callback instance of callback interface
      * @param itemIcons array of image ids
@@ -93,12 +91,14 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                 break;
 
 			case TYPE_SEPARATOR:
+                // Hides icon and text, shows separator
                 viewHolder.mViewSeparator.setVisibility(View.VISIBLE);
                 viewHolder.mImageViewItemIcon.setVisibility(View.GONE);
                 viewHolder.mTextViewItemName.setVisibility(View.GONE);
                 break;
 
             case TYPE_ITEM:
+                // Hides separator, shows icon and text
                 viewHolder.mViewSeparator.setVisibility(View.GONE);
                 viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
                 viewHolder.mTextViewItemName.setVisibility(View.VISIBLE);
@@ -106,7 +106,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                 viewHolder.mTextViewItemName.setText(mArrayItemNames[position - typeOffset]);
 				
 				// Set icon to the image resource given for this position if one was provided
-				// otherwise, use a default image (settings)
+				// otherwise, hides the icon
 				if (mArrayItemIcons.length > position - typeOffset)
 				{
                     viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
@@ -115,7 +115,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				else
 				{
 					viewHolder.mImageViewItemIcon.setVisibility(View.INVISIBLE);
-					viewHolder.mImageViewItemIcon.setImageResource(R.drawable.ic_settings);
 				}
 
 				// Highlights the image if it is the currently selected item
@@ -124,6 +123,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 				{
                     viewHolder.mImageViewItemIcon.setColorFilter(
                             mArrayItemHighlights[position - typeOffset], PorterDuff.Mode.MULTIPLY);
+                    // TODO: change background color of itemView?
 				}
 				else
 				{
@@ -140,14 +140,21 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     }
 
     @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView)
+    {
+        super.onDetachedFromRecyclerView(recyclerView);
+        mCallback = null;
+    }
+
+    @Override
     public int getItemViewType(int position)
     {
-		if (position == 0)
-			return TYPE_HEADER;
+        if (position == 0)
+            return TYPE_HEADER;
         else if (mSetSeparators.contains(position))
             return TYPE_SEPARATOR;
         else
-			return TYPE_ITEM;
+            return TYPE_ITEM;
     }
 
     @Override
@@ -178,17 +185,26 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 		
 		if (mCallback != null)
 		{
-			int lastPosition = mCallback.getCurrentPosition();
-            lastPosition += getTypeOffset(lastPosition, true);
-			if (position != lastPosition)
-			{
-				notifyItemChanged(lastPosition);
-				notifyItemChanged(position);
-			}
+            // Updates highlighted drawer item and invokes callback method
 			mCallback.onDrawerItemClicked(position - typeOffset);
+
+            int lastPosition = mCallback.getCurrentPosition();
+            lastPosition += getTypeOffset(lastPosition, true);
+            if (position != lastPosition)
+            {
+                notifyItemChanged(lastPosition);
+                notifyItemChanged(position);
+            }
 		}
 	}
 
+    /**
+     * Calculates how many items in the drawer above {@code position} are not of the type TYPE_ITEM.
+     *
+     * @param position position to calculate offset for
+     * @param callback whether the position is from the callback or not
+     * @return number of items which are not of type TYPE_ITEM
+     */
     private byte getTypeOffset(int position, boolean callback)
     {
         byte offset = 1;
@@ -211,15 +227,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     }
 
     /**
-     * Removes a separator from the navigation drawer.
-     * @param position position to remove separator from
-     */
-    public void removeSeparator(int position)
-    {
-        mSetSeparators.remove(position);
-    }
-
-    /**
      * Offers methods for sending events to the navigation drawer which uses this adapter.
      */
     public interface DrawerAdapterCallbacks
@@ -227,7 +234,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         /**
          * Called when an item in the drawer is clicked, so the parent fragment can handle
          * the user interaction.
-         * @param position view which was clicked.
+         * @param position position of view which was clicked.
          */
         void onDrawerItemClicked(int position);
 		
@@ -249,12 +256,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         private ImageView mImageViewItemIcon;
         /** TextView for name of list item. */
         private TextView mTextViewItemName;
-		/** View to display an item separator */
+		/** View to display an item separator. */
 		private View mViewSeparator;
 
         /**
          * Calls super constructor with {@code itemLayout} as parameter and gets references
-         * for member variables from {@code itemLayou}.
+         * for member variables from {@code itemLayout}.
          *
          * @param itemLayout root layout
          * @param viewType type of view holder

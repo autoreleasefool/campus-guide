@@ -3,7 +3,6 @@ package ca.josephroque.uottawacampusnavigator.fragment.intro;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,15 +24,17 @@ import ca.josephroque.uottawacampusnavigator.R;
 public class LanguageFragment extends Fragment
         implements View.OnClickListener
 {
+    /** Identifies output from this class in Logcat. */
+    private static final String TAG = "LanguageFragment";
 
-    /** Reference to activity used for callback methods */
-    private LanguageCallbacks mListener;
+    /** Instance of callback interface. */
+    private LanguageCallbacks mCallback;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment LanguageFragment.
+     * @return new instance of fragment LanguageFragment
      */
     public static LanguageFragment newInstance()
     {
@@ -50,8 +51,6 @@ public class LanguageFragment extends Fragment
         rootView.findViewById(R.id.rl_lang_en).setOnClickListener(this);
         rootView.findViewById(R.id.rl_lang_en).setOnClickListener(this);
 
-        Log.i("LanguageFragment", "Language Fragment created");
-
         return rootView;
     }
 
@@ -61,7 +60,7 @@ public class LanguageFragment extends Fragment
         super.onAttach(activity);
         try
         {
-            mListener = (LanguageCallbacks) activity;
+            mCallback = (LanguageCallbacks) activity;
         } catch (ClassCastException e)
         {
             throw new ClassCastException(activity.toString()
@@ -73,15 +72,15 @@ public class LanguageFragment extends Fragment
     public void onDetach()
     {
         super.onDetach();
-        mListener = null;
+        mCallback = null;
     }
 
     @Override
     public void onClick(View src)
     {
-        if (mListener != null)
+        if (mCallback != null)
         {
-            mListener.onLanguageSelected(src.getId() == R.id.rl_lang_en);
+            mCallback.onLanguageSelected(src.getId() == R.id.rl_lang_en);
         }
     }
 

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,28 +25,33 @@ import ca.josephroque.uottawacampusnavigator.util.DataFormatter;
  */
 public class FeatureFragment extends Fragment
 {
+    /** Identifies output from this class in Logcat. */
+    private static final String TAG = "FeatureFragment";
 
-    /** Identifies feature which the fragment highlights */
+    /** Identifies feature which the fragment highlights. */
     private static final String ARG_FEATURE = "feature";
-    /** Total number of possible features this fragment may highlight */
+    /** Total number of possible features this fragment may highlight. */
     public static final byte MAX_FEATURES = 5;
 
-    /** Displays an image representing the feature being displayed */
+    /** Displays an image representing the feature being displayed. */
     private ImageView mImageViewFeature;
-    /** Displays text describing the feature being displayed */
+    /** Displays text describing the feature being displayed. */
     private TextView mTextViewFeatureDescription;
 
-    /** The feature being highlighted by this instance */
+    /** The feature being highlighted by this instance. */
     private byte mFeature;
-    /** Indicates if the animation for the fragment has been completed already, so it isn't run again */
+    /**
+     * Indicates if the animation for the fragment has been completed already,
+     * so it isn't run again.
+     */
     private boolean mAnimationCompleted;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param feature Feature which will be displayed by this instance.
-     * @return A new instance of fragment FeatureFragment.
+     * @param feature Feature which will be displayed by this instance
+     * @return A new instance of fragment FeatureFragment
      * @throws IllegalArgumentException if feature is not above 0 and less than {@code MAX_FEATURES}
      */
     public static FeatureFragment newInstance(byte feature)
@@ -83,17 +89,18 @@ public class FeatureFragment extends Fragment
         //Density of screen to set proper width/height of views
         final float screenDensity = getResources().getDisplayMetrics().density;
 
-        mImageViewFeature = new ImageView(getActivity());
+        mImageViewFeature = new ImageView(getActivity().getApplicationContext());
         mImageViewFeature.setId(R.id.iv_feature);
         mImageViewFeature.setAdjustViewBounds(true);
         mImageViewFeature.setScaleType(ImageView.ScaleType.FIT_XY);
 
         final int dp_16 = DataFormatter.getPixelsFromDP(screenDensity, 16);
-        mTextViewFeatureDescription = new TextView(getActivity());
+        mTextViewFeatureDescription = new TextView(getActivity().getApplicationContext());
         mTextViewFeatureDescription.setId(R.id.tv_feature);
         mTextViewFeatureDescription.setPadding(dp_16, dp_16, dp_16, dp_16);
         mTextViewFeatureDescription.setGravity(Gravity.CENTER_HORIZONTAL);
-        mTextViewFeatureDescription.setTextAppearance(getActivity(), android.R.style.TextAppearance_Large);
+        mTextViewFeatureDescription.setTextAppearance(getActivity().getApplicationContext(),
+                android.R.style.TextAppearance_Large);
         mTextViewFeatureDescription.setTextColor(getResources().getColor(R.color.primary_text));
 
         // Adds two views to the fragment, an ImageView and a TextView
@@ -114,7 +121,7 @@ public class FeatureFragment extends Fragment
         {
             rootView.setBackgroundColor(getResources().getColor(R.color.primary_gray));
 
-            Space emptySpace = new Space(getActivity());
+            Space emptySpace = new Space(getActivity().getApplicationContext());
             emptySpace.setId(R.id.space_feature);
             layoutParams = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -145,18 +152,28 @@ public class FeatureFragment extends Fragment
         {
             case 0:
                 mTextViewFeatureDescription.setText(R.string.text_feature_description_0);
+                Log.i(TAG, "TODO: Feature 0 - "
+                        + getResources().getString(R.string.text_feature_description_0));
                 break;
             case 1:
                 mTextViewFeatureDescription.setText(R.string.text_feature_description_1);
+                Log.i(TAG, "TODO: Feature 1 - "
+                        + getResources().getString(R.string.text_feature_description_1));
                 break;
             case 2:
                 mTextViewFeatureDescription.setText(R.string.text_feature_description_2);
+                Log.i(TAG, "TODO: Feature 2 - "
+                        + getResources().getString(R.string.text_feature_description_2));
                 break;
             case 3:
                 mTextViewFeatureDescription.setText(R.string.text_feature_description_3);
+                Log.i(TAG, "TODO: Feature 3 - "
+                        + getResources().getString(R.string.text_feature_description_3));
                 break;
             case 4:
                 mTextViewFeatureDescription.setText(R.string.text_feature_description_4);
+                Log.i(TAG, "TODO: Feature 4 - "
+                        + getResources().getString(R.string.text_feature_description_4));
                 break;
             default:
                 throw new IllegalStateException(this.toString() + ": mFeature must be between 0-"
@@ -171,7 +188,7 @@ public class FeatureFragment extends Fragment
     {
         super.onResume();
 
-        if (FeatureFragment.this.isVisible() && mFeature == 0)
+        if (isVisible() && mFeature == 0)
             startAnimation();
     }
 
@@ -182,6 +199,9 @@ public class FeatureFragment extends Fragment
         outState.putByte(ARG_FEATURE, mFeature);
     }
 
+    /**
+     * Begins animation of views.
+     */
     public void startAnimation()
     {
         if (mAnimationCompleted)

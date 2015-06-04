@@ -94,9 +94,11 @@ public class LinksFragment extends Fragment
         LinksAdapter linksAdapter = new LinksAdapter(this, getResources(), mLinksArray, mDepth != 0,
                 mParentList, mListName);
         recyclerView.setAdapter(linksAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(
+                getActivity().getApplicationContext()));
         recyclerView.addItemDecoration(
-                new DividerItemDecoration(getActivity(), LinearLayout.VERTICAL));
+                new DividerItemDecoration(getActivity().getApplicationContext(),
+                        LinearLayout.VERTICAL));
 
         return recyclerView;
     }

@@ -21,11 +21,11 @@ import ca.josephroque.uottawacampusnavigator.R;
  */
 public class ExternalUtil
 {
-
+	/** Identifies output from this class in Logcat. */
     private static final String TAG = "ExternalUtil";
 
 	/**
-	 * Opens link in a browser
+	 * Opens link in a browser.
 	 *
 	 * @param sourceActivity activity to open intent with
 	 * @param url hyperlink to open in browser

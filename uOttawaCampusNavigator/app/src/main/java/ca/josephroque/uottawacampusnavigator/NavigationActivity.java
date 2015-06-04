@@ -1,11 +1,11 @@
 package ca.josephroque.uottawacampusnavigator;
 
-import android.app.ActionBar;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,12 +22,10 @@ public class NavigationActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
 
-    /** Identifies this class in logcat. */
+    /** Identifies output from this class in Logcat. */
     private static final String TAG = "NavigationActivity";
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
+    /** Fragment managing the behaviors, interactions and presentation of the navigation drawer. */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 	
 	/** Indicates if the application is current in English (true) or French (false). */
@@ -197,7 +195,7 @@ public class NavigationActivity extends AppCompatActivity
 	 */
 	private void setActionBarTitle(String title)
 	{
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
             actionBar.setTitle(title);
 	}
@@ -208,16 +206,6 @@ public class NavigationActivity extends AppCompatActivity
     private void openSettings()
     {
         // TODO: open settings
-        Log.i(TAG, "TODO: open settings");
+        Log.i(TAG, "TODO: Open settings");
     }
-	
-	/**
-	 * Indicates whether the app is being used in English (true) or French (false).
-	 *
-	 * @return true if the app is English, false if it is in French.
-	 */
-	public boolean isAppEnglish()
-	{
-		return mIsAppInEnglish;
-	}
 }
