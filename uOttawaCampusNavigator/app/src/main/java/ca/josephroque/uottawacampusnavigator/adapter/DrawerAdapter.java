@@ -92,8 +92,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
         int viewType = getItemViewType(position);
 
-        final byte typeOffset = getTypeOffset(position, false);
-        final byte currentPosOffset = getTypeOffset(mCallback.getCurrentPosition(), true);
+        //final byte typeOffset = getTypeOffset(position, false);
+        //final byte currentPosOffset = getTypeOffset(mCallback.getCurrentPosition(), true);
 
         switch (viewType)
         {
@@ -114,36 +114,37 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                 viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
                 viewHolder.mTextViewItemName.setVisibility(View.VISIBLE);
 
-                viewHolder.mTextViewItemName.setText(mArrayItemNames[position - typeOffset]);
+                viewHolder.mTextViewItemName.setText(mArrayItemNames[position]);
 				
 				// Set icon to the image resource given for this position if one was provided
 				// otherwise, hides the icon
-				if (mArrayItemIcons.length > position - typeOffset)
+				if (mArrayItemIcons.length > position)
 				{
                     viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
-					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - typeOffset]);
+					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position]);
 				}
 				else
 				{
 					viewHolder.mImageViewItemIcon.setVisibility(View.INVISIBLE);
 				}
 
-                Log.i(TAG, "Pos: " + position + " Off: " + typeOffset + " Cur: " + mCallback.getCurrentPosition() + " CurOff: " + currentPosOffset);
-
 				// Highlights the image if it is the currently selected item
-				if (mArrayItemHighlights.length > position - typeOffset && mCallback != null
-						&& position == mCallback.getCurrentPosition() + currentPosOffset)
+				if (mArrayItemHighlights.length > position && mCallback != null
+						&& position == mCallback.getCurrentPosition())
 				{
                     viewHolder.mImageViewItemIcon.setColorFilter(
-                            mArrayItemHighlights[position - typeOffset], PorterDuff.Mode.MULTIPLY);
-                    // TODO: change background color of itemView?
+                            mArrayItemHighlights[position], PorterDuff.Mode.MULTIPLY);
+                    viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources().getColor(
+                            R.color.primary_gray_light));
 				}
 				else
 				{
 					viewHolder.mImageViewItemIcon.clearColorFilter();
+                    viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources().getColor(
+                            R.color.primary_gray));
 				}
 				
-				viewHolder.itemView.setTag(Pair.create(position, typeOffset));
+				viewHolder.itemView.setTag(Pair.create(position, 0));
                 viewHolder.itemView.setOnClickListener(this);
                 break;
 
@@ -195,7 +196,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 		
 		final int position = pair.first;
 		final byte typeOffset = pair.second;
-		
+
 		if (mCallback != null)
 		{
             boolean isHighlightable = !mSetNonHighlightable.contains(position + typeOffset);
@@ -225,10 +226,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     private byte getTypeOffset(int position, boolean callback)
     {
         byte offset = 1;
-        for (int i = 1; (i < position + offset) || (i <= position + offset && callback); i++)
+        for (int separator : mSetSeparators)
         {
-            if (getItemViewType(i) != TYPE_ITEM)
-                offset++;
+            if (separator > position + offset)
+                break;
+            offset++;
         }
         return offset;
     }
@@ -239,7 +241,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
      */
     public void addSeparator(int position)
     {
-        position += getTypeOffset(position, false);
+        position += getTypeOffset(position, true);
         mSetSeparators.add(position);
 
         if (mSetSeparators.last() != position)
@@ -252,7 +254,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 
     public void setPositionNotHighlighted(int position)
     {
-        position += getTypeOffset(position, false);
+        position += getTypeOffset(position, true);
         mSetNonHighlightable.add(position);
         Log.i(TAG, "Nonhighlightable: " + position);
 

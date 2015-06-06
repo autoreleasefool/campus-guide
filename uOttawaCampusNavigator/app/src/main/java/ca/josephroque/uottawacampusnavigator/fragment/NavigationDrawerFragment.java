@@ -145,9 +145,12 @@ public class NavigationDrawerFragment extends Fragment
         drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_SETTINGS);
         drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_HELP);
         drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_LANGUAGE);
+
         recyclerView.setAdapter(drawerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 getActivity().getApplicationContext()));
+
+        drawerAdapter.notifyDataSetChanged();
         return recyclerView;
     }
 
@@ -299,7 +302,7 @@ public class NavigationDrawerFragment extends Fragment
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         if (mCallback != null)
             mCallback.onNavigationDrawerItemSelected(
-					NAVIGATION_DRAWER_ITEMS[mCurrentSelectedPosition]);
+					NAVIGATION_DRAWER_ITEMS[position]);
     }
 	
 	@Override
