@@ -22,7 +22,8 @@ import ca.josephroque.uottawacampusnavigator.R;
 public class ExternalUtil
 {
 	/** Identifies output from this class in Logcat. */
-    private static final String TAG = "ExternalUtil";
+	@SuppressWarnings("unused")
+	private static final String TAG = "ExternalUtil";
 
 	/**
 	 * Opens link in a browser.

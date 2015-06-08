@@ -25,19 +25,20 @@ import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
- * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
+ * See <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment
     implements DrawerAdapter.DrawerAdapterCallbacks
 {
-
     /** Identifies output from this class in Logcat. */
-    private static final String TAG = "NavigationDrawer";
+    @SuppressWarnings("unused")
+    private static final String TAG = "MavigationDrawer";
+
+    // Constant values
 
     /** Remember the position of the current selected item. */
     private static final String ARG_STATE_SELECTED_POSITION = "arg_navigation_drawer_position";
-
     /**
      * Per the design guidelines, you should show the drawer on launch until the user manually
      * expands it. This shared preference tracks this.
@@ -71,23 +72,27 @@ public class NavigationDrawerFragment extends Fragment
 			R.color.nav_help_highlight,
 			R.color.nav_language_highlight,
 	};
-	
-	/** Items which will appear in the navigation drawer. */
-	private static String[] NAVIGATION_DRAWER_ITEMS;
 
-    /** Indicates if the highlights have been converted to actual colors values. */
-    private static boolean sHighlightsConverted = false;
+    // Objects
 
     /** Instance of callback interface. */
     private NavigationDrawerCallbacks mCallback;
-
     /** Helper component that ties the action bar to the navigation drawer. */
     private ActionBarDrawerToggle mDrawerToggle;
-
     /** Layout for the navigation drawer. */
     private DrawerLayout mDrawerLayout;
     /** Container for fragments. */
     private View mFragmentContainerView;
+
+    // Arrays, data structures
+
+    /** Items which will appear in the navigation drawer. */
+    private static String[] sNavigationDrawerItems;
+
+    // Primitive variables
+
+    /** Indicates if the highlights have been converted to actual colors values. */
+    private static boolean sHighlightsConverted = false;
 
     /** Current position of the navigation drawer. */
     private int mCurrentSelectedPosition = 0;
@@ -114,7 +119,7 @@ public class NavigationDrawerFragment extends Fragment
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 		
 		boolean appIsEnglish = sp.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
-		NAVIGATION_DRAWER_ITEMS = (appIsEnglish)
+		sNavigationDrawerItems = (appIsEnglish)
 				? Constants.NAVIGATION_DRAWER_ITEMS_EN
 				: Constants.NAVIGATION_DRAWER_ITEMS_FR;
 
@@ -140,7 +145,7 @@ public class NavigationDrawerFragment extends Fragment
         DrawerAdapter drawerAdapter = new DrawerAdapter(this,
                 NAVIGATION_DRAWER_ICONS,
 				NAVIGATION_DRAWER_HIGHLIGHTS,
-                NAVIGATION_DRAWER_ITEMS);
+                sNavigationDrawerItems);
         drawerAdapter.addSeparator(Constants.NAVIGATION_ITEM_SETTINGS);
         drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_SETTINGS);
         drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_HELP);
@@ -182,34 +187,18 @@ public class NavigationDrawerFragment extends Fragment
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        mDrawerLayout.setStatusBarBackgroundColor(
-                getResources().getColor(R.color.primary_garnet));
+        mDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primary_garnet));
 
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeButtonEnabled(true);
-        }
-
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the navigation drawer and the action bar app icon.
-        mDrawerToggle = new ActionBarDrawerToggle(
-                getActivity(),                    /* host Activity */
-                mDrawerLayout,                    /* DrawerLayout object */
-                R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
-                R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
-        )
+        // ActionBarDrawerToggle ties the the proper interactions between drawer and app icon
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         {
             @Override
             public void onDrawerClosed(View drawerView)
             {
                 super.onDrawerClosed(drawerView);
                 if (!isAdded())
-                {
                     return;
-                }
-
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
 
@@ -218,34 +207,24 @@ public class NavigationDrawerFragment extends Fragment
             {
                 super.onDrawerOpened(drawerView);
                 if (!isAdded())
-                {
                     return;
-                }
 
                 if (!mUserLearnedDrawer)
                 {
-                    // The user manually opened the drawer; store this flag to prevent auto-showing
-                    // the navigation drawer automatically in the future.
                     mUserLearnedDrawer = true;
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getActivity());
-                    sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
+                    PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                            .putBoolean(PREF_USER_LEARNED_DRAWER, true)
+                            .apply();
                 }
-
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
         };
 
-        // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
-        // per the navigation drawer design guidelines.
+        // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer
         if (!mUserLearnedDrawer && !mFromSavedInstanceState)
-        {
             mDrawerLayout.openDrawer(mFragmentContainerView);
-        }
 		
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        // Defer code dependent on restoration of previous instance state.
         mDrawerLayout.post(new Runnable()
         {
             @Override
@@ -255,7 +234,21 @@ public class NavigationDrawerFragment extends Fragment
             }
         });
 
+        setupActionBar();
         getActivity().invalidateOptionsMenu();
+    }
+
+    /**
+     * Sets up appearance of action bar.
+     */
+    private void setupActionBar()
+    {
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null)
+        {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
     }
 
     @Override
@@ -265,7 +258,8 @@ public class NavigationDrawerFragment extends Fragment
         try
         {
             mCallback = (NavigationDrawerCallbacks) activity;
-        } catch (ClassCastException e)
+        }
+        catch (ClassCastException e)
         {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }
@@ -302,7 +296,7 @@ public class NavigationDrawerFragment extends Fragment
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         if (mCallback != null)
             mCallback.onNavigationDrawerItemSelected(
-					NAVIGATION_DRAWER_ITEMS[position]);
+                    sNavigationDrawerItems[position]);
     }
 	
 	@Override

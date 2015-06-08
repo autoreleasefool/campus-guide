@@ -2,18 +2,18 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_gray">
-	
-	<View
-		android:id="@+id/view_separator"
-		android:layout_width="match_parent"
-		android:layout_height="1dp"
-        android:paddingTop="@dimen/recyclerview_separator_padding"
+    android:background="@color/primary_gray"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/view_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/primary_text_light"
         android:paddingBottom="@dimen/recyclerview_separator_padding"
-		android:background="@color/primary_text_light" />
+        android:paddingTop="@dimen/recyclerview_separator_padding" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,10 +25,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/navigation_image_padding"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/navigation_image_padding"
-            android:paddingBottom="@dimen/navigation_image_padding"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -37,9 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:paddingLeft="@dimen/navigation_text_padding"
-            android:textSize="@dimen/text_small"
             android:textColor="@color/primary_text_light"
-            tools:ignore="RtlHardcoded,RtlSymmetry"/>
+            android:textSize="@dimen/text_small"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
 
     </RelativeLayout>
 

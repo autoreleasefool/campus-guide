@@ -22,9 +22,18 @@ import ca.josephroque.uottawacampusnavigator.fragment.intro.LanguageFragment;
 import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 
+/**
+ * Activity with purpose of introducing user to the application on their first launch. Subsequent
+ * launches will instead begin with instance of {@link NavigationActivity}.
+ */
 public class IntroActivity extends FragmentActivity
-    implements LanguageFragment.LanguageCallbacks
+        implements LanguageFragment.LanguageCallbacks
 {
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "IntroActivity";
+
+    // Constant values
 
     /** Identifier for the current feature page being displayed. */
     private static final String ARG_CURRENT_PAGE = "arg_intro_cur_page";
@@ -38,6 +47,8 @@ public class IntroActivity extends FragmentActivity
     /** Alpha value for an inactive indicator dot. */
     private static final float INDICATOR_INACTIVE = 0.25f;
 
+    // Objects
+
     /** Adapter to manage fragments displayed by this activity. */
     private IntroPagerAdapter mPagerAdapter;
 
@@ -45,6 +56,10 @@ public class IntroActivity extends FragmentActivity
     private RelativeLayout mRelativeLayoutToolbar;
     /** Provide feedback on user's navigation in app. */
     private View[] mViewPositionIndicator;
+
+    // Arrays, data structures
+
+    // Primitive variables
 
     /** Indicates if the user is select a language. */
     private boolean mIsSelectingLanguage = true;
@@ -58,12 +73,11 @@ public class IntroActivity extends FragmentActivity
     {
         super.onCreate(savedInstanceState);
 
-        boolean languageSelected = PreferenceManager.getDefaultSharedPreferences(this)
+        final boolean languageSelected = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(PREF_IS_LANGUAGE_SELECTED, false);
         if (languageSelected)
         {
-            Intent navigationIntent = new Intent(this, NavigationActivity.class);
-            startActivity(navigationIntent);
+            startActivity(new Intent(this, NavigationActivity.class));
             finish();
         }
         else
@@ -72,14 +86,13 @@ public class IntroActivity extends FragmentActivity
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            setContentView(R.layout.activity_intro);
 
             if (savedInstanceState != null)
             {
                 mCurrentFeaturePage = savedInstanceState.getByte(ARG_CURRENT_PAGE);
                 mIsSelectingLanguage = savedInstanceState.getBoolean(ARG_SELECTING_LANGUAGE);
             }
-
-            setContentView(R.layout.activity_intro);
 
             // Getting references to objects, creating listeners
             ViewPager viewPager = (ViewPager) findViewById(R.id.vp_intro);
@@ -100,28 +113,7 @@ public class IntroActivity extends FragmentActivity
                 }
             });
 
-            mRelativeLayoutToolbar = (RelativeLayout)findViewById(R.id.rl_intro_toolbar);
-            mRelativeLayoutToolbar.setVisibility(View.INVISIBLE);
-
-            mViewPositionIndicator = new View[5];
-            mViewPositionIndicator[0] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_0);
-            mViewPositionIndicator[1] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_1);
-            mViewPositionIndicator[2] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_2);
-            mViewPositionIndicator[3] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_3);
-            mViewPositionIndicator[4] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_4);
-            for (View v : mViewPositionIndicator)
-                v.setAlpha(INDICATOR_INACTIVE);
-
-            mRelativeLayoutToolbar.findViewById(R.id.tv_intro_continue).setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    Intent navigationIntent = new Intent(IntroActivity.this, NavigationActivity.class);
-                    startActivity(navigationIntent);
-                    finish();
-                }
-            });
+            setupFeatureToolbar();
         }
     }
 
@@ -151,6 +143,36 @@ public class IntroActivity extends FragmentActivity
     }
 
     /**
+     * Sets up toolbar for bottom of screen which indicates user position within features
+     * and offers utilities for continuing through the application.
+     */
+    private void setupFeatureToolbar()
+    {
+        mRelativeLayoutToolbar = (RelativeLayout) findViewById(R.id.rl_intro_toolbar);
+        mRelativeLayoutToolbar.setVisibility(View.INVISIBLE);
+
+        mViewPositionIndicator = new View[FeatureFragment.MAX_FEATURES];
+        mViewPositionIndicator[0] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_0);
+        mViewPositionIndicator[1] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_1);
+        mViewPositionIndicator[2] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_2);
+        mViewPositionIndicator[3] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_3);
+        mViewPositionIndicator[4] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_4);
+        for (View v : mViewPositionIndicator)
+            v.setAlpha(INDICATOR_INACTIVE);
+
+        mRelativeLayoutToolbar.findViewById(R.id.tv_intro_continue).setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        startActivity(new Intent(IntroActivity.this, NavigationActivity.class));
+                        finish();
+                    }
+                });
+    }
+
+    /**
      * Changes the color of views which indicate user's navigation in the view pager. Unhighlights
      * the last position, then highlights the new position.
      *
@@ -162,7 +184,7 @@ public class IntroActivity extends FragmentActivity
         mViewPositionIndicator[mCurrentFeaturePage].setAlpha(INDICATOR_INACTIVE);
         mViewPositionIndicator[position].setAlpha(INDICATOR_ACTIVE);
 
-        mCurrentFeaturePage = (byte)position;
+        mCurrentFeaturePage = (byte) position;
     }
 
     /**
@@ -171,7 +193,7 @@ public class IntroActivity extends FragmentActivity
     private class IntroPagerAdapter extends FragmentStatePagerAdapter
     {
         /** Fragments in the view pager. */
-        SparseArray<WeakReference<Fragment>> registeredFragments = new SparseArray<>();
+        private SparseArray<WeakReference<Fragment>> mRegisteredFragments = new SparseArray<>();
 
         /**
          * Default constructor.
@@ -190,14 +212,14 @@ public class IntroActivity extends FragmentActivity
             if (mIsSelectingLanguage)
                 return LanguageFragment.newInstance();
             else
-                return FeatureFragment.newInstance((byte)position);
+                return FeatureFragment.newInstance((byte) position);
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position)
         {
-            Fragment fragment = (Fragment)super.instantiateItem(container, position);
-            registeredFragments.put(position, new WeakReference<>(fragment));
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            mRegisteredFragments.put(position, new WeakReference<>(fragment));
             return fragment;
         }
 
@@ -205,7 +227,7 @@ public class IntroActivity extends FragmentActivity
         public void destroyItem(ViewGroup container, int position, Object item)
         {
             super.destroyItem(container, position, item);
-            registeredFragments.remove(position);
+            mRegisteredFragments.remove(position);
         }
 
         @Override
@@ -232,12 +254,13 @@ public class IntroActivity extends FragmentActivity
 
         /**
          * Gets the fragment from the {@link SparseArray} at {@code position}.
+         *
          * @param position key for the fragment
          * @return fragment at {@code position}
          */
         private Fragment getRegisteredFragment(int position)
         {
-            return registeredFragments.get(position).get();
+            return mRegisteredFragments.get(position).get();
         }
     }
 }

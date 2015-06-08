@@ -2,48 +2,48 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/recyclerview_padding"
+    android:background="@color/primary_gray"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/recyclerview_padding"
-    android:background="@color/primary_gray">
+    android:paddingTop="@dimen/recyclerview_padding">
 
     <ImageView
         android:id="@+id/iv_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:paddingLeft="@dimen/recyclerview_padding"
         android:paddingRight="@dimen/recyclerview_padding"
-        tools:ignore="ContentDescription"/>
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tv_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_toRightOf="@id/iv_item_icon"
-        android:layout_toEndOf="@id/iv_item_icon"
         android:layout_alignParentTop="true"
-        android:textSize="@dimen/text_medium"
-        android:textColor="@color/primary_text_light" />
+        android:layout_gravity="center_vertical"
+        android:layout_toEndOf="@id/iv_item_icon"
+        android:layout_toRightOf="@id/iv_item_icon"
+        android:textColor="@color/primary_text_light"
+        android:textSize="@dimen/text_medium" />
 
     <TextView
         android:id="@+id/tv_item_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_toRightOf="@id/iv_item_icon"
-        android:layout_toEndOf="@id/iv_item_icon"
-        android:layout_below="@id/tv_item_title"
         android:layout_alignParentBottom="true"
+        android:layout_below="@id/tv_item_title"
+        android:layout_gravity="center_vertical"
+        android:layout_toEndOf="@id/iv_item_icon"
+        android:layout_toRightOf="@id/iv_item_icon"
+        android:ellipsize="end"
         android:paddingLeft="@dimen/recyclerview_text_padding"
         android:paddingRight="@dimen/recyclerview_text_padding"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/primary_text_dark"
         android:singleLine="true"
-        android:ellipsize="end" />
+        android:textColor="@color/primary_text_dark"
+        android:textSize="@dimen/text_small" />
 
 </RelativeLayout>

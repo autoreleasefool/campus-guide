@@ -1,3 +1,17 @@
+package ca.josephroque.uottawacampusnavigator.util;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
+import android.util.AttributeSet;
+import android.widget.FrameLayout;
+
+import ca.josephroque.uottawacampusnavigator.R;
+
 /*
  * Copyright 2014 Google Inc.
  *
@@ -16,51 +30,45 @@
  * Retrieved from https://github.com/google/iosched/blob/master/android/src/main/java/com/google
  *      /samples/apps/iosched/ui/widget/ScrimInsetsFrameLayout.java
  */
-
-package ca.josephroque.uottawacampusnavigator.util;
-
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
-import android.util.AttributeSet;
-import android.widget.FrameLayout;
-
-import ca.josephroque.uottawacampusnavigator.R;
-
 /**
- * A layout that draws something in the insets passed to {@link #fitSystemWindows(Rect)}, i.e. the area above UI chrome
+ * A layout that draws something in the insets passed to {@link #fitSystemWindows(Rect)}, i.e. the
+ * area above UI chrome
  * (status and navigation bars, overlay action bars).
+ * @see <a href="https://github.com/google/iosched/blob/master/android/src/main/java/com/google
+ *      /samples/apps/iosched/ui/widget/ScrimInsetsFrameLayout.java">Google IOSched Source</a>
  */
-public class ScrimInsetsFrameLayout extends FrameLayout {
+public class ScrimInsetsFrameLayout extends FrameLayout
+{
     private Drawable mInsetForeground;
 
     private Rect mInsets;
     private Rect mTempRect = new Rect();
     private OnInsetsCallback mOnInsetsCallback;
 
-    public ScrimInsetsFrameLayout(Context context) {
+    public ScrimInsetsFrameLayout(Context context)
+    {
         super(context);
         init(context, null, 0);
     }
 
-    public ScrimInsetsFrameLayout(Context context, AttributeSet attrs) {
+    public ScrimInsetsFrameLayout(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
         init(context, attrs, 0);
     }
 
-    public ScrimInsetsFrameLayout(Context context, AttributeSet attrs, int defStyle) {
+    public ScrimInsetsFrameLayout(Context context, AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
         init(context, attrs, defStyle);
     }
 
-    private void init(Context context, AttributeSet attrs, int defStyle) {
+    private void init(Context context, AttributeSet attrs, int defStyle)
+    {
         final TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.ScrimInsetsView, defStyle, 0);
-        if (a == null) {
+        if (a == null)
+        {
             return;
         }
         mInsetForeground = a.getDrawable(R.styleable.ScrimInsetsView_insetForeground);
@@ -71,23 +79,27 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
 
     @SuppressWarnings("deprecation")
     @Override
-    protected boolean fitSystemWindows(@NonNull Rect insets) {
+    protected boolean fitSystemWindows(@NonNull Rect insets)
+    {
         mInsets = new Rect(insets);
         setWillNotDraw(mInsetForeground == null);
         ViewCompat.postInvalidateOnAnimation(this);
-        if (mOnInsetsCallback != null) {
+        if (mOnInsetsCallback != null)
+        {
             mOnInsetsCallback.onInsetsChanged(insets);
         }
         return true; // consume insets
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas) {
+    public void draw(@NonNull Canvas canvas)
+    {
         super.draw(canvas);
 
         int width = getWidth();
         int height = getHeight();
-        if (mInsets != null && mInsetForeground != null) {
+        if (mInsets != null && mInsetForeground != null)
+        {
             int sc = canvas.save();
             canvas.translate(getScrollX(), getScrollY());
 
@@ -116,33 +128,42 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
     }
 
     @Override
-    protected void onAttachedToWindow() {
+    protected void onAttachedToWindow()
+    {
         super.onAttachedToWindow();
-        if (mInsetForeground != null) {
+        if (mInsetForeground != null)
+        {
             mInsetForeground.setCallback(this);
         }
     }
 
     @Override
-    protected void onDetachedFromWindow() {
+    protected void onDetachedFromWindow()
+    {
         super.onDetachedFromWindow();
-        if (mInsetForeground != null) {
+        if (mInsetForeground != null)
+        {
             mInsetForeground.setCallback(null);
         }
     }
 
     /**
-     * Allows the calling container to specify a callback for custom processing when insets change (i.e. when
-     * {@link #fitSystemWindows(Rect)} is called. This is useful for setting padding on UI elements based on
-     * UI chrome insets (e.g. a Google Map or a ListView). When using with ListView or GridView, remember to set
+     * Allows the calling container to specify a callback for custom processing when insets change
+     * (i.e. when
+     * {@link #fitSystemWindows(Rect)} is called. This is useful for setting padding on UI elements
+     * based on
+     * UI chrome insets (e.g. a Google Map or a ListView). When using with ListView or GridView,
+     * remember to set
      * clipToPadding to false.
      */
     @SuppressWarnings("unused")
-    public void setOnInsetsCallback(OnInsetsCallback onInsetsCallback) {
+    public void setOnInsetsCallback(OnInsetsCallback onInsetsCallback)
+    {
         mOnInsetsCallback = onInsetsCallback;
     }
 
-    public interface OnInsetsCallback {
+    public interface OnInsetsCallback
+    {
         void onInsetsChanged(Rect insets);
     }
 }

@@ -24,11 +24,20 @@ import ca.josephroque.uottawacampusnavigator.R;
 public class LanguageFragment extends Fragment
         implements View.OnClickListener
 {
+    // Constant values
+
     /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
     private static final String TAG = "LanguageFragment";
+
+    // Objects
 
     /** Instance of callback interface. */
     private LanguageCallbacks mCallback;
+
+    // Arrays, data structures
+
+    // Primitive variables
 
     /**
      * Use this factory method to create a new instance of
@@ -61,7 +70,8 @@ public class LanguageFragment extends Fragment
         try
         {
             mCallback = (LanguageCallbacks) activity;
-        } catch (ClassCastException e)
+        }
+        catch (ClassCastException e)
         {
             throw new ClassCastException(activity.toString()
                     + " must implement LanguageCallbacks");
@@ -95,6 +105,7 @@ public class LanguageFragment extends Fragment
         /**
          * Called when the user selects a language from the options.
          * The available language options are English or French.
+         *
          * @param isEnglish true if the selected language was English. False, if French.
          */
         void onLanguageSelected(boolean isEnglish);

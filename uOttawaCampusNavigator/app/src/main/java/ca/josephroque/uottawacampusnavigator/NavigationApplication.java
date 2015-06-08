@@ -16,17 +16,22 @@ import ca.josephroque.uottawacampusnavigator.util.Constants;
  */
 public class NavigationApplication extends Application
 {
-    private Locale locale;
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "NavigationApp";
+
+    /** Locale of application - fr_CA or en_CA. */
+    private Locale mLocale;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-        if (locale != null)
+        if (mLocale != null)
         {
             Configuration config = new Configuration(newConfig);
-            config.locale = locale;
-            Locale.setDefault(locale);
+            config.locale = mLocale;
+            Locale.setDefault(mLocale);
             getBaseContext().getResources().updateConfiguration(config,
                     getBaseContext().getResources().getDisplayMetrics());
         }
@@ -46,9 +51,9 @@ public class NavigationApplication extends Application
                 : "en_FR");
         if (!config.locale.getLanguage().equals(lang))
         {
-            locale = new Locale(lang);
-            Locale.setDefault(locale);
-            config.locale = locale;
+            mLocale = new Locale(lang);
+            Locale.setDefault(mLocale);
+            config.locale = mLocale;
             getBaseContext().getResources().updateConfiguration(config,
                     getBaseContext().getResources().getDisplayMetrics());
         }

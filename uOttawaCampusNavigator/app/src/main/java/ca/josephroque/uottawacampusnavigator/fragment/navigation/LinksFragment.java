@@ -1,11 +1,10 @@
 package ca.josephroque.uottawacampusnavigator.fragment.navigation;
 
-
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,11 @@ import ca.josephroque.uottawacampusnavigator.util.ExternalUtil;
 public class LinksFragment extends Fragment
     implements LinksAdapter.LinkAdapterCallback
 {
-
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
     private static final String TAG = "LinksFragment";
+
+    // Constant values
 
 	/** Remembers which useful_links array is to be displayed. */
     private static final String ARG_LINKS_ARRAY = "arg_links_array";
@@ -36,6 +38,12 @@ public class LinksFragment extends Fragment
 	private static final String ARG_PARENT_LIST = "arg_parent_list";
 	/** Remembers name of the list this fragment displays. */
 	private static final String ARG_LIST_NAME = "arg_list_name";
+
+    // Objects
+
+    // Arrays, data structures
+
+    // Primitive variables
 
 	/** Indicates which useful_links array this fragment displays. */
     private int mLinksArray;
@@ -52,12 +60,15 @@ public class LinksFragment extends Fragment
      *
      * @param linksArray determines useful_links array which this fragment will display
      * @param depth how many levels deep this fragment is
+     * @param parentList name of parent list, or {@code null} if there isn't one
+     * @param listName name of list
      * @return A new instance of fragment LinksFragment
      */
-    public static LinksFragment newInstance(int linksArray, int depth, String parentList, String listName)
+    public static LinksFragment newInstance(int linksArray,
+                                            int depth,
+                                            String parentList,
+                                            @NonNull String listName)
     {
-        Log.i(TAG, "Parent: " + parentList + " Name: " + listName);
-
         LinksFragment fragment = new LinksFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_LINKS_ARRAY, linksArray);

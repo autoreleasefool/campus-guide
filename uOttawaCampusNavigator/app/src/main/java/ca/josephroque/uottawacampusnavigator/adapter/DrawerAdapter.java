@@ -2,7 +2,6 @@ package ca.josephroque.uottawacampusnavigator.adapter;
 
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +19,13 @@ import ca.josephroque.uottawacampusnavigator.R;
  * Manages data which will be displayed by the Navigation Drawer.
  */
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerViewHolder>
-	implements View.OnClickListener
+        implements View.OnClickListener
 {
     /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
     private static final String TAG = "DrawerAdapter";
+
+    // Constant values
 
     /** Indicates the type of the item is a header. */
     private static final int TYPE_HEADER = 0;
@@ -32,19 +34,25 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     /** Indicates the type of the item is a separator. */
     private static final int TYPE_SEPARATOR = 2;
 
+    // Objects
+
     /** Instance of callback interface. */
     private DrawerAdapterCallbacks mCallback;
 
+    // Arrays, data structures
+
     /** Array of image ids to display as icons for drawer items. */
     private int[] mArrayItemIcons;
-	/** Array of colors to highlight selected icon. */
-	private int[] mArrayItemHighlights;
+    /** Array of colors to highlight selected icon. */
+    private int[] mArrayItemHighlights;
     /** Array of strings to display as names for drawer items. */
     private String[] mArrayItemNames;
     /** Set of positions which represent separators. */
     private TreeSet<Integer> mSetSeparators;
     /** Set of positions which cannot be highlighted. */
     private TreeSet<Integer> mSetNonHighlightable;
+
+    // Primitive variables
 
     /** Indicates if a highlight has been set. */
     private boolean mHighlightSet = false;
@@ -54,20 +62,22 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
      *
      * @param callback instance of callback interface
      * @param itemIcons array of image ids
+     * @param itemHighlights array of color ids
      * @param itemNames array of strings
      */
-    public DrawerAdapter(DrawerAdapterCallbacks callback, int[] itemIcons, int[] itemHighlights, String[] itemNames)
+    public DrawerAdapter(DrawerAdapterCallbacks callback,
+                         int[] itemIcons,
+                         int[] itemHighlights,
+                         String[] itemNames)
     {
-        if (itemNames.length != itemIcons.length
-                || itemNames.length != itemHighlights.length)
+        if (itemNames.length != itemIcons.length || itemNames.length != itemHighlights.length)
         {
             throw new IllegalArgumentException("All array must be same size");
-
         }
 
         this.mCallback = callback;
         this.mArrayItemIcons = itemIcons;
-		this.mArrayItemHighlights = itemHighlights;
+        this.mArrayItemHighlights = itemHighlights;
         this.mArrayItemNames = itemNames;
         mSetSeparators = new TreeSet<>();
         mSetNonHighlightable = new TreeSet<>();
@@ -94,23 +104,18 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     public void onBindViewHolder(DrawerViewHolder viewHolder, final int position)
     {
         int viewType = getItemViewType(position);
-
         final byte typeOffset = getTypeOffset(position, false);
         final byte currentPosOffset = getTypeOffset(mCallback.getCurrentPosition(), true);
 
         switch (viewType)
         {
-            case TYPE_HEADER:
-                //do nothing
-                break;
-
-			case TYPE_SEPARATOR:
+            case TYPE_HEADER: break;
+            case TYPE_SEPARATOR:
                 // Hides icon and text, shows separator
                 viewHolder.mViewSeparator.setVisibility(View.VISIBLE);
                 viewHolder.mImageViewItemIcon.setVisibility(View.GONE);
                 viewHolder.mTextViewItemName.setVisibility(View.GONE);
                 break;
-
             case TYPE_ITEM:
                 // Hides separator, shows icon and text
                 viewHolder.mViewSeparator.setVisibility(View.GONE);
@@ -118,41 +123,40 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                 viewHolder.mTextViewItemName.setVisibility(View.VISIBLE);
 
                 viewHolder.mTextViewItemName.setText(mArrayItemNames[position - typeOffset]);
-				
-				// Set icon to the image resource given for this position if one was provided
-				// otherwise, hides the icon
-				if (mArrayItemIcons.length > position - typeOffset)
-				{
-                    viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
-					viewHolder.mImageViewItemIcon.setImageResource(mArrayItemIcons[position - typeOffset]);
-				}
-				else
-				{
-					viewHolder.mImageViewItemIcon.setVisibility(View.INVISIBLE);
-				}
 
-				// Highlights the image if it is the currently selected item
-				if (mArrayItemHighlights.length > position - typeOffset && mCallback != null
-						&& position == mCallback.getCurrentPosition() + currentPosOffset)
-				{
+                // Set icon to the image resource given for this position if one was provided
+                // otherwise, hides the icon
+                if (mArrayItemIcons.length > position - typeOffset)
+                {
+                    viewHolder.mImageViewItemIcon.setVisibility(View.VISIBLE);
+                    viewHolder.mImageViewItemIcon.setImageResource(
+                            mArrayItemIcons[position - typeOffset]);
+                }
+                else
+                {
+                    viewHolder.mImageViewItemIcon.setVisibility(View.INVISIBLE);
+                }
+
+                // Highlights the image if it is the currently selected item
+                if (mArrayItemHighlights.length > position - typeOffset && mCallback != null
+                        && position == mCallback.getCurrentPosition() + currentPosOffset)
+                {
                     viewHolder.mImageViewItemIcon.setColorFilter(
                             mArrayItemHighlights[position - typeOffset], PorterDuff.Mode.MULTIPLY);
                     viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources()
                             .getColor(R.color.primary_gray_light));
-				}
-				else
-				{
-					viewHolder.mImageViewItemIcon.clearColorFilter();
+                }
+                else
+                {
+                    viewHolder.mImageViewItemIcon.clearColorFilter();
                     viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getResources()
                             .getColor(R.color.primary_gray));
-				}
-				
-				viewHolder.itemView.setTag(Pair.create(position, typeOffset));
+                }
+
+                viewHolder.itemView.setTag(Pair.create(position, typeOffset));
                 viewHolder.itemView.setOnClickListener(this);
                 break;
-
-            default:
-                throw new IllegalStateException("Illegal value for view type: " + viewType);
+            default: throw new IllegalStateException("Illegal value for view type: " + viewType);
         }
     }
 
@@ -179,29 +183,29 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
         return mArrayItemNames.length + 1 + mSetSeparators.size();
     }
-	
-	@SuppressWarnings("unchecked")
+
+    @SuppressWarnings("unchecked")
     @Override
-	public void onClick(View src)
-	{
-		Pair<Integer, Byte> pair;
-		try
-		{
+    public void onClick(View src)
+    {
+        Pair<Integer, Byte> pair;
+        try
+        {
             pair = (Pair<Integer, Byte>) src.getTag();
-		}
-		catch (ClassCastException ex)
-		{
-			throw new ClassCastException("Tag must be a pair<int, byte> with a position and offset");
-		}
-		
-		if (pair == null)
-			return;
-		
-		final int position = pair.first;
-		final byte typeOffset = pair.second;
-		
-		if (mCallback != null)
-		{
+        }
+        catch (ClassCastException ex)
+        {
+            throw new ClassCastException("Tag must be a pair<int, byte> for position and offset");
+        }
+
+        if (pair == null)
+            return;
+
+        final int position = pair.first;
+        final byte typeOffset = pair.second;
+
+        if (mCallback != null)
+        {
             boolean isHighlightable = !mSetNonHighlightable.contains(position - typeOffset);
             if (isHighlightable)
             {
@@ -215,12 +219,13 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
             }
 
             // Updates highlighted drawer item and invokes callback method
-			mCallback.onDrawerItemClicked(position - typeOffset, isHighlightable);
-		}
-	}
+            mCallback.onDrawerItemClicked(position - typeOffset, isHighlightable);
+        }
+    }
 
     /**
-     * Calculates how many items in the drawer above {@code position} are not of the type TYPE_ITEM.
+     * Calculates how many items in the drawer above {@code position} are not of the type
+     * TYPE_ITEM.
      *
      * @param position position to calculate offset for
      * @param callback whether the position is from the callback or not
@@ -239,6 +244,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 
     /**
      * Adds a separator to the navigation drawer.
+     *
      * @param position position for new separator
      */
     public void addSeparator(int position)
@@ -259,6 +265,10 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         }
     }
 
+    /**
+     * Sets an item to not be highlighted in the drawer after selection.
+     * @param position item to not highlight
+     */
     public void setPositionNotHighlighted(int position)
     {
         mSetNonHighlightable.add(position);
@@ -280,17 +290,18 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         /**
          * Called when an item in the drawer is clicked, so the parent fragment can handle
          * the user interaction.
+         *
          * @param position position of view which was clicked.
          * @param updatePosition indicates if position should be saved
          */
         void onDrawerItemClicked(int position, boolean updatePosition);
-		
-		/**
-		 * Should return the current item which is highlighted in the navigation drawer.
-		 
-		 * @return a value which indicates the current position in navigation.
-		 */
-		int getCurrentPosition();
+
+        /**
+         * Should return the current item which is highlighted in the navigation drawer.
+         *
+         * @return a value which indicates the current position in navigation.
+         */
+        int getCurrentPosition();
     }
 
     /**
@@ -303,8 +314,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         private ImageView mImageViewItemIcon;
         /** TextView for name of list item. */
         private TextView mTextViewItemName;
-		/** View to display an item separator. */
-		private View mViewSeparator;
+        /** View to display an item separator. */
+        private View mViewSeparator;
 
         /**
          * Calls super constructor with {@code itemLayout} as parameter and gets references
@@ -319,9 +330,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 
             if (viewType != TYPE_HEADER)
             {
-                mImageViewItemIcon = (ImageView) itemLayout.findViewById(R.id.iv_navigation_item_icon);
-                mTextViewItemName = (TextView) itemLayout.findViewById(R.id.tv_navigation_item_name);
-				mViewSeparator = itemLayout.findViewById(R.id.view_separator);
+                mImageViewItemIcon =
+                        (ImageView) itemLayout.findViewById(R.id.iv_navigation_item_icon);
+                mTextViewItemName =
+                        (TextView) itemLayout.findViewById(R.id.tv_navigation_item_name);
+                mViewSeparator =
+                        itemLayout.findViewById(R.id.view_separator);
             }
         }
     }

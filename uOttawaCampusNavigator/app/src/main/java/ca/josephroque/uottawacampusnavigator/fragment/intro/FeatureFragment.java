@@ -26,24 +26,44 @@ import ca.josephroque.uottawacampusnavigator.util.DataFormatter;
 public class FeatureFragment extends Fragment
 {
     /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
     private static final String TAG = "FeatureFragment";
+
+    //Constant values
 
     /** Identifies feature which the fragment highlights. */
     private static final String ARG_FEATURE = "feature";
+
     /** Total number of possible features this fragment may highlight. */
     public static final byte MAX_FEATURES = 5;
+    /** Represents feature describing navigation. */
+    private static final byte FEATURE_NAVIGATION = 0;
+    /** Represents feature describing scheduling. */
+    private static final byte FEATURE_SCHEDULE = 1;
+    /** Represents feature describing bus information. */
+    private static final byte FEATURE_BUS_INFO = 2;
+    /** Represents feature describing accessibility options. */
+    private static final byte FEATURE_ACCESSIBLE = 3;
+    /** Represents feature describing useful links within the application. */
+    private static final byte FEATURE_USEFUL_LINKS = 4;
+
+    /** Distance to animate position offset of views. */
+    private static final int ANIMATION_POSITION_OFFSET = 50;
+
+    // Objects
 
     /** Displays an image representing the feature being displayed. */
     private ImageView mImageViewFeature;
     /** Displays text describing the feature being displayed. */
     private TextView mTextViewFeatureDescription;
 
+    // Arrays, data structures
+
+    // Primitive variables
+
     /** The feature being highlighted by this instance. */
     private byte mFeature;
-    /**
-     * Indicates if the animation for the fragment has been completed already,
-     * so it isn't run again.
-     */
+    /** Indicates if the animation for the fragment has been completed already. */
     private boolean mAnimationCompleted;
 
     /**
@@ -52,12 +72,14 @@ public class FeatureFragment extends Fragment
      *
      * @param feature Feature which will be displayed by this instance
      * @return A new instance of fragment FeatureFragment
-     * @throws IllegalArgumentException if feature is not above 0 and less than {@code MAX_FEATURES}
+     * @throws IllegalArgumentException if feature is not above 0 and less than {@code
+     *                                  MAX_FEATURES}
      */
     public static FeatureFragment newInstance(byte feature)
     {
         if (feature < 0 || feature >= MAX_FEATURES)
-            throw new IllegalArgumentException("feature must be between 0 and " + (MAX_FEATURES - 1));
+            throw new IllegalArgumentException("feature must be between 0 and "
+                    + (MAX_FEATURES - 1));
 
         FeatureFragment fragment = new FeatureFragment();
         Bundle args = new Bundle();
@@ -83,102 +105,11 @@ public class FeatureFragment extends Fragment
                              Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        RelativeLayout rootView = (RelativeLayout)inflater.inflate(R.layout.fragment_feature, container, false);
-        RelativeLayout.LayoutParams layoutParams;
+        RelativeLayout rootView =
+                (RelativeLayout) inflater.inflate(R.layout.fragment_feature, container, false);
 
-        //Density of screen to set proper width/height of views
-        final float screenDensity = getResources().getDisplayMetrics().density;
-
-        mImageViewFeature = new ImageView(getActivity().getApplicationContext());
-        mImageViewFeature.setId(R.id.iv_feature);
-        mImageViewFeature.setAdjustViewBounds(true);
-        mImageViewFeature.setScaleType(ImageView.ScaleType.FIT_XY);
-
-        final int dp_16 = DataFormatter.getPixelsFromDP(screenDensity, 16);
-        mTextViewFeatureDescription = new TextView(getActivity().getApplicationContext());
-        mTextViewFeatureDescription.setId(R.id.tv_feature);
-        mTextViewFeatureDescription.setPadding(dp_16, dp_16, dp_16, dp_16);
-        mTextViewFeatureDescription.setGravity(Gravity.CENTER_HORIZONTAL);
-        mTextViewFeatureDescription.setTextAppearance(getActivity().getApplicationContext(),
-                android.R.style.TextAppearance_Large);
-        mTextViewFeatureDescription.setTextColor(getResources().getColor(R.color.primary_text));
-
-        // Adds two views to the fragment, an ImageView and a TextView
-        // Alternates between placing ImageView above TextView and vice versa
-        if (mFeature % 2 == 0)
-        {
-            rootView.setBackgroundColor(getResources().getColor(R.color.primary_garnet));
-
-            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            rootView.addView(mTextViewFeatureDescription, layoutParams);
-
-            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.BELOW, R.id.tv_feature);
-            rootView.addView(mImageViewFeature, layoutParams);
-        }
-        else
-        {
-            rootView.setBackgroundColor(getResources().getColor(R.color.primary_gray));
-
-            Space emptySpace = new Space(getActivity().getApplicationContext());
-            emptySpace.setId(R.id.space_feature);
-            layoutParams = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    getActivity().findViewById(R.id.rl_intro_toolbar).getHeight());
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            rootView.addView(emptySpace, layoutParams);
-
-            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.ABOVE, R.id.space_feature);
-            rootView.addView(mTextViewFeatureDescription, layoutParams);
-
-            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.addRule(RelativeLayout.ABOVE, R.id.tv_feature);
-            rootView.addView(mImageViewFeature, layoutParams);
-        }
-
-        // TODO: create layout for each feature
-        // 1 - navigation
-        // 2 - scheduling
-        // 3 - bus information
-        // 4 - accessibility
-        // 5 - useful links
-
-        mImageViewFeature.setVisibility(View.INVISIBLE);
-        mTextViewFeatureDescription.setVisibility(View.INVISIBLE);
-
-        switch(mFeature)
-        {
-            case 0:
-                mTextViewFeatureDescription.setText(R.string.text_feature_description_0);
-                Log.i(TAG, "TODO: Feature 0 - "
-                        + getResources().getString(R.string.text_feature_description_0));
-                break;
-            case 1:
-                mTextViewFeatureDescription.setText(R.string.text_feature_description_1);
-                Log.i(TAG, "TODO: Feature 1 - "
-                        + getResources().getString(R.string.text_feature_description_1));
-                break;
-            case 2:
-                mTextViewFeatureDescription.setText(R.string.text_feature_description_2);
-                Log.i(TAG, "TODO: Feature 2 - "
-                        + getResources().getString(R.string.text_feature_description_2));
-                break;
-            case 3:
-                mTextViewFeatureDescription.setText(R.string.text_feature_description_3);
-                Log.i(TAG, "TODO: Feature 3 - "
-                        + getResources().getString(R.string.text_feature_description_3));
-                break;
-            case 4:
-                mTextViewFeatureDescription.setText(R.string.text_feature_description_4);
-                Log.i(TAG, "TODO: Feature 4 - "
-                        + getResources().getString(R.string.text_feature_description_4));
-                break;
-            default:
-                throw new IllegalStateException(this.toString() + ": mFeature must be between 0-"
-                        + (MAX_FEATURES - 1));
-        }
+        setupFeatureImageAndText();
+        adjustFeatureLayout(rootView, mFeature % 2 == 0);
 
         return rootView;
     }
@@ -200,6 +131,109 @@ public class FeatureFragment extends Fragment
     }
 
     /**
+     * Assigns text and an image to the views which display the specifics of the feature represented
+     * by this fragment.
+     */
+    private void setupFeatureImageAndText()
+    {
+        //Density of screen to set proper width/height of views
+        final float screenDensity = DataFormatter.getScreenDensity(getResources());
+        final int dp16 = DataFormatter.getPixelsFromDP(screenDensity, 16);
+
+        mImageViewFeature = new ImageView(getActivity().getApplicationContext());
+        mImageViewFeature.setId(R.id.iv_feature);
+        mImageViewFeature.setAdjustViewBounds(true);
+        mImageViewFeature.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        mTextViewFeatureDescription = new TextView(getActivity().getApplicationContext());
+        mTextViewFeatureDescription.setId(R.id.tv_feature);
+        mTextViewFeatureDescription.setPadding(dp16, dp16, dp16, dp16);
+        mTextViewFeatureDescription.setGravity(Gravity.CENTER_HORIZONTAL);
+        mTextViewFeatureDescription.setTextAppearance(getActivity().getApplicationContext(),
+                android.R.style.TextAppearance_Large);
+        mTextViewFeatureDescription.setTextColor(getResources().getColor(R.color.primary_text));
+
+        mImageViewFeature.setVisibility(View.INVISIBLE);
+        mTextViewFeatureDescription.setVisibility(View.INVISIBLE);
+
+        switch (mFeature)
+        {
+            case FEATURE_NAVIGATION:
+                mTextViewFeatureDescription.setText(R.string.text_feature_description_0);
+                Log.i(TAG, "TODO: Feature 0 - navigation");
+                break;
+            case FEATURE_SCHEDULE:
+                mTextViewFeatureDescription.setText(R.string.text_feature_description_1);
+                Log.i(TAG, "TODO: Feature 1 - scheduling");
+                break;
+            case FEATURE_BUS_INFO:
+                mTextViewFeatureDescription.setText(R.string.text_feature_description_2);
+                Log.i(TAG, "TODO: Feature 2 - bus info");
+                break;
+            case FEATURE_ACCESSIBLE:
+                mTextViewFeatureDescription.setText(R.string.text_feature_description_3);
+                Log.i(TAG, "TODO: Feature 3 - accessibility");
+                break;
+            case FEATURE_USEFUL_LINKS:
+                mTextViewFeatureDescription.setText(R.string.text_feature_description_4);
+                Log.i(TAG, "TODO: Feature 4 - useful links");
+                break;
+            default:
+                throw new IllegalStateException("mFeature must be between 0-" + (MAX_FEATURES - 1));
+        }
+    }
+
+    /**
+     * The layout of each feature will alternate from the text being above the image, to below.
+     * Calling this will arrange the text and image according to {@code textAboveImage}.
+     * @param rootView root view of fragment
+     * @param textAboveImage indicates if text should be above image or vice versa.
+     */
+    private void adjustFeatureLayout(RelativeLayout rootView, boolean textAboveImage)
+    {
+        RelativeLayout.LayoutParams layoutParams;
+
+        // Clears any existing views in root layout
+        rootView.removeAllViews();
+
+        if (textAboveImage)
+        {
+            rootView.setBackgroundColor(getResources().getColor(R.color.primary_garnet));
+
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            rootView.addView(mTextViewFeatureDescription, layoutParams);
+
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.BELOW, R.id.tv_feature);
+            rootView.addView(mImageViewFeature, layoutParams);
+        }
+        else
+        {
+            rootView.setBackgroundColor(getResources().getColor(R.color.primary_gray));
+
+            Space emptySpace = new Space(getActivity().getApplicationContext());
+            emptySpace.setId(R.id.space_feature);
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    getActivity().findViewById(R.id.rl_intro_toolbar).getHeight());
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            rootView.addView(emptySpace, layoutParams);
+
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.space_feature);
+            rootView.addView(mTextViewFeatureDescription, layoutParams);
+
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.tv_feature);
+            rootView.addView(mImageViewFeature, layoutParams);
+        }
+    }
+
+    /**
      * Begins animation of views.
      */
     public void startAnimation()
@@ -207,7 +241,8 @@ public class FeatureFragment extends Fragment
         if (mAnimationCompleted)
             return;
 
-        final int longAnimDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
+        final int longAnimDuration =
+                getResources().getInteger(android.R.integer.config_longAnimTime);
         mAnimationCompleted = true;
 
         mTextViewFeatureDescription.setAlpha(0f);
@@ -223,10 +258,10 @@ public class FeatureFragment extends Fragment
                         mImageViewFeature.setAlpha(0f);
                         mImageViewFeature.setVisibility(View.VISIBLE);
                         mImageViewFeature.setY(mImageViewFeature.getY()
-                                + 50 * (mFeature % 2 == 0 ? 1 : -1));
+                                + ANIMATION_POSITION_OFFSET * (mFeature % 2 == 0 ? 1 : -1));
                         mImageViewFeature.animate()
                                 .alpha(1f)
-                                .yBy(50 * (mFeature % 2 == 0 ? -1 : 1))
+                                .yBy(ANIMATION_POSITION_OFFSET * (mFeature % 2 == 0 ? -1 : 1))
                                 .setDuration(longAnimDuration)
                                 .setInterpolator(new DecelerateInterpolator())
                                 .start();

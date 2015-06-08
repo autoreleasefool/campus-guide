@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">uOttawa Campus Navigator</string>
     <string name="app_name_condensed">Campus Navigator</string>
     <string name="app_name_condensed_split">Campus\nNavigator</string>
@@ -20,9 +21,9 @@
     <string name="text_feature_description_3">Made to be accessible to anyone. Check the settings for various accessibility options.</string>
     <string name="text_feature_description_4">Tonnes of useful links to help you find food, get involved and make university enjoyable.</string>
     <string name="text_view_links">See more&#8230;</string>
-	<string name="text_dial_confirmation">Do you want to dial the number\n</string>
-	<string name="text_dial_number">Dial phone number?</string>
-	<string name="text_return_to">Return to </string>
+    <string name="text_dial_confirmation">Do you want to dial the number\n</string>
+    <string name="text_dial_number">Dial phone number?</string>
+    <string name="text_return_to">Return to </string>
 
     <string name="dialog_title_select_language">Select a Language</string>
     <string name="dialog_text_dial">Dial</string>
@@ -35,4 +36,5 @@
 
     <!-- Action items -->
     <string name="action_settings">Settings</string>
+
 </resources>

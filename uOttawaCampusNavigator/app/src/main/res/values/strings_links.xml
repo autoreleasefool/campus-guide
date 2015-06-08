@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="useful_links_0">
         <item>uOttawa~1</item>
         <item>uOttawa Faculties~4</item>
@@ -282,4 +283,5 @@
         <item>uOttawa Emergency Preparedness~http://www.emergencypreparedness.uottawa.ca/</item>
         <item>Protection Services~http://www.protection.uottawa.ca/en/index.html</item>
     </string-array>
+
 </resources>

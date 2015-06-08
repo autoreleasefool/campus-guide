@@ -15,17 +15,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin">
+        android:paddingTop="@dimen/activity_vertical_margin">
 
         <View
             android:id="@+id/view_indicator_2"
             android:layout_width="@dimen/indicator_width"
             android:layout_height="@dimen/indicator_height"
-            android:layout_margin="@dimen/indicator_width"
             android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/indicator_width"
             android:background="@drawable/position_indicator" />
 
         <View
@@ -51,8 +51,8 @@
             android:layout_width="@dimen/indicator_width"
             android:layout_height="@dimen/indicator_height"
             android:layout_margin="@dimen/indicator_width"
-            android:layout_toRightOf="@id/view_indicator_2"
             android:layout_toEndOf="@id/view_indicator_2"
+            android:layout_toRightOf="@id/view_indicator_2"
             android:background="@drawable/position_indicator" />
 
         <View
@@ -60,8 +60,8 @@
             android:layout_width="@dimen/indicator_width"
             android:layout_height="@dimen/indicator_height"
             android:layout_margin="@dimen/indicator_width"
-            android:layout_toRightOf="@id/view_indicator_3"
             android:layout_toEndOf="@id/view_indicator_3"
+            android:layout_toRightOf="@id/view_indicator_3"
             android:background="@drawable/position_indicator" />
 
         <TextView
@@ -72,7 +72,7 @@
             android:layout_alignParentRight="true"
             android:text="@string/text_intro_continue"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/primary_text"/>
+            android:textColor="@color/primary_text" />
 
     </RelativeLayout>
 

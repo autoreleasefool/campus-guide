@@ -25,18 +25,29 @@ import ca.josephroque.uottawacampusnavigator.fragment.navigation.LinksFragment;
 import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 
+/**
+ * Activity which provides main functionality of campus navigation to user.
+ */
 public class NavigationActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
-
     /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
     private static final String TAG = "NavigationActivity";
+
+    // Constants
+
+    // Objects
 
     /** Fragment managing the behaviors, interactions and presentation of the navigation drawer. */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-	
-	/** Indicates if the application is current in English (true) or French (false). */
-	private boolean mIsAppInEnglish;
+
+    // Arrays, data structures
+
+    //Primitive variables
+
+    /** Indicates if the application is current in English (true) or French (false). */
+    private boolean mIsAppInEnglish;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,9 +58,9 @@ public class NavigationActivity extends AppCompatActivity
         mIsAppInEnglish = preferences.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
 
         setContentView(R.layout.activity_navigation);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
-		
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer_fragment);
 
@@ -63,149 +74,82 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public void onNavigationDrawerItemSelected(String itemName)
     {
-		String[] drawerItems = (mIsAppInEnglish)
-				? Constants.NAVIGATION_DRAWER_ITEMS_EN
-				: Constants.NAVIGATION_DRAWER_ITEMS_FR;
-		
-		if (itemName == drawerItems[Constants.NAVIGATION_ITEM_SETTINGS])
+        String[] drawerItems = (mIsAppInEnglish)
+                ? Constants.NAVIGATION_DRAWER_ITEMS_EN
+                : Constants.NAVIGATION_DRAWER_ITEMS_FR;
+
+        if (itemName == drawerItems[Constants.NAVIGATION_ITEM_SETTINGS])
         {
-			openSettings(null);
-			return;
-		}
+            openSettings(null);
+            return;
+        }
 
-		Fragment fragment = null;
-		String fragmentTag;
+        Fragment fragment = null;
+        String fragmentTag;
         String suffix = "";
-		if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HOME])
-		{
-			// TODO: Open Home Fragment
-			Log.i(TAG, "TODO: Open HomeFragment");
-			fragmentTag = Constants.FRAGMENT_HOME;
-		}
-		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_FIND])
-		{
-			// TODO: Open Find Fragment
-			Log.i(TAG, "TODO: Open FindFragment");
-			fragmentTag = Constants.FRAGMENT_FIND;
-		}
-		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_FAVOURITES])
-		{
-			// TODO: Open FavouritesFragment
-			Log.i(TAG, "TODO: Open FavouritesFragment");
-			fragmentTag = Constants.FRAGMENT_FAVOURITES;
-		}
-		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_USEFUL_LINKS])
-		{
-			fragmentTag = Constants.FRAGMENT_LINKS;
-			fragment = LinksFragment.newInstance(0, 0, null, "Master");
+        if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HOME])
+        {
+            // TODO: Open Home Fragment
+            Log.i(TAG, "TODO: Open HomeFragment");
+            fragmentTag = Constants.FRAGMENT_HOME;
+        }
+        else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_FIND])
+        {
+            // TODO: Open Find Fragment
+            Log.i(TAG, "TODO: Open FindFragment");
+            fragmentTag = Constants.FRAGMENT_FIND;
+        }
+        else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_FAVOURITES])
+        {
+            // TODO: Open FavouritesFragment
+            Log.i(TAG, "TODO: Open FavouritesFragment");
+            fragmentTag = Constants.FRAGMENT_FAVOURITES;
+        }
+        else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_USEFUL_LINKS])
+        {
+            fragmentTag = Constants.FRAGMENT_LINKS;
+            fragment = LinksFragment.newInstance(0, 0, null, "Master");
             suffix = "0";
-		}
-		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_BUS_INFO])
-		{
-			// TODO: Open BusInfoFragment
-			Log.i(TAG, "TODO: Open BusInfoFragment");
-			fragmentTag = Constants.FRAGMENT_BUS_INFO;
-		}
-		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_ACCESSIBILITY])
-		{
-			// TODO: Open AccessibilityFragment
-			Log.i(TAG, "TODO: Open AccessibilityFragmnt");
-			fragmentTag = Constants.FRAGMENT_ACCESSIBILITY;
-		}
-		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HOTSPOTS])
-		{
-			// TODO: Open HotspotsFragment
-			Log.i(TAG, "TODO: Open HotspotsFragment");
-			fragmentTag = Constants.FRAGMENT_HOTSPOTS;
-		}
-		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HELP])
-		{
-			// TODO: Open HelpFragment
-			Log.i(TAG, "TODO: Open HelpFragment");
-			fragmentTag = Constants.FRAGMENT_HELP;
-		}
-		else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_LANGUAGE])
-		{
-            final SharedPreferences sharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(this);
-            final boolean startingLanguage =
-                    sharedPreferences.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
-            final AtomicBoolean setLanguage = new AtomicBoolean(startingLanguage);
-            final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    dialog.dismiss();
-
-                    if (which == DialogInterface.BUTTON_POSITIVE
-                            && setLanguage.get() != startingLanguage)
-                    {
-                        Configuration config = new Configuration(
-                                getBaseContext().getResources().getConfiguration());
-                        sharedPreferences.edit()
-                                .putBoolean(Constants.PREF_LANGUAGE_SELECTED, setLanguage.get())
-                                .apply();
-
-                        String lang = (setLanguage.get()
-                                ? "en_CA"
-                                : "en_FR");
-                        if (!config.locale.getLanguage().equals(lang))
-                        {
-                            Locale locale = new Locale(lang);
-                            Locale.setDefault(locale);
-                            config.locale = locale;
-                            getBaseContext().getResources().updateConfiguration(config,
-                                    getBaseContext().getResources().getDisplayMetrics());
-                        }
-
-                        recreate();
-                    }
-                }
-            };
-
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.dialog_title_select_language)
-                    .setSingleChoiceItems(R.array.dialog_array_language,
-                            (setLanguage.get()) ? 0 : 1,
-                            new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which)
-                                {
-                                    setLanguage.set(which == 0);
-                                }
-                            })
-                    .setPositiveButton(R.string.dialog_text_okay, listener)
-                    .setNegativeButton(R.string.dialog_text_cancel, listener)
-                    .create()
-                    .show();
+        }
+        else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_BUS_INFO])
+        {
+            // TODO: Open BusInfoFragment
+            Log.i(TAG, "TODO: Open BusInfoFragment");
+            fragmentTag = Constants.FRAGMENT_BUS_INFO;
+        }
+        else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_ACCESSIBILITY])
+        {
+            // TODO: Open AccessibilityFragment
+            Log.i(TAG, "TODO: Open AccessibilityFragmnt");
+            fragmentTag = Constants.FRAGMENT_ACCESSIBILITY;
+        }
+        else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HOTSPOTS])
+        {
+            // TODO: Open HotspotsFragment
+            Log.i(TAG, "TODO: Open HotspotsFragment");
+            fragmentTag = Constants.FRAGMENT_HOTSPOTS;
+        }
+        else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_HELP])
+        {
+            // TODO: Open HelpFragment
+            Log.i(TAG, "TODO: Open HelpFragment");
+            fragmentTag = Constants.FRAGMENT_HELP;
+        }
+        else if (itemName == drawerItems[Constants.NAVIGATION_ITEM_LANGUAGE])
+        {
+            promptLanguageChange();
             return;
-		}
-		else 
-		{
-			throw new IllegalArgumentException("Drawer item not recognized: "
-					+ itemName);
-		}
+        }
+        else
+        {
+            throw new IllegalArgumentException("Drawer item not recognized: " + itemName);
+        }
 
-		if (fragment == null)
+        // TODO: remove following once all fragments work
+        if (fragment == null)
             return;
 
-		setActionBarTitle(itemName);
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		if (fragmentManager.findFragmentByTag(fragmentTag) == null)
-		{
-			fragmentManager.popBackStackImmediate(null, 
-					FragmentManager.POP_BACK_STACK_INCLUSIVE);
-			fragmentManager.beginTransaction()
-				.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-				.replace(R.id.fl_nav_fragment_container, fragment, fragmentTag)
-				.commit();
-		}
-		else
-		{
-			fragmentManager.popBackStack(fragmentTag + suffix, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-		}
+        beginFragmentTransaction(fragment, fragmentTag + suffix, itemName);
     }
 
     @Override
@@ -228,14 +172,14 @@ public class NavigationActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch(item.getItemId())
+        switch (item.getItemId())
         {
             case R.id.action_settings:
                 openSettings(null);
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -246,28 +190,117 @@ public class NavigationActivity extends AppCompatActivity
         else
             super.onBackPressed();
     }
-	
-	/**
-	 * Sets the title in the activity action bar to {@code title}.
-	 *
-	 * @param title title for activity
-	 */
-	private void setActionBarTitle(String title)
-	{
-		ActionBar actionBar = getSupportActionBar();
+
+    /**
+     * Opens a new fragment.
+     * @param fragment fragment to open
+     * @param fragmentTag tag for fragment manager
+     * @param fragmentTitle title for action bar
+     */
+    private void beginFragmentTransaction(Fragment fragment,
+                                          String fragmentTag,
+                                          String fragmentTitle)
+    {
+        setActionBarTitle(fragmentTitle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.findFragmentByTag(fragmentTag) == null)
+        {
+            fragmentManager.popBackStackImmediate(null,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fl_nav_fragment_container, fragment, fragmentTag)
+                    .commit();
+        }
+        else
+        {
+            fragmentManager.popBackStack(fragmentTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
+    /**
+     * Displays prompt to user to change the application language between English or French.
+     */
+    private void promptLanguageChange()
+    {
+        final SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        final boolean startingLanguage =
+                sharedPreferences.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
+        final AtomicBoolean setLanguage = new AtomicBoolean(startingLanguage);
+        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.dismiss();
+
+                if (which == DialogInterface.BUTTON_POSITIVE
+                        && setLanguage.get() != startingLanguage)
+                {
+                    Configuration config = new Configuration(
+                            getBaseContext().getResources().getConfiguration());
+                    sharedPreferences.edit()
+                            .putBoolean(Constants.PREF_LANGUAGE_SELECTED, setLanguage.get())
+                            .apply();
+
+                    String lang = (setLanguage.get()
+                            ? "en_CA"
+                            : "en_FR");
+                    if (!config.locale.getLanguage().equals(lang))
+                    {
+                        Locale locale = new Locale(lang);
+                        Locale.setDefault(locale);
+                        config.locale = locale;
+                        getBaseContext().getResources().updateConfiguration(config,
+                                getBaseContext().getResources().getDisplayMetrics());
+                    }
+
+                    recreate();
+                }
+            }
+        };
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_title_select_language)
+                .setSingleChoiceItems(R.array.dialog_array_language,
+                        (setLanguage.get()) ? 0 : 1,
+                        new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                setLanguage.set(which == 0);
+                            }
+                        })
+                .setPositiveButton(R.string.dialog_text_okay, listener)
+                .setNegativeButton(R.string.dialog_text_cancel, listener)
+                .create()
+                .show();
+    }
+
+    /**
+     * Sets the title in the activity action bar to {@code title}.
+     *
+     * @param title title for activity
+     */
+    private void setActionBarTitle(String title)
+    {
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
             actionBar.setTitle(title);
-	}
+    }
 
     /**
      * Displays the application's settings to the user.
+     *
      * @param src source of onClick call
      */
     @SuppressWarnings("UnusedParameters")   // View parameter only required for onClick
-                                            // attribute in XML
+    // attribute in XML
     public void openSettings(View src)
     {
-		if (mNavigationDrawerFragment.isDrawerOpen())
+        if (mNavigationDrawerFragment.isDrawerOpen())
             mNavigationDrawerFragment.closeDrawer();
         // TODO: open settings
         Log.i(TAG, "TODO: Open settings");
