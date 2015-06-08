@@ -44,6 +44,7 @@
 			android:layout_alignParentRight="true"
 			android:layout_alignParentEnd="true"
 			android:layout_margin="@dimen/floatingactionbutton_margin"
+            android:src="@drawable/ic_search"
             fab:fab_type="mini"
 			fab:fab_colorNormal="@color/primary_garnet"
 			fab:fab_colorPressed="@color/primary_garnet"
