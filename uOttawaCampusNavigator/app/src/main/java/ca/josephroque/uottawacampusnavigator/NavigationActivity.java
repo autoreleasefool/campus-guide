@@ -28,9 +28,11 @@ import ca.josephroque.uottawacampusnavigator.util.Constants;
 /**
  * Activity which provides main functionality of campus navigation to user.
  */
-public class NavigationActivity extends AppCompatActivity
+public class NavigationActivity
+        extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
+
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "NavigationActivity";
@@ -193,6 +195,7 @@ public class NavigationActivity extends AppCompatActivity
 
     /**
      * Opens a new fragment.
+     *
      * @param fragment fragment to open
      * @param fragmentTag tag for fragment manager
      * @param fragmentTitle title for action bar
@@ -233,13 +236,16 @@ public class NavigationActivity extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-                dialog.dismiss();
-
-                if (which == DialogInterface.BUTTON_POSITIVE
+                if (which >= 0)
+                    setLanguage.set(which == 0);
+                else if (which == DialogInterface.BUTTON_NEGATIVE)
+                    dialog.dismiss();
+                else if (which == DialogInterface.BUTTON_POSITIVE
                         && setLanguage.get() != startingLanguage)
                 {
                     Configuration config = new Configuration(
-                            getBaseContext().getResources().getConfiguration());
+                            getBaseContext().getResources()
+                                    .getConfiguration());
                     sharedPreferences.edit()
                             .putBoolean(Constants.PREF_LANGUAGE_SELECTED, setLanguage.get())
                             .apply();
@@ -247,15 +253,18 @@ public class NavigationActivity extends AppCompatActivity
                     String lang = (setLanguage.get()
                             ? "en_CA"
                             : "en_FR");
-                    if (!config.locale.getLanguage().equals(lang))
+                    if (!lang.equals(config.locale.getLanguage()))
                     {
                         Locale locale = new Locale(lang);
                         Locale.setDefault(locale);
                         config.locale = locale;
-                        getBaseContext().getResources().updateConfiguration(config,
-                                getBaseContext().getResources().getDisplayMetrics());
+                        getBaseContext().getResources()
+                                .updateConfiguration(config,
+                                        getBaseContext().getResources()
+                                                .getDisplayMetrics());
                     }
 
+                    dialog.dismiss();
                     recreate();
                 }
             }
@@ -264,15 +273,9 @@ public class NavigationActivity extends AppCompatActivity
         new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_title_select_language)
                 .setSingleChoiceItems(R.array.dialog_array_language,
-                        (setLanguage.get()) ? 0 : 1,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                setLanguage.set(which == 0);
-                            }
-                        })
+                        (setLanguage.get())
+                                ? 0
+                                : 1, listener)
                 .setPositiveButton(R.string.dialog_text_okay, listener)
                 .setNegativeButton(R.string.dialog_text_cancel, listener)
                 .create()

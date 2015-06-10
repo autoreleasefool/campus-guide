@@ -11,37 +11,28 @@ import ca.josephroque.uottawacampusnavigator.R;
 
 /**
  * Created by Joseph Roque on 15-05-09
- *
+ * <p/>
  * Provides UI and methods for the user to select a language preference.
- *
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link LanguageFragment.LanguageCallbacks} interface
- * to handle interaction events.
- * Use the {@link LanguageFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * <p/>
+ * A simple {@link Fragment} subclass. Activities that contain this fragment must implement the
+ * {@link LanguageFragment.LanguageCallbacks} interface to handle interaction events. Use the {@link
+ * LanguageFragment#newInstance} factory method to create an instance of this fragment.
  */
-public class LanguageFragment extends Fragment
+public class LanguageFragment
+        extends Fragment
         implements View.OnClickListener
 {
-    // Constant values
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "LanguageFragment";
 
-    // Objects
-
     /** Instance of callback interface. */
     private LanguageCallbacks mCallback;
 
-    // Arrays, data structures
-
-    // Primitive variables
-
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Use this factory method to create a new instance of this fragment using the provided
+     * parameters.
      *
      * @return new instance of fragment LanguageFragment
      */
@@ -57,8 +48,10 @@ public class LanguageFragment extends Fragment
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_language, container, false);
 
-        rootView.findViewById(R.id.rl_lang_en).setOnClickListener(this);
-        rootView.findViewById(R.id.rl_lang_en).setOnClickListener(this);
+        rootView.findViewById(R.id.rl_lang_en)
+                .setOnClickListener(this);
+        rootView.findViewById(R.id.rl_lang_en)
+                .setOnClickListener(this);
 
         return rootView;
     }
@@ -95,16 +88,16 @@ public class LanguageFragment extends Fragment
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
+     * This interface must be implemented by activities that contain this fragment to allow an
+     * interaction in this fragment to be communicated to the activity and potentially other
+     * fragments contained in that activity.
      */
     public interface LanguageCallbacks
     {
+
         /**
-         * Called when the user selects a language from the options.
-         * The available language options are English or French.
+         * Called when the user selects a language from the options. The available language options
+         * are English or French.
          *
          * @param isEnglish true if the selected language was English. False, if French.
          */

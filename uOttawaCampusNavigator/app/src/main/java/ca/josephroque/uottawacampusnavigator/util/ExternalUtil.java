@@ -19,65 +19,75 @@ import ca.josephroque.uottawacampusnavigator.R;
  * <p/>
  * Provides methods which offer some utility outside of the application.
  */
-public class ExternalUtil
+public final class ExternalUtil
 {
-	/** Identifies output from this class in Logcat. */
-	@SuppressWarnings("unused")
-	private static final String TAG = "ExternalUtil";
 
-	/**
-	 * Opens link in a browser.
-	 *
-	 * @param sourceActivity activity to open intent with
-	 * @param url hyperlink to open in browser
-	 */
-	public static void openLinkInBrowser(Activity sourceActivity, String url)
-	{
-		if (!url.startsWith("http://") && !url.startsWith("https://"))
-			url = "http://" + url;
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "ExternalUtil";
 
-		Uri uri = Uri.parse(url);
-		Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
-		sourceActivity.startActivity(browserIntent);
-	}
-	
-	/**
-	 * Prompts user to dial a phone number.
-	 *
-	 * @param sourceActivity activity to open intent with
-	 * @param phoneNumber number to call
-	 */
-	public static void dialPhoneNumber(final Activity sourceActivity, String phoneNumber)
-	{
+    /**
+     * Default private constructor.
+     */
+    private ExternalUtil()
+    {
+        // does nothing
+    }
+
+    /**
+     * Opens link in a browser.
+     *
+     * @param sourceActivity activity to open intent with
+     * @param url hyperlink to open in browser
+     */
+    public static void openLinkInBrowser(Activity sourceActivity, String url)
+    {
+        if (!url.startsWith("http://") && !url.startsWith("https://"))
+            url = "http://" + url;
+
+        Uri uri = Uri.parse(url);
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+        sourceActivity.startActivity(browserIntent);
+    }
+
+    /**
+     * Prompts user to dial a phone number.
+     *
+     * @param sourceActivity activity to open intent with
+     * @param phoneNumber number to call
+     */
+    public static void dialPhoneNumber(final Activity sourceActivity, String phoneNumber)
+    {
         Log.i(TAG, "" + isFeatureAvailable(sourceActivity, PackageManager.FEATURE_TELEPHONY));
-		if (!isFeatureAvailable(sourceActivity, PackageManager.FEATURE_TELEPHONY))
-			return;
-		
-		final String rawPhoneNumber = DataFormatter.stripNonDigits(phoneNumber);
+        if (!isFeatureAvailable(sourceActivity, PackageManager.FEATURE_TELEPHONY))
+            return;
 
-		// Prompts user before dialing number
-		TextView textMessage = new TextView(sourceActivity);
-		textMessage.setText(sourceActivity.getResources().getString(R.string.text_dial_confirmation)
+        final String rawPhoneNumber = DataFormatter.stripNonDigits(phoneNumber);
+
+        // Prompts user before dialing number
+        TextView textMessage = new TextView(sourceActivity);
+        textMessage.setText(sourceActivity.getResources()
+                .getString(R.string.text_dial_confirmation)
                 + DataFormatter.formatPhoneNumber(phoneNumber) + "?");
-		textMessage.setGravity(Gravity.CENTER_HORIZONTAL);
-		
-		new AlertDialog.Builder(sourceActivity)
-				.setTitle(R.string.text_dial_number)
-				.setView(textMessage)
-				.setPositiveButton(R.string.dialog_text_dial, new DialogInterface.OnClickListener()
-				{
-					@Override
-					public void onClick(DialogInterface dialog, int which)
-					{
-						// Creates intent to dial phone number
-						Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-						dialIntent.setData(Uri.parse("tel:" + rawPhoneNumber));
-						sourceActivity.startActivity(dialIntent);
-						
-						dialog.dismiss();
-					}
-				})
-				.setNegativeButton(R.string.dialog_text_cancel,
+        textMessage.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        new AlertDialog.Builder(sourceActivity)
+                .setTitle(R.string.text_dial_number)
+                .setView(textMessage)
+                .setPositiveButton(R.string.dialog_text_dial, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        // Creates intent to dial phone number
+                        Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+                        dialIntent.setData(Uri.parse("tel:" + rawPhoneNumber));
+                        sourceActivity.startActivity(dialIntent);
+
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_text_cancel,
                         new DialogInterface.OnClickListener()
                         {
                             @Override
@@ -85,27 +95,28 @@ public class ExternalUtil
                             {
                                 dialog.dismiss();
                             }
-				})
-				.create()
-				.show();
-	}
-	
-	/**
-	 * Checks if a specified feature is available to the device.
-	 *
-	 * @param context source context for package manager
-	 * @param feature device feature to check for
-	 */
-	public static boolean isFeatureAvailable(Context context, String feature)
-	{
-		final PackageManager packageManager = context.getPackageManager();
-		final FeatureInfo[] featuresList = packageManager.getSystemAvailableFeatures();
-		for (FeatureInfo f : featuresList)
-		{
-			if (f.name != null && f.name.equals(feature))
-				return true;
-		}
-		
-		return false;
-	}
+                        })
+                .create()
+                .show();
+    }
+
+    /**
+     * Checks if a specified feature is available to the device.
+     *
+     * @param context source context for package manager
+     * @param feature device feature to check for
+     * @return true if the feature is available on the device, false otherwise
+     */
+    public static boolean isFeatureAvailable(Context context, String feature)
+    {
+        final PackageManager packageManager = context.getPackageManager();
+        final FeatureInfo[] featuresList = packageManager.getSystemAvailableFeatures();
+        for (FeatureInfo f : featuresList)
+        {
+            if (f.name != null && f.name.equals(feature))
+                return true;
+        }
+
+        return false;
+    }
 }

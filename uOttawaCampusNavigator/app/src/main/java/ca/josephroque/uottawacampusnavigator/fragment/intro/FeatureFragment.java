@@ -19,17 +19,16 @@ import ca.josephroque.uottawacampusnavigator.R;
 import ca.josephroque.uottawacampusnavigator.util.DataFormatter;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link FeatureFragment#newInstance} factory method to
+ * A simple {@link Fragment} subclass. Use the {@link FeatureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FeatureFragment extends Fragment
+public class FeatureFragment
+        extends Fragment
 {
+
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "FeatureFragment";
-
-    //Constant values
 
     /** Identifies feature which the fragment highlights. */
     private static final String ARG_FEATURE = "feature";
@@ -50,16 +49,10 @@ public class FeatureFragment extends Fragment
     /** Distance to animate position offset of views. */
     private static final int ANIMATION_POSITION_OFFSET = 50;
 
-    // Objects
-
     /** Displays an image representing the feature being displayed. */
     private ImageView mImageViewFeature;
     /** Displays text describing the feature being displayed. */
     private TextView mTextViewFeatureDescription;
-
-    // Arrays, data structures
-
-    // Primitive variables
 
     /** The feature being highlighted by this instance. */
     private byte mFeature;
@@ -67,13 +60,13 @@ public class FeatureFragment extends Fragment
     private boolean mAnimationCompleted;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Use this factory method to create a new instance of this fragment using the provided
+     * parameters.
      *
      * @param feature Feature which will be displayed by this instance
      * @return A new instance of fragment FeatureFragment
      * @throws IllegalArgumentException if feature is not above 0 and less than {@code
-     *                                  MAX_FEATURES}
+     * MAX_FEATURES}
      */
     public static FeatureFragment newInstance(byte feature)
     {
@@ -93,7 +86,9 @@ public class FeatureFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
-        Bundle args = (savedInstanceState == null) ? getArguments() : savedInstanceState;
+        Bundle args = (savedInstanceState == null)
+                ? getArguments()
+                : savedInstanceState;
         if (args != null)
         {
             mFeature = args.getByte(ARG_FEATURE);
@@ -186,6 +181,7 @@ public class FeatureFragment extends Fragment
     /**
      * The layout of each feature will alternate from the text being above the image, to below.
      * Calling this will arrange the text and image according to {@code textAboveImage}.
+     *
      * @param rootView root view of fragment
      * @param textAboveImage indicates if text should be above image or vice versa.
      */
@@ -217,7 +213,8 @@ public class FeatureFragment extends Fragment
             Space emptySpace = new Space(getActivity().getApplicationContext());
             emptySpace.setId(R.id.space_feature);
             layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    getActivity().findViewById(R.id.rl_intro_toolbar).getHeight());
+                    getActivity().findViewById(R.id.rl_intro_toolbar)
+                            .getHeight());
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             rootView.addView(emptySpace, layoutParams);
 
@@ -258,10 +255,14 @@ public class FeatureFragment extends Fragment
                         mImageViewFeature.setAlpha(0f);
                         mImageViewFeature.setVisibility(View.VISIBLE);
                         mImageViewFeature.setY(mImageViewFeature.getY()
-                                + ANIMATION_POSITION_OFFSET * (mFeature % 2 == 0 ? 1 : -1));
+                                + ANIMATION_POSITION_OFFSET * (mFeature % 2 == 0
+                                ? 1
+                                : -1));
                         mImageViewFeature.animate()
                                 .alpha(1f)
-                                .yBy(ANIMATION_POSITION_OFFSET * (mFeature % 2 == 0 ? -1 : 1))
+                                .yBy(ANIMATION_POSITION_OFFSET * (mFeature % 2 == 0
+                                        ? -1
+                                        : 1))
                                 .setDuration(longAnimDuration)
                                 .setInterpolator(new DecelerateInterpolator())
                                 .start();

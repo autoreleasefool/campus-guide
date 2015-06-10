@@ -18,14 +18,14 @@ import ca.josephroque.uottawacampusnavigator.R;
  * <p/>
  * Manages data which will be displayed by the Navigation Drawer.
  */
-public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerViewHolder>
+public class DrawerAdapter
+        extends RecyclerView.Adapter<DrawerAdapter.DrawerViewHolder>
         implements View.OnClickListener
 {
+
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "DrawerAdapter";
-
-    // Constant values
 
     /** Indicates the type of the item is a header. */
     private static final int TYPE_HEADER = 0;
@@ -34,12 +34,13 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     /** Indicates the type of the item is a separator. */
     private static final int TYPE_SEPARATOR = 2;
 
-    // Objects
-
     /** Instance of callback interface. */
     private DrawerAdapterCallbacks mCallback;
 
-    // Arrays, data structures
+    /** Set of positions which represent separators. */
+    private TreeSet<Integer> mSetSeparators;
+    /** Set of positions which cannot be highlighted. */
+    private TreeSet<Integer> mSetNonHighlightable;
 
     /** Array of image ids to display as icons for drawer items. */
     private int[] mArrayItemIcons;
@@ -47,12 +48,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     private int[] mArrayItemHighlights;
     /** Array of strings to display as names for drawer items. */
     private String[] mArrayItemNames;
-    /** Set of positions which represent separators. */
-    private TreeSet<Integer> mSetSeparators;
-    /** Set of positions which cannot be highlighted. */
-    private TreeSet<Integer> mSetNonHighlightable;
-
-    // Primitive variables
 
     /** Indicates if a highlight has been set. */
     private boolean mHighlightSet = false;
@@ -71,9 +66,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                          String[] itemNames)
     {
         if (itemNames.length != itemIcons.length || itemNames.length != itemHighlights.length)
-        {
             throw new IllegalArgumentException("All array must be same size");
-        }
 
         this.mCallback = callback;
         this.mArrayItemIcons = itemIcons;
@@ -88,15 +81,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     {
         View itemLayout;
         if (viewType == TYPE_HEADER)
-        {
             itemLayout = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.header_navigation_drawer, parent, false);
-        }
         else
-        {
             itemLayout = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_navigation_drawer, parent, false);
-        }
+
         return new DrawerViewHolder(itemLayout, viewType);
     }
 
@@ -109,7 +99,9 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 
         switch (viewType)
         {
-            case TYPE_HEADER: break;
+            case TYPE_HEADER:
+                // TODO: select random image for header
+                break;
             case TYPE_SEPARATOR:
                 // Hides icon and text, shows separator
                 viewHolder.mViewSeparator.setVisibility(View.VISIBLE);
@@ -156,7 +148,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
                 viewHolder.itemView.setTag(Pair.create(position, typeOffset));
                 viewHolder.itemView.setOnClickListener(this);
                 break;
-            default: throw new IllegalStateException("Illegal value for view type: " + viewType);
+            default:
+                throw new IllegalStateException("Illegal value for view type: " + viewType);
         }
     }
 
@@ -267,6 +260,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
 
     /**
      * Sets an item to not be highlighted in the drawer after selection.
+     *
      * @param position item to not highlight
      */
     public void setPositionNotHighlighted(int position)
@@ -287,9 +281,10 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
      */
     public interface DrawerAdapterCallbacks
     {
+
         /**
-         * Called when an item in the drawer is clicked, so the parent fragment can handle
-         * the user interaction.
+         * Called when an item in the drawer is clicked, so the parent fragment can handle the user
+         * interaction.
          *
          * @param position position of view which was clicked.
          * @param updatePosition indicates if position should be saved
@@ -305,11 +300,13 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
     }
 
     /**
-     * Subclass of RecyclerView.ViewHolder to manage view which will display an image
-     * and text to the user.
+     * Subclass of RecyclerView.ViewHolder to manage view which will display an image and text to
+     * the user.
      */
-    public static class DrawerViewHolder extends RecyclerView.ViewHolder
+    public static class DrawerViewHolder
+            extends RecyclerView.ViewHolder
     {
+
         /** ImageView for icon of list item. */
         private ImageView mImageViewItemIcon;
         /** TextView for name of list item. */
@@ -318,8 +315,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.DrawerView
         private View mViewSeparator;
 
         /**
-         * Calls super constructor with {@code itemLayout} as parameter and gets references
-         * for member variables from {@code itemLayout}.
+         * Calls super constructor with {@code itemLayout} as parameter and gets references for
+         * member variables from {@code itemLayout}.
          *
          * @param itemLayout root layout
          * @param viewType type of view holder

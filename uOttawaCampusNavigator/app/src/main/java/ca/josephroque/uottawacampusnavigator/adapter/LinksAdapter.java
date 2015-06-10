@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import ca.josephroque.uottawacampusnavigator.NavigationApplication;
 import ca.josephroque.uottawacampusnavigator.R;
 import ca.josephroque.uottawacampusnavigator.util.DataFormatter;
 
@@ -18,14 +19,13 @@ import ca.josephroque.uottawacampusnavigator.util.DataFormatter;
  * <p/>
  * Manages the data displayed in a LinkFragment.
  */
-public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHolder>
+public class LinksAdapter
+        extends RecyclerView.Adapter<LinksAdapter.LinksViewHolder>
         implements View.OnClickListener
 {
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "LanguageFragment";
-
-    // Constant values
 
     /** Represents an item which references more links. */
     private static final byte TYPE_MORE_LINKS = 0;
@@ -36,17 +36,11 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     /** Represents an item which returns to previous list. */
     private static final byte TYPE_RETURN = 3;
 
-    // Objects
-
     /** Instance of callback interface. */
     private LinkAdapterCallback mCallback;
 
-    // Arrays, data structures
-
     /** Array of names and values which will be displayed in the recycler view. */
     private String[] mLinkValues;
-
-    // Primitive variables
 
     /** Indicates if this adapter was created from a previous LinkAdapter callback . */
     private boolean mHasParentList;
@@ -68,39 +62,10 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     public LinksAdapter(LinkAdapterCallback callback, Resources resources,
                         int linksArray, boolean hasParentList, String parentList, String listName)
     {
-        switch (linksArray)
-        {
-            case 0:mLinkValues = resources.getStringArray(R.array.useful_links_0); break;
-            case 1:mLinkValues = resources.getStringArray(R.array.useful_links_1); break;
-            case 2:mLinkValues = resources.getStringArray(R.array.useful_links_2); break;
-            case 3:mLinkValues = resources.getStringArray(R.array.useful_links_3); break;
-            case 4:mLinkValues = resources.getStringArray(R.array.useful_links_4); break;
-            case 5:mLinkValues = resources.getStringArray(R.array.useful_links_5); break;
-            case 6:mLinkValues = resources.getStringArray(R.array.useful_links_6); break;
-            case 7:mLinkValues = resources.getStringArray(R.array.useful_links_7); break;
-            case 8:mLinkValues = resources.getStringArray(R.array.useful_links_8); break;
-            case 9:mLinkValues = resources.getStringArray(R.array.useful_links_9); break;
-            case 10:mLinkValues = resources.getStringArray(R.array.useful_links_10); break;
-            case 11:mLinkValues = resources.getStringArray(R.array.useful_links_11); break;
-            case 12:mLinkValues = resources.getStringArray(R.array.useful_links_12); break;
-            case 13:mLinkValues = resources.getStringArray(R.array.useful_links_13); break;
-            case 14:mLinkValues = resources.getStringArray(R.array.useful_links_14); break;
-            case 15:mLinkValues = resources.getStringArray(R.array.useful_links_15); break;
-            case 16:mLinkValues = resources.getStringArray(R.array.useful_links_16); break;
-            case 17:mLinkValues = resources.getStringArray(R.array.useful_links_17); break;
-            case 18:mLinkValues = resources.getStringArray(R.array.useful_links_18); break;
-            case 19:mLinkValues = resources.getStringArray(R.array.useful_links_19); break;
-            case 20:mLinkValues = resources.getStringArray(R.array.useful_links_20); break;
-            case 21:mLinkValues = resources.getStringArray(R.array.useful_links_21); break;
-            case 22:mLinkValues = resources.getStringArray(R.array.useful_links_22); break;
-            case 23:mLinkValues = resources.getStringArray(R.array.useful_links_23); break;
-            case 24:mLinkValues = resources.getStringArray(R.array.useful_links_24); break;
-            case 25:mLinkValues = resources.getStringArray(R.array.useful_links_25); break;
-            case 26:mLinkValues = resources.getStringArray(R.array.useful_links_26); break;
-            case 27:mLinkValues = resources.getStringArray(R.array.useful_links_27); break;
-            default:throw new IllegalArgumentException("Invalid links array: " + linksArray);
-        }
+        final int linkId = resources.getIdentifier("useful_links_" + linksArray,
+                "string-array", NavigationApplication.getSimplePackageName());
 
+        mLinkValues = resources.getStringArray(linkId);
         mHasParentList = hasParentList;
         mParentList = parentList;
         mListName = listName;
@@ -131,16 +96,17 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
             {
                 viewHolder.itemView.setTag(Pair.create(TYPE_RETURN, 0));
                 viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getContext()
-                        .getResources().getColor(R.color.primary_garnet));
+                        .getResources()
+                        .getColor(R.color.primary_garnet));
 
                 viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_arrow_back);
                 viewHolder.mTextViewTitle.setText(mListName);
                 viewHolder.mTextViewSubtitle.setText(viewHolder.mTextViewSubtitle.getContext()
-                        .getResources().getString(R.string.text_return_to) + " " + mParentList);
+                        .getResources()
+                        .getString(R.string.text_return_to) + " " + mParentList);
                 return;
             }
-            else
-                positionOffset = 1;
+            positionOffset = 1;
         }
         else
             positionOffset = 0;
@@ -148,7 +114,8 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
         String[] itemSplit = mLinkValues[position - positionOffset].split("~");
         viewHolder.mTextViewTitle.setText(itemSplit[0]);
         viewHolder.itemView.setBackgroundColor(viewHolder.itemView.getContext()
-                .getResources().getColor(R.color.primary_gray));
+                .getResources()
+                .getColor(R.color.primary_gray));
 
         if (itemSplit[1].matches("\\d+"))
         {
@@ -185,7 +152,9 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     @Override
     public int getItemCount()
     {
-        return mLinkValues.length + ((mHasParentList) ? 1 : 0);
+        return mLinkValues.length + ((mHasParentList)
+                ? 1
+                : 0);
     }
 
     @Override
@@ -266,10 +235,10 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
     }
 
     /**
-     * Subclass of RecyclerView.ViewHolder to manage view which will display text to
-     * the user.
+     * Subclass of RecyclerView.ViewHolder to manage view which will display text to the user.
      */
-    public static class LinksViewHolder extends RecyclerView.ViewHolder
+    public static class LinksViewHolder
+            extends RecyclerView.ViewHolder
     {
         /** Displays title of the item. */
         private TextView mTextViewTitle;
@@ -279,8 +248,8 @@ public class LinksAdapter extends RecyclerView.Adapter<LinksAdapter.LinksViewHol
         private ImageView mImageViewIcon;
 
         /**
-         * Gets references for member variables from {@code itemLayout} then passes
-         * {@code itemLayout} to super constructor.
+         * Gets references for member variables from {@code itemLayout} then passes {@code
+         * itemLayout} to super constructor.
          *
          * @param itemLayout root layout of view holder
          */

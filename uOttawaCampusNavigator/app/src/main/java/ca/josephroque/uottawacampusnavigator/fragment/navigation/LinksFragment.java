@@ -17,46 +17,40 @@ import ca.josephroque.uottawacampusnavigator.util.DividerItemDecoration;
 import ca.josephroque.uottawacampusnavigator.util.ExternalUtil;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link LinksFragment#newInstance} factory method to
+ * A simple {@link Fragment} subclass. Use the {@link LinksFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinksFragment extends Fragment
-    implements LinksAdapter.LinkAdapterCallback
+public class LinksFragment
+        extends Fragment
+        implements LinksAdapter.LinkAdapterCallback
 {
+
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "LinksFragment";
 
-    // Constant values
-
-	/** Remembers which useful_links array is to be displayed. */
+    /** Remembers which useful_links array is to be displayed. */
     private static final String ARG_LINKS_ARRAY = "arg_links_array";
-	/** Remembers depth of fragment, i.e. how many clicks from top LinksFragment. */
+    /** Remembers depth of fragment, i.e. how many clicks from top LinksFragment. */
     private static final String ARG_DEPTH = "arg_depth";
-	/** Remembers name of the list this fragment's parent displays. */
-	private static final String ARG_PARENT_LIST = "arg_parent_list";
-	/** Remembers name of the list this fragment displays. */
-	private static final String ARG_LIST_NAME = "arg_list_name";
+    /** Remembers name of the list this fragment's parent displays. */
+    private static final String ARG_PARENT_LIST = "arg_parent_list";
+    /** Remembers name of the list this fragment displays. */
+    private static final String ARG_LIST_NAME = "arg_list_name";
 
-    // Objects
 
-    // Arrays, data structures
-
-    // Primitive variables
-
-	/** Indicates which useful_links array this fragment displays. */
+    /** Indicates which useful_links array this fragment displays. */
     private int mLinksArray;
-	/** Indicates depth from top LinksFragment in backstack. */
+    /** Indicates depth from top LinksFragment in backstack. */
     private int mDepth;
-	/** Name of list which this fragment's parent displays. */
-	private String mParentList;
-	/** Name of list which this fragment displays. */
-	private String mListName;
+    /** Name of list which this fragment's parent displays. */
+    private String mParentList;
+    /** Name of list which this fragment displays. */
+    private String mListName;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Use this factory method to create a new instance of this fragment using the provided
+     * parameters.
      *
      * @param linksArray determines useful_links array which this fragment will display
      * @param depth how many levels deep this fragment is
@@ -73,8 +67,8 @@ public class LinksFragment extends Fragment
         Bundle args = new Bundle();
         args.putInt(ARG_LINKS_ARRAY, linksArray);
         args.putInt(ARG_DEPTH, depth);
-		args.putString(ARG_PARENT_LIST, parentList);
-		args.putString(ARG_LIST_NAME, listName);
+        args.putString(ARG_PARENT_LIST, parentList);
+        args.putString(ARG_LIST_NAME, listName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,13 +78,15 @@ public class LinksFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
-        Bundle bundle = (savedInstanceState != null) ? savedInstanceState : getArguments();
+        Bundle bundle = (savedInstanceState != null)
+                ? savedInstanceState
+                : getArguments();
         if (bundle != null)
         {
             mLinksArray = bundle.getInt(ARG_LINKS_ARRAY);
             mDepth = bundle.getInt(ARG_DEPTH);
-			mParentList = bundle.getString(ARG_PARENT_LIST);
-			mListName = bundle.getString(ARG_LIST_NAME);
+            mParentList = bundle.getString(ARG_PARENT_LIST);
+            mListName = bundle.getString(ARG_LIST_NAME);
         }
     }
 
@@ -120,14 +116,15 @@ public class LinksFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putInt(ARG_LINKS_ARRAY, mLinksArray);
         outState.putInt(ARG_DEPTH, mDepth);
-		outState.putString(ARG_PARENT_LIST, mParentList);
-		outState.putString(ARG_LIST_NAME, mListName);
+        outState.putString(ARG_PARENT_LIST, mParentList);
+        outState.putString(ARG_LIST_NAME, mListName);
     }
 
     @Override
     public void openSublinks(int linksArray, String listTitle)
     {
-        getActivity().getSupportFragmentManager().beginTransaction()
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
                         R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.fl_nav_fragment_container,
@@ -148,11 +145,11 @@ public class LinksFragment extends Fragment
     {
         ExternalUtil.dialPhoneNumber(getActivity(), phoneNumber);
     }
-	
-	@Override
-	public void moveUpList()
-	{
-		getActivity().getSupportFragmentManager()
-				.popBackStack();
-	}
+
+    @Override
+    public void moveUpList()
+    {
+        getActivity().getSupportFragmentManager()
+                .popBackStack();
+    }
 }

@@ -26,14 +26,14 @@ import ca.josephroque.uottawacampusnavigator.util.Constants;
  * Activity with purpose of introducing user to the application on their first launch. Subsequent
  * launches will instead begin with instance of {@link NavigationActivity}.
  */
-public class IntroActivity extends FragmentActivity
+public class IntroActivity
+        extends FragmentActivity
         implements LanguageFragment.LanguageCallbacks
 {
+
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "IntroActivity";
-
-    // Constant values
 
     /** Identifier for the current feature page being displayed. */
     private static final String ARG_CURRENT_PAGE = "arg_intro_cur_page";
@@ -47,8 +47,6 @@ public class IntroActivity extends FragmentActivity
     /** Alpha value for an inactive indicator dot. */
     private static final float INDICATOR_INACTIVE = 0.25f;
 
-    // Objects
-
     /** Adapter to manage fragments displayed by this activity. */
     private IntroPagerAdapter mPagerAdapter;
 
@@ -56,10 +54,6 @@ public class IntroActivity extends FragmentActivity
     private RelativeLayout mRelativeLayoutToolbar;
     /** Provide feedback on user's navigation in app. */
     private View[] mViewPositionIndicator;
-
-    // Arrays, data structures
-
-    // Primitive variables
 
     /** Indicates if the user is select a language. */
     private boolean mIsSelectingLanguage = true;
@@ -143,8 +137,8 @@ public class IntroActivity extends FragmentActivity
     }
 
     /**
-     * Sets up toolbar for bottom of screen which indicates user position within features
-     * and offers utilities for continuing through the application.
+     * Sets up toolbar for bottom of screen which indicates user position within features and offers
+     * utilities for continuing through the application.
      */
     private void setupFeatureToolbar()
     {
@@ -152,24 +146,26 @@ public class IntroActivity extends FragmentActivity
         mRelativeLayoutToolbar.setVisibility(View.INVISIBLE);
 
         mViewPositionIndicator = new View[FeatureFragment.MAX_FEATURES];
-        mViewPositionIndicator[0] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_0);
-        mViewPositionIndicator[1] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_1);
-        mViewPositionIndicator[2] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_2);
-        mViewPositionIndicator[3] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_3);
-        mViewPositionIndicator[4] = mRelativeLayoutToolbar.findViewById(R.id.view_indicator_4);
-        for (View v : mViewPositionIndicator)
-            v.setAlpha(INDICATOR_INACTIVE);
+        for (int i = 0; i < mViewPositionIndicator.length; i++)
+        {
+            final int viewId = getResources().getIdentifier("view_indicator_" + i, "id",
+                    NavigationApplication.getSimplePackageName());
+            mViewPositionIndicator[i] = mRelativeLayoutToolbar.findViewById(viewId);
+            mViewPositionIndicator[i].setAlpha(INDICATOR_INACTIVE);
+        }
 
-        mRelativeLayoutToolbar.findViewById(R.id.tv_intro_continue).setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        startActivity(new Intent(IntroActivity.this, NavigationActivity.class));
-                        finish();
-                    }
-                });
+        mRelativeLayoutToolbar.findViewById(R.id.tv_intro_continue)
+                .setOnClickListener(
+                        new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                startActivity(
+                                        new Intent(IntroActivity.this, NavigationActivity.class));
+                                finish();
+                            }
+                        });
     }
 
     /**
@@ -190,8 +186,10 @@ public class IntroActivity extends FragmentActivity
     /**
      * Manages which fragments will be displayed in the activity's view pager.
      */
-    private class IntroPagerAdapter extends FragmentStatePagerAdapter
+    private class IntroPagerAdapter
+            extends FragmentStatePagerAdapter
     {
+
         /** Fragments in the view pager. */
         private SparseArray<WeakReference<Fragment>> mRegisteredFragments = new SparseArray<>();
 
@@ -260,7 +258,8 @@ public class IntroActivity extends FragmentActivity
          */
         private Fragment getRegisteredFragment(int position)
         {
-            return mRegisteredFragments.get(position).get();
+            return mRegisteredFragments.get(position)
+                    .get();
         }
     }
 }

@@ -9,11 +9,10 @@ import android.content.res.Resources;
  */
 public final class DataFormatter
 {
+
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "DataFormatter";
-
-    // Constant values
 
     /** Ratio for converting dp to pixels using screen density. */
     private static final float DP_PIXEL_DENSITY_RATIO = 0.5f;

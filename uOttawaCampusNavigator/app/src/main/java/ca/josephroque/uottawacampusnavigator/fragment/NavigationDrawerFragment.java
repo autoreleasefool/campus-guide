@@ -24,18 +24,18 @@ import ca.josephroque.uottawacampusnavigator.adapter.DrawerAdapter;
 import ca.josephroque.uottawacampusnavigator.util.Constants;
 
 /**
- * Fragment used for managing interactions for and presentation of a navigation drawer.
- * See <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
- * design guidelines</a> for a complete explanation of the behaviors implemented here.
+ * Fragment used for managing interactions for and presentation of a navigation drawer. See <a
+ * href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction"> design
+ * guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment
-    implements DrawerAdapter.DrawerAdapterCallbacks
+public class NavigationDrawerFragment
+        extends Fragment
+        implements DrawerAdapter.DrawerAdapterCallbacks
 {
+
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "MavigationDrawer";
-
-    // Constant values
 
     /** Remember the position of the current selected item. */
     private static final String ARG_STATE_SELECTED_POSITION = "arg_navigation_drawer_position";
@@ -44,39 +44,35 @@ public class NavigationDrawerFragment extends Fragment
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "pref_navigation_drawer_learned";
-	
-	/** Icons for items which appear in the navigation drawer. */
-	private static final int[] NAVIGATION_DRAWER_ICONS = {
-			R.drawable.ic_home,
-			R.drawable.ic_navigation,
-			R.drawable.ic_star,
-			R.drawable.ic_link,
-			R.drawable.ic_bus,
-			R.drawable.ic_accessibility,
-			R.drawable.ic_whatshot,
-			R.drawable.ic_settings,
-			R.drawable.ic_help,
-			R.drawable.ic_language,
-	};
-	
-	/** Colors for icons when they are highlighted. */
-	private static final int[] NAVIGATION_DRAWER_HIGHLIGHTS = {
-			R.color.nav_home_highlight,
-			R.color.nav_navigation_highlight,
-			R.color.nav_star_highlight,
-			R.color.nav_link_highlight,
-			R.color.nav_bus_highlight,
-			R.color.nav_accessibility_highlight,
-			R.color.nav_whatshot_highlight,
-			R.color.nav_settings_highlight,
-			R.color.nav_help_highlight,
-			R.color.nav_language_highlight,
-	};
 
-    // Objects
+    /** Icons for items which appear in the navigation drawer. */
+    private static final int[] NAVIGATION_DRAWER_ICONS = {
+            R.drawable.ic_home,
+            R.drawable.ic_navigation,
+            R.drawable.ic_star,
+            R.drawable.ic_link,
+            R.drawable.ic_bus,
+            R.drawable.ic_accessibility,
+            R.drawable.ic_whatshot,
+            R.drawable.ic_settings,
+            R.drawable.ic_help,
+            R.drawable.ic_language,
+    };
 
-    /** Instance of callback interface. */
-    private NavigationDrawerCallbacks mCallback;
+    /** Colors for icons when they are highlighted. */
+    private static final int[] NAVIGATION_DRAWER_HIGHLIGHTS = {
+            R.color.nav_home_highlight,
+            R.color.nav_navigation_highlight,
+            R.color.nav_star_highlight,
+            R.color.nav_link_highlight,
+            R.color.nav_bus_highlight,
+            R.color.nav_accessibility_highlight,
+            R.color.nav_whatshot_highlight,
+            R.color.nav_settings_highlight,
+            R.color.nav_help_highlight,
+            R.color.nav_language_highlight,
+    };
+
     /** Helper component that ties the action bar to the navigation drawer. */
     private ActionBarDrawerToggle mDrawerToggle;
     /** Layout for the navigation drawer. */
@@ -84,12 +80,11 @@ public class NavigationDrawerFragment extends Fragment
     /** Container for fragments. */
     private View mFragmentContainerView;
 
-    // Arrays, data structures
+    /** Instance of callback interface. */
+    private NavigationDrawerCallbacks mCallback;
 
     /** Items which will appear in the navigation drawer. */
     private static String[] sNavigationDrawerItems;
-
-    // Primitive variables
 
     /** Indicates if the highlights have been converted to actual colors values. */
     private static boolean sHighlightsConverted = false;
@@ -117,11 +112,11 @@ public class NavigationDrawerFragment extends Fragment
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
-		
-		boolean appIsEnglish = sp.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
-		sNavigationDrawerItems = (appIsEnglish)
-				? Constants.NAVIGATION_DRAWER_ITEMS_EN
-				: Constants.NAVIGATION_DRAWER_ITEMS_FR;
+
+        boolean appIsEnglish = sp.getBoolean(Constants.PREF_LANGUAGE_SELECTED, true);
+        sNavigationDrawerItems = (appIsEnglish)
+                ? Constants.NAVIGATION_DRAWER_ITEMS_EN
+                : Constants.NAVIGATION_DRAWER_ITEMS_FR;
 
         if (savedInstanceState != null)
         {
@@ -138,13 +133,13 @@ public class NavigationDrawerFragment extends Fragment
     {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.fragment_recyclerview, container, false);
-				
-		if (!sHighlightsConverted)
-			convertHighlights(getResources());
+
+        if (!sHighlightsConverted)
+            convertHighlights(getResources());
 
         DrawerAdapter drawerAdapter = new DrawerAdapter(this,
                 NAVIGATION_DRAWER_ICONS,
-				NAVIGATION_DRAWER_HIGHLIGHTS,
+                NAVIGATION_DRAWER_HIGHLIGHTS,
                 sNavigationDrawerItems);
         drawerAdapter.addSeparator(Constants.NAVIGATION_ITEM_SETTINGS);
         drawerAdapter.setPositionNotHighlighted(Constants.NAVIGATION_ITEM_SETTINGS);
@@ -167,6 +162,7 @@ public class NavigationDrawerFragment extends Fragment
 
     /**
      * Checks if the navigation drawer is open.
+     *
      * @return true if the drawer is fully open, false otherwise
      */
     public boolean isDrawerOpen()
@@ -177,7 +173,7 @@ public class NavigationDrawerFragment extends Fragment
     /**
      * Users of this fragment must call this method to set up the navigation drawer interactions.
      *
-     * @param fragmentId   The android:id of this fragment in its activity's layout
+     * @param fragmentId The android:id of this fragment in its activity's layout
      * @param drawerLayout The DrawerLayout containing this fragment's UI
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout)
@@ -212,7 +208,8 @@ public class NavigationDrawerFragment extends Fragment
                 if (!mUserLearnedDrawer)
                 {
                     mUserLearnedDrawer = true;
-                    PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                    PreferenceManager.getDefaultSharedPreferences(getActivity())
+                            .edit()
                             .putBoolean(PREF_USER_LEARNED_DRAWER, true)
                             .apply();
                 }
@@ -223,8 +220,8 @@ public class NavigationDrawerFragment extends Fragment
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer
         if (!mUserLearnedDrawer && !mFromSavedInstanceState)
             mDrawerLayout.openDrawer(mFragmentContainerView);
-		
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerLayout.post(new Runnable()
         {
             @Override
@@ -298,27 +295,28 @@ public class NavigationDrawerFragment extends Fragment
             mCallback.onNavigationDrawerItemSelected(
                     sNavigationDrawerItems[position]);
     }
-	
-	@Override
-	public int getCurrentPosition()
-	{
-		return mCurrentSelectedPosition;
-	}
+
+    @Override
+    public int getCurrentPosition()
+    {
+        return mCurrentSelectedPosition;
+    }
 
     /**
-     * Converts values in {@code NAVIGAION_DRAWER_HIGHLIGHTS} from color ids to their
-     * integer values.
+     * Converts values in {@code NAVIGAION_DRAWER_HIGHLIGHTS} from color ids to their integer
+     * values.
+     *
      * @param resources to get color represented by ids
      */
-	private static void convertHighlights(Resources resources)
-	{
-		for (int i = 0; i < NAVIGATION_DRAWER_HIGHLIGHTS.length; i++)
-		{
-			NAVIGATION_DRAWER_HIGHLIGHTS[i] =
-				resources.getColor(NAVIGATION_DRAWER_HIGHLIGHTS[i]);
-		}
-		sHighlightsConverted = true;
-	}
+    private static void convertHighlights(Resources resources)
+    {
+        for (int i = 0; i < NAVIGATION_DRAWER_HIGHLIGHTS.length; i++)
+        {
+            NAVIGATION_DRAWER_HIGHLIGHTS[i] =
+                    resources.getColor(NAVIGATION_DRAWER_HIGHLIGHTS[i]);
+        }
+        sHighlightsConverted = true;
+    }
 
     /**
      * Closes the navigation drawer.
@@ -334,9 +332,11 @@ public class NavigationDrawerFragment extends Fragment
      */
     public interface NavigationDrawerCallbacks
     {
+
         /**
          * Called when an item in the navigation drawer is selected.
-		 * @param itemName name of the selected item
+         *
+         * @param itemName name of the selected item
          */
         void onNavigationDrawerItemSelected(String itemName);
     }
