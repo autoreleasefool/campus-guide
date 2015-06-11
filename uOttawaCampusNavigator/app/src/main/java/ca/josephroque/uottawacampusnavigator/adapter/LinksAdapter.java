@@ -1,7 +1,9 @@
 package ca.josephroque.uottawacampusnavigator.adapter;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,17 +55,18 @@ public class LinksAdapter
      * Gets an array for {@code mLinkValues} from resources based on linksArray.
      *
      * @param callback instance of callback interface
-     * @param resources to get string arrays
+     * @param context for resources
      * @param linksArray which useful_links array will be used
      * @param hasParentList indicates if this fragment has a parent
      * @param parentList name of parent list or null if there isn't one
      * @param listName name of current list
      */
-    public LinksAdapter(LinkAdapterCallback callback, Resources resources,
+    public LinksAdapter(LinkAdapterCallback callback, Context context,
                         int linksArray, boolean hasParentList, String parentList, String listName)
     {
+        final Resources resources = context.getResources();
         final int linkId = resources.getIdentifier("useful_links_" + linksArray,
-                "string-array", NavigationApplication.getSimplePackageName());
+                "array", NavigationApplication.getSimplePackageName());
 
         mLinkValues = resources.getStringArray(linkId);
         mHasParentList = hasParentList;
