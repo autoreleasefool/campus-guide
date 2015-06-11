@@ -25,9 +25,10 @@ public class LinksAdapter
         extends RecyclerView.Adapter<LinksAdapter.LinksViewHolder>
         implements View.OnClickListener
 {
+
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
-    private static final String TAG = "LanguageFragment";
+    private static final String TAG = "LinksAdapter";
 
     /** Represents an item which references more links. */
     private static final byte TYPE_MORE_LINKS = 0;
