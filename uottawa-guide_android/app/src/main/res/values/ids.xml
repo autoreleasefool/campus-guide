@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- IDs for FeatureFragment views -->
+    <item name="tv_feature" type="id" />
+    <item name="iv_feature" type="id" />
+    <item name="space_feature" type="id" />
+
+</resources>
