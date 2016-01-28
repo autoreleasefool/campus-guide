@@ -4,13 +4,14 @@ var React = require('react-native');
 var SplashPage = require('./views/splash');
 
 var {
-  Navigator
+  Navigator,
 } = React;
 
+// TODO: figure out exactly what this does
 var CustomSceneConfig = Object.assign({}, Navigator.SceneConfigs.FloatFromRight, {
   // A very tighly wound spring will make this transition fast
   springTension: 100,
-  springFriction: 1
+  springFriction: 1,
 });
 
 var CampusGuide = React.createClass({
@@ -31,7 +32,7 @@ var CampusGuide = React.createClass({
         renderScene={ this._renderScene }
         configureScene={ this._configureScene } />
     );
-  }
+  },
 });
 
 module.exports = CampusGuide;
