@@ -28,9 +28,9 @@ var CampusGuide = React.createClass({
   render() {
     return (
       <Navigator
-        initialRoute={{ id: 1 }}
-        renderScene={ this._renderScene }
-        configureScene={ this._configureScene } />
+        initialRoute={{id: 1}}
+        renderScene={this._renderScene}
+        configureScene={this._configureScene} />
     );
   },
 });
