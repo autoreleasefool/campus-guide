@@ -7,13 +7,6 @@ var {
   Navigator,
 } = React;
 
-// TODO: figure out exactly what this does
-var CustomSceneConfig = Object.assign({}, Navigator.SceneConfigs.FloatFromRight, {
-  // A very tighly wound spring will make this transition fast
-  springTension: 100,
-  springFriction: 1,
-});
-
 var CampusGuide = React.createClass({
   _renderScene(route, navigator) {
     if (route.id === 1) {
@@ -22,7 +15,7 @@ var CampusGuide = React.createClass({
   },
 
   _configureScene(route) {
-    return CustomSceneConfig;
+    return Navigator.SceneConfigs.FloatFromRight;
   },
 
   render() {
