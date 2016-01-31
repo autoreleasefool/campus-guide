@@ -18,19 +18,20 @@ var SplashScreen = React.createClass({
 
   _selectEnglish() {
     AsyncStorage.setItem(Constants.PREF_LANGUAGE, '0');
-    this.props.navigator.push({id: 2});
   },
 
   _selectFrench() {
     AsyncStorage.setItem(Constants.PREF_LANGUAGE, '1');
-    this.props.navigator.push({id: 2});
   },
 
   render() {
     return (
       <View style = {_styles.container}>
 
-        <TouchableOpacity onPress={this._selectEnglish} style={{flex: 1}}>
+        <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={this._selectEnglish}
+            style={{flex: 1}}>
           <View style={[styles.garnetBackground, _styles.languageContainer]}>
             <Text style={[styles.mediumText, {color: 'white'}]}>
               {I18n.t('continue_in', {locale: 'en'})}
@@ -41,12 +42,15 @@ var SplashScreen = React.createClass({
               </Text>
             </View>
           </View>
-          <Text style={[styles.smallText, _styles.onlyOnceText, {bottom: 0}]}>
+          <Text style={[styles.smallText, styles.garnetBackground, _styles.onlyOnceText, {bottom: 0}]}>
             {I18n.t('only_once', {locale: 'en'})}
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={this._selectFrench} style={{flex: 1}}>
+        <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={this._selectFrench}
+            style={{flex: 1}}>
           <View style={[styles.charcoalGreyBackground, _styles.languageContainer]}>
             <Text style={[styles.mediumText, {color: 'white'}]}>
               {I18n.t('continue_in', {locale: 'fr'})}
@@ -57,7 +61,7 @@ var SplashScreen = React.createClass({
               </Text>
             </View>
           </View>
-          <Text style={[styles.smallText, _styles.onlyOnceText, {top: 0}]}>
+          <Text style={[styles.smallText, styles.charcoalGreyBackground, _styles.onlyOnceText, {top: 0}]}>
             {I18n.t('only_once', {locale: 'fr'})}
           </Text>
         </TouchableOpacity>
@@ -70,7 +74,8 @@ var SplashScreen = React.createClass({
 var _styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    backgroundColor: '#000000'
   },
   languageContainer: {
     position: 'absolute',
@@ -88,7 +93,7 @@ var _styles = StyleSheet.create({
     textAlign: 'center',
     left: 0,
     right: 0,
-    padding: 10,
+    padding: 20,
   },
 });
 

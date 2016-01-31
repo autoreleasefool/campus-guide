@@ -8,18 +8,6 @@ var {
 
 module.exports = StyleSheet.create({
 
-  controlPanel: {
-    flex: 1,
-    backgroundColor:'#326945',
-  },
-  controlPanelWelcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 25,
-    color:'white',
-    fontWeight:'bold',
-  },
-
   /* Background Colours */
   garnetBackground: {
     backgroundColor: '#8F001A',
