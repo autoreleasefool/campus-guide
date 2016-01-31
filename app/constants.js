@@ -5,6 +5,6 @@ module.exports = {
 
   Views: {
     SPLASH: 1,
-    MAIN_MENU: 2,
-  },
+    MAIN: 2
+  }
 };

@@ -11,17 +11,6 @@ import com.i18n.reactnativei18n.ReactNativeI18n;
 
 public class MainActivity extends ReactActivity {
 
-  /** React Instance Manager. */
-  private ReactInstanceManager mReactInstanceManager;
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    mReactInstanceManager = ReactInstanceManager.builder()
-        .setApplication(getApplication())
-        .addPackage(new ReactNativeI18n())  // <---- add this line
-        .build();
-  }
-
   /**
    * Returns the name of the main component registered from JavaScript.
    * This is used to schedule rendering of the component.
@@ -47,6 +36,7 @@ public class MainActivity extends ReactActivity {
   @Override
   protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
-      new MainReactPackage());
+      new MainReactPackage(),
+      new ReactNativeI18n());
   }
 }
