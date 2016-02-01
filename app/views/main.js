@@ -10,6 +10,27 @@ var {
 
 var MainScreen = React.createClass({
 
+  _orientationDidChange: function(orientation) {
+    // TODO: if this remains unused, then delete it and the add/remove OrientationListener lines
+    if (orientation == 'LANDSCAPE') {
+      // TODO: adjust for landscape layout if necessary
+    } else {
+      // TODO: adjust for portrait layout if necessary
+    }
+  },
+
+  componentDidMount() {
+    // Allow all orientations
+    Orientation.unlockAllOrientations();
+    // Add a listener for orientation changes
+    Orientation.addOrientationListener(this._orientationDidChange);
+  },
+
+  componentWillUnmount: function() {
+    // Remove the orientation change listener
+    Orientation.removeOrientationListener(this._orientationDidChange);
+  },
+
   render() {
     return (
       <ScrollableTabView

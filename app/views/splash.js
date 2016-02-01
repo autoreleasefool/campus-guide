@@ -3,6 +3,7 @@
 var Constants = require('../constants');
 var I18n = require('react-native-i18n');
 var React = require('react-native');
+var Orientation = require('react-native-orientation');
 var styles = require('../styles');
 
 var {
@@ -16,6 +17,12 @@ var {
 } = React;
 
 var SplashScreen = React.createClass({
+
+  _selectLanguage(language) {
+    // Set the language of the app, open the main screen
+    AsyncStorage.setItem(Constants.PREF_LANGUAGE, language);
+    this.props.navigator.push({id: 2});
+  },
 
   getInitialState() {
     return {
@@ -41,10 +48,9 @@ var SplashScreen = React.createClass({
     });
   },
 
-  _selectLanguage(language) {
-    // Set the language of the app, open the main screen
-    AsyncStorage.setItem(Constants.PREF_LANGUAGE, language);
-    this.props.navigator.push({id: 2});
+  componentDidMount() {
+    // Ensure the splash screen can only be viewed in portrait
+    Orientation.lockToPortrait();
   },
 
   render() {
