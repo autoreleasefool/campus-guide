@@ -1,10 +1,7 @@
 'use strict';
 
-var Constants = require('../constants');
-var I18n = require('react-native-i18n');
+// react-native imports
 var React = require('react-native');
-var Orientation = require('react-native-orientation');
-var styles = require('../styles');
 
 var {
   AsyncStorage,
@@ -15,6 +12,12 @@ var {
   TouchableOpacity,
   View
 } = React;
+
+// Other imports
+var Constants = require('../constants');
+var I18n = require('react-native-i18n');
+var Orientation = require('react-native-orientation');
+var styles = require('../styles');
 
 var SplashScreen = React.createClass({
 
@@ -138,9 +141,7 @@ var _styles = StyleSheet.create({
   },
 });
 
-
 I18n.fallbacks = true;
-
 I18n.translations = {
     en: {
         continue_in: 'Continue in',

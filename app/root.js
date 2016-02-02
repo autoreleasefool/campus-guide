@@ -1,34 +1,42 @@
 'use strict';
 
-var Constants = require('./constants');
-var MainScreen = require('./views/main');
+// react-native imports
 var React = require('react-native');
-var SplashScreen = require('./views/splash');
-var styles = require('./styles');
 
 var {
-  Navigator
+  Navigator,
+  View
 } = React;
+
+// Other imports
+var Constants = require('./constants');
+var MainScreen = require('./views/main');
+var SplashScreen = require('./views/splash');
+var styles = require('./styles');
 
 var CampusGuide = React.createClass({
 
   _renderScene(route, navigator) {
     if (route.id === Constants.Views.SPLASH) {
       return <SplashScreen navigator={navigator} />
-    } else {
+    } else if (route.id === Constants.Views.MAIN) {
       return <MainScreen navigator={navigator} />
     }
+  },
+
+  _configureScene() {
+    return ({
+      ...Navigator.SceneConfigs.HorizontalSwipeJump,
+      gestures: false
+    });
   },
 
   render() {
     return (
       <Navigator
-        configureScene={() => ({
-          ...Navigator.SceneConfigs.HorizontalSwipeJump,
-          gestures: false
-        })}
-        initialRoute={{id: 1}}
-        renderScene={this._renderScene} />
+          configureScene={this._configureScene}
+          initialRoute={{id: 1}}
+          renderScene={this._renderScene} />
     );
   }
 });
