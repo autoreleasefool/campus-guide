@@ -18,6 +18,11 @@
 	<string>1.0</string>
 	<key>CFBundleDisplayName</key>
 	<string>Campus Guide</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Ionicons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+	</array>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
