@@ -16,7 +16,6 @@ var {
 // Other imports
 var Constants = require('../constants');
 var I18n = require('react-native-i18n');
-var Orientation = require('react-native-orientation');
 var Preferences = require('../util/preferences');
 var styles = require('../styles');
 
@@ -35,9 +34,6 @@ var SplashScreen = React.createClass({
   },
 
   componentDidMount() {
-    // Ensure the splash screen can only be viewed in portrait
-    Orientation.lockToPortrait();
-
     var self = this;
     Preferences.loadInitialPreferences().done(function() {
       if (!Preferences.isLanguageSelected()) {

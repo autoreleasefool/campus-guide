@@ -12,6 +12,7 @@ var {
 var Constants = require('./constants');
 var I18n = require('react-native-i18n');
 var MainScreen = require('./views/main');
+var Orientation = require('react-native-orientation');
 var SplashScreen = require('./views/splash');
 var styles = require('./styles');
 
@@ -30,6 +31,11 @@ var CampusGuide = React.createClass({
       ...Navigator.SceneConfigs.HorizontalSwipeJump,
       gestures: false,
     });
+  },
+
+  componentDidMount() {
+    // Lock the application to portrait orientation
+    Orientation.lockToPortrait();
   },
 
   render() {
