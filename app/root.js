@@ -10,16 +10,12 @@ var {
 
 // Other imports
 var Constants = require('./constants');
-var Install = require('./util/install');
+var I18n = require('react-native-i18n');
 var MainScreen = require('./views/main');
 var SplashScreen = require('./views/splash');
 var styles = require('./styles');
 
 var CampusGuide = React.createClass({
-
-  componentDidMount() {
-    Install.appOpened();
-  },
 
   _renderScene(route, navigator) {
     if (route.id === Constants.Views.Splash) {
@@ -45,5 +41,10 @@ var CampusGuide = React.createClass({
     );
   },
 });
+
+// Setup internationalization
+I18n.fallbacks = true;
+I18n.defaultLocale = 'en';
+require('./util/language/translations');
 
 module.exports = CampusGuide;

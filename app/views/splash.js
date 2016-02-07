@@ -17,13 +17,14 @@ var {
 var Constants = require('../constants');
 var I18n = require('react-native-i18n');
 var Orientation = require('react-native-orientation');
+var Preferences = require('../util/preferences');
 var styles = require('../styles');
 
 var SplashScreen = React.createClass({
 
   _selectLanguage(language) {
     // Set the language of the app, open the main screen
-    AsyncStorage.setItem(Constants.PREF_LANGUAGE, language);
+    Preferences.setSelectedLanguage(language);
     this.props.navigator.push({id: 2});
   },
 
@@ -33,27 +34,25 @@ var SplashScreen = React.createClass({
     };
   },
 
-  componentWillMount() {
-    // Checks if the key PREF_LANGUAGE exists before the app loads
-    AsyncStorage.getItem(Constants.PREF_LANGUAGE).then((value) => {
-      if (value === null) {
-        this.setState({
+  componentDidMount() {
+    // Ensure the splash screen can only be viewed in portrait
+    Orientation.lockToPortrait();
+
+    var self = this;
+    Preferences.loadInitialPreferences().done(function() {
+      if (!Preferences.isLanguageSelected()) {
+        self.setState({
           isLoading: false,
         });
       } else {
         // If a lanuage has been selected, remove this language select screen, open the main screen
-        this.props.navigator.push({id: 2});
+        self.props.navigator.push({id: 2});
         // TODO: comment above and uncomment below to always show splash screen
         // this.setState({
         //   isLoading: false
         // });
       }
     });
-  },
-
-  componentDidMount() {
-    // Ensure the splash screen can only be viewed in portrait
-    Orientation.lockToPortrait();
   },
 
   render() {
@@ -73,10 +72,10 @@ var SplashScreen = React.createClass({
       <View style = {_styles.container}>
         <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => this._selectLanguage('0')}
+            onPress={() => this._selectLanguage('en')}
             style={{flex: 1}}>
-            <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
-              <View style={_styles.languageContainer}>
+          <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
+            <View style={_styles.languageContainer}>
               <Text style={[styles.mediumText, {color: 'white'}]}>
                 {I18n.t('continue_in', {locale: 'en'})}
               </Text>
@@ -90,7 +89,7 @@ var SplashScreen = React.createClass({
         </TouchableOpacity>
         <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => this._selectLanguage('1')}
+            onPress={() => this._selectLanguage('fr')}
             style={{flex: 1}}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
@@ -126,17 +125,5 @@ var _styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-I18n.fallbacks = true;
-I18n.translations = {
-    en: {
-        continue_in: 'Continue in',
-        language: 'ENGLISH',
-    },
-    fr: {
-        continue_in: 'Continuer en',
-        language: 'FRANÇAIS',
-    },
-}
 
 module.exports = SplashScreen;

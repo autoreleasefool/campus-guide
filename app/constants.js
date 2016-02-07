@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = {
-  PREF_LANGUAGE: 'pref_lang',
 
   Colors: {
     garnet: '#8F001A',

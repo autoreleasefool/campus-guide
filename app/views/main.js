@@ -4,6 +4,7 @@
 var React = require('react-native');
 
 var {
+  Alert,
   Navigator,
   StyleSheet,
   View,
@@ -12,7 +13,8 @@ var {
 // Other imports
 var buildStyleInterpolator = require('buildStyleInterpolator');
 var Constants = require('../constants');
-var Orientation = require('react-native-orientation');
+var I18n = require('react-native-i18n');
+var Preferences = require('../util/preferences');
 var styles = require('../styles');
 var TabBar = require('../components/tabs');
 
@@ -63,25 +65,22 @@ var MainScreen = React.createClass({
     );
   },
 
-  _orientationDidChange(orientation) {
-    // TODO: if this remains unused, then delete it and the add/remove OrientationListener lines
-    if (orientation == 'LANDSCAPE') {
-      // TODO: adjust for landscape layout if necessary
-    } else {
-      // TODO: adjust for portrait layout if necessary
+  componentDidMount() {
+    // TODO: consider unlocking orientation (probably won't)
+    // Orientation.unlockAllOrientations();
+    //Orientation.addOrientationListener(this._orientationDidChange);
+
+    if (Preferences.isFirstTimeOpened()) {
+      Alert.alert(
+        I18n.t('only_once_title', {locale: Preferences.getSelectedLanguage()}),
+        I18n.t('only_once_message', {locale: Preferences.getSelectedLanguage()}),
+      );
     }
   },
 
-  componentDidMount() {
-    // Allow all orientations
-    Orientation.unlockAllOrientations();
-    // Add a listener for orientation changes
-    Orientation.addOrientationListener(this._orientationDidChange);
-  },
-
   componentWillUnmount() {
-    // Remove the orientation change listener
-    Orientation.removeOrientationListener(this._orientationDidChange);
+    // TODO: consider unlocking orientation (probably won't)
+    //Orientation.removeOrientationListener(this._orientationDidChange);
   },
 
   render() {
