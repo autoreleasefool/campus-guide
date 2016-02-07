@@ -5,7 +5,7 @@ var React = require('react-native');
 
 var {
   Navigator,
-  View
+  View,
 } = React;
 
 // Other imports
@@ -17,9 +17,9 @@ var styles = require('./styles');
 var CampusGuide = React.createClass({
 
   _renderScene(route, navigator) {
-    if (route.id === Constants.Views.SPLASH) {
+    if (route.id === Constants.Views.Splash) {
       return <SplashScreen navigator={navigator} />
-    } else if (route.id === Constants.Views.MAIN) {
+    } else if (route.id === Constants.Views.Main) {
       return <MainScreen navigator={navigator} />
     }
   },
@@ -27,7 +27,7 @@ var CampusGuide = React.createClass({
   _configureScene() {
     return ({
       ...Navigator.SceneConfigs.HorizontalSwipeJump,
-      gestures: false
+      gestures: false,
     });
   },
 
@@ -38,7 +38,7 @@ var CampusGuide = React.createClass({
           initialRoute={{id: 1}}
           renderScene={this._renderScene} />
     );
-  }
+  },
 });
 
 module.exports = CampusGuide;

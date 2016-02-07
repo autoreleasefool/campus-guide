@@ -10,7 +10,7 @@ var {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } = React;
 
 // Other imports
@@ -38,7 +38,7 @@ var SplashScreen = React.createClass({
     AsyncStorage.getItem(Constants.PREF_LANGUAGE).then((value) => {
       if (value === null) {
         this.setState({
-          isLoading: false
+          isLoading: false,
         });
       } else {
         // If a lanuage has been selected, remove this language select screen, open the main screen
@@ -65,18 +65,17 @@ var SplashScreen = React.createClass({
     if (this.state.isLoading) {
       // While checking to see if a language has been selected, display an empty view
       return (
-        <View style={[styles.garnetBackground, {flex: 1}]}></View>
+        <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}></View>
       );
     }
 
     return (
       <View style = {_styles.container}>
-
         <TouchableOpacity
             activeOpacity={0.6}
             onPress={() => this._selectLanguage('0')}
             style={{flex: 1}}>
-            <View style={[styles.garnetBackground, {flex: 1}]}>
+            <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
               <View style={_styles.languageContainer}>
               <Text style={[styles.mediumText, {color: 'white'}]}>
                 {I18n.t('continue_in', {locale: 'en'})}
@@ -87,17 +86,16 @@ var SplashScreen = React.createClass({
                 </Text>
               </View>
             </View>
-            <Text style={[styles.smallText, styles.transparentBackground, _styles.onlyOnceText, {width: onlyOnceTextWidth, left: onlyOnceTextLeft, bottom: 20}]}>
+            <Text style={[styles.smallText, _styles.onlyOnceText, {width: onlyOnceTextWidth, left: onlyOnceTextLeft, bottom: 20, backgroundColor: Constants.Colors.transparent}]}>
               {I18n.t('only_once', {locale: 'en'})}
             </Text>
           </View>
         </TouchableOpacity>
-
         <TouchableOpacity
             activeOpacity={0.6}
             onPress={() => this._selectLanguage('1')}
             style={{flex: 1}}>
-          <View style={[styles.charcoalGreyBackground, {flex: 1}]}>
+          <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
               <Text style={[styles.mediumText, {color: 'white'}]}>
                 {I18n.t('continue_in', {locale: 'fr'})}
@@ -108,12 +106,11 @@ var SplashScreen = React.createClass({
                 </Text>
               </View>
             </View>
-            <Text style={[styles.smallText, styles.transparentBackground, _styles.onlyOnceText, {width: onlyOnceTextWidth, left: onlyOnceTextLeft,  top: 20}]}>
+            <Text style={[styles.smallText, _styles.onlyOnceText, {width: onlyOnceTextWidth, left: onlyOnceTextLeft,  top: 20, backgroundColor: Constants.Colors.transparent}]}>
               {I18n.t('only_once', {locale: 'fr'})}
             </Text>
           </View>
         </TouchableOpacity>
-
       </View>
     );
   },
@@ -123,7 +120,7 @@ var _styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#000000'
+    backgroundColor: '#000000',
   },
   languageContainer: {
     position: 'absolute',
