@@ -86,9 +86,6 @@ var SplashScreen = React.createClass({
                 </Text>
               </View>
             </View>
-            <Text style={[styles.smallText, _styles.onlyOnceText, {width: onlyOnceTextWidth, left: onlyOnceTextLeft, bottom: 20, backgroundColor: Constants.Colors.transparent}]}>
-              {I18n.t('only_once', {locale: 'en'})}
-            </Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -106,9 +103,6 @@ var SplashScreen = React.createClass({
                 </Text>
               </View>
             </View>
-            <Text style={[styles.smallText, _styles.onlyOnceText, {width: onlyOnceTextWidth, left: onlyOnceTextLeft,  top: 20, backgroundColor: Constants.Colors.transparent}]}>
-              {I18n.t('only_once', {locale: 'fr'})}
-            </Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -131,11 +125,6 @@ var _styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  onlyOnceText: {
-    position: 'absolute',
-    color: 'white',
-    textAlign: 'center',
-  },
 });
 
 I18n.fallbacks = true;
@@ -143,12 +132,10 @@ I18n.translations = {
     en: {
         continue_in: 'Continue in',
         language: 'ENGLISH',
-        only_once: 'We\'ll only ask you once, but feel free to switch at any time through the settings.',
     },
     fr: {
         continue_in: 'Continuer en',
         language: 'FRANÇAIS',
-        only_once: 'Nous vous demandons seulement une fois, mais sentons libres de changer à tout moment à travers les paramètres.',
     },
 }
 
