@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.github.yamill.orientation.OrientationPackage;
-import com.i18n.reactnativei18n.ReactNativeI18n;
 
 public class MainActivity extends ReactActivity {
 
@@ -49,7 +48,6 @@ public class MainActivity extends ReactActivity {
   protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
       new MainReactPackage(),
-      new ReactNativeI18n(),
       new OrientationPackage(this));
   }
 }

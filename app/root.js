@@ -8,12 +8,13 @@ var {
   View,
 } = React;
 
+// Views
+var MainScreen = require('./views/main');
+var SplashScreen = require('./views/splash');
+
 // Other imports
 var Constants = require('./constants');
-var I18n = require('react-native-i18n');
-var MainScreen = require('./views/main');
 var Orientation = require('react-native-orientation');
-var SplashScreen = require('./views/splash');
 var styles = require('./styles');
 
 var CampusGuide = React.createClass({
@@ -47,10 +48,5 @@ var CampusGuide = React.createClass({
     );
   },
 });
-
-// Setup internationalization
-I18n.fallbacks = true;
-I18n.defaultLocale = 'en';
-require('./util/language/translations');
 
 module.exports = CampusGuide;
