@@ -10,6 +10,10 @@ var {
   View,
 } = React;
 
+// Views
+var FindHome = require('./find/home');
+var TabBar = require('../components/tabs');
+
 // Other imports
 var buildStyleInterpolator = require('buildStyleInterpolator');
 var Constants = require('../constants');
@@ -48,16 +52,16 @@ var MainScreen = React.createClass({
     return (
       <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
         {route.id === Constants.Views.Find.Home
-            ? <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}></View>
+            ? <FindHome navigator={navigator}/>
             : null}
         {route.id === Constants.Views.Buses.Home
             ? <View style={{flex: 1, backgroundColor: Constants.Colors.darkGrey}}></View>
             : null}
         {route.id === Constants.Views.Discover.Home
-            ? <View style={{flex: 1, backgroundColor: Constants.Colors.polarGrey}}></View>
+            ? <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}></View>
             : null}
         {route.id === Constants.Views.Settings.Home
-            ? <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}></View>
+            ? <View style={{flex: 1, backgroundColor: Constants.Colors.polarGrey}}></View>
             : null}
         <TabBar navigator={navigator} />
       </View>
