@@ -15,9 +15,9 @@ var {
 
 // Other imports
 var Constants = require('../constants');
-var I18n = require('react-native-i18n');
 var Preferences = require('../util/preferences');
 var styles = require('../styles');
+var Translations = require('../util/translations');
 
 var SplashScreen = React.createClass({
 
@@ -73,11 +73,11 @@ var SplashScreen = React.createClass({
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <View style={_styles.languageContainer}>
               <Text style={[styles.mediumText, {color: 'white'}]}>
-                {I18n.t('continue_in', {locale: 'en'})}
+                {Translations['en']['continue_in']}
               </Text>
               <View style={{padding: 5}}>
                 <Text style={[styles.titleText, {color: 'white'}]}>
-                  {I18n.t('language', {locale: 'en'})}
+                  {Translations['en']['language']}
                 </Text>
               </View>
             </View>
@@ -90,11 +90,11 @@ var SplashScreen = React.createClass({
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
               <Text style={[styles.mediumText, {color: 'white'}]}>
-                {I18n.t('continue_in', {locale: 'fr'})}
+                {Translations['fr']['continue_in']}
               </Text>
               <View style={{padding: 5}}>
                 <Text style={[styles.titleText, {color: 'white'}]}>
-                  {I18n.t('language', {locale: 'fr'})}
+                  {Translations['fr']['language']}
                 </Text>
               </View>
             </View>

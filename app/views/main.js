@@ -13,10 +13,9 @@ var {
 // Other imports
 var buildStyleInterpolator = require('buildStyleInterpolator');
 var Constants = require('../constants');
-var I18n = require('react-native-i18n');
 var Preferences = require('../util/preferences');
 var styles = require('../styles');
-var TabBar = require('../components/tabs');
+var Translations = require('../util/translations');
 
 var MainScreen = React.createClass({
 
@@ -72,8 +71,8 @@ var MainScreen = React.createClass({
 
     if (Preferences.isFirstTimeOpened()) {
       Alert.alert(
-        I18n.t('only_once_title', {locale: Preferences.getSelectedLanguage()}),
-        I18n.t('only_once_message', {locale: Preferences.getSelectedLanguage()}),
+        Translations[Preferences.getSelectedLanguage()]['only_once_title'],
+        Translations[Preferences.getSelectedLanguage()]['only_once_message'],
       );
     }
   },
