@@ -1,0 +1,21 @@
+{
+  "settings": [
+    {
+      "name": "Language / Langue",
+      "type": "multi",
+      "options": [
+        "English",
+        "Français",
+      ],
+    },
+    {
+      "name": "Accessibility",
+      "type": "header",
+    },
+    {
+      "name_en": "Prefer wheelchair accessible routes",
+      "name_fr": "Préférez itinéraires accessibles en fauteuil roulant",
+      "type": "boolean",
+    },
+  ],
+}
