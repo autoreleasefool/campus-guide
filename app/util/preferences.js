@@ -8,9 +8,11 @@ var {
 
 const TIMES_APP_OPENED = 'app_times_opened';
 const SELECTED_LANGUAGE = 'app_selected_langauge';
+const PREFER_WHEELCHAIR = 'app_pref_wheel';
 
 var timesAppOpened = 0;
 var selectedLanguage = null;
+var preferWheelchair = false;
 
 /*
  * Method which should be invoked each time the app is opened, to keep a running track
@@ -29,12 +31,19 @@ async function _loadInitialPreferences() {
     selectedLanguage = (value !== null)
         ? value
         : null;
+
+    // If the user prefers wheelchair accessible routes
+    value = await AsyncStorage.getItem(PREFER_WHEELCHAIR)
+    preferWheelchair = (value !== null)
+        ? (value === 'true')
+        : false;
   } catch (e) {
     console.log('Caught error checking first time.', e);
 
     // Setting variables to their default values
     timesAppOpened = 0;
     selectedLanguage = null;
+    preferWheelchair = false;
   }
 
   timesAppOpened += 1;
@@ -84,5 +93,40 @@ module.exports = {
 
     selectedLanguage = language;
     AsyncStorage.setItem(SELECTED_LANGUAGE, language);
+  },
+
+  /*
+   * Indicates if the user prefers wheelchair accessible routes or doesn't care.
+   */
+  isWheelchairRoutePreferred() {
+    return preferWheelchair;
+  },
+
+  /*
+   * Updates the user's preference to wheelchair accessible routes.
+   */
+  setWheelchairRoutePreferred(preferred) {
+    if (preferred !== true && preferred !== false) {
+      return;
+    }
+
+    preferWheelchair = preferred;
+    AsyncStorage.setItem(PREFER_WHEELCHAIR, preferred.toString());
+  },
+
+  /*
+   * Returns the value of a setting based on the provided key. The returned value may be a string, boolean, integer,
+   * or object, and should correspond to the type of the setting.
+   */
+  getSetting(key) {
+    if (key === 'pref_lang') {
+      return (this.getSelectedLanguage() === 'en')
+          ? 'English'
+          : 'French';
+    } else if (key === 'pref_wheel') {
+      return this.isWheelchairRoutePreferred();
+    }
+
+    return null;
   },
 };

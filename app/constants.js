@@ -9,6 +9,7 @@ module.exports = {
     lightGrey: '#ACA39A',
     charcoalGrey: '#2D2D2C',
     transparent: 'rgba(0, 0, 0, 0)',
+    rootElementBorder: 'rgba(0, 0, 0, 0.25)',
   },
 
   Views: {

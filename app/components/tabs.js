@@ -97,11 +97,8 @@ var _styles = StyleSheet.create({
   container: {
     height: 50,
     flexDirection: 'row',
-    borderWidth: 1,
-    borderBottomWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderTopColor: 'rgba(0, 0, 0, 0.4)',
+    borderTopWidth: 1,
+    borderTopColor: Constants.Colors.rootElementBorder,
     backgroundColor: Constants.Colors.polarGrey,
   },
   tab: {
