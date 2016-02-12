@@ -29,7 +29,7 @@ if (Platform.OS === 'ios') {
 } else {
   Icon = require('react-native-vector-icons/MaterialIcons');
   findIcons = {
-    'Search': 'android-search',
+    'Search': 'search',
   };
 }
 
@@ -60,21 +60,21 @@ var FindHome = React.createClass({
               placeholderTextColor={Constants.Colors.lightGrey} />
         </View>
         <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-          <Text style={[styles.mediumText, {color: 'white', paddingTop: 20, paddingBottom: 5}]}>
+          <Text style={[styles.mediumText, {color: 'white', marginTop: 20, marginBottom: 10}]}>
             {Translations[Preferences.getSelectedLanguage()]['upcoming_classes']}
           </Text>
           <TouchableOpacity
               activeOpacity={0.6}
               onPress={() => this._editSchedule()}
               style={{position: 'absolute', right: 0}}>
-            <Text style={[styles.smallText, {color: 'white', paddingTop: 20, paddingBottom: 5, paddingLeft: 10}]}>
+            <Text style={[styles.smallText, {color: 'white', marginTop: 20, marginBottom: 10, marginLeft: 10}]}>
               {Translations[Preferences.getSelectedLanguage()]['edit']}
             </Text>
           </TouchableOpacity>
         </View>
         <View style={[_styles.innerContainer, _styles.upcomingClassesContainer]}>
         </View>
-        <Text style={[styles.mediumText, {color: 'white', paddingTop: 20, paddingBottom: 5}]}>
+        <Text style={[styles.mediumText, {color: 'white', marginTop: 20, marginBottom: 10}]}>
           {Translations[Preferences.getSelectedLanguage()]['uottawa_buildings']}
         </Text>
         <View style={[_styles.innerContainer, _styles.buildingsContainer]}>
@@ -105,8 +105,8 @@ var _styles = StyleSheet.create({
     flex: 2,
   },
   searchIcon: {
-    paddingLeft: 10,
-    paddingRight: 10,
+    marginLeft: 10,
+    marginRight: 10,
   },
 });
 

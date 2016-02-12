@@ -93,7 +93,7 @@ var SettingsHome = React.createClass({
     if (setting.type === 'multi') {
       var content =
           <View style={_styles.settingContent}>
-            <Text style={styles.mediumText}>{Preferences.getSetting(setting.key)}</Text>
+            <Text style={[styles.mediumText, {color: 'black'}]}>{Preferences.getSetting(setting.key)}</Text>
           </View>
     } else if (setting.type === 'boolean') {
       var content =
@@ -110,7 +110,7 @@ var SettingsHome = React.createClass({
       <View style={_styles.settingContainer}>
         <TouchableOpacity onPress={() => this._pressRow(setting.key)}>
           <View style={_styles.setting}>
-            <Text style={[_styles.settingText, styles.mediumText]}>
+            <Text style={[_styles.settingText, styles.mediumText, {color: 'black'}]}>
               {setting['name_' + Preferences.getSelectedLanguage()]}
             </Text>
             {content}
@@ -133,7 +133,7 @@ var SettingsHome = React.createClass({
 
     return (
       <View style={_styles.section}>
-        <Text style={styles.largeText}>{sectionName}</Text>
+        <Text style={[styles.largeText, {color: 'black'}]}>{sectionName}</Text>
       </View>
     );
   },
@@ -163,7 +163,7 @@ var SettingsHome = React.createClass({
     } else {
       return (
         <View style={_styles.container}>
-          <Text style={[_styles.title, styles.titleText]}>
+          <Text style={[_styles.title, styles.titleText, {color: 'black'}]}>
             {Translations[Preferences.getSelectedLanguage()]['settings']}
           </Text>
           <ListView
@@ -183,15 +183,15 @@ var _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.polarGrey,
   },
   title: {
-    height: 60,
-    paddingTop: 30,
+    height: 30,
+    marginTop: 30,
     marginBottom: 5,
     textAlign: 'center',
   },
   section: {
     paddingTop: 10,
     paddingBottom: 10,
-    paddingLeft: 20,
+    paddingLeft: 10,
     backgroundColor: Constants.Colors.lightGrey,
   },
   settingContainer: {
