@@ -12,6 +12,7 @@ var {
 
 // Views
 var FindHome = require('./find/home');
+var SettingsHome = require('./settings/home');
 var TabBar = require('../components/tabs');
 
 // Other imports
@@ -52,7 +53,7 @@ var MainScreen = React.createClass({
     return (
       <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
         {route.id === Constants.Views.Find.Home
-            ? <FindHome navigator={navigator}/>
+            ? <FindHome navigator={navigator} />
             : null}
         {route.id === Constants.Views.Buses.Home
             ? <View style={{flex: 1, backgroundColor: Constants.Colors.darkGrey}}></View>
@@ -61,7 +62,7 @@ var MainScreen = React.createClass({
             ? <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}></View>
             : null}
         {route.id === Constants.Views.Settings.Home
-            ? <View style={{flex: 1, backgroundColor: Constants.Colors.polarGrey}}></View>
+            ? <SettingsHome navigator={navigator} />
             : null}
         <TabBar navigator={navigator} />
       </View>
@@ -87,11 +88,12 @@ var MainScreen = React.createClass({
   },
 
   render() {
+    // TODO: change initial route to Find.Home
     return (
       <View style={_styles.container}>
         <Navigator
             configureScene={this._configureScene}
-            initialRoute={{id: Constants.Views.Find.Home}}
+            initialRoute={{id: Constants.Views.Settings.Home}}
             renderScene={this._renderScene} />
       </View>
     );

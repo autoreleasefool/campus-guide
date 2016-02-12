@@ -3,6 +3,8 @@
 module.exports = {
   en: {
     language: 'English',
+    edit: 'Edit',
+    settings: 'Settings',
 
     continue_in: 'Continue in',
     only_once_title: 'English selected',
@@ -12,10 +14,11 @@ module.exports = {
     upcoming_classes: 'Upcoming Classes',
     uottawa_buildings: 'uOttawa Buildings',
 
-    edit: 'Edit',
   },
   fr: {
     language: 'Français',
+    edit: 'Éditer',
+    settings: 'Réglages',
 
     continue_in: 'Continuer en',
     only_once_title: 'Français sélectionnés',
@@ -24,7 +27,5 @@ module.exports = {
     search_placeholder: 'Recherche des classes, des professeurs...',
     upcoming_classes: 'Classes à venir',
     uottawa_buildings: 'Bâtiments de l\'Université d\'Ottawa',
-
-    edit: 'Éditer',
   },
 }

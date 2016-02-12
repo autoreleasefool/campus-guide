@@ -1,5 +1,5 @@
 {
-  "Language": [
+  "Language / Langue": [
     {
       "name_en": "Language / Langue",
       "name_fr": "Language / Langue",
@@ -11,10 +11,10 @@
       ],
     },
   ],
-  "Accessibility": [
+  "Accessibility:Accessibilité": [
     {
-      "name_en": "Prefer wheelchair accessible routes",
-      "name_fr": "Préférez itinéraires accessibles en fauteuil roulant",
+      "name_en": "Prefer accessible routes",
+      "name_fr": "Préférez routes accessibles",
       "key": "pref_wheel",
       "type": "boolean",
     },

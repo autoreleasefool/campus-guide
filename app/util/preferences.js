@@ -38,7 +38,7 @@ async function _loadInitialPreferences() {
         ? (value === 'true')
         : false;
   } catch (e) {
-    console.log('Caught error checking first time.', e);
+    console.log('Caught error loading preferences.', e);
 
     // Setting variables to their default values
     timesAppOpened = 0;
@@ -122,7 +122,7 @@ module.exports = {
     if (key === 'pref_lang') {
       return (this.getSelectedLanguage() === 'en')
           ? 'English'
-          : 'French';
+          : 'Français';
     } else if (key === 'pref_wheel') {
       return this.isWheelchairRoutePreferred();
     }
