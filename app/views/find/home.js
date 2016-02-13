@@ -18,6 +18,9 @@ var styles = require('../../styles');
 var Translations = require('../../util/translations');
 var {height, width} = Dimensions.get('window');
 
+// View imports
+var Buildings = require('./buildinggrid');
+
 // Icons
 var Ionicons = require('react-native-vector-icons/Ionicons');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -92,6 +95,7 @@ var FindHome = React.createClass({
           </Text>
         </View>
         <View style={[_styles.content, {flex: 2}]}>
+          <Buildings />
         </View>
 
       </View>
