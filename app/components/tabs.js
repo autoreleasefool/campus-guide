@@ -1,8 +1,6 @@
 'use strict';
 
-// react-native imports
 var React = require('react-native');
-
 var {
   Animated,
   Dimensions,
@@ -13,10 +11,10 @@ var {
   View,
 } = React;
 
-// Other imports
 var Constants = require('../constants');
 var styles = require('../styles');
 
+// Icons
 var Icon;
 var tabIcons;
 if (Platform.OS === 'ios') {

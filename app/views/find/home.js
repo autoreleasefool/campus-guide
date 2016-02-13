@@ -1,8 +1,7 @@
 'use strict';
 
-// react-native imports
+// Imports
 var React = require('react-native');
-
 var {
   Dimensions,
   Platform,
@@ -13,22 +12,21 @@ var {
   View,
 } = React;
 
-// Other imports
 var Constants = require('../../constants');
 var Preferences = require('../../util/preferences');
 var styles = require('../../styles');
 var Translations = require('../../util/translations');
+var {height, width} = Dimensions.get('window');
+
+// Icons
+var Ionicons = require('react-native-vector-icons/Ionicons');
+var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 
 // Additional padding at the top of the app if the iOS status bar must be accounted for
 var statusBarPadding = 0;
 if (Platform.OS === 'ios') {
   statusBarPadding = 20;
 }
-
-var Ionicons = require('react-native-vector-icons/Ionicons');
-var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-
-var {height, width} = Dimensions.get('window');
 
 var FindHome = React.createClass({
 

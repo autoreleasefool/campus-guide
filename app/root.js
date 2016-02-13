@@ -1,21 +1,19 @@
 'use strict';
 
-// react-native imports
+// Imports
 var React = require('react-native');
-
 var {
   Navigator,
   View,
 } = React;
 
-// Views
-var MainScreen = require('./views/main');
-var SplashScreen = require('./views/splash');
-
-// Other imports
 var Constants = require('./constants');
 var Orientation = require('react-native-orientation');
 var styles = require('./styles');
+
+// Views
+var MainScreen = require('./views/main');
+var SplashScreen = require('./views/splash');
 
 var CampusGuide = React.createClass({
 

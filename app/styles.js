@@ -1,7 +1,7 @@
 'use strict';
 
+// Imports
 var React = require('react-native');
-
 var {
   StyleSheet
 } = React;

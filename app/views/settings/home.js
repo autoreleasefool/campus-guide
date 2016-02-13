@@ -1,8 +1,7 @@
 'use strict';
 
-// react-native imports
+// Imports
 var React = require('react-native');
-
 var {
   ListView,
   Platform,
@@ -12,7 +11,6 @@ var {
   View,
 } = React;
 
-// Other imports
 var Constants = require('../../constants');
 var Preferences = require('../../util/preferences');
 var styles = require('../../styles');
@@ -89,6 +87,9 @@ var SettingsHome = React.createClass({
     });
   },
 
+  /*
+   * Displays a single row, representing a setting which can be changed.
+   */
   _renderRow(setting, sectionId, rowId) {
     if (setting.type === 'multi') {
       var content =
@@ -120,6 +121,9 @@ var SettingsHome = React.createClass({
     );
   },
 
+  /*
+   * Renders a heading for a section of settings.
+   */
   _renderSectionHeader(sectionData, sectionId) {
     let sectionName = sectionId;
     let colonIndex = sectionName.indexOf(':');
@@ -138,12 +142,6 @@ var SettingsHome = React.createClass({
     );
   },
 
-  componentWillMount() {
-    if (!this.state.loaded) {
-      this._getSettings();
-    }
-  },
-
   getInitialState() {
     return {
       dataSource: new ListView.DataSource({
@@ -151,6 +149,12 @@ var SettingsHome = React.createClass({
         sectionHeaderHasChanged: (s1, s2) => s1 !== s2 || keyOfLastSettingChanged === 'pref_lang',
       }),
       loaded: false,
+    }
+  },
+
+  componentWillMount() {
+    if (!this.state.loaded) {
+      this._getSettings();
     }
   },
 

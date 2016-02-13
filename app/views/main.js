@@ -1,8 +1,7 @@
 'use strict';
 
-// react-native imports
+// Imports
 var React = require('react-native');
-
 var {
   Alert,
   Navigator,
@@ -10,18 +9,18 @@ var {
   View,
 } = React;
 
-// Views
-var FindHome = require('./find/home');
-var SettingsHome = require('./settings/home');
-var TabBar = require('../components/tabs');
-
-// Other imports
 var buildStyleInterpolator = require('buildStyleInterpolator');
 var Constants = require('../constants');
 var Preferences = require('../util/preferences');
 var styles = require('../styles');
 var Translations = require('../util/translations');
 
+// View imports
+var FindHome = require('./find/home');
+var SettingsHome = require('./settings/home');
+var TabBar = require('../components/tabs');
+
+// Root view
 var MainScreen = React.createClass({
 
   _configureScene() {
@@ -93,7 +92,7 @@ var MainScreen = React.createClass({
       <View style={_styles.container}>
         <Navigator
             configureScene={this._configureScene}
-            initialRoute={{id: Constants.Views.Settings.Home}}
+            initialRoute={{id: Constants.Views.Find.Home}}
             renderScene={this._renderScene} />
       </View>
     );

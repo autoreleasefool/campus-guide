@@ -1,8 +1,7 @@
 'use strict';
 
-// react-native imports
+// Imports
 var React = require('react-native');
-
 var {
   AsyncStorage,
   Dimensions,
@@ -13,12 +12,12 @@ var {
   View,
 } = React;
 
-// Other imports
 var Constants = require('../constants');
 var Preferences = require('../util/preferences');
 var styles = require('../styles');
 var Translations = require('../util/translations');
 
+// Root view
 var SplashScreen = React.createClass({
 
   _selectLanguage(language) {
