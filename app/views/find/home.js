@@ -19,19 +19,14 @@ var Preferences = require('../../util/preferences');
 var styles = require('../../styles');
 var Translations = require('../../util/translations');
 
-var Icon;
-var findIcons;
+// Additional padding at the top of the app if the iOS status bar must be accounted for
+var statusBarPadding = 0;
 if (Platform.OS === 'ios') {
-  Icon = require('react-native-vector-icons/Ionicons');
-  findIcons = {
-    'Search': 'ios-search',
-  };
-} else {
-  Icon = require('react-native-vector-icons/MaterialIcons');
-  findIcons = {
-    'Search': 'search',
-  };
+  statusBarPadding = 20;
 }
+
+var Ionicons = require('react-native-vector-icons/Ionicons');
+var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 
 var {height, width} = Dimensions.get('window');
 
@@ -49,36 +44,58 @@ var FindHome = React.createClass({
 
   render() {
     return (
-      <View style={[_styles.container, {backgroundColor: Constants.Colors.garnet}]}>
-        <View style={[_styles.innerContainer, _styles.searchContainer]}>
-          <Icon name={findIcons['Search']} size={25} color={Constants.Colors.lightGrey} style={_styles.searchIcon} />
+      <View style={_styles.container}>
+        <View style={_styles.searchContainer}>
+
+          <Ionicons
+              onPress={() => this.refs.SearchInput.focus()}
+              name={'ios-search'}
+              size={24}
+              color={'white'}
+              style={{marginLeft: 10, marginRight: 10}} />
           <TextInput
+              ref='SearchInput'
               style={{height: 40, flex: 1, color: Constants.Colors.polarGrey}}
               onChangeText={(text) => this._search(text)}
               autoCorrect={false}
               placeholder={Translations[Preferences.getSelectedLanguage()]['search_placeholder']}
               placeholderTextColor={Constants.Colors.lightGrey} />
         </View>
-        <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-          <Text style={[styles.mediumText, {color: 'white', marginTop: 20, marginBottom: 10}]}>
+
+        <View style={_styles.header}>
+          <MaterialIcons
+              name={'event'}
+              size={24}
+              color={'white'}
+              style={{marginLeft: 20}} />
+          <Text style={[styles.largeText, {color: 'white', marginLeft: 20}]}>
             {Translations[Preferences.getSelectedLanguage()]['upcoming_classes']}
           </Text>
           <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={() => this._editSchedule()}
+              onPress={this._editSchedule}
+              activeOpacity={0.4}
               style={{position: 'absolute', right: 0}}>
-            <Text style={[styles.smallText, {color: 'white', marginTop: 20, marginBottom: 10, marginLeft: 10}]}>
+            <Text style={[styles.smallText, {color: 'white', marginTop: 17, marginBottom: 17, marginLeft: 20, marginRight: 20}]}>
               {Translations[Preferences.getSelectedLanguage()]['edit']}
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={[_styles.innerContainer, _styles.upcomingClassesContainer]}>
+        <View style={[_styles.content, {flex: 1}]}>
         </View>
-        <Text style={[styles.mediumText, {color: 'white', marginTop: 20, marginBottom: 10}]}>
-          {Translations[Preferences.getSelectedLanguage()]['uottawa_buildings']}
-        </Text>
-        <View style={[_styles.innerContainer, _styles.buildingsContainer]}>
+
+        <View style={_styles.header}>
+          <MaterialIcons
+              name={'store'}
+              size={24}
+              color={'white'}
+              style={{marginLeft: 20}} />
+          <Text style={[styles.largeText, {color: 'white', marginLeft: 20}]}>
+            {Translations[Preferences.getSelectedLanguage()]['building_directory']}
+          </Text>
         </View>
+        <View style={[_styles.content, {flex: 2}]}>
+        </View>
+
       </View>
     );
   },
@@ -87,27 +104,26 @@ var FindHome = React.createClass({
 var _styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    padding: 20,
-  },
-  innerContainer: {
-    borderRadius: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    backgroundColor: Constants.Colors.garnet,
   },
   searchContainer: {
     alignItems: 'center',
     flexDirection: 'row',
+    borderRadius: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    margin: 20,
+    marginTop: 20 + statusBarPadding,
   },
-  upcomingClassesContainer: {
-    flex: 1,
+  header: {
+    height: 50,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
-  buildingsContainer: {
-    flex: 2,
-  },
-  searchIcon: {
-    marginLeft: 10,
-    marginRight: 10,
-  },
+  content: {
+    margin: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  }
 });
 
 module.exports = FindHome;

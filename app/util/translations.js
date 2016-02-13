@@ -12,7 +12,7 @@ module.exports = {
 
     search_placeholder: 'Search classes, professors...',
     upcoming_classes: 'Upcoming Classes',
-    uottawa_buildings: 'uOttawa Buildings',
+    building_directory: 'Building Directory',
 
   },
   fr: {
@@ -26,6 +26,6 @@ module.exports = {
 
     search_placeholder: 'Recherche des classes, des professeurs...',
     upcoming_classes: 'Classes à venir',
-    uottawa_buildings: 'Bâtiments de l\'Université d\'Ottawa',
+    building_directory: 'Annuaire bâtiment',
   },
 }
