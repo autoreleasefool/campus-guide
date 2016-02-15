@@ -13,7 +13,7 @@ module.exports = {
     search_placeholder: 'Search classes, professors...',
     upcoming_classes: 'Upcoming Classes',
     building_directory: 'Building Directory',
-
+    no_courses_added: 'You haven\'t added any courses.\nTap here to add some now.'
   },
   fr: {
     language: 'Français',
@@ -27,5 +27,6 @@ module.exports = {
     search_placeholder: 'Recherche des classes, des professeurs...',
     upcoming_classes: 'Classes à venir',
     building_directory: 'Annuaire bâtiment',
+    no_courses_added: 'Vous avez pas ajouté de sources.\nAppuyez ici pour ajouter un peu maintenant.'
   },
 }

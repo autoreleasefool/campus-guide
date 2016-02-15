@@ -20,6 +20,7 @@ var {height, width} = Dimensions.get('window');
 
 // View imports
 var Buildings = require('./buildinggrid');
+var Upcoming = require('./upcoming');
 
 // Icons
 var Ionicons = require('react-native-vector-icons/Ionicons');
@@ -82,6 +83,7 @@ var FindHome = React.createClass({
           </TouchableOpacity>
         </View>
         <View style={[_styles.content, {flex: 1}]}>
+          <Upcoming onEdit={this._editSchedule} />
         </View>
 
         <View style={_styles.header}>
