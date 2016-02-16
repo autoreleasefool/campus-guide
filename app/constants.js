@@ -18,7 +18,7 @@ module.exports = {
     Find: {
       Home: 100,
     },
-    Buses: {
+    Schedule: {
       Home: 200,
     },
     Discover: {

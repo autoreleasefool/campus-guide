@@ -21,7 +21,7 @@ if (Platform.OS === 'ios') {
   Icon = require('react-native-vector-icons/Ionicons');
   tabIcons = {
     'Find': 'navigate',
-    'Buses': 'android-bus',
+    'Schedule': 'ios-calendar-outline',
     'Discover': 'compass',
     'Settings': 'ios-gear',
   };
@@ -29,7 +29,7 @@ if (Platform.OS === 'ios') {
   Icon = require('react-native-vector-icons/MaterialIcons');
   tabIcons = {
     'Find': 'directions',
-    'Buses': 'directions-bus',
+    'Schedule': 'event',
     'Discover': 'near-me',
     'Settings': 'settings',
   };
@@ -51,7 +51,7 @@ var TabBar = React.createClass({
 
   render() {
     let findColor = Constants.Colors.charcoalGrey;
-    let busColor = Constants.Colors.charcoalGrey;
+    let scheduleColor = Constants.Colors.charcoalGrey;
     let discoverColor = Constants.Colors.charcoalGrey;
     let settingsColor = Constants.Colors.charcoalGrey;
     let indicatorLeft = 0;
@@ -60,9 +60,9 @@ var TabBar = React.createClass({
     if (currentTab === Constants.Views.Find.Home) {
       indicatorLeft = 0;
       findColor = Constants.Colors.garnet;
-    } else if (currentTab === Constants.Views.Buses.Home) {
+    } else if (currentTab === Constants.Views.Schedule.Home) {
       indicatorLeft = indicatorWidth;
-      busColor = Constants.Colors.garnet;
+      scheduleColor = Constants.Colors.garnet;
     } else if (currentTab === Constants.Views.Discover.Home) {
       indicatorLeft = indicatorWidth * 2;
       discoverColor = Constants.Colors.garnet;
@@ -76,8 +76,8 @@ var TabBar = React.createClass({
         <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Find.Home)}} style={_styles.tab}>
           <Icon name={tabIcons['Find']} size={30} color={findColor} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Buses.Home)}} style={_styles.tab}>
-          <Icon name={tabIcons['Buses']} size={30} color={busColor} />
+        <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Schedule.Home)}} style={_styles.tab}>
+          <Icon name={tabIcons['Schedule']} size={30} color={scheduleColor} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Discover.Home)}} style={_styles.tab}>
           <Icon name={tabIcons['Discover']} size={30} color={discoverColor} />

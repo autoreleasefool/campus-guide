@@ -54,7 +54,7 @@ var MainScreen = React.createClass({
         {route.id === Constants.Views.Find.Home
             ? <FindHome navigator={navigator} />
             : null}
-        {route.id === Constants.Views.Buses.Home
+        {route.id === Constants.Views.Schedule.Home
             ? <View style={{flex: 1, backgroundColor: Constants.Colors.darkGrey}}></View>
             : null}
         {route.id === Constants.Views.Discover.Home
