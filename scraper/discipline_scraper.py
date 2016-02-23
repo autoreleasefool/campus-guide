@@ -1,5 +1,6 @@
 import json
 import re
+from operator import itemgetter
 from selenium.webdriver.support.ui import Select
 
 # Configuration
@@ -81,10 +82,12 @@ def get_disciplines(browser):
 	browser.execute_script('WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ChLangUrlLinkButton1", "en-CA", false, "", "", false, true))')
 
 	disciplines = []
+	disciplines_scraped = 1
+	total_disciplines = len(discipline_codes_to_en_names.keys())
 	for code in discipline_codes_to_en_names:
 		if code == '':
 			continue
-		print_verbose_message('Scraping next discipline:', discipline_codes_to_en_names[code])
+		print_verbose_message('Scraping discipline ({0}/{1}):'.format(disciplines_scraped, total_disciplines), discipline_codes_to_en_names[code])
 
 		# Set the next discipline to be scraped and load its search page
 		discipline_dropdown = Select(browser.find_element_by_id(dropdown_id))
@@ -113,15 +116,15 @@ def get_disciplines(browser):
 
 		# Once the scrape for a discipline is complete, add the data to a list of disciplines to be saved
 		disciplines.append({'name_en': discipline_codes_to_en_names[code], 'name_fr': discipline_codes_to_fr_names[code], 'code': code, 'faculties': '|'.join(faculties)})
+		disciplines_scraped += 1
 
 	# Sorting the disciplines so they are printed in alphabetical order by their code
 	print_verbose_message('All disciplines scraped, formatting and printing.')
-	disciplines = sorted(disciplines, key=attrgetter('code'))
 	formatted_disciplines = {'Disciplines': []}
 	for discipline in disciplines:
-		disc_entry = {'name_en': discipline.name_en, 'name_fr': discipline.name_fr, 'code': discipline.code, 'faculties': discipline.faculties}
-		print_verbose_message('Discipline:', disc_entry)
+		disc_entry = {'name_en': discipline['name_en'], 'name_fr': discipline['name_fr'], 'code': discipline['code'], 'faculties': discipline['faculties']}
 		formatted_disciplines['Disciplines'].append(disc_entry)
+	formatted_disciplines['Disciplines'] = sorted(formatted_disciplines['Disciplines'], key=itemgetter('code'))
 
 	print_verbose_message('Saving to', output_filename)
 	with open(output_filename, 'w', encoding='utf8') as outfile:
