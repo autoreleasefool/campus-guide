@@ -70,7 +70,7 @@ var BuildingGrid = React.createClass({
     }
   },
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.state.loaded) {
       this._loadBuildingsList();
     }
