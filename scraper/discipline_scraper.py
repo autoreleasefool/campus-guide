@@ -89,6 +89,9 @@ def get_disciplines(browser):
 			continue
 		print_verbose_message('Scraping discipline ({0}/{1}):'.format(disciplines_scraped, total_disciplines), discipline_codes_to_en_names[code])
 
+		if disciplines_scraped == 4:
+			break
+
 		# Set the next discipline to be scraped and load its search page
 		discipline_dropdown = Select(browser.find_element_by_id(dropdown_id))
 		discipline_dropdown.select_by_value(code)
@@ -128,4 +131,4 @@ def get_disciplines(browser):
 
 	print_verbose_message('Saving to', output_filename)
 	with open(output_filename, 'w', encoding='utf8') as outfile:
-	    json.dump(formatted_disciplines, outfile, indent=4, sort_keys=True)
+	    json.dump(formatted_disciplines, outfile, indent=4, sort_keys=True, ensure_ascii=False)
