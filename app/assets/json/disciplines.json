@@ -1,718 +1,718 @@
 {
-    "Disciplines": [
-        {
-            "code": "ADM",
-            "faculties": "telfer|graduate",
-            "name_en": "Administration",
-            "name_fr": "Administration"
-        },
-        {
-            "code": "ADX",
-            "faculties": "graduate",
-            "name_en": "Executive MBA",
-            "name_fr": "MBA pour cadres"
-        },
-        {
-            "code": "ALG",
-            "faculties": "arts",
-            "name_en": "German Language and Culture",
-            "name_fr": "Langue et culture allemandes"
-        },
-        {
-            "code": "AMT",
-            "faculties": "arts",
-            "name_en": "Arts, Music, Theatre",
-            "name_fr": "Arts, Musique, Théâtre"
-        },
-        {
-            "code": "ANP",
-            "faculties": "medicine",
-            "name_en": "Anatomy and Physiology",
-            "name_fr": "Anatomie et physiologie"
-        },
-        {
-            "code": "ANT",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Anthropology",
-            "name_fr": "Anthropologie"
-        },
-        {
-            "code": "APA",
-            "faculties": "healthsciences|graduate",
-            "name_en": "Human Kinetics",
-            "name_fr": "Activité physique"
-        },
-        {
-            "code": "APN",
-            "faculties": "graduate",
-            "name_en": "Public and International Affairs",
-            "name_fr": "Affaires publiques et internationales"
-        },
-        {
-            "code": "ARB",
-            "faculties": "arts",
-            "name_en": "Arabic Language and Culture",
-            "name_fr": "Langue et cultures arabes"
-        },
-        {
-            "code": "ART",
-            "faculties": "graduate|arts",
-            "name_en": "Visual Arts",
-            "name_fr": "Arts visuels"
-        },
-        {
-            "code": "ASI",
-            "faculties": "arts",
-            "name_en": "Asian Studies",
-            "name_fr": "Etudes asiatiques"
-        },
-        {
-            "code": "BCH",
-            "faculties": "graduate|science",
-            "name_en": "Biochemistry",
-            "name_fr": "Biochimie"
-        },
-        {
-            "code": "BIL",
-            "faculties": "graduate",
-            "name_en": "Bilingualism Studies",
-            "name_fr": "Études du bilinguisme"
-        },
-        {
-            "code": "BIM",
-            "faculties": "science",
-            "name_en": "Biomedical sciences",
-            "name_fr": "Sciences biomédicales"
-        },
-        {
-            "code": "BIO",
-            "faculties": "graduate|science",
-            "name_en": "Biology",
-            "name_fr": "Biologie"
-        },
-        {
-            "code": "BMG",
-            "faculties": "graduate",
-            "name_en": "Biomedical Engineering",
-            "name_fr": "Génie biomédical"
-        },
-        {
-            "code": "BNF",
-            "faculties": "graduate",
-            "name_en": "Bioinformatics",
-            "name_fr": "Bioinformatique"
-        },
-        {
-            "code": "BPS",
-            "faculties": "science",
-            "name_en": "Biopharmaceutical sciences",
-            "name_fr": "Sciences biopharmaceutiques"
-        },
-        {
-            "code": "CDN",
-            "faculties": "graduate|arts",
-            "name_en": "Canadian Studies",
-            "name_fr": "Etudes canadiennes"
-        },
-        {
-            "code": "CEG",
-            "faculties": "engineering",
-            "name_en": "Computer Engineering",
-            "name_fr": "Génie informatique"
-        },
-        {
-            "code": "CHG",
-            "faculties": "engineering|graduate",
-            "name_en": "Chemical Engineering",
-            "name_fr": "Génie chimique"
-        },
-        {
-            "code": "CHM",
-            "faculties": "graduate|science",
-            "name_en": "Chemistry",
-            "name_fr": "Chimie"
-        },
-        {
-            "code": "CHN",
-            "faculties": "arts",
-            "name_en": "Chinese",
-            "name_fr": "Chinois"
-        },
-        {
-            "code": "CIN",
-            "faculties": "arts",
-            "name_en": "Film Studies",
-            "name_fr": "Etudes cinématographiques"
-        },
-        {
-            "code": "CLA",
-            "faculties": "graduate|arts",
-            "name_en": "Classical Studies",
-            "name_fr": "Etudes anciennes"
-        },
-        {
-            "code": "CLT",
-            "faculties": "arts",
-            "name_en": "Celtic Studies",
-            "name_fr": "Etudes celtiques"
-        },
-        {
-            "code": "CML",
-            "faculties": "law",
-            "name_en": "Common Law",
-            "name_fr": "Common Law"
-        },
-        {
-            "code": "CMM",
-            "faculties": "graduate|medicine",
-            "name_en": "Cellular and Molecular Medicine",
-            "name_fr": "Médecine cellulaire et moléculaire"
-        },
-        {
-            "code": "CMN",
-            "faculties": "graduate|arts",
-            "name_en": "Communication",
-            "name_fr": "Communication"
-        },
-        {
-            "code": "CRM",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Criminology",
-            "name_fr": "Criminologie"
-        },
-        {
-            "code": "CSI",
-            "faculties": "engineering|graduate",
-            "name_en": "Computer Science",
-            "name_fr": "Informatique"
-        },
-        {
-            "code": "CVG",
-            "faculties": "engineering|graduate",
-            "name_en": "Civil Engineering",
-            "name_fr": "Génie civil"
-        },
-        {
-            "code": "DCC",
-            "faculties": "law",
-            "name_en": "Droit (Certificat)",
-            "name_fr": "Droit (Certificat)"
-        },
-        {
-            "code": "DCL",
-            "faculties": "graduate",
-            "name_en": "Law",
-            "name_fr": "Droit"
-        },
-        {
-            "code": "DLS",
-            "faculties": "arts",
-            "name_en": "Second-Language Teaching",
-            "name_fr": "Didactique des langues secondes"
-        },
-        {
-            "code": "DRC",
-            "faculties": "law",
-            "name_en": "Civil Law",
-            "name_fr": "Droit civil"
-        },
-        {
-            "code": "DVM",
-            "faculties": "graduate|socialsciences",
-            "name_en": "International Develop. and Globalization",
-            "name_fr": "Dével. international et mondialisation"
-        },
-        {
-            "code": "EAS",
-            "faculties": "arts",
-            "name_en": "Aboriginal studies",
-            "name_fr": "Etudes autochtones"
-        },
-        {
-            "code": "EBC",
-            "faculties": "graduate",
-            "name_en": "Electronic Business",
-            "name_fr": "Affaires électroniques"
-        },
-        {
-            "code": "ECH",
-            "faculties": "socialsciences",
-            "name_en": "Conflict Studies and Human Rights",
-            "name_fr": "Etudes de conflits et droits humains"
-        },
-        {
-            "code": "ECO",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Economics",
-            "name_fr": "Science économique"
-        },
-        {
-            "code": "EDU",
-            "faculties": "graduate",
-            "name_en": "Education",
-            "name_fr": "Education"
-        },
-        {
-            "code": "EFR",
-            "faculties": "arts",
-            "name_en": "Etudes des francophonies",
-            "name_fr": "Etudes des francophonies"
-        },
-        {
-            "code": "EIA",
-            "faculties": "arts",
-            "name_en": "Interdisciplinary Study in Arts",
-            "name_fr": "Études interdisciplinaires en Arts"
-        },
-        {
-            "code": "ELA",
-            "faculties": "arts",
-            "name_en": "Latin American Studies",
-            "name_fr": "Etudes latino-américaines"
-        },
-        {
-            "code": "ELG",
-            "faculties": "engineering|graduate",
-            "name_en": "Electrical Engineering",
-            "name_fr": "Génie électrique"
-        },
-        {
-            "code": "EMP",
-            "faculties": "graduate",
-            "name_en": "Engineering Management",
-            "name_fr": "Gestion en ingénierie"
-        },
-        {
-            "code": "ENG",
-            "faculties": "graduate|arts",
-            "name_en": "English",
-            "name_fr": "English"
-        },
-        {
-            "code": "ENV",
-            "faculties": "arts",
-            "name_en": "Environmental Studies",
-            "name_fr": "Etudes de l'environnement"
-        },
-        {
-            "code": "EPI",
-            "faculties": "graduate",
-            "name_en": "Epidemiology and Community Medicine",
-            "name_fr": "Epidémiologie et médecine sociale"
-        },
-        {
-            "code": "ERG",
-            "faculties": "graduate",
-            "name_en": "Occupational Therapy",
-            "name_fr": "Ergothérapie"
-        },
-        {
-            "code": "ESL",
-            "faculties": "arts",
-            "name_en": "English as a Second Language",
-            "name_fr": "Anglais langue seconde"
-        },
-        {
-            "code": "ESP",
-            "faculties": "graduate|arts",
-            "name_en": "Spanish",
-            "name_fr": "Espagnol"
-        },
-        {
-            "code": "EVD",
-            "faculties": "graduate",
-            "name_en": "Environmental Sustainability",
-            "name_fr": "Durabilité de l'environnement"
-        },
-        {
-            "code": "EVS",
-            "faculties": "science",
-            "name_en": "Environmental Science",
-            "name_fr": "Sciences environnementales"
-        },
-        {
-            "code": "FEM",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Women's Studies",
-            "name_fr": "Etudes des femmes"
-        },
-        {
-            "code": "FLS",
-            "faculties": "arts",
-            "name_en": "French as a Second Language",
-            "name_fr": "Français langue seconde"
-        },
-        {
-            "code": "FRA",
-            "faculties": "graduate|arts",
-            "name_en": "Lettres françaises",
-            "name_fr": "Lettres françaises"
-        },
-        {
-            "code": "FRE",
-            "faculties": "arts",
-            "name_en": "French",
-            "name_fr": "French"
-        },
-        {
-            "code": "GEG",
-            "faculties": "graduate|arts",
-            "name_en": "Geography",
-            "name_fr": "Géographie"
-        },
-        {
-            "code": "GEO",
-            "faculties": "graduate|science",
-            "name_en": "Geology",
-            "name_fr": "Géologie"
-        },
-        {
-            "code": "GNG",
-            "faculties": "engineering|graduate",
-            "name_en": "General Engineering",
-            "name_fr": "Génie général"
-        },
-        {
-            "code": "GRT",
-            "faculties": "socialsciences",
-            "name_en": "Gerontology",
-            "name_fr": "Gérontologie"
-        },
-        {
-            "code": "HIS",
-            "faculties": "graduate|arts",
-            "name_en": "History",
-            "name_fr": "Histoire"
-        },
-        {
-            "code": "HMG",
-            "faculties": "graduate",
-            "name_en": "Human and Molecular Genetics",
-            "name_fr": "Génétique humaine et moléculaire"
-        },
-        {
-            "code": "HSS",
-            "faculties": "healthsciences|graduate",
-            "name_en": "Health Sciences",
-            "name_fr": "Sciences de la santé"
-        },
-        {
-            "code": "ISI",
-            "faculties": "graduate",
-            "name_en": "Information Studies",
-            "name_fr": "Sciences de l'information"
-        },
-        {
-            "code": "ISP",
-            "faculties": "graduate",
-            "name_en": "Science, Society and Policy",
-            "name_fr": "Science, société et politique publique"
-        },
-        {
-            "code": "ITA",
-            "faculties": "arts",
-            "name_en": "Italian Language and Culture",
-            "name_fr": "Langue et culture italiennes"
-        },
-        {
-            "code": "ITI",
-            "faculties": "engineering",
-            "name_en": "Information Technology",
-            "name_fr": "Technologie de l'information"
-        },
-        {
-            "code": "JOU",
-            "faculties": "arts",
-            "name_en": "Journalism",
-            "name_fr": "Journalisme"
-        },
-        {
-            "code": "JPN",
-            "faculties": "arts",
-            "name_en": "Japanese",
-            "name_fr": "Japonais"
-        },
-        {
-            "code": "LCL",
-            "faculties": "arts",
-            "name_en": "Classics",
-            "name_fr": "Lettres classiques"
-        },
-        {
-            "code": "LCM",
-            "faculties": "graduate",
-            "name_en": "World Literatures and Cultures",
-            "name_fr": "Littératures et cultures du monde"
-        },
-        {
-            "code": "LIN",
-            "faculties": "graduate|arts",
-            "name_en": "Linguistics",
-            "name_fr": "Linguistique"
-        },
-        {
-            "code": "LLM",
-            "faculties": "arts",
-            "name_en": "Modern Languages",
-            "name_fr": "Langues modernes"
-        },
-        {
-            "code": "LSR",
-            "faculties": "healthsciences",
-            "name_en": "Leisure Studies",
-            "name_fr": "Sciences du loisir"
-        },
-        {
-            "code": "MAT",
-            "faculties": "graduate|science",
-            "name_en": "Mathematics",
-            "name_fr": "Mathématiques"
-        },
-        {
-            "code": "MBA",
-            "faculties": "graduate",
-            "name_en": "Master of Business Administration",
-            "name_fr": "Maîtrise en administration des affaires"
-        },
-        {
-            "code": "MCG",
-            "faculties": "engineering|graduate",
-            "name_en": "Mechanical Engineering",
-            "name_fr": "Génie mécanique"
-        },
-        {
-            "code": "MDV",
-            "faculties": "graduate|arts",
-            "name_en": "Medieval Studies",
-            "name_fr": "Etudes médiévales"
-        },
-        {
-            "code": "MED",
-            "faculties": "graduate|medicine",
-            "name_en": "Medicine",
-            "name_fr": "Médecine"
-        },
-        {
-            "code": "MGT",
-            "faculties": "graduate",
-            "name_en": "Management",
-            "name_fr": "Gestion"
-        },
-        {
-            "code": "MHA",
-            "faculties": "graduate",
-            "name_en": "Health Administration",
-            "name_fr": "Gestion des services de santé"
-        },
-        {
-            "code": "MHS",
-            "faculties": "graduate",
-            "name_en": "Health Systems",
-            "name_fr": "Systèmes de santé"
-        },
-        {
-            "code": "MIC",
-            "faculties": "graduate|science",
-            "name_en": "Microbiology and Immunology",
-            "name_fr": "Microbiologie et immunologie"
-        },
-        {
-            "code": "MUS",
-            "faculties": "graduate|arts",
-            "name_en": "Music",
-            "name_fr": "Musique"
-        },
-        {
-            "code": "NSC",
-            "faculties": "graduate",
-            "name_en": "Neuroscience",
-            "name_fr": "Neurosciences"
-        },
-        {
-            "code": "NSG",
-            "faculties": "healthsciences|graduate",
-            "name_en": "Nursing",
-            "name_fr": "Sciences infirmières"
-        },
-        {
-            "code": "NUT",
-            "faculties": "healthsciences",
-            "name_en": "Nutrition",
-            "name_fr": "Nutrition"
-        },
-        {
-            "code": "ORA",
-            "faculties": "graduate",
-            "name_en": "Speech-Language Pathology",
-            "name_fr": "Orthophonie"
-        },
-        {
-            "code": "PAP",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Public Administration",
-            "name_fr": "Administration publique"
-        },
-        {
-            "code": "PDP",
-            "faculties": "education",
-            "name_en": "Education  - Professional Development",
-            "name_fr": "Education  - Développement professionnel"
-        },
-        {
-            "code": "PED",
-            "faculties": "education",
-            "name_en": "Education - Teacher Education",
-            "name_fr": "Education - Formation à l'enseignement"
-        },
-        {
-            "code": "PHA",
-            "faculties": "medicine",
-            "name_en": "Pharmacology",
-            "name_fr": "Pharmacologie"
-        },
-        {
-            "code": "PHI",
-            "faculties": "graduate|arts",
-            "name_en": "Philosophy",
-            "name_fr": "Philosophie"
-        },
-        {
-            "code": "PHR",
-            "faculties": "graduate",
-            "name_en": "Pop. Health Risk Assessment and Manag.",
-            "name_fr": "Gestion du risque santé des populations"
-        },
-        {
-            "code": "PHS",
-            "faculties": "medicine",
-            "name_en": "Physiology",
-            "name_fr": "Physiologie"
-        },
-        {
-            "code": "PHT",
-            "faculties": "graduate",
-            "name_en": "Physiotherapy",
-            "name_fr": "Physiothérapie"
-        },
-        {
-            "code": "PHY",
-            "faculties": "graduate|science",
-            "name_en": "Physics",
-            "name_fr": "Physique"
-        },
-        {
-            "code": "PLN",
-            "faculties": "arts",
-            "name_en": "Polish",
-            "name_fr": "Polonais"
-        },
-        {
-            "code": "POL",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Political Science",
-            "name_fr": "Science politique"
-        },
-        {
-            "code": "POP",
-            "faculties": "graduate",
-            "name_en": "Population Health",
-            "name_fr": "Santé des populations"
-        },
-        {
-            "code": "POR",
-            "faculties": "arts",
-            "name_en": "Portuguese",
-            "name_fr": "Portugais"
-        },
-        {
-            "code": "PSY",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Psychology",
-            "name_fr": "Psychologie"
-        },
-        {
-            "code": "REA",
-            "faculties": "graduate",
-            "name_en": "Rehabilitation",
-            "name_fr": "Réadaptation"
-        },
-        {
-            "code": "RUS",
-            "faculties": "arts",
-            "name_en": "Russian Language and Culture",
-            "name_fr": "Langue et culture russes"
-        },
-        {
-            "code": "SCI",
-            "faculties": "science",
-            "name_en": "Science (General)",
-            "name_fr": "Sciences (général)"
-        },
-        {
-            "code": "SCS",
-            "faculties": "socialsciences",
-            "name_en": "Social Sciences",
-            "name_fr": "Sciences sociales"
-        },
-        {
-            "code": "SEG",
-            "faculties": "engineering",
-            "name_en": "Software Engineering",
-            "name_fr": "Génie logiciel"
-        },
-        {
-            "code": "SOC",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Sociology",
-            "name_fr": "Sociologie"
-        },
-        {
-            "code": "SRS",
-            "faculties": "graduate|arts",
-            "name_en": "Religious Studies",
-            "name_fr": "Sciences des religions"
-        },
-        {
-            "code": "SSS",
-            "faculties": "socialsciences",
-            "name_en": "Social Sciences of Health",
-            "name_fr": "Sciences sociales de la santé"
-        },
-        {
-            "code": "SVS",
-            "faculties": "graduate|socialsciences",
-            "name_en": "Social Work",
-            "name_fr": "Service social"
-        },
-        {
-            "code": "SYS",
-            "faculties": "graduate",
-            "name_en": "Systems Science",
-            "name_fr": "Science des systèmes"
-        },
-        {
-            "code": "THE",
-            "faculties": "graduate|arts",
-            "name_en": "Theatre",
-            "name_fr": "Théâtre"
-        },
-        {
-            "code": "TOX",
-            "faculties": "graduate",
-            "name_en": "Chemical and Environmental Toxicology",
-            "name_fr": "Toxicologie chimique et environnementale"
-        },
-        {
-            "code": "TRA",
-            "faculties": "graduate|arts",
-            "name_en": "Translation",
-            "name_fr": "Traduction"
-        },
-        {
-            "code": "YDD",
-            "faculties": "arts",
-            "name_en": "Yiddish",
-            "name_fr": "Yiddish"
-        }
-    ]
+  "Disciplines": [
+    {
+      "code": "ADM",
+      "faculties": "telfer|graduate",
+      "name_en": "Administration",
+      "name_fr": "Administration"
+    },
+    {
+      "code": "ADX",
+      "faculties": "graduate",
+      "name_en": "Executive MBA",
+      "name_fr": "MBA pour cadres"
+    },
+    {
+      "code": "ALG",
+      "faculties": "arts",
+      "name_en": "German Language and Culture",
+      "name_fr": "Langue et culture allemandes"
+    },
+    {
+      "code": "AMT",
+      "faculties": "arts",
+      "name_en": "Arts, Music, Theatre",
+      "name_fr": "Arts, Musique, Théâtre"
+    },
+    {
+      "code": "ANP",
+      "faculties": "medicine",
+      "name_en": "Anatomy and Physiology",
+      "name_fr": "Anatomie et physiologie"
+    },
+    {
+      "code": "ANT",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Anthropology",
+      "name_fr": "Anthropologie"
+    },
+    {
+      "code": "APA",
+      "faculties": "healthsciences|graduate",
+      "name_en": "Human Kinetics",
+      "name_fr": "Activité physique"
+    },
+    {
+      "code": "APN",
+      "faculties": "graduate",
+      "name_en": "Public and International Affairs",
+      "name_fr": "Affaires publiques et internationales"
+    },
+    {
+      "code": "ARB",
+      "faculties": "arts",
+      "name_en": "Arabic Language and Culture",
+      "name_fr": "Langue et cultures arabes"
+    },
+    {
+      "code": "ART",
+      "faculties": "graduate|arts",
+      "name_en": "Visual Arts",
+      "name_fr": "Arts visuels"
+    },
+    {
+      "code": "ASI",
+      "faculties": "arts",
+      "name_en": "Asian Studies",
+      "name_fr": "Etudes asiatiques"
+    },
+    {
+      "code": "BCH",
+      "faculties": "graduate|science",
+      "name_en": "Biochemistry",
+      "name_fr": "Biochimie"
+    },
+    {
+      "code": "BIL",
+      "faculties": "graduate",
+      "name_en": "Bilingualism Studies",
+      "name_fr": "Études du bilinguisme"
+    },
+    {
+      "code": "BIM",
+      "faculties": "science",
+      "name_en": "Biomedical sciences",
+      "name_fr": "Sciences biomédicales"
+    },
+    {
+      "code": "BIO",
+      "faculties": "graduate|science",
+      "name_en": "Biology",
+      "name_fr": "Biologie"
+    },
+    {
+      "code": "BMG",
+      "faculties": "graduate",
+      "name_en": "Biomedical Engineering",
+      "name_fr": "Génie biomédical"
+    },
+    {
+      "code": "BNF",
+      "faculties": "graduate",
+      "name_en": "Bioinformatics",
+      "name_fr": "Bioinformatique"
+    },
+    {
+      "code": "BPS",
+      "faculties": "science",
+      "name_en": "Biopharmaceutical sciences",
+      "name_fr": "Sciences biopharmaceutiques"
+    },
+    {
+      "code": "CDN",
+      "faculties": "graduate|arts",
+      "name_en": "Canadian Studies",
+      "name_fr": "Etudes canadiennes"
+    },
+    {
+      "code": "CEG",
+      "faculties": "engineering",
+      "name_en": "Computer Engineering",
+      "name_fr": "Génie informatique"
+    },
+    {
+      "code": "CHG",
+      "faculties": "engineering|graduate",
+      "name_en": "Chemical Engineering",
+      "name_fr": "Génie chimique"
+    },
+    {
+      "code": "CHM",
+      "faculties": "graduate|science",
+      "name_en": "Chemistry",
+      "name_fr": "Chimie"
+    },
+    {
+      "code": "CHN",
+      "faculties": "arts",
+      "name_en": "Chinese",
+      "name_fr": "Chinois"
+    },
+    {
+      "code": "CIN",
+      "faculties": "arts",
+      "name_en": "Film Studies",
+      "name_fr": "Etudes cinématographiques"
+    },
+    {
+      "code": "CLA",
+      "faculties": "graduate|arts",
+      "name_en": "Classical Studies",
+      "name_fr": "Etudes anciennes"
+    },
+    {
+      "code": "CLT",
+      "faculties": "arts",
+      "name_en": "Celtic Studies",
+      "name_fr": "Etudes celtiques"
+    },
+    {
+      "code": "CML",
+      "faculties": "law",
+      "name_en": "Common Law",
+      "name_fr": "Common Law"
+    },
+    {
+      "code": "CMM",
+      "faculties": "graduate|medicine",
+      "name_en": "Cellular and Molecular Medicine",
+      "name_fr": "Médecine cellulaire et moléculaire"
+    },
+    {
+      "code": "CMN",
+      "faculties": "graduate|arts",
+      "name_en": "Communication",
+      "name_fr": "Communication"
+    },
+    {
+      "code": "CRM",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Criminology",
+      "name_fr": "Criminologie"
+    },
+    {
+      "code": "CSI",
+      "faculties": "engineering|graduate",
+      "name_en": "Computer Science",
+      "name_fr": "Informatique"
+    },
+    {
+      "code": "CVG",
+      "faculties": "engineering|graduate",
+      "name_en": "Civil Engineering",
+      "name_fr": "Génie civil"
+    },
+    {
+      "code": "DCC",
+      "faculties": "law",
+      "name_en": "Droit (Certificat)",
+      "name_fr": "Droit (Certificat)"
+    },
+    {
+      "code": "DCL",
+      "faculties": "graduate",
+      "name_en": "Law",
+      "name_fr": "Droit"
+    },
+    {
+      "code": "DLS",
+      "faculties": "arts",
+      "name_en": "Second-Language Teaching",
+      "name_fr": "Didactique des langues secondes"
+    },
+    {
+      "code": "DRC",
+      "faculties": "law",
+      "name_en": "Civil Law",
+      "name_fr": "Droit civil"
+    },
+    {
+      "code": "DVM",
+      "faculties": "graduate|socialsciences",
+      "name_en": "International Develop. and Globalization",
+      "name_fr": "Dével. international et mondialisation"
+    },
+    {
+      "code": "EAS",
+      "faculties": "arts",
+      "name_en": "Aboriginal studies",
+      "name_fr": "Etudes autochtones"
+    },
+    {
+      "code": "EBC",
+      "faculties": "graduate",
+      "name_en": "Electronic Business",
+      "name_fr": "Affaires électroniques"
+    },
+    {
+      "code": "ECH",
+      "faculties": "socialsciences",
+      "name_en": "Conflict Studies and Human Rights",
+      "name_fr": "Etudes de conflits et droits humains"
+    },
+    {
+      "code": "ECO",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Economics",
+      "name_fr": "Science économique"
+    },
+    {
+      "code": "EDU",
+      "faculties": "graduate",
+      "name_en": "Education",
+      "name_fr": "Education"
+    },
+    {
+      "code": "EFR",
+      "faculties": "arts",
+      "name_en": "Etudes des francophonies",
+      "name_fr": "Etudes des francophonies"
+    },
+    {
+      "code": "EIA",
+      "faculties": "arts",
+      "name_en": "Interdisciplinary Study in Arts",
+      "name_fr": "Études interdisciplinaires en Arts"
+    },
+    {
+      "code": "ELA",
+      "faculties": "arts",
+      "name_en": "Latin American Studies",
+      "name_fr": "Etudes latino-américaines"
+    },
+    {
+      "code": "ELG",
+      "faculties": "engineering|graduate",
+      "name_en": "Electrical Engineering",
+      "name_fr": "Génie électrique"
+    },
+    {
+      "code": "EMP",
+      "faculties": "graduate",
+      "name_en": "Engineering Management",
+      "name_fr": "Gestion en ingénierie"
+    },
+    {
+      "code": "ENG",
+      "faculties": "graduate|arts",
+      "name_en": "English",
+      "name_fr": "English"
+    },
+    {
+      "code": "ENV",
+      "faculties": "arts",
+      "name_en": "Environmental Studies",
+      "name_fr": "Etudes de l'environnement"
+    },
+    {
+      "code": "EPI",
+      "faculties": "graduate",
+      "name_en": "Epidemiology and Community Medicine",
+      "name_fr": "Epidémiologie et médecine sociale"
+    },
+    {
+      "code": "ERG",
+      "faculties": "graduate",
+      "name_en": "Occupational Therapy",
+      "name_fr": "Ergothérapie"
+    },
+    {
+      "code": "ESL",
+      "faculties": "arts",
+      "name_en": "English as a Second Language",
+      "name_fr": "Anglais langue seconde"
+    },
+    {
+      "code": "ESP",
+      "faculties": "graduate|arts",
+      "name_en": "Spanish",
+      "name_fr": "Espagnol"
+    },
+    {
+      "code": "EVD",
+      "faculties": "graduate",
+      "name_en": "Environmental Sustainability",
+      "name_fr": "Durabilité de l'environnement"
+    },
+    {
+      "code": "EVS",
+      "faculties": "science",
+      "name_en": "Environmental Science",
+      "name_fr": "Sciences environnementales"
+    },
+    {
+      "code": "FEM",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Women's Studies",
+      "name_fr": "Etudes des femmes"
+    },
+    {
+      "code": "FLS",
+      "faculties": "arts",
+      "name_en": "French as a Second Language",
+      "name_fr": "Français langue seconde"
+    },
+    {
+      "code": "FRA",
+      "faculties": "graduate|arts",
+      "name_en": "Lettres françaises",
+      "name_fr": "Lettres françaises"
+    },
+    {
+      "code": "FRE",
+      "faculties": "arts",
+      "name_en": "French",
+      "name_fr": "French"
+    },
+    {
+      "code": "GEG",
+      "faculties": "graduate|arts",
+      "name_en": "Geography",
+      "name_fr": "Géographie"
+    },
+    {
+      "code": "GEO",
+      "faculties": "graduate|science",
+      "name_en": "Geology",
+      "name_fr": "Géologie"
+    },
+    {
+      "code": "GNG",
+      "faculties": "engineering|graduate",
+      "name_en": "General Engineering",
+      "name_fr": "Génie général"
+    },
+    {
+      "code": "GRT",
+      "faculties": "socialsciences",
+      "name_en": "Gerontology",
+      "name_fr": "Gérontologie"
+    },
+    {
+      "code": "HIS",
+      "faculties": "graduate|arts",
+      "name_en": "History",
+      "name_fr": "Histoire"
+    },
+    {
+      "code": "HMG",
+      "faculties": "graduate",
+      "name_en": "Human and Molecular Genetics",
+      "name_fr": "Génétique humaine et moléculaire"
+    },
+    {
+      "code": "HSS",
+      "faculties": "healthsciences|graduate",
+      "name_en": "Health Sciences",
+      "name_fr": "Sciences de la santé"
+    },
+    {
+      "code": "ISI",
+      "faculties": "graduate",
+      "name_en": "Information Studies",
+      "name_fr": "Sciences de l'information"
+    },
+    {
+      "code": "ISP",
+      "faculties": "graduate",
+      "name_en": "Science, Society and Policy",
+      "name_fr": "Science, société et politique publique"
+    },
+    {
+      "code": "ITA",
+      "faculties": "arts",
+      "name_en": "Italian Language and Culture",
+      "name_fr": "Langue et culture italiennes"
+    },
+    {
+      "code": "ITI",
+      "faculties": "engineering",
+      "name_en": "Information Technology",
+      "name_fr": "Technologie de l'information"
+    },
+    {
+      "code": "JOU",
+      "faculties": "arts",
+      "name_en": "Journalism",
+      "name_fr": "Journalisme"
+    },
+    {
+      "code": "JPN",
+      "faculties": "arts",
+      "name_en": "Japanese",
+      "name_fr": "Japonais"
+    },
+    {
+      "code": "LCL",
+      "faculties": "arts",
+      "name_en": "Classics",
+      "name_fr": "Lettres classiques"
+    },
+    {
+      "code": "LCM",
+      "faculties": "graduate",
+      "name_en": "World Literatures and Cultures",
+      "name_fr": "Littératures et cultures du monde"
+    },
+    {
+      "code": "LIN",
+      "faculties": "graduate|arts",
+      "name_en": "Linguistics",
+      "name_fr": "Linguistique"
+    },
+    {
+      "code": "LLM",
+      "faculties": "arts",
+      "name_en": "Modern Languages",
+      "name_fr": "Langues modernes"
+    },
+    {
+      "code": "LSR",
+      "faculties": "healthsciences",
+      "name_en": "Leisure Studies",
+      "name_fr": "Sciences du loisir"
+    },
+    {
+      "code": "MAT",
+      "faculties": "graduate|science",
+      "name_en": "Mathematics",
+      "name_fr": "Mathématiques"
+    },
+    {
+      "code": "MBA",
+      "faculties": "graduate",
+      "name_en": "Master of Business Administration",
+      "name_fr": "Maîtrise en administration des affaires"
+    },
+    {
+      "code": "MCG",
+      "faculties": "engineering|graduate",
+      "name_en": "Mechanical Engineering",
+      "name_fr": "Génie mécanique"
+    },
+    {
+      "code": "MDV",
+      "faculties": "graduate|arts",
+      "name_en": "Medieval Studies",
+      "name_fr": "Etudes médiévales"
+    },
+    {
+      "code": "MED",
+      "faculties": "graduate|medicine",
+      "name_en": "Medicine",
+      "name_fr": "Médecine"
+    },
+    {
+      "code": "MGT",
+      "faculties": "graduate",
+      "name_en": "Management",
+      "name_fr": "Gestion"
+    },
+    {
+      "code": "MHA",
+      "faculties": "graduate",
+      "name_en": "Health Administration",
+      "name_fr": "Gestion des services de santé"
+    },
+    {
+      "code": "MHS",
+      "faculties": "graduate",
+      "name_en": "Health Systems",
+      "name_fr": "Systèmes de santé"
+    },
+    {
+      "code": "MIC",
+      "faculties": "graduate|science",
+      "name_en": "Microbiology and Immunology",
+      "name_fr": "Microbiologie et immunologie"
+    },
+    {
+      "code": "MUS",
+      "faculties": "graduate|arts",
+      "name_en": "Music",
+      "name_fr": "Musique"
+    },
+    {
+      "code": "NSC",
+      "faculties": "graduate",
+      "name_en": "Neuroscience",
+      "name_fr": "Neurosciences"
+    },
+    {
+      "code": "NSG",
+      "faculties": "healthsciences|graduate",
+      "name_en": "Nursing",
+      "name_fr": "Sciences infirmières"
+    },
+    {
+      "code": "NUT",
+      "faculties": "healthsciences",
+      "name_en": "Nutrition",
+      "name_fr": "Nutrition"
+    },
+    {
+      "code": "ORA",
+      "faculties": "graduate",
+      "name_en": "Speech-Language Pathology",
+      "name_fr": "Orthophonie"
+    },
+    {
+      "code": "PAP",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Public Administration",
+      "name_fr": "Administration publique"
+    },
+    {
+      "code": "PDP",
+      "faculties": "education",
+      "name_en": "Education  - Professional Development",
+      "name_fr": "Education  - Développement professionnel"
+    },
+    {
+      "code": "PED",
+      "faculties": "education",
+      "name_en": "Education - Teacher Education",
+      "name_fr": "Education - Formation à l'enseignement"
+    },
+    {
+      "code": "PHA",
+      "faculties": "medicine",
+      "name_en": "Pharmacology",
+      "name_fr": "Pharmacologie"
+    },
+    {
+      "code": "PHI",
+      "faculties": "graduate|arts",
+      "name_en": "Philosophy",
+      "name_fr": "Philosophie"
+    },
+    {
+      "code": "PHR",
+      "faculties": "graduate",
+      "name_en": "Pop. Health Risk Assessment and Manag.",
+      "name_fr": "Gestion du risque santé des populations"
+    },
+    {
+      "code": "PHS",
+      "faculties": "medicine",
+      "name_en": "Physiology",
+      "name_fr": "Physiologie"
+    },
+    {
+      "code": "PHT",
+      "faculties": "graduate",
+      "name_en": "Physiotherapy",
+      "name_fr": "Physiothérapie"
+    },
+    {
+      "code": "PHY",
+      "faculties": "graduate|science",
+      "name_en": "Physics",
+      "name_fr": "Physique"
+    },
+    {
+      "code": "PLN",
+      "faculties": "arts",
+      "name_en": "Polish",
+      "name_fr": "Polonais"
+    },
+    {
+      "code": "POL",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Political Science",
+      "name_fr": "Science politique"
+    },
+    {
+      "code": "POP",
+      "faculties": "graduate",
+      "name_en": "Population Health",
+      "name_fr": "Santé des populations"
+    },
+    {
+      "code": "POR",
+      "faculties": "arts",
+      "name_en": "Portuguese",
+      "name_fr": "Portugais"
+    },
+    {
+      "code": "PSY",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Psychology",
+      "name_fr": "Psychologie"
+    },
+    {
+      "code": "REA",
+      "faculties": "graduate",
+      "name_en": "Rehabilitation",
+      "name_fr": "Réadaptation"
+    },
+    {
+      "code": "RUS",
+      "faculties": "arts",
+      "name_en": "Russian Language and Culture",
+      "name_fr": "Langue et culture russes"
+    },
+    {
+      "code": "SCI",
+      "faculties": "science",
+      "name_en": "Science (General)",
+      "name_fr": "Sciences (général)"
+    },
+    {
+      "code": "SCS",
+      "faculties": "socialsciences",
+      "name_en": "Social Sciences",
+      "name_fr": "Sciences sociales"
+    },
+    {
+      "code": "SEG",
+      "faculties": "engineering",
+      "name_en": "Software Engineering",
+      "name_fr": "Génie logiciel"
+    },
+    {
+      "code": "SOC",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Sociology",
+      "name_fr": "Sociologie"
+    },
+    {
+      "code": "SRS",
+      "faculties": "graduate|arts",
+      "name_en": "Religious Studies",
+      "name_fr": "Sciences des religions"
+    },
+    {
+      "code": "SSS",
+      "faculties": "socialsciences",
+      "name_en": "Social Sciences of Health",
+      "name_fr": "Sciences sociales de la santé"
+    },
+    {
+      "code": "SVS",
+      "faculties": "graduate|socialsciences",
+      "name_en": "Social Work",
+      "name_fr": "Service social"
+    },
+    {
+      "code": "SYS",
+      "faculties": "graduate",
+      "name_en": "Systems Science",
+      "name_fr": "Science des systèmes"
+    },
+    {
+      "code": "THE",
+      "faculties": "graduate|arts",
+      "name_en": "Theatre",
+      "name_fr": "Théâtre"
+    },
+    {
+      "code": "TOX",
+      "faculties": "graduate",
+      "name_en": "Chemical and Environmental Toxicology",
+      "name_fr": "Toxicologie chimique et environnementale"
+    },
+    {
+      "code": "TRA",
+      "faculties": "graduate|arts",
+      "name_en": "Translation",
+      "name_fr": "Traduction"
+    },
+    {
+      "code": "YDD",
+      "faculties": "arts",
+      "name_en": "Yiddish",
+      "name_fr": "Yiddish"
+    }
+  ]
 }
