@@ -7,6 +7,9 @@ from selenium.webdriver.support.ui import Select
 verbose = False
 output_filename = 'disciplines.json'
 
+# Regular expression to get course codes and faculties
+regex_courses = re.compile(r'<a.*?>([A-Z]{3}[0-9]{4}.*?)<\/a>.*?<td class="Faculty">(.*?)<\/td>')
+
 # Update the level of verbosity to use (either True or False)
 def set_verbosity(verbosity):
 	global verbose
@@ -55,9 +58,6 @@ def parse_faculties(matched_courses):
 # Scrapes uOttawa for a list of disciplines and saves relevant data to disciplines.json
 def get_disciplines(browser):
 	print_verbose_message('Starting scrape for disciplines.')
-
-	# Regular expression to get course codes and faculties
-	regex_courses = re.compile(r'<a.*?>([A-Z]{3}[0-9]{4}.*?)<\/a>.*?<td class="Faculty">(.*?)<\/td>')
 
 	# Starting url for the scrape
 	initial_url = 'https://web30.uottawa.ca/v3/SITS/timetable/Search.aspx'
