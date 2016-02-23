@@ -29,7 +29,6 @@ def print_verbose_message(*messages):
 def parse_faculties(matched_courses):
 	faculties = set()
 	for course in matched_courses:
-		if 'CHG' in course[0]: print(course[1])
 		if 'Arts' in course[1]:
 			faculties.add('arts')
 		elif 'Engineering' in course[1]:
