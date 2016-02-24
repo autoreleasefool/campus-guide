@@ -2,6 +2,7 @@ import os
 import re
 import ssl
 from bs4 import BeautifulSoup
+from operator import itemgetter
 from selenium.webdriver.support.ui import Select
 from urllib.request import urlopen
 
@@ -9,6 +10,7 @@ from urllib.request import urlopen
 verbose = False
 output_files = []
 errors = []
+scraped_courses = {}
 
 # Regular expression to get course codes
 regex_courses = re.compile(r'<a.*?>([A-Z]{3}[0-9]{4}.*?)<\/a>.*?class=\"Faculty\">(.*?)<\/td>')
@@ -121,11 +123,12 @@ def parse_course_info(course_code, course_soup):
 				professor = professors[i].getText()
 
 				# Put all the data scraped in a list of tuples to return
-				classes.append((session_id, course_code, section, activity, day, start_time, end_time, room, professor))
+				classes.append((session_id, course_name, course_code, section, activity, day, start_time, end_time, room, professor))
 	return classes
 
 # Prints a list of courses and section info to files
 def get_courses(browser):
+	cc = 0
 	print_verbose_message('Starting scrape for courses.')
 
 	# URLs for the scrape
@@ -149,6 +152,14 @@ def get_courses(browser):
 		for raw_course in raw_courses:
 			# Scrape the course page for name, faculty, etc.
 			course_code = raw_course[0]
+
+			# Don't scrape the same course twice
+			if course_code in scraped_courses:
+				scraped_courses[course_code] += 1
+				continue
+			else:
+				scraped_courses[course_code] = 1
+
 			course_code_url = course_url.format(course_code)
 			course_faculty = get_faculty_shorthand(raw_course[1])
 
@@ -167,14 +178,15 @@ def get_courses(browser):
 					sessions[course[0]] = []
 
 				final_course = {
-					'code': course[1],
-					'section': course[2],
-					'type': course[3],
-					'day': course[4],
-					'start_time': course[5],
-					'end_time': course[6],
-					'room': course[7],
-					'professor': course[8]
+					'name': course[1],
+					'code': course[2],
+					'section': course[3],
+					'type': course[4],
+					'day': course[5],
+					'start_time': course[6],
+					'end_time': course[7],
+					'room': course[8],
+					'professor': course[9]
 				}
 
 				found_faculty = False
@@ -221,13 +233,17 @@ def get_courses(browser):
 			filename = '{0}/{1}.csv'.format(session_str, faculty['name'])
 			output_files.append(filename)
 
+			# Sort the courses by their course code
+			faculty['courses'] = sorted(faculty['courses'], key=itemgetter('code', 'section'))
+
 			# Open the file to print to
 			with open(filename, 'w', encoding='utf8') as outfile:
-				outfile.write('COURSE CODE,SECTION,TYPE,DAY,STARTTIME,ENDTIME,ROOM,PROFESSOR\n')
+				outfile.write('CODE,SECTION,TYPE,DAY,START,END,ROOM,NAME,PROFESSOR\n')
 
 				# Iterate through each of the courses available in the faculty
 				for course in faculty['courses']:
-					outfile.write('{0},{1},{2},{3},{4},{5},{6},{7}\n'.format(
+					print(course)
+					outfile.write('{0},{1},{2},{3},{4},{5},{6},{7},{8}\n'.format(
 						course['code'],
 						course['section'],
 						course['type'],
@@ -235,6 +251,7 @@ def get_courses(browser):
 						course['start_time'],
 						course['end_time'],
 						course['room'],
+						course['name'],
 						course['professor']
 					))
 
