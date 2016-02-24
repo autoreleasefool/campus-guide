@@ -124,8 +124,8 @@ def parse_course_info(course_code, course_soup):
 				classes.append((session_id, course_code, section, activity, day, start_time, end_time, room, professor))
 	return classes
 
+# Prints a list of courses and section info to files
 def get_courses(browser):
-	cc = 0
 	print_verbose_message('Starting scrape for courses.')
 
 	# URLs for the scrape
@@ -176,9 +176,6 @@ def get_courses(browser):
 					'room': course[7],
 					'professor': course[8]
 				}
-				cc += 1
-				if cc > 20:
-					break
 
 				found_faculty = False
 				for faculty in sessions[course[0]]:
@@ -193,12 +190,6 @@ def get_courses(browser):
 					})
 
 				print_verbose_message('Parsed course:', str(final_course))
-
-			if cc > 20:
-				break
-
-		if cc > 20:
-			break
 
 		# Attempt to keep going to the next page
 		browser.execute_script('__doPostBack("ctl00$MainContentPlaceHolder$ctl05","")')
