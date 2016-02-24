@@ -128,4 +128,4 @@ def get_disciplines(browser):
 
 	print_verbose_message('Saving to', output_filename)
 	with open(output_filename, 'w', encoding='utf8') as outfile:
-	    json.dump(formatted_disciplines, outfile, indent=4, sort_keys=True, ensure_ascii=False)
+	    json.dump(formatted_disciplines, outfile, indent=2, sort_keys=True, ensure_ascii=False)
