@@ -33,15 +33,20 @@ if (Platform.OS === 'ios') {
 }
 
 var FindHome = React.createClass({
+  propTypes: {
+    requestTabChange: React.PropTypes.func.isRequired,
+  },
 
   _search(text) {
     // TODO: search for a building, class, or professor
     console.log('TODO: search for a building, class, or professor');
   },
 
+  /*
+   * Opens the app scheduling screen so the user can update their schedule.
+   */
   _editSchedule() {
-    // TODO: edit the user's class schedule
-    console.log('TODO: edit the user\'s class schedule');
+    this.props.requestTabChange(Constants.Views.Schedule.Home);
   },
 
   render() {

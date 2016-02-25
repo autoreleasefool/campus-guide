@@ -39,14 +39,20 @@ var {height, width} = Dimensions.get('window');
 var indicatorWidth = Math.ceil(width / 4);
 var indicatorHeight = 5;
 
-var currentTab = Constants.Views.Find.Home;
-
 var TabBar = React.createClass({
+  propTypes: {
+    requestTabChange: React.PropTypes.func.isRequired,
+  },
 
   _changeTabs(tab) {
     // Switch to the selected tab
-    currentTab = tab;
-    this.props.navigator.replace({id: tab});
+    this.props.requestTabChange(tab);
+  },
+
+  getInitialState() {
+    return {
+      currentTab: Constants.Views.Find.Home,
+    };
   },
 
   render() {
@@ -57,16 +63,16 @@ var TabBar = React.createClass({
     let indicatorLeft = 0;
 
     // Set the color of the current tab to garnet
-    if (currentTab === Constants.Views.Find.Home) {
+    if (this.state.currentTab === Constants.Views.Find.Home) {
       indicatorLeft = 0;
       findColor = Constants.Colors.garnet;
-    } else if (currentTab === Constants.Views.Schedule.Home) {
+    } else if (this.state.currentTab === Constants.Views.Schedule.Home) {
       indicatorLeft = indicatorWidth;
       scheduleColor = Constants.Colors.garnet;
-    } else if (currentTab === Constants.Views.Discover.Home) {
+    } else if (this.state.currentTab === Constants.Views.Discover.Home) {
       indicatorLeft = indicatorWidth * 2;
       discoverColor = Constants.Colors.garnet;
-    } else if (currentTab === Constants.Views.Settings.Home) {
+    } else if (this.state.currentTab === Constants.Views.Settings.Home) {
       indicatorLeft = indicatorWidth * 3;
       settingsColor = Constants.Colors.garnet;
     }

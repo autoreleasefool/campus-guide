@@ -23,6 +23,11 @@ var TabBar = require('../components/tabs');
 // Root view
 var MainScreen = React.createClass({
 
+  _onChangeTab(tabId) {
+    this.refs.MainNavigator.replace({id: tabId});
+    this.refs.MainTabBar.setState({currentTab: tabId})
+  },
+
   _configureScene() {
     // Disable transitions between screens
     var NoTransition = {
@@ -52,7 +57,7 @@ var MainScreen = React.createClass({
     return (
       <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
         {route.id === Constants.Views.Find.Home
-            ? <FindHome navigator={navigator} />
+            ? <FindHome requestTabChange={this._onChangeTab} />
             : null}
         {route.id === Constants.Views.Schedule.Home
             ? <View style={{flex: 1, backgroundColor: Constants.Colors.darkGrey}}></View>
@@ -61,9 +66,8 @@ var MainScreen = React.createClass({
             ? <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}></View>
             : null}
         {route.id === Constants.Views.Settings.Home
-            ? <SettingsHome navigator={navigator} />
+            ? <SettingsHome requestTabChange={this._onChangeTab} />
             : null}
-        <TabBar navigator={navigator} />
       </View>
     );
   },
@@ -91,9 +95,11 @@ var MainScreen = React.createClass({
     return (
       <View style={_styles.container}>
         <Navigator
+            ref='MainNavigator'
             configureScene={this._configureScene}
             initialRoute={{id: Constants.Views.Find.Home}}
             renderScene={this._renderScene} />
+        <TabBar ref='MainTabBar' requestTabChange={this._onChangeTab} />
       </View>
     );
   },

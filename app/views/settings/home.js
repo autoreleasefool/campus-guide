@@ -37,6 +37,9 @@ var settingsCache = [];
 var keyOfLastSettingChanged = null;
 
 var SettingsHome = React.createClass({
+  propTypes: {
+    requestTabChange: React.PropTypes.func.isRequired,
+  },
 
   /*
    * Loads the current settings to setup the views and cache the settings to determine when a setting changes.
