@@ -46,7 +46,7 @@ var TabBar = React.createClass({
   _changeTabs(tab) {
     // Switch to the selected tab
     currentTab = tab;
-    this.props.navigator.push({id: tab});
+    this.props.navigator.replace({id: tab});
   },
 
   render() {

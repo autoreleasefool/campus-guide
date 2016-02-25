@@ -41,7 +41,7 @@ var SplashScreen = React.createClass({
         });
       } else {
         // If a lanuage has been selected, remove this language select screen, open the main screen
-        self.props.navigator.push({id: 2});
+        self.props.navigator.replace({id: 2});
         // TODO: comment above and uncomment below to always show splash screen
         // this.setState({
         //   isLoading: false
