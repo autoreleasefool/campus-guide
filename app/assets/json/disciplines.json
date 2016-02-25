@@ -43,7 +43,7 @@
       "name_fr": "Activité physique"
     },
     {
-      "code": "APN",
+      "code": "API|APN",
       "faculties": "graduate",
       "name_en": "Public and International Affairs",
       "name_fr": "Affaires publiques et internationales"

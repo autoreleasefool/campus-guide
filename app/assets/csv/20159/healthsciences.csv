@@ -1,0 +1,404 @@
+CODE,SECTION,TYPE,DAY,START,END,ROOM,NAME,PROFESSOR
+APA1161,A,Lecture 1,2,08:00,10:00,MRT 212,INTRO BIOPHYS HUMAN MOVEMENT,Carla Geurts
+APA1161,A,Laboratory 1,1,13:00,15:00,Consult the department,INTRO BIOPHYS HUMAN MOVEMENT,Martine Dumont
+APA1161,A,Laboratory 2,1,15:00,17:00,Consult the department,INTRO BIOPHYS HUMAN MOVEMENT,Natalie Elliott
+APA1161,A,Laboratory 3,3,15:00,17:00,Consult the department,INTRO BIOPHYS HUMAN MOVEMENT,Martine Dumont
+APA1161,A,Laboratory 4,5,08:00,10:00,Consult the department,INTRO BIOPHYS HUMAN MOVEMENT,Martine Dumont
+APA1161,A,Laboratory 5,5,13:00,15:00,Consult the department,INTRO BIOPHYS HUMAN MOVEMENT,Martine Dumont
+APA1313,A,Lecture 1,4,08:00,10:00,MRT 218,MUSCULOSKELETAL ANATOMY,Jingxian Li
+APA1313,A,Laboratory 1,1,08:00,10:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 2,1,10:00,12:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 3,1,18:00,20:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 4,2,08:00,10:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 5,2,10:00,12:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 6,2,12:00,14:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 7,2,14:00,16:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 8,2,16:00,18:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 9,4,10:00,12:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 10,4,12:00,14:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 11,4,14:00,16:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 12,4,16:00,18:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 13,5,08:00,10:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 14,5,10:00,12:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 15,5,12:00,14:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 16,5,14:00,16:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1313,A,Laboratory 17,5,16:00,18:00,MNT 317,MUSCULOSKELETAL ANATOMY,Natalie Elliott
+APA1561,A,Lecture 1,4,08:00,10:00,FTX 302,INTRO ASPECTS BIOPHYS MOUV HUM,Julie Nantel
+APA1561,A,Laboratory 1,2,15:00,17:00,Consult the department,INTRO ASPECTS BIOPHYS MOUV HUM,Natalie Elliott
+APA1561,A,Laboratory 2,3,13:00,15:00,Consult the department,INTRO ASPECTS BIOPHYS MOUV HUM,Martine Dumont
+APA1561,A,Laboratory 3,4,13:00,15:00,Consult the department,INTRO ASPECTS BIOPHYS MOUV HUM,Natalie Elliott
+APA1561,A,Laboratory 4,5,13:00,15:00,Consult the department,INTRO ASPECTS BIOPHYS MOUV HUM,Martine Dumont
+APA1713,A,Lecture 1,2,08:00,10:00,STE A0150,ANATOMIE DU SYSTÈME LOCOMOTEUR,Julie Nantel
+APA1713,A,Laboratory 1,1,12:00,14:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 2,1,14:00,16:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 3,1,16:00,18:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 4,2,18:00,20:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 5,3,08:00,10:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 6,3,10:00,12:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 7,3,12:00,14:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 8,3,14:00,16:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 9,3,16:00,18:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA1713,A,Laboratory 10,3,18:00,20:00,MNT 317,ANATOMIE DU SYSTÈME LOCOMOTEUR,Natalie Elliott
+APA2111,A,Lecture 1,2,19:00,22:00,STE B0138,INTERVENTION THEORIES,Bradley Young
+APA2120,A,Lecture 1,1,11:30,13:00,STE B0138,Motor Control and Learning,Anthony Carlsen
+APA2120,A,Lecture 2,4,13:00,14:30,STE B0138,Motor Control and Learning,Michael Carter
+APA2121,A,Lecture 1,3,16:00,17:30,STE G0103,NUTRITION AND HEALTH,Carla Geurts
+APA2121,A,Lecture 2,5,14:30,16:00,STE G0103,NUTRITION AND HEALTH,Carla Geurts
+APA2140,A,Lecture 1,2,11:30,13:00,STE G0103,Introduction to Sport and Exer,Jennifer Brunet
+APA2140,A,Lecture 2,5,13:00,14:30,STE G0103,Introduction to Sport and Exer,Jennifer Brunet
+APA2315,A,Lecture 1,4,08:00,10:00,LEE A131,Introduction to the Biomechani,Andrew Post
+APA2315,A,Laboratory 1,1,14:00,16:00,MNT 319,Introduction to the Biomechani,Natalie Elliott
+APA2315,A,Laboratory 2,2,08:00,10:00,MNT 319,Introduction to the Biomechani,Natalie Elliott
+APA2315,A,Laboratory 3,2,14:00,16:00,MNT 319,Introduction to the Biomechani,Natalie Elliott
+APA2315,A,Laboratory 4,3,08:00,10:00,MNT 319,Introduction to the Biomechani,Natalie Elliott
+APA2315,A,Laboratory 5,3,10:00,12:00,MNT 319,Introduction to the Biomechani,Natalie Elliott
+APA2315,A,Laboratory 6,3,12:00,14:00,MNT 319,Introduction to the Biomechani,Natalie Elliott
+APA2315,A,Laboratory 7,3,14:00,16:00,MNT 319,Introduction to the Biomechani,Natalie Elliott
+APA2315,A,Laboratory 8,5,08:00,10:00,MNT 319,Introduction to the Biomechani,Natalie Elliott
+APA2511,A,Lecture 1,2,13:00,14:30,LEE A131,THÉORIES DE L'INTERVENTION,Martin Camiré
+APA2511,A,Lecture 2,4,11:30,13:00,LEE A131,THÉORIES DE L'INTERVENTION,Martin Camiré
+APA2520,A,Lecture 1,3,10:00,11:30,CBY B205,Apprentissage et contrôle mote,Yves Lajoie
+APA2520,A,Lecture 2,5,08:30,10:00,CBY B205,Apprentissage et contrôle mote,Yves Lajoie
+APA2521,A,Lecture 1,1,19:00,22:00,CBY C03,NUTRITION ET SANTÉ,Jacynthe Lafrenière
+APA2540,A,Lecture 1,5,17:30,20:30,HGN 302,Introduction à la psychologie,Kim Thompson
+APA2715,A,Lecture 1,3,08:00,10:00,MRT 015,Introduction à la biomécanique,Mario Lamontagne
+APA2715,A,Laboratory 1,1,12:00,14:00,MNT 319,Introduction à la biomécanique,Natalie Elliott
+APA2715,A,Laboratory 2,1,16:00,18:00,MNT 319,Introduction à la biomécanique,Natalie Elliott
+APA2715,A,Laboratory 3,2,10:00,12:00,MNT 319,Introduction à la biomécanique,Natalie Elliott
+APA2715,A,Laboratory 4,2,16:00,18:00,MNT 319,Introduction à la biomécanique,Natalie Elliott
+APA3114,A,Lecture 1,1,08:00,10:00,MNT 207,Exercise Physiology II,Pascal Imbeault
+APA3114,A,Laboratory 1,1,10:00,12:00,MNT 303,Exercise Physiology II,Martine Dumont
+APA3114,A,Laboratory 2,1,12:00,14:00,MNT 303,Exercise Physiology II,Martine Dumont
+APA3114,A,Laboratory 3,1,14:00,16:00,MNT 303,Exercise Physiology II,Martine Dumont
+APA3114,A,Laboratory 4,1,16:00,18:00,MNT 303,Exercise Physiology II,Martine Dumont
+APA3114,A,Laboratory 5,1,18:00,20:00,MNT 303,Exercise Physiology II,Martine Dumont
+APA3114,A,Laboratory 6,4,16:00,18:00,MNT 303,Exercise Physiology II,Martine Dumont
+APA3114,A,Laboratory 7,4,18:00,20:00,MNT 303,Exercise Physiology II,Martine Dumont
+APA3116,A,Lecture 1,2,17:30,19:00,LEE A130,PRINCIPLES OF COACHING,Diane Culver
+APA3116,A,Lecture 2,4,17:30,19:00,LEE A130,PRINCIPLES OF COACHING,Diane Culver
+APA3118,A,Lecture 1,1,11:30,13:00,DMS 1150,Recreation, Sport and Communit,Alexandra Arellano
+APA3118,A,Lecture 2,4,13:00,14:30,DMS 1150,Recreation, Sport and Communit,Alexandra Arellano
+APA3121,A,Lecture 1,1,16:00,17:30,MRT 211,Human Motor Skill Development,Diane Ste-Marie
+APA3121,A,Lecture 2,3,14:30,16:00,MRT 211,Human Motor Skill Development,Diane Ste-Marie
+APA3150,A,Lecture 1,4,19:00,22:00,LEE A130,NEURAL CONTROL OF HUM. MOV'T,Natalie Richer
+APA3324,A,Lecture 1,1,08:00,10:00,MNT 103,TECH. AND STRATEGIES IN SPORT,Deborah Jehu
+APA3324,A,Laboratory 1,2,13:00,15:00,Consult the department,TECH. AND STRATEGIES IN SPORT,Deborah Jehu
+APA3325,A,Lecture 1,2,13:00,14:30,STE G0103,FITNESS TRAINING PRINCIPLES,Carla Geurts
+APA3325,A,Lecture 2,4,11:30,13:00,STE G0103,FITNESS TRAINING PRINCIPLES,Not available at this time.
+APA3381,A,Lecture 1,2,11:30,13:00,ART 033,MEAS. &amp; DATA ANALYSIS IN H.K.,Gordon Robertson
+APA3381,A,Lecture 2,5,13:00,14:30,ART 033,MEAS. &amp; DATA ANALYSIS IN H.K.,Gordon Robertson
+APA3514,A,Lecture 1,5,08:00,10:00,SMD 428,Physiologie de l'exercice II,Pascal Imbeault
+APA3514,A,Laboratory 1,4,08:00,10:00,MNT 303,Physiologie de l'exercice II,Martine Dumont
+APA3514,A,Laboratory 2,4,10:00,12:00,MNT 303,Physiologie de l'exercice II,Martine Dumont
+APA3514,A,Laboratory 3,4,12:00,14:00,MNT 303,Physiologie de l'exercice II,Martine Dumont
+APA3514,A,Laboratory 4,4,14:00,16:00,MNT 303,Physiologie de l'exercice II,Martine Dumont
+APA3516,A,Lecture 1,1,13:00,14:30,VNR 1095,PRINCIPES D'ENTRAÎNEMENT,Pierre Trudel
+APA3516,A,Lecture 2,3,11:30,13:00,VNR 1095,PRINCIPES D'ENTRAÎNEMENT,Pierre Trudel
+APA3518,A,Lecture 1,3,19:00,22:00,FTX 137,Loisir, sport et développement,Alexandra Arellano
+APA3542,A,Lecture 1,2,16:00,17:30,SMD 227,Sociologie de la santé au Cana,Alexandre Dumas
+APA3542,A,Lecture 2,4,14:30,16:00,SMD 227,Sociologie de la santé au Cana,Alexandre Dumas
+APA3711,A,Lecture 1,3,16:00,17:30,SMD 429,BIOMÉCANIQUE STRUCTURALE,Mario Lamontagne
+APA3711,A,Lecture 2,5,14:30,16:00,SMD 429,BIOMÉCANIQUE STRUCTURALE,Mario Lamontagne
+APA3711,A,Laboratory 1,4,10:00,12:00,MNT 319,BIOMÉCANIQUE STRUCTURALE,Natalie Elliott
+APA3711,A,Laboratory 2,4,12:00,14:00,MNT 319,BIOMÉCANIQUE STRUCTURALE,Natalie Elliott
+APA3724,A,Lecture 1,2,19:00,21:00,SMD 402,TECH. ET STRATÉGIES DANS SPORT,André Lachance
+APA3724,A,Laboratory 1,3,08:00,10:00,Consult the department,TECH. ET STRATÉGIES DANS SPORT,André Lachance
+APA3725,A,Lecture 1,1,08:30,10:00,FSS 1030,PRINCIPES D'AMÉLIO. COND. PHYS,Steve Pelletier
+APA3725,A,Lecture 2,4,10:00,11:30,FSS 1030,PRINCIPES D'AMÉLIO. COND. PHYS,Steve Pelletier
+APA3781,A,Lecture 1,1,19:00,22:00,DMS 1140,MESURE ANALYSE DONNÉES QUANT.,Philippe Rousseau
+APA4111,A,Lecture 1,1,19:00,22:00,MRT 221,INTERNSHIP/CLINICAL EXPERIENCE,Daniel Crête
+APA4111,B,Lecture 1,2,19:00,22:00,MRT 221,INTERNSHIP/CLINICAL EXPERIENCE,Daniel Crête
+APA4111,C,Lecture 1,5,19:00,22:00,MRT 221,INTERNSHIP/CLINICAL EXPERIENCE,Daniel Crête
+APA4116,A,Lecture 1,1,14:30,16:00,STE A0150,APPLIED SPORT &amp; PERF. PSY.,Terrance Orlick
+APA4116,A,Lecture 2,4,16:00,17:30,STE A0150,APPLIED SPORT &amp; PERF. PSY.,Terrance Orlick
+APA4123,A,Lecture 1,1,19:00,21:30,MNT 103,PHYSICAL ACTIVITY COUNSELLING,François Cholette
+APA4123,A,Laboratory 1,2,08:00,10:00,THN 133,PHYSICAL ACTIVITY COUNSELLING,Not available at this time.
+APA4123,A,Laboratory 2,3,19:00,21:00,FSS 9003,PHYSICAL ACTIVITY COUNSELLING,Not available at this time.
+APA4145,A,Lecture 1,4,08:00,10:00,SMD 428,SPORT &amp; RECREATION MARKETING,Stephen Stuart
+APA4145,A,Discussion Group 1,2,08:00,10:00,CBY E015,SPORT &amp; RECREATION MARKETING,Not available at this time.
+APA4145,A,Discussion Group 2,3,08:00,10:00,GSD 307,SPORT &amp; RECREATION MARKETING,Not available at this time.
+APA4145,A,Discussion Group 3,4,19:00,21:00,FSS 10003,SPORT &amp; RECREATION MARKETING,Not available at this time.
+APA4150,A,Lecture 1,1,17:30,19:00,MRT 211,PSYCHOMOTOR REHABILITATION,Eric Heiden
+APA4150,A,Lecture 2,3,17:30,19:00,MRT 211,PSYCHOMOTOR REHABILITATION,Eric Heiden
+APA4313,A,Lecture 1,3,19:00,22:00,FSS 1007,EXERCISE DISEASE PREVENTION,Ron Saulnier
+APA4323,A,Lecture 1,3,16:00,17:30,LEE C102,SELECTED TOPICS: HUMAN KINETIC,Thomas Hoshizaki
+APA4323,A,Lecture 2,5,14:30,16:00,LEE C102,SELECTED TOPICS: HUMAN KINETIC,Thomas Hoshizaki
+APA4323,B,Lecture 1,2,10:00,13:00,MNT 303,SELECTED TOPICS: HUMAN KINETIC,Martine Dumont
+APA4511,A,Lecture 1,4,19:00,22:00,DMS 1120,INTERNAT / EXPÉRIENCE CLINIQUE,Daniel Crête
+HSS1100,B,Lecture 1,1,19:00,22:00,MRT 212,MICROBIOLOGY AND IMMUNOLOGY,William Yan
+HSS1101,A,Lecture 1,1,08:30,10:00,TBT 333,DET OF HEALTH,Tien Nguyen
+HSS1101,A,Lecture 2,4,10:00,11:30,TBT 333,DET OF HEALTH,Tien Nguyen
+HSS1101,AP,Lecture 1,2,10:00,13:00,Pembroke,DET OF HEALTH,Not available at this time.
+HSS1101,AW,Lecture 1,4,08:00,11:00,WC 144,DET OF HEALTH,François Beaulieu
+HSS1101,B,Lecture 1,2,16:00,17:30,TBT 333,DET OF HEALTH,Tien Nguyen
+HSS1101,B,Lecture 2,4,14:30,16:00,TBT 333,DET OF HEALTH,Tien Nguyen
+HSS1500,B,Lecture 1,3,17:30,19:00,MRT 212,MICROBIOLOGIE ET IMMUNOLOGIE,Marc Desjardins
+HSS1500,B,Lecture 2,5,17:30,19:00,MRT 212,MICROBIOLOGIE ET IMMUNOLOGIE,Marc Desjardins
+HSS1501,A,Lecture 1,2,08:30,10:00,TBT 070,Déterminants de la santé,Gabriel Kashindi
+HSS1501,A,Lecture 2,5,10:00,11:30,TBT 070,Déterminants de la santé,Gabriel Kashindi
+HSS1501,B,Lecture 1,2,19:00,22:00,LEE A130,Déterminants de la santé,Gaétan Girard
+HSS2102,A,Lecture 1,3,16:00,17:30,TBT 333,COMM &amp; HEALTH,Sonia Gulati
+HSS2102,A,Lecture 2,5,14:30,16:00,TBT 333,COMM &amp; HEALTH,Sonia Gulati
+HSS2102,B,Lecture 1,2,14:30,16:00,MRT 212,COMM &amp; HEALTH,Jenn Fitzpatrick
+HSS2102,B,Lecture 2,5,16:00,17:30,MRT 212,COMM &amp; HEALTH,Jenn Fitzpatrick
+HSS2111,A,Lecture 1,3,19:00,22:00,MRT 212,POSTURE, MOV &amp; INJURIES PREV,Tien Nguyen
+HSS2111,B,Lecture 1,1,11:30,13:00,DMS 1140,POSTURE, MOV &amp; INJURIES PREV,Tien Nguyen
+HSS2111,B,Lecture 2,4,13:00,14:30,DMS 1140,POSTURE, MOV &amp; INJURIES PREV,Tien Nguyen
+HSS2121,A,Lecture 1,2,19:00,22:00,DMS 1150,HISTORY OF HEALTH CARE,Louise Edmonds
+HSS2305,A,Lecture 1,1,10:00,11:30,FSS 1006,MOLECULAR MECHANISMS OF DISEA,Shannon Bainbridge-Whiteside
+HSS2305,A,Lecture 2,3,08:30,10:00,FSS 1006,MOLECULAR MECHANISMS OF DISEA,Shannon Bainbridge-Whiteside
+HSS2305,B,Lecture 1,2,16:00,17:30,SCR 002,MOLECULAR MECHANISMS OF DISEA,Ajoy Basak
+HSS2305,B,Lecture 2,4,14:30,16:00,SCR 002,MOLECULAR MECHANISMS OF DISEA,Ajoy Basak
+HSS2381,AP,Lecture 1,1,16:00,18:00,Pembroke,QUANT. METHODS IN HEALTH SC. I,Elizabeth Rolland-Harris
+HSS2381,AP,Laboratory 1,1,18:00,19:00,Pembroke,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,AW,Lecture 1,3,11:00,14:00,WC 144,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,AW,Laboratory 1,3,14:00,15:00,WC 144,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,B,Lecture 1,1,08:30,10:00,VNR 1095,QUANT. METHODS IN HEALTH SC. I,Kerry-Anne Hogan
+HSS2381,B,Lecture 2,4,10:00,11:30,VNR 1095,QUANT. METHODS IN HEALTH SC. I,Kerry-Anne Hogan
+HSS2381,B,Laboratory 1,2,10:00,11:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,B,Laboratory 2,2,13:30,14:30,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,B,Laboratory 3,3,11:30,12:30,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,B,Laboratory 4,3,12:30,13:30,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,C,Lecture 1,3,13:00,14:30,SCS E217,QUANT. METHODS IN HEALTH SC. I,Raywat Deonandan
+HSS2381,C,Lecture 2,5,11:30,13:00,SCS E217,QUANT. METHODS IN HEALTH SC. I,Raywat Deonandan
+HSS2381,C,Laboratory 1,1,13:00,14:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,C,Laboratory 2,1,14:00,15:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,C,Laboratory 3,1,15:00,16:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,C,Laboratory 4,1,12:00,13:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,D,Lecture 1,4,16:30,19:30,RGN 2003,QUANT. METHODS IN HEALTH SC. I,Kerry-Anne Hogan
+HSS2381,D,Laboratory 1,2,13:30,14:30,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,D,Laboratory 2,2,14:30,15:30,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,D,Laboratory 3,2,15:30,16:30,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,D,Laboratory 4,3,11:00,12:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,D,Laboratory 5,3,12:00,13:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,D,Laboratory 6,3,13:00,14:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2381,D,Laboratory 7,3,15:00,16:00,Consult the department,QUANT. METHODS IN HEALTH SC. I,Not available at this time.
+HSS2502,A,Lecture 1,2,19:00,22:00,FSS 1007,COMMUNICATION ET SANTE,Zeina Abou-Rizk
+HSS2502,B,Lecture 1,3,13:00,14:30,MRT 212,COMMUNICATION ET SANTE,Monique Potvin Kent
+HSS2502,B,Lecture 2,5,11:30,13:00,MRT 212,COMMUNICATION ET SANTE,Monique Potvin Kent
+HSS2705,A,Lecture 1,3,10:00,11:30,MNT 201,MECHA MOL DES MALADIES,Frédérique Tesson
+HSS2705,A,Lecture 2,5,08:30,10:00,MNT 201,MECHA MOL DES MALADIES,Frédérique Tesson
+HSS2781,B,Lecture 1,3,17:00,20:00,RGN 2149,ANAL QUANT DONÉES SC SANTÉ I,Nicolas Mezher
+HSS2781,B,Laboratory 1,3,08:30,09:30,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS2781,B,Laboratory 2,3,09:30,10:30,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS2781,B,Laboratory 3,4,08:30,09:30,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS2781,B,Laboratory 4,4,09:30,10:30,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS2781,B,Laboratory 5,4,10:30,11:30,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS2781,C,Lecture 1,4,08:30,11:30,SMD 425,ANAL QUANT DONÉES SC SANTÉ I,Charles Dabone
+HSS2781,C,Laboratory 1,1,09:00,10:00,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS2781,C,Laboratory 2,4,11:30,12:30,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS2781,C,Laboratory 3,4,12:30,13:30,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS2781,C,Laboratory 4,4,13:30,14:30,Consult the department,ANAL QUANT DONÉES SC SANTÉ I,Not available at this time.
+HSS3101,A,Lecture 1,1,10:00,11:30,SMD 224,HEALTH RESEARCH,Kerry-Anne Hogan
+HSS3101,A,Lecture 2,3,08:30,10:00,SMD 224,HEALTH RESEARCH,Kerry-Anne Hogan
+HSS3101,B,Lecture 1,1,19:00,22:00,SMD 224,HEALTH RESEARCH,Kerry-Anne Hogan
+HSS3103,A,Lecture 1,3,19:00,22:00,SMD 425,ILLNESS, IMPAIRMENT DISABILITY,Sonia Gulati
+HSS3103,B,Lecture 1,2,10:00,11:30,DMS 1130,ILLNESS, IMPAIRMENT DISABILITY,Jeffrey Jutai
+HSS3103,B,Lecture 2,4,08:30,10:00,DMS 1130,ILLNESS, IMPAIRMENT DISABILITY,Jeffrey Jutai
+HSS3105,A,Lecture 1,2,13:00,14:30,HGN 302,GLOBAL CITI &amp; HEALTH,Sonia Gulati
+HSS3105,A,Lecture 2,4,11:30,13:00,HGN 302,GLOBAL CITI &amp; HEALTH,Sonia Gulati
+HSS3305,A,Lecture 1,1,13:00,14:30,FSS 1007,PATHOPHYSIO OF HEALTH PROBLEMS,Karen Phillips
+HSS3305,A,Lecture 2,3,11:30,13:00,FSS 1007,PATHOPHYSIO OF HEALTH PROBLEMS,Karen Phillips
+HSS3501,A,Lecture 1,3,19:00,22:00,SMD 224,RECHERCHE SANTÉ APP QUAL QUANT,Isabelle Marcoux
+HSS3503,A,Lecture 1,1,10:00,11:30,MRT 212,MALADIE, DÉFIENCE ET HANDICAP,Sarah Fraser
+HSS3503,A,Lecture 2,3,08:30,10:00,MRT 212,MALADIE, DÉFIENCE ET HANDICAP,Sarah Fraser
+HSS3505,A,Lecture 1,1,14:30,17:30,SMD 226,CITOYENNETÉ GLOBALE ET SANTÉ,Zeina Abou-Rizk
+HSS3705,A,Lecture 1,2,11:30,13:00,FSS 1030,PATHPHYSIOL DES PROBL DE SANTE,Sihem Djoudi
+HSS3705,A,Lecture 2,5,13:00,14:30,FSS 1030,PATHPHYSIOL DES PROBL DE SANTE,Sihem Djoudi
+HSS4102,A,Lecture 1,2,11:30,13:00,MRT 205,DEV OF HEALTH PROBLEMS,Monique Potvin Kent
+HSS4102,A,Lecture 2,5,13:00,14:30,MRT 205,DEV OF HEALTH PROBLEMS,Monique Potvin Kent
+HSS4102,B,Lecture 1,2,14:30,16:00,SCR 002,DEV OF HEALTH PROBLEMS,Kirsti Bissada
+HSS4102,B,Lecture 2,5,16:00,17:30,SCR 002,DEV OF HEALTH PROBLEMS,Kirsti Bissada
+HSS4107,A,Lecture 1,1,16:00,17:30,SMD 430,INT PERS. ON DEATH AND DYING,Stuart Chambers
+HSS4107,A,Lecture 2,3,14:30,16:00,SMD 430,INT PERS. ON DEATH AND DYING,Stuart Chambers
+HSS4303,A,Lecture 1,3,13:00,14:30,TBT 070,EPIDEMIOLOGY,Éric Lavigne
+HSS4303,A,Lecture 2,5,11:30,13:00,TBT 070,EPIDEMIOLOGY,Éric Lavigne
+HSS4303,B,Lecture 1,2,17:30,19:00,SMD 224,EPIDEMIOLOGY,Raywat Deonandan
+HSS4303,B,Lecture 2,4,17:30,19:00,SMD 224,EPIDEMIOLOGY,Raywat Deonandan
+HSS4324,A,Lecture 1,3,16:00,17:30,SMD 227,SELECTED TOPICS,Jennifer Reed
+HSS4324,A,Lecture 2,5,14:30,16:00,SMD 227,SELECTED TOPICS,Jennifer Reed
+HSS4331,A,Lecture 1,1,17:30,19:00,MNT 201,INTERNATIONAL HEALTH,Raywat Deonandan
+HSS4331,A,Lecture 2,3,17:30,19:00,MNT 201,INTERNATIONAL HEALTH,Raywat Deonandan
+HSS4502,A,Lecture 1,3,13:00,14:30,VNR 2095,DEV DES PROBLEMES DE SANTE,Gabriel Kashindi
+HSS4502,A,Lecture 2,5,11:30,13:00,VNR 2095,DEV DES PROBLEMES DE SANTE,Gabriel Kashindi
+HSS4507,A,Lecture 1,5,08:30,11:30,MNT 204,VIS. INT FIN DE VIE ET MORT,Isabelle Marcoux
+HSS4703,A,Lecture 1,4,14:30,17:30,MRT 250,ÉPIDÉMIOLOGIE,Éric Lavigne
+LSR1100,A,Lecture 1,3,19:00,22:00,ART 257,INTRODUC. TO LEISURE STUDIES,George Karlis
+LSR1500,A,Lecture 1,2,16:00,17:30,SMD 224,INTRO.DE L'ETUDE DU LOISIR,François Gravelle
+LSR1500,A,Lecture 2,4,14:30,16:00,SMD 224,INTRO.DE L'ETUDE DU LOISIR,François Gravelle
+LSR2118,A,Lecture 1,4,19:00,22:00,SMD 423,RECR. PROG. DEV. &amp; EVALUATION,Eileen O'Connor
+LSR2518,A,Lecture 1,2,13:00,14:30,MRT 211,DEV. ET ÉVAL. DE PROG. RECREA.,Julien Pelletier
+LSR2518,A,Lecture 2,4,11:30,13:00,MRT 211,DEV. ET ÉVAL. DE PROG. RECREA.,Julien Pelletier
+LSR3516,A,Lecture 1,2,11:30,13:00,MRT 211,COUNSELLING EN LOISIR,Jean-Marc Adjizian
+LSR3516,A,Lecture 2,5,13:00,14:30,MRT 211,COUNSELLING EN LOISIR,Jean-Marc Adjizian
+NSG2113,A,Lecture 1,1,12:30,15:30,RGN 2005,INTRO. TO NURSING SCIENCE,Amanda Vandyk
+NSG2113,AP,Lecture 1,2,13:30,16:30,Pembroke,INTRO. TO NURSING SCIENCE,Not available at this time.
+NSG2113,AW,Lecture 1,4,14:30,17:30,WC 144,INTRO. TO NURSING SCIENCE,Not available at this time.
+NSG2317,A,Lecture 1,3,08:30,10:30,RGN 2003,HEALTH ASSESSMENT,Joy Noel-Weiss
+NSG2317,A,Laboratory 1,4,09:00,12:00,Consult the department,HEALTH ASSESSMENT,Laura Payant
+NSG2317,A,Laboratory 2,4,09:00,12:00,Consult the department,HEALTH ASSESSMENT,Shawna Watt
+NSG2317,A,Laboratory 3,4,09:00,12:00,Consult the department,HEALTH ASSESSMENT,Monique Maisonneuve
+NSG2317,A,Laboratory 4,4,12:30,15:30,Consult the department,HEALTH ASSESSMENT,Shawna Watt
+NSG2317,A,Laboratory 5,4,12:30,15:30,Consult the department,HEALTH ASSESSMENT,Monique Maisonneuve
+NSG2317,A,Laboratory 6,4,12:30,15:30,Consult the department,HEALTH ASSESSMENT,Gabrielle Proper
+NSG2317,A,Laboratory 7,5,09:00,12:00,Consult the department,HEALTH ASSESSMENT,Jeanne Falabi-Bakinde
+NSG2317,A,Laboratory 8,5,09:00,12:00,Consult the department,HEALTH ASSESSMENT,Shawna Watt
+NSG2317,A,Laboratory 9,5,09:00,12:00,Consult the department,HEALTH ASSESSMENT,Monique Maisonneuve
+NSG2317,A,Laboratory 10,5,13:00,16:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,A,Laboratory 11,5,13:00,16:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,A,Laboratory 12,5,13:00,16:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AP,Lecture 1,3,08:30,10:30,Pembroke,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AP,Laboratory 1,3,13:30,16:30,Pembroke,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AP,Laboratory 2,4,08:00,11:00,Pembroke,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AP,Laboratory 3,4,12:00,15:00,Pembroke,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AP,Laboratory 4,4,15:00,18:00,Pembroke,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Lecture 1,2,12:00,14:00,WC 144,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 1,5,08:00,11:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 2,5,08:00,11:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 3,5,08:00,11:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 4,5,08:00,11:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 5,5,11:30,14:30,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 6,5,11:30,14:30,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 7,5,11:30,14:30,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 8,5,11:30,14:30,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 9,5,15:00,18:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 10,5,15:00,18:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2317,AW,Laboratory 11,5,15:00,18:00,Consult the department,HEALTH ASSESSMENT,Not available at this time.
+NSG2513,A,Lecture 1,1,15:00,18:00,RGN 3248,INTRODUC. SCIENCES INFIRMIÈRES,Seynab Sougal
+NSG2717,A,Lecture 1,3,13:00,15:00,RGN 3248,ÉVALUATION DE LA SANTÉ,Jacinthe Trudeau
+NSG2717,A,Laboratory 1,4,13:00,16:00,Consult the department,ÉVALUATION DE LA SANTÉ,Jeanne Falabi-Bakinde
+NSG2717,A,Laboratory 2,4,13:00,16:00,Consult the department,ÉVALUATION DE LA SANTÉ,Lyssa Woloschuk
+NSG2717,A,Laboratory 3,4,13:00,16:00,Consult the department,ÉVALUATION DE LA SANTÉ,Laura Macéus
+NSG2717,A,Laboratory 4,5,09:00,12:00,Consult the department,ÉVALUATION DE LA SANTÉ,Lyssa Woloschuk
+NSG2717,A,Laboratory 5,5,09:00,12:00,Consult the department,ÉVALUATION DE LA SANTÉ,Laura Macéus
+NSG2717,A,Laboratory 6,5,09:00,12:00,Consult the department,ÉVALUATION DE LA SANTÉ,Marie-Eve Latreille
+NSG2717,A,Laboratory 7,5,13:00,16:00,Consult the department,ÉVALUATION DE LA SANTÉ,Marie-Eve Latreille
+NSG2717,A,Laboratory 8,5,13:00,16:00,Consult the department,ÉVALUATION DE LA SANTÉ,Not available at this time.
+NSG3105,A,Lecture 1,1,08:30,11:30,RGN 2003,CARE ADULTS EXP. ILLNESS,Joy Noel-Weiss
+NSG3107,AP,Lecture 1,5,08:30,11:30,Pembroke,FAM-CENT CARE CHILD ACUTE CHR,Not available at this time.
+NSG3107,AW,Lecture 1,1,13:00,16:00,WC 144,FAM-CENT CARE CHILD ACUTE CHR,Not available at this time.
+NSG3111,AP,Lecture 1,1,09:00,12:00,Pembroke,CARE CHILDBEARING FAMILY,Not available at this time.
+NSG3111,AW,Lecture 1,1,09:00,12:00,WC 144,CARE CHILDBEARING FAMILY,Not available at this time.
+NSG3123,A,Lecture 1,3,13:00,16:00,RGN 2005,COMMUNITY HEALTH NURSING,Craig Phillips
+NSG3123,AP,Lecture 1,5,08:30,11:30,Pembroke,COMMUNITY HEALTH NURSING,Not available at this time.
+NSG3123,AW,Lecture 1,3,13:00,16:00,WC 346,COMMUNITY HEALTH NURSING,Not available at this time.
+NSG3127,A,Lecture 1,2,12:00,15:00,RGN 2005,NURS. PROFESSIONALISM ETHICS,Joy Noel-Weiss
+NSG3127,A,Discussion Group 1,1,12:00,15:00,RGN 2007,NURS. PROFESSIONALISM ETHICS,Joy Noel-Weiss
+NSG3127,A,Discussion Group 2,1,12:00,15:00,RGN 2008,NURS. PROFESSIONALISM ETHICS,Judy Redman
+NSG3127,A,Discussion Group 3,1,12:00,15:00,RGN 2009,NURS. PROFESSIONALISM ETHICS,Not available at this time.
+NSG3127,A,Discussion Group 4,1,12:00,15:00,RGN 2052,NURS. PROFESSIONALISM ETHICS,Lisa Stewart
+NSG3127,A,Discussion Group 5,1,12:00,15:00,RGN 2053,NURS. PROFESSIONALISM ETHICS,Anne Marie Clarkson
+NSG3127,A,Discussion Group 6,1,12:00,15:00,RGN 2054,NURS. PROFESSIONALISM ETHICS,Tawnya Shimizu
+NSG3127,A,Discussion Group 7,2,08:30,11:30,RGN 2007,NURS. PROFESSIONALISM ETHICS,Frances Legault
+NSG3127,A,Discussion Group 8,2,08:30,11:30,RGN 2008,NURS. PROFESSIONALISM ETHICS,Judy Redman
+NSG3127,A,Discussion Group 9,2,08:30,11:30,RGN 2009,NURS. PROFESSIONALISM ETHICS,Lisa Stewart
+NSG3127,A,Discussion Group 10,2,08:30,11:30,RGN 2052,NURS. PROFESSIONALISM ETHICS,Anne Marie Clarkson
+NSG3127,A,Discussion Group 11,2,08:30,11:30,RGN 2053,NURS. PROFESSIONALISM ETHICS,Tawnya Shimizu
+NSG3127,A,Discussion Group 12,2,08:30,11:30,RGN 2054,NURS. PROFESSIONALISM ETHICS,Sandra Djuric-Graham
+NSG3127,A,Discussion Group 13,2,08:30,11:30,RGN 2012,NURS. PROFESSIONALISM ETHICS,Not available at this time.
+NSG3127,AP,Lecture 1,1,13:00,15:00,Pembroke,NURS. PROFESSIONALISM ETHICS,Not available at this time.
+NSG3127,AP,Discussion Group 1,1,15:00,17:00,Pembroke,NURS. PROFESSIONALISM ETHICS,Not available at this time.
+NSG3127,AW,Lecture 1,2,09:00,12:00,CA 105,NURS. PROFESSIONALISM ETHICS,Not available at this time.
+NSG3127,AW,Discussion Group 1,2,08:00,09:00,Consult the department,NURS. PROFESSIONALISM ETHICS,Not available at this time.
+NSG3137,A,Laboratory 1,2,17:30,19:00,Consult the department,PRACTICUM: MENTAL HEALTH,Not available at this time.
+NSG3137,A,Work Term 1,3,07:30,15:00,Consult the department,PRACTICUM: MENTAL HEALTH,Patricia McDonough
+NSG3137,A,Work Term 2,4,07:30,15:00,Consult the department,PRACTICUM: MENTAL HEALTH,Patricia McDonough
+NSG3137,A,Work Term 3,5,07:30,15:00,Consult the department,PRACTICUM: MENTAL HEALTH,Emilia Druzenco
+NSG3305,A,Laboratory 1,2,16:00,17:30,Consult the department,PRACTICUM: CARE ADULT ILLNESS,Not available at this time.
+NSG3305,A,Work Term 1,3,15:00,22:00,Consult the department,PRACTICUM: CARE ADULT ILLNESS,Kelley Tousignant
+NSG3305,A,Work Term 2,4,15:00,22:00,Consult the department,PRACTICUM: CARE ADULT ILLNESS,Barbara Cameron
+NSG3305,A,Work Term 3,5,15:00,22:00,Consult the department,PRACTICUM: CARE ADULT ILLNESS,Marbe Sumitro
+NSG3307,AP,Laboratory 1,4,09:00,13:00,Pembroke,PRAC: FAM CHILD ACUTE CHRONIC,Not available at this time.
+NSG3307,AP,Work Term 1,2,14:30,22:00,Pembroke,PRAC: FAM CHILD ACUTE CHRONIC,Not available at this time.
+NSG3307,AP,Work Term 2,3,07:30,14:30,Pembroke,PRAC: FAM CHILD ACUTE CHRONIC,Not available at this time.
+NSG3307,AW,Laboratory 1,2,13:00,17:00,Consult the department,PRAC: FAM CHILD ACUTE CHRONIC,Not available at this time.
+NSG3307,AW,Work Term 1,4,15:00,22:00,Consult the department,PRAC: FAM CHILD ACUTE CHRONIC,Not available at this time.
+NSG3307,AW,Work Term 2,5,15:00,22:00,Consult the department,PRAC: FAM CHILD ACUTE CHRONIC,Not available at this time.
+NSG3311,AP,Laboratory 1,4,13:00,17:00,Pembroke,PRACTICUM: CHILDBEARING FAM,Not available at this time.
+NSG3311,AP,Work Term 1,2,07:30,14:30,Pembroke,PRACTICUM: CHILDBEARING FAM,Not available at this time.
+NSG3311,AP,Work Term 2,3,14:30,22:00,Pembroke,PRACTICUM: CHILDBEARING FAM,Not available at this time.
+NSG3311,AW,Laboratory 1,3,08:00,12:00,Consult the department,PRACTICUM: CHILDBEARING FAM,Not available at this time.
+NSG3311,AW,Work Term 1,4,07:30,15:00,Consult the department,PRACTICUM: CHILDBEARING FAM,Not available at this time.
+NSG3311,AW,Work Term 2,5,07:30,15:00,Consult the department,PRACTICUM: CHILDBEARING FAM,Not available at this time.
+NSG3320,A,Lecture 1,1,16:00,19:00,RGN 2005,MENTAL HEALTH NURSING,Amanda Vandyk
+NSG3323,A,Work Term 1,4,07:30,22:00,Consult the department,PRACTICUM: COMMUNITY HEALTH,Jodi Lusk
+NSG3323,AP,Work Term 1,4,07:30,16:00,Pembroke,PRACTICUM: COMMUNITY HEALTH,Not available at this time.
+NSG3323,AW,Work Term 1,2,07:30,22:00,Consult the department,PRACTICUM: COMMUNITY HEALTH,Not available at this time.
+NSG3505,A,Lecture 1,2,09:00,12:00,RGN 2005,SOINS ADULTES MALADIE,Sophie Bigras
+NSG3516,A,Lecture 1,2,16:00,19:00,RGN 2111,LA DISCIPLINE INF. ET LA SANTÉ,Naima Bouabdillah
+NSG3518,A,Lecture 1,4,16:00,19:00,RGN 1007,LA PROF. INF. COMME FORCE SOC.,Thomas Foth
+NSG3523,A,Lecture 1,3,09:00,12:00,RGN 2005,SANTÉ COMMUNAUTAIRE,Hélène Laperrière
+NSG3527,A,Lecture 1,1,13:00,16:00,RGN 2003,PROF ÉTHIQUE SOINS INFIRMIERS,Mariève Bercier
+NSG3527,A,Discussion Group 1,1,09:00,12:00,RGN 2007,PROF ÉTHIQUE SOINS INFIRMIERS,Mariève Bercier
+NSG3527,A,Discussion Group 2,1,09:00,12:00,RGN 2008,PROF ÉTHIQUE SOINS INFIRMIERS,Chantal Backman
+NSG3527,A,Discussion Group 3,1,09:00,12:00,RGN 2009,PROF ÉTHIQUE SOINS INFIRMIERS,Seynab Sougal
+NSG3527,A,Discussion Group 4,1,09:00,12:00,RGN 2052,PROF ÉTHIQUE SOINS INFIRMIERS,Martine Sawadogo
+NSG3527,A,Discussion Group 5,2,12:30,15:30,RGN 2007,PROF ÉTHIQUE SOINS INFIRMIERS,Naima Bouabdillah
+NSG3527,A,Discussion Group 6,2,12:30,15:30,RGN 2008,PROF ÉTHIQUE SOINS INFIRMIERS,Chantal Backman
+NSG3527,A,Discussion Group 7,2,12:30,15:30,RGN 2009,PROF ÉTHIQUE SOINS INFIRMIERS,Sophie Bigras
+NSG3527,A,Discussion Group 8,1,09:00,12:00,RGN 2053,PROF ÉTHIQUE SOINS INFIRMIERS,Not available at this time.
+NSG3537,A,Laboratory 1,2,18:00,19:30,Consult the department,STAGE CLINIQUE SANTÉ MENTALE,Not available at this time.
+NSG3537,A,Work Term 1,3,07:30,15:00,Consult the department,STAGE CLINIQUE SANTÉ MENTALE,Himbie Musafiri
+NSG3537,A,Work Term 2,4,07:30,15:00,Consult the department,STAGE CLINIQUE SANTÉ MENTALE,Sylvie Buisson
+NSG3537,A,Work Term 3,5,07:30,15:00,Consult the department,STAGE CLINIQUE SANTÉ MENTALE,Not available at this time.
+NSG3705,A,Laboratory 1,2,16:30,18:00,Consult the department,STAGE AUPRÈS DES ADULTES,Not available at this time.
+NSG3705,A,Work Term 1,3,15:00,22:00,Consult the department,STAGE AUPRÈS DES ADULTES,Chantal Duclos
+NSG3705,A,Work Term 2,4,15:00,22:00,Consult the department,STAGE AUPRÈS DES ADULTES,Michelle Denard-Robelin
+NSG3705,A,Work Term 3,5,15:00,22:00,Consult the department,STAGE AUPRÈS DES ADULTES,Chantal Duclos
+NSG3720,A,Lecture 1,1,16:30,19:30,RGN 2149,SOINS EN SANTÉ MENTALE,Sylvie Buisson
+NSG3723,A,Work Term 1,4,07:30,22:00,Consult the department,Stage clinique en santé commun,Hélène Laperrière
+NSG4330,A,Lecture 1,5,09:00,12:00,RGN 2005,COMPLEX NURSING CARE,Brandi Vanderspank
+NSG4330,AP,Lecture 1,1,08:30,11:30,Pembroke,COMPLEX NURSING CARE,Not available at this time.
+NSG4330,AW,Lecture 1,3,09:00,12:00,WC 346,COMPLEX NURSING CARE,Not available at this time.
+NSG4430,A,Laboratory 1,3,09:00,12:00,Consult the department,PRACT. COMPLEX NURSING CARE,Jeanne Falabi-Bakinde
+NSG4430,A,Laboratory 2,3,09:00,12:00,Consult the department,PRACT. COMPLEX NURSING CARE,Shawna Watt
+NSG4430,A,Laboratory 3,3,09:00,12:00,Consult the department,PRACT. COMPLEX NURSING CARE,Marie-Eve Latreille
+NSG4430,A,Laboratory 4,3,09:00,12:00,Consult the department,PRACT. COMPLEX NURSING CARE,Lyssa Woloschuk
+NSG4430,A,Laboratory 5,3,09:00,12:00,Consult the department,PRACT. COMPLEX NURSING CARE,Amarpreet Bajwa
+NSG4430,A,Laboratory 6,3,09:00,12:00,Consult the department,PRACT. COMPLEX NURSING CARE,Gabrielle Proper
+NSG4430,A,Laboratory 7,3,17:00,20:00,Consult the department,PRACT. COMPLEX NURSING CARE,Jeanne Falabi-Bakinde
+NSG4430,A,Laboratory 8,3,17:00,20:00,Consult the department,PRACT. COMPLEX NURSING CARE,Gabrielle Proper
+NSG4430,A,Laboratory 9,3,17:00,20:00,Consult the department,PRACT. COMPLEX NURSING CARE,Marie-Eve Latreille
+NSG4430,A,Laboratory 10,3,17:00,20:00,Consult the department,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4430,A,Laboratory 11,3,17:00,20:00,Consult the department,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4430,A,Laboratory 12,3,17:00,20:00,Consult the department,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4430,A,Work Term 1,1,07:30,22:00,Consult the department,PRACT. COMPLEX NURSING CARE,Kelley Tousignant
+NSG4430,A,Work Term 2,2,07:30,22:00,Consult the department,PRACT. COMPLEX NURSING CARE,Mona Dayfallah
+NSG4430,AP,Laboratory 1,1,12:00,17:00,Pembroke,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4430,AP,Work Term 1,2,07:30,15:00,Pembroke,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4430,AP,Work Term 2,3,07:30,15:00,Pembroke,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4430,AW,Laboratory 1,1,07:30,22:00,Consult the department,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4430,AW,Work Term 1,4,07:30,22:00,Consult the department,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4430,AW,Work Term 2,5,07:30,22:00,Consult the department,PRACT. COMPLEX NURSING CARE,Not available at this time.
+NSG4510,A,Lecture 1,1,16:00,19:00,RGN 2012,PRAT INFIRM DYNAMIQUES FAM,Viola Polomeno
+NSG4730,A,Lecture 1,5,09:00,12:00,RGN 2003,SOINS INFIRMIERS COMPLEXES,Nancy Paris
+NSG4830,A,Laboratory 1,3,13:00,16:00,Consult the department,Stage clinique en soins infirm,Jeanne Falabi-Bakinde
+NSG4830,A,Laboratory 2,3,13:00,16:00,Consult the department,Stage clinique en soins infirm,Shawna Watt
+NSG4830,A,Laboratory 3,3,13:00,16:00,Consult the department,Stage clinique en soins infirm,Marie-Eve Latreille
+NSG4830,A,Laboratory 4,3,13:00,16:00,Consult the department,Stage clinique en soins infirm,Lyssa Woloschuk
+NSG4830,A,Laboratory 5,3,13:00,16:00,Consult the department,Stage clinique en soins infirm,Elyse Le Bel-Roy
+NSG4830,A,Laboratory 6,3,13:00,16:00,Consult the department,Stage clinique en soins infirm,Gabrielle Proper
+NSG4830,A,Laboratory 7,5,13:00,16:00,Consult the department,Stage clinique en soins infirm,Jeanne Falabi-Bakinde
+NSG4830,A,Laboratory 8,5,13:00,16:00,Consult the department,Stage clinique en soins infirm,Laura Macéus
+NSG4830,A,Laboratory 9,5,13:00,16:00,Consult the department,Stage clinique en soins infirm,Not available at this time.
+NSG4830,A,Work Term 1,1,07:30,22:00,Consult the department,Stage clinique en soins infirm,Mariève Bercier
+NSG4830,A,Work Term 2,2,07:30,22:00,Consult the department,Stage clinique en soins infirm,Sherley Etienne
+NUT1524,A,Lecture 1,1,08:30,10:00,TBT 319,SCIENCES DES ALIMENTS II,Geneviève Grenier
+NUT1524,A,Laboratory 1,0,09:00,12:00,Consult the department,SCIENCES DES ALIMENTS II,Not available at this time.
+NUT1524,A,Laboratory 2,0,13:00,16:00,Consult the department,SCIENCES DES ALIMENTS II,Not available at this time.
+NUT1704,A,Lecture 1,1,08:30,10:00,MRT 252,INTRO A LA NUTRITION,Bénédicte Fontaine-Bisson
+NUT1704,A,Lecture 2,4,10:00,11:30,MRT 252,INTRO A LA NUTRITION,Bénédicte Fontaine-Bisson
+NUT2523,A,Lecture 1,3,17:30,20:30,CBY B202,NUTRITION COMMUNAUTAIRE I,Constance Nana
+NUT2525,A,Lecture 1,3,13:00,14:30,TBT 327,GESTION DES SERV. ALIM. II,Nicole Lemire
+NUT2525,A,Lecture 2,5,11:30,13:00,TBT 327,GESTION DES SERV. ALIM. II,Nicole Lemire
+NUT2733,A,Lecture 1,4,14:30,17:30,TBT 319,BIOCHIMIE NUTRITIONNELLE,Chantal Matar
+NUT3502,A,Lecture 1,5,08:30,11:30,CBY B202,NUTRITION CLINIQUE 1,Isabelle Giroux
+NUT3702,A,Lecture 1,1,08:00,10:00,CBY B202,ÉVALUATION NUTRITIONNELLE,Isabelle Giroux
+NUT3702,A,Laboratory 1,3,08:30,10:30,Consult the department,ÉVALUATION NUTRITIONNELLE,Isabelle Giroux
+NUT3702,A,Laboratory 2,3,10:30,12:30,Consult the department,ÉVALUATION NUTRITIONNELLE,Constance Nana
+NUT3705,A,Lecture 1,2,19:00,22:00,SMD 423,INTRO A LA NUTRIGENOMIQUE,Bénédicte Fontaine-Bisson
+NUT4501,A,Lecture 1,2,11:30,13:00,SMD 427,RECHERCHE EN NUTRITION,Jean-François Mauger
+NUT4501,A,Lecture 2,5,13:00,14:30,SMD 427,RECHERCHE EN NUTRITION,Jean-François Mauger
+NUT4502,A,Lecture 1,2,14:30,17:30,THN 124,NUTRITION CLINIQUE III,Isabelle Giroux
+NUT4507,A,Course has on-line/classroom activities 1,1,19:00,22:00,FTX 232,ALIM, SANTE ET NUTRACEUTIQUES,Chantal Matar
+NUT4711,A,Lecture 1,3,11:30,14:30,THN 124,INIT. AUX MIL. CLIN.,Pauline Darling
