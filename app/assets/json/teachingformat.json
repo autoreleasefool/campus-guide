@@ -1,0 +1,52 @@
+{
+  "Formats": [
+    {
+      "name": "Audioconference course",
+      "code": "AUC",
+    },
+    {
+      "name": "Discussion Group",
+      "code": "DGD",
+    },
+    {
+      "name": "Course has on-line/classroom activities",
+      "code": "HYB",
+    },
+    {
+      "name": "Course entirely via Internet",
+      "code": "IN1",
+    },
+    {
+      "name": "Laboratory",
+      "code": "LAB",
+    },
+    {
+      "name": "Lecture",
+      "code": "LEC",
+    },
+    {
+      "name": "Research",
+      "code": "REC",
+    },
+    {
+      "name": "Seminar",
+      "code": "SEM",
+    },
+    {
+      "name": "Work Term",
+      "code": "STG",
+    },
+    {
+      "name": "Theory and laboratory",
+      "code": "TLB",
+    },
+    {
+      "name": "Tutorial",
+      "code": "TUT",
+    },
+    {
+      "name": "Videoconference course",
+      "code": "VDC",
+    },
+  ],
+}
