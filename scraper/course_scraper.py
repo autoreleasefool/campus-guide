@@ -14,7 +14,9 @@ scraped_courses = {}
 
 # Regular expression to get course codes
 regex_courses = re.compile(r'<a.*?>([A-Z]{3}[0-9]{4}.*?)<\/a>.*?class=\"Faculty\">(.*?)<\/td>')
+# Regular expression to get the day of the week
 regex_day = re.compile(r'([A-Za-z]{3,6}day)')
+# Regular expression to get the start and end time of an activity
 regex_time = re.compile(r'([012][0-9]:[0-9]{2}) - ([012][0-9]:[0-9]{2})')
 
 # Update the level of verbosity to use (either True or False)
@@ -106,29 +108,32 @@ def parse_course_info(course_code, course_soup):
 			last_valid_section = 0
 
 			for i in range(len(sections)):
-				section = re.search(re.escape(course_code) + r'\s*(.*?)\s*\(', sections[i].getText())
-				if not section:
-					# Not a valid section, meaning it's an add-on to the last section
-					section = last_valid_section
-				else:
-					# Get the section text
-					section = section.group(1)
-					last_valid_section = section
-				activity = activities[i].getText()
-				day = get_numeric_day_of_week(re.search(regex_day, days[i].getText()).group(1))
-				time = re.search(regex_time, days[i].getText())
-				start_time = time.group(1)
-				end_time = time.group(2)
-				room = locations[i].getText()
-				professor = professors[i].getText()
+				try:
+					section = re.search(re.escape(course_code) + r'\s*(.*?)\s*\(', sections[i].getText())
+					if not section:
+						# Not a valid section, meaning it's an add-on to the last section
+						section = last_valid_section
+					else:
+						# Get the section text
+						section = section.group(1)
+						last_valid_section = section
+					activity = activities[i].getText()
+					day = get_numeric_day_of_week(re.search(regex_day, days[i].getText()).group(1))
+					time = re.search(regex_time, days[i].getText())
+					start_time = time.group(1)
+					end_time = time.group(2)
+					room = locations[i].getText()
+					professor = professors[i].getText()
 
-				# Put all the data scraped in a list of tuples to return
-				classes.append((session_id, course_name, course_code, section, activity, day, start_time, end_time, room, professor))
+					# Put all the data scraped in a list of tuples to return
+					classes.append((session_id, course_name, course_code, section, activity, day, start_time, end_time, room, professor))
+				except Exception as e:
+					print_verbose_message('Error parsing course:', course_code)
+					errors.append('Error parsing course: {0}. {1}'.format(course_code, e))
 	return classes
 
 # Prints a list of courses and section info to files
 def get_courses(browser):
-	cc = 0
 	print_verbose_message('Starting scrape for courses.')
 
 	# URLs for the scrape
@@ -201,8 +206,6 @@ def get_courses(browser):
 						'courses': [final_course]
 					})
 
-				print_verbose_message('Parsed course:', str(final_course))
-
 		# Attempt to keep going to the next page
 		browser.execute_script('__doPostBack("ctl00$MainContentPlaceHolder$ctl05","")')
 		if 'ErrorInternal' in browser.current_url:
@@ -211,26 +214,21 @@ def get_courses(browser):
 			break
 
 	for session in sessions:
-		session_str = str(session)
 		# Create a folder for each session
-
-		if not os.path.exists(session_str):
-			print_verbose_message('Creating new session folder:', session_str)
-			os.makedirs(session_str)
-
-		# Remove any existing files in the session folder
-		print_verbose_message('Removing old files in folder:', session_str)
-		for the_file in os.listdir(session_str):
-			file_path = os.path.join(session_str, the_file)
-			try:
-				if os.path.isfile(file_path):
-					os.unlink(file_path)
-			except Exception as e:
-				print(e)
+		if not os.path.exists(session):
+			print_verbose_message('Creating new session folder:', session)
+			os.makedirs(session)
 
 		for faculty in sessions[session]:
 			print_verbose_message('Printing faculty to file:', faculty['name'])
-			filename = '{0}/{1}.csv'.format(session_str, faculty['name'])
+
+			# Delete the file with the faculty courses if it already exists
+			filename = os.path.join(session, '{0}.csv'.format(faculty['name']))
+			try:
+				if os.path.isfile(filename):
+					os.unlink(filename)
+			except Exception as e:
+				print(e)
 			output_files.append(filename)
 
 			# Sort the courses by their course code
@@ -242,7 +240,6 @@ def get_courses(browser):
 
 				# Iterate through each of the courses available in the faculty
 				for course in faculty['courses']:
-					print(course)
 					outfile.write('{0},{1},{2},{3},{4},{5},{6},{7},{8}\n'.format(
 						course['code'],
 						course['section'],
