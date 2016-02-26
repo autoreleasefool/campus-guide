@@ -19,7 +19,7 @@ var buildingItemSize = (width - 40) / 3;
 var BuildingGrid = React.createClass({
 
   _loadBuildingsList() {
-    var buildingsList = require('./buildings').Buildings;
+    var buildingsList = require('../../../assets/js/buildings').Buildings;
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(buildingsList),

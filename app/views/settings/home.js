@@ -32,7 +32,7 @@ if (Platform.OS === 'ios') {
   };
 }
 
-var settings = require('../../assets/json/settings.json');
+var settings = require('../../../assets/json/settings.json');
 var settingsCache = [];
 var keyOfLastSettingChanged = null;
 
