@@ -37,6 +37,9 @@ var FindHome = React.createClass({
     requestTabChange: React.PropTypes.func.isRequired,
   },
 
+  /*
+   * Searches through the buildings, professors, and classes
+   */
   _search(text) {
     // TODO: search for a building, class, or professor
     console.log('TODO: search for a building, class, or professor');
@@ -50,6 +53,26 @@ var FindHome = React.createClass({
   },
 
   render() {
+    let calendarIcon = null;
+
+    // Use a different icon for the calendar depending on the platform
+    if (Platform.OS == 'ios') {
+      calendarIcon =
+        <Ionicons
+            name={'ios-calendar-outline'}
+            size={24}
+            color={'white'}
+            style={{marginLeft: 20}} />;
+    } else {
+      calendarIcon =
+        <MaterialIcons
+            name={'event'}
+            size={24}
+            color={'white'}
+            style={{marginLeft: 20}} />;
+    }
+
+
     return (
       <View style={_styles.container}>
         <View style={_styles.searchContainer}>
@@ -70,11 +93,7 @@ var FindHome = React.createClass({
         </View>
 
         <View style={_styles.header}>
-          <MaterialIcons
-              name={'event'}
-              size={24}
-              color={'white'}
-              style={{marginLeft: 20}} />
+          {calendarIcon}
           <Text style={[styles.largeText, {color: 'white', marginLeft: 20}]}>
             {Translations[Preferences.getSelectedLanguage()]['upcoming_classes']}
           </Text>
