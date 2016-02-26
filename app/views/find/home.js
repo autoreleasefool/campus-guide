@@ -14,6 +14,7 @@ var {
 
 var Constants = require('../../constants');
 var Preferences = require('../../util/preferences');
+var StatusBar = require('../../util/statusbar');
 var styles = require('../../styles');
 var Translations = require('../../util/translations');
 var {height, width} = Dimensions.get('window');
@@ -25,12 +26,6 @@ var Upcoming = require('./upcoming');
 // Icons
 var Ionicons = require('react-native-vector-icons/Ionicons');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-
-// Additional padding at the top of the app if the iOS status bar must be accounted for
-var statusBarPadding = 0;
-if (Platform.OS === 'ios') {
-  statusBarPadding = 20;
-}
 
 var FindHome = React.createClass({
   propTypes: {
@@ -140,7 +135,7 @@ var _styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     margin: 20,
-    marginTop: 20 + statusBarPadding,
+    marginTop: 20 + StatusBar.getStatusBarPadding(),
   },
   header: {
     height: 50,

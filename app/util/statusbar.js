@@ -6,6 +6,11 @@ var {
   StatusBarIOS,
 } = React;
 
+var statusBarPadding = 0;
+if (Platform.OS === 'ios') {
+  statusBarPadding = 20;
+}
+
 module.exports = {
 
   /*
@@ -20,4 +25,11 @@ module.exports = {
       }
     }
   },
+
+  /*
+   * Returns an additional padding for the status bar on iOS.
+   */
+  getStatusBarPadding() {
+    return statusBarPadding;
+  }
 }

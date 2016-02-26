@@ -12,9 +12,9 @@ var {
 var buildStyleInterpolator = require('buildStyleInterpolator');
 var Constants = require('../constants');
 var Preferences = require('../util/preferences');
+var StatusBar = require('../util/statusbar');
 var styles = require('../styles');
 var Translations = require('../util/translations');
-var StatusBar = require('../util/statusbar');
 
 // View imports
 var FindHome = require('./find/home');
