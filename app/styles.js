@@ -8,6 +8,16 @@ var {
 
 module.exports = StyleSheet.create({
 
+  /* Headers */
+  header: {
+    height: 50,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  headerIcon: {
+    marginLeft: 20,
+  },
+
   /* Text Formatting */
   smallText: {
     fontSize: 14,

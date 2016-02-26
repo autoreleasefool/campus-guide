@@ -51,22 +51,21 @@ var FindHome = React.createClass({
     let calendarIcon = null;
 
     // Use a different icon for the calendar depending on the platform
-    if (Platform.OS == 'ios') {
+    if (Platform.OS === 'ios') {
       calendarIcon =
         <Ionicons
             name={'ios-calendar-outline'}
             size={24}
             color={'white'}
-            style={{marginLeft: 20}} />;
+            style={styles.headerIcon} />;
     } else {
       calendarIcon =
         <MaterialIcons
             name={'event'}
             size={24}
             color={'white'}
-            style={{marginLeft: 20}} />;
+            style={styles.headerIcon} />;
     }
-
 
     return (
       <View style={_styles.container}>
@@ -87,7 +86,7 @@ var FindHome = React.createClass({
               placeholderTextColor={Constants.Colors.lightGrey} />
         </View>
 
-        <View style={_styles.header}>
+        <View style={[styles.header, _styles.headerBackground]}>
           {calendarIcon}
           <Text style={[styles.largeText, {color: 'white', marginLeft: 20}]}>
             {Translations[Preferences.getSelectedLanguage()]['upcoming_classes']}
@@ -96,7 +95,7 @@ var FindHome = React.createClass({
               onPress={this._editSchedule}
               activeOpacity={0.4}
               style={{position: 'absolute', right: 0}}>
-            <Text style={[styles.smallText, {color: 'white', marginTop: 17, marginBottom: 17, marginLeft: 20, marginRight: 20}]}>
+            <Text style={[styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
               {Translations[Preferences.getSelectedLanguage()]['edit']}
             </Text>
           </TouchableOpacity>
@@ -105,12 +104,12 @@ var FindHome = React.createClass({
           <Upcoming onEdit={this._editSchedule} />
         </View>
 
-        <View style={_styles.header}>
+        <View style={[styles.header, _styles.headerBackground]}>
           <MaterialIcons
               name={'store'}
               size={24}
               color={'white'}
-              style={{marginLeft: 20}} />
+              style={styles.headerIcon} />
           <Text style={[styles.largeText, {color: 'white', marginLeft: 20}]}>
             {Translations[Preferences.getSelectedLanguage()]['building_directory']}
           </Text>
@@ -137,11 +136,8 @@ var _styles = StyleSheet.create({
     margin: 20,
     marginTop: 20 + StatusBar.getStatusBarPadding(),
   },
-  header: {
-    height: 50,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    alignItems: 'center',
-    flexDirection: 'row',
+  headerBackground: {
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   content: {
     margin: 20,
