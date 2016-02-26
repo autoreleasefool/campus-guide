@@ -14,15 +14,20 @@ var Constants = require('../constants');
 var Preferences = require('../util/preferences');
 var styles = require('../styles');
 var Translations = require('../util/translations');
+var StatusBar = require('../util/statusbar');
 
 // View imports
 var FindHome = require('./find/home');
+var ScheduleHome = require('./schedule/home');
 var SettingsHome = require('./settings/home');
 var TabBar = require('../components/tabs');
 
 // Root view
 var MainScreen = React.createClass({
 
+  /*
+   * Updates views accordingly to display a new tab.
+   */
   _onChangeTab(tabId) {
     this.refs.MainNavigator.replace({id: tabId});
     this.refs.MainTabBar.setState({currentTab: tabId})
@@ -54,13 +59,19 @@ var MainScreen = React.createClass({
   },
 
   _renderScene(route, navigator) {
+    if (route.id == Constants.Views.Find.Home || route.id == Constants.Views.Schedule.Home) {
+      StatusBar.setLightStatusBarIOS(true);
+    } else {
+      StatusBar.setLightStatusBarIOS(false);
+    }
+
     return (
       <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
         {route.id === Constants.Views.Find.Home
             ? <FindHome requestTabChange={this._onChangeTab} />
             : null}
         {route.id === Constants.Views.Schedule.Home
-            ? <View style={{flex: 1, backgroundColor: Constants.Colors.darkGrey}}></View>
+            ? <ScheduleHome requestTabChange={this._onChangeTab} />
             : null}
         {route.id === Constants.Views.Discover.Home
             ? <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}></View>
