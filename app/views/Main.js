@@ -58,8 +58,8 @@ var MainScreen = React.createClass({
       gestures: null,
       defaultTransitionVelocity: 100,
       animationInterpolators: {
-        into: buildStyleInterpolator(NoTransition),
-        out: buildStyleInterpolator(NoTransition),
+        into: BuildStyleInterpolator(NoTransition),
+        out: BuildStyleInterpolator(NoTransition),
       },
     });
   },

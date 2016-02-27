@@ -103,7 +103,7 @@ var SettingsHome = React.createClass({
     if (setting.type === 'multi') {
       var content =
           <View style={_styles.settingContent}>
-            <Text style={[styles.mediumText, {color: 'black'}]}>{Preferences.getSetting(setting.key)}</Text>
+            <Text style={[Styles.mediumText, {color: 'black'}]}>{Preferences.getSetting(setting.key)}</Text>
           </View>
     } else if (setting.type === 'boolean') {
       var content =
@@ -120,7 +120,7 @@ var SettingsHome = React.createClass({
       <View style={_styles.settingContainer}>
         <TouchableOpacity onPress={() => this._pressRow(setting.key)}>
           <View style={_styles.setting}>
-            <Text style={[_styles.settingText, styles.mediumText, {color: 'black'}]}>
+            <Text style={[_styles.settingText, Styles.mediumText, {color: 'black'}]}>
               {setting['name_' + Preferences.getSelectedLanguage()]}
             </Text>
             {content}
@@ -146,7 +146,7 @@ var SettingsHome = React.createClass({
 
     return (
       <View style={_styles.section}>
-        <Text style={[styles.largeText, {color: 'black'}]}>{sectionName}</Text>
+        <Text style={[Styles.largeText, {color: 'black'}]}>{sectionName}</Text>
       </View>
     );
   },

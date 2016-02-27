@@ -25,7 +25,7 @@ var BuildingGrid = React.createClass({
    * Loads the names and images of the buildings from the assets to display them.
    */
   _loadBuildingsList() {
-    var buildingsList = require('../../../assets/static/js/Buildings').Buildings;
+    var buildingsList = require('../../../assets/static/js/Buildings');
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(buildingsList),
