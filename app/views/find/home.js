@@ -24,8 +24,8 @@ var Translations = require('../../util/Translations');
 var {height, width} = Dimensions.get('window');
 
 // View imports
-var Buildings = require('./buildinggrid');
-var Upcoming = require('./upcoming');
+var Buildings = require('./BuildingGrid');
+var Upcoming = require('./Upcoming');
 
 // Icons
 var Ionicons = require('react-native-vector-icons/Ionicons');

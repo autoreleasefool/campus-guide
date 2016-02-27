@@ -15,8 +15,7 @@ var {
   View,
 } = React;
 
-var Constants = require('../constants');
-var styles = require('../styles');
+var Constants = require('../Constants');
 
 // Icons
 var Icon;

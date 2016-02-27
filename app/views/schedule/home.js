@@ -16,7 +16,7 @@ var {
 // Imports
 var Constants = require('../../Constants');
 var Preferences = require('../../util/Preferences');
-var StatusBar = require('../../util/sStatusBar');
+var StatusBar = require('../../util/StatusBar');
 var Styles = require('../../Styles');
 var Translations = require('../../util/Translations');
 

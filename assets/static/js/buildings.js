@@ -1,3 +1,6 @@
+/*
+ * Provides names and images of all buildings on the uOttawa campus.
+ */
 'use strict';
 
 module.exports = [

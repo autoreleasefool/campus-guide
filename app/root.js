@@ -15,8 +15,8 @@ var Constants = require('./Constants');
 var Orientation = require('react-native-orientation');
 
 // Views
-var MainScreen = require('./views/main');
-var SplashScreen = require('./views/splash');
+var MainScreen = require('./views/Main');
+var SplashScreen = require('./views/Splash');
 
 // Root view
 var CampusGuide = React.createClass({
