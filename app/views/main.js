@@ -1,6 +1,9 @@
+/*
+ * Main view of the application.
+ */
 'use strict';
 
-// Imports
+// React imports
 var React = require('react-native');
 var {
   Alert,
@@ -9,18 +12,18 @@ var {
   View,
 } = React;
 
-var buildStyleInterpolator = require('buildStyleInterpolator');
-var Constants = require('../constants');
-var Preferences = require('../util/preferences');
-var StatusBar = require('../util/statusbar');
-var styles = require('../styles');
-var Translations = require('../util/translations');
+// Imports
+var BuildStyleInterpolator = require('buildStyleInterpolator');
+var Constants = require('../Constants');
+var Preferences = require('../util/Preferences');
+var StatusBar = require('../util/StatusBar');
+var Translations = require('../util/Translations');
 
 // View imports
-var FindHome = require('./find/home');
-var ScheduleHome = require('./schedule/home');
-var SettingsHome = require('./settings/home');
-var TabBar = require('../components/tabs');
+var FindHome = require('./find/Home');
+var ScheduleHome = require('./schedule/Home');
+var SettingsHome = require('./settings/Home');
+var TabBar = require('../components/Tabs');
 
 // Root view
 var MainScreen = React.createClass({
@@ -33,6 +36,9 @@ var MainScreen = React.createClass({
     this.refs.MainTabBar.setState({currentTab: tabId})
   },
 
+  /*
+   * Sets the transition between two views in the navigator.
+   */
   _configureScene() {
     // Disable transitions between screens
     var NoTransition = {
@@ -58,6 +64,9 @@ var MainScreen = React.createClass({
     });
   },
 
+  /*
+   * Renders a view according to the current route of the navigator.
+   */
   _renderScene(route, navigator) {
     if (route.id == Constants.Views.Find.Home || route.id == Constants.Views.Schedule.Home) {
       StatusBar.setLightStatusBarIOS(true);
@@ -83,11 +92,10 @@ var MainScreen = React.createClass({
     );
   },
 
+  /*
+   * Displays a pop up when the application opens for the first time after the user selects their preferred language.
+   */
   componentDidMount() {
-    // TODO: consider unlocking orientation (probably won't)
-    // Orientation.unlockAllOrientations();
-    //Orientation.addOrientationListener(this._orientationDidChange);
-
     if (Preferences.isFirstTimeOpened()) {
       Alert.alert(
         Translations[Preferences.getSelectedLanguage()]['only_once_title'],
@@ -96,11 +104,9 @@ var MainScreen = React.createClass({
     }
   },
 
-  componentWillUnmount() {
-    // TODO: consider unlocking orientation (probably won't)
-    //Orientation.removeOrientationListener(this._orientationDidChange);
-  },
-
+  /*
+   * Renders a navigator to switch between the app's tabs, and a tab view.
+   */
   render() {
     // TODO: change initial route to Find.Home
     return (
@@ -116,6 +122,7 @@ var MainScreen = React.createClass({
   },
 });
 
+// View styles
 var _styles = StyleSheet.create({
   container: {
     flex: 1

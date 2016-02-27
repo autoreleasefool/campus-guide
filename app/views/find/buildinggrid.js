@@ -1,6 +1,9 @@
+/*
+ * Displays the list of buildings in a grid, with the building's name and an image.
+ */
 'use strict';
 
-// Imports
+// React imports
 var React = require('react-native');
 var {
   Dimensions,
@@ -18,8 +21,11 @@ var buildingItemSize = (width - 40) / 3;
 // Root view
 var BuildingGrid = React.createClass({
 
+  /*
+   * Loads the names and images of the buildings from the assets to display them.
+   */
   _loadBuildingsList() {
-    var buildingsList = require('../../../assets/js/buildings').Buildings;
+    var buildingsList = require('../../../assets/static/js/Buildings').Buildings;
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(buildingsList),
@@ -27,6 +33,9 @@ var BuildingGrid = React.createClass({
     });
   },
 
+  /*
+   * Displays a single building with its name and image.
+   */
   _renderRow(building, sectionId, rowId) {
     let rowVal = parseInt(rowId);
     let iconWidth = (rowVal % 3 === 1)
@@ -36,12 +45,14 @@ var BuildingGrid = React.createClass({
     let iconRightMargin = 10;
     let iconTopMargin = 0;
 
+    // Add additional left and right spacing to items on the edges
     if (rowVal % 3 === 0) {
       iconLeftMargin += 10;
     } else if (rowVal % 3 === 2) {
       iconRightMargin += 10;
     }
 
+    // Add additional top margin to the first row
     if (rowVal < 3) {
       iconTopMargin = 10;
     }
@@ -56,12 +67,18 @@ var BuildingGrid = React.createClass({
     );
   },
 
+  /*
+   * Displays the details of a single building.
+   */
   _pressRow(code) {
     // TODO: open building page with rooms
     console.log('TODO: open building page with rooms');
   },
 
-  getInitialState: function() {
+  /*
+   * Returns the initial state of the view.
+   */
+  getInitialState() {
     return {
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
@@ -70,12 +87,19 @@ var BuildingGrid = React.createClass({
     }
   },
 
+  /*
+   * Loads the buildings once the view has been mounted.
+   */
   componentDidMount() {
     if (!this.state.loaded) {
       this._loadBuildingsList();
     }
   },
 
+  /*
+   * Renders the view. Displays an empty view before the buildings have loaded and a list of the building names
+   * and icons once they have.
+   */
   render() {
     if (!this.state.loaded) {
       // Return an empty view until the data has been loaded
@@ -93,6 +117,7 @@ var BuildingGrid = React.createClass({
   },
 });
 
+// View styles
 var _styles = StyleSheet.create({
   listview: {
     flexDirection: 'row',

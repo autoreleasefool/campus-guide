@@ -1,3 +1,6 @@
+/*
+ * Provides translations of English and French of all the text in the application.
+ */
 'use strict';
 
 module.exports = {

@@ -1,7 +1,11 @@
+/*
+ * Manages the application's configuration by either retrieving it from local storage when needed, or downaloading
+ * it from the web if it has expired.
+ */
 'use strict';
 
-// Imports
-var React = require('react-native');
+// React imports
+var React: Object = require('react-native');
 var {
   AsyncStorage,
   NetInfo,
@@ -9,12 +13,19 @@ var {
 
 // Represents the last time the configuration file was downloaded and updated
 const LAST_REQUEST_FULFILL_TIME = 'config_last_req';
+// Represents the amount of time that must pass before the configuration is refreshed
 const TIME_TO_REFRESH_CONFIG = 'config_time_to_refresh';
+// Represents a locally stored version of the most recently used config
 const LAST_VALID_CONFIGURATION = 'config_last_valid';
 
 // Cached config of the app
 var app_config = null;
 
+/*
+ * Asynchronously gets the configuration for the application. If the configuration has expired (as determined by
+ * the stored values of LAST_REQUEST_FULFILL_TIME and TIME_TO_REFRESH_CONFIG) then the app attempts to refresh the
+ * config from the web.
+ */
 async function _requestConfig() {
   let lastRequestTime = await AsyncStorage.getItem(LAST_REQUEST_FULFILL_TIME);
   if (lastRequestTime == null) {

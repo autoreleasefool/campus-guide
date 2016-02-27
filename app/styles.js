@@ -1,6 +1,9 @@
+/*
+ * Defines global styles for the app.
+ */
 'use strict';
 
-// Imports
+// React imports
 var React = require('react-native');
 var {
   StyleSheet

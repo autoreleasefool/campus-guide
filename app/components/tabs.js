@@ -1,5 +1,9 @@
+/*
+ * Tab bar to manage navigation between the root views in the application.
+ */
 'use strict';
 
+// React imports
 var React = require('react-native');
 var {
   Animated,

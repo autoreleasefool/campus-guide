@@ -1,22 +1,29 @@
+/*
+ *
+ */
 'use strict';
 
-// Imports
+// React imports
 var React = require('react-native');
 var {
   Navigator,
   View,
 } = React;
 
-var Constants = require('./constants');
+// Imports
+var Constants = require('./Constants');
 var Orientation = require('react-native-orientation');
-var styles = require('./styles');
 
 // Views
 var MainScreen = require('./views/main');
 var SplashScreen = require('./views/splash');
 
+// Root view
 var CampusGuide = React.createClass({
 
+  /*
+   * Renders a different view based on the current navigator route.
+   */
   _renderScene(route, navigator) {
     if (route.id === Constants.Views.Splash) {
       return <SplashScreen navigator={navigator} />
@@ -25,6 +32,9 @@ var CampusGuide = React.createClass({
     }
   },
 
+  /*
+   * Defines the transition between views.
+   */
   _configureScene() {
     return ({
       ...Navigator.SceneConfigs.HorizontalSwipeJump,
@@ -32,11 +42,16 @@ var CampusGuide = React.createClass({
     });
   },
 
+  /*
+   * Locks the application to portrait orientation.
+   */
   componentDidMount() {
-    // Lock the application to portrait orientation
     Orientation.lockToPortrait();
   },
 
+  /*
+   * Renders the root navigator of the app to switch between the splash screen and main screen.
+   */
   render() {
     return (
       <Navigator

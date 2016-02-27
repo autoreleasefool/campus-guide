@@ -1,6 +1,9 @@
+/*
+ * Initial entry view for the application. Allows the user to select their preferred language on first run.
+ */
 'use strict';
 
-// Imports
+// React imports
 var React = require('react-native');
 var {
   AsyncStorage,
@@ -12,27 +15,36 @@ var {
   View,
 } = React;
 
-var Configuration = require('../util/configuration');
-var Constants = require('../constants');
-var Preferences = require('../util/preferences');
-var styles = require('../styles');
-var Translations = require('../util/translations');
+// Imports
+var Configuration = require('../util/Configuration');
+var Constants = require('../Constants');
+var Preferences = require('../util/Preferences');
+var Styles = require('../Styles');
+var Translations = require('../util/Translations');
 
 // Root view
 var SplashScreen = React.createClass({
 
+  /*
+   * Sets the language of the app and opens the main screen.
+   */
   _selectLanguage(language) {
-    // Set the language of the app, open the main screen
     Preferences.setSelectedLanguage(language);
     this.props.navigator.push({id: 2});
   },
 
+  /*
+   * Returns the initial state of the view.
+   */
   getInitialState() {
     return {
       isLoading: true,
     };
   },
 
+  /*
+   * Calls the startup functions of the application.
+   */
   componentDidMount() {
     var self = this;
     Configuration.getConfiguration();
@@ -52,6 +64,9 @@ var SplashScreen = React.createClass({
     });
   },
 
+  /*
+   * Displays two buttons to allow the user to select French or English.
+   */
   render() {
     // Get the width and height of the screen
     var {height, width} = Dimensions.get('window');
@@ -73,11 +88,11 @@ var SplashScreen = React.createClass({
             style={{flex: 1}}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <View style={_styles.languageContainer}>
-              <Text style={[styles.mediumText, {color: 'white'}]}>
+              <Text style={[Styles.mediumText, {color: 'white'}]}>
                 {Translations['en']['continue_in']}
               </Text>
               <View style={{padding: 5}}>
-                <Text style={[styles.titleText, {color: 'white'}]}>
+                <Text style={[Styles.titleText, {color: 'white'}]}>
                   {Translations['en']['language']}
                 </Text>
               </View>
@@ -90,11 +105,11 @@ var SplashScreen = React.createClass({
             style={{flex: 1}}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
-              <Text style={[styles.mediumText, {color: 'white'}]}>
+              <Text style={[Styles.mediumText, {color: 'white'}]}>
                 {Translations['fr']['continue_in']}
               </Text>
               <View style={{padding: 5}}>
-                <Text style={[styles.titleText, {color: 'white'}]}>
+                <Text style={[Styles.titleText, {color: 'white'}]}>
                   {Translations['fr']['language']}
                 </Text>
               </View>
@@ -106,6 +121,7 @@ var SplashScreen = React.createClass({
   },
 });
 
+// View styles
 var _styles = StyleSheet.create({
   container: {
     flex: 1,

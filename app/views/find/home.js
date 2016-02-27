@@ -1,6 +1,9 @@
+/*
+ * View for the root navigation for finding a room on campus.
+ */
 'use strict';
 
-// Imports
+// React imports
 var React = require('react-native');
 var {
   Dimensions,
@@ -12,11 +15,12 @@ var {
   View,
 } = React;
 
-var Constants = require('../../constants');
-var Preferences = require('../../util/preferences');
-var StatusBar = require('../../util/statusbar');
-var styles = require('../../styles');
-var Translations = require('../../util/translations');
+// Imports
+var Constants = require('../../Constants');
+var Preferences = require('../../util/Preferences');
+var StatusBar = require('../../util/StatusBar');
+var Styles = require('../../Styles');
+var Translations = require('../../util/Translations');
 var {height, width} = Dimensions.get('window');
 
 // View imports
@@ -47,6 +51,9 @@ var FindHome = React.createClass({
     this.props.requestTabChange(Constants.Views.Schedule.Home);
   },
 
+  /*
+   * Renders the root Find view.
+   */
   render() {
     let calendarIcon = null;
 
@@ -57,14 +64,14 @@ var FindHome = React.createClass({
             name={'ios-calendar-outline'}
             size={24}
             color={'white'}
-            style={styles.headerIcon} />;
+            style={Styles.headerIcon} />;
     } else {
       calendarIcon =
         <MaterialIcons
             name={'event'}
             size={24}
             color={'white'}
-            style={styles.headerIcon} />;
+            style={Styles.headerIcon} />;
     }
 
     return (
@@ -86,16 +93,16 @@ var FindHome = React.createClass({
               placeholderTextColor={Constants.Colors.lightGrey} />
         </View>
 
-        <View style={[styles.header, _styles.headerBackground]}>
+        <View style={[Styles.header, _styles.headerBackground]}>
           {calendarIcon}
-          <Text style={[styles.largeText, {color: 'white', marginLeft: 20}]}>
+          <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
             {Translations[Preferences.getSelectedLanguage()]['upcoming_classes']}
           </Text>
           <TouchableOpacity
               onPress={this._editSchedule}
               activeOpacity={0.4}
               style={{position: 'absolute', right: 0}}>
-            <Text style={[styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
+            <Text style={[Styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
               {Translations[Preferences.getSelectedLanguage()]['edit']}
             </Text>
           </TouchableOpacity>
@@ -104,13 +111,13 @@ var FindHome = React.createClass({
           <Upcoming onEdit={this._editSchedule} />
         </View>
 
-        <View style={[styles.header, _styles.headerBackground]}>
+        <View style={[Styles.header, _styles.headerBackground]}>
           <MaterialIcons
               name={'store'}
               size={24}
               color={'white'}
-              style={styles.headerIcon} />
-          <Text style={[styles.largeText, {color: 'white', marginLeft: 20}]}>
+              style={Styles.headerIcon} />
+          <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
             {Translations[Preferences.getSelectedLanguage()]['building_directory']}
           </Text>
         </View>
@@ -123,6 +130,7 @@ var FindHome = React.createClass({
   },
 });
 
+// View styles
 var _styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,6 +1,9 @@
+/*
+ * View for the root navigation for updating settings.
+ */
 'use strict';
 
-// Imports
+// React imports
 var React = require('react-native');
 var {
   ListView,
@@ -11,11 +14,13 @@ var {
   View,
 } = React;
 
-var Constants = require('../../constants');
-var Preferences = require('../../util/preferences');
-var styles = require('../../styles');
-var Translations = require('../../util/translations');
+// Imports
+var Constants = require('../../Constants');
+var Preferences = require('../../util/Preferences');
+var Styles = require('../../Styles');
+var Translations = require('../../util/Translations');
 
+// Icons
 var Icon;
 var settingsIcons;
 if (Platform.OS === 'ios') {
@@ -32,10 +37,11 @@ if (Platform.OS === 'ios') {
   };
 }
 
-var settings = require('../../../assets/json/settings.json');
+var settings = require('../../../assets/static/json/settings.json');
 var settingsCache = [];
 var keyOfLastSettingChanged = null;
 
+// Root view
 var SettingsHome = React.createClass({
   propTypes: {
     requestTabChange: React.PropTypes.func.isRequired,
@@ -145,6 +151,9 @@ var SettingsHome = React.createClass({
     );
   },
 
+  /*
+   * Returns the initial state of the view.
+   */
   getInitialState() {
     return {
       dataSource: new ListView.DataSource({
@@ -155,12 +164,18 @@ var SettingsHome = React.createClass({
     }
   },
 
-  componentWillMount() {
+  /*
+   * Loads the settings once the view has been mounted.
+   */
+  componentDidMount() {
     if (!this.state.loaded) {
       this._getSettings();
     }
   },
 
+  /*
+   * Displays a list of settings.
+   */
   render() {
     if (!this.state.loaded) {
       // Return an empty view until the data has been loaded
@@ -170,7 +185,7 @@ var SettingsHome = React.createClass({
     } else {
       return (
         <View style={_styles.container}>
-          <Text style={[_styles.title, styles.titleText, {color: 'black'}]}>
+          <Text style={[_styles.title, Styles.titleText, {color: 'black'}]}>
             {Translations[Preferences.getSelectedLanguage()]['settings']}
           </Text>
           <ListView
@@ -184,6 +199,7 @@ var SettingsHome = React.createClass({
   },
 });
 
+// View styles
 var _styles = StyleSheet.create({
   container: {
     flex: 1,

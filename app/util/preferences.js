@@ -1,15 +1,24 @@
+/*
+ * Manages the application preferences. Loads the preferences upon opening the application then caches their
+ * values so they don't need to be reloaded later. When preferences are updated, the cache is updated and
+ * the stored preference is updated to the new value.
+ */
 'use strict';
 
+// React imports
 var React = require('react-native');
-
 var {
   AsyncStorage,
 } = React;
 
+// Represents the number of times the app has been opened
 const TIMES_APP_OPENED = 'app_times_opened';
+// Represents the language selected by the user to use the app in
 const SELECTED_LANGUAGE = 'app_selected_langauge';
+// Represents if the user prefers routes with wheelchair access
 const PREFER_WHEELCHAIR = 'app_pref_wheel';
 
+// Cached values of preferences
 var timesAppOpened = 0;
 var selectedLanguage = null;
 var preferWheelchair = false;
@@ -19,6 +28,7 @@ var preferWheelchair = false;
  * of how many times the app has been opened, the user's preferred language, etc.
  */
 async function _loadInitialPreferences() {
+  // If any errors occur, just use the default values of the preferences
   try {
     /// Number of times the app has been used. Either null or integer greater than or equal to 0
     let value = await AsyncStorage.getItem(TIMES_APP_OPENED);

@@ -1,11 +1,16 @@
+/*
+ * Offers utilities for adjusting the status bar.
+ */
 'use strict';
 
+// React imports
 var React = require('react-native');
 var {
   Platform,
   StatusBarIOS,
 } = React;
 
+// Provides additional spacing on iOS to allow room for the status bar
 var statusBarPadding = 0;
 if (Platform.OS === 'ios') {
   statusBarPadding = 20;
