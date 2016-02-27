@@ -12,6 +12,7 @@ var {
   View,
 } = React;
 
+var Configuration = require('../util/configuration');
 var Constants = require('../constants');
 var Preferences = require('../util/preferences');
 var styles = require('../styles');
@@ -34,6 +35,7 @@ var SplashScreen = React.createClass({
 
   componentDidMount() {
     var self = this;
+    Configuration.getConfiguration();
     Preferences.loadInitialPreferences().done(function() {
       if (!Preferences.isLanguageSelected()) {
         self.setState({

@@ -29,7 +29,7 @@ module.exports = {
 
     spring: 'Printemps',
     summer: 'Été',
-    autumn: 'L\'automne',
+    autumn: 'Automne',
     winter: 'Hiver',
 
     continue_in: 'Continuer en',

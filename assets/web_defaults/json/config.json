@@ -1,0 +1,21 @@
+{
+  "Meta": {
+    "Version": "0.1.0",
+    "TimeToRefresh": "86400"
+  },
+  "Content": {
+    "AvailableSemesters": [
+      {
+        "code": "20161",
+        "name_en": "Winter 2016",
+        "name_fr": "Hiver 2016",
+        "current": "true"
+      },
+      {
+        "code": "20159",
+        "name_en": "Fall 2015",
+        "name_fr": "Automne 2015"
+      }
+    ]
+  }
+}
