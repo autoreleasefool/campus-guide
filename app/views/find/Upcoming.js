@@ -14,7 +14,6 @@ var {
 var Constants = require('../../Constants');
 var Preferences = require('../../util/Preferences');
 var Styles = require('../../Styles');
-var Translations = require('../../util/Translations');
 
 // Root view
 var Upcoming = React.createClass({
@@ -36,11 +35,19 @@ var Upcoming = React.createClass({
    * can update their schedule.
    */
   render() {
+    // Translations
+    let Translations = null;
+    if (Preferences.getSelectedLanguage() === 'en') {
+      Translations = require('../../util/Translations.en.js');
+    } else {
+      Translations = require('../../util/Translations.fr.js');
+    }
+
     if (!this.state.loaded) {
       return (
         <TouchableOpacity activeOpacity={1} onPress={this.props.onEdit} style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={[Styles.mediumText, {color: 'white', textAlign: 'center'}]}>
-            {Translations[Preferences.getSelectedLanguage()]['no_courses_added']}
+            {Translations['no_courses_added']}
           </Text>
         </TouchableOpacity>
       );

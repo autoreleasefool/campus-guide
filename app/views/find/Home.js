@@ -20,7 +20,6 @@ var Constants = require('../../Constants');
 var Preferences = require('../../util/Preferences');
 var StatusBar = require('../../util/StatusBar');
 var Styles = require('../../Styles');
-var Translations = require('../../util/Translations');
 var {height, width} = Dimensions.get('window');
 
 // View imports
@@ -57,6 +56,14 @@ var FindHome = React.createClass({
   render() {
     let calendarIcon = null;
 
+    // Translations
+    let Translations = null;
+    if (Preferences.getSelectedLanguage() === 'en') {
+      Translations = require('../../util/Translations.en.js');
+    } else {
+      Translations = require('../../util/Translations.fr.js');
+    }
+
     // Use a different icon for the calendar depending on the platform
     if (Platform.OS === 'ios') {
       calendarIcon =
@@ -89,21 +96,21 @@ var FindHome = React.createClass({
               style={{height: 40, flex: 1, color: Constants.Colors.polarGrey}}
               onChangeText={(text) => this._search(text)}
               autoCorrect={false}
-              placeholder={Translations[Preferences.getSelectedLanguage()]['search_placeholder']}
+              placeholder={Translations['search_placeholder']}
               placeholderTextColor={Constants.Colors.lightGrey} />
         </View>
 
         <View style={[Styles.header, _styles.headerBackground]}>
           {calendarIcon}
           <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
-            {Translations[Preferences.getSelectedLanguage()]['upcoming_classes']}
+            {Translations['upcoming_classes']}
           </Text>
           <TouchableOpacity
               onPress={this._editSchedule}
               activeOpacity={0.4}
               style={{position: 'absolute', right: 0}}>
             <Text style={[Styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
-              {Translations[Preferences.getSelectedLanguage()]['edit']}
+              {Translations['edit']}
             </Text>
           </TouchableOpacity>
         </View>
@@ -118,7 +125,7 @@ var FindHome = React.createClass({
               color={'white'}
               style={Styles.headerIcon} />
           <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
-            {Translations[Preferences.getSelectedLanguage()]['building_directory']}
+            {Translations['building_directory']}
           </Text>
         </View>
         <View style={[_styles.content, {flex: 2}]}>

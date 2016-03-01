@@ -18,7 +18,6 @@ var {
 var Constants = require('../../Constants');
 var Preferences = require('../../util/Preferences');
 var Styles = require('../../Styles');
-var Translations = require('../../util/Translations');
 
 // Icons
 var Icon;
@@ -36,6 +35,10 @@ if (Platform.OS === 'ios') {
     'CheckDisabled': 'check-box',
   };
 }
+
+// Translations
+var TranslationsEn = require('../../util/Translations.en.js');
+var TranslationsFr = require('../../util/Translations.fr.js');
 
 var settings = require('../../../assets/static/json/settings.json');
 var settingsCache = [];
@@ -177,6 +180,10 @@ var SettingsHome = React.createClass({
    * Displays a list of settings.
    */
   render() {
+    let CurrentTranslations = (Preferences.getSelectedLanguage() === 'en')
+        ? TranslationsEn
+        : TranslationsFr;
+
     if (!this.state.loaded) {
       // Return an empty view until the data has been loaded
       return (
@@ -186,7 +193,7 @@ var SettingsHome = React.createClass({
       return (
         <View style={_styles.container}>
           <Text style={[_styles.title, Styles.titleText, {color: 'black'}]}>
-            {Translations[Preferences.getSelectedLanguage()]['settings']}
+            {CurrentTranslations['settings']}
           </Text>
           <ListView
               dataSource={this.state.dataSource}

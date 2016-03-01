@@ -20,7 +20,10 @@ var Configuration = require('../util/Configuration');
 var Constants = require('../Constants');
 var Preferences = require('../util/Preferences');
 var Styles = require('../Styles');
-var Translations = require('../util/Translations');
+
+// Translations
+var TranslationsEn = require('../util/Translations.en.js');
+var TranslationsFr = require('../util/Translations.fr.js');
 
 // Root view
 var SplashScreen = React.createClass({
@@ -89,11 +92,11 @@ var SplashScreen = React.createClass({
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <View style={_styles.languageContainer}>
               <Text style={[Styles.mediumText, {color: 'white'}]}>
-                {Translations['en']['continue_in']}
+                {TranslationsEn['continue_in']}
               </Text>
               <View style={{padding: 5}}>
                 <Text style={[Styles.titleText, {color: 'white'}]}>
-                  {Translations['en']['language']}
+                  {TranslationsEn['language']}
                 </Text>
               </View>
             </View>
@@ -106,11 +109,11 @@ var SplashScreen = React.createClass({
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
               <Text style={[Styles.mediumText, {color: 'white'}]}>
-                {Translations['fr']['continue_in']}
+                {TranslationsFr['continue_in']}
               </Text>
               <View style={{padding: 5}}>
                 <Text style={[Styles.titleText, {color: 'white'}]}>
-                  {Translations['fr']['language']}
+                  {TranslationsFr['language']}
                 </Text>
               </View>
             </View>

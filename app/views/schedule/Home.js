@@ -18,7 +18,6 @@ var Constants = require('../../Constants');
 var Preferences = require('../../util/Preferences');
 var StatusBar = require('../../util/StatusBar');
 var Styles = require('../../Styles');
-var Translations = require('../../util/Translations');
 
 // Icons
 var Ionicons = require('react-native-vector-icons/Ionicons');
@@ -53,6 +52,14 @@ var ScheduleHome = React.createClass({
   render() {
     let calendarIcon = null;
 
+    // Translations
+    let Translations = null;
+    if (Preferences.getSelectedLanguage() === 'en') {
+      Translations = require('../../util/Translations.en.js');
+    } else {
+      Translations = require('../../util/Translations.fr.js');
+    }
+
     // Use a different icon for the calendar depending on the platform
     if (Platform.OS === 'ios') {
       calendarIcon =
@@ -75,14 +82,14 @@ var ScheduleHome = React.createClass({
         <View style={[Styles.header, _styles.headerBackground]}>
           {calendarIcon}
           <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
-            {Translations[Preferences.getSelectedLanguage()]['schedule']}
+            {Translations['schedule']}
           </Text>
           <TouchableOpacity
               onPress={this._changeSchedule}
               activeOpacity={0.4}
               style={{position: 'absolute', right: 0, flex: 1, flexDirection: 'row'}}>
             <Text style={[Styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
-              {Translations[Preferences.getSelectedLanguage()]['winter'].toUpperCase()}
+              {Translations['winter'].toUpperCase()}
             </Text>
             <Ionicons
                 name={'arrow-swap'}

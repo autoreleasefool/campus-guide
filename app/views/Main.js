@@ -17,7 +17,6 @@ var BuildStyleInterpolator = require('buildStyleInterpolator');
 var Constants = require('../Constants');
 var Preferences = require('../util/Preferences');
 var StatusBar = require('../util/StatusBar');
-var Translations = require('../util/Translations');
 
 // View imports
 var FindHome = require('./find/Home');
@@ -96,10 +95,18 @@ var MainScreen = React.createClass({
    * Displays a pop up when the application opens for the first time after the user selects their preferred language.
    */
   componentDidMount() {
+    // Translations
+    let Translations = null;
+    if (Preferences.getSelectedLanguage() === 'en') {
+      Translations = require('../util/Translations.en.js');
+    } else {
+      Translations = require('../util/Translations.fr.js');
+    }
+
     if (Preferences.isFirstTimeOpened()) {
       Alert.alert(
-        Translations[Preferences.getSelectedLanguage()]['only_once_title'],
-        Translations[Preferences.getSelectedLanguage()]['only_once_message'],
+        Translations['only_once_title'],
+        Translations['only_once_message'],
       );
     }
   },
