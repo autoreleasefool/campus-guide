@@ -16,7 +16,7 @@ var {
 } = React;
 
 var {height, width} = Dimensions.get('window');
-var buildingItemSize = (width - 40) / 3;
+var buildingIconSize = Math.floor((width - 60) / 3);
 
 // Root view
 var BuildingGrid = React.createClass({
@@ -38,18 +38,15 @@ var BuildingGrid = React.createClass({
    */
   _renderRow(building, sectionId, rowId) {
     let rowVal = parseInt(rowId);
-    let iconWidth = (rowVal % 3 === 1)
-        ? buildingItemSize - 20
-        : buildingItemSize - 30;
-    let iconLeftMargin = 10;
-    let iconRightMargin = 10;
+    let iconLeftMargin = 5;
+    let iconRightMargin = 5;
     let iconTopMargin = 0;
 
     // Add additional left and right spacing to items on the edges
     if (rowVal % 3 === 0) {
-      iconLeftMargin += 10;
+      iconLeftMargin += 5;
     } else if (rowVal % 3 === 2) {
-      iconRightMargin += 10;
+      iconRightMargin += 5;
     }
 
     // Add additional top margin to the first row
@@ -59,7 +56,7 @@ var BuildingGrid = React.createClass({
 
     return (
       <TouchableOpacity onPress={() => this._pressRow(building.code)}>
-        <View style={{width: iconWidth, marginLeft: iconLeftMargin, marginRight: iconRightMargin, marginTop: iconTopMargin, marginBottom: 10}}>
+        <View style={{width: buildingIconSize, marginLeft: iconLeftMargin, marginRight: iconRightMargin, marginTop: iconTopMargin, marginBottom: 15}}>
           <Image style={_styles.buildingIcon} source={building.icon} />
           <Text style={_styles.buildingCode}>{building.code}</Text>
         </View>
@@ -129,8 +126,8 @@ var _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buildingIcon: {
-    width: (width - 120) / 3,
-    height: (width - 120) / 3,
+    width: (width - 60) / 3,
+    height: (width - 60) / 3,
   },
   buildingCode: {
     textAlign: 'center',

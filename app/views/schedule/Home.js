@@ -108,7 +108,6 @@ var _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.charcoalGrey,
-    paddingTop: 20 + StatusBar.getStatusBarPadding(),
   },
   headerBackground: {
     backgroundColor: Constants.Colors.garnet,

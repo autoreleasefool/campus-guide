@@ -13,6 +13,7 @@ module.exports = {
   },
 
   Views: {
+    Default: 100,
     Splash: 1,
     Main: 2,
     Find: {

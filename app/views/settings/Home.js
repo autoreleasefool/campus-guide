@@ -214,7 +214,7 @@ var _styles = StyleSheet.create({
   },
   title: {
     height: 30,
-    marginTop: 30,
+    marginTop: 10,
     marginBottom: 5,
     textAlign: 'center',
   },

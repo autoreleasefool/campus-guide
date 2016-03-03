@@ -20,6 +20,7 @@ var StatusBar = require('../util/StatusBar');
 
 // View imports
 var FindHome = require('./find/Home');
+var SearchBar = require('../components/SearchBar');
 var ScheduleHome = require('./schedule/Home');
 var SettingsHome = require('./settings/Home');
 var TabBar = require('../components/Tabs');
@@ -31,8 +32,33 @@ var MainScreen = React.createClass({
    * Updates views accordingly to display a new tab.
    */
   _onChangeTab(tabId) {
+    let backgroundColor = null;
+    if (tabId === Constants.Views.Settings.Home) {
+      backgroundColor = Constants.Colors.polarGrey;
+    } else if (tabId === Constants.Views.Schedule.Home) {
+      backgroundColor = Constants.Colors.charcoalGrey;
+    } else if (tabId === Constants.Views.Find.Home) {
+      backgroundColor = Constants.Colors.garnet;
+    } else if (tabId === Constants.Views.Discover.Home) {
+      backgroundColor = Constants.Colors.lightGrey;
+    }
+
     this.refs.MainNavigator.replace({id: tabId});
-    this.refs.MainTabBar.setState({currentTab: tabId})
+    this.refs.MainTabBar.setState({
+      currentTab: tabId,
+    });
+    this.refs.MainSearchBar.setState({
+      searchBackground: backgroundColor,
+    });
+  },
+
+  /*
+   * Displays the results of the user's search parameters.
+   */
+  _onSearch(search) {
+    // TODO: search...
+    console.log('TODO: search...');
+    this._onChangeTab(Constants.Views.Find.Home);
   },
 
   /*
@@ -115,13 +141,13 @@ var MainScreen = React.createClass({
    * Renders a navigator to switch between the app's tabs, and a tab view.
    */
   render() {
-    // TODO: change initial route to Find.Home
     return (
-      <View style={_styles.container}>
+      <View style={[_styles.container]}>
+        <SearchBar ref="MainSearchBar" onSearch={this._onSearch} />
         <Navigator
             ref='MainNavigator'
             configureScene={this._configureScene}
-            initialRoute={{id: Constants.Views.Find.Home}}
+            initialRoute={{id: Constants.Views.Default}}
             renderScene={this._renderScene} />
         <TabBar ref='MainTabBar' requestTabChange={this._onChangeTab} />
       </View>

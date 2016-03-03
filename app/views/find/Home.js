@@ -18,7 +18,6 @@ var {
 // Imports
 var Constants = require('../../Constants');
 var Preferences = require('../../util/Preferences');
-var StatusBar = require('../../util/StatusBar');
 var Styles = require('../../Styles');
 var {height, width} = Dimensions.get('window');
 
@@ -83,22 +82,6 @@ var FindHome = React.createClass({
 
     return (
       <View style={_styles.container}>
-        <View style={_styles.searchContainer}>
-
-          <Ionicons
-              onPress={() => this.refs.SearchInput.focus()}
-              name={'ios-search'}
-              size={24}
-              color={'white'}
-              style={{marginLeft: 10, marginRight: 10}} />
-          <TextInput
-              ref='SearchInput'
-              style={{height: 40, flex: 1, color: Constants.Colors.polarGrey}}
-              onChangeText={(text) => this._search(text)}
-              autoCorrect={false}
-              placeholder={Translations['search_placeholder']}
-              placeholderTextColor={Constants.Colors.lightGrey} />
-        </View>
 
         <View style={[Styles.header, _styles.headerBackground]}>
           {calendarIcon}
@@ -143,19 +126,11 @@ var _styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.Colors.garnet,
   },
-  searchContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    borderRadius: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    margin: 20,
-    marginTop: 20 + StatusBar.getStatusBarPadding(),
-  },
   headerBackground: {
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
   content: {
-    margin: 20,
+    margin: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   }
 });
