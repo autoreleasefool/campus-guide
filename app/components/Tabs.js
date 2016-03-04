@@ -7,6 +7,7 @@
 var React = require('react-native');
 var {
   Animated,
+  Component,
   Dimensions,
   Platform,
   StyleSheet,
@@ -17,7 +18,7 @@ var {
 
 var Constants = require('../Constants');
 
-// Icons
+// Declaring icons depending on the platform
 var Icon;
 var tabIcons;
 if (Platform.OS === 'ios') {
@@ -38,26 +39,45 @@ if (Platform.OS === 'ios') {
   };
 }
 
+// Determining the size of the current tab indicator based on the screen size
 var {height, width} = Dimensions.get('window');
-var indicatorWidth = Math.ceil(width / 4);
-var indicatorHeight = 5;
+const indicatorWidth = Math.ceil(width / 4);
+const indicatorHeight = 5;
+const tabIconSize = 30;
 
-var TabBar = React.createClass({
-  propTypes: {
+class TabBar extends Component {
+
+  /*
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
     requestTabChange: React.PropTypes.func.isRequired,
-  },
+  };
 
-  _changeTabs(tab) {
-    // Switch to the selected tab
-    this.props.requestTabChange(tab);
-  },
-
-  getInitialState() {
-    return {
+  /*
+   * Pass props and declares initial state.
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
       currentTab: Constants.Views.Find.Home,
     };
-  },
 
+    // Explicitly binding 'this' to all methods that need it
+    this._changeTabs = this._changeTabs.bind(this);
+  };
+
+  /*
+   * Switch to the selected tab, as determined by tabId.
+   */
+  _changeTabs(tabId) {
+    // Switch to the selected tab
+    this.props.requestTabChange(tabId);
+  };
+
+  /*
+   * Renders the app tabs and icons, and an indicator to show the current tab.
+   */
   render() {
     let findColor = Constants.Colors.charcoalGrey;
     let scheduleColor = Constants.Colors.charcoalGrey;
@@ -83,26 +103,27 @@ var TabBar = React.createClass({
     return (
       <View style={_styles.container}>
         <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Find.Home)}} style={_styles.tab}>
-          <Icon name={tabIcons['Find']} size={30} color={findColor} />
+          <Icon name={tabIcons['Find']} size={tabIconSize} color={findColor} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Schedule.Home)}} style={_styles.tab}>
-          <Icon name={tabIcons['Schedule']} size={30} color={scheduleColor} />
+          <Icon name={tabIcons['Schedule']} size={tabIconSize} color={scheduleColor} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Discover.Home)}} style={_styles.tab}>
-          <Icon name={tabIcons['Discover']} size={30} color={discoverColor} />
+          <Icon name={tabIcons['Discover']} size={tabIconSize} color={discoverColor} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Settings.Home)}} style={_styles.tab}>
-          <Icon name={tabIcons['Settings']} size={30} color={settingsColor} />
+          <Icon name={tabIcons['Settings']} size={tabIconSize} color={settingsColor} />
         </TouchableOpacity>
         <View style={[_styles.indicator, {left: indicatorLeft}]} />
       </View>
     )
-  },
-});
+  };
+};
 
+// Private styles for component
 var _styles = StyleSheet.create({
   container: {
-    height: 50,
+    height: 60,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: Constants.Colors.rootElementBorder,
@@ -122,4 +143,5 @@ var _styles = StyleSheet.create({
   }
 });
 
+// Expose component to app
 module.exports = TabBar;

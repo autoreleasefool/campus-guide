@@ -6,6 +6,7 @@
 // React imports
 var React = require('react-native');
 var {
+  Component,
   Dimensions,
   Image,
   ListView,
@@ -15,11 +16,29 @@ var {
   View,
 } = React;
 
+// Determining size of building icons based on the screen size.
 var {height, width} = Dimensions.get('window');
-var buildingIconSize = Math.floor((width - 60) / 3);
+const buildingIconSize = Math.floor((width - 60) / 3);
 
-// Root view
-var BuildingGrid = React.createClass({
+class BuildingGrid extends Component {
+
+  /*
+   * Pass props and declares initial state.
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2,
+      }),
+      loaded: false,
+    }
+
+    // Explicitly binding 'this' to all methods that need it
+    this._loadBuildingsList = this._loadBuildingsList.bind(this);
+    this._pressRow = this._pressRow.bind(this);
+    this._renderRow = this._renderRow.bind(this);
+  };
 
   /*
    * Loads the names and images of the buildings from the assets to display them.
@@ -31,7 +50,15 @@ var BuildingGrid = React.createClass({
       dataSource: this.state.dataSource.cloneWithRows(buildingsList),
       loaded: true,
     });
-  },
+  };
+
+  /*
+   * Displays the details of a single building.
+   */
+  _pressRow(code) {
+    // TODO: open building page with rooms
+    console.log('TODO: open building page with rooms');
+  };
 
   /*
    * Displays a single building with its name and image.
@@ -62,27 +89,7 @@ var BuildingGrid = React.createClass({
         </View>
       </TouchableOpacity>
     );
-  },
-
-  /*
-   * Displays the details of a single building.
-   */
-  _pressRow(code) {
-    // TODO: open building page with rooms
-    console.log('TODO: open building page with rooms');
-  },
-
-  /*
-   * Returns the initial state of the view.
-   */
-  getInitialState() {
-    return {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2,
-      }),
-      loaded: false,
-    }
-  },
+  };
 
   /*
    * Loads the buildings once the view has been mounted.
@@ -91,7 +98,7 @@ var BuildingGrid = React.createClass({
     if (!this.state.loaded) {
       this._loadBuildingsList();
     }
-  },
+  };
 
   /*
    * Renders the view. Displays an empty view before the buildings have loaded and a list of the building names
@@ -111,10 +118,10 @@ var BuildingGrid = React.createClass({
           dataSource={this.state.dataSource}
           renderRow={this._renderRow} />
     );
-  },
-});
+  };
+};
 
-// View styles
+// Private styles for component
 var _styles = StyleSheet.create({
   listview: {
     flexDirection: 'row',
@@ -136,4 +143,5 @@ var _styles = StyleSheet.create({
   },
 });
 
+// Expose component to app
 module.exports = BuildingGrid;

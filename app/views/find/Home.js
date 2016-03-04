@@ -6,6 +6,7 @@
 // React imports
 var React = require('react-native');
 var {
+  Component,
   Dimensions,
   Platform,
   StyleSheet,
@@ -16,23 +17,42 @@ var {
 } = React;
 
 // Imports
-var Constants = require('../../Constants');
-var Preferences = require('../../util/Preferences');
-var Styles = require('../../Styles');
-var {height, width} = Dimensions.get('window');
-
-// View imports
 var Buildings = require('./BuildingGrid');
-var Upcoming = require('./Upcoming');
-
-// Icons
+var Constants = require('../../Constants');
 var Ionicons = require('react-native-vector-icons/Ionicons');
 var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
+var Preferences = require('../../util/Preferences');
+var Styles = require('../../Styles');
+var Upcoming = require('./Upcoming');
 
-var FindHome = React.createClass({
-  propTypes: {
-    requestTabChange: React.PropTypes.func.isRequired,
-  },
+var {height, width} = Dimensions.get('window');
+
+class FindHome extends Component {
+
+  /*
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
+    onEditSchedule: React.PropTypes.func.isRequired,
+  };
+
+  /*
+   * Pass props.
+   */
+  constructor(props) {
+    super(props);
+
+    // Explicitly binding 'this' to all methods that need it
+    this._editSchedule = this._editSchedule.bind(this);
+    this._search = this._search.bind(this);
+  };
+
+  /*
+   * Opens the app scheduling screen so the user can update their schedule.
+   */
+  _editSchedule() {
+    this.props.onEditSchedule();
+  };
 
   /*
    * Searches through the buildings, professors, and classes
@@ -40,22 +60,15 @@ var FindHome = React.createClass({
   _search(text) {
     // TODO: search for a building, class, or professor
     console.log('TODO: search for a building, class, or professor');
-  },
+  };
 
   /*
-   * Opens the app scheduling screen so the user can update their schedule.
-   */
-  _editSchedule() {
-    this.props.requestTabChange(Constants.Views.Schedule.Home);
-  },
-
-  /*
-   * Renders the root Find view.
+   * Renders the user's upcoming classes for the day and a list of buildings on campus.
    */
   render() {
     let calendarIcon = null;
 
-    // Translations
+    // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'en') {
       Translations = require('../../util/Translations.en.js');
@@ -117,10 +130,10 @@ var FindHome = React.createClass({
 
       </View>
     );
-  },
-});
+  };
+};
 
-// View styles
+// Private styles for component
 var _styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -132,7 +145,8 @@ var _styles = StyleSheet.create({
   content: {
     margin: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
-  }
+  },
 });
 
+// Expose component to app
 module.exports = FindHome;

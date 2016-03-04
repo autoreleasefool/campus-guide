@@ -6,6 +6,7 @@
 // React imports
 var React = require('react-native');
 var {
+  Component,
   ListView,
   Platform,
   StyleSheet,
@@ -14,12 +15,11 @@ var {
   View,
 } = React;
 
-// Imports
 var Constants = require('../../Constants');
 var Preferences = require('../../util/Preferences');
 var Styles = require('../../Styles');
 
-// Icons
+// Declaring icons depending on the platform
 var Icon;
 var settingsIcons;
 if (Platform.OS === 'ios') {
@@ -36,19 +36,58 @@ if (Platform.OS === 'ios') {
   };
 }
 
-// Translations
+// Require both language translations to switch between them easily
 var TranslationsEn = require('../../util/Translations.en.js');
 var TranslationsFr = require('../../util/Translations.fr.js');
 
+// Create a cache of settings values to retrieve and update them quickly
 var settings = require('../../../assets/static/json/settings.json');
 var settingsCache = [];
 var keyOfLastSettingChanged = null;
 
-// Root view
-var SettingsHome = React.createClass({
-  propTypes: {
+class SettingsHome extends Component {
+
+  /*
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
     requestTabChange: React.PropTypes.func.isRequired,
-  },
+  };
+
+  /*
+   * Pass props and declares initial state.
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => this._checkChangedSetting(r1.key) || keyOfLastSettingChanged === 'pref_lang',
+        sectionHeaderHasChanged: (s1, s2) => s1 !== s2 || keyOfLastSettingChanged === 'pref_lang',
+      }),
+      loaded: false,
+    };
+
+    // Explicitly binding 'this' to all methods that need it
+    // TODO: remove if binding not needed
+    // this._checkChangedSetting = this._checkChangedSetting.bind(this);
+    this._getSettings = this._getSettings.bind(this);
+    this._pressRow = this._pressRow.bind(this);
+    this._renderRow = this._renderRow.bind(this);
+    this._renderSectionHeader = this._renderSectionHeader.bind(this);
+  };
+
+  /*
+   * Returns true if a setting's current value does not match its cached value, and updates the cached value if so.
+   */
+  _checkChangedSetting(key) {
+    let settingValue = Preferences.getSetting(key);
+    let changed = settingsCache[key] !== settingValue;
+    if (changed) {
+      settingsCache[key] = settingValue;
+    }
+
+    return changed;
+  };
 
   /*
    * Loads the current settings to setup the views and cache the settings to determine when a setting changes.
@@ -64,20 +103,7 @@ var SettingsHome = React.createClass({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(settings),
       loaded: true,
     });
-  },
-
-  /*
-   * Returns true if a setting's current value does not match its cached value, and updates the cached value if so.
-   */
-  _checkChangedSetting(key) {
-    let settingValue = Preferences.getSetting(key);
-    let changed = settingsCache[key] !== settingValue;
-    if (changed) {
-      settingsCache[key] = settingValue;
-    }
-
-    return changed;
-  },
+  };
 
   /*
    * Updates the setting for the row pressed.
@@ -97,7 +123,7 @@ var SettingsHome = React.createClass({
     this.setState({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(settings),
     });
-  },
+  };
 
   /*
    * Displays a single row, representing a setting which can be changed.
@@ -131,7 +157,7 @@ var SettingsHome = React.createClass({
         </TouchableOpacity>
       </View>
     );
-  },
+  };
 
   /*
    * Renders a heading for a section of settings.
@@ -152,20 +178,7 @@ var SettingsHome = React.createClass({
         <Text style={[Styles.largeText, {color: 'black'}]}>{sectionName}</Text>
       </View>
     );
-  },
-
-  /*
-   * Returns the initial state of the view.
-   */
-  getInitialState() {
-    return {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => this._checkChangedSetting(r1.key) || keyOfLastSettingChanged === 'pref_lang',
-        sectionHeaderHasChanged: (s1, s2) => s1 !== s2 || keyOfLastSettingChanged === 'pref_lang',
-      }),
-      loaded: false,
-    }
-  },
+  };
 
   /*
    * Loads the settings once the view has been mounted.
@@ -174,7 +187,7 @@ var SettingsHome = React.createClass({
     if (!this.state.loaded) {
       this._getSettings();
     }
-  },
+  };
 
   /*
    * Displays a list of settings.
@@ -203,10 +216,10 @@ var SettingsHome = React.createClass({
         </View>
       );
     }
-  },
-});
+  };
+};
 
-// View styles
+// Private styles for component
 var _styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -238,4 +251,5 @@ var _styles = StyleSheet.create({
   }
 });
 
+// Expose component to app
 module.exports = SettingsHome;

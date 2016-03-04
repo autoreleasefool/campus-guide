@@ -7,59 +7,37 @@
 var React = require('react-native');
 var {
   Alert,
+  Component,
   Navigator,
   StyleSheet,
   View,
 } = React;
 
-// Imports
+var FindHome = require('./find/Home');
 var BuildStyleInterpolator = require('buildStyleInterpolator');
 var Constants = require('../Constants');
 var Preferences = require('../util/Preferences');
-var StatusBar = require('../util/StatusBar');
-
-// View imports
-var FindHome = require('./find/Home');
-var SearchBar = require('../components/SearchBar');
 var ScheduleHome = require('./schedule/Home');
+var SearchBar = require('../components/SearchBar');
 var SettingsHome = require('./settings/Home');
+var StatusBar = require('../util/StatusBar');
 var TabBar = require('../components/Tabs');
 
-// Root view
-var MainScreen = React.createClass({
+class MainScreen extends Component {
 
   /*
-   * Updates views accordingly to display a new tab.
+   * Pass props.
    */
-  _onChangeTab(tabId) {
-    let backgroundColor = null;
-    if (tabId === Constants.Views.Settings.Home) {
-      backgroundColor = Constants.Colors.polarGrey;
-    } else if (tabId === Constants.Views.Schedule.Home) {
-      backgroundColor = Constants.Colors.charcoalGrey;
-    } else if (tabId === Constants.Views.Find.Home) {
-      backgroundColor = Constants.Colors.garnet;
-    } else if (tabId === Constants.Views.Discover.Home) {
-      backgroundColor = Constants.Colors.lightGrey;
-    }
+  constructor(props) {
+    super(props);
 
-    this.refs.MainNavigator.replace({id: tabId});
-    this.refs.MainTabBar.setState({
-      currentTab: tabId,
-    });
-    this.refs.MainSearchBar.setState({
-      searchBackground: backgroundColor,
-    });
-  },
-
-  /*
-   * Displays the results of the user's search parameters.
-   */
-  _onSearch(search) {
-    // TODO: search...
-    console.log('TODO: search...');
-    this._onChangeTab(Constants.Views.Find.Home);
-  },
+    // Explicitly binding 'this' to all methods that need it
+    // TODO: remove if binding not needed
+    // this._configureScene = this._configureScene.bind(this);
+    this._onChangeTab = this._onChangeTab.bind(this);
+    this._onSearch = this._onSearch.bind(this);
+    this._renderScene = this._renderScene.bind(this);
+  };
 
   /*
    * Sets the transition between two views in the navigator.
@@ -87,22 +65,35 @@ var MainScreen = React.createClass({
         out: BuildStyleInterpolator(NoTransition),
       },
     });
-  },
+  };
+
+  /*
+   * Updates views accordingly to display a new tab.
+   */
+  _onChangeTab(tabId) {
+    this.refs.MainNavigator.replace({id: tabId});
+    this.refs.MainTabBar.setState({
+      currentTab: tabId,
+    });
+  };
+
+  /*
+   * Displays the results of the user's search parameters.
+   */
+  _onSearch(search) {
+    // TODO: search...
+    console.log('TODO: search...');
+    this._onChangeTab(Constants.Views.Find.Home);
+  };
 
   /*
    * Renders a view according to the current route of the navigator.
    */
   _renderScene(route, navigator) {
-    if (route.id == Constants.Views.Find.Home || route.id == Constants.Views.Schedule.Home) {
-      StatusBar.setLightStatusBarIOS(true);
-    } else {
-      StatusBar.setLightStatusBarIOS(false);
-    }
-
     return (
       <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
         {route.id === Constants.Views.Find.Home
-            ? <FindHome requestTabChange={this._onChangeTab} />
+            ? <FindHome onEditSchedule={() => this._onChangeTab(Constants.Views.Schedule.Home)} />
             : null}
         {route.id === Constants.Views.Schedule.Home
             ? <ScheduleHome requestTabChange={this._onChangeTab} />
@@ -115,13 +106,13 @@ var MainScreen = React.createClass({
             : null}
       </View>
     );
-  },
+  };
 
   /*
    * Displays a pop up when the application opens for the first time after the user selects their preferred language.
    */
   componentDidMount() {
-    // Translations
+    // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'en') {
       Translations = require('../util/Translations.en.js');
@@ -135,7 +126,7 @@ var MainScreen = React.createClass({
         Translations['only_once_message'],
       );
     }
-  },
+  };
 
   /*
    * Renders a navigator to switch between the app's tabs, and a tab view.
@@ -152,14 +143,15 @@ var MainScreen = React.createClass({
         <TabBar ref='MainTabBar' requestTabChange={this._onChangeTab} />
       </View>
     );
-  },
-});
+  };
+};
 
-// View styles
+// Private styles for component
 var _styles = StyleSheet.create({
   container: {
     flex: 1
   }
 });
 
+// Expose component to app
 module.exports = MainScreen;

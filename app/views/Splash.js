@@ -7,6 +7,7 @@
 var React = require('react-native');
 var {
   AsyncStorage,
+  Component,
   Dimensions,
   Navigator,
   StyleSheet,
@@ -15,18 +16,37 @@ var {
   View,
 } = React;
 
-// Imports
 var Configuration = require('../util/Configuration');
 var Constants = require('../Constants');
 var Preferences = require('../util/Preferences');
+var StatusBar = require('../util/StatusBar');
 var Styles = require('../Styles');
 
-// Translations
+// Require both language translations to display items in both languages
 var TranslationsEn = require('../util/Translations.en.js');
 var TranslationsFr = require('../util/Translations.fr.js');
 
-// Root view
-var SplashScreen = React.createClass({
+class SplashScreen extends Component {
+
+  /*
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
+    navigator: React.PropTypes.object.isRequired,
+  };
+
+  /*
+   * Pass props and declares initial state.
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+    };
+
+    // Explicitly binding 'this' to all methods that need it
+    this._selectLanguage = this._selectLanguage.bind(this);
+  };
 
   /*
    * Sets the language of the app and opens the main screen.
@@ -34,22 +54,14 @@ var SplashScreen = React.createClass({
   _selectLanguage(language) {
     Preferences.setSelectedLanguage(language);
     this.props.navigator.push({id: 2});
-  },
-
-  /*
-   * Returns the initial state of the view.
-   */
-  getInitialState() {
-    return {
-      isLoading: true,
-    };
-  },
+  };
 
   /*
    * Calls the startup functions of the application.
    */
   componentDidMount() {
     var self = this;
+    StatusBar.setLightStatusBarIOS(true);
     Configuration.getConfiguration();
     Preferences.loadInitialPreferences().done(function() {
       if (!Preferences.isLanguageSelected()) {
@@ -65,7 +77,7 @@ var SplashScreen = React.createClass({
         // });
       }
     });
-  },
+  };
 
   /*
    * Displays two buttons to allow the user to select French or English.
@@ -121,10 +133,10 @@ var SplashScreen = React.createClass({
         </TouchableOpacity>
       </View>
     );
-  },
-});
+  };
+};
 
-// View styles
+// Private styles for component
 var _styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -142,4 +154,5 @@ var _styles = StyleSheet.create({
   },
 });
 
+// Expose component to app
 module.exports = SplashScreen;

@@ -1,25 +1,44 @@
 /*
- *
+ * Root entry view for application.
  */
 'use strict';
 
 // React imports
 var React = require('react-native');
 var {
+  Component,
   Navigator,
   View,
 } = React;
 
-// Imports
 var Constants = require('./Constants');
-var Orientation = require('react-native-orientation');
-
-// Views
 var MainScreen = require('./views/Main');
+var Orientation = require('react-native-orientation');
 var SplashScreen = require('./views/Splash');
 
-// Root view
-var CampusGuide = React.createClass({
+class CampusGuide extends Component {
+
+  /*
+   * Pass props.
+   */
+  constructor(props) {
+    super(props);
+
+    // Explicitly binding 'this' to all methods that need it
+    // TODO: remove if binding not needed
+    // this._configureScene = this._configureScene.bind(this);
+    // this._renderScene = this._renderScene.bind(this);
+  };
+
+  /*
+   * Defines the transition between views.
+   */
+  _configureScene() {
+    return ({
+      ...Navigator.SceneConfigs.HorizontalSwipeJump,
+      gestures: false,
+    });
+  };
 
   /*
    * Renders a different view based on the current navigator route.
@@ -30,24 +49,14 @@ var CampusGuide = React.createClass({
     } else if (route.id === Constants.Views.Main) {
       return <MainScreen navigator={navigator} />
     }
-  },
-
-  /*
-   * Defines the transition between views.
-   */
-  _configureScene() {
-    return ({
-      ...Navigator.SceneConfigs.HorizontalSwipeJump,
-      gestures: false,
-    });
-  },
+  };
 
   /*
    * Locks the application to portrait orientation.
    */
   componentDidMount() {
     Orientation.lockToPortrait();
-  },
+  };
 
   /*
    * Renders the root navigator of the app to switch between the splash screen and main screen.
@@ -59,7 +68,8 @@ var CampusGuide = React.createClass({
           initialRoute={{id: 1}}
           renderScene={this._renderScene} />
     );
-  },
-});
+  };
+};
 
+// Expose component to app
 module.exports = CampusGuide;

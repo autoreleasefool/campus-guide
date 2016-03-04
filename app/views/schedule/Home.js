@@ -6,6 +6,7 @@
 // React imports
 var React = require('react-native');
 var {
+  Component,
   Platform,
   StyleSheet,
   Text,
@@ -13,21 +14,34 @@ var {
   View
 } = React;
 
-// Imports
 var Constants = require('../../Constants');
+var Ionicons = require('react-native-vector-icons/Ionicons');
+var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 var Preferences = require('../../util/Preferences');
 var StatusBar = require('../../util/StatusBar');
 var Styles = require('../../Styles');
 
-// Icons
-var Ionicons = require('react-native-vector-icons/Ionicons');
-var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
+class ScheduleHome extends Component {
 
-// Root view
-var ScheduleHome = React.createClass({
-  propTypes: {
+  /*
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
     requestTabChange: React.PropTypes.func.isRequired,
-  },
+  };
+
+  /*
+   * Pass props and declares initial state.
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: null,
+    };
+
+    // Explicitly binding 'this' to all methods that need it
+    this._changeSchedule = this._changeSchedule.bind(this);
+  };
 
   /*
    * Switches to the next available schedule and updates the views.
@@ -35,16 +49,7 @@ var ScheduleHome = React.createClass({
   _changeSchedule() {
     // TODO: shuffle through the available schedules
     console.log('TODO: shuffle through the available schedules');
-  },
-
-  /*
-   * Returns the initial state of the view.
-   */
-  getInitialState() {
-    return {
-      dataSource: null,
-    };
-  },
+  };
 
   /*
    * Renders the root Schedule view.
@@ -52,7 +57,7 @@ var ScheduleHome = React.createClass({
   render() {
     let calendarIcon = null;
 
-    // Translations
+    // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'en') {
       Translations = require('../../util/Translations.en.js');
@@ -100,18 +105,19 @@ var ScheduleHome = React.createClass({
         </View>
       </View>
     );
-  },
-});
+  };
+};
 
-// View styles
+// Private styles for component
 var _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.charcoalGrey,
   },
   headerBackground: {
-    backgroundColor: Constants.Colors.garnet,
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
 });
 
+// Expose component to app
 module.exports = ScheduleHome;

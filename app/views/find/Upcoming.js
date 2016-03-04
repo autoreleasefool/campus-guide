@@ -1,41 +1,45 @@
 /*
- * View to display the user's upcoming classes and events for the day
+ * View to display the user's upcoming classes and events for the day.
  */
 'use strict';
 
 // React imports
 var React = require('react-native');
 var {
+  Component,
   Text,
   TouchableOpacity,
 } = React;
 
-// Imports
 var Constants = require('../../Constants');
 var Preferences = require('../../util/Preferences');
 var Styles = require('../../Styles');
 
-// Root view
-var Upcoming = React.createClass({
-  propTypes: {
-    onEdit: React.PropTypes.func.isRequired,
-  },
+class Upcoming extends Component {
 
   /*
-   * Returns the initial state of the view.
+   * Properties which the parent component should make available to this component.
    */
-  getInitialState() {
-    return {
+  static propTypes = {
+    onEdit: React.PropTypes.func.isRequired,
+  };
+
+  /*
+   * Pass props and declares initial state.
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
       loaded: false,
     };
-  },
+  };
 
   /*
    * Renders a list of the user's upcoming classes, or a view which links to the Schedule tab so the user
    * can update their schedule.
    */
   render() {
-    // Translations
+    // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'en') {
       Translations = require('../../util/Translations.en.js');
@@ -52,7 +56,8 @@ var Upcoming = React.createClass({
         </TouchableOpacity>
       );
     }
-  },
-});
+  };
+};
 
+// Expose component to app
 module.exports = Upcoming;

@@ -1,37 +1,43 @@
 /*
- * Search bar for the top of the app.
+ * Search bar for the top of the app, to allow the user to search from anywhere.
  */
 'use strict';
 
 // React imports
 var React = require('react-native');
 var {
+  Component,
   StyleSheet,
   TextInput,
   View,
 } = React;
 
 var Constants = require('../Constants');
+var Ionicons = require('react-native-vector-icons/Ionicons');
 var Preferences = require('../util/Preferences');
 var StatusBar = require('../util/StatusBar');
 
-// Icons
-var Ionicons = require('react-native-vector-icons/Ionicons');
+class SearchBar extends Component {
 
-// Root view
-var SearchBar = React.createClass({
-  propTypes: {
+  /*
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
     onSearch: React.PropTypes.func.isRequired,
-  },
+  };
 
-  getInitialState() {
-    return {
-      searchBackground: Constants.Colors.garnet,
-    };
-  },
+  /*
+   * Pass props.
+   */
+  constructor(props) {
+    super(props);
+  };
 
+  /*
+   * Renders a text input field for searching.
+   */
   render() {
-    // Translations
+    // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'en') {
       Translations = require('../util/Translations.en.js');
@@ -40,7 +46,7 @@ var SearchBar = React.createClass({
     }
 
     return (
-      <View style={[_styles.searchContainer, {backgroundColor: this.state.searchBackground}]}>
+      <View style={{backgroundColor: Constants.Colors.garnet}}>
         <View style={_styles.innerContainer}>
           <Ionicons
               onPress={() => this.refs.SearchInput.focus()}
@@ -58,13 +64,11 @@ var SearchBar = React.createClass({
         </View>
       </View>
     )
-  }
-});
+  };
+};
 
+// Private styles for component
 var _styles = StyleSheet.create({
-  searchContainer: {
-
-  },
   innerContainer: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -75,4 +79,5 @@ var _styles = StyleSheet.create({
   }
 });
 
+// Expose component to app
 module.exports = SearchBar;
