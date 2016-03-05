@@ -3,7 +3,7 @@ from selenium import webdriver
 
 if len(sys.argv) == 1:
 	# Output instructions to use the scraper, then exit
-	print('\n\tWelcome to the uOttawa Campus Guide web scraping tool.')
+	print('\n\tWelcome to the University of Ottawa Campus Guide web scraping tool.')
 	print('\tTo use this tool, you\'ll need to provide some arguments.\n')
 	print('\t--courses\tRetrieve a list of all courses available at the University of Ottawa')
 	print('\t-c\t\tSee --courses')

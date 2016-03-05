@@ -1,5 +1,5 @@
 /*
- * Provides names and images of all buildings on the uOttawa campus.
+ * Provides names and images of all buildings on the University of Ottawa campus.
  */
 'use strict';
 

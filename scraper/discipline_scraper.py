@@ -55,7 +55,7 @@ def parse_faculties(matched_courses):
 			faculties.add('science')
 	return faculties
 
-# Scrapes uOttawa for a list of disciplines and saves relevant data to disciplines.json
+# Scrapes University of Ottawa for a list of disciplines and saves relevant data to disciplines.json
 def get_disciplines(browser):
 	print_verbose_message('Starting scrape for disciplines.')
 
