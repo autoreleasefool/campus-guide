@@ -4,8 +4,8 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Component,
   Dimensions,
   Image,
@@ -17,7 +17,7 @@ var {
 } = React;
 
 // Determining size of building icons based on the screen size.
-var {height, width} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const buildingIconSize = Math.floor((width - 60) / 3);
 
 class BuildingGrid extends Component {
@@ -44,7 +44,7 @@ class BuildingGrid extends Component {
    * Loads the names and images of the buildings from the assets to display them.
    */
   _loadBuildingsList() {
-    var buildingsList = require('../../../assets/static/js/Buildings');
+    let buildingsList = require('../../../assets/static/js/Buildings');
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(buildingsList),
@@ -122,7 +122,7 @@ class BuildingGrid extends Component {
 };
 
 // Private styles for component
-var _styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   listview: {
     flexDirection: 'row',
     flexWrap: 'wrap'

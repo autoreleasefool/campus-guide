@@ -4,8 +4,8 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Component,
   Dimensions,
   Platform,
@@ -17,15 +17,15 @@ var {
 } = React;
 
 // Imports
-var Buildings = require('./BuildingGrid');
-var Constants = require('../../Constants');
-var Ionicons = require('react-native-vector-icons/Ionicons');
-var MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-var Preferences = require('../../util/Preferences');
-var Styles = require('../../Styles');
-var Upcoming = require('./Upcoming');
+const Buildings = require('./BuildingGrid');
+const Constants = require('../../Constants');
+const Ionicons = require('react-native-vector-icons/Ionicons');
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
+const Preferences = require('../../util/Preferences');
+const Styles = require('../../Styles');
+const Upcoming = require('./Upcoming');
 
-var {height, width} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 
 class FindHome extends Component {
 
@@ -66,8 +66,6 @@ class FindHome extends Component {
    * Renders the user's upcoming classes for the day and a list of buildings on campus.
    */
   render() {
-    let calendarIcon = null;
-
     // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'en') {
@@ -77,6 +75,7 @@ class FindHome extends Component {
     }
 
     // Use a different icon for the calendar depending on the platform
+    let calendarIcon = null;
     if (Platform.OS === 'ios') {
       calendarIcon =
         <Ionicons
@@ -134,7 +133,7 @@ class FindHome extends Component {
 };
 
 // Private styles for component
-var _styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.garnet,

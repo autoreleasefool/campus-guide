@@ -6,8 +6,8 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   AsyncStorage,
 } = React;
 
@@ -19,9 +19,9 @@ const SELECTED_LANGUAGE = 'app_selected_langauge';
 const PREFER_WHEELCHAIR = 'app_pref_wheel';
 
 // Cached values of preferences
-var timesAppOpened = 0;
-var selectedLanguage = null;
-var preferWheelchair = false;
+let timesAppOpened = 0;
+let selectedLanguage = null;
+let preferWheelchair = false;
 
 /*
  * Method which should be invoked each time the app is opened, to keep a running track

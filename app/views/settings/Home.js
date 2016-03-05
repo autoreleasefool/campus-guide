@@ -4,8 +4,8 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Component,
   ListView,
   Platform,
@@ -15,13 +15,13 @@ var {
   View,
 } = React;
 
-var Constants = require('../../Constants');
-var Preferences = require('../../util/Preferences');
-var Styles = require('../../Styles');
+const Constants = require('../../Constants');
+const Preferences = require('../../util/Preferences');
+const Styles = require('../../Styles');
 
 // Declaring icons depending on the platform
-var Icon;
-var settingsIcons;
+let Icon;
+let settingsIcons;
 if (Platform.OS === 'ios') {
   Icon = require('react-native-vector-icons/Ionicons');
   settingsIcons = {
@@ -37,13 +37,13 @@ if (Platform.OS === 'ios') {
 }
 
 // Require both language translations to switch between them easily
-var TranslationsEn = require('../../util/Translations.en.js');
-var TranslationsFr = require('../../util/Translations.fr.js');
+const TranslationsEn = require('../../util/Translations.en.js');
+const TranslationsFr = require('../../util/Translations.fr.js');
 
 // Create a cache of settings values to retrieve and update them quickly
-var settings = require('../../../assets/static/json/settings.json');
-var settingsCache = [];
-var keyOfLastSettingChanged = null;
+let settings = require('../../../assets/static/json/settings.json');
+let settingsCache = [];
+let keyOfLastSettingChanged = null;
 
 class SettingsHome extends Component {
 
@@ -129,13 +129,14 @@ class SettingsHome extends Component {
    * Displays a single row, representing a setting which can be changed.
    */
   _renderRow(setting, sectionId, rowId) {
+    let content = null;
     if (setting.type === 'multi') {
-      var content =
+      content =
           <View style={_styles.settingContent}>
             <Text style={[Styles.mediumText, {color: 'black'}]}>{Preferences.getSetting(setting.key)}</Text>
           </View>
     } else if (setting.type === 'boolean') {
-      var content =
+      content =
           <View style={_styles.settingContent}>
             {
               Preferences.getSetting(setting.key)
@@ -220,7 +221,7 @@ class SettingsHome extends Component {
 };
 
 // Private styles for component
-var _styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.polarGrey,

@@ -4,18 +4,18 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Component,
   StyleSheet,
   TextInput,
   View,
 } = React;
 
-var Constants = require('../Constants');
-var Ionicons = require('react-native-vector-icons/Ionicons');
-var Preferences = require('../util/Preferences');
-var StatusBar = require('../util/StatusBar');
+const Constants = require('../Constants');
+const Ionicons = require('react-native-vector-icons/Ionicons');
+const Preferences = require('../util/Preferences');
+const StatusBar = require('../util/StatusBar');
 
 class SearchBar extends Component {
 
@@ -68,7 +68,7 @@ class SearchBar extends Component {
 };
 
 // Private styles for component
-var _styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   innerContainer: {
     alignItems: 'center',
     flexDirection: 'row',

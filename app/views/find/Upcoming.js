@@ -4,16 +4,16 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Component,
   Text,
   TouchableOpacity,
 } = React;
 
-var Constants = require('../../Constants');
-var Preferences = require('../../util/Preferences');
-var Styles = require('../../Styles');
+const Constants = require('../../Constants');
+const Preferences = require('../../util/Preferences');
+const Styles = require('../../Styles');
 
 class Upcoming extends Component {
 

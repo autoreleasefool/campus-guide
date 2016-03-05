@@ -4,8 +4,8 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Alert,
   Component,
   Navigator,
@@ -13,15 +13,15 @@ var {
   View,
 } = React;
 
-var FindHome = require('./find/Home');
-var BuildStyleInterpolator = require('buildStyleInterpolator');
-var Constants = require('../Constants');
-var Preferences = require('../util/Preferences');
-var ScheduleHome = require('./schedule/Home');
-var SearchBar = require('../components/SearchBar');
-var SettingsHome = require('./settings/Home');
-var StatusBar = require('../util/StatusBar');
-var TabBar = require('../components/Tabs');
+const FindHome = require('./find/Home');
+const BuildStyleInterpolator = require('buildStyleInterpolator');
+const Constants = require('../Constants');
+const Preferences = require('../util/Preferences');
+const ScheduleHome = require('./schedule/Home');
+const SearchBar = require('../components/SearchBar');
+const SettingsHome = require('./settings/Home');
+const StatusBar = require('../util/StatusBar');
+const TabBar = require('../components/Tabs');
 
 class MainScreen extends Component {
 
@@ -44,7 +44,7 @@ class MainScreen extends Component {
    */
   _configureScene() {
     // Disable transitions between screens
-    var NoTransition = {
+    let NoTransition = {
       opacity: {
         from: 1,
         to: 1,
@@ -147,7 +147,7 @@ class MainScreen extends Component {
 };
 
 // Private styles for component
-var _styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
     flex: 1
   }

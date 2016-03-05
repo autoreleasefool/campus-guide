@@ -1,14 +1,15 @@
 'use strict';
 
 // Imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
+  Component,
   View,
 } = React;
 
 // Root view
-var BuildingPage = React.createClass({
+class BuildingPage extends Component {
 
-});
+};
 
 module.exports = BuildingPage;

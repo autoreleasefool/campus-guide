@@ -4,8 +4,8 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Animated,
   Component,
   Dimensions,
@@ -16,11 +16,11 @@ var {
   View,
 } = React;
 
-var Constants = require('../Constants');
+const Constants = require('../Constants');
 
 // Declaring icons depending on the platform
-var Icon;
-var tabIcons;
+let Icon;
+let tabIcons;
 if (Platform.OS === 'ios') {
   Icon = require('react-native-vector-icons/Ionicons');
   tabIcons = {
@@ -40,7 +40,7 @@ if (Platform.OS === 'ios') {
 }
 
 // Determining the size of the current tab indicator based on the screen size
-var {height, width} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const indicatorWidth = Math.ceil(width / 4);
 const indicatorHeight = 5;
 const tabIconSize = 30;
@@ -121,7 +121,7 @@ class TabBar extends Component {
 };
 
 // Private styles for component
-var _styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
     height: 60,
     flexDirection: 'row',

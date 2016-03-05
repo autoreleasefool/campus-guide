@@ -4,8 +4,8 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   AsyncStorage,
   Component,
   Dimensions,
@@ -16,15 +16,15 @@ var {
   View,
 } = React;
 
-var Configuration = require('../util/Configuration');
-var Constants = require('../Constants');
-var Preferences = require('../util/Preferences');
-var StatusBar = require('../util/StatusBar');
-var Styles = require('../Styles');
+const Configuration = require('../util/Configuration');
+const Constants = require('../Constants');
+const Preferences = require('../util/Preferences');
+const StatusBar = require('../util/StatusBar');
+const Styles = require('../Styles');
 
 // Require both language translations to display items in both languages
-var TranslationsEn = require('../util/Translations.en.js');
-var TranslationsFr = require('../util/Translations.fr.js');
+const TranslationsEn = require('../util/Translations.en.js');
+const TranslationsFr = require('../util/Translations.fr.js');
 
 class SplashScreen extends Component {
 
@@ -60,7 +60,7 @@ class SplashScreen extends Component {
    * Calls the startup functions of the application.
    */
   componentDidMount() {
-    var self = this;
+    const self = this;
     StatusBar.setLightStatusBarIOS(true);
     Configuration.getConfiguration();
     Preferences.loadInitialPreferences().done(function() {
@@ -84,9 +84,9 @@ class SplashScreen extends Component {
    */
   render() {
     // Get the width and height of the screen
-    var {height, width} = Dimensions.get('window');
-    var onlyOnceTextWidth = Math.min(width, 400);
-    var onlyOnceTextLeft = (width - onlyOnceTextWidth) / 2;
+    const {height, width} = Dimensions.get('window');
+    const onlyOnceTextWidth = Math.min(width, 400);
+    const onlyOnceTextLeft = (width - onlyOnceTextWidth) / 2;
 
     if (this.state.isLoading) {
       // While checking to see if a language has been selected, display an empty view
@@ -137,7 +137,7 @@ class SplashScreen extends Component {
 };
 
 // Private styles for component
-var _styles = StyleSheet.create({
+const _styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',

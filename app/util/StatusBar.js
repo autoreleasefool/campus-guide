@@ -4,14 +4,14 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Platform,
   StatusBarIOS,
 } = React;
 
 // Provides additional spacing on iOS to allow room for the status bar
-var statusBarPadding = 0;
+let statusBarPadding = 0;
 if (Platform.OS === 'ios') {
   statusBarPadding = 20;
 }

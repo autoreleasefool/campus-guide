@@ -4,17 +4,17 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Component,
   Navigator,
   View,
 } = React;
 
-var Constants = require('./Constants');
-var MainScreen = require('./views/Main');
-var Orientation = require('react-native-orientation');
-var SplashScreen = require('./views/Splash');
+const Constants = require('./Constants');
+const MainScreen = require('./views/Main');
+const Orientation = require('react-native-orientation');
+const SplashScreen = require('./views/Splash');
 
 class CampusGuide extends Component {
 

@@ -5,8 +5,8 @@
 'use strict';
 
 // React imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   AsyncStorage,
   NetInfo,
 } = React;
@@ -19,7 +19,7 @@ const TIME_TO_REFRESH_CONFIG = 'config_time_to_refresh';
 const LAST_VALID_CONFIGURATION = 'config_last_valid';
 
 // Cached config of the app
-var app_config = null;
+let app_config = null;
 
 /*
  * Asynchronously gets the configuration for the application. If the configuration has expired (as determined by
