@@ -13,6 +13,7 @@ const {
   StyleSheet,
   Text,
   TouchableOpacity,
+  UIManager,
   View,
 } = React;
 
@@ -61,6 +62,7 @@ class SplashScreen extends Component {
    */
   componentDidMount() {
     const self = this;
+    UIManager.setLayoutAnimationEnabledExperimental(true);
     StatusBar.setLightStatusBarIOS(true);
     Configuration.getConfiguration();
     Preferences.loadInitialPreferences().done(function() {
