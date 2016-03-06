@@ -10,23 +10,26 @@ const {
   Component,
   Navigator,
   StyleSheet,
+  TouchableOpacity,
   View,
 } = React;
 
 const FindHome = require('./find/Home');
 const BuildStyleInterpolator = require('buildStyleInterpolator');
 const Constants = require('../Constants');
+const NavBar = require('../components/NavBar');
 const Preferences = require('../util/Preferences');
 const ScheduleHome = require('./schedule/Home');
-const SearchBar = require('../components/SearchBar');
+const ScreenUtils = require('../util/ScreenUtils');
 const SettingsHome = require('./settings/Home');
-const StatusBar = require('../util/StatusBar');
 const TabBar = require('../components/Tabs');
+
+let screenStack = [Constants.Views.Default];
 
 class MainScreen extends Component {
 
   /*
-   * Pass props.
+   * Pass props and declare initial state.
    */
   constructor(props) {
     super(props);
@@ -34,6 +37,8 @@ class MainScreen extends Component {
     // Explicitly binding 'this' to all methods that need it
     // TODO: remove if binding not needed
     // this._configureScene = this._configureScene.bind(this);
+    this._navigateBack = this._navigateBack.bind(this);
+    this._navigateForward = this._navigateForward.bind(this);
     this._onChangeTab = this._onChangeTab.bind(this);
     this._onSearch = this._onSearch.bind(this);
     this._renderScene = this._renderScene.bind(this);
@@ -68,13 +73,74 @@ class MainScreen extends Component {
   };
 
   /*
+   * Returns the current screen being displayed, or 0 if there isn't one.
+   */
+  _getCurrentScreen() {
+    if (screenStack !== null && screenStack.length > 0) {
+      return screenStack[screenStack.length - 1]
+    } else {
+      return 0;
+    }
+  }
+
+  /*
+   * Returns to the previous page.
+   */
+  _navigateBack() {
+    if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
+      this.refs.MainNavigator.pop();
+      screenStack.pop();
+
+      if (ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
+        this.refs.NavBar.setState({
+          showBackButton: false,
+        });
+      }
+    }
+  };
+
+  /*
+   * Opens a screen. If the current root screen is not a precursor to the provided screen,
+   * the app switches to the root screen, then shows the new screen.
+   */
+  _navigateForward(screenId) {
+    if (this._getCurrentScreen() === screenId) {
+      // Don't push the screen if it's already showing.
+      return;
+    }
+
+    let rootScreen = ScreenUtils.getRootScreen(screenId);
+    if (rootScreen === this._getCurrentScreen() && rootScreen !== screenId) {
+      this.refs.NavBar.setState({
+        showBackButton: true,
+      });
+    }
+
+    if (rootScreen === ScreenUtils.getRootScreen(this.refs.MainTabBar.getCurrentTab())) {
+      this.refs.MainNavigator.push({id: screenId});
+      screenStack.push(screenId);
+    } else {
+      this.refs.MainNavigator.resetTo({id: rootScreen});
+      this.refs.MainNavigator.push({id: screenId});
+      screenStack = [rootScreen, screenId];
+    }
+  };
+
+  /*
    * Updates views accordingly to display a new tab.
    */
   _onChangeTab(tabId) {
-    this.refs.MainNavigator.replace({id: tabId});
+    if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
+      this.refs.NavBar.setState({
+        showBackButton: false,
+      });
+    }
+
+    this.refs.MainNavigator.resetTo({id: tabId});
     this.refs.MainTabBar.setState({
       currentTab: tabId,
-    });
+    })
+    screenStack = [tabId];
   };
 
   /*
@@ -83,7 +149,7 @@ class MainScreen extends Component {
   _onSearch(search) {
     // TODO: search...
     console.log('TODO: search...');
-    this._onChangeTab(Constants.Views.Find.Home);
+    this._navigateForward(Constants.Views.Find.Test);
   };
 
   /*
@@ -94,6 +160,9 @@ class MainScreen extends Component {
       <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
         {route.id === Constants.Views.Find.Home
             ? <FindHome onEditSchedule={() => this._onChangeTab(Constants.Views.Schedule.Home)} />
+            : null}
+        {route.id === Constants.Views.Find.Test
+            ? <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}></View>
             : null}
         {route.id === Constants.Views.Schedule.Home
             ? <ScheduleHome requestTabChange={this._onChangeTab} />
@@ -133,8 +202,8 @@ class MainScreen extends Component {
    */
   render() {
     return (
-      <View style={[_styles.container]}>
-        <SearchBar ref="MainSearchBar" onSearch={this._onSearch} />
+      <View style={_styles.container}>
+        <NavBar ref='NavBar' onSearch={this._onSearch} onBack={this._navigateBack} />
         <Navigator
             ref='MainNavigator'
             configureScene={this._configureScene}
@@ -149,8 +218,9 @@ class MainScreen extends Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1
-  }
+    flex: 1,
+    backgroundColor: Constants.Colors.garnet,
+  },
 });
 
 // Expose component to app

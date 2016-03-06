@@ -64,7 +64,15 @@ class TabBar extends Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
+    this.getCurrentTab = this.getCurrentTab.bind(this);
     this._changeTabs = this._changeTabs.bind(this);
+  };
+
+  /*
+   * Retrieves the current tab.
+   */
+  getCurrentTab() {
+    return this.state.currentTab;
   };
 
   /*

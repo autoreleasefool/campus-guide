@@ -18,6 +18,7 @@ module.exports = {
     Main: 2,
     Find: {
       Home: 100,
+      Test: 101,
     },
     Schedule: {
       Home: 200,
