@@ -65,8 +65,8 @@ async function _requestConfig() {
   // AsyncStorage.setItem(TIME_TO_REFRESH_CONFIG, configuration.Meta.TimeToRefresh.toString());
 
   // Store the configuration, then return it
-  app_config = configuration.Config;
-  AsyncStorage.setItem(LAST_VALID_CONFIGURATION, configuration.Config.toString())
+  app_config = configuration.Content;
+  AsyncStorage.setItem(LAST_VALID_CONFIGURATION, configuration.Content.toString())
   return app_config;
 }
 

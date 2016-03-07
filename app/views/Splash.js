@@ -10,6 +10,7 @@ const {
   Component,
   Dimensions,
   Navigator,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -62,7 +63,11 @@ class SplashScreen extends Component {
    */
   componentDidMount() {
     const self = this;
-    UIManager.setLayoutAnimationEnabledExperimental(true);
+
+    if (Platform.OS === 'android') {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+
     StatusBar.setLightStatusBarIOS(true);
     Configuration.getConfiguration();
     Preferences.loadInitialPreferences().done(function() {
