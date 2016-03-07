@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.github.yamill.orientation.OrientationPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
 
 public class MainActivity extends ReactActivity {
 
@@ -41,13 +42,14 @@ public class MainActivity extends ReactActivity {
   }
 
  /**
- * A list of packages used by the app. If the app uses additional views
- * or modules besides the default ones, add more packages here.
- */
+  * A list of packages used by the app. If the app uses additional views
+  * or modules besides the default ones, add more packages here.
+  */
   @Override
   protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
       new MainReactPackage(),
-      new OrientationPackage(this));
+      new OrientationPackage(this),
+      new VectorIconsPackage());
   }
 }
