@@ -17,6 +17,7 @@ const {
 
 const Constants = require('../../Constants');
 const Preferences = require('../../util/Preferences');
+const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
 
 // Declaring icons depending on the platform
@@ -175,9 +176,9 @@ class SettingsHome extends Component {
     }
 
     return (
-      <View style={_styles.section}>
-        <Text style={[Styles.largeText, {color: 'black'}]}>{sectionName}</Text>
-      </View>
+      <SectionHeader
+          sectionName={sectionName}
+          backgroundOverride={Constants.Colors.lightGrey} />
     );
   };
 
@@ -231,12 +232,6 @@ const _styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 5,
     textAlign: 'center',
-  },
-  section: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    backgroundColor: Constants.Colors.lightGrey,
   },
   settingContainer: {
     backgroundColor: Constants.Colors.charcoalGrey,

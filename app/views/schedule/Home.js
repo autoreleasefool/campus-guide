@@ -15,9 +15,8 @@ const {
 } = React;
 
 const Constants = require('../../Constants');
-const Ionicons = require('react-native-vector-icons/Ionicons');
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
+const SectionHeader = require('../../components/SectionHeader');
 const StatusBar = require('../../util/StatusBar');
 const Styles = require('../../Styles');
 
@@ -66,42 +65,21 @@ class ScheduleHome extends Component {
     // Use a different icon for the calendar depending on the platform
     let calendarIcon = null;
     if (Platform.OS === 'ios') {
-      calendarIcon =
-        <Ionicons
-            name={'ios-calendar-outline'}
-            size={24}
-            color={'white'}
-            style={Styles.headerIcon} />;
+      calendarIcon = ['ionicon', 'ios-calendar-outline'];
     } else {
-      calendarIcon =
-        <MaterialIcons
-            name={'event'}
-            size={24}
-            color={'white'}
-            style={Styles.headerIcon} />;
+      calendarIcon = ['material', 'event'];
     }
 
     return (
       <View style={_styles.container}>
-        <View style={[Styles.header, _styles.headerBackground]}>
-          {calendarIcon}
-          <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
-            {Translations['schedule']}
-          </Text>
-          <TouchableOpacity
-              onPress={this._changeSchedule}
-              activeOpacity={0.4}
-              style={{position: 'absolute', right: 0, flex: 1, flexDirection: 'row'}}>
-            <Text style={[Styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
-              {Translations['winter'].toUpperCase()}
-            </Text>
-            <Ionicons
-                name={'arrow-swap'}
-                size={18}
-                color={'white'}
-                style={{marginTop: 15, marginBottom: 15, marginRight: 20}} />
-          </TouchableOpacity>
-        </View>
+        <SectionHeader
+            sectionName={Translations['schedule']}
+            sectionIcon={calendarIcon[1]}
+            sectionIconClass={calendarIcon[0]}
+            subtitleOnClick={this._changeSchedule}
+            subtitleName={Translations['winter']}
+            subtitleIcon={'arrow-swap'}
+            subtitleIconClass={'ionicon'} />
       </View>
     );
   };
@@ -112,9 +90,6 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.charcoalGrey,
-  },
-  headerBackground: {
-    backgroundColor: 'rgba(0,0,0,0.4)',
   },
 });
 

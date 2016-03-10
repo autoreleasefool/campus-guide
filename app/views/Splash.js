@@ -55,7 +55,7 @@ class SplashScreen extends Component {
    */
   _selectLanguage(language) {
     Preferences.setSelectedLanguage(language);
-    this.props.navigator.push({id: 2});
+    this.props.navigator.push({id: Constants.Views.Main});
   };
 
   /*

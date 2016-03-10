@@ -109,21 +109,14 @@ class MainScreen extends Component {
       return;
     }
 
-    let rootScreen = ScreenUtils.getRootScreen(screenId);
-    if (rootScreen === this._getCurrentScreen() && rootScreen !== screenId) {
+    if (ScreenUtils.isRootScreen(this._getCurrentScreen())) {
       this.refs.NavBar.setState({
         showBackButton: true,
       });
     }
 
-    if (rootScreen === ScreenUtils.getRootScreen(this.refs.MainTabBar.getCurrentTab())) {
-      this.refs.MainNavigator.push({id: screenId});
-      screenStack.push(screenId);
-    } else {
-      this.refs.MainNavigator.resetTo({id: rootScreen});
-      this.refs.MainNavigator.push({id: screenId});
-      screenStack = [rootScreen, screenId];
-    }
+    this.refs.MainNavigator.push({id: screenId});
+    screenStack.push(screenId);
   };
 
   /*

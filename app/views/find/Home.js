@@ -19,9 +19,8 @@ const {
 // Imports
 const Buildings = require('./BuildingGrid');
 const Constants = require('../../Constants');
-const Ionicons = require('react-native-vector-icons/Ionicons');
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
+const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
 const Upcoming = require('./Upcoming');
 
@@ -77,52 +76,27 @@ class FindHome extends Component {
     // Use a different icon for the calendar depending on the platform
     let calendarIcon = null;
     if (Platform.OS === 'ios') {
-      calendarIcon =
-        <Ionicons
-            name={'ios-calendar-outline'}
-            size={24}
-            color={'white'}
-            style={Styles.headerIcon} />;
+      calendarIcon = ['ionicon', 'ios-calendar-outline'];
     } else {
-      calendarIcon =
-        <MaterialIcons
-            name={'event'}
-            size={24}
-            color={'white'}
-            style={Styles.headerIcon} />;
+      calendarIcon = ['material', 'event'];
     }
 
     return (
       <View style={_styles.container}>
-
-        <View style={[Styles.header, _styles.headerBackground]}>
-          {calendarIcon}
-          <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
-            {Translations['upcoming_classes']}
-          </Text>
-          <TouchableOpacity
-              onPress={this._editSchedule}
-              activeOpacity={0.4}
-              style={{position: 'absolute', right: 0}}>
-            <Text style={[Styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
-              {Translations['edit']}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <SectionHeader
+            sectionName={Translations['upcoming_classes']}
+            sectionIcon={calendarIcon[1]}
+            sectionIconClass={calendarIcon[0]}
+            subtitleOnClick={this._editSchedule}
+            subtitleName={Translations['edit']} />
         <View style={[_styles.content, {flex: 1}]}>
           <Upcoming onEdit={this._editSchedule} />
         </View>
 
-        <View style={[Styles.header, _styles.headerBackground]}>
-          <MaterialIcons
-              name={'store'}
-              size={24}
-              color={'white'}
-              style={Styles.headerIcon} />
-          <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
-            {Translations['building_directory']}
-          </Text>
-        </View>
+        <SectionHeader
+            sectionName={Translations['building_directory']}
+            sectionIcon={'store'}
+            sectionIconClass={'material'} />
         <View style={[_styles.content, {flex: 2}]}>
           <Buildings />
         </View>

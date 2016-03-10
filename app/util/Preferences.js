@@ -30,7 +30,7 @@ let preferWheelchair = false;
 async function _loadInitialPreferences() {
   // If any errors occur, just use the default values of the preferences
   try {
-    /// Number of times the app has been used. Either null or integer greater than or equal to 0
+    // Number of times the app has been used. Either null or integer greater than or equal to 0
     let value = await AsyncStorage.getItem(TIMES_APP_OPENED);
     timesAppOpened = (value !== null)
         ? parseInt(value)
