@@ -88,7 +88,7 @@ class MainScreen extends Component {
    */
   _navigateBack() {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-      this.refs.MainNavigator.pop();
+      this.refs.Navigator.pop();
       screenStack.pop();
 
       if (ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
@@ -115,7 +115,7 @@ class MainScreen extends Component {
       });
     }
 
-    this.refs.MainNavigator.push({id: screenId});
+    this.refs.Navigator.push({id: screenId});
     screenStack.push(screenId);
   };
 
@@ -129,8 +129,8 @@ class MainScreen extends Component {
       });
     }
 
-    this.refs.MainNavigator.resetTo({id: tabId});
-    this.refs.MainTabBar.setState({
+    this.refs.Navigator.resetTo({id: tabId});
+    this.refs.TabBar.setState({
       currentTab: tabId,
     })
     screenStack = [tabId];
@@ -144,6 +144,13 @@ class MainScreen extends Component {
     console.log('TODO: search...');
     this._navigateForward(Constants.Views.Find.Test);
   };
+
+  /*
+   * Forces the navbar to be re-rendered.
+   */
+  _updateNavbar() {
+    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()})
+  }
 
   /*
    * Renders a view according to the current route of the navigator.
@@ -164,7 +171,7 @@ class MainScreen extends Component {
             ? <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}></View>
             : null}
         {route.id === Constants.Views.Settings.Home
-            ? <SettingsHome requestTabChange={this._onChangeTab} />
+            ? <SettingsHome requestTabChange={this._onChangeTab} refreshParent={this._updateNavbar.bind(this)} />
             : null}
       </View>
     );
@@ -198,11 +205,11 @@ class MainScreen extends Component {
       <View style={_styles.container}>
         <NavBar ref='NavBar' onSearch={this._onSearch} onBack={this._navigateBack} />
         <Navigator
-            ref='MainNavigator'
+            ref='Navigator'
             configureScene={this._configureScene}
             initialRoute={{id: Constants.Views.Default}}
             renderScene={this._renderScene} />
-        <TabBar ref='MainTabBar' requestTabChange={this._onChangeTab} />
+        <TabBar ref='TabBar' requestTabChange={this._onChangeTab} />
       </View>
     );
   };

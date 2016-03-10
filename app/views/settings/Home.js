@@ -53,6 +53,7 @@ class SettingsHome extends Component {
    */
   static propTypes = {
     requestTabChange: React.PropTypes.func.isRequired,
+    refreshParent: React.PropTypes.func,
   };
 
   /*
@@ -116,6 +117,10 @@ class SettingsHome extends Component {
             ? 'fr'
             : 'en'
       );
+
+      if (this.props.refreshParent) {
+        this.props.refreshParent();
+      }
     } else if (key === 'pref_wheel') {
       Preferences.setWheelchairRoutePreferred(!Preferences.isWheelchairRoutePreferred());
     }

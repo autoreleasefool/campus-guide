@@ -52,7 +52,11 @@ class SearchBar extends Component {
     super(props);
     this.state = {
       showBackButton: false,
+      refresh: false,
     };
+
+    // Explicitly binding 'this' to certain methods
+    this.getRefresh = this.getRefresh.bind(this);
   };
 
   /*
@@ -61,6 +65,13 @@ class SearchBar extends Component {
   setState(state) {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     super.setState(state);
+  };
+
+  /*
+   * Returns the current state of the refresh variable, to allow it to be flipped to re-render the view.
+   */
+  getRefresh() {
+    return this.state.refresh;
   };
 
   /*
