@@ -55,10 +55,30 @@ class SearchBar extends Component {
     };
   };
 
+  /*
+   * Configures the app to animate the next layout change, then updates the state.
+   */
   setState(state) {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     super.setState(state);
-  }
+  };
+
+  /*
+   * Clears the search field and requests a back navigation.
+   */
+  _onBack() {
+    this.refs.SearchInput.setNativeProps({text: ''});
+    this.props.onBack();
+  };
+
+  /*
+   * Prompts the app to search, so long as there is any text to search with.
+   */
+  _onSearch(text) {
+    if (text && text.length > 0) {
+      this.props.onSearch(text);
+    }
+  };
 
   /*
    * Renders a text input field for searching.
@@ -85,7 +105,7 @@ class SearchBar extends Component {
 
     return (
       <View style={_styles.container}>
-        <TouchableOpacity onPress={this.props.onBack} style={{height: 40, alignItems: 'center', left: backButtonLeft}}>
+        <TouchableOpacity onPress={this._onBack.bind(this)} style={{height: 40, alignItems: 'center', left: backButtonLeft}}>
           <Icon name={backIcon} size={24} color={'white'} style={{marginLeft: 20, marginRight: 20, marginTop: 8}} />
         </TouchableOpacity>
         <View style={[_styles.innerContainer, {position: 'absolute', width: searchBarWidth, left: searchBarLeft, top: 0}]}>
@@ -98,7 +118,7 @@ class SearchBar extends Component {
           <TextInput
               ref='SearchInput'
               style={{flex: 1, height: 40, color: Constants.Colors.polarGrey}}
-              onChangeText={(text) => this.props.onSearch(text)}
+              onChangeText={this._onSearch.bind(this)}
               autoCorrect={false}
               placeholder={Translations['search_placeholder']}
               placeholderTextColor={Constants.Colors.lightGrey} />
