@@ -102,3 +102,6 @@ target/
 
 # pyenv
 .python-version
+
+# Assets
+/assets/
