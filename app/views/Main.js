@@ -100,10 +100,9 @@ class MainScreen extends Component {
   };
 
   /*
-   * Opens a screen. If the current root screen is not a precursor to the provided screen,
-   * the app switches to the root screen, then shows the new screen.
+   * Opens a screen, unless the screen is already showing. Passes data to the new screen.
    */
-  _navigateForward(screenId) {
+  _navigateForward(screenId, data) {
     if (this._getCurrentScreen() === screenId) {
       // Don't push the screen if it's already showing.
       return;
@@ -115,7 +114,7 @@ class MainScreen extends Component {
       });
     }
 
-    this.refs.Navigator.push({id: screenId});
+    this.refs.Navigator.push({id: screenId, data: data});
     screenStack.push(screenId);
   };
 
@@ -139,10 +138,10 @@ class MainScreen extends Component {
   /*
    * Displays the results of the user's search parameters.
    */
-  _onSearch(search) {
+  _onSearch(searchTerms) {
     // TODO: search...
     console.log('TODO: search...');
-    this._navigateForward(Constants.Views.Find.Test);
+    this._navigateForward(Constants.Views.Find.Search, searchTerms);
   };
 
   /*
@@ -156,23 +155,30 @@ class MainScreen extends Component {
    * Renders a view according to the current route of the navigator.
    */
   _renderScene(route, navigator) {
+    let scene = null;
+    if (route.id === Constants.Views.Find.Home) {
+      scene = (
+        <FindHome
+            onEditSchedule={() => this._onChangeTab(Constants.Views.Schedule.Home)}
+            onShowBuilding={(buildingCode) => this._navigateForward(Constants.Views.Fine.Building, buildingCode)} />
+      );
+    } else if (route.id === Constants.Views.Schedule.Home) {
+      scene = (
+        <ScheduleHome requestTabChange={this._onChangeTab} />
+      );
+    } else if (route.id === Constants.Views.Discover.Home) {
+      scene = (
+        <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}} />
+      );
+    } else if (route.id === Constants.Views.Settings.Home) {
+      scene = (
+        <SettingsHome requestTabChange={this._onChangeTab} refreshParent={this._updateNavbar.bind(this)} />
+      );
+    }
+
     return (
       <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
-        {route.id === Constants.Views.Find.Home
-            ? <FindHome onEditSchedule={() => this._onChangeTab(Constants.Views.Schedule.Home)} />
-            : null}
-        {route.id === Constants.Views.Find.Test
-            ? <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}></View>
-            : null}
-        {route.id === Constants.Views.Schedule.Home
-            ? <ScheduleHome requestTabChange={this._onChangeTab} />
-            : null}
-        {route.id === Constants.Views.Discover.Home
-            ? <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}></View>
-            : null}
-        {route.id === Constants.Views.Settings.Home
-            ? <SettingsHome requestTabChange={this._onChangeTab} refreshParent={this._updateNavbar.bind(this)} />
-            : null}
+        {scene}
       </View>
     );
   };

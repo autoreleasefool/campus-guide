@@ -22,7 +22,8 @@ module.exports = {
    */
   getRootScreen(screenId) {
     if (screenId === Constants.Views.Find.Home
-        || screenId === Constants.Views.Find.Test) {
+        || screenId === Constants.Views.Find.Building
+        || screenId === Constants.Views.Find.Search) {
       return Constants.Views.Find.Home;
     } else if (screenId === Constants.Views.Schedule.Home) {
       return Constants.Views.Schedule.Home;

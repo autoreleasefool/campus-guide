@@ -17,7 +17,8 @@ const {
 } = React;
 
 // Imports
-const Buildings = require('./BuildingGrid');
+const BuildingPage = require('./BuildingPage');
+const BuildingGrid = require('./BuildingGrid');
 const Constants = require('../../Constants');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
@@ -44,6 +45,7 @@ class FindHome extends Component {
     // Explicitly binding 'this' to all methods that need it
     this._editSchedule = this._editSchedule.bind(this);
     this._search = this._search.bind(this);
+    this._showBuilding = this._showBuilding.bind(this);
   };
 
   /*
@@ -59,6 +61,13 @@ class FindHome extends Component {
   _search(text) {
     // TODO: search for a building, class, or professor
     console.log('TODO: search for a building, class, or professor');
+  };
+
+  /*
+   * Loads a view to display details about a building.
+   */
+  _showBuilding(building) {
+
   };
 
   /*
@@ -98,7 +107,7 @@ class FindHome extends Component {
             sectionIcon={'store'}
             sectionIconClass={'material'} />
         <View style={[_styles.content, {flex: 2}]}>
-          <Buildings />
+          <BuildingGrid showBuilding={this._showBuilding} />
         </View>
 
       </View>
@@ -111,9 +120,6 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.garnet,
-  },
-  headerBackground: {
-    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   content: {
     margin: 10,

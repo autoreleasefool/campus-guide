@@ -23,6 +23,13 @@ const buildingIconSize = Math.floor((width - 60) / 3);
 class BuildingGrid extends Component {
 
   /*
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
+    showBuilding: React.PropTypes.func.isRequired,
+  };
+
+  /*
    * Pass props and declares initial state.
    */
   constructor(props) {
@@ -36,7 +43,6 @@ class BuildingGrid extends Component {
 
     // Explicitly binding 'this' to all methods that need it
     this._loadBuildingsList = this._loadBuildingsList.bind(this);
-    this._pressRow = this._pressRow.bind(this);
     this._renderRow = this._renderRow.bind(this);
   };
 
@@ -50,14 +56,6 @@ class BuildingGrid extends Component {
       dataSource: this.state.dataSource.cloneWithRows(buildingsList),
       loaded: true,
     });
-  };
-
-  /*
-   * Displays the details of a single building.
-   */
-  _pressRow(code) {
-    // TODO: open building page with rooms
-    console.log('TODO: open building page with rooms');
   };
 
   /*
@@ -82,7 +80,7 @@ class BuildingGrid extends Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => this._pressRow(building.code)}>
+      <TouchableOpacity onPress={() => this.props.showBuilding(building)}>
         <View style={{width: buildingIconSize, marginLeft: iconLeftMargin, marginRight: iconRightMargin, marginTop: iconTopMargin, marginBottom: 15}}>
           <Image style={_styles.buildingIcon} source={building.icon} />
           <Text style={_styles.buildingCode}>{building.code}</Text>
