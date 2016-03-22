@@ -125,7 +125,7 @@ class SettingsHome extends Component {
     } else if (key === 'pref_wheel') {
       Preferences.setWheelchairRoutePreferred(!Preferences.isWheelchairRoutePreferred());
     } else if (key === 'pref_session') {
-      Preferences.setCurrentSemester(Preferences.getCurrentSemester() + 1);
+      Preferences.setToNextSemester();
     }
 
     keyOfLastSettingChanged = key;

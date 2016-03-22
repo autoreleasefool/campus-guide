@@ -45,10 +45,6 @@ module.exports = {
    * Returns the semester requested.
    */
   getSemester(semester) {
-    console.log('here');
-    console.log(semester);
-    console.log(availableSemesters);
-    console.log(availableSemesters[semester]);
     return availableSemesters[semester];
   }
 };

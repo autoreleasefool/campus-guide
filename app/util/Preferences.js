@@ -150,6 +150,13 @@ module.exports = {
   },
 
   /*
+   * Sets semester to be the next in chronologically.
+   */
+  setToNextSemester() {
+    this.setCurrentSemester(currentSemester + 1);
+  },
+
+  /*
    * Returns the index of the current semester.
    */
   getCurrentSemester() {

@@ -14,7 +14,9 @@ const {
   View
 } = React;
 
+const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
+const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 const StatusBar = require('../../util/StatusBar');
@@ -36,6 +38,7 @@ class ScheduleHome extends Component {
     super(props);
     this.state = {
       dataSource: null,
+      currentSemester: Preferences.getCurrentSemester()
     };
 
     // Explicitly binding 'this' to all methods that need it
@@ -46,8 +49,10 @@ class ScheduleHome extends Component {
    * Switches to the next available schedule and updates the views.
    */
   _changeSchedule() {
-    // TODO: shuffle through the available schedules
-    console.log('TODO: shuffle through the available schedules');
+    Preferences.setToNextSemester();
+    this.setState({
+      currentSemester: Preferences.getCurrentSemester()
+    });
   };
 
   /*
@@ -77,7 +82,7 @@ class ScheduleHome extends Component {
             sectionIcon={calendarIcon[1]}
             sectionIconClass={calendarIcon[0]}
             subtitleOnClick={this._changeSchedule}
-            subtitleName={Translations['winter']}
+            subtitleName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Configuration.getSemester(this.state.currentSemester))}
             subtitleIcon={'arrow-swap'}
             subtitleIconClass={'ionicon'} />
       </View>
