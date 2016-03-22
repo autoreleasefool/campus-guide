@@ -137,7 +137,7 @@ module.exports = {
   },
 
   /*
-   * Sets the current session. If the provided value is not a valid index, the current semester is set to 0.
+   * Sets the current semester. If the provided value is not a valid index, the current semester is set to 0.
    */
   setCurrentSemester(semester) {
     if (semester >= Configuration.getAvailableSemesters().length || semester < 0) {
@@ -181,7 +181,7 @@ module.exports = {
           : 'Français';
     } else if (key === 'pref_wheel') {
       return this.isWheelchairRoutePreferred();
-    } else if (key === 'pref_session') {
+    } else if (key === 'pref_semester') {
       return LanguageUtils.getTranslatedName(this.getSelectedLanguage(), this.getCurrentSemesterInfo());
     }
 

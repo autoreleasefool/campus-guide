@@ -19,7 +19,7 @@ async function _requestConfig() {
   // Get the configuration file
   let configuration = require('../../assets/static/json/config.json');
 
-  // Get the current sessions available in the app
+  // Get the current semesters available in the app
   for (var i = 0; i < configuration['AvailableSemesters'].length; i++) {
     availableSemesters.push(configuration['AvailableSemesters'][i]);
   }

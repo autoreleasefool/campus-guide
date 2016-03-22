@@ -98,14 +98,16 @@ class SettingsHome extends Component {
   _getSettings() {
     for (var section in settings) {
       for (var row in settings[section]) {
-        settingsCache[row.key] = Preferences.getSetting(row.key);
+        settingsCache[settings[section][row]['key']] = Preferences.getSetting(Preferences.getSetting(settings[section][row]['key']));
       }
     }
 
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(settings),
-      loaded: true,
-    });
+    if (!this.state.loaded) {
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRowsAndSections(settings),
+        loaded: true,
+      });
+    }
   };
 
   /*
@@ -124,7 +126,7 @@ class SettingsHome extends Component {
       }
     } else if (key === 'pref_wheel') {
       Preferences.setWheelchairRoutePreferred(!Preferences.isWheelchairRoutePreferred());
-    } else if (key === 'pref_session') {
+    } else if (key === 'pref_semester') {
       Preferences.setToNextSemester();
     }
 
@@ -194,9 +196,7 @@ class SettingsHome extends Component {
    * Loads the settings once the view has been mounted.
    */
   componentDidMount() {
-    if (!this.state.loaded) {
-      this._getSettings();
-    }
+    this._getSettings();
   };
 
   /*

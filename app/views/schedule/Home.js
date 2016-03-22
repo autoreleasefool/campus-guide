@@ -50,7 +50,7 @@ class ScheduleHome extends Component {
   _changeSchedule() {
     Preferences.setToNextSemester();
     let header = this.refs.ScheduleHeader;
-    header.updateSubtitle(LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Configuration.getSemester(Preferences.getCurrentSemester())), header.getSubtitleIcon(), header.getSubtitleIconClass());
+    header.updateSubtitle(LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo()), header.getSubtitleIcon(), header.getSubtitleIconClass());
   };
 
   /*
@@ -81,7 +81,7 @@ class ScheduleHome extends Component {
             sectionIcon={calendarIcon[1]}
             sectionIconClass={calendarIcon[0]}
             subtitleOnClick={this._changeSchedule}
-            subtitleName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Configuration.getSemester(Preferences.getCurrentSemester()))}
+            subtitleName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo())}
             subtitleIcon={'arrow-swap'}
             subtitleIconClass={'ionicon'} />
       </View>
