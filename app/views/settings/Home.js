@@ -16,6 +16,7 @@ const {
 } = React;
 
 const Constants = require('../../Constants');
+const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
@@ -123,6 +124,8 @@ class SettingsHome extends Component {
       }
     } else if (key === 'pref_wheel') {
       Preferences.setWheelchairRoutePreferred(!Preferences.isWheelchairRoutePreferred());
+    } else if (key === 'pref_session') {
+      Preferences.setCurrentSemester(Preferences.getCurrentSemester() + 1);
     }
 
     keyOfLastSettingChanged = key;
@@ -157,7 +160,7 @@ class SettingsHome extends Component {
         <TouchableOpacity onPress={() => this._pressRow(setting.key)}>
           <View style={_styles.setting}>
             <Text style={[_styles.settingText, Styles.mediumText, {color: 'black'}]}>
-              {setting['name_' + Preferences.getSelectedLanguage()]}
+              {LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), setting)}
             </Text>
             {content}
           </View>

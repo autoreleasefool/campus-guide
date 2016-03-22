@@ -11,16 +11,22 @@ const {
   AsyncStorage,
 } = React;
 
+const Configuration = require('./Configuration');
+const LanguageUtils = require('./LanguageUtils');
+
 // Represents the number of times the app has been opened
 const TIMES_APP_OPENED = 'app_times_opened';
 // Represents the language selected by the user to use the app in
 const SELECTED_LANGUAGE = 'app_selected_langauge';
+// Represents the current study semester selected by the user
+const CURRENT_SEMESTER = 'app_current_semester';
 // Represents if the user prefers routes with wheelchair access
 const PREFER_WHEELCHAIR = 'app_pref_wheel';
 
 // Cached values of preferences
 let timesAppOpened = 0;
 let selectedLanguage = null;
+let currentSemester = 0;
 let preferWheelchair = false;
 
 /*
@@ -37,13 +43,18 @@ async function _loadInitialPreferences() {
         : 0;
 
     // Language chosen by the user. Either null (if no language has been selected), 'en' for English, 'fr' for French
-    value = await AsyncStorage.getItem(SELECTED_LANGUAGE)
+    value = await AsyncStorage.getItem(SELECTED_LANGUAGE);
     selectedLanguage = (value !== null)
         ? value
         : null;
 
+    value = await AsyncStorage.getItem(CURRENT_SEMESTER);
+    currentSemester = (value !== null)
+        ? parseInt(value)
+        : 0;
+
     // If the user prefers wheelchair accessible routes
-    value = await AsyncStorage.getItem(PREFER_WHEELCHAIR)
+    value = await AsyncStorage.getItem(PREFER_WHEELCHAIR);
     preferWheelchair = (value !== null)
         ? (value === 'true')
         : false;
@@ -53,6 +64,7 @@ async function _loadInitialPreferences() {
     // Setting variables to their default values
     timesAppOpened = 0;
     selectedLanguage = null;
+    currentSemester = 0;
     preferWheelchair = false;
   }
 
@@ -125,6 +137,33 @@ module.exports = {
   },
 
   /*
+   * Sets the current session. If the provided value is not a valid index, the current semester is set to 0.
+   */
+  setCurrentSemester(semester) {
+    if (semester >= Configuration.getAvailableSemesters().length || semester < 0) {
+      currentSemester = 0;
+    } else {
+      currentSemester = semester;
+    }
+
+    AsyncStorage.setItem(CURRENT_SEMESTER, currentSemester.toString());
+  },
+
+  /*
+   * Returns the index of the current semester.
+   */
+  getCurrentSemester() {
+    return currentSemester;
+  },
+
+  /*
+   * Returns information about the current semester.
+   */
+  getCurrentSemesterInfo() {
+    return Configuration.getSemester(currentSemester);
+  },
+
+  /*
    * Returns the value of a setting based on the provided key. The returned value may be a string, boolean, integer,
    * or object, and should correspond to the type of the setting.
    */
@@ -135,6 +174,8 @@ module.exports = {
           : 'Français';
     } else if (key === 'pref_wheel') {
       return this.isWheelchairRoutePreferred();
+    } else if (key === 'pref_session') {
+      return LanguageUtils.getTranslatedName(this.getSelectedLanguage(), this.getCurrentSemesterInfo());
     }
 
     return null;

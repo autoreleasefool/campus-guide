@@ -69,20 +69,21 @@ class SplashScreen extends Component {
     }
 
     StatusBar.setLightStatusBarIOS(true);
-    Configuration.getConfiguration();
-    Preferences.loadInitialPreferences().done(function() {
-      if (!Preferences.isLanguageSelected()) {
-        self.setState({
-          isLoading: false,
-        });
-      } else {
-        // If a lanuage has been selected, remove this language select screen, open the main screen
-        self.props.navigator.replace({id: 2});
-        // TODO: comment above and uncomment below to always show splash screen
-        // this.setState({
-        //   isLoading: false
-        // });
-      }
+    Configuration.loadConfiguration().done(function() {
+      Preferences.loadInitialPreferences().done(function() {
+        if (!Preferences.isLanguageSelected()) {
+          self.setState({
+            isLoading: false,
+          });
+        } else {
+          // If a lanuage has been selected, remove this language select screen, open the main screen
+          self.props.navigator.replace({id: 2});
+          // TODO: comment above and uncomment below to always show splash screen
+          // this.setState({
+          //   isLoading: false
+          // });
+        }
+      });
     });
   };
 
