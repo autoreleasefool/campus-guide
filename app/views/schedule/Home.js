@@ -38,7 +38,6 @@ class ScheduleHome extends Component {
     super(props);
     this.state = {
       dataSource: null,
-      currentSemester: Preferences.getCurrentSemester()
     };
 
     // Explicitly binding 'this' to all methods that need it
@@ -50,9 +49,8 @@ class ScheduleHome extends Component {
    */
   _changeSchedule() {
     Preferences.setToNextSemester();
-    this.setState({
-      currentSemester: Preferences.getCurrentSemester()
-    });
+    let header = this.refs.ScheduleHeader;
+    header.updateSubtitle(LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Configuration.getSemester(Preferences.getCurrentSemester())), header.getSubtitleIcon(), header.getSubtitleIconClass());
   };
 
   /*
@@ -78,11 +76,12 @@ class ScheduleHome extends Component {
     return (
       <View style={_styles.container}>
         <SectionHeader
+            ref='ScheduleHeader'
             sectionName={Translations['schedule']}
             sectionIcon={calendarIcon[1]}
             sectionIconClass={calendarIcon[0]}
             subtitleOnClick={this._changeSchedule}
-            subtitleName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Configuration.getSemester(this.state.currentSemester))}
+            subtitleName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Configuration.getSemester(Preferences.getCurrentSemester()))}
             subtitleIcon={'arrow-swap'}
             subtitleIconClass={'ionicon'} />
       </View>
