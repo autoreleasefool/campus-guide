@@ -16,6 +16,7 @@ const {
   View,
 } = React;
 
+import TimerMixin from 'react-timer-mixin';
 const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -57,14 +58,17 @@ class SearchBar extends Component {
 
     // Explicitly binding 'this' to certain methods
     this.getRefresh = this.getRefresh.bind(this);
+
   };
 
   /*
    * Configures the app to animate the next layout change, then updates the state.
    */
   setState(state) {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    super.setState(state);
+    setTimeout(() => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      super.setState(state);
+    }, 50);
   };
 
   /*
