@@ -20,6 +20,7 @@ const Constants = require('../Constants');
 const NavBar = require('../components/NavBar');
 const Preferences = require('../util/Preferences');
 const ScheduleHome = require('./schedule/ScheduleHome');
+const ScheduleEditor = require('./schedule/ScheduleEditor');
 const ScreenUtils = require('../util/ScreenUtils');
 const SettingsHome = require('./settings/SettingsHome');
 const TabBar = require('../components/Tabs');
@@ -139,11 +140,17 @@ class MainScreen extends Component {
       scene = (
         <FindHome
             onEditSchedule={() => this._onChangeTab(Constants.Views.Schedule.Home)}
-            onShowBuilding={(buildingCode) => this._navigateForward(Constants.Views.Fine.Building, buildingCode)} />
+            onShowBuilding={(buildingCode) => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
       );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (
-        <ScheduleHome requestTabChange={this._onChangeTab} />
+        <ScheduleHome
+            requestTabChange={this._onChangeTab}
+            editSchedule={() => this._navigateForward(Constants.Views.Schedule.Editor)} />
+      );
+    } else if (route.id === Constants.Views.Schedule.Editor) {
+      scene = (
+        <ScheduleEditor />
       );
     } else if (route.id === Constants.Views.Discover.Home) {
       scene = (

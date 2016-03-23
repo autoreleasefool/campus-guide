@@ -12,6 +12,9 @@ module.exports = {
     rootElementBorder: 'rgba(0, 0, 0, 0.25)',
   },
 
+  /*
+   * NOTE: When adding a new view here, make sure you also update app/util/ScreenUtils.js
+   */
   Views: {
     Default: 100,
     Splash: 1,
@@ -23,6 +26,7 @@ module.exports = {
     },
     Schedule: {
       Home: 200,
+      Editor: 201,
     },
     Discover: {
       Home: 300,

@@ -23,4 +23,5 @@ module.exports = {
   no_courses_added: 'You haven\'t added any courses.\nTap here to add some now.',
 
   schedule: 'Schedule',
+  edit_schedule: 'Edit Schedule',
 }

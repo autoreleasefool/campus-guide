@@ -29,6 +29,7 @@ class ScheduleHome extends Component {
    */
   static propTypes = {
     requestTabChange: React.PropTypes.func.isRequired,
+    editSchedule: React.PropTypes.func.isRequired,
   };
 
   /*
@@ -84,6 +85,15 @@ class ScheduleHome extends Component {
             subtitleName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo())}
             subtitleIcon={'arrow-swap'}
             subtitleIconClass={'ionicon'} />
+        {/* TODO: replace with scroll view for schedule */}
+        <View style={{flex: 1}} />
+        <TouchableOpacity onPress={this.props.editSchedule}>
+          <View style={_styles.editButton}>
+            <Text style={[Styles.mediumText, {color: 'white'}]}>
+              {Translations['edit_schedule']}
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -94,6 +104,16 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.charcoalGrey,
+  },
+  editButton: {
+    backgroundColor: Constants.Colors.garnet,
+    height: 50,
+    margin: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editButtonText: {
+    color: 'white',
   },
 });
 

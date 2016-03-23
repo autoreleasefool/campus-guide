@@ -49,7 +49,7 @@ class Upcoming extends Component {
 
     if (!this.state.loaded) {
       return (
-        <TouchableOpacity activeOpacity={1} onPress={this.props.onEdit} style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <TouchableOpacity onPress={this.props.onEdit} style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text style={[Styles.mediumText, {color: 'white', textAlign: 'center'}]}>
             {Translations['no_courses_added']}
           </Text>

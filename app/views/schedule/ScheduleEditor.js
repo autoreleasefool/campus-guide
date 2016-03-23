@@ -7,14 +7,13 @@ const {
   View,
 } = React;
 
-// Root view
-class BuildingPage extends Component {
+class ScheduleEditor extends Component {
 
   /*
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
-    buildingCode: React.PropTypes.string.isRequired,
+
   };
 
   /*
@@ -22,8 +21,16 @@ class BuildingPage extends Component {
    */
   constructor(props) {
     super(props);
+
+    // Explicitly binding 'this' to all methods that need it
+  };
+
+  render() {
+    return (
+      <View style={{flex: 1, backgroundColor: 'black'}} />
+    );
   };
 };
 
 // Expose component to app
-module.exports = BuildingPage;
+module.exports = ScheduleEditor;

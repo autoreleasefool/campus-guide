@@ -23,4 +23,5 @@ module.exports = {
   no_courses_added: 'Vous avez pas ajouté de sources.\nAppuyez ici pour ajouter un peu maintenant.',
 
   schedule: 'Programme',
+  edit_schedule: 'Calendrier d\'édition',
 }

@@ -25,7 +25,8 @@ module.exports = {
         || screenId === Constants.Views.Find.Building
         || screenId === Constants.Views.Find.Search) {
       return Constants.Views.Find.Home;
-    } else if (screenId === Constants.Views.Schedule.Home) {
+    } else if (screenId === Constants.Views.Schedule.Home
+        || screenId === Constants.Views.Schedule.Editor) {
       return Constants.Views.Schedule.Home;
     } else if (screenId === Constants.Views.Discover.Home) {
       return Constants.Views.Discover.Home;
