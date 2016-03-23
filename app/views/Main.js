@@ -48,28 +48,7 @@ class MainScreen extends Component {
    * Sets the transition between two views in the navigator.
    */
   _configureScene() {
-    // Disable transitions between screens
-    let NoTransition = {
-      opacity: {
-        from: 1,
-        to: 1,
-        min: 1,
-        max: 1,
-        type: 'linear',
-        extrapolate: false,
-        round: 100,
-      },
-    };
-
-    return  ({
-      ...Navigator.SceneConfigs.FadeAndroid,
-      gestures: null,
-      defaultTransitionVelocity: 100,
-      animationInterpolators: {
-        into: BuildStyleInterpolator(NoTransition),
-        out: BuildStyleInterpolator(NoTransition),
-      },
-    });
+    return Navigator.SceneConfigs.PushFromRight;
   };
 
   /*
