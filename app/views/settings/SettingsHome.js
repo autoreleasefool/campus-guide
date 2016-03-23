@@ -246,13 +246,18 @@ const _styles = StyleSheet.create({
   },
   setting: {
     flexDirection: 'row',
-    padding: 20,
+    height: 50,
+    alignItems: 'center',
     backgroundColor: Constants.Colors.polarGrey,
   },
   settingContent: {
     position: 'absolute',
     right: 20,
-  }
+    top: 15,
+  },
+  settingText: {
+    marginLeft: 20,
+  },
 });
 
 // Expose component to app
