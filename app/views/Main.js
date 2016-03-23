@@ -14,14 +14,14 @@ const {
   View,
 } = React;
 
-const FindHome = require('./find/Home');
+const FindHome = require('./find/FindHome');
 const BuildStyleInterpolator = require('buildStyleInterpolator');
 const Constants = require('../Constants');
 const NavBar = require('../components/NavBar');
 const Preferences = require('../util/Preferences');
-const ScheduleHome = require('./schedule/Home');
+const ScheduleHome = require('./schedule/ScheduleHome');
 const ScreenUtils = require('../util/ScreenUtils');
-const SettingsHome = require('./settings/Home');
+const SettingsHome = require('./settings/SettingsHome');
 const TabBar = require('../components/Tabs');
 
 let screenStack = [Constants.Views.Default];
