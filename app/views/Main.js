@@ -17,6 +17,7 @@ const {
 const FindHome = require('./find/FindHome');
 const BuildStyleInterpolator = require('buildStyleInterpolator');
 const BusHome = require('./discover/BusHome');
+const CampusStops = require('./discover/CampusStops');
 const Constants = require('../Constants');
 const NavBar = require('../components/NavBar');
 const Preferences = require('../util/Preferences');
@@ -155,7 +156,12 @@ class MainScreen extends Component {
       );
     } else if (route.id === Constants.Views.Discover.Home) {
       scene = (
-        <BusHome />
+        <BusHome
+            showCampus={(campusName) => this._navigateForward(Constants.Views.Discover.CampusStops, campusName)} />
+      );
+    } else if (route.id === Constants.Views.Discover.CampusStops) {
+      scene = (
+        <CampusStops campusName={route.data} />
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (

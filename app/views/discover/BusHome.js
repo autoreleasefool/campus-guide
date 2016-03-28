@@ -24,7 +24,7 @@ class BusHome extends Component {
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
-    showCampus: React.PropTypes.function.isRequired,
+    showCampus: React.PropTypes.func.isRequired,
   };
 
   /*
@@ -37,9 +37,6 @@ class BusHome extends Component {
       campuses: null,
       loaded: false,
     }
-
-    // Explicitly binding 'this' to all methods that need it
-    this._showCampus = this._showCampus.bind(this);
   };
 
   /*
@@ -53,26 +50,19 @@ class BusHome extends Component {
     });
   };
 
-  /*
-   * Opens a view with details about the selected campus and bus stops surrounding it.
-   */
-  _showCampus(campusName) {
-    this.props.showCampus(Constants.Views.Discover.CampusStops, campusName);
-  };
-
   componentDidMount() {
     if (!this.state.loaded) {
       this._loadCampuses();
     }
-  }
+  };
 
   render() {
     // Get current language for translations
     let Translations = null;
-    if (Preferences.getSelectedLanguage() === 'en') {
-      Translations = require('../../util/Translations.en.js');
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {
-      Translations = require('../../util/Translations.fr.js');
+      Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
     let campusDisplayNames = ['nil', 'nil', 'nil', 'nil'];
@@ -83,7 +73,7 @@ class BusHome extends Component {
     if (this.state.loaded) {
       for (let campus in this.state.campuses) {
         campusDisplayNames[campus] = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campuses[campus]);
-        campusStopNames[campus] = LanguageUtils.getEnglishName(Preferences.getSelectedLanguage(), this.state.campuses[campus]);
+        campusStopNames[campus] = LanguageUtils.getEnglishName(this.state.campuses[campus]);
         campusImages[campus] = (
           <Image
               style={{flex: 1}}
@@ -95,26 +85,26 @@ class BusHome extends Component {
 
     return (
       <View style={_styles.container}>
-        <TouchableOpacity onPress={this._showCampus(campusStopNames[0])} style={_styles.campusContainer}>
+        <TouchableOpacity onPress={() => this.props.showCampus(campusStopNames[0])} style={_styles.campusContainer}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <SectionHeader sectionName={campusDisplayNames[0]} />
             {campusImages[0]}
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={this._showCampus(campusStopNames[1])} style={_styles.campusContainer}>
+        <TouchableOpacity onPress={() => this.props.showCampus(campusStopNames[1])} style={_styles.campusContainer}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <SectionHeader sectionName={campusDisplayNames[1]} />
             {campusImages[1]}
           </View>
         </TouchableOpacity>
         <View style={_styles.campusContainer}>
-          <TouchableOpacity onPress={this._showCampus(campusStopNames[2])} style={_styles.campusContainer}>
+          <TouchableOpacity onPress={() => this.props.showCampus(campusStopNames[2])} style={_styles.campusContainer}>
             <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}>
               <SectionHeader sectionName={campusDisplayNames[2]} />
               {campusImages[2]}
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._showCampus(campusStopNames[3])} style={_styles.campusContainer}>
+          <TouchableOpacity onPress={() => this.props.showCampus(campusStopNames[3])} style={_styles.campusContainer}>
             <View style={{flex: 1, backgroundColor: Constants.Colors.darkGrey}}>
               <SectionHeader sectionName={campusDisplayNames[3]} />
               {campusImages[3]}

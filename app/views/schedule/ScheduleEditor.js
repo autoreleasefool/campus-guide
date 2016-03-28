@@ -1,3 +1,6 @@
+/*
+ * Views and controls for the user to add or remove classes from their schedule.
+ */
 'use strict';
 
 // Imports

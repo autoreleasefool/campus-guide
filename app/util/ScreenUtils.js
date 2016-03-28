@@ -28,7 +28,8 @@ module.exports = {
     } else if (screenId === Constants.Views.Schedule.Home
         || screenId === Constants.Views.Schedule.Editor) {
       return Constants.Views.Schedule.Home;
-    } else if (screenId === Constants.Views.Discover.Home) {
+    } else if (screenId === Constants.Views.Discover.Home
+        || screenId === Constants.Views.Discover.CampusStops) {
       return Constants.Views.Discover.Home;
     } else if (screenId === Constants.Views.Settings.Home) {
       return Constants.Views.Settings.Home;

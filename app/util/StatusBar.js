@@ -7,7 +7,7 @@
 const React = require('react-native');
 const {
   Platform,
-  StatusBarIOS,
+  StatusBar,
 } = React;
 
 // Provides additional spacing on iOS to allow room for the status bar
@@ -24,9 +24,9 @@ module.exports = {
   setLightStatusBarIOS(light) {
     if (Platform.OS === 'ios') {
       if (light) {
-        StatusBarIOS.setStyle('light-content')
+        StatusBar.setBarStyle('light-content');
       } else {
-        StatusBarIOS.setStyle('default')
+        StatusBar.setBarStyle('default');
       }
     }
   },

@@ -30,6 +30,7 @@ module.exports = {
     },
     Discover: {
       Home: 300,
+      CampusStops: 301,
     },
     Settings: {
       Home: 400,
