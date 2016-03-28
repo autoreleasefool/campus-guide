@@ -16,6 +16,7 @@ const {
 
 const FindHome = require('./find/FindHome');
 const BuildStyleInterpolator = require('buildStyleInterpolator');
+const BusHome = require('./discover/BusHome');
 const Constants = require('../Constants');
 const NavBar = require('../components/NavBar');
 const Preferences = require('../util/Preferences');
@@ -154,7 +155,7 @@ class MainScreen extends Component {
       );
     } else if (route.id === Constants.Views.Discover.Home) {
       scene = (
-        <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}} />
+        <BusHome />
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
