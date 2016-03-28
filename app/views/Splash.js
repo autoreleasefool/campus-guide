@@ -25,8 +25,8 @@ const StatusBar = require('../util/StatusBar');
 const Styles = require('../Styles');
 
 // Require both language translations to display items in both languages
-const TranslationsEn = require('../util/Translations.en.js');
-const TranslationsFr = require('../util/Translations.fr.js');
+const TranslationsEn = require('../../assets/static/js/Translations.en.js');
+const TranslationsFr = require('../../assets/static/js/Translations.fr.js');
 
 class SplashScreen extends Component {
 

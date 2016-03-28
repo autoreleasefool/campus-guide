@@ -76,10 +76,10 @@ class FindHome extends Component {
   render() {
     // Get current language for translations
     let Translations = null;
-    if (Preferences.getSelectedLanguage() === 'en') {
-      Translations = require('../../util/Translations.en.js');
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {
-      Translations = require('../../util/Translations.fr.js');
+      Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
     // Use a different icon for the calendar depending on the platform

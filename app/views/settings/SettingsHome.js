@@ -39,8 +39,8 @@ if (Platform.OS === 'ios') {
 }
 
 // Require both language translations to switch between them easily
-const TranslationsEn = require('../../util/Translations.en.js');
-const TranslationsFr = require('../../util/Translations.fr.js');
+const TranslationsEn = require('../../../assets/static/js/Translations.en.js');
+const TranslationsFr = require('../../../assets/static/js/Translations.fr.js');
 
 // Create a cache of settings values to retrieve and update them quickly
 let settings = require('../../../assets/static/json/settings.json');
