@@ -1,5 +1,6 @@
 rootProject.name = 'CampusGuide'
 
-include ':react-native-vector-icons', ':Orientation', ':app'
+include ':react-native-vector-icons', ':Orientation', ':react-native-maps', ':app'
 project(':Orientation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-orientation/android')
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
+project(':react-native-maps').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-maps/android')
