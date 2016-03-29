@@ -55,19 +55,17 @@ class CampusStops extends Component {
       lat = university['lat'];
       long = university['long'];
     } else {
-      // TODO: replace with campus location
-      let university = Configuration.getUniversity();
-      lat = university['lat'];
-      long = university['long'];
+      lat = this.state.campus['lat'];
+      long = this.state.campus['long'];
 
-      for (let stop in this.state.campus) {
+      for (let stop in this.state.campus['stops']) {
         markers.push({
-          'title': this.state.campus[stop].name,
-          'desc': this.state.campus[stop].code,
+          'title': this.state.campus['stops'][stop].name,
+          'desc': this.state.campus['stops'][stop].code,
           'id': stop,
           'latlng': {
-            'latitude': this.state.campus[stop].lat,
-            'longitude': this.state.campus[stop].long,
+            'latitude': this.state.campus['stops'][stop].lat,
+            'longitude': this.state.campus['stops'][stop].long,
           },
         });
       }
@@ -91,6 +89,23 @@ class CampusStops extends Component {
           />
         ))}
       </MapView>
+    );
+  };
+
+  _getCampusStops() {
+    if (this.state.campus == null) {
+      return (
+        <View style={_styles.container} />
+      );
+    }
+
+    return (
+      <View style={_styles.container}>
+        <SectionHeader
+            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campus)}
+            sectionIcon={'directions-bus'}
+            sectionIconClass={'material'} />
+      </View>
     );
   };
 
@@ -126,7 +141,7 @@ class CampusStops extends Component {
         <View style={_styles.container}>
           {this._getCampusMap()}
         </View>
-        <View style={_styles.container} />
+        {this._getCampusStops()}
       </View>
     );
   };
