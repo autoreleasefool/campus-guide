@@ -10,6 +10,7 @@ const {
 } = React;
 
 let availableSemesters = [];
+let university = {};
 
 /*
  * Asynchronously gets the configuration for the application and loads the various config values into their respective
@@ -23,6 +24,8 @@ async function _requestConfig() {
   for (var i = 0; i < configuration['AvailableSemesters'].length; i++) {
     availableSemesters.push(configuration['AvailableSemesters'][i]);
   }
+
+  university = configuration['University'];
 }
 
 module.exports = {
@@ -46,5 +49,12 @@ module.exports = {
    */
   getSemester(semester) {
     return availableSemesters[semester];
-  }
+  },
+
+  /*
+   * Gets a object with information about the university.
+   */
+   getUniversity() {
+     return university;
+   },
 };
