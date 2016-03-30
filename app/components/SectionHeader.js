@@ -17,6 +17,7 @@ const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Styles = require('../Styles');
+const TextUtils = require('../util/TextUtils');
 
 // Represents a value in the subtitle which should not be used.
 const NULL_SUBTITLE_VALUE = 'value_null';
@@ -207,7 +208,7 @@ class SectionHeader extends Component {
       <View style={[_styles.header, {backgroundColor: headerBackground}]}>
         {icon}
         <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
-          {this.props.sectionName}
+          {TextUtils.getTextWithEllipses(this.props.sectionName, 21)}
         </Text>
         {iconAndSubtitle}
       </View>
