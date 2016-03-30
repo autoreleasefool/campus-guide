@@ -10,6 +10,9 @@ module.exports = {
     charcoalGrey: '#2D2D2C',
     transparent: 'rgba(0, 0, 0, 0)',
     rootElementBorder: 'rgba(0, 0, 0, 0.25)',
+    defaultComponentBackgroundColor: 'rgba(0,0,0,0.4)',
+    primaryWhiteText: 'white',
+    secondaryWhiteText: 'rgba(255, 255, 255, 0.7)',
   },
 
   /*

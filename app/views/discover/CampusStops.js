@@ -9,7 +9,9 @@ const React = require('react-native');
 const {
   Component,
   Image,
+  ListView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } = React;
@@ -20,6 +22,7 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const MapView = require('react-native-maps');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
+const Styles = require('../../Styles');
 
 class CampusStops extends Component {
 
@@ -38,11 +41,16 @@ class CampusStops extends Component {
 
     this.state = {
       campus: null,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2,
+      }),
     }
 
     // Explicitly binding 'this' to all methods that need it
     this._getCampusMap = this._getCampusMap.bind(this);
+    this._getCampusStops = this._getCampusStops.bind(this);
     this._loadCampusInfo = this._loadCampusInfo.bind(this);
+    this._renderRow = this._renderRow.bind(this);
   };
 
   _getCampusMap() {
@@ -92,6 +100,10 @@ class CampusStops extends Component {
     );
   };
 
+  /*
+   * Returns a view containing a header and list with the stops surrounding the campus provided by
+   * this.props.campusName.
+   */
   _getCampusStops() {
     if (this.state.campus == null) {
       return (
@@ -105,6 +117,10 @@ class CampusStops extends Component {
             sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campus)}
             sectionIcon={'directions-bus'}
             sectionIconClass={'material'} />
+        <ListView
+            style={_styles.listview}
+            dataSource={this.state.dataSource}
+            renderRow={this._renderRow} />
       </View>
     );
   };
@@ -115,17 +131,52 @@ class CampusStops extends Component {
   _loadCampusInfo() {
     let campuses = require('../../../assets/static/json/transit_stops.json');
     if (this.props.campusName in campuses) {
+      let stops = [];
+      for (let stop in campuses[this.props.campusName]['stops']) {
+        stops.push(campuses[this.props.campusName]['stops'][stop]);
+      }
+
       this.setState({
         campus: campuses[this.props.campusName],
+        dataSource: this.state.dataSource.cloneWithRows(stops),
       });
     }
+  };
+
+  _renderRow(stop, sectionIndex, rowIndex) {
+    console.log(rowIndex, this.state.dataSource.getRowCount());
+    return (
+      <View>
+        <TouchableOpacity onPress={() => this._pressRow(stop)}>
+          <View style={_styles.stopHeader}>
+            <Text style={[Styles.largeText, _styles.stopHeaderTitle]}>
+              {stop.name}
+            </Text>
+            <Text style={[Styles.smallText, _styles.stopHeaderSubtitle]}>
+              {stop.code}
+            </Text>
+          </View>
+          <Text style={[Styles.mediumText, _styles.stopRoutes]}>
+            {stop.routes.join(', ')}
+          </Text>
+        </TouchableOpacity>
+        {(rowIndex != this.state.dataSource.getRowCount() - 1)
+            ? <View style={_styles.divider} />
+            : null}
+      </View>
+    );
+  };
+
+  _pressRow(stop) {
+    // TODO: open stop
+    console.log('TODO: open stop');
   };
 
   componentDidMount() {
     if (this.state.campus == null) {
       this._loadCampusInfo();
     }
-  }
+  };
 
   render() {
     // Get current language for translations
@@ -157,6 +208,37 @@ const _styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  listview: {
+    backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
+    margin: 10,
+  },
+  stopHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin: 10,
+  },
+  stopHeaderTitle: {
+    flex: 1,
+    textAlign: 'left',
+    color: Constants.Colors.primaryWhiteText,
+  },
+  stopHeaderSubtitle: {
+    textAlign: 'right',
+    color: Constants.Colors.secondaryWhiteText,
+  },
+  stopRoutes: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
+    color: Constants.Colors.primaryWhiteText,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    marginLeft: 10,
+    marginRight: 10,
+    backgroundColor: Constants.Colors.secondaryWhiteText,
   },
 });
 

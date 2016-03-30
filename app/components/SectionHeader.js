@@ -13,6 +13,7 @@ var {
   View,
 } = React;
 
+const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Styles = require('../Styles');
@@ -191,7 +192,7 @@ class SectionHeader extends Component {
     }
 
     // Set the background color of the header to a default value if not provided
-    let headerBackground = this.props.backgroundOverride || 'rgba(0,0,0,0.4)';
+    let headerBackground = this.props.backgroundOverride || Constants.Colors.defaultComponentBackgroundColor;
 
     return (
       <View style={[_styles.header, {backgroundColor: headerBackground}]}>
