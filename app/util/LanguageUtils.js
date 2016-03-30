@@ -1,3 +1,6 @@
+/*
+ * Defines a set of methods to easily get translations from objects.
+ */
 'use strict';
 
 module.exports = {
