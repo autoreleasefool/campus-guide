@@ -43,6 +43,9 @@ class CampusStops extends Component {
     this._loadCampusInfo = this._loadCampusInfo.bind(this);
   };
 
+  /*
+   * Renders a map with a list of markers to denote bus stops near the campus.
+   */
   _getCampusMap() {
     let lat = 0;
     let long = 0;

@@ -8,6 +8,8 @@ const React = require('react-native');
 const {
   Component,
   ListView,
+  Navigator,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -19,6 +21,9 @@ const LanguageUtils = require('../../../util/LanguageUtils');
 const Preferences = require('../../../util/Preferences');
 const SectionHeader = require('../../../components/SectionHeader');
 const Styles = require('../../../Styles');
+
+const LIST = 0;
+const DETAILS = 1;
 
 class Stops extends Component {
 
@@ -46,6 +51,15 @@ class Stops extends Component {
     this._loadStops = this._loadStops.bind(this);
     this._pressRow = this._pressRow.bind(this);
     this._renderRow = this._renderRow.bind(this);
+    this._renderScene = this._renderScene.bind(this);
+    this._toggleFilter = this._toggleFilter.bind(this);
+  };
+
+  /*
+   * Sets the transition between two views in the navigator.
+   */
+  _configureScene() {
+    return Navigator.SceneConfigs.PushFromRight;
   };
 
   /*
@@ -67,8 +81,7 @@ class Stops extends Component {
    * Displays details about a single stop.
    */
   _pressRow(stop) {
-    // TODO: open stop
-    console.log('TODO: open stop');
+    this.refs.Navigator.push({id: DETAILS, stop: stop});
   };
 
   /*
@@ -97,13 +110,10 @@ class Stops extends Component {
     );
   };
 
-  componentDidMount() {
-    if (!this.state.loaded) {
-      this._loadStops();
-    }
-  };
-
-  render() {
+  /*
+   * Renders a view according to the current route of the navigator.
+   */
+  _renderScene(route, navigator) {
     // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'fr') {
@@ -112,18 +122,65 @@ class Stops extends Component {
       Translations = require('../../../../assets/static/js/Translations.en.js');
     }
 
+    if (route.id === DETAILS && route.stop != null) {
+      let icon = {
+        class: 'material',
+        name: 'arrow-back',
+      };
+      if (Platform.OS === 'ios') {
+        icon = {
+          class: 'ionicon',
+          name: 'ios-arrow-back',
+        };
+      }
+
+      return (
+        <View>
+          <SectionHeader
+              sectionName={route.stop.name}
+              sectionIcon={icon.name}
+              sectionIconClass={icon.class}
+              sectionIconOnClick={() => this.refs.Navigator.pop()}
+              subtitleName={route.stop.code} />
+        </View>
+      );
+    } else {
+      return (
+        <View style={_styles.container}>
+          <SectionHeader
+              sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.campus)}
+              sectionIcon={'directions-bus'}
+              sectionIconClass={'material'}
+              subtitleName={Translations['filter']}
+              subtitleOnClick={this._toggleFilter} />
+          <ListView
+              style={_styles.listview}
+              dataSource={this.state.dataSource}
+              renderRow={this._renderRow} />
+        </View>
+      );
+    }
+  };
+
+  _toggleFilter() {
+    // TODO: filter results
+    console.log('TODO: filter results');
+  };
+
+  componentDidMount() {
+    if (!this.state.loaded) {
+      this._loadStops();
+    }
+  };
+
+  render() {
     return (
       <View style={_styles.container}>
-        <SectionHeader
-            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.campus)}
-            sectionIcon={'directions-bus'}
-            sectionIconClass={'material'}
-            subtitleName={Translations['filter']}
-            subtitleOnClick={this._toggleFilter} />
-        <ListView
-            style={_styles.listview}
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow} />
+        <Navigator
+            ref='Navigator'
+            configureScene={this._configureScene}
+            initialRoute={{id: LIST}}
+            renderScene={this._renderScene} />
       </View>
     );
   }
