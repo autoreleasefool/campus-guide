@@ -121,45 +121,29 @@ class SectionHeader extends Component {
     // Build the icon for the section
     if (this.state.sectionIcon !== NULL_SUBTITLE_VALUE && this.state.sectionIconClass !== NULL_SUBTITLE_VALUE) {
       if (this.state.sectionIconClass === 'material') {
-        if (this.props.sectionIconOnClick) {
-          icon = (
-            <TouchableOpacity onPress={this.props.sectionIconOnClick}>
-              <MaterialIcons
-                  name={this.state.sectionIcon}
-                  size={24}
-                  color={'white'}
-                  style={_styles.headerIcon} />
-            </TouchableOpacity>
-          );
-        } else {
-          icon = (
-            <MaterialIcons
-                name={this.state.sectionIcon}
-                size={24}
-                color={'white'}
-                style={_styles.headerIcon} />
-          );
-        }
+        icon = (
+          <MaterialIcons
+              name={this.state.sectionIcon}
+              size={24}
+              color={'white'}
+              style={_styles.headerIcon} />
+        );
       } else {
-        if (this.props.sectionIconOnClick) {
-          icon = (
-            <TouchableOpacity onPress={this.props.sectionIconOnClick}>
-              <Ionicons
-                  name={this.state.sectionIcon}
-                  size={24}
-                  color={'white'}
-                  style={_styles.headerIcon} />
-            </TouchableOpacity>
-          );
-        } else {
-          icon = (
-            <Ionicons
-                name={this.state.sectionIcon}
-                size={24}
-                color={'white'}
-                style={_styles.headerIcon} />
-          );
-        }
+        icon = (
+          <Ionicons
+              name={this.state.sectionIcon}
+              size={24}
+              color={'white'}
+              style={_styles.headerIcon} />
+        );
+      }
+
+      if (this.props.sectionIconOnClick) {
+        icon = (
+          <TouchableOpacity onPress={this.props.sectionIconOnClick}>
+            {icon}
+          </TouchableOpacity>
+        );
       }
     }
 
@@ -240,6 +224,8 @@ const _styles = StyleSheet.create({
   },
   headerIcon: {
     marginLeft: 20,
+    marginTop: 20,
+    marginBottom: 20,
   },
   iconAndSubtitle: {
     position: 'absolute',
