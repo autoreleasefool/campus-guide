@@ -105,6 +105,14 @@ class CampusStops extends Component {
    * this.props.campusName.
    */
   _getCampusStops() {
+    // Get current language for translations
+    let Translations = null;
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../assets/static/js/Translations.fr.js');
+    } else {
+      Translations = require('../../../assets/static/js/Translations.en.js');
+    }
+
     if (this.state.campus == null) {
       return (
         <View style={_styles.container} />
@@ -116,7 +124,9 @@ class CampusStops extends Component {
         <SectionHeader
             sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campus)}
             sectionIcon={'directions-bus'}
-            sectionIconClass={'material'} />
+            sectionIconClass={'material'}
+            subtitleName={Translations['filter']}
+            subtitleOnClick={this._toggleFilter} />
         <ListView
             style={_styles.listview}
             dataSource={this.state.dataSource}
@@ -143,8 +153,18 @@ class CampusStops extends Component {
     }
   };
 
+  /*
+   * Displays details about a single stop.
+   */
+  _pressRow(stop) {
+    // TODO: open stop
+    console.log('TODO: open stop');
+  };
+
+  /*
+   * Shows partial details about a stop.
+   */
   _renderRow(stop, sectionIndex, rowIndex) {
-    console.log(rowIndex, this.state.dataSource.getRowCount());
     return (
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>
@@ -165,11 +185,6 @@ class CampusStops extends Component {
             : null}
       </View>
     );
-  };
-
-  _pressRow(stop) {
-    // TODO: open stop
-    console.log('TODO: open stop');
   };
 
   componentDidMount() {

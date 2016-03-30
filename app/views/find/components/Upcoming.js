@@ -11,9 +11,9 @@ const {
   TouchableOpacity,
 } = React;
 
-const Constants = require('../../Constants');
-const Preferences = require('../../util/Preferences');
-const Styles = require('../../Styles');
+const Constants = require('../../../Constants');
+const Preferences = require('../../../util/Preferences');
+const Styles = require('../../../Styles');
 
 class Upcoming extends Component {
 
@@ -42,9 +42,9 @@ class Upcoming extends Component {
     // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/static/js/Translations.fr.js');
+      Translations = require('../../../../assets/static/js/Translations.fr.js');
     } else {
-      Translations = require('../../../assets/static/js/Translations.en.js');
+      Translations = require('../../../../assets/static/js/Translations.en.js');
     }
 
     if (!this.state.loaded) {

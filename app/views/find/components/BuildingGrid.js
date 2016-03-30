@@ -50,7 +50,7 @@ class BuildingGrid extends Component {
    * Loads the names and images of the buildings from the assets to display them.
    */
   _loadBuildingsList() {
-    let buildingsList = require('../../../assets/static/js/Buildings');
+    let buildingsList = require('../../../../assets/static/js/Buildings');
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(buildingsList),

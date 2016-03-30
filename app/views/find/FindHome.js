@@ -17,13 +17,12 @@ const {
 } = React;
 
 // Imports
-const BuildingPage = require('./BuildingPage');
-const BuildingGrid = require('./BuildingGrid');
+const BuildingGrid = require('./components/BuildingGrid');
 const Constants = require('../../Constants');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
-const Upcoming = require('./Upcoming');
+const Upcoming = require('./components/Upcoming');
 
 const {height, width} = Dimensions.get('window');
 

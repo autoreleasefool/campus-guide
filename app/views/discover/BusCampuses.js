@@ -18,7 +18,7 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 
-class BusHome extends Component {
+class BusCampuses extends Component {
 
   /*
    * Properties which the parent component should make available to this component.
@@ -130,4 +130,4 @@ const _styles = StyleSheet.create({
 });
 
 // Expose component to app
-module.exports = BusHome;
+module.exports = BusCampuses;
