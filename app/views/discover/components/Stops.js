@@ -61,6 +61,17 @@ class Stops extends Component {
     this._renderScene = this._renderScene.bind(this);
   };
 
+  _getAdjustedTime(time) {
+    let hours = parseInt(time.substring(0, 2));
+    let minutes = time.substring(3, 5);
+    if (hours > 24) {
+      hours = hours - 24;
+    }
+
+    return TextUtils.leftPad(hours.toString(), 2, '0')
+        + ':' + minutes;
+  }
+
   /*
    * Sets the transition between two views in the navigator.
    */
@@ -124,11 +135,11 @@ class Stops extends Component {
     return (
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>
-          <View style={_styles.stopHeader}>
-            <Text style={[Styles.largeText, _styles.stopHeaderTitle]}>
+          <View style={_styles.header}>
+            <Text style={[Styles.largeText, _styles.headerTitle]}>
               {stop.name}
             </Text>
-            <Text style={[Styles.smallText, _styles.stopHeaderSubtitle]}>
+            <Text style={[Styles.smallText, _styles.headerSubtitle]}>
               {stop.code}
             </Text>
           </View>
@@ -146,15 +157,15 @@ class Stops extends Component {
   _renderTimeRow(route, sectionIndex, rowIndex) {
     return (
       <View>
-        <View style={_styles.stopHeader}>
-          <Text style={[Styles.largeText, _styles.stopHeaderTitle]}>
+        <View style={_styles.header}>
+          <Text style={[Styles.largeText, _styles.headerTitle]}>
             {route.sign}
           </Text>
-          <Text style={[Styles.smallText, _styles.stopHeaderSubtitle]}>
+          <Text style={[Styles.smallText, _styles.headerSubtitle]}>
             {route.number}
           </Text>
         </View>
-        <Text style={[Styles.mediumText, _styles.stopRoutes]}>
+        <Text style={[Styles.mediumText, _styles.stopTimes]}>
           {this._retrieveUpcomingTimes(route.days)}
         </Text>
         {(rowIndex != this.state.dataSourceTimes.getRowCount() - 1)
@@ -175,10 +186,10 @@ class Stops extends Component {
       if (day.indexOf(currentDay) > -1) {
         let i = days[day].length - 1;
         while (i >= 0) {
-          if (days[day][i].localeCompare(currentTime) < 0) {
+          if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
             let j = 1;
             while (j < 4 && i + j < days[day].length) {
-              upcomingTimes.push(days[day][i + j]);
+              upcomingTimes.push(this._getAdjustedTime(days[day][i + j]));
               j += 1;
             }
             break;
@@ -189,9 +200,9 @@ class Stops extends Component {
     }
 
     if (upcomingTimes.length > 0) {
-      return upcomingTimes.join('  ');
+      return upcomingTimes.join('   ');
     } else {
-      return 'No buses';
+      return 'No upcoming buses';
     }
   }
 
@@ -262,17 +273,17 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  stopHeader: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     margin: 10,
   },
-  stopHeaderTitle: {
+  headerTitle: {
     flex: 1,
     textAlign: 'left',
     color: Constants.Colors.primaryWhiteText,
   },
-  stopHeaderSubtitle: {
+  headerSubtitle: {
     textAlign: 'right',
     color: Constants.Colors.secondaryWhiteText,
   },
@@ -281,6 +292,13 @@ const _styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
     color: Constants.Colors.primaryWhiteText,
+  },
+  stopTimes: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
+    color: Constants.Colors.primaryWhiteText,
+    fontStyle: 'italic',
   },
   divider: {
     flex: 1,
