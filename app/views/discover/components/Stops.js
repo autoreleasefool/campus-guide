@@ -32,6 +32,7 @@ class Stops extends Component {
    */
   static propTypes = {
     campus: React.PropTypes.object.isRequired,
+    onStopSelected: React.PropTypes.func,
   };
 
   /*
@@ -81,6 +82,9 @@ class Stops extends Component {
    * Displays details about a single stop.
    */
   _pressRow(stop) {
+    if (this.props.onStopSelected) {
+      this.props.onStopSelected(stop);
+    }
     this.refs.Navigator.push({id: DETAILS, stop: stop});
   };
 

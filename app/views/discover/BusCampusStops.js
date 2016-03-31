@@ -38,10 +38,19 @@ class CampusStops extends Component {
     }
 
     // Explicitly binding 'this' to all methods that need it
+    this._busStopSelected = this._busStopSelected.bind(this);
     this._getCampusMap = this._getCampusMap.bind(this);
     this._getCampusStops = this._getCampusStops.bind(this);
     this._loadCampusInfo = this._loadCampusInfo.bind(this);
   };
+
+  /*
+   * Invoked when the user selects a stop.
+   */
+  _busStopSelected(stop) {
+    // TODO: focus on stop on map
+    console.log('TODO: focus on stop:', stop);
+  }
 
   /*
    * Renders a map with a list of markers to denote bus stops near the campus.
@@ -83,11 +92,11 @@ class CampusStops extends Component {
           }}>
         {markers.map((marker) => (
           <MapView.Marker
-            key={marker.id}
-            coordinate={marker.latlng}
-            title={marker.title}
-            description={marker.desc}
-          />
+              key={marker.id}
+              coordinate={marker.latlng}
+              title={marker.title}
+              description={marker.desc}>
+          </MapView.Marker>
         ))}
       </MapView>
     );
@@ -104,7 +113,7 @@ class CampusStops extends Component {
       );
     } else {
       return (
-        <Stops campus={this.state.campus} />
+        <Stops campus={this.state.campus} onStopSelected={this._busStopSelected} />
       )
     }
   };
