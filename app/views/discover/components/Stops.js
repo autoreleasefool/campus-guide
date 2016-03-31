@@ -147,7 +147,6 @@ class Stops extends Component {
               sectionIcon={'directions-bus'}
               sectionIconClass={'material'} />
           <ListView
-              style={_styles.listview}
               dataSource={this.state.dataSource}
               renderRow={this._renderRow} />
         </View>
@@ -177,10 +176,6 @@ class Stops extends Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  listview: {
-    backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
-    margin: 10,
   },
   stopHeader: {
     flexDirection: 'row',
