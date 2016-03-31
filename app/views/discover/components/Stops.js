@@ -53,7 +53,6 @@ class Stops extends Component {
     this._pressRow = this._pressRow.bind(this);
     this._renderRow = this._renderRow.bind(this);
     this._renderScene = this._renderScene.bind(this);
-    this._toggleFilter = this._toggleFilter.bind(this);
   };
 
   /*
@@ -118,14 +117,6 @@ class Stops extends Component {
    * Renders a view according to the current route of the navigator.
    */
   _renderScene(route, navigator) {
-    // Get current language for translations
-    let Translations = null;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../../assets/static/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../../assets/static/js/Translations.en.js');
-    }
-
     if (route.id === DETAILS && route.stop != null) {
       let icon = {
         class: 'material',
@@ -154,9 +145,7 @@ class Stops extends Component {
           <SectionHeader
               sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.campus)}
               sectionIcon={'directions-bus'}
-              sectionIconClass={'material'}
-              subtitleName={Translations['filter']}
-              subtitleOnClick={this._toggleFilter} />
+              sectionIconClass={'material'} />
           <ListView
               style={_styles.listview}
               dataSource={this.state.dataSource}
@@ -164,11 +153,6 @@ class Stops extends Component {
         </View>
       );
     }
-  };
-
-  _toggleFilter() {
-    // TODO: filter results
-    console.log('TODO: filter results');
   };
 
   componentDidMount() {
