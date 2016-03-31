@@ -35,6 +35,7 @@ class CampusStops extends Component {
 
     this.state = {
       campus: null,
+      region: null,
     }
 
     // Explicitly binding 'this' to all methods that need it
@@ -48,8 +49,20 @@ class CampusStops extends Component {
    * Invoked when the user selects a stop.
    */
   _busStopSelected(stop) {
-    // TODO: focus on stop on map
-    console.log('TODO: focus on stop:', stop);
+    if (stop === null) {
+      this.setState({
+        region: null,
+      });
+    } else {
+      this.setState({
+        region: {
+          latitude: stop.lat,
+          longitude: stop.long,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        },
+      });
+    }
   }
 
   /*
@@ -59,14 +72,27 @@ class CampusStops extends Component {
     let lat = 0;
     let long = 0;
     let markers = []
+    let initialRegion = {};
 
     if (this.state.campus == null) {
       let university = Configuration.getUniversity();
       lat = university['lat'];
       long = university['long'];
+      initialRegion = {
+        latitude: lat,
+        longitude: long,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      };
     } else {
       lat = this.state.campus['lat'];
       long = this.state.campus['long'];
+      initialRegion = {
+        latitude: lat,
+        longitude: long,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      };
 
       for (let stop in this.state.campus['stops']) {
         markers.push({
@@ -79,17 +105,13 @@ class CampusStops extends Component {
           },
         });
       }
+
     }
 
     return (
       <MapView
           style={_styles.map}
-          initialRegion={{
-            latitude: lat,
-            longitude: long,
-            latitudeDelta: 0.04,
-            longitudeDelta: 0.04,
-          }}>
+          region={this.state.region || initialRegion}>
         {markers.map((marker) => (
           <MapView.Marker
               key={marker.id}

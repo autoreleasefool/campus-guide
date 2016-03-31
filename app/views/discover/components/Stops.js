@@ -54,6 +54,7 @@ class Stops extends Component {
     }
 
     // Explicitly binding 'this' to all methods that need it
+    this._clearStop = this._clearStop.bind(this);
     this._loadStops = this._loadStops.bind(this);
     this._pressRow = this._pressRow.bind(this);
     this._renderStopRow = this._renderStopRow.bind(this);
@@ -61,16 +62,16 @@ class Stops extends Component {
     this._renderScene = this._renderScene.bind(this);
   };
 
-  _getAdjustedTime(time) {
-    let hours = parseInt(time.substring(0, 2));
-    let minutes = time.substring(3, 5);
-    if (hours > 24) {
-      hours = hours - 24;
+  /*
+   * Informs parent that no stop is selected.
+   */
+  _clearStop() {
+    this.refs.Navigator.pop();
+    if (this.props.onStopSelected) {
+      this.props.onStopSelected(null);
     }
-
-    return TextUtils.leftPad(hours.toString(), 2, '0')
-        + ':' + minutes;
   }
+
 
   /*
    * Sets the transition between two views in the navigator.
@@ -78,6 +79,20 @@ class Stops extends Component {
   _configureScene() {
     return Navigator.SceneConfigs.PushFromRight;
   };
+
+  /*
+   * If a time has an hour greater than 23, it is adjusted to be within 24 hours.
+   */
+  _getAdjustedTime(time) {
+    let hours = parseInt(time.substring(0, 2));
+    let minutes = time.substring(3, 5);
+    if (hours > 23) {
+      hours = hours - 24;
+    }
+
+    return TextUtils.leftPad(hours.toString(), 2, '0')
+    + ':' + minutes;
+  }
 
   /*
    * Loads information about each of the stops on the campus into a list to display.
@@ -228,7 +243,7 @@ class Stops extends Component {
               sectionName={route.stop.name}
               sectionIcon={icon.name}
               sectionIconClass={icon.class}
-              sectionIconOnClick={() => this.refs.Navigator.pop()}
+              sectionIconOnClick={this._clearStop}
               subtitleName={route.stop.code} />
           <ListView
               dataSource={this.state.dataSourceTimes}
