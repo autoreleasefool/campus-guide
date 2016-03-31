@@ -113,7 +113,7 @@ class CampusStops extends Component {
       );
     } else {
       return (
-        <Stops campus={this.state.campus} onStopSelected={this._busStopSelected} />
+        <Stops campus={this.state.campus} campusName={this.props.campusName} onStopSelected={this._busStopSelected} />
       )
     }
   };
