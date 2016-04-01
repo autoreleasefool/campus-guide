@@ -15,6 +15,7 @@ const {
 
 const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
+const DisplayUtils = require('../../util/DisplayUtils');
 const MapView = require('react-native-maps');
 const Stops = require('./components/Stops');
 
@@ -25,6 +26,7 @@ class CampusStops extends Component {
    */
   static propTypes = {
     campusName: React.PropTypes.string.isRequired,
+    campuscolor: React.PropTypes.string.isRequired,
   };
 
   /*
@@ -135,7 +137,7 @@ class CampusStops extends Component {
       );
     } else {
       return (
-        <Stops campus={this.state.campus} campusName={this.props.campusName} onStopSelected={this._busStopSelected} />
+        <Stops campus={this.state.campus} campusName={this.props.campusName} onStopSelected={this._busStopSelected} backgroundIsDark={DisplayUtils.isColorDark(this.props.campuscolor)}/>
       )
     }
   };
@@ -160,7 +162,7 @@ class CampusStops extends Component {
 
   render() {
     return (
-      <View style={_styles.container}>
+      <View style={[_styles.container, {backgroundColor: this.props.campuscolor}]}>
         <View style={_styles.container}>
           {this._getCampusMap()}
         </View>

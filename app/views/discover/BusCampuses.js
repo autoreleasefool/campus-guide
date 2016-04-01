@@ -18,6 +18,8 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 
+const campuscolors = [Constants.Colors.garnet, Constants.Colors.charcoalGrey, Constants.Colors.lightGrey, Constants.Colors.darkGrey];
+
 class BusCampuses extends Component {
 
   /*
@@ -85,27 +87,35 @@ class BusCampuses extends Component {
 
     return (
       <View style={_styles.container}>
-        <TouchableOpacity onPress={() => this.props.showCampus(campusStopNames[0])} style={_styles.campusContainer}>
-          <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
+        <TouchableOpacity
+            onPress={() => this.props.showCampus(campusStopNames[0], campuscolors[0])}
+            style={_styles.campusContainer}>
+          <View style={{flex: 1, backgroundColor: campuscolors[0]}}>
             <SectionHeader sectionName={campusDisplayNames[0]} />
             {campusImages[0]}
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => this.props.showCampus(campusStopNames[1])} style={_styles.campusContainer}>
-          <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
+        <TouchableOpacity
+            onPress={() => this.props.showCampus(campusStopNames[1], campuscolors[1])}
+            style={_styles.campusContainer}>
+          <View style={{flex: 1, backgroundColor: campuscolors[1]}}>
             <SectionHeader sectionName={campusDisplayNames[1]} />
             {campusImages[1]}
           </View>
         </TouchableOpacity>
         <View style={_styles.campusContainer}>
-          <TouchableOpacity onPress={() => this.props.showCampus(campusStopNames[2])} style={_styles.campusContainer}>
-            <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}}>
+          <TouchableOpacity
+              onPress={() => this.props.showCampus(campusStopNames[2], campuscolors[2])}
+              style={_styles.campusContainer}>
+            <View style={{flex: 1, backgroundColor: campuscolors[2]}}>
               <SectionHeader sectionName={campusDisplayNames[2]} />
               {campusImages[2]}
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.props.showCampus(campusStopNames[3])} style={_styles.campusContainer}>
-            <View style={{flex: 1, backgroundColor: Constants.Colors.darkGrey}}>
+          <TouchableOpacity
+              onPress={() => this.props.showCampus(campusStopNames[3], campuscolors[3])}
+              style={_styles.campusContainer}>
+            <View style={{flex: 1, backgroundColor: campuscolors[3]}}>
               <SectionHeader sectionName={campusDisplayNames[3]} />
               {campusImages[3]}
             </View>

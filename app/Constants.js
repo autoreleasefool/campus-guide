@@ -13,6 +13,8 @@ module.exports = {
     defaultComponentBackgroundColor: 'rgba(0,0,0,0.4)',
     primaryWhiteText: 'white',
     secondaryWhiteText: 'rgba(255, 255, 255, 0.7)',
+    primaryBlackText: 'black',
+    secondaryBlackText: 'rgba(0, 0, 0, 0.7)',
   },
 
   /*

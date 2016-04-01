@@ -35,6 +35,7 @@ class Stops extends Component {
     campus: React.PropTypes.object.isRequired,
     campusName: React.PropTypes.string.isRequired,
     onStopSelected: React.PropTypes.func,
+    backgroundIsDark: React.PropTypes.bool,
   };
 
   /*
@@ -42,6 +43,13 @@ class Stops extends Component {
    */
   constructor(props) {
     super(props);
+
+    let primaryTextColor = (this.props.backgroundIsDark)
+        ? Constants.Colors.primaryWhiteText
+        : Constants.Colors.primaryBlackText;
+    let secondaryTextColor = (this.props.backgroundIsDark)
+        ? Constants.Colors.secondaryWhiteText
+        : Constants.Colors.secondaryBlackText;
 
     this.state = {
       dataSourceStops: new ListView.DataSource({
@@ -51,6 +59,8 @@ class Stops extends Component {
         rowHasChanged: (r1, r2) => r1 !== r2,
       }),
       loaded: false,
+      primaryTextColor: primaryTextColor,
+      secondaryTextColor: secondaryTextColor,
     }
 
     // Explicitly binding 'this' to all methods that need it
@@ -71,7 +81,6 @@ class Stops extends Component {
       this.props.onStopSelected(null);
     }
   }
-
 
   /*
    * Sets the transition between two views in the navigator.
@@ -151,14 +160,14 @@ class Stops extends Component {
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>
           <View style={_styles.header}>
-            <Text style={[Styles.largeText, _styles.headerTitle]}>
+            <Text style={[Styles.largeText, _styles.headerTitle, {color: this.state.primaryTextColor}]}>
               {stop.name}
             </Text>
-            <Text style={[Styles.smallText, _styles.headerSubtitle]}>
+            <Text style={[Styles.smallText, _styles.headerSubtitle, {color: this.state.secondaryTextColor}]}>
               {stop.code}
             </Text>
           </View>
-          <Text style={[Styles.mediumText, _styles.stopRoutes]}>
+          <Text style={[Styles.mediumText, _styles.stopRoutes, {color: this.state.primaryTextColor}]}>
             {stop.routes.join(', ')}
           </Text>
         </TouchableOpacity>
@@ -173,14 +182,14 @@ class Stops extends Component {
     return (
       <View>
         <View style={_styles.header}>
-          <Text style={[Styles.largeText, _styles.headerTitle]}>
+          <Text style={[Styles.largeText, _styles.headerTitle, {color: this.state.primaryTextColor}]}>
             {route.sign}
           </Text>
-          <Text style={[Styles.smallText, _styles.headerSubtitle]}>
+          <Text style={[Styles.smallText, _styles.headerSubtitle, {color: this.state.secondaryTextColor}]}>
             {route.number}
           </Text>
         </View>
-        <Text style={[Styles.mediumText, _styles.stopTimes]}>
+        <Text style={[Styles.mediumText, _styles.stopTimes, {color: this.state.primaryTextColor}]}>
           {this._retrieveUpcomingTimes(route.days)}
         </Text>
         {(rowIndex != this.state.dataSourceTimes.getRowCount() - 1)
@@ -296,23 +305,19 @@ const _styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     textAlign: 'left',
-    color: Constants.Colors.primaryWhiteText,
   },
   headerSubtitle: {
     textAlign: 'right',
-    color: Constants.Colors.secondaryWhiteText,
   },
   stopRoutes: {
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
-    color: Constants.Colors.primaryWhiteText,
   },
   stopTimes: {
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
-    color: Constants.Colors.primaryWhiteText,
     fontStyle: 'italic',
   },
   divider: {

@@ -157,11 +157,11 @@ class MainScreen extends Component {
     } else if (route.id === Constants.Views.Discover.Home) {
       scene = (
         <BusCampuses
-            showCampus={(campusName) => this._navigateForward(Constants.Views.Discover.BusCampusStops, campusName)} />
+            showCampus={(campusName, campuscolor) => this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: campusName, color: campuscolor})} />
       );
     } else if (route.id === Constants.Views.Discover.BusCampusStops) {
       scene = (
-        <BusCampusStops campusName={route.data} />
+        <BusCampusStops campusName={route.data.name} campuscolor={route.data.color} />
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
