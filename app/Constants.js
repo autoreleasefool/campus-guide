@@ -21,7 +21,11 @@ module.exports = {
    * NOTE: When adding a new view here, make sure you also update app/util/ScreenUtils.js
    */
   Views: {
-    Default: 100,
+
+    /*
+     * TODO: Change default to 100
+     */
+    Default: 300,
     Splash: 1,
     Main: 2,
     Find: {

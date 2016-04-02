@@ -14,18 +14,20 @@ const {
   View,
 } = React;
 
-const FindHome = require('./find/FindHome');
 const BuildStyleInterpolator = require('buildStyleInterpolator');
-const BusCampuses = require('./discover/BusCampuses');
-const BusCampusStops = require('./discover/BusCampusStops');
 const Constants = require('../Constants');
 const NavBar = require('../components/NavBar');
 const Preferences = require('../util/Preferences');
+const ScreenUtils = require('../util/ScreenUtils');
+const TabBar = require('../components/Tabs');
+
+// Screen imports
+const FindHome = require('./find/FindHome');
+const BusCampuses = require('./discover/BusCampuses');
+const BusCampusStops = require('./discover/BusCampusStops');
 const ScheduleHome = require('./schedule/ScheduleHome');
 const ScheduleEditor = require('./schedule/ScheduleEditor');
-const ScreenUtils = require('../util/ScreenUtils');
 const SettingsHome = require('./settings/SettingsHome');
-const TabBar = require('../components/Tabs');
 
 let screenStack = [Constants.Views.Default];
 
