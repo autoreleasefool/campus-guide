@@ -22,9 +22,10 @@ const ScreenUtils = require('../util/ScreenUtils');
 const TabBar = require('../components/Tabs');
 
 // Screen imports
-const FindHome = require('./find/FindHome');
 const BusCampuses = require('./discover/BusCampuses');
 const BusCampusStops = require('./discover/BusCampusStops');
+const DiscoverHome = require('./discover/DiscoverHome');
+const FindHome = require('./find/FindHome');
 const ScheduleHome = require('./schedule/ScheduleHome');
 const ScheduleEditor = require('./schedule/ScheduleEditor');
 const SettingsHome = require('./settings/SettingsHome');
@@ -157,6 +158,10 @@ class MainScreen extends Component {
         <ScheduleEditor />
       );
     } else if (route.id === Constants.Views.Discover.Home) {
+      scene = (
+        <DiscoverHome onScreenSelected={this._navigateForward} />
+      );
+    } else if (route.id === Constants.Views.Discover.BusCampuses) {
       scene = (
         <BusCampuses
             showCampus={(campusName, campuscolor) => this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: campusName, color: campuscolor})} />

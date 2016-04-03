@@ -11,6 +11,7 @@ const {
 
 let availableSemesters = [];
 let university = {};
+let cityBuses = {};
 
 /*
  * Asynchronously gets the configuration for the application and loads the various config values into their respective
@@ -26,6 +27,7 @@ async function _requestConfig() {
   }
 
   university = configuration['University'];
+  cityBuses = configuration['Bus'];
 }
 
 module.exports = {
@@ -56,5 +58,12 @@ module.exports = {
    */
    getUniversity() {
      return university;
+   },
+
+   /*
+    * Returns an object with information about the city buses.
+    */
+   getCityBusyInfo() {
+     return cityBuses;
    },
 };

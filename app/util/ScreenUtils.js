@@ -29,6 +29,7 @@ module.exports = {
         || screenId === Constants.Views.Schedule.Editor) {
       return Constants.Views.Schedule.Home;
     } else if (screenId === Constants.Views.Discover.Home
+        || screenId === Constants.Views.Discover.BusCampuses
         || screenId === Constants.Views.Discover.BusCampusStops) {
       return Constants.Views.Discover.Home;
     } else if (screenId === Constants.Views.Settings.Home) {
