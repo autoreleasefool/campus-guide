@@ -58,7 +58,6 @@ class SearchBar extends Component {
 
     // Explicitly binding 'this' to certain methods
     this.getRefresh = this.getRefresh.bind(this);
-
   };
 
   /*
