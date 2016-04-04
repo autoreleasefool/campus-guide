@@ -8,6 +8,7 @@ const {
   Component,
   Image,
   LayoutAnimation,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View
@@ -15,6 +16,7 @@ const {
 
 const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
+const DisplayUtils = require('../../util/DisplayUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
@@ -107,14 +109,16 @@ class DiscoverHome extends Component {
       subtitleIcon = 'chevron-right';
     }
 
+    let sectionIcon = DisplayUtils.getPlatformIcon(Platform.OS, section);
+
     return (
       <TouchableOpacity onPress={onPress} key={section.id} style={touchableStyle}>
         {sectionImage}
         <SectionHeader
             ref={'Header-' + section.id}
             sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), section)}
-            sectionIcon={section.icon}
-            sectionIconClass={section.icon_class}
+            sectionIcon={sectionIcon.icon}
+            sectionIconClass={sectionIcon.iconClass}
             subtitleIcon={subtitleIcon}
             subtitleIconClass={'material'} />
       </TouchableOpacity>
