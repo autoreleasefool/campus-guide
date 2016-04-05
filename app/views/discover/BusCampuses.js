@@ -78,7 +78,7 @@ class BusCampuses extends Component {
         campusStopNames[campus] = LanguageUtils.getEnglishName(this.state.campuses[campus]);
         campusImages[campus] = (
           <Image
-              style={{flex: 1}}
+              style={_styles.campusImage}
               resizeMode={'cover'}
               source={this.state.campuses[campus].image} />
         );
@@ -136,6 +136,11 @@ const _styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     overflow: 'hidden',
+  },
+  campusImage: {
+    flex: 1,
+    width: null,
+    height: null,
   },
 });
 

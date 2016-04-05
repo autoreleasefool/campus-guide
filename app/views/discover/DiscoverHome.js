@@ -101,7 +101,7 @@ class DiscoverHome extends Component {
     if (section.id === this.state.currentSection) {
       sectionImage = (
         <Image
-            style={{flex: 1, position: 'absolute', top: 0, right: 0, bottom: 0, left: 0}}
+            style={{flex: 1, position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, width: null, height: null}}
             resizeMode={'cover'}
             source={section.image} />
       );
