@@ -23,6 +23,13 @@ const Styles = require('../../Styles');
 class LinksHome extends Component {
 
   /*
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
+    showLinkCategory: React.PropTypes.func.isRequired,
+  };
+
+  /*
    * Pass props and declares initial state.
    */
   constructor(props) {
@@ -36,7 +43,6 @@ class LinksHome extends Component {
 
     // Explicitly binding 'this' to all methods that need it
     this._loadLinkCategories = this._loadLinkCategories.bind(this);
-    this._pressRow = this._pressRow.bind(this);
     this._renderRow = this._renderRow.bind(this);
   };
 
@@ -61,7 +67,7 @@ class LinksHome extends Component {
    */
   _renderRow(category) {
     return (
-      <TouchableOpacity style={_styles.categoryContainer}>
+      <TouchableOpacity onPress={() => this.props.showLinkCategory(category)} style={_styles.categoryContainer}>
         <Image
             resizeMode={'cover'}
             source={category.image}

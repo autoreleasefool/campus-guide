@@ -6,7 +6,6 @@
 // React imports
 const React = require('react-native');
 const {
-  Animated,
   Component,
   Dimensions,
   Platform,

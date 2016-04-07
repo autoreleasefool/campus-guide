@@ -31,7 +31,8 @@ module.exports = {
     } else if (screenId === Constants.Views.Discover.Home
         || screenId === Constants.Views.Discover.BusCampuses
         || screenId === Constants.Views.Discover.BusCampusStops
-        || screenId === Constants.Views.Discover.LinksHome) {
+        || screenId === Constants.Views.Discover.LinksHome
+        || screenId === Constants.Views.Discover.LinkCategory) {
       return Constants.Views.Discover.Home;
     } else if (screenId === Constants.Views.Settings.Home) {
       return Constants.Views.Settings.Home;
