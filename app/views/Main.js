@@ -26,6 +26,7 @@ const BusCampuses = require('./discover/BusCampuses');
 const BusCampusStops = require('./discover/BusCampusStops');
 const DiscoverHome = require('./discover/DiscoverHome');
 const FindHome = require('./find/FindHome');
+const LinksHome = require('./discover/LinksHome');
 const ScheduleHome = require('./schedule/ScheduleHome');
 const ScheduleEditor = require('./schedule/ScheduleEditor');
 const SettingsHome = require('./settings/SettingsHome');
@@ -169,6 +170,10 @@ class MainScreen extends Component {
     } else if (route.id === Constants.Views.Discover.BusCampusStops) {
       scene = (
         <BusCampusStops campusName={route.data.name} campuscolor={route.data.color} />
+      );
+    } else if (route.id === Constants.Views.Discover.LinksHome) {
+      scene = (
+        <LinksHome showLinkCategory={this._navigateForward} />
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (

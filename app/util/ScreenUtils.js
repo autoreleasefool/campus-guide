@@ -30,7 +30,8 @@ module.exports = {
       return Constants.Views.Schedule.Home;
     } else if (screenId === Constants.Views.Discover.Home
         || screenId === Constants.Views.Discover.BusCampuses
-        || screenId === Constants.Views.Discover.BusCampusStops) {
+        || screenId === Constants.Views.Discover.BusCampusStops
+        || screenId === Constants.Views.Discover.LinksHome) {
       return Constants.Views.Discover.Home;
     } else if (screenId === Constants.Views.Settings.Home) {
       return Constants.Views.Settings.Home;

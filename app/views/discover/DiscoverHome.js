@@ -85,7 +85,7 @@ class DiscoverHome extends Component {
       } else if (section.id === 'stu') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
       } else if (section.id === 'use') {
-        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
+        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.LinksHome);
       } else if (section.id === 'bus') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
       } else if (section.id === 'shu') {
@@ -101,7 +101,7 @@ class DiscoverHome extends Component {
     if (section.id === this.state.currentSection) {
       sectionImage = (
         <Image
-            style={{flex: 1, position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, width: null, height: null}}
+            style={_styles.sectionImage}
             resizeMode={'cover'}
             source={section.image} />
       );
@@ -164,7 +164,17 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.darkGrey
-  }
+  },
+  sectionImage: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    width: null,
+    height: null,
+  },
 });
 
 // Expose component to app

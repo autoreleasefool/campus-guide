@@ -41,6 +41,7 @@ module.exports = {
       Home: 300,
       BusCampuses: 301,
       BusCampusStops: 302,
+      LinksHome: 303,
     },
     Settings: {
       Home: 400,
