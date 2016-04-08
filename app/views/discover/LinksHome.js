@@ -50,14 +50,10 @@ class LinksHome extends Component {
    * Retrieves the set of categories that the various useful links in the app belong to.
    */
   _loadLinkCategories() {
-    let links = require('../../../assets/static/js/UsefulLinks');
-    let categories = [];
-    for (let category in links) {
-      categories.push(links[category]);
-    }
+    let linkCategories = require('../../../assets/static/js/UsefulLinks');
 
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(categories),
+      dataSource: this.state.dataSource.cloneWithRows(linkCategories),
       loaded: true,
     });
   }

@@ -11,6 +11,7 @@ module.exports = {
     transparent: 'rgba(0, 0, 0, 0)',
     rootElementBorder: 'rgba(0, 0, 0, 0.25)',
     defaultComponentBackgroundColor: 'rgba(0,0,0,0.4)',
+    whiteComponentBackgroundColor: 'rgba(255,255,255,0.8)',
     primaryWhiteText: 'white',
     secondaryWhiteText: 'rgba(255, 255, 255, 0.7)',
     primaryBlackText: 'black',

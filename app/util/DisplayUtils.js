@@ -59,4 +59,45 @@ module.exports = {
       return null;
     }
   },
+
+  /*
+   * Returns the icon name for a certain social media platform.
+   */
+  getSocialMediaIconName(socialMedia) {
+    switch(socialMedia.toLowerCase()) {
+      case 'linkedin':
+        return 'social-linkedin';
+      case 'twitter':
+        return 'social-twitter';
+      case 'facebook':
+        return 'social-facebook';
+      case 'instagram':
+        return 'social-instagram-outline';
+      case 'youtube':
+        return 'social-youtube';
+      case 'tumblr':
+        return 'social-tumblr';
+      default:
+        return 'android-open';
+    }
+  },
+
+  getSocialMediaIconColor(socialMedia) {
+    switch(socialMedia.toLowerCase()) {
+      case 'linkedin':
+        return '#0077B5';
+      case 'twitter':
+        return '#55ACEE';
+      case 'facebook':
+        return '#3D509F';
+      case 'instagram':
+        return '#241F20';
+      case 'youtube':
+        return '#CD201F';
+      case 'tumblr':
+        return '#35465C';
+      default:
+        return '#000000';
+    }
+  },
 };

@@ -7,16 +7,22 @@
 const React = require('react-native');
 const {
   Component,
-  StyleSheet,
   Image,
+  LayoutAnimation,
+  Linking,
+  StyleSheet,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
 } = React;
 
 const Constants = require('../../Constants');
+const DisplayUtils = require('../../util/DisplayUtils');
+const Icon = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
+const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
 
 class LinkCategory extends Component {
@@ -34,9 +40,113 @@ class LinkCategory extends Component {
    */
   constructor(props) {
     super(props);
+
+    this.state = {
+      showLinks: false,
+    };
+
+    // Explicitly bind 'this' to those methods that require it.
+    this._getCategories = this._getCategories.bind(this);
+    this._getLinks = this._getLinks.bind(this);
+    this._getSocialMediaLinks = this._getSocialMediaLinks.bind(this);
+    this._openLink = this._openLink.bind(this);
+  };
+
+  /*
+   * Gets the list of categories.
+   */
+  _getCategories(categories) {
+    return null;
+  };
+
+  /*
+   * Gets the list of links.
+   */
+  _getLinks(links) {
+    let language = Preferences.getSelectedLanguage();
+
+    return (
+      <View style={_styles.linksContainer}>
+        {links.map(link => (
+          <TouchableOpacity
+              onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link))}
+              key={LanguageUtils.getTranslatedLink(language, link)}>
+            <Text style={[_styles.link, Styles.largeText]}>
+              {LanguageUtils.getTranslatedName(language, link)}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+  /*
+   * Gets the list of social media icons.
+   */
+  _getSocialMediaLinks(socialMediaLinks) {
+    return (
+      <View style={_styles.socialMediaContainer}>
+        {socialMediaLinks.map(socialLink => (
+          <TouchableOpacity onPress={() => this._openLink(socialLink.link)} key={socialLink.link}>
+            <Icon
+                name={DisplayUtils.getSocialMediaIconName(socialLink.name)}
+                color={DisplayUtils.getSocialMediaIconColor(socialLink.name)}
+                style={_styles.socialMediaIcon}
+                size={24} />
+          </TouchableOpacity>
+        ))}
+      </View>
+    )
+  };
+
+  /*
+   * Opens a URL
+   */
+  _openLink(url) {
+    Linking.openURL(url);
+  };
+
+  /*
+   * Hides or shows the list of links in the category.
+   */
+  _toggleLinks() {
+    let linksHeader = this.refs.UsefulLinks;
+    let linksIcon = 'expand-less';
+    if (this.state.showLinks) {
+      linksIcon = 'expand-more';
+    }
+    linksHeader.updateSubtitle(linksHeader.getSubtitleName(), linksIcon, linksHeader.getSubtitleIconClass());
+
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState({
+      showLinks: !this.state.showLinks,
+    });
   };
 
   render() {
+    // Get current language for translations
+    let Translations = null;
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../assets/static/js/Translations.fr.js');
+    } else {
+      Translations = require('../../../assets/static/js/Translations.en.js');
+    }
+
+    let social = null;
+    if (this.props.category.social) {
+      social = this._getSocialMediaLinks(this.props.category.social);
+    }
+
+    let usefulLinks = null;
+    if (this.state.showLinks && this.props.category.links) {
+      usefulLinks = this._getLinks(this.props.category.links);
+    }
+
+    let categories = null;
+    if (this.props.category.categories) {
+      categories = this._getCategories(this.props.category.categories);
+    }
+
     return (
       <View style={_styles.container}>
         <View style={_styles.banner}>
@@ -50,6 +160,20 @@ class LinkCategory extends Component {
             </Text>
           </View>
         </View>
+        <ScrollView style={_styles.scrollview}>
+          {social}
+          <TouchableOpacity onPress={this._toggleLinks.bind(this)}>
+            <SectionHeader
+                ref='UsefulLinks'
+                sectionName={Translations['useful_links']}
+                sectionIcon={'insert-link'}
+                sectionIconClass={'material'}
+                subtitleIcon={'expand-more'}
+                subtitleIconClass={'material'} />
+          </TouchableOpacity>
+          {usefulLinks}
+          {categories}
+        </ScrollView>
       </View>
     );
   };
@@ -83,6 +207,19 @@ const _styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 20,
     marginRight: 20,
+    color: Constants.Colors.primaryWhiteText,
+  },
+  socialMediaContainer: {
+    backgroundColor: Constants.Colors.whiteComponentBackgroundColor,
+    flexDirection: 'row',
+  },
+  socialMediaIcon: {
+    margin: 20,
+  },
+  scrollview: {
+    flex: 1,
+  },
+  link: {
     color: Constants.Colors.primaryWhiteText,
   },
 });
