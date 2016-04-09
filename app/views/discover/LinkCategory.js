@@ -67,14 +67,26 @@ class LinkCategory extends Component {
 
     return (
       <View style={_styles.linksContainer}>
-        {links.map(link => (
-          <TouchableOpacity
-              onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link))}
-              key={LanguageUtils.getTranslatedLink(language, link)}>
-            <Text style={[_styles.link, Styles.largeText]}>
-              {LanguageUtils.getTranslatedName(language, link)}
-            </Text>
-          </TouchableOpacity>
+        {links.map((link, index) => (
+          <View>
+            <TouchableOpacity
+                onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link))}
+                key={LanguageUtils.getTranslatedLink(language, link)}
+                style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Icon
+                  color={Constants.Colors.secondaryBlackText}
+                  name={'android-open'}
+                  size={24}
+                  style={_styles.linkIcon} />
+              <Text style={[_styles.link, Styles.largeText]}>
+                {LanguageUtils.getTranslatedName(language, link)}
+              </Text>
+            </TouchableOpacity>
+            {(index != links.length - 1) ?
+                <View style={_styles.separator} />
+                : null
+            }
+          </View>
         ))}
       </View>
     );
@@ -89,10 +101,10 @@ class LinkCategory extends Component {
         {socialMediaLinks.map(socialLink => (
           <TouchableOpacity onPress={() => this._openLink(socialLink.link)} key={socialLink.link}>
             <Icon
-                name={DisplayUtils.getSocialMediaIconName(socialLink.name)}
                 color={DisplayUtils.getSocialMediaIconColor(socialLink.name)}
-                style={_styles.socialMediaIcon}
-                size={24} />
+                name={DisplayUtils.getSocialMediaIconName(socialLink.name)}
+                size={30}
+                style={_styles.socialMediaIcon} />
           </TouchableOpacity>
         ))}
       </View>
@@ -214,14 +226,29 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
   socialMediaIcon: {
-    margin: 20,
+    marginTop: 20,
+    marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10,
   },
   scrollview: {
     flex: 1,
   },
   link: {
-    color: Constants.Colors.primaryWhiteText,
+    color: Constants.Colors.primaryBlackText,
+    margin: 10,
   },
+  linkIcon: {
+    marginLeft: 20,
+    marginRight: 10,
+    marginTop: 15,
+    marginBottom: 15,
+  },
+  separator: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'white',
+  }
 });
 
 // Expose component to app
