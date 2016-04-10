@@ -62,32 +62,49 @@ class LinkCategory extends Component {
   /*
    * Gets the list of links.
    */
-  _getLinks(links) {
+  _getLinks(links, Translations) {
     let language = Preferences.getSelectedLanguage();
 
+    let listOfLinks = null;
+    if (this.state.showLinks) {
+      listOfLinks = (
+        <View style={_styles.linksContainer}>
+          {links.map((link, index) => (
+            <View key={LanguageUtils.getTranslatedLink(language, link)}>
+              <TouchableOpacity
+                  onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link))}
+                  style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Icon
+                    color={Constants.Colors.secondaryWhiteText}
+                    name={'android-open'}
+                    size={24}
+                    style={_styles.linkIcon} />
+                <Text style={[_styles.link, Styles.largeText]}>
+                  {LanguageUtils.getTranslatedName(language, link)}
+                </Text>
+              </TouchableOpacity>
+              {(index != links.length - 1) ?
+                  <View style={_styles.separator} />
+                  : null
+              }
+            </View>
+          ))}
+        </View>
+      );
+    }
+
     return (
-      <View style={_styles.linksContainer}>
-        {links.map((link, index) => (
-          <View>
-            <TouchableOpacity
-                onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link))}
-                key={LanguageUtils.getTranslatedLink(language, link)}
-                style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Icon
-                  color={Constants.Colors.secondaryBlackText}
-                  name={'android-open'}
-                  size={24}
-                  style={_styles.linkIcon} />
-              <Text style={[_styles.link, Styles.largeText]}>
-                {LanguageUtils.getTranslatedName(language, link)}
-              </Text>
-            </TouchableOpacity>
-            {(index != links.length - 1) ?
-                <View style={_styles.separator} />
-                : null
-            }
-          </View>
-        ))}
+      <View>
+        <TouchableOpacity onPress={this._toggleLinks.bind(this)}>
+          <SectionHeader
+              ref='UsefulLinks'
+              sectionName={Translations['useful_links']}
+              sectionIcon={'insert-link'}
+              sectionIconClass={'material'}
+              subtitleIcon={'expand-more'}
+              subtitleIconClass={'material'} />
+        </TouchableOpacity>
+        {listOfLinks}
       </View>
     );
   };
@@ -150,8 +167,8 @@ class LinkCategory extends Component {
     }
 
     let usefulLinks = null;
-    if (this.state.showLinks && this.props.category.links) {
-      usefulLinks = this._getLinks(this.props.category.links);
+    if (this.props.category.links) {
+      usefulLinks = this._getLinks(this.props.category.links, Translations);
     }
 
     let categories = null;
@@ -174,15 +191,6 @@ class LinkCategory extends Component {
         </View>
         <ScrollView style={_styles.scrollview}>
           {social}
-          <TouchableOpacity onPress={this._toggleLinks.bind(this)}>
-            <SectionHeader
-                ref='UsefulLinks'
-                sectionName={Translations['useful_links']}
-                sectionIcon={'insert-link'}
-                sectionIconClass={'material'}
-                subtitleIcon={'expand-more'}
-                subtitleIconClass={'material'} />
-          </TouchableOpacity>
           {usefulLinks}
           {categories}
         </ScrollView>
@@ -224,18 +232,16 @@ const _styles = StyleSheet.create({
   socialMediaContainer: {
     backgroundColor: Constants.Colors.whiteComponentBackgroundColor,
     flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   socialMediaIcon: {
-    marginTop: 20,
-    marginBottom: 20,
-    marginLeft: 10,
-    marginRight: 10,
+    margin: 20,
   },
   scrollview: {
     flex: 1,
   },
   link: {
-    color: Constants.Colors.primaryBlackText,
+    color: Constants.Colors.primaryWhiteText,
     margin: 10,
   },
   linkIcon: {
