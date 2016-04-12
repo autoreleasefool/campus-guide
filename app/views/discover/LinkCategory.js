@@ -32,6 +32,7 @@ class LinkCategory extends Component {
    */
   static propTypes = {
     category: React.PropTypes.object.isRequired,
+    categoryImage: React.PropTypes.instanceOf(Image).isRequired,
     showLinkCategory: React.PropTypes.func.isRequired,
   };
 
@@ -56,7 +57,26 @@ class LinkCategory extends Component {
    * Gets the list of categories.
    */
   _getCategories(categories) {
-    return null;
+    let language = Preferences.getSelectedLanguage();
+
+    return (
+      <View>
+        {categories.map((category, index) => (
+          <TouchableOpacity
+              onPress={() => this.props.showLinkCategory(category)}
+              key={LanguageUtils.getEnglishName(category)}>
+            <SectionHeader
+                sectionName={LanguageUtils.getTranslatedName(language, category)}
+                subtitleIcon={'chevron-right'}
+                subtitleIconClass={'material'} />
+            {(index != categories.length - 1) ?
+                <View style={_styles.separator} />
+                : null
+            }
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
   };
 
   /*
@@ -181,7 +201,7 @@ class LinkCategory extends Component {
         <View style={_styles.banner}>
           <Image
               resizeMode={'cover'}
-              source={this.props.category.image}
+              source={this.props.categoryImage}
               style={_styles.bannerImage} />
           <View style={_styles.bannerTextContainer}>
             <Text style={[_styles.bannerText, Styles.titleText]}>

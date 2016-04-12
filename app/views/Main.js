@@ -174,11 +174,14 @@ class MainScreen extends Component {
       );
     } else if (route.id === Constants.Views.Discover.LinksHome) {
       scene = (
-        <LinksHome showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory, {category: category})} />
+        <LinksHome showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory + '-0', {category: category, categoryImage: category.image, index: 0})} />
       );
-    } else if (route.id === Constants.Views.Discover.LinkCategory) {
+    } else if (route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
       scene = (
-        <LinkCategory category={route.data.category} showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory, {category: category})} />
+        <LinkCategory
+            category={route.data.category}
+            categoryImage={route.data.categoryImage}
+            showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1), {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
