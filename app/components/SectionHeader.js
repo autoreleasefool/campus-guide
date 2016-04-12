@@ -180,7 +180,7 @@ class SectionHeader extends Component {
 
     // Combine the subtitle name and icon
     let iconAndSubtitle = null;
-    if (subtitleName !== null || icon !== null) {
+    if (subtitleName !== null || subtitleIcon !== null) {
       if (this.props.subtitleOnClick) {
         iconAndSubtitle = (
           <TouchableOpacity
