@@ -24,6 +24,7 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
+const TextUtils = require('../../util/TextUtils');
 
 class LinkCategory extends Component {
 
@@ -87,6 +88,34 @@ class LinkCategory extends Component {
   _getLinks(links, Translations) {
     let language = Preferences.getSelectedLanguage();
 
+    let getLinkIcon = function(link) {
+      if (link.indexOf('tel:') === 0) {
+        return (
+          <Icon
+              color={Constants.Colors.secondaryWhiteText}
+              name={'android-call'}
+              size={24}
+              style={_styles.linkIcon} />
+        );
+      } else if (link.indexOf('mailto:') === 0) {
+        return (
+          <Icon
+              color={Constants.Colors.secondaryWhiteText}
+              name={'android-mail'}
+              size={24}
+              style={_styles.linkIcon} />
+        );
+      } else {
+        return (
+          <Icon
+              color={Constants.Colors.secondaryWhiteText}
+              name={'android-open'}
+              size={24}
+              style={_styles.linkIcon} />
+        );
+      }
+    }
+
     let listOfLinks = null;
     if (this.state.showLinks) {
       listOfLinks = (
@@ -96,14 +125,18 @@ class LinkCategory extends Component {
               <TouchableOpacity
                   onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link))}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Icon
-                    color={Constants.Colors.secondaryWhiteText}
-                    name={'android-open'}
-                    size={24}
-                    style={_styles.linkIcon} />
-                <Text style={[_styles.link, Styles.largeText]}>
-                  {LanguageUtils.getTranslatedName(language, link)}
-                </Text>
+                {getLinkIcon(LanguageUtils.getTranslatedLink(language, link))}
+                <View>
+                  <Text style={[_styles.link, Styles.largeText]}>
+                    {LanguageUtils.getTranslatedName(language, link)}
+                  </Text>
+                  {(LanguageUtils.getTranslatedLink(language, link).indexOf('http') !== 0)
+                      ? <Text style={[_styles.linkSubtitle, Styles.smallText]}>
+                          {TextUtils.formatLink(LanguageUtils.getTranslatedLink(language, link))}
+                        </Text>
+                      : null
+                  }
+                </View>
               </TouchableOpacity>
               {(index != links.length - 1) ?
                   <View style={_styles.separator} />
@@ -274,6 +307,12 @@ const _styles = StyleSheet.create({
   link: {
     color: Constants.Colors.primaryWhiteText,
     margin: 10,
+  },
+  linkSubtitle: {
+    color: Constants.Colors.primaryWhiteText,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
   },
   linkIcon: {
     marginLeft: 20,
