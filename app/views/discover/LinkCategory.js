@@ -32,7 +32,7 @@ class LinkCategory extends Component {
    */
   static propTypes = {
     category: React.PropTypes.object.isRequired,
-    categoryImage: React.PropTypes.instanceOf(Image).isRequired,
+    categoryImage: React.PropTypes.any.isRequired,
     showLinkCategory: React.PropTypes.func.isRequired,
   };
 
@@ -42,8 +42,10 @@ class LinkCategory extends Component {
   constructor(props) {
     super(props);
 
+    let shouldShowLinks = this.props.category.categories == null;
+
     this.state = {
-      showLinks: false,
+      showLinks: shouldShowLinks,
     };
 
     // Explicitly bind 'this' to those methods that require it.
@@ -113,6 +115,11 @@ class LinkCategory extends Component {
       );
     }
 
+    let linksIcon = 'expand-more';
+    if (this.props.category.categories == null) {
+      linksIcon = null;
+    }
+
     return (
       <View>
         <TouchableOpacity onPress={this._toggleLinks.bind(this)}>
@@ -121,7 +128,7 @@ class LinkCategory extends Component {
               sectionName={Translations['useful_links']}
               sectionIcon={'insert-link'}
               sectionIconClass={'material'}
-              subtitleIcon={'expand-more'}
+              subtitleIcon={linksIcon}
               subtitleIconClass={'material'} />
         </TouchableOpacity>
         {listOfLinks}
@@ -159,6 +166,10 @@ class LinkCategory extends Component {
    * Hides or shows the list of links in the category.
    */
   _toggleLinks() {
+    if (this.props.category.categories == null) {
+      return;
+    }
+
     let linksHeader = this.refs.UsefulLinks;
     let linksIcon = 'expand-less';
     if (this.state.showLinks) {
