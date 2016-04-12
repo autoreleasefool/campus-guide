@@ -6,6 +6,8 @@
 // React imports
 const React = require('react-native');
 const {
+  Alert,
+  Clipboard,
   Component,
   Image,
   LayoutAnimation,
@@ -123,7 +125,7 @@ class LinkCategory extends Component {
           {links.map((link, index) => (
             <View key={LanguageUtils.getTranslatedLink(language, link)}>
               <TouchableOpacity
-                  onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link))}
+                  onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link), Translations)}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
                 {getLinkIcon(LanguageUtils.getTranslatedLink(language, link))}
                 <View>
@@ -191,7 +193,23 @@ class LinkCategory extends Component {
   /*
    * Opens a URL
    */
-  _openLink(url) {
+  _openLink(url, Translations) {
+    let formattedUrl = TextUtils.formatLink(url);
+
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        return Linking.openURL(url);
+      } else {
+        return Alert.alert(
+          Translations['cannot_open_url'],
+          formattedUrl,
+          [
+            {text: Translations['cancel'], style: 'cancel'},
+            {text: Translations['copy_link'], onPress: () => Clipboard.setString(formattedUrl)},
+          ],
+        );
+      }
+    }).catch(err => console.error('An error occurred opening the link.', err));
     Linking.openURL(url);
   };
 
