@@ -182,7 +182,7 @@ class MainScreen extends Component {
       scene = (
         <ShuttleInfo
             showCampus={(campusName, campusColor) => this._navigateForward(Constants.Views.Discover.ShuttleCampusInfo, {name: campusName, color: campusColor})}
-            showDetails={(title, image, text) => this._navigateForward(Constants.Views.Discover.ShuttleDetails, {title: title, image: image, text: text})}/>
+            showDetails={(title, image, text, backgroundColor) => this._navigateForward(Constants.Views.Discover.ShuttleDetails, {title: title, image: image, text: text, backgroundColor: backgroundColor})}/>
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
@@ -193,7 +193,8 @@ class MainScreen extends Component {
         <DetailsScreen
             title={route.data.title}
             image={route.data.image}
-            text={route.data.text} />
+            text={route.data.text}
+            backgroundColor={route.data.backgroundColor} />
       );
     } else if (typeof(route.id) === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
       scene = (

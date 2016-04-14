@@ -10,7 +10,11 @@ module.exports = {
    */
   isColorDark(color) {
     if (typeof(color) == 'string') {
-      color = parseInt(color.substring(1, color.length), 16);
+      if (color.indexOf('#') == 0) {
+        color = parseInt(color.substring(1, color.length), 16);
+      } else {
+        color = parseInt(color, 16);
+      }
     }
 
     let r = (color & 0xff0000) >> 16;

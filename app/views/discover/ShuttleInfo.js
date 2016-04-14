@@ -140,7 +140,8 @@ class ShuttleInfo extends Component {
               onPress={() => this.props.showDetails(
                 LanguageUtils.getTranslatedName(language, detail),
                 detail.image,
-                LanguageUtils.getTranslatedDetails(language, detail)
+                LanguageUtils.getTranslatedDetails(language, detail),
+                Constants.Colors.darkGrey
               )}>
             <SectionHeader
                 sectionName={LanguageUtils.getTranslatedName(language, detail)}
