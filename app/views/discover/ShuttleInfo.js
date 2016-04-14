@@ -128,6 +128,24 @@ class ShuttleInfo extends Component {
             </View>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+            onPress={() => this.props.showDetails(Translations['accessibility'], campusImages[0], ['Helllo'])}>
+          <SectionHeader
+              sectionName={Translations['accessibility']}
+              sectionIcon={'accessible'}
+              sectionIconClass={'material'}
+              subtitleIcon={'chevron-right'}
+              subtitleIconClass={'material'} />
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => this.props.showDetails(Translations['summer_bus_tickets'], campusImages[0], ['Helllo'])}>
+          <SectionHeader
+              sectionName={Translations['summer_bus_tickets']}
+              sectionIcon={'directions-bus'}
+              sectionIconClass={'material'}
+              subtitleIcon={'chevron-right'}
+              subtitleIconClass={'material'} />
+        </TouchableOpacity>
       </View>
     );
   }
