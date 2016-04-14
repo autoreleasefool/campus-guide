@@ -37,32 +37,38 @@ class ShuttleInfo extends Component {
     super(props);
     this.state = {
       campuses: null,
+      details: null,
     };
 
     // Explicitly binding 'this' to all methods that need it
-    this._loadCampuses = this._loadCampuses.bind(this);
+    this._loadCampusesAndDetails = this._loadCampusesAndDetails.bind(this);
   };
 
   /*
-   * Loads a list of campus names and images representing them.
+   * Loads a list of campus names and images representing them, as well as details the user can view.
    */
-  _loadCampuses() {
+  _loadCampusesAndDetails() {
     let campuses = require('../../../assets/static/js/ShuttleCampuses');
+    let details = require('../../../assets/static/js/ShuttleDetails');
     this.setState({
       campuses: campuses,
+      details: details,
     });
   };
 
   componentDidMount() {
     if (this.state.campuses == null) {
-      this._loadCampuses();
+      this._loadCampusesAndDetails();
     }
   };
 
   render() {
+    // Get current language
+    let language = Preferences.getSelectedLanguage();
+
     // Get current language for translations
     let Translations = null;
-    if (Preferences.getSelectedLanguage() === 'fr') {
+    if (language === 'fr') {
       Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {
       Translations = require('../../../assets/static/js/Translations.en.js');
@@ -73,9 +79,9 @@ class ShuttleInfo extends Component {
     let campusImages = [null, null, null, null];
 
     // If the campuses have been loaded, parse the data
-    if (this.state.campuses != null) {
+    if (this.state.campuses != null && this.state.details != null) {
       for (let campus in this.state.campuses) {
-        campusDisplayNames[campus] = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campuses[campus]);
+        campusDisplayNames[campus] = LanguageUtils.getTranslatedName(language, this.state.campuses[campus]);
         campusStopNames[campus] = LanguageUtils.getEnglishName(this.state.campuses[campus]);
         campusImages[campus] = (
           <Image
@@ -128,24 +134,22 @@ class ShuttleInfo extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-            onPress={() => this.props.showDetails(Translations['accessibility'], campusImages[0], ['Helllo'])}>
-          <SectionHeader
-              sectionName={Translations['accessibility']}
-              sectionIcon={'accessible'}
-              sectionIconClass={'material'}
-              subtitleIcon={'chevron-right'}
-              subtitleIconClass={'material'} />
-        </TouchableOpacity>
-        <TouchableOpacity
-            onPress={() => this.props.showDetails(Translations['summer_bus_tickets'], campusImages[0], ['Helllo'])}>
-          <SectionHeader
-              sectionName={Translations['summer_bus_tickets']}
-              sectionIcon={'directions-bus'}
-              sectionIconClass={'material'}
-              subtitleIcon={'chevron-right'}
-              subtitleIconClass={'material'} />
-        </TouchableOpacity>
+        {this.state.details.map((detail, index) => (
+          <TouchableOpacity
+              key={index}
+              onPress={() => this.props.showDetails(
+                LanguageUtils.getTranslatedName(language, detail),
+                detail.image,
+                LanguageUtils.getTranslatedDetails(language, detail)
+              )}>
+            <SectionHeader
+                sectionName={LanguageUtils.getTranslatedName(language, detail)}
+                sectionIcon={detail.icon}
+                sectionIconClass={detail.iconClass}
+                subtitleIcon={'chevron-right'}
+                subtitleIconClass={'material'} />
+          </TouchableOpacity>
+        ))}
       </View>
     );
   }
