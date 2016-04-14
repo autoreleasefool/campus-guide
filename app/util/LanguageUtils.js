@@ -64,6 +64,20 @@ module.exports = {
   },
 
   /*
+   * Gets the French details of an object, or returns the default details. If neither is available, returns null.
+   */
+  getFrenchDetails(obj) {
+    return this._getFrenchVariant('details', obj);
+  },
+
+  /*
+   * Gets the English details of an object, or returns the default details. If neither is available, returns null.
+   */
+  getEnglishDetails(obj) {
+    return this._getEnglishVariant('details', obj);
+  },
+
+  /*
    * Gets either the French or English translation name from an object, or null.
    */
   getTranslatedName(language, obj) {
@@ -77,13 +91,26 @@ module.exports = {
   },
 
   /*
-   * Gets either the French of English translation link from an object, or null.
+   * Gets either the French or English translation link from an object, or null.
    */
   getTranslatedLink(language, obj) {
     if (language === 'en') {
       return this.getEnglishLink(obj);
     } else if (language === 'fr') {
       return this.getFrenchLink(obj);
+    } else {
+      return null;
+    }
+  },
+
+  /*
+   * Gets either the French or English translation details from an object, or null.
+   */
+  getTranslatedDetails(language, obj) {
+    if (language === 'en') {
+      return this._getEnglishDetails(obj);
+    } else if (language === 'fr') {
+      return this._getFrenchDetails(obj);
     } else {
       return null;
     }
