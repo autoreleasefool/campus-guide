@@ -108,9 +108,9 @@ module.exports = {
    */
   getTranslatedDetails(language, obj) {
     if (language === 'en') {
-      return this._getEnglishDetails(obj);
+      return this.getEnglishDetails(obj);
     } else if (language === 'fr') {
-      return this._getFrenchDetails(obj);
+      return this.getFrenchDetails(obj);
     } else {
       return null;
     }
