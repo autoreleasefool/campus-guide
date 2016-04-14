@@ -44,6 +44,9 @@ module.exports = {
       BusCampusStops: 302,
       LinksHome: 303,
       LinkCategory: 304,
+      ShuttleInfo: 305,
+      ShuttleCampusInfo: 306,
+      ShuttleDetails: 307,
     },
     Settings: {
       Home: 400,

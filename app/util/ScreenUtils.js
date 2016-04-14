@@ -34,11 +34,13 @@ const DISCOVER_SCREENS = [
   Constants.Views.Discover.LinksHome,
   Constants.Views.Discover.LinkCategory,
   Constants.Views.Discover.ShuttleInfo,
+  Constants.Views.Discover.ShuttleCampusInfo,
+  Constants.Views.Discover.ShuttleDetails,
 ];
 
 // Screens which are subscreens of the Settings tab
 const SETTINGS_SCREENS = [
-  Constants.Views.Settings.Home
+  Constants.Views.Settings.Home,
 ];
 
 module.exports = {
@@ -63,6 +65,6 @@ module.exports = {
     } else if (DISCOVER_SCREENS.includes(screenId)
         || typeof(screenId) === 'string' && screenId.indexOf(Constants.Views.Discover.LinkCategory) === 0) {
       return Constants.Views.Discover.Home;
+    }
   },
-
 };

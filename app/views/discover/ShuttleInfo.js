@@ -1,9 +1,9 @@
 /*
- * Displays the list of campuses with bus stop information.
+ * Displays info about shuttles provided by the university across the various campuses.
  */
 'use strict';
 
-// Imports
+// React imports
 const React = require('react-native');
 const {
   Component,
@@ -20,13 +20,14 @@ const SectionHeader = require('../../components/SectionHeader');
 
 const campuscolors = [Constants.Colors.garnet, Constants.Colors.charcoalGrey, Constants.Colors.lightGrey, Constants.Colors.darkGrey];
 
-class BusCampuses extends Component {
+class ShuttleInfo extends Component {
 
   /*
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     showCampus: React.PropTypes.func.isRequired,
+    showDetails: React.PropTypes.func.isRequired,
   };
 
   /*
@@ -34,17 +35,19 @@ class BusCampuses extends Component {
    */
   constructor(props) {
     super(props);
-
     this.state = {
       campuses: null,
-    }
+    };
+
+    // Explicitly binding 'this' to all methods that need it
+    this._loadCampuses = this._loadCampuses.bind(this);
   };
 
   /*
    * Loads a list of campus names and images representing them.
    */
   _loadCampuses() {
-    let campuses = require('../../../assets/static/js/BusCampuses');
+    let campuses = require('../../../assets/static/js/ShuttleCampuses');
     this.setState({
       campuses: campuses,
     });
@@ -89,22 +92,24 @@ class BusCampuses extends Component {
 
     return (
       <View style={_styles.container}>
-        <TouchableOpacity
-            onPress={() => this.props.showCampus(campusStopNames[0], campuscolors[0])}
-            style={_styles.campusContainer}>
-          <View style={{flex: 1, backgroundColor: campuscolors[0]}}>
-            <SectionHeader sectionName={campusDisplayNames[0]} />
-            {campusImages[0]}
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-            onPress={() => this.props.showCampus(campusStopNames[1], campuscolors[1])}
-            style={_styles.campusContainer}>
-          <View style={{flex: 1, backgroundColor: campuscolors[1]}}>
-            <SectionHeader sectionName={campusDisplayNames[1]} />
-            {campusImages[1]}
-          </View>
-        </TouchableOpacity>
+        <View style={_styles.campusContainer}>
+          <TouchableOpacity
+              onPress={() => this.props.showCampus(campusStopNames[0], campuscolors[0])}
+              style={_styles.campusContainer}>
+            <View style={{flex: 1, backgroundColor: campuscolors[0]}}>
+              <SectionHeader sectionName={campusDisplayNames[0]} />
+              {campusImages[0]}
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+              onPress={() => this.props.showCampus(campusStopNames[1], campuscolors[1])}
+              style={_styles.campusContainer}>
+            <View style={{flex: 1, backgroundColor: campuscolors[1]}}>
+              <SectionHeader sectionName={campusDisplayNames[1]} />
+              {campusImages[1]}
+            </View>
+          </TouchableOpacity>
+        </View>
         <View style={_styles.campusContainer}>
           <TouchableOpacity
               onPress={() => this.props.showCampus(campusStopNames[2], campuscolors[2])}
@@ -125,14 +130,15 @@ class BusCampuses extends Component {
         </View>
       </View>
     );
-  };
+  }
 };
 
+// Private styles for component
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'black',
+    backgroundColor: Constants.Colors.darkGrey,
   },
   campusContainer: {
     flex: 1,
@@ -147,4 +153,4 @@ const _styles = StyleSheet.create({
 });
 
 // Expose component to app
-module.exports = BusCampuses;
+module.exports = ShuttleInfo;

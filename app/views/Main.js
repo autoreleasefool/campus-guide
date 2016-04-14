@@ -16,6 +16,7 @@ const {
 
 const BuildStyleInterpolator = require('buildStyleInterpolator');
 const Constants = require('../Constants');
+const DetailsScreen = require('../components/DetailsScreen');
 const NavBar = require('../components/NavBar');
 const Preferences = require('../util/Preferences');
 const ScreenUtils = require('../util/ScreenUtils');
@@ -31,6 +32,7 @@ const LinksHome = require('./discover/LinksHome');
 const ScheduleHome = require('./schedule/ScheduleHome');
 const ScheduleEditor = require('./schedule/ScheduleEditor');
 const SettingsHome = require('./settings/SettingsHome');
+const ShuttleInfo = require('./discover/ShuttleInfo');
 
 let screenStack = [Constants.Views.Default];
 
@@ -176,9 +178,22 @@ class MainScreen extends Component {
       scene = (
         <LinksHome showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory + '-0', {category: category, categoryImage: category.image, index: 0})} />
       );
+    } else if (route.id === Constants.Views.Discover.ShuttleInfo) {
+      scene = (
+        <ShuttleInfo
+            showCampus={(campusName, campusColor) => this._navigateForward(Constants.Views.Discover.ShuttleCampusInfo, {name: campusName, color: campusColor})}
+            showDetails={(title, image, text) => this._navigateForward(Constants.Views.Discover.ShuttleDetails, {title: title, image: image, text: text})}/>
+      );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
         <SettingsHome requestTabChange={this._onChangeTab} refreshParent={this._updateNavbar.bind(this)} />
+      );
+    } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
+      scene = (
+        <DetailsScreen
+            title={route.data.title}
+            image={route.data.image}
+            text={route.data.text} />
       );
     } else if (typeof(route.id) === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
       scene = (

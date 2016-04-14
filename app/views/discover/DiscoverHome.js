@@ -89,7 +89,7 @@ class DiscoverHome extends Component {
       } else if (section.id === 'bus') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
       } else if (section.id === 'shu') {
-        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
+        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.ShuttleInfo);
       }
     } else {
       onPress = () => this._focusSection(section.id);
