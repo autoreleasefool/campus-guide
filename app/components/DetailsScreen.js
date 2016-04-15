@@ -36,11 +36,12 @@ class DetailsScreen extends Component {
    */
   constructor(props) {
     super(props);
+    this.state = {
+      backgroundColor: this.props.backgroundColor || Constants.Colors.garnet,
+    }
   };
 
   render() {
-    let backgroundColor = this.props.backgroundColor || Constants.Colors.garnet;
-
     let banner = null;
     if (this.props.image) {
       if (this.props.title) {
@@ -75,7 +76,7 @@ class DetailsScreen extends Component {
 
     let details = null;
     if (this.props.text) {
-      let textColor = DisplayUtils.isColorDark(backgroundColor)
+      let textColor = DisplayUtils.isColorDark(this.state.backgroundColor)
           ? Constants.Colors.primaryWhiteText
           : Constants.Colors.primaryBlackText;
       details = (
@@ -90,7 +91,7 @@ class DetailsScreen extends Component {
     }
 
     return (
-      <View style={{flex: 1, backgroundColor: backgroundColor}}>
+      <View style={{flex: 1, backgroundColor: this.state.backgroundColor}}>
         {banner}
         {details}
       </View>
