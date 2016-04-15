@@ -1,5 +1,5 @@
 /*
- *
+ * Displays the links and subcategories belonging to a category of useful links.
  */
 'use strict';
 
