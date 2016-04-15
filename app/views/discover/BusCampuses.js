@@ -8,6 +8,7 @@ const React = require('react-native');
 const {
   Component,
   Image,
+  Linking,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -37,6 +38,14 @@ class BusCampuses extends Component {
 
     this.state = {
       campuses: null,
+    }
+  };
+
+  _goToOCTranspo() {
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Linking.openURL('http://www.octranspo1.com/acceuil');
+    } else {
+      Linking.openURL('http://www.octranspo1.com/');
     }
   };
 
@@ -123,6 +132,16 @@ class BusCampuses extends Component {
             </View>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity
+            onPress={this._goToOCTranspo}>
+          <SectionHeader
+              sectionName={Translations['oc_transpo']}
+              sectionIcon={'android-open'}
+              sectionIconClass={'ionicon'}
+              subtitleIcon={'chevron-right'}
+              subtitleIconClass={'material'}
+              backgroundOverride={Constants.Colors.garnet} />
+        </TouchableOpacity>
       </View>
     );
   };
