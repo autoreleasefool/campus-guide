@@ -32,6 +32,7 @@ const LinksHome = require('./discover/LinksHome');
 const ScheduleHome = require('./schedule/ScheduleHome');
 const ScheduleEditor = require('./schedule/ScheduleEditor');
 const SettingsHome = require('./settings/SettingsHome');
+const ShuttleCampusInfo = require('./discover/ShuttleCampusInfo');
 const ShuttleInfo = require('./discover/ShuttleInfo');
 
 let screenStack = [Constants.Views.Default];
@@ -168,11 +169,11 @@ class MainScreen extends Component {
     } else if (route.id === Constants.Views.Discover.BusCampuses) {
       scene = (
         <BusCampuses
-            showCampus={(campusName, campuscolor) => this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: campusName, color: campuscolor})} />
+            showCampus={(campusName, campusColor) => this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: campusName, color: campusColor})} />
       );
     } else if (route.id === Constants.Views.Discover.BusCampusStops) {
       scene = (
-        <BusCampusStops campusName={route.data.name} campuscolor={route.data.color} />
+        <BusCampusStops campusName={route.data.name} campusColor={route.data.color} />
       );
     } else if (route.id === Constants.Views.Discover.LinksHome) {
       scene = (
@@ -183,6 +184,12 @@ class MainScreen extends Component {
         <ShuttleInfo
             showCampus={(campusName, campusColor) => this._navigateForward(Constants.Views.Discover.ShuttleCampusInfo, {name: campusName, color: campusColor})}
             showDetails={(title, image, text, backgroundColor) => this._navigateForward(Constants.Views.Discover.ShuttleDetails, {title: title, image: image, text: text, backgroundColor: backgroundColor})}/>
+      );
+    } else if (route.id === Constants.Views.Discover.ShuttleCampusInfo) {
+      scene = (
+        <ShuttleCampusInfo
+            campusName={route.data.name}
+            campusColor={route.data.color} />
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (

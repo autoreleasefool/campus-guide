@@ -26,7 +26,7 @@ class CampusStops extends Component {
    */
   static propTypes = {
     campusName: React.PropTypes.string.isRequired,
-    campuscolor: React.PropTypes.string.isRequired,
+    campusColor: React.PropTypes.string.isRequired,
   };
 
   /*
@@ -137,7 +137,7 @@ class CampusStops extends Component {
       );
     } else {
       return (
-        <Stops campus={this.state.campus} campusName={this.props.campusName} onStopSelected={this._busStopSelected} backgroundIsDark={DisplayUtils.isColorDark(this.props.campuscolor)}/>
+        <Stops campus={this.state.campus} campusName={this.props.campusName} onStopSelected={this._busStopSelected} backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}/>
       )
     }
   };
@@ -162,7 +162,7 @@ class CampusStops extends Component {
 
   render() {
     return (
-      <View style={[_styles.container, {backgroundColor: this.props.campuscolor}]}>
+      <View style={[_styles.container, {backgroundColor: this.props.campusColor}]}>
         <View style={_styles.container}>
           {this._getCampusMap()}
         </View>
@@ -172,6 +172,7 @@ class CampusStops extends Component {
   };
 };
 
+// Private styles for the component
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
