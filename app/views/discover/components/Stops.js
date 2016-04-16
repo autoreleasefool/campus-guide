@@ -322,7 +322,7 @@ const _styles = StyleSheet.create({
   },
   divider: {
     flex: 1,
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     marginLeft: 10,
     marginRight: 10,
     backgroundColor: Constants.Colors.secondaryWhiteText,

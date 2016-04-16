@@ -75,7 +75,7 @@ class LinkCategory extends Component {
                 subtitleIcon={'chevron-right'}
                 subtitleIconClass={'material'} />
             {(index != categories.length - 1) ?
-                <View style={_styles.separator} />
+                <View style={_styles.divider} />
                 : null
             }
           </TouchableOpacity>
@@ -141,7 +141,7 @@ class LinkCategory extends Component {
                 </View>
               </TouchableOpacity>
               {(index != links.length - 1) ?
-                  <View style={_styles.separator} />
+                  <View style={_styles.divider} />
                   : null
               }
             </View>
@@ -338,9 +338,9 @@ const _styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 15,
   },
-  separator: {
+  divider: {
     flex: 1,
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     backgroundColor: 'white',
   }
 });
