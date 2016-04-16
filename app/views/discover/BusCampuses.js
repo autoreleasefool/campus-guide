@@ -135,7 +135,7 @@ class BusCampuses extends Component {
         <TouchableOpacity
             onPress={this._goToOCTranspo}>
           <SectionHeader
-              sectionName={Translations['oc_transpo']}
+              sectionName={Translations['bus_company']}
               sectionIcon={'android-open'}
               sectionIconClass={'ionicon'}
               subtitleIcon={'chevron-right'}
