@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "react": "^0.14.7",
-    "react-native": "^0.22.2",
+    "react-native": "^0.23.1",
     "react-native-maps": "^0.3.1",
     "react-native-orientation": "^1.15.0",
     "react-native-store": "^0.4.1",
