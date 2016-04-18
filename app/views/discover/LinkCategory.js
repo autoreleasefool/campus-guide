@@ -55,6 +55,7 @@ const {
 // Imports
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
+const ExternalUtils = require('../../util/ExternalUtils');
 const Icon = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
@@ -91,7 +92,6 @@ class LinkCategory extends Component {
     this._getCategories = this._getCategories.bind(this);
     this._getLinks = this._getLinks.bind(this);
     this._getSocialMediaLinks = this._getSocialMediaLinks.bind(this);
-    this._openLink = this._openLink.bind(this);
   };
 
   /**
@@ -171,7 +171,7 @@ class LinkCategory extends Component {
           {links.map((link, index) => (
             <View key={LanguageUtils.getTranslatedLink(language, link)}>
               <TouchableOpacity
-                  onPress={() => this._openLink(LanguageUtils.getTranslatedLink(language, link), Translations)}
+                  onPress={() => ExternalUtils.openLink(Linking, LanguageUtils.getTranslatedLink(language, link), Translations)}
                   style={{flexDirection: 'row', alignItems: 'center'}}>
                 {getLinkIcon(LanguageUtils.getTranslatedLink(language, link))}
                 <View>
@@ -222,14 +222,15 @@ class LinkCategory extends Component {
    *
    * @param socialMediaLinks list of links to social media sites in the current
    *                         category.
+   * @param Translations     translations in the current language of certain text.
    * @return for each index in {socialMediaLinks}, a {TouchableOpacity} with
    *         an icon representing the social media site.
    */
-  _getSocialMediaLinks(socialMediaLinks) {
+  _getSocialMediaLinks(socialMediaLinks, Translations) {
     return (
       <View style={_styles.socialMediaContainer}>
         {socialMediaLinks.map(socialLink => (
-          <TouchableOpacity onPress={() => this._openLink(socialLink.link)} key={socialLink.link}>
+          <TouchableOpacity onPress={() => ExternalUtils.openLink(Linking, socialLink.link, Translations)} key={socialLink.link}>
             <Icon
                 color={DisplayUtils.getSocialMediaIconColor(socialLink.name)}
                 name={DisplayUtils.getSocialMediaIconName(socialLink.name)}
@@ -239,31 +240,6 @@ class LinkCategory extends Component {
         ))}
       </View>
     )
-  };
-
-  /**
-   * Opens a URL if the URL is valid.
-   *
-   * @param url URL to open.
-   * @param Translations translations in the current language of certain text.
-   */
-  _openLink(url, Translations) {
-    let formattedUrl = TextUtils.formatLink(url);
-
-    Linking.canOpenURL(url).then(supported => {
-      if (supported) {
-        return Linking.openURL(url);
-      } else {
-        return Alert.alert(
-          Translations['cannot_open_url'],
-          formattedUrl,
-          [
-            {text: Translations['cancel'], style: 'cancel'},
-            {text: Translations['copy_link'], onPress: () => Clipboard.setString(formattedUrl)},
-          ],
-        );
-      }
-    }).catch(err => console.error('An error occurred opening the link.', err));
   };
 
   /**
@@ -303,7 +279,7 @@ class LinkCategory extends Component {
 
     let social = null;
     if (this.props.category.social) {
-      social = this._getSocialMediaLinks(this.props.category.social);
+      social = this._getSocialMediaLinks(this.props.category.social, Translations);
     }
 
     let usefulLinks = null;

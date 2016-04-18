@@ -47,7 +47,9 @@ const {
 } = React;
 
 // Imports
+const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
+const ExternalUtils = require('../../util/ExternalUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
@@ -83,15 +85,14 @@ class BusCampuses extends Component {
   };
 
   /**
-   * Opens a link to the bus company website for additional info.
+   * Opens the bus company website.
+   * @param Translations translations in the current language of certain text.
    */
-  _goToBusWebsite() {
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Linking.openURL('http://www.octranspo1.com/acceuil');
-    } else {
-      Linking.openURL('http://www.octranspo1.com/');
-    }
-  };
+  _goToBusWebsite(Translations) {
+    ExternalUtils.openLink(Linking,
+        LanguageUtils.getTranslatedLink(Preferences.getSelectedLanguage(), Configuration.getCityBusyInfo()),
+        Translations);
+  }
 
   /**
    * Loads a list of campus names and images representing them.
@@ -186,7 +187,7 @@ class BusCampuses extends Component {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-            onPress={this._goToOCTranspo}>
+            onPress={() => this._goToBusWebsite(Translations)}>
           <SectionHeader
               sectionName={Translations['bus_company']}
               sectionIcon={'android-open'}
