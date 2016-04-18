@@ -1,9 +1,42 @@
-/*
- * Presents a list of defined, useful links for the user regarding the university.
- */
-
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * LinksHome.js
+ *
+ * @description
+ * Presents a list of defined, useful links for the user regarding the
+ * university.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -15,6 +48,7 @@ const {
   View,
 } = React;
 
+// Imports
 const Constants = require('../../Constants');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
@@ -22,15 +56,18 @@ const Styles = require('../../Styles');
 
 class LinksHome extends Component {
 
-  /*
-   * Properties which the parent component should make available to this component.
+  /**
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     showLinkCategory: React.PropTypes.func.isRequired,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -46,8 +83,9 @@ class LinksHome extends Component {
     this._renderRow = this._renderRow.bind(this);
   };
 
-  /*
-   * Retrieves the set of categories that the various useful links in the app belong to.
+  /**
+   * Retrieves the set of categories that the various useful links in the app
+   * belong to.
    */
   _loadLinkCategories() {
     let linkCategories = require('../../../assets/static/js/UsefulLinks');
@@ -58,8 +96,11 @@ class LinksHome extends Component {
     });
   }
 
-  /*
+  /**
    * Displays a single category name and an image which represents it.
+   *
+   * @param category object with properties describing the category.
+   * @return an image and text describing the category.
    */
   _renderRow(category) {
     return (
@@ -77,7 +118,7 @@ class LinksHome extends Component {
     )
   };
 
-  /*
+  /**
    * Loads the links to display.
    */
   componentDidMount() {
@@ -86,6 +127,12 @@ class LinksHome extends Component {
     }
   };
 
+  /**
+   * Renders a list of images and titles for the user to select, opening a
+   * screen with a list of useful links.
+   *
+   * @return the hierarchy of views to render.
+   */
   render() {
     if (!this.state.loaded) {
       return (

@@ -1,9 +1,42 @@
-/*
- * Displays details about the departure times of the shuttle from a single campus.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * ShuttleCampusInfo.js
+ *
+ * @description
+ * Displays details about the departure times of the shuttle from a
+ * single campus.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -12,6 +45,7 @@ const {
   View,
 } = React;
 
+// Imports
 const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
@@ -19,19 +53,21 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const MapView = require('react-native-maps');
 const Preferences = require('../../util/Preferences');
 
-
 class ShuttleCampusInfo extends Component {
 
-  /*
-   * Properties which the parent component should make available to this component.
+  /**
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     campusName: React.PropTypes.string.isRequired,
     campusColor: React.PropTypes.string.isRequired,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -46,8 +82,10 @@ class ShuttleCampusInfo extends Component {
     this._loadCampusInfo = this._loadCampusInfo.bind(this);
   };
 
-  /*
+  /**
    * Renders a map with a list of markers to denote bus stops near the campus.
+   *
+   * @param Translations translations in the current language of certain text.
    */
   _getCampusMap(Translations) {
     let initialRegion = {};
@@ -91,7 +129,7 @@ class ShuttleCampusInfo extends Component {
     );
   };
 
-  /*
+  /**
    * Retrieves data about the campus provided as this.props.campusName.
    */
   _loadCampusInfo() {
@@ -103,12 +141,21 @@ class ShuttleCampusInfo extends Component {
     }
   };
 
+  /**
+   * If the campus info has not been loaded yet, then load it.
+   */
   componentDidMount() {
     if (this.state.campus == null) {
       this._loadCampusInfo();
     }
   };
 
+  /**
+   * Renders a map and details about the shuttle drop off times at the campus
+   * specified by {this.props.campusName}.
+   *
+   * @return the hierarchy of views to render.
+   */
   render() {
     // Get current language for translations
     let Translations = null;

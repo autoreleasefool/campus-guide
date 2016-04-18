@@ -1,9 +1,42 @@
-/*
- * View for the root navigation for updating settings.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * SettingsHome.js
+ *
+ * @description
+ * View to allow the user to see and update their settings and
+ * preferences.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -15,6 +48,7 @@ const {
   View,
 } = React;
 
+// Imports
 const Constants = require('../../Constants');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
@@ -49,16 +83,19 @@ let keyOfLastSettingChanged = null;
 
 class SettingsHome extends Component {
 
-  /*
-   * Properties which the parent component should make available to this component.
+  /**
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     requestTabChange: React.PropTypes.func.isRequired,
     refreshParent: React.PropTypes.func,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -71,16 +108,18 @@ class SettingsHome extends Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
-    // TODO: remove if binding not needed
-    // this._checkChangedSetting = this._checkChangedSetting.bind(this);
     this._getSettings = this._getSettings.bind(this);
     this._pressRow = this._pressRow.bind(this);
     this._renderRow = this._renderRow.bind(this);
     this._renderSectionHeader = this._renderSectionHeader.bind(this);
   };
 
-  /*
-   * Returns true if a setting's current value does not match its cached value, and updates the cached value if so.
+  /**
+   * Returns true if a setting's current value does not match its cached value,
+   * and updates the cached value if so.
+   *
+   * @param key identifier for the setting to check
+   * @return true if the value in the cache was updated.
    */
   _checkChangedSetting(key) {
     let settingValue = Preferences.getSetting(key);
@@ -93,7 +132,8 @@ class SettingsHome extends Component {
   };
 
   /*
-   * Loads the current settings to setup the views and cache the settings to determine when a setting changes.
+   * Loads the current settings to setup the views and cache the settings to
+   * determine when a setting changes.
    */
   _getSettings() {
     for (var section in settings) {
@@ -110,8 +150,10 @@ class SettingsHome extends Component {
     }
   };
 
-  /*
+  /**
    * Updates the setting for the row pressed.
+   *
+   * @param key identifier for the setting pressed.
    */
   _pressRow(key) {
     if (key === 'pref_lang') {
@@ -136,8 +178,13 @@ class SettingsHome extends Component {
     });
   };
 
-  /*
+  /**
    * Displays a single row, representing a setting which can be changed.
+   *
+   * @param setting   defines the setting contents to render.
+   * @param sectionId index of the section the setting is in.
+   * @param rowId     index of the row the setting is in.
+   * @return views to render the setting in the list.
    */
   _renderRow(setting, sectionId, rowId) {
     let content = null;
@@ -171,8 +218,12 @@ class SettingsHome extends Component {
     );
   };
 
-  /*
+  /**
    * Renders a heading for a section of settings.
+   *
+   * @param sectionData section contents
+   * @param sectionId   index of the section.
+   * @return a {SectionHeader} with the name of the section.
    */
   _renderSectionHeader(sectionData, sectionId) {
     let sectionName = sectionId;
@@ -192,15 +243,17 @@ class SettingsHome extends Component {
     );
   };
 
-  /*
+  /**
    * Loads the settings once the view has been mounted.
    */
   componentDidMount() {
     this._getSettings();
   };
 
-  /*
+  /**
    * Displays a list of settings.
+   *
+   * @return the hierarchy of views to render.
    */
   render() {
     let CurrentTranslations = (Preferences.getSelectedLanguage() === 'en')

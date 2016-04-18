@@ -1,9 +1,42 @@
-/*
- * Initial entry view for the application. Allows the user to select their preferred language on first run.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * Splash.js
+ *
+ * @description
+ * Initial entry view for the application. Allows the user to select their
+ * preferred language on first run.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   AsyncStorage,
@@ -18,6 +51,7 @@ const {
   View,
 } = React;
 
+// Imports
 const Configuration = require('../util/Configuration');
 const Constants = require('../Constants');
 const Preferences = require('../util/Preferences');
@@ -28,17 +62,23 @@ const Styles = require('../Styles');
 const TranslationsEn = require('../../assets/static/js/Translations.en.js');
 const TranslationsFr = require('../../assets/static/js/Translations.fr.js');
 
+// Languages which can be selected by the user.
+const validLanguages = ['en', 'fr'];
+
 class SplashScreen extends Component {
 
-  /*
-   * Properties which the parent component should make available to this component.
+  /**
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -50,15 +90,23 @@ class SplashScreen extends Component {
     this._selectLanguage = this._selectLanguage.bind(this);
   };
 
-  /*
+  /**
    * Sets the language of the app and opens the main screen.
+   *
+   * @param language  one of 'en' or 'fr', to specify the language
+   *                  chosen by the user.
    */
   _selectLanguage(language) {
+    if (validLanguages.indexOf(language) < 0) {
+      console.log('Invalid language:', language);
+      return;
+    }
+
     Preferences.setSelectedLanguage(language);
     this.props.navigator.push({id: Constants.Views.Main});
   };
 
-  /*
+  /**
    * Calls the startup functions of the application.
    */
   componentDidMount() {
@@ -76,9 +124,11 @@ class SplashScreen extends Component {
             isLoading: false,
           });
         } else {
-          // If a lanuage has been selected, remove this language select screen, open the main screen
+          // If a lanuage has been selected, remove this language select
+          // screen, open the main screen
           self.props.navigator.replace({id: 2});
-          // TODO: comment above and uncomment below to always show splash screen
+          // TODO: comment above and uncomment below to always show splash
+          // screen
           // this.setState({
           //   isLoading: false
           // });
@@ -87,8 +137,10 @@ class SplashScreen extends Component {
     });
   };
 
-  /*
+  /**
    * Displays two buttons to allow the user to select French or English.
+   *
+   * @return the hierarchy of views to render.
    */
   render() {
     // Get the width and height of the screen
@@ -97,7 +149,8 @@ class SplashScreen extends Component {
     const onlyOnceTextLeft = (width - onlyOnceTextWidth) / 2;
 
     if (this.state.isLoading) {
-      // While checking to see if a language has been selected, display an empty view
+      // While checking to see if a language has been selected,
+      // display an empty view
       return (
         <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}></View>
       );

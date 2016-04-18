@@ -1,9 +1,42 @@
-/*
- * Displays details about the stops provided. Navigates between a list of stops and their individual details.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * Stops.js
+ *
+ * @description
+ * Displays details about the stops provided. Navigates between a list of
+ * stops and their individual details.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// Imports
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -16,6 +49,7 @@ const {
   View,
 } = React;
 
+// Imports
 const Constants = require('../../../Constants');
 const LanguageUtils = require('../../../util/LanguageUtils');
 const Preferences = require('../../../util/Preferences');
@@ -23,12 +57,14 @@ const SectionHeader = require('../../../components/SectionHeader');
 const Styles = require('../../../Styles');
 const TextUtils = require('../../../util/TextUtils');
 
+// Identifier for the navigator, indicating the list of stops is being shown.
 const LIST = 0;
+// Identifier for the navigator, indicating the details of a stop are shown.
 const DETAILS = 1;
 
 class Stops extends Component {
 
-  /*
+  /**
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
@@ -38,8 +74,10 @@ class Stops extends Component {
     backgroundIsDark: React.PropTypes.bool,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -72,7 +110,7 @@ class Stops extends Component {
     this._renderScene = this._renderScene.bind(this);
   };
 
-  /*
+  /**
    * Informs parent that no stop is selected.
    */
   _clearStop() {
@@ -82,15 +120,21 @@ class Stops extends Component {
     }
   }
 
-  /*
+  /**
    * Sets the transition between two views in the navigator.
+   *
+   * @return a configuration for transitions between scenes.
    */
   _configureScene() {
     return Navigator.SceneConfigs.PushFromRight;
   };
 
-  /*
-   * If a time has an hour greater than 23, it is adjusted to be within 24 hours.
+  /**
+   * If a time has an hour greater than 23, it is adjusted to be within 24
+   * hours.
+   *
+   * @param time time to convert, in '00:00' format.
+   * @return a time between 00:00 and 23:59.
    */
   _getAdjustedTime(time) {
     let hours = parseInt(time.substring(0, 2));
@@ -103,8 +147,9 @@ class Stops extends Component {
     + ':' + minutes;
   }
 
-  /*
-   * Loads information about each of the stops on the campus into a list to display.
+  /**
+   * Loads information about each of the stops on the campus into a list to
+   * display.
    */
   _loadStops() {
     let stops = [];
@@ -127,8 +172,10 @@ class Stops extends Component {
     });
   }
 
-  /*
+  /**
    * Displays details about a single stop.
+   *
+   * @param stop details about the stop to display.
    */
   _pressRow(stop) {
     if (this.props.onStopSelected) {
@@ -152,8 +199,14 @@ class Stops extends Component {
     })
   };
 
-  /*
+  /**
    * Shows partial details about a stop.
+   *
+   * @param stop         details about the stop to display.
+   * @param sectionIndex index of the section the stop is in.
+   * @param rowIndex     index of the row the stop is in.
+   * @return the name of the stop, its unique code, and the list of routes
+   *         that serve the stop.
    */
   _renderStopRow(stop, sectionIndex, rowIndex) {
     return (
@@ -178,6 +231,14 @@ class Stops extends Component {
     );
   };
 
+  /**
+   * Shows partial details about a route.
+   *
+   * @param route        details about the route to display.
+   * @param sectionIndex index of the section the route is in.
+   * @param rowIndex     index of the row the route is in.
+   * @return the headline and number of the route, and the upcoming times.
+   */
   _renderTimeRow(route, sectionIndex, rowIndex) {
     return (
       <View>
@@ -199,6 +260,12 @@ class Stops extends Component {
     );
   };
 
+  /**
+   * Returns a list of times for the current day that will be the next to occur.
+   *
+   * @param days a dictionary of days mapped to times.
+   * @return a list of up to 3 times, formatted as a string.
+   */
   _retrieveUpcomingTimes(days) {
     let upcomingTimes = [];
     let now = new Date();
@@ -230,8 +297,12 @@ class Stops extends Component {
     }
   }
 
-  /*
+  /**
    * Renders a view according to the current route of the navigator.
+   *
+   * @param route     object with properties to identify the route to display.
+   * @param navigator navigator object to pass to children.
+   * @return the view to render, based on {route}.
    */
   _renderScene(route, navigator) {
     if (route.id === DETAILS && route.stop != null) {
@@ -274,12 +345,20 @@ class Stops extends Component {
     }
   };
 
+  /**
+   * If the stops have not beed loaded, then loads them.
+   */
   componentDidMount() {
     if (!this.state.loaded) {
       this._loadStops();
     }
   };
 
+  /**
+   * Renders a navigator which handles the scene rendering.
+   *
+   * @return the hierarchy of views to render.
+   */
   render() {
     return (
       <View style={_styles.container}>
@@ -293,6 +372,7 @@ class Stops extends Component {
   }
 };
 
+// Private styles for component
 const _styles = StyleSheet.create({
   container: {
     flex: 1,

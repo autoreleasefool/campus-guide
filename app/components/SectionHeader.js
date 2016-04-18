@@ -1,9 +1,41 @@
-/*
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * SectionHeader.js
+ *
+ * @description
  * Predefined style for section separating headers in the app.
- */
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 var React = require('react-native');
 var {
   Component,
@@ -13,6 +45,7 @@ var {
   View,
 } = React;
 
+// Imports
 const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -26,7 +59,7 @@ const VALID_ICON_CLASSES = ['material', 'ionicon'];
 
 class SectionHeader extends Component {
 
-  /*
+  /**
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
@@ -41,8 +74,10 @@ class SectionHeader extends Component {
     backgroundOverride: React.PropTypes.string,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -68,36 +103,49 @@ class SectionHeader extends Component {
     this.updateSubtitle = this.updateSubtitle.bind(this);
   };
 
-  /*
+  /**
    * Gets the subtitle of the header.
+   *
+   * @return the subtitle name from the state.
    */
   getSubtitleName() {
     return this.state.subtitleName;
   };
 
-  /*
+  /**
    * Gets the name of the icon on the subtitle.
+   *
+   * @return the subtitle icon name from the state.
    */
   getSubtitleIcon() {
     return this.state.subtitleIcon;
   };
 
-  /*
+  /**
    * Gets the string representation of the icon class.
+   *
+   * @return the subtitle icon class from the state.
    */
   getSubtitleIconClass() {
     return this.state.subtitleIconClass;
   };
 
-  /*
-   * Returns a value which can be used in updateSubtitle(name, icon, iconClass) to remove a subtitle value.
+  /**
+   * Returns a value which can be used in updateSubtitle(name, icon, iconClass)
+   * to remove a subtitle value.
+   *
+   * @return {NULL_SUBTITLE_VALUE}.
    */
   getEmptySubtitleValue() {
     return NULL_SUBTITLE_VALUE;
   };
 
-  /*
+  /**
    * Update properties of the subtitle in the header.
+   *
+   * @param name      new name for the subtitle.
+   * @param icon      new icon name for the subtitle.
+   * @param iconClass new icon class name for the subtitle.
    */
   updateSubtitle(name, icon, iconClass) {
     if (VALID_ICON_CLASSES.indexOf(iconClass) < 0) {
@@ -111,8 +159,11 @@ class SectionHeader extends Component {
     });
   };
 
-  /*
-   * Builds the components of the section header, including the title, icon, subtitle, and subtitle icon.
+  /**
+   * Builds the components of the section header, including the title, icon,
+   * subtitle, and subtitle icon.
+   *
+   * @return the hierarchy of views to render.
    */
   render() {
     let icon = null;

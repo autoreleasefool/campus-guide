@@ -1,9 +1,42 @@
-/*
- * Displays the list of buildings in a grid, with the building's name and an image.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * BuildingGrid.js
+ *
+ * @description
+ * Displays the list of buildings in a grid, with the building's
+ * name and an image.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -23,14 +56,17 @@ const buildingIconSize = Math.floor((width - 60) / 3);
 class BuildingGrid extends Component {
 
   /*
-   * Properties which the parent component should make available to this component.
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     showBuilding: React.PropTypes.func.isRequired,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -46,8 +82,9 @@ class BuildingGrid extends Component {
     this._renderRow = this._renderRow.bind(this);
   };
 
-  /*
-   * Loads the names and images of the buildings from the assets to display them.
+  /**
+   * Loads the names and images of the buildings from the assets to display
+   * them.
    */
   _loadBuildingsList() {
     let buildingsList = require('../../../../assets/static/js/Buildings');
@@ -58,8 +95,13 @@ class BuildingGrid extends Component {
     });
   };
 
-  /*
+  /**
    * Displays a single building with its name and image.
+   *
+   * @param building  information about the building to display.
+   * @param sectionId index of the section the building is in.
+   * @param rowId     index of the row the building is in.
+   * @return an image and name for the building.
    */
   _renderRow(building, sectionId, rowId) {
     let rowVal = parseInt(rowId);
@@ -89,7 +131,7 @@ class BuildingGrid extends Component {
     );
   };
 
-  /*
+  /**
    * Loads the buildings once the view has been mounted.
    */
   componentDidMount() {
@@ -98,9 +140,11 @@ class BuildingGrid extends Component {
     }
   };
 
-  /*
+  /**
    * Renders the view. Displays an empty view before the buildings have loaded and a list of the building names
    * and icons once they have.
+   *
+   * @return the hierarchy of views to render.
    */
   render() {
     if (!this.state.loaded) {

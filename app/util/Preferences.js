@@ -1,16 +1,50 @@
-/*
- * Manages the application preferences. Loads the preferences upon opening the application then caches their
- * values so they don't need to be reloaded later. When preferences are updated, the cache is updated and
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * Preferences.js
+ *
+ * @description
+ * Manages the application preferences. Loads the preferences upon opening
+ * the application then caches their values so they don't need to be
+ * reloaded later. When preferences are updated, the cache is updated and
  * the stored preference is updated to the new value.
- */
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   AsyncStorage,
 } = React;
 
+// Imports
 const Configuration = require('./Configuration');
 const LanguageUtils = require('./LanguageUtils');
 
@@ -29,9 +63,10 @@ let selectedLanguage = null;
 let currentSemester = 0;
 let preferWheelchair = false;
 
-/*
- * Method which should be invoked each time the app is opened, to keep a running track
- * of how many times the app has been opened, the user's preferred language, etc.
+/**
+ * Method which should be invoked each time the app is opened, to
+ * keep a running track of how many times the app has been opened,
+ * the user's preferred language, etc.
  */
 async function _loadInitialPreferences() {
   // If any errors occur, just use the default values of the preferences
@@ -74,30 +109,38 @@ async function _loadInitialPreferences() {
 
 module.exports = {
 
-  /*
+  /**
    * Wrapper method for _loadInitialPreferences.
+   *
+   * @return the Promise from the async function {_loadInitialPreferences}.
    */
   loadInitialPreferences() {
     return _loadInitialPreferences();
   },
 
-  /*
+  /**
    * Checks if the app is being opened for the first time.
+   *
+   * @return {true} if the app has not been opened before, {false} otherwise.
    */
   isFirstTimeOpened() {
     return timesAppOpened == 1;
   },
 
-  /*
-   * Returns true if a language has been selected, false if the current language is null.
+  /**
+   * Checks if a language has been selected by the user.
+   *
+   * @return {true} if a language has been selected, {false} otherwise.
    */
   isLanguageSelected() {
     return selectedLanguage === 'en' || selectedLanguage === 'fr';
   },
 
-  /*
-   * Gets the preferred language selected by the user. Returns 'en' for English, 'fr' for French, or 'en' if no
-   * language has been selected yet.
+  /**
+   * Gets the preferred language selected by the user.
+   *
+   * @return 'en' for English, 'fr' for French, or 'en' if no language has
+   *         been selected yet.
    */
   getSelectedLanguage() {
     return (this.isLanguageSelected()
@@ -105,8 +148,10 @@ module.exports = {
         : 'en');
   },
 
-  /*
+  /**
    * Updates the user's preferred language.
+   *
+   * @param language the new language, either 'en' or 'fr'.
    */
   setSelectedLanguage(language) {
     if (language !== 'en' && language !=='fr') {
@@ -117,15 +162,19 @@ module.exports = {
     AsyncStorage.setItem(SELECTED_LANGUAGE, language);
   },
 
-  /*
+  /**
    * Indicates if the user prefers wheelchair accessible routes or doesn't care.
+   *
+   * @return {true} if the user prefers accessible routes, {false} otherwise.
    */
   isWheelchairRoutePreferred() {
     return preferWheelchair;
   },
 
-  /*
+  /**
    * Updates the user's preference to wheelchair accessible routes.
+   *
+   * @param preferred the new preference for wheelchair accessible routes.
    */
   setWheelchairRoutePreferred(preferred) {
     if (preferred !== true && preferred !== false) {
@@ -136,8 +185,11 @@ module.exports = {
     AsyncStorage.setItem(PREFER_WHEELCHAIR, preferred.toString());
   },
 
-  /*
-   * Sets the current semester. If the provided value is not a valid index, the current semester is set to 0.
+  /**
+   * Sets the current semester. If the provided value is not a valid index,
+   * the current semester is set to 0.
+   *
+   * @param semester the new current semester.
    */
   setCurrentSemester(semester) {
     if (semester >= Configuration.getAvailableSemesters().length || semester < 0) {
@@ -149,30 +201,38 @@ module.exports = {
     AsyncStorage.setItem(CURRENT_SEMESTER, currentSemester.toString());
   },
 
-  /*
+  /**
    * Sets semester to be the next in chronologically.
    */
   setToNextSemester() {
     this.setCurrentSemester(currentSemester + 1);
   },
 
-  /*
+  /**
    * Returns the index of the current semester.
+   *
+   * @return the index of the current semester.
    */
   getCurrentSemester() {
     return currentSemester;
   },
 
-  /*
+  /**
    * Returns information about the current semester.
+   *
+   * @return details about the current semester.
    */
   getCurrentSemesterInfo() {
     return Configuration.getSemester(currentSemester);
   },
 
-  /*
-   * Returns the value of a setting based on the provided key. The returned value may be a string, boolean, integer,
-   * or object, and should correspond to the type of the setting.
+  /**
+   * Returns the value of a setting based on the provided key. The returned
+   * value may be a string, boolean, integer, or object, and should correspond
+   * to the type of the setting.
+   *
+   * @param key the setting value to return.
+   * @return the value of the setting corresponding to {key}, or null.
    */
   getSetting(key) {
     if (key === 'pref_lang') {

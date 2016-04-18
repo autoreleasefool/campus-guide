@@ -1,9 +1,41 @@
-/*
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * Tabs.js
+ *
+ * @description
  * Tab bar to manage navigation between the root views in the application.
- */
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -15,6 +47,7 @@ const {
   View,
 } = React;
 
+// Imports
 const Constants = require('../Constants');
 
 // Declaring icons depending on the platform
@@ -46,15 +79,18 @@ const tabIconSize = 30;
 
 class TabBar extends Component {
 
-  /*
-   * Properties which the parent component should make available to this component.
+  /**
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     requestTabChange: React.PropTypes.func.isRequired,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -67,23 +103,29 @@ class TabBar extends Component {
     this._changeTabs = this._changeTabs.bind(this);
   };
 
-  /*
+  /**
    * Retrieves the current tab.
+   *
+   * @return the current tab in the state.
    */
   getCurrentTab() {
     return this.state.currentTab;
   };
 
-  /*
+  /**
    * Switch to the selected tab, as determined by tabId.
+   *
+   * @param tabId the tab to switch to.
    */
   _changeTabs(tabId) {
     // Switch to the selected tab
     this.props.requestTabChange(tabId);
   };
 
-  /*
+  /**
    * Renders the app tabs and icons, and an indicator to show the current tab.
+   *
+   * @return the hierarchy of views to render.
    */
   render() {
     let findColor = Constants.Colors.charcoalGrey;

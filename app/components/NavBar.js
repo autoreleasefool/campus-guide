@@ -1,9 +1,42 @@
-/*
- * Navigation and search bar for the top of the app, to allow the user to search from anywhere.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * NavBar.js
+ *
+ * @description
+ * Navigation and search bar for the top of the app, to allow the user to
+ * search from anywhere.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -16,6 +49,7 @@ const {
   View,
 } = React;
 
+// Imports
 import TimerMixin from 'react-timer-mixin';
 const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
@@ -23,6 +57,7 @@ const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../util/Preferences');
 const StatusBar = require('../util/StatusBar');
 
+// Get dimensions of the screen
 const {height, width} = Dimensions.get('window');
 
 // Declaring icons depending on the platform
@@ -38,16 +73,19 @@ if (Platform.OS === 'ios') {
 
 class SearchBar extends Component {
 
-  /*
-   * Properties which the parent component should make available to this component.
+  /**
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     onSearch: React.PropTypes.func.isRequired,
     onBack: React.PropTypes.func.isRequired,
   };
 
-  /*
-   * Pass props.
+  /**
+   * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -60,8 +98,11 @@ class SearchBar extends Component {
     this.getRefresh = this.getRefresh.bind(this);
   };
 
-  /*
-   * Configures the app to animate the next layout change, then updates the state.
+  /**
+   * Configures the app to animate the next layout change, then updates the
+   * state.
+   *
+   * @param state the new state for the component.
    */
   setState(state) {
     setTimeout(() => {
@@ -70,14 +111,17 @@ class SearchBar extends Component {
     }, 50);
   };
 
-  /*
-   * Returns the current state of the refresh variable, to allow it to be flipped to re-render the view.
+  /**
+   * Returns the current state of the refresh variable, to allow it to be
+   * flipped to re-render the view.
+   *
+   * @return {refresh}, from the state of the component.
    */
   getRefresh() {
     return this.state.refresh;
   };
 
-  /*
+  /**
    * Clears the search field and requests a back navigation.
    */
   _onBack() {
@@ -85,8 +129,10 @@ class SearchBar extends Component {
     this.props.onBack();
   };
 
-  /*
+  /**
    * Prompts the app to search, so long as there is any text to search with.
+   *
+   * @param text params to search for.
    */
   _onSearch(text) {
     if (text && text.length > 0) {
@@ -94,8 +140,10 @@ class SearchBar extends Component {
     }
   };
 
-  /*
+  /**
    * Renders a text input field for searching.
+   *
+   * @return the hierarchy of views to render.
    */
   render() {
     // Get current language for translations

@@ -1,9 +1,42 @@
-/*
- * Main view of the application.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * Main.js
+ *
+ * @description
+ * Main navigational point of the application. Provides the primary
+ * Navigator instance.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   Alert,
@@ -14,6 +47,7 @@ const {
   View,
 } = React;
 
+// Imports
 const BuildStyleInterpolator = require('buildStyleInterpolator');
 const Constants = require('../Constants');
 const DetailsScreen = require('../components/DetailsScreen');
@@ -35,19 +69,20 @@ const SettingsHome = require('./settings/SettingsHome');
 const ShuttleCampusInfo = require('./discover/ShuttleCampusInfo');
 const ShuttleInfo = require('./discover/ShuttleInfo');
 
+// Lists the views currently on the stack in the Navigator.
 let screenStack = [Constants.Views.Default];
 
 class MainScreen extends Component {
 
-  /*
-   * Pass props and declare initial state.
+  /**
+   * Pass props to parent and declare initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
 
     // Explicitly binding 'this' to all methods that need it
-    // TODO: remove if binding not needed
-    // this._configureScene = this._configureScene.bind(this);
     this._navigateBack = this._navigateBack.bind(this);
     this._navigateForward = this._navigateForward.bind(this);
     this._onChangeTab = this._onChangeTab.bind(this);
@@ -55,15 +90,19 @@ class MainScreen extends Component {
     this._renderScene = this._renderScene.bind(this);
   };
 
-  /*
+  /**
    * Sets the transition between two views in the navigator.
+   *
+   * @return a configuration for the transition between scenes.
    */
   _configureScene() {
     return Navigator.SceneConfigs.PushFromRight;
   };
 
-  /*
+  /**
    * Returns the current screen being displayed, or 0 if there isn't one.
+   *
+   * @return the screen at the top of {screenStack}, or 0.
    */
   _getCurrentScreen() {
     if (screenStack !== null && screenStack.length > 0) {
@@ -73,7 +112,7 @@ class MainScreen extends Component {
     }
   }
 
-  /*
+  /**
    * Returns to the previous page.
    */
   _navigateBack() {
@@ -89,8 +128,12 @@ class MainScreen extends Component {
     }
   };
 
-  /*
-   * Opens a screen, unless the screen is already showing. Passes data to the new screen.
+  /**
+   * Opens a screen, unless the screen is already showing. Passes data to
+   * the new screen.
+   *
+   * @param screenId  id of the screen to display
+   * @param data      optional parameters to pass to the renderScene method.
    */
   _navigateForward(screenId, data) {
     if (this._getCurrentScreen() === screenId) {
@@ -98,6 +141,8 @@ class MainScreen extends Component {
       return;
     }
 
+    // Show a back button to return to the previous screen, if the screen
+    // is not a home screen
     if (ScreenUtils.isRootScreen(this._getCurrentScreen())) {
       this.refs.NavBar.setState({
         showBackButton: true,
@@ -108,8 +153,10 @@ class MainScreen extends Component {
     screenStack.push(screenId);
   };
 
-  /*
+  /**
    * Updates views accordingly to display a new tab.
+   *
+   * @param tabId id of the tab to display.
    */
   _onChangeTab(tabId) {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
@@ -125,8 +172,10 @@ class MainScreen extends Component {
     screenStack = [tabId];
   };
 
-  /*
+  /**
    * Displays the results of the user's search parameters.
+   *
+   * @param searchTerms string of terms to search for.
    */
   _onSearch(searchTerms) {
     // TODO: search...
@@ -134,15 +183,19 @@ class MainScreen extends Component {
     this._navigateForward(Constants.Views.Find.Search, searchTerms);
   };
 
-  /*
+  /**
    * Forces the navbar to be re-rendered.
    */
   _updateNavbar() {
     this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()})
   }
 
-  /*
+  /**
    * Renders a view according to the current route of the navigator.
+   *
+   * @param route     object with properties to identify the route to display.
+   * @param navigator navigator object to pass to children.
+   * @return the view to render, based on {route}.
    */
   _renderScene(route, navigator) {
     let scene = null;
@@ -219,8 +272,9 @@ class MainScreen extends Component {
     );
   };
 
-  /*
-   * Displays a pop up when the application opens for the first time after the user selects their preferred language.
+  /**
+   * Displays a pop up when the application opens for the first time after the
+   * user selects their preferred language.
    */
   componentDidMount() {
     // Get current language for translations
@@ -239,8 +293,10 @@ class MainScreen extends Component {
     }
   };
 
-  /*
+  /**
    * Renders a navigator to switch between the app's tabs, and a tab view.
+   *
+   * @return the hierarchy of views to render.
    */
   render() {
     return (

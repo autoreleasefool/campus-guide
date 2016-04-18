@@ -1,9 +1,42 @@
-/*
- * Displays the links and subcategories belonging to a category of useful links.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * LinkCategory.js
+ *
+ * @description
+ * Displays the links and subcategories belonging to a category of useful
+ * links.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// React imports
+// React Native imports
 const React = require('react-native');
 const {
   Alert,
@@ -19,6 +52,7 @@ const {
   View,
 } = React;
 
+// Imports
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
 const Icon = require('react-native-vector-icons/Ionicons');
@@ -30,8 +64,9 @@ const TextUtils = require('../../util/TextUtils');
 
 class LinkCategory extends Component {
 
-  /*
-   * Properties which the parent component should make available to this component.
+  /**
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     category: React.PropTypes.object.isRequired,
@@ -39,14 +74,15 @@ class LinkCategory extends Component {
     showLinkCategory: React.PropTypes.func.isRequired,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
 
     let shouldShowLinks = this.props.category.categories == null;
-
     this.state = {
       showLinks: shouldShowLinks,
     };
@@ -58,8 +94,13 @@ class LinkCategory extends Component {
     this._openLink = this._openLink.bind(this);
   };
 
-  /*
-   * Gets the list of categories.
+  /**
+   * Returns a list of touchable views which lead to new pages of categories
+   * of links.
+   *
+   * @param categories categories of links.
+   * @return for each index in {categories}, a {TouchableOpacity} with the name
+   *         of the category.
    */
   _getCategories(categories) {
     let language = Preferences.getSelectedLanguage();
@@ -84,8 +125,13 @@ class LinkCategory extends Component {
     );
   };
 
-  /*
-   * Gets the list of links.
+  /**
+   * Returns a list of touchable views which open links in the web browser.
+   *
+   * @param links list of links in the current category.
+   * @param Translations translations in the current language of certain text.
+   * @return for each index in {links}, a {TouchableOpacity} with the name
+   *         of the link.
    */
   _getLinks(links, Translations) {
     let language = Preferences.getSelectedLanguage();
@@ -171,8 +217,13 @@ class LinkCategory extends Component {
     );
   };
 
-  /*
-   * Gets the list of social media icons.
+  /**
+   * Returns a list of touchable views which open links in the web browser.
+   *
+   * @param socialMediaLinks list of links to social media sites in the current
+   *                         category.
+   * @return for each index in {socialMediaLinks}, a {TouchableOpacity} with
+   *         an icon representing the social media site.
    */
   _getSocialMediaLinks(socialMediaLinks) {
     return (
@@ -190,8 +241,11 @@ class LinkCategory extends Component {
     )
   };
 
-  /*
-   * Opens a URL
+  /**
+   * Opens a URL if the URL is valid.
+   *
+   * @param url URL to open.
+   * @param Translations translations in the current language of certain text.
    */
   _openLink(url, Translations) {
     let formattedUrl = TextUtils.formatLink(url);
@@ -210,10 +264,9 @@ class LinkCategory extends Component {
         );
       }
     }).catch(err => console.error('An error occurred opening the link.', err));
-    Linking.openURL(url);
   };
 
-  /*
+  /**
    * Hides or shows the list of links in the category.
    */
   _toggleLinks() {
@@ -234,6 +287,11 @@ class LinkCategory extends Component {
     });
   };
 
+  /**
+   * Renders an image, category title, and list of useful links.
+   *
+   * @return the hierarchy of views to render.
+   */
   render() {
     // Get current language for translations
     let Translations = null;

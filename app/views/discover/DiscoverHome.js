@@ -1,8 +1,41 @@
-/*
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * DiscoverHome.js
+ *
+ * @description
  * Root view for links which help users become acquainted with the school.
- */
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -14,6 +47,7 @@ const {
   View
 } = React;
 
+// Imports
 const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
@@ -24,15 +58,17 @@ const Styles = require('../../Styles');
 
 class DiscoverHome extends Component {
 
-  /*
+  /**
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     onScreenSelected: React.PropTypes.func.isRequired,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -47,8 +83,11 @@ class DiscoverHome extends Component {
     this._loadDiscoverSections = this._loadDiscoverSections.bind(this);
   };
 
-  /*
-   * Focuses a new section for the user, hides the old section's image and shows the new section's image.
+  /**
+   * Focuses a new section for the user, hides the old section's image and
+   * shows the new section's image.
+   *
+   * @param sectionId new section to focus.
    */
   _focusSection(sectionId) {
     if (this.state.currentSection === sectionId) {
@@ -73,9 +112,12 @@ class DiscoverHome extends Component {
     });
   };
 
-  /*
-   * Returns a view for a section which displays the section name and icon, as well as an image if the
-   * section is currently selected.
+  /**
+   * Returns a view for a section which displays the section name and icon, as
+   * well as an image if the section is currently selected.
+   *
+   * @param section section to render.
+   * @return a view with an image and title which is clickable by the user.
    */
   _getSectionView(section) {
     let onPress = null;
@@ -125,8 +167,9 @@ class DiscoverHome extends Component {
     );
   };
 
-  /*
-   * Retrieves information about the sections in the discover tab and refreshes the view.
+  /**
+   * Retrieves information about the sections in the discover tab and refreshes
+   * the view.
    */
   _loadDiscoverSections() {
     let sections = require('../../../assets/static/js/DiscoverSections');
@@ -136,14 +179,23 @@ class DiscoverHome extends Component {
     });
   };
 
+  /**
+   * If the sections have not been loaded, then loads them.
+   */
   componentDidMount() {
-    if (this.state.sections === null) {
+    if (this.state.sections == null) {
       this._loadDiscoverSections();
     }
   };
 
+  /**
+   * Renders each of the sections, with one of them focused and showing an
+   * image.
+   *
+   * @return the hierarchy of views to render.
+   */
   render() {
-    if (this.state.sections === null) {
+    if (this.state.sections == null) {
       return (
         <View style={_styles.container} />
       );

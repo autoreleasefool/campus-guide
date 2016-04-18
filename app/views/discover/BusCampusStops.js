@@ -1,10 +1,42 @@
-/*
- * Displays a campus' location on a map, relative to a user's location, as well as a list of the stops
- * near the campus.
- */
+/*************************************************************************
+ *
+ * @license
+ *
+ * Copyright 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *************************************************************************
+ *
+ * @file
+ * BusCampusStops.js
+ *
+ * @description
+ * Displays a campus' location on a map, relative to a user's location, as
+ * well as a list of the stops near the campus.
+ *
+ * @author
+ * Joseph Roque
+ *
+ *************************************************************************
+ *
+ * @external
+ * @flow
+ *
+ ************************************************************************/
 'use strict';
 
-// Imports
+// React Native imports
 const React = require('react-native');
 const {
   Component,
@@ -13,6 +45,7 @@ const {
   View,
 } = React;
 
+// Imports
 const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
@@ -21,7 +54,7 @@ const Stops = require('./components/Stops');
 
 class CampusStops extends Component {
 
-  /*
+  /**
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
@@ -29,8 +62,10 @@ class CampusStops extends Component {
     campusColor: React.PropTypes.string.isRequired,
   };
 
-  /*
+  /**
    * Pass props and declares initial state.
+   *
+   * @param props properties passed from container to this component.
    */
   constructor(props) {
     super(props);
@@ -47,8 +82,10 @@ class CampusStops extends Component {
     this._loadCampusInfo = this._loadCampusInfo.bind(this);
   };
 
-  /*
+  /**
    * Invoked when the user selects a stop.
+   *
+   * @param stop properties of the selected stop.
    */
   _busStopSelected(stop) {
     if (stop === null) {
@@ -67,8 +104,11 @@ class CampusStops extends Component {
     }
   }
 
-  /*
+  /**
    * Renders a map with a list of markers to denote bus stops near the campus.
+   *
+   * @return a {MapView} with a list of markers placed at the stops on the
+   *         campus.
    */
   _getCampusMap() {
     let lat = 0;
@@ -126,9 +166,11 @@ class CampusStops extends Component {
     );
   };
 
-  /*
-   * Returns a view containing a header and list with the stops surrounding the campus provided by
-   * this.props.campusName.
+  /**
+   * Returns a view containing a header and list with the stops surrounding the
+   * campus provided by {this.props.campusName}.
+   *
+   * @return a {Stops} view with details about the various stops on the campus.
    */
   _getCampusStops() {
     if (this.state.campus == null) {
@@ -137,13 +179,17 @@ class CampusStops extends Component {
       );
     } else {
       return (
-        <Stops campus={this.state.campus} campusName={this.props.campusName} onStopSelected={this._busStopSelected} backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}/>
+        <Stops
+            campus={this.state.campus}
+            campusName={this.props.campusName}
+            onStopSelected={this._busStopSelected}
+            backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}/>
       )
     }
   };
 
-  /*
-   * Retrieves data about the campus provided as this.props.campusName.
+  /**
+   * Retrieves data about the campus provided as {this.props.campusName}.
    */
   _loadCampusInfo() {
     let campuses = require('../../../assets/static/json/transit_stops.json');
@@ -154,12 +200,20 @@ class CampusStops extends Component {
     }
   };
 
+  /**
+   * If the campus details have not been loaded, then loads them.
+   */
   componentDidMount() {
     if (this.state.campus == null) {
       this._loadCampusInfo();
     }
   };
 
+  /**
+   * Renders a map and list of routes and stop times at the various stops.
+   *
+   * @return the hierarchy of views to render.
+   */
   render() {
     return (
       <View style={[_styles.container, {backgroundColor: this.props.campusColor}]}>
