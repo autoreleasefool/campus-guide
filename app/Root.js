@@ -56,7 +56,7 @@ class CampusGuide extends Component {
    *
    * @param props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: {}) {
     super(props);
   };
 
@@ -65,7 +65,7 @@ class CampusGuide extends Component {
    *
    * @return a configuration for scene transitions in the navigator.
    */
-  _configureScene() {
+  _configureScene(): {} {
     return ({
       ...Navigator.SceneConfigs.HorizontalSwipeJump,
       gestures: false,
@@ -79,7 +79,7 @@ class CampusGuide extends Component {
    * @param navigator navigator object to pass to children.
    * @return the view to render, based on {route}.
    */
-  _renderScene(route, navigator) {
+  _renderScene(route: {id: number}, navigator: any) {
     if (route.id === Constants.Views.Splash) {
       return <SplashScreen navigator={navigator} />
     } else if (route.id === Constants.Views.Main) {
