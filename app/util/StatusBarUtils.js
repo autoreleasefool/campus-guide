@@ -19,7 +19,7 @@
  *************************************************************************
  *
  * @file
- * StatusBar.js
+ * StatusBarUtils.js
  *
  * @description
  * Offers utilities for adjusting the status bar.
@@ -35,19 +35,6 @@
  ************************************************************************/
 'use strict';
 
-// React Native imports
-const React = require('react-native');
-const {
-  Platform,
-  StatusBar,
-} = React;
-
-// Provides additional spacing on iOS to allow room for the status bar
-let statusBarPadding = 0;
-if (Platform.OS === 'ios') {
-  statusBarPadding = 20;
-}
-
 module.exports = {
 
   /**
@@ -56,7 +43,7 @@ module.exports = {
    *
    * @param light {true} or {false} to set the color of the status bar.
    */
-  setLightStatusBarIOS(light) {
+  setLightStatusBarIOS(Platform, StatusBar, light) {
     if (Platform.OS === 'ios') {
       if (light) {
         StatusBar.setBarStyle('light-content');
@@ -71,7 +58,11 @@ module.exports = {
    *
    * @return the padding to use for the status bar.
    */
-  getStatusBarPadding() {
-    return statusBarPadding;
+  getStatusBarPadding(Platform) {
+    if (Platform.OS === 'ios') {
+      return 20;
+    } else {
+      return 0;
+    }
   }
 }

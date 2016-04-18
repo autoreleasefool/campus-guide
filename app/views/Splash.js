@@ -44,6 +44,7 @@ const {
   Dimensions,
   Navigator,
   Platform,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -55,7 +56,7 @@ const {
 const Configuration = require('../util/Configuration');
 const Constants = require('../Constants');
 const Preferences = require('../util/Preferences');
-const StatusBar = require('../util/StatusBar');
+const StatusBarUtils = require('../util/StatusBarUtils');
 const Styles = require('../Styles');
 
 // Require both language translations to display items in both languages
@@ -116,7 +117,7 @@ class SplashScreen extends Component {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
 
-    StatusBar.setLightStatusBarIOS(true);
+    StatusBarUtils.setLightStatusBarIOS(Platform, StatusBar, true);
     Configuration.loadConfiguration().done(function() {
       Preferences.loadInitialPreferences().done(function() {
         if (!Preferences.isLanguageSelected()) {

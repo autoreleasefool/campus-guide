@@ -35,12 +35,6 @@
  ************************************************************************/
 'use strict';
 
-// React Native imports
-const React = require('react-native');
-const {
-  AsyncStorage,
-} = React;
-
 let availableSemesters = [];
 let university = {};
 let cityBuses = {};

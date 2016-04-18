@@ -55,7 +55,7 @@ const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../util/Preferences');
-const StatusBar = require('../util/StatusBar');
+const StatusBarUtils = require('../util/StatusBarUtils');
 
 // Get dimensions of the screen
 const {height, width} = Dimensions.get('window');
@@ -196,7 +196,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 60,
-    marginTop: StatusBar.getStatusBarPadding(),
+    marginTop: StatusBarUtils.getStatusBarPadding(Platform),
   },
   innerContainer: {
     alignItems: 'center',

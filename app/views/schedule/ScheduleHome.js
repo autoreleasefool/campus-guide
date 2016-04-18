@@ -56,7 +56,6 @@ const Icon = require('react-native-vector-icons/MaterialIcons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
-const StatusBar = require('../../util/StatusBar');
 const Styles = require('../../Styles');
 
 // Get dimensions of the device
