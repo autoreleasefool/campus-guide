@@ -94,4 +94,21 @@ module.exports = {
       return link;
     }
   },
+
+  /**
+   * If a time has an hour greater than 23, it is adjusted to be within 24
+   * hours.
+   *
+   * @param time time to convert, in '00:00' format.
+   * @return a time between 00:00 and 23:59.
+   */
+  _get24HourAdjustedTime(time) {
+    let hours = parseInt(time.substring(0, 2));
+    let minutes = time.substring(3, 5);
+    if (hours > 23) {
+      hours = hours - 24;
+    }
+
+    return TextUtils.leftPad(hours.toString(), 2, '0') + ':' + minutes;
+  }
 };

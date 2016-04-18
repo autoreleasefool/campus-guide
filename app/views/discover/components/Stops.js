@@ -130,24 +130,6 @@ class Stops extends Component {
   };
 
   /**
-   * If a time has an hour greater than 23, it is adjusted to be within 24
-   * hours.
-   *
-   * @param time time to convert, in '00:00' format.
-   * @return a time between 00:00 and 23:59.
-   */
-  _getAdjustedTime(time) {
-    let hours = parseInt(time.substring(0, 2));
-    let minutes = time.substring(3, 5);
-    if (hours > 23) {
-      hours = hours - 24;
-    }
-
-    return TextUtils.leftPad(hours.toString(), 2, '0')
-    + ':' + minutes;
-  }
-
-  /**
    * Loads information about each of the stops on the campus into a list to
    * display.
    */
@@ -280,7 +262,7 @@ class Stops extends Component {
           if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
             let j = 1;
             while (j < 4 && i + j < days[day].length) {
-              upcomingTimes.push(this._getAdjustedTime(days[day][i + j]));
+              upcomingTimes.push(TextUtils._getAdjustedTime(days[day][i + j]));
               j += 1;
             }
             break;
