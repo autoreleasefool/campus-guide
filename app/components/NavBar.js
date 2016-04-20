@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * NavBar.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -61,17 +56,27 @@ const StatusBarUtils = require('../util/StatusBarUtils');
 const {height, width} = Dimensions.get('window');
 
 // Declaring icons depending on the platform
-var Icon;
-var backIcon;
-if (Platform.OS === 'ios') {
-  Icon = Ionicons;
-  backIcon = 'ios-arrow-back';
-} else {
+let Icon: ReactClass = Ionicons;
+let backIcon: string = 'ios-arrow-back';
+if (Platform.OS !== 'ios') {
   Icon = require('react-native-vector-icons/MaterialIcons');
   backIcon = 'arrow-back';
 }
 
+// Type definition for component props.
+type Props = {
+  onSearch: () => any,
+  onBack: () => any,
+};
+
+// Type definition for component state.
+type State = {
+  showBackButton: ?boolean,
+  refresh: ?boolean,
+};
+
 class SearchBar extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -85,9 +90,9 @@ class SearchBar extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showBackButton: false,
@@ -95,16 +100,16 @@ class SearchBar extends Component {
     };
 
     // Explicitly binding 'this' to certain methods
-    this.getRefresh = this.getRefresh.bind(this);
+    (this:any).getRefresh = this.getRefresh.bind(this);
   };
 
   /**
    * Configures the app to animate the next layout change, then updates the
    * state.
    *
-   * @param state the new state for the component.
+   * @param {State} state the new state for the component.
    */
-  setState(state) {
+  setState(state: State) {
     setTimeout(() => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       super.setState(state);
@@ -115,16 +120,20 @@ class SearchBar extends Component {
    * Returns the current state of the refresh variable, to allow it to be
    * flipped to re-render the view.
    *
-   * @return {refresh}, from the state of the component.
+   * @return {boolean} the value of {this.state.refresh}.
    */
-  getRefresh() {
+  getRefresh(): boolean {
+    if (this.state.refresh == null) {
+      return false;
+    }
+
     return this.state.refresh;
   };
 
   /**
    * Clears the search field and requests a back navigation.
    */
-  _onBack() {
+  _onBack(): void {
     this.refs.SearchInput.setNativeProps({text: ''});
     this.props.onBack();
   };
@@ -132,9 +141,9 @@ class SearchBar extends Component {
   /**
    * Prompts the app to search, so long as there is any text to search with.
    *
-   * @param text params to search for.
+   * @param {string} text params to search for.
    */
-  _onSearch(text) {
+  _onSearch(text: string): void {
     if (text && text.length > 0) {
       this.props.onSearch(text);
     }
@@ -143,7 +152,7 @@ class SearchBar extends Component {
   /**
    * Renders a text input field for searching.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
   render() {
     // Get current language for translations

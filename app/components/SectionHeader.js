@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * SectionHeader.js
  *
@@ -27,12 +24,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -53,11 +48,34 @@ const Styles = require('../Styles');
 const TextUtils = require('../util/TextUtils');
 
 // Represents a value in the subtitle which should not be used.
-const NULL_SUBTITLE_VALUE = 'value_null';
+const NULL_SUBTITLE_VALUE: string = 'value_null';
 // List of icon families that the subtitle icon can belong to.
-const VALID_ICON_CLASSES = ['material', 'ionicon'];
+const VALID_ICON_CLASSES: Array<?string> = ['material', 'ionicon'];
+
+// Type definition for component props.
+type Props = {
+  sectionName: string,
+  sectionIcon: ?string,
+  sectionIconClass: ?string,
+  sectionIconOnClick: () => any,
+  subtitleOnClick: () => any,
+  subtitleName: ?string,
+  subtitleIcon: ?string,
+  subtitleIconClass: ?string,
+  backgroundOverride: ?string,
+};
+
+// Type definition for component state.
+type State = {
+  sectionIcon: ?string,
+  sectionIconClass: ?string,
+  subtitleName: ?string,
+  subtitleIcon: ?string,
+  subtitleIconClass: ?string,
+};
 
 class SectionHeader extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this component.
@@ -77,9 +95,9 @@ class SectionHeader extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     let sectIcon = this.props.sectionIcon || NULL_SUBTITLE_VALUE;
@@ -97,36 +115,36 @@ class SectionHeader extends Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
-    this.getSubtitleName = this.getSubtitleName.bind(this);
-    this.getSubtitleIcon = this.getSubtitleIcon.bind(this);
-    this.getSubtitleIconClass = this.getSubtitleIconClass.bind(this);
-    this.updateSubtitle = this.updateSubtitle.bind(this);
+    (this:any).getSubtitleName = this.getSubtitleName.bind(this);
+    (this:any).getSubtitleIcon = this.getSubtitleIcon.bind(this);
+    (this:any).getSubtitleIconClass = this.getSubtitleIconClass.bind(this);
+    (this:any).updateSubtitle = this.updateSubtitle.bind(this);
   };
 
   /**
    * Gets the subtitle of the header.
    *
-   * @return the subtitle name from the state.
+   * @return {?string} the subtitle name from the state.
    */
-  getSubtitleName() {
+  getSubtitleName(): ?string {
     return this.state.subtitleName;
   };
 
   /**
    * Gets the name of the icon on the subtitle.
    *
-   * @return the subtitle icon name from the state.
+   * @return {?string} the subtitle icon name from the state.
    */
-  getSubtitleIcon() {
+  getSubtitleIcon(): ?string {
     return this.state.subtitleIcon;
   };
 
   /**
    * Gets the string representation of the icon class.
    *
-   * @return the subtitle icon class from the state.
+   * @return {?string} the subtitle icon class from the state.
    */
-  getSubtitleIconClass() {
+  getSubtitleIconClass(): ?string {
     return this.state.subtitleIconClass;
   };
 
@@ -134,24 +152,38 @@ class SectionHeader extends Component {
    * Returns a value which can be used in updateSubtitle(name, icon, iconClass)
    * to remove a subtitle value.
    *
-   * @return {NULL_SUBTITLE_VALUE}.
+   * @return {string} {NULL_SUBTITLE_VALUE}.
    */
-  getEmptySubtitleValue() {
+  getEmptySubtitleValue(): string {
     return NULL_SUBTITLE_VALUE;
   };
 
   /**
    * Update properties of the subtitle in the header.
    *
-   * @param name      new name for the subtitle.
-   * @param icon      new icon name for the subtitle.
-   * @param iconClass new icon class name for the subtitle.
+   * @param {string} name      new name for the subtitle.
+   * @param {string} icon      new icon name for the subtitle.
+   * @param {string} iconClass new icon class name for the subtitle.
    */
-  updateSubtitle(name, icon, iconClass) {
+  updateSubtitle(name: ?string, icon: ?string, iconClass: ?string) {
     if (VALID_ICON_CLASSES.indexOf(iconClass) < 0) {
       icon = iconClass = NULL_SUBTITLE_VALUE;
     }
 
+    // Set the subtitle params to {NULL_SUBTITLE_VALUE} if they are invalid.
+    if (name == null) {
+      name = NULL_SUBTITLE_VALUE;
+    }
+
+    if (icon == null) {
+      icon = NULL_SUBTITLE_VALUE;
+    }
+
+    if (iconClass == null) {
+      iconClass == NULL_SUBTITLE_VALUE;
+    }
+
+    // Update the state with the parameters
     this.setState({
       subtitleName: name,
       subtitleIcon: icon,
@@ -163,12 +195,12 @@ class SectionHeader extends Component {
    * Builds the components of the section header, including the title, icon,
    * subtitle, and subtitle icon.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
   render() {
-    let icon = null;
-    let subtitleName = null;
-    let subtitleIcon = null;
+    let icon: ?ReactElement = null;
+    let subtitleName: ?ReactElement = null;
+    let subtitleIcon: ?ReactElement = null;
 
     // Build the icon for the section
     if (this.state.sectionIcon !== NULL_SUBTITLE_VALUE && this.state.sectionIconClass !== NULL_SUBTITLE_VALUE) {
@@ -200,7 +232,7 @@ class SectionHeader extends Component {
     }
 
     // Build the subtitle for the section
-    if (this.state.subtitleName !== NULL_SUBTITLE_VALUE) {
+    if (this.state.subtitleName && this.state.subtitleName !== NULL_SUBTITLE_VALUE) {
       subtitleName = (
         <Text style={[Styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
           {this.state.subtitleName.toUpperCase()}
@@ -209,7 +241,8 @@ class SectionHeader extends Component {
     }
 
     // Build the icon for the subtitle
-    if (this.state.subtitleIcon !== NULL_SUBTITLE_VALUE && this.state.subtitleIconClass !== NULL_SUBTITLE_VALUE) {
+    if (this.state.subtitleIcon && this.state.subtitleIcon !== NULL_SUBTITLE_VALUE
+        && this.state.subtitleIconClass && this.state.subtitleIconClass !== NULL_SUBTITLE_VALUE) {
       if (this.state.subtitleIconClass === 'material') {
         subtitleIcon = (
           <MaterialIcons

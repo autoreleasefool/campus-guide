@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * DetailsScreen.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -53,7 +48,21 @@ const DisplayUtils = require('../util/DisplayUtils');
 const SectionHeader = require('./SectionHeader');
 const Styles = require('../Styles');
 
+// Type definition for component props.
+type Props = {
+  title: string,
+  image: ReactElement,
+  text: Array<string>,
+  backgroundColor: string,
+};
+
+// Type definition for component state.
+type State = {
+  backgroundColor: string,
+};
+
 class DetailsScreen extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -69,9 +78,9 @@ class DetailsScreen extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       backgroundColor: this.props.backgroundColor || Constants.Colors.garnet,
@@ -81,7 +90,7 @@ class DetailsScreen extends Component {
   /**
    * Renders an image, a title, and a set of paragraphs of text (the details).
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
   render() {
     let banner = null;
