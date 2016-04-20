@@ -30,12 +30,20 @@
  */
 'use strict';
 
+/******************************************************************************
+ *    Tabs
+ *****************************************************************************/
+
 export type TabIcons = {
   find: string,
   schedule: string,
   discover: string,
   settings: string,
 };
+
+/******************************************************************************
+ *    Semesters
+ *****************************************************************************/
 
 type SemesterWithDefaultName = {
   code: string,
@@ -54,6 +62,10 @@ export type Semester =
     | SemesterWithDefaultName
     | SemesterWithTranslatedName;
 
+/******************************************************************************
+ *    University
+ *****************************************************************************/
+
 type UniversityWithDefaultName = {
   lat: number,
   long: number,
@@ -71,6 +83,10 @@ export type University =
     | UniversityWithDefaultName
     | UniversityWithTranslatedNames;
 
+/******************************************************************************
+ *    Buses
+ *****************************************************************************/
+
 type BusInfoWithDefault = {
   name: string,
   link: string,
@@ -86,6 +102,34 @@ type BusInfoWithTranslated = {
 export type BusInfo =
     | BusInfoWithDefault
     | BusInfoWithTranslated;
+
+export type DetailedRouteInfo = {
+  number: number,
+  sign: string,
+  days: Object,
+};
+
+export type TransitStop = {
+  code: string,
+  id: string,
+  lat: number,
+  long: number,
+  name: string,
+  routes: Array<number | DetailedRouteInfo>,
+};
+
+export type TransitCampus = {
+  id: string,
+  lat: number,
+  long: number,
+  name_en: string,
+  name_fr: string,
+  stops: Array<TransitStop>,
+}
+
+/******************************************************************************
+ *    Icons
+ *****************************************************************************/
 
 type DefaultIcon = {
   icon: string,
@@ -107,9 +151,17 @@ export type IconObject =
 
 export type DefaultIconObject = DefaultIcon;
 
+/******************************************************************************
+ *    Platforms
+ *****************************************************************************/
+
 export type PlatformString =
     | 'ios'
     | 'android';
+
+/******************************************************************************
+ *    Languages
+ *****************************************************************************/
 
 export type LanguageString =
     | 'en'

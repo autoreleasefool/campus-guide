@@ -54,6 +54,7 @@ const TextUtils = require('../../../util/TextUtils');
 
 // Import type definition icons.
 import type {
+  DetailedRouteInfo,
   TransitCampus,
   TransitStop,
 } from '../../../Types';
@@ -67,7 +68,7 @@ const DETAILS: number = 1;
 type Props = {
   campus: TransitCampus,
   campusName: string,
-  onStopSelected: ?() => any,
+  onStopSelected: ?(stop: any) => any,
   backgroundIsDark: boolean,
 };
 
@@ -78,6 +79,22 @@ type State = {
   loaded: boolean,
   primaryTextColor: string,
   secondaryTextColor: string,
+};
+
+// Type definition for information about transit stops.
+type StopInfo = {
+  code: string,
+  name: string,
+  lat: number,
+  long: number,
+  routes: Array<number>,
+  key: number,
+};
+
+// Type definition for navigator routes.
+type NavigatorRoute = {
+  id: number,
+  stop: ?StopInfo,
 };
 
 class Stops extends Component {
@@ -154,15 +171,15 @@ class Stops extends Component {
    * display.
    */
   _loadStops(): void {
-    let stops = [];
-    for (let stop in this.props.campus['stops']) {
-      let stopInfo = {
-        code: this.props.campus['stops'][stop].code,
-        name: this.props.campus['stops'][stop].name,
-        lat: this.props.campus['stops'][stop].lat,
-        long: this.props.campus['stops'][stop].long,
-        routes: this.props.campus['stops'][stop].routes.slice(),
-        key: stop,
+    let stops: Array<StopInfo> = [];
+    for (let i = 0; i < this.props.campus.stops.length; i++) {
+      let stopInfo: StopInfo = {
+        code: this.props.campus.stops[i].code,
+        name: this.props.campus.stops[i].name,
+        lat: this.props.campus.stops[i].lat,
+        long: this.props.campus.stops[i].long,
+        routes: this.props.campus.stops[i].routes,
+        key: i,
       };
 
       stops.push(stopInfo);
@@ -177,28 +194,31 @@ class Stops extends Component {
   /**
    * Displays details about a single stop.
    *
-   * @param stop details about the stop to display.
+   * @param {TransitStop} stop details about the stop to display.
    */
-  _pressRow(stop) {
+  _pressRow(stop: StopInfo): void {
     if (this.props.onStopSelected) {
       this.props.onStopSelected(stop);
     }
 
-    const campuses = require('../../../../assets/static/json/transit_times.json');
-    let stopInfo = null;
-    for (let campus in campuses) {
-      if (campuses[campus].id === this.props.campusName) {
-        stopInfo = campuses[campus]['stops'][stop.key]['routes'];
+    const campuses: Array<TransitCampus> = require('../../../../assets/static/json/transit_times.json');
+    let routeInfo: ?Array<DetailedRouteInfo> = null;
+    for (let i = 0; i < campuses.length; i++) {
+      if (campuses[i].id === this.props.campusName) {
+        routeInfo = campuses[i]['stops'][stop.key]['routes'];
+        break;
       }
     }
 
-    let routesAndTimes = [];
-    for (let route in stopInfo) {
-      routesAndTimes.push({
-        number: route,
-        sign: stopInfo[route]['sign'],
-        days: stopInfo[route]['days'],
-      });
+    let routesAndTimes: Array<DetailedRouteInfo> = [];
+    if (routeInfo != null) {
+      for (let i = 0; i < routeInfo.length; i++) {
+        routesAndTimes.push({
+          number: routeInfo[i].number,
+          sign: routeInfo[i].sign,
+          days: routeInfo[i].days,
+        });
+      }
     }
 
     this.refs.Navigator.push({id: DETAILS, stop: stop});
@@ -210,13 +230,13 @@ class Stops extends Component {
   /**
    * Shows partial details about a stop.
    *
-   * @param stop         details about the stop to display.
-   * @param sectionIndex index of the section the stop is in.
-   * @param rowIndex     index of the row the stop is in.
-   * @return the name of the stop, its unique code, and the list of routes
+   * @param {StopInfo} stop       details about the stop to display.
+   * @param {string} sectionIndex index of the section the stop is in.
+   * @param {string} rowIndex     index of the row the stop is in.
+   * @return {ReactElement} Pthe name of the stop, its unique code, and the list of routes
    *         that serve the stop.
    */
-  _renderStopRow(stop, sectionIndex, rowIndex) {
+  _renderStopRow(stop: StopInfo, sectionIndex: string, rowIndex: string): ReactElement {
     return (
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>
@@ -242,12 +262,12 @@ class Stops extends Component {
   /**
    * Shows partial details about a route.
    *
-   * @param route        details about the route to display.
-   * @param sectionIndex index of the section the route is in.
-   * @param rowIndex     index of the row the route is in.
-   * @return the headline and number of the route, and the upcoming times.
+   * @param {DetailedRouteInfo} route details about the route to display.
+   * @param {string} sectionIndex     index of the section the route is in.
+   * @param {string} rowIndex         index of the row the route is in.
+   * @return {ReactElement} the headline and number of the route, and the upcoming times.
    */
-  _renderTimeRow(route, sectionIndex, rowIndex) {
+  _renderTimeRow(route: DetailedRouteInfo, sectionIndex: string, rowIndex: string): ReactElement {
     return (
       <View>
         <View style={_styles.header}>
@@ -271,10 +291,10 @@ class Stops extends Component {
   /**
    * Returns a list of times for the current day that will be the next to occur.
    *
-   * @param days a dictionary of days mapped to times.
-   * @return a list of up to 3 times, formatted as a string.
+   * @param {Object} days a dictionary of days mapped to times.
+   * @return {string} a list of up to 3 times, formatted as a string.
    */
-  _retrieveUpcomingTimes(days) {
+  _retrieveUpcomingTimes(days: Object): string {
     let upcomingTimes = [];
     let now = new Date();
     let currentDay = now.getDay().toString();
@@ -308,11 +328,11 @@ class Stops extends Component {
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param route     object with properties to identify the route to display.
-   * @param navigator navigator object to pass to children.
-   * @return the view to render, based on {route}.
+   * @param {NavigatorRoute} route object with properties to identify the route to display.
+   * @param {ReactClass} navigator navigator object to pass to children.
+   * @return {ReactElement} the view to render, based on {route}.
    */
-  _renderScene(route, navigator) {
+  _renderScene(route: NavigatorRoute, navigator: ReactClass): ReactElement {
     if (route.id === DETAILS && route.stop != null) {
       let icon = {
         class: 'material',
@@ -356,7 +376,7 @@ class Stops extends Component {
   /**
    * If the stops have not beed loaded, then loads them.
    */
-  componentDidMount() {
+  componentDidMount(): void {
     if (!this.state.loaded) {
       this._loadStops();
     }
@@ -365,9 +385,9 @@ class Stops extends Component {
   /**
    * Renders a navigator which handles the scene rendering.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     return (
       <View style={_styles.container}>
         <Navigator
