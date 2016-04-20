@@ -97,7 +97,7 @@ module.exports = {
    * @param {string} time time to convert, in '00:00' format.
    * @return {string} a time between 00:00 and 23:59.
    */
-  _get24HourAdjustedTime(time: string): string {
+  get24HourAdjustedTime(time: string): string {
     let hours = parseInt(time.substring(0, 2));
     let minutes = time.substring(3, 5);
     if (hours > 23) {

@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * Stops.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -57,15 +52,40 @@ const SectionHeader = require('../../../components/SectionHeader');
 const Styles = require('../../../Styles');
 const TextUtils = require('../../../util/TextUtils');
 
+// Import type definition icons.
+import type {
+  TransitCampus,
+  TransitStop,
+} from '../../../Types';
+
 // Identifier for the navigator, indicating the list of stops is being shown.
-const LIST = 0;
+const LIST: number = 0;
 // Identifier for the navigator, indicating the details of a stop are shown.
-const DETAILS = 1;
+const DETAILS: number = 1;
+
+// Type definition for component props.
+type Props = {
+  campus: TransitCampus,
+  campusName: string,
+  onStopSelected: ?() => any,
+  backgroundIsDark: boolean,
+};
+
+// Type definition for component state.
+type State = {
+  dataSourceStops: ReactClass,
+  dataSourceTimes: ReactClass,
+  loaded: boolean,
+  primaryTextColor: string,
+  secondaryTextColor: string,
+};
 
 class Stops extends Component {
+  state: State;
 
   /**
-   * Properties which the parent component should make available to this component.
+   * Properties which the parent component should make available to this
+   * component.
    */
   static propTypes = {
     campus: React.PropTypes.object.isRequired,
@@ -77,9 +97,9 @@ class Stops extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     let primaryTextColor = (this.props.backgroundIsDark)
@@ -99,21 +119,21 @@ class Stops extends Component {
       loaded: false,
       primaryTextColor: primaryTextColor,
       secondaryTextColor: secondaryTextColor,
-    }
+    };
 
     // Explicitly binding 'this' to all methods that need it
-    this._clearStop = this._clearStop.bind(this);
-    this._loadStops = this._loadStops.bind(this);
-    this._pressRow = this._pressRow.bind(this);
-    this._renderStopRow = this._renderStopRow.bind(this);
-    this._renderTimeRow = this._renderTimeRow.bind(this);
-    this._renderScene = this._renderScene.bind(this);
+    (this:any)._clearStop = this._clearStop.bind(this);
+    (this:any)._loadStops = this._loadStops.bind(this);
+    (this:any)._pressRow = this._pressRow.bind(this);
+    (this:any)._renderStopRow = this._renderStopRow.bind(this);
+    (this:any)._renderTimeRow = this._renderTimeRow.bind(this);
+    (this:any)._renderScene = this._renderScene.bind(this);
   };
 
   /**
    * Informs parent that no stop is selected.
    */
-  _clearStop() {
+  _clearStop(): void {
     this.refs.Navigator.pop();
     if (this.props.onStopSelected) {
       this.props.onStopSelected(null);
@@ -123,9 +143,9 @@ class Stops extends Component {
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @return a configuration for transitions between scenes.
+   * @return {Object} a configuration for transitions between scenes.
    */
-  _configureScene() {
+  _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
   };
 
@@ -133,7 +153,7 @@ class Stops extends Component {
    * Loads information about each of the stops on the campus into a list to
    * display.
    */
-  _loadStops() {
+  _loadStops(): void {
     let stops = [];
     for (let stop in this.props.campus['stops']) {
       let stopInfo = {
@@ -164,8 +184,14 @@ class Stops extends Component {
       this.props.onStopSelected(stop);
     }
 
-    let stopInfo = require('../../../../assets/static/json/transit_times.json');
-    stopInfo = stopInfo[this.props.campusName]['stops'][stop.key]['routes'];
+    const campuses = require('../../../../assets/static/json/transit_times.json');
+    let stopInfo = null;
+    for (let campus in campuses) {
+      if (campuses[campus].id === this.props.campusName) {
+        stopInfo = campuses[campus]['stops'][stop.key]['routes'];
+      }
+    }
+
     let routesAndTimes = [];
     for (let route in stopInfo) {
       routesAndTimes.push({
@@ -262,7 +288,7 @@ class Stops extends Component {
           if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
             let j = 1;
             while (j < 4 && i + j < days[day].length) {
-              upcomingTimes.push(TextUtils._getAdjustedTime(days[day][i + j]));
+              upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
               j += 1;
             }
             break;

@@ -192,11 +192,13 @@ class CampusStops extends Component {
    * Retrieves data about the campus provided as {this.props.campusName}.
    */
   _loadCampusInfo() {
-    let campuses = require('../../../assets/static/json/transit_stops.json');
-    if (this.props.campusName in campuses) {
-      this.setState({
-        campus: campuses[this.props.campusName],
-      });
+    const campuses = require('../../../assets/static/json/transit_stops.json');
+    for (let campus in campuses) {
+      if (campuses[campus].id === this.props.campusName) {
+        this.setState({
+          campus: campuses[campus],
+        });
+      }
     }
   };
 
@@ -217,10 +219,12 @@ class CampusStops extends Component {
   render() {
     return (
       <View style={[_styles.container, {backgroundColor: this.props.campusColor}]}>
-        <View style={_styles.container}>
+        <View style={_styles.mapContainer}>
           {this._getCampusMap()}
         </View>
-        {this._getCampusStops()}
+        <View style={_styles.stopsContainer}>
+          {this._getCampusStops()}
+        </View>
       </View>
     );
   };
@@ -237,6 +241,12 @@ const _styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  mapContainer: {
+    flex: 1,
+  },
+  stopsContainer: {
+    flex: 2,
   },
 });
 
