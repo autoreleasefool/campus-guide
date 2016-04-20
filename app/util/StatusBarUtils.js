@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * StatusBarUtils.js
  *
@@ -27,12 +24,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 module.exports = {
@@ -41,9 +36,11 @@ module.exports = {
    * Changes the status bar text colors on iOS to be either light or dark.
    * True for light, false for dark.
    *
-   * @param light {true} or {false} to set the color of the status bar.
+   * @param {{OS: string}} Platform an instance of the React Native Platform class.
+   * @param {ReactClass} StatusBar an instance of the React Native StatusBar class.
+   * @param {boolean} light true or false to set the color of the status bar.
    */
-  setLightStatusBarIOS(Platform, StatusBar, light) {
+  setLightStatusBarIOS(Platform: {OS: string}, StatusBar: ReactClass, light: boolean): void {
     if (Platform.OS === 'ios') {
       if (light) {
         StatusBar.setBarStyle('light-content');
@@ -56,9 +53,10 @@ module.exports = {
   /**
    * Returns an additional padding for the status bar on iOS.
    *
-   * @return the padding to use for the status bar.
+   * @param {{OS: string}} Platform an instance of the React Native Platform class.
+   * @return {number} the padding to use for the status bar.
    */
-  getStatusBarPadding(Platform) {
+  getStatusBarPadding(Platform: {OS: string}): number {
     if (Platform.OS === 'ios') {
       return 20;
     } else {

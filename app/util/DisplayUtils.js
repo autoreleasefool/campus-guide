@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * DisplayUtils.js
  *
@@ -27,34 +24,38 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
+
+// Import type definition icons.
+import type {
+  DefaultIconObject,
+  IconObject,
+  PlatformString,
+} from '../Types';
 
 module.exports = {
 
   /**
    * Returns true if a hexadecimal color is 'dark', false otherwise.
    *
-   * @param color a hexadecimal string
-   * @return {true} if the color is dark, {false} otherwise.
+   * @param {string} color a hexadecimal string
+   * @return {boolean} true if the color is dark, false otherwise.
    */
-  isColorDark(color) {
-    if (typeof(color) == 'string') {
-      if (color.indexOf('#') == 0) {
-        color = parseInt(color.substring(1, color.length), 16);
-      } else {
-        color = parseInt(color, 16);
-      }
+  isColorDark(color: string): boolean {
+    let hexColor: number = 0;
+    if (color.indexOf('#') == 0) {
+      hexColor = parseInt(color.substring(1, color.length), 16);
+    } else {
+      hexColor = parseInt(color, 16);
     }
 
-    let r = (color & 0xff0000) >> 16;
-    let g = (color & 0xff00) >> 8;
-    let b = (color & 0xff);
+    const r: number = (hexColor & 0xff0000) >> 16;
+    const g: number = (hexColor & 0xff00) >> 8;
+    const b: number = (hexColor & 0xff);
 
     return ((r * 0.299 + g * 0.587 + b * 0.114) / 256 < 0.5);
   },
@@ -63,12 +64,12 @@ module.exports = {
    * Returns the icon and class for an icon to use for the iOS platform,
    * defined in the object.
    *
-   * @param obj the object with either 'ios.icon' and 'ios.iconClass'
-   *            properties, or 'icon' and 'iconClass' properties.
-   * @return an object with 'icon' and 'iconClass' properties, or null.
+   * @param {IconObject} obj the object with either 'ios.icon' and 'ios.iconClass'
+   *                         properties, or 'icon' and 'iconClass' properties.
+   * @return {?DefaultIconObject} an object with 'icon' and 'iconClass' properties, or null.
    */
-  getIOSIcon(obj) {
-    if ('ios' in obj && 'icon' in obj['ios'] && 'iconClass' in obj['ios']) {
+  getIOSIcon(obj: IconObject): ?DefaultIconObject {
+    if ('ios' in obj && 'icon' in obj.ios && 'iconClass' in obj.ios) {
       return {icon: obj.ios.icon, iconClass: obj.ios.iconClass};
     } else if ('icon' in obj && 'iconClass' in obj) {
       return {icon: obj.icon, iconClass: obj.iconClass};
@@ -81,12 +82,12 @@ module.exports = {
    * Returns the icon and class for an icon to use for the Android platform,
    * defined in the object.
    *
-   * @param obj the object with either 'android.icon' and 'android.iconClass'
-   *            properties, or 'icon' and 'iconClass' properties.
-   * @return an object with 'icon' and 'iconClass' properties, or null.
+   * @param {IconObject} obj the object with either 'android.icon' and 'android.iconClass'
+   *                         properties, or 'icon' and 'iconClass' properties.
+   * @return {?DefaultIconObject} an object with 'icon' and 'iconClass' properties, or null.
    */
-  getAndroidIcon(obj) {
-    if ('android' in obj && 'icon' in obj['android'] && 'iconClass' in obj['android']) {
+  getAndroidIcon(obj: IconObject): ?DefaultIconObject {
+    if ('android' in obj && 'icon' in obj.android && 'iconClass' in obj.android) {
       return {icon: obj.android.icon, iconClass: obj.android.iconClass};
     } else if ('icon' in obj && 'iconClass' in obj) {
       return {icon: obj.icon, iconClass: obj.iconClass};
@@ -99,13 +100,13 @@ module.exports = {
    * Returns the icon and class defined for an object, for the platform specified.
    * Platform should be 'ios' or 'android'.
    *
-   * @param platform either 'ios' or 'android'.
-   * @param obj      the object with either '{platform}.icon' and
-   *                 '{platform}.iconClass' properties, or 'icon' and
-   *                 'iconClass' properties.
-   * @return an object with 'icon' and 'iconClass' properties, or null.
+   * @param {PlatformString} platform either 'ios' or 'android'.
+   * @param {IconObject}     obj      the object with either '{platform}.icon' and
+   *                                  '{platform}.iconClass' properties, or 'icon' and
+   *                                  'iconClass' properties.
+   * @return {?DefaultIconObject} an object with 'icon' and 'iconClass' properties, or null.
    */
-  getPlatformIcon(platform, obj) {
+  getPlatformIcon(platform: PlatformString, obj: IconObject): ?DefaultIconObject {
     if (platform === 'ios') {
       return this.getIOSIcon(obj);
     } else if (platform === 'android') {
@@ -118,10 +119,10 @@ module.exports = {
   /**
    * Returns the icon name for certain social media platforms.
    *
-   * @param socialMedia a string containing the name of a social media platform.
-   * @return the icon of the provided social media platform, or a generic icon.
+   * @param {string} socialMedia a string containing the name of a social media platform.
+   * @return {string} the icon of the provided social media platform, or a generic icon.
    */
-  getSocialMediaIconName(socialMedia) {
+  getSocialMediaIconName(socialMedia: string): string {
     switch(socialMedia.toLowerCase()) {
       case 'linkedin':
         return 'social-linkedin';
@@ -143,11 +144,11 @@ module.exports = {
   /**
    * Returns a color for the icon for certain social media platforms.
    *
-   * @param socialMedia a string containing the name of a social media platform.
-   * @return the color for the icon of the provided social media platform,
+   * @param {string} socialMedia a string containing the name of a social media platform.
+   * @return {string} the color for the icon of the provided social media platform,
    *         or a generic color.
    */
-  getSocialMediaIconColor(socialMedia) {
+  getSocialMediaIconColor(socialMedia: string): string {
     switch(socialMedia.toLowerCase()) {
       case 'linkedin':
         return '#0077B5';

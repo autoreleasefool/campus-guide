@@ -47,7 +47,9 @@ const {
 const Constants = require('../Constants');
 
 // Import type definition for tab icons.
-import type {TabIcons} from '../Types';
+import type {
+  TabIcons,
+} from '../Types';
 
 let Icon: ReactClass = require('react-native-vector-icons/MaterialIcons');
 let tabIcons: TabIcons = {

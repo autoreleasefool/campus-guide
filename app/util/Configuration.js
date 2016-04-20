@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * Configuration.js
  *
@@ -27,33 +24,40 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
-let availableSemesters = [];
-let university = {};
-let cityBuses = {};
+// Import type definition for objects.
+import type {
+  Semester,
+  University,
+  BusInfo,
+} from '../Types';
+
+let availableSemesters: Array<Semester> = [];
+let university: ?University = null;
+let cityBuses: ?BusInfo = null;
 
 /*
  * Asynchronously gets the configuration for the application and loads the
  * various config values into their respective variables.
  */
-async function _requestConfig() {
+async function _requestConfig(): Promise<void> {
   // Get the configuration file
-  let configuration = require('../../assets/static/json/config.json');
+  const configuration: Object = require('../../assets/static/json/config.json');
 
   // Get the current semesters available in the app
-  for (var i = 0; i < configuration['AvailableSemesters'].length; i++) {
-    availableSemesters.push(configuration['AvailableSemesters'][i]);
+  if (configuration.AvailableSemesters) {
+    for (var i = 0; i < configuration.AvailableSemesters.length; i++) {
+      availableSemesters.push(configuration.AvailableSemesters[i]);
+    }
   }
 
-  university = configuration['University'];
-  cityBuses = configuration['Bus'];
+  university = configuration.University;
+  cityBuses = configuration.Bus;
 }
 
 module.exports = {
@@ -63,44 +67,44 @@ module.exports = {
    *
    * @return the Promise from the async function {_requestConfig}.
    */
-  loadConfiguration() {
+  loadConfiguration(): Promise<void> {
     return _requestConfig();
   },
 
   /**
    * Gets the list of semesters currently available in the application.
    *
-   * @return the list of objects containing semester information.
+   * @return {Array<Semester>} the list of objects containing semester information.
    */
-  getAvailableSemesters() {
+  getAvailableSemesters(): Array<Semester> {
     return availableSemesters;
   },
 
   /**
    * Returns the semester requested.
    *
-   * @param semester index of the semester to return.
-   * @return the object with semester information.
+   * @param {number} semester index of the semester to return.
+   * @return {Semester} the object with semester information.
    */
-  getSemester(semester) {
+  getSemester(semester: number): Semester {
     return availableSemesters[semester];
   },
 
   /**
    * Gets a object with information about the university.
    *
-   * @return an object with details about the university.
+   * @return {University} an object with details about the university.
    */
-  getUniversity() {
+  getUniversity(): ?University {
     return university;
   },
 
   /**
    * Returns an object with information about the city buses.
    *
-   * @return an objec with details about the city bus system.
+   * @return {BusInfo} an object with details about the city bus system.
    */
-  getCityBusyInfo() {
+  getCityBusyInfo(): ?BusInfo {
     return cityBuses;
   },
 };

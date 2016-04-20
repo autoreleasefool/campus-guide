@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * Preferences.js
  *
@@ -30,12 +27,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -48,31 +43,37 @@ const {
 const Configuration = require('./Configuration');
 const LanguageUtils = require('./LanguageUtils');
 
+// Import type definition for objects.
+import type {
+  LanguageString,
+  Semester,
+} from '../Types';
+
 // Represents the number of times the app has been opened
-const TIMES_APP_OPENED = 'app_times_opened';
+const TIMES_APP_OPENED: string = 'app_times_opened';
 // Represents the language selected by the user to use the app in
-const SELECTED_LANGUAGE = 'app_selected_langauge';
+const SELECTED_LANGUAGE: string = 'app_selected_langauge';
 // Represents the current study semester selected by the user
-const CURRENT_SEMESTER = 'app_current_semester';
+const CURRENT_SEMESTER: string = 'app_current_semester';
 // Represents if the user prefers routes with wheelchair access
-const PREFER_WHEELCHAIR = 'app_pref_wheel';
+const PREFER_WHEELCHAIR: string = 'app_pref_wheel';
 
 // Cached values of preferences
-let timesAppOpened = 0;
-let selectedLanguage = null;
-let currentSemester = 0;
-let preferWheelchair = false;
+let timesAppOpened: number = 0;
+let selectedLanguage: ?LanguageString = null;
+let currentSemester: number = 0;
+let preferWheelchair: boolean = false;
 
 /**
  * Method which should be invoked each time the app is opened, to
  * keep a running track of how many times the app has been opened,
  * the user's preferred language, etc.
  */
-async function _loadInitialPreferences() {
+async function _loadInitialPreferences(): Promise<void> {
   // If any errors occur, just use the default values of the preferences
   try {
     // Number of times the app has been used. Either null or integer greater than or equal to 0
-    let value = await AsyncStorage.getItem(TIMES_APP_OPENED);
+    let value: any = await AsyncStorage.getItem(TIMES_APP_OPENED);
     timesAppOpened = (value !== null)
         ? parseInt(value)
         : 0;
@@ -112,38 +113,38 @@ module.exports = {
   /**
    * Wrapper method for _loadInitialPreferences.
    *
-   * @return the Promise from the async function {_loadInitialPreferences}.
+   * @return {Promise<void>} the Promise from the async function {_loadInitialPreferences}.
    */
-  loadInitialPreferences() {
+  loadInitialPreferences(): Promise<void> {
     return _loadInitialPreferences();
   },
 
   /**
    * Checks if the app is being opened for the first time.
    *
-   * @return {true} if the app has not been opened before, {false} otherwise.
+   * @return {boolean} true if the app has not been opened before, false otherwise.
    */
-  isFirstTimeOpened() {
+  isFirstTimeOpened(): boolean {
     return timesAppOpened == 1;
   },
 
   /**
    * Checks if a language has been selected by the user.
    *
-   * @return {true} if a language has been selected, {false} otherwise.
+   * @return {boolean} true if a language has been selected, false otherwise.
    */
-  isLanguageSelected() {
+  isLanguageSelected(): boolean {
     return selectedLanguage === 'en' || selectedLanguage === 'fr';
   },
 
   /**
    * Gets the preferred language selected by the user.
    *
-   * @return 'en' for English, 'fr' for French, or 'en' if no language has
+   * @return {LanguageString} 'en' for English, 'fr' for French, or 'en' if no language has
    *         been selected yet.
    */
-  getSelectedLanguage() {
-    return (this.isLanguageSelected()
+  getSelectedLanguage(): LanguageString {
+    return (this.isLanguageSelected() && selectedLanguage != null
         ? selectedLanguage
         : 'en');
   },
@@ -151,9 +152,9 @@ module.exports = {
   /**
    * Updates the user's preferred language.
    *
-   * @param language the new language, either 'en' or 'fr'.
+   * @param {LanguageString} language the new language, either 'en' or 'fr'.
    */
-  setSelectedLanguage(language) {
+  setSelectedLanguage(language: LanguageString): void {
     if (language !== 'en' && language !=='fr') {
       return;
     }
@@ -165,18 +166,18 @@ module.exports = {
   /**
    * Indicates if the user prefers wheelchair accessible routes or doesn't care.
    *
-   * @return {true} if the user prefers accessible routes, {false} otherwise.
+   * @return {boolean} true if the user prefers accessible routes, false otherwise.
    */
-  isWheelchairRoutePreferred() {
+  isWheelchairRoutePreferred(): boolean {
     return preferWheelchair;
   },
 
   /**
    * Updates the user's preference to wheelchair accessible routes.
    *
-   * @param preferred the new preference for wheelchair accessible routes.
+   * @param {boolean} preferred the new preference for wheelchair accessible routes.
    */
-  setWheelchairRoutePreferred(preferred) {
+  setWheelchairRoutePreferred(preferred: boolean): void {
     if (preferred !== true && preferred !== false) {
       return;
     }
@@ -189,9 +190,9 @@ module.exports = {
    * Sets the current semester. If the provided value is not a valid index,
    * the current semester is set to 0.
    *
-   * @param semester the new current semester.
+   * @param {number} semester the new current semester.
    */
-  setCurrentSemester(semester) {
+  setCurrentSemester(semester: number): void {
     if (semester >= Configuration.getAvailableSemesters().length || semester < 0) {
       currentSemester = 0;
     } else {
@@ -204,25 +205,25 @@ module.exports = {
   /**
    * Sets semester to be the next in chronologically.
    */
-  setToNextSemester() {
+  setToNextSemester(): void {
     this.setCurrentSemester(currentSemester + 1);
   },
 
   /**
    * Returns the index of the current semester.
    *
-   * @return the index of the current semester.
+   * @return {number} the index of the current semester.
    */
-  getCurrentSemester() {
+  getCurrentSemester(): number {
     return currentSemester;
   },
 
   /**
    * Returns information about the current semester.
    *
-   * @return details about the current semester.
+   * @return {Semester} details about the current semester.
    */
-  getCurrentSemesterInfo() {
+  getCurrentSemesterInfo(): Semester {
     return Configuration.getSemester(currentSemester);
   },
 
@@ -231,10 +232,10 @@ module.exports = {
    * value may be a string, boolean, integer, or object, and should correspond
    * to the type of the setting.
    *
-   * @param key the setting value to return.
-   * @return the value of the setting corresponding to {key}, or null.
+   * @param {string} key the setting value to return.
+   * @return {any} the value of the setting corresponding to {key}, or null.
    */
-  getSetting(key) {
+  getSetting(key: string): any {
     if (key === 'pref_lang') {
       return (this.getSelectedLanguage() === 'en')
           ? 'English'

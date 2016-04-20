@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * ExternalUtils.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // Imports
@@ -44,10 +39,17 @@ module.exports = {
   /**
    * Opens a URL if the URL is valid.
    *
-   * @param url URL to open.
-   * @param Translations translations in the current language of certain text.
+   * @param {string} url URL to open.
+   * @param {Object} Translations translations in the current language of certain text.
+   * @param {ReactClass} Linking an instance of the React Native Linking class.
+   * @param {ReactClass} Alert an instance of the React Native Alert class.
+   * @param {ReactClass} Clipboard an instance of the React Native Clipboard class.
    */
-  openLink(Linking, url, Translations) {
+  openLink(url: string,
+           Translations: Object,
+           Linking: ReactClass,
+           Alert: ReactClass,
+           Clipboard: ReactClass): void {
     let formattedUrl = TextUtils.formatLink(url);
 
     Linking.canOpenURL(url).then(supported => {

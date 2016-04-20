@@ -30,4 +30,87 @@
  */
 'use strict';
 
-export type TabIcons = {find: string, schedule: string, discover: string, settings: string};
+export type TabIcons = {
+  find: string,
+  schedule: string,
+  discover: string,
+  settings: string,
+};
+
+type SemesterWithDefaultName = {
+  code: string,
+  current: boolean,
+  name: string,
+};
+
+type SemesterWithTranslatedName = {
+  code: string,
+  current: boolean,
+  name_en: string,
+  name_fr: string,
+};
+
+export type Semester =
+    | SemesterWithDefaultName
+    | SemesterWithTranslatedName;
+
+type UniversityWithDefaultName = {
+  lat: number,
+  long: number,
+  name: string,
+};
+
+type UniversityWithTranslatedNames = {
+  lat: number,
+  long: number,
+  name_en: string,
+  name_fr: string,
+};
+
+export type University =
+    | UniversityWithDefaultName
+    | UniversityWithTranslatedNames;
+
+type BusInfoWithDefault = {
+  name: string,
+  link: string,
+};
+
+type BusInfoWithTranslated = {
+  name_en: string,
+  name_fr: string,
+  link_en: string,
+  link_fr: string,
+};
+
+export type BusInfo =
+    | BusInfoWithDefault
+    | BusInfoWithTranslated;
+
+type DefaultIcon = {
+  icon: string,
+  iconClass: string,
+};
+
+type AndroidIcon = {
+  android: DefaultIcon,
+};
+
+type IOSIcon = {
+  ios: DefaultIcon,
+};
+
+export type IconObject =
+    | DefaultIcon
+    | AndroidIcon
+    | IOSIcon;
+
+export type DefaultIconObject = DefaultIcon;
+
+export type PlatformString =
+    | 'ios'
+    | 'android';
+
+export type LanguageString =
+    | 'en'
+    | 'fr';
