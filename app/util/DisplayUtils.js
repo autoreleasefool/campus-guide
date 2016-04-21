@@ -32,10 +32,8 @@
 
 // Import type definition icons.
 import type {
-  AndroidIcon,
   DefaultIcon,
   IconObject,
-  IOSIcon,
   PlatformString,
 } from '../Types';
 

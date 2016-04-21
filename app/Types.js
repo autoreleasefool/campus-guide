@@ -151,18 +151,14 @@ export type DefaultIcon = {
   class: string,
 };
 
-export type AndroidIcon = {
-  android: DefaultIcon,
-};
-
-export type IOSIcon = {
+export type PlatformIcon = {
   ios: DefaultIcon,
-};
+  android: DefaultIcon,
+}
 
 export type IconObject =
     | DefaultIcon
-    | AndroidIcon
-    | IOSIcon;
+    | PlatformIcon;
 
 /******************************************************************************
  *    Platforms
