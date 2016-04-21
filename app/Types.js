@@ -103,6 +103,21 @@ export type BusInfo =
     | BusInfoWithDefault
     | BusInfoWithTranslated;
 
+type BusCampusWithDefaultName = {
+  name: string,
+  image: ReactClass,
+};
+
+type BusCampusWithTranslatedName = {
+  name_en: string,
+  name_fr: string,
+  image: ReactClass,
+};
+
+export type BusCampus =
+    | BusCampusWithDefaultName
+    | BusCampusWithTranslatedName;
+
 export type DetailedRouteInfo = {
   number: number,
   sign: string,
@@ -166,3 +181,14 @@ export type PlatformString =
 export type LanguageString =
     | 'en'
     | 'fr';
+
+/******************************************************************************
+ *    Location
+ *****************************************************************************/
+
+ export type LatLong = {
+   latitude: number,
+   longitude: number,
+   latitudeDelta: number,
+   longitudeDelta: number,
+ }

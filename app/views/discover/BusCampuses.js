@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * BusCampuses.js
  *
@@ -27,17 +24,17 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
 const React = require('react-native');
 const {
+  Alert,
+  Clipboard,
   Component,
   Image,
   Linking,
@@ -54,15 +51,31 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 
+// Import type definition for bus campus.
+import type {
+  BusCampus,
+} from '../../Types';
+
 // Background colors for each campus
-const campuscolors = [
+const campuscolors: Array<string> = [
   Constants.Colors.garnet,
   Constants.Colors.charcoalGrey,
   Constants.Colors.lightGrey,
-  Constants.Colors.darkGrey
+  Constants.Colors.darkGrey,
 ];
 
+// Type definition for component props.
+type Props = {
+  showCampus: () => any,
+};
+
+// Type definition for component state.
+type State = {
+  campuses: ?Array<BusCampus>,
+};
+
 class BusCampuses extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this component.
@@ -74,9 +87,9 @@ class BusCampuses extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -86,19 +99,23 @@ class BusCampuses extends Component {
 
   /**
    * Opens the bus company website.
-   * @param Translations translations in the current language of certain text.
+   *
+   * @param {Object} Translations translations in the current language of certain text.
    */
-  _goToBusWebsite(Translations) {
-    ExternalUtils.openLink(Linking,
+  _goToBusWebsite(Translations: Object): void {
+    ExternalUtils.openLink(
         LanguageUtils.getTranslatedLink(Preferences.getSelectedLanguage(), Configuration.getCityBusyInfo()),
-        Translations);
+        Translations,
+        Linking,
+        Alert,
+        Clipboard);
   }
 
   /**
    * Loads a list of campus names and images representing them.
    */
-  _loadCampuses() {
-    let campuses = require('../../../assets/static/js/BusCampuses');
+  _loadCampuses(): void {
+    const campuses: Array<BusCampus> = require('../../../assets/static/js/BusCampuses');
     this.setState({
       campuses: campuses,
     });
@@ -107,7 +124,7 @@ class BusCampuses extends Component {
   /**
    * If the campuses have not been loaded, then loads them.
    */
-  componentDidMount() {
+  componentDidMount(): void {
     if (this.state.campuses == null) {
       this._loadCampuses();
     }
@@ -117,31 +134,38 @@ class BusCampuses extends Component {
    * Renders an image and title for each of the campuses which link to more
    * detailed views.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     // Get current language for translations
-    let Translations = null;
+    let Translations: ?Object = null;
     if (Preferences.getSelectedLanguage() === 'fr') {
       Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {
       Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
-    let campusDisplayNames = [null, null, null, null];
-    let campusStopNames = [null, null, null, null];
-    let campusImages = [null, null, null, null];
+    let campusDisplayNames: Array<string> = [];
+    let campusStopNames: Array<string> = [];
+    let campusImages: Array<ReactElement> = [];
 
     // If the campuses have been loaded, parse the data
     if (this.state.campuses != null) {
-      for (let campus in this.state.campuses) {
-        campusDisplayNames[campus] = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campuses[campus]);
-        campusStopNames[campus] = LanguageUtils.getEnglishName(this.state.campuses[campus]);
-        campusImages[campus] = (
+      for (let i: number = 0; i < this.state.campuses.length; i++) {
+        let campus: BusCampus = this.state.campuses[i];
+        let displayName: ?string = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), campus);
+        let stopName: ?string = LanguageUtils.getEnglishName(campus);
+
+        displayName = displayName || '';
+        stopName = stopName || '';
+
+        campusDisplayNames.push(displayName);
+        campusStopNames.push(stopName);
+        campusImages.push(
           <Image
               style={_styles.campusImage}
               resizeMode={'cover'}
-              source={this.state.campuses[campus].image} />
+              source={campus.image} />
         );
       }
     } else {
@@ -187,7 +211,7 @@ class BusCampuses extends Component {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-            onPress={() => this._goToBusWebsite(Translations)}>
+            onPress={() => this._goToBusWebsite(Translations || {})}>
           <SectionHeader
               sectionName={Translations['bus_company']}
               sectionIcon={'android-open'}

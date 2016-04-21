@@ -39,17 +39,17 @@ module.exports = {
   /**
    * Opens a URL if the URL is valid.
    *
-   * @param {string} url URL to open.
+   * @param {?string} url URL to open.
    * @param {Object} Translations translations in the current language of certain text.
    * @param {ReactClass} Linking an instance of the React Native Linking class.
    * @param {ReactClass} Alert an instance of the React Native Alert class.
    * @param {ReactClass} Clipboard an instance of the React Native Clipboard class.
    */
-  openLink(url: string,
+  openLink(url: ?string,
            Translations: Object,
            Linking: ReactClass,
            Alert: ReactClass,
-           Clipboard: ReactClass): void {
+           Clipboard: Object): void {
     let formattedUrl = TextUtils.formatLink(url);
 
     Linking.canOpenURL(url).then(supported => {

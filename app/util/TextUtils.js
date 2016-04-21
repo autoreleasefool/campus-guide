@@ -76,7 +76,11 @@ module.exports = {
    * @param {string} link link to format. Accepted formats are 'tel:\d+', 'mailto:.*'.
    * @return {string} a link which is better for display, or the original.
    */
-  formatLink(link: string): string {
+  formatLink(link: ?string): string {
+    if (link == null) {
+      return '';
+    }
+
     if (link.indexOf('tel:') === 0) {
       if (link.length === 14) {
         return '(' + link.substr(4, 3) + ') ' + link.substr(7, 3) + '-' + link.substr(10, 4);
