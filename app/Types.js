@@ -146,16 +146,16 @@ export type TransitCampus = {
  *    Icons
  *****************************************************************************/
 
-type DefaultIcon = {
-  icon: string,
-  iconClass: string,
+export type DefaultIcon = {
+  name: string,
+  class: string,
 };
 
-type AndroidIcon = {
+export type AndroidIcon = {
   android: DefaultIcon,
 };
 
-type IOSIcon = {
+export type IOSIcon = {
   ios: DefaultIcon,
 };
 
@@ -163,8 +163,6 @@ export type IconObject =
     | DefaultIcon
     | AndroidIcon
     | IOSIcon;
-
-export type DefaultIconObject = DefaultIcon;
 
 /******************************************************************************
  *    Platforms

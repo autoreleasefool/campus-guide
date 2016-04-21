@@ -32,8 +32,10 @@
 
 // Import type definition icons.
 import type {
-  DefaultIconObject,
+  AndroidIcon,
+  DefaultIcon,
   IconObject,
+  IOSIcon,
   PlatformString,
 } from '../Types';
 
@@ -64,36 +66,42 @@ module.exports = {
    * Returns the icon and class for an icon to use for the iOS platform,
    * defined in the object.
    *
-   * @param {IconObject} obj the object with either 'ios.icon' and 'ios.iconClass'
-   *                         properties, or 'icon' and 'iconClass' properties.
-   * @return {?DefaultIconObject} an object with 'icon' and 'iconClass' properties, or null.
+   * @param {Object} obj the object with either 'icon.ios.name' and 'icon.ios.class'
+   *                     properties, or 'icon.name' and 'icon.class' properties.
+   * @return {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
-  getIOSIcon(obj: IconObject): ?DefaultIconObject {
-    if ('ios' in obj && 'icon' in obj.ios && 'iconClass' in obj.ios) {
-      return {icon: obj.ios.icon, iconClass: obj.ios.iconClass};
-    } else if ('icon' in obj && 'iconClass' in obj) {
-      return {icon: obj.icon, iconClass: obj.iconClass};
-    } else {
-      return null;
+  getIOSIcon(obj: Object): ?DefaultIcon {
+    if ('icon' in obj) {
+      let icon: IconObject = obj.icon;
+      if (icon.ios != null) {
+        return {name: icon.ios.name, class: icon.ios.class};
+      } else if (icon.name != null && icon.class != null){
+        return {name: icon.name, class: icon.class};
+      }
     }
+
+    return null;
   },
 
   /**
    * Returns the icon and class for an icon to use for the Android platform,
    * defined in the object.
    *
-   * @param {IconObject} obj the object with either 'android.icon' and 'android.iconClass'
-   *                         properties, or 'icon' and 'iconClass' properties.
-   * @return {?DefaultIconObject} an object with 'icon' and 'iconClass' properties, or null.
+   * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class'
+   *                     properties, or 'icon.name' and 'icon.class' properties.
+   * @return {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
-  getAndroidIcon(obj: IconObject): ?DefaultIconObject {
-    if ('android' in obj && 'icon' in obj.android && 'iconClass' in obj.android) {
-      return {icon: obj.android.icon, iconClass: obj.android.iconClass};
-    } else if ('icon' in obj && 'iconClass' in obj) {
-      return {icon: obj.icon, iconClass: obj.iconClass};
-    } else {
-      return null;
+  getAndroidIcon(obj: Object): ?DefaultIcon {
+    if ('icon' in obj) {
+      let icon: IconObject = obj.icon;
+      if (icon.android != null) {
+        return {name: icon.android.name, class: icon.android.class};
+      } else if (icon.name != null && icon.class != null){
+        return {name: icon.name, class: icon.class};
+      }
     }
+
+    return null;
   },
 
   /**
@@ -101,12 +109,12 @@ module.exports = {
    * Platform should be 'ios' or 'android'.
    *
    * @param {PlatformString} platform either 'ios' or 'android'.
-   * @param {IconObject}     obj      the object with either '{platform}.icon' and
-   *                                  '{platform}.iconClass' properties, or 'icon' and
-   *                                  'iconClass' properties.
-   * @return {?DefaultIconObject} an object with 'icon' and 'iconClass' properties, or null.
+   * @param {Object} obj              the object with either 'icon.{platform}.name' and
+   *                                  'icon.{platform}.class' properties, or 'icon.name' and
+   *                                  'icon.class' properties.
+   * @return {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
-  getPlatformIcon(platform: PlatformString, obj: IconObject): ?DefaultIconObject {
+  getPlatformIcon(platform: PlatformString, obj: Object): ?DefaultIcon {
     if (platform === 'ios') {
       return this.getIOSIcon(obj);
     } else if (platform === 'android') {
