@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * LinkCategory.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -52,7 +47,15 @@ const {
   View,
 } = React;
 
+// Import type definitions.
+import type {
+  LanguageString,
+  Link,
+  LinkCategoryType,
+} from '../../Types';
+
 // Imports
+const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
 const ExternalUtils = require('../../util/ExternalUtils');
@@ -63,7 +66,20 @@ const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
 const TextUtils = require('../../util/TextUtils');
 
+// Type definition for component props.
+type Props = {
+  category: LinkCategoryType,
+  categoryImage: ReactClass,
+  showLinkCategory: () => any;
+};
+
+// Type definition for component state.
+type State = {
+  showLinks: boolean,
+};
+
 class LinkCategory extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -78,36 +94,36 @@ class LinkCategory extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
-    let shouldShowLinks = this.props.category.categories == null;
+    let shouldShowLinks: boolean = this.props.category.categories == null;
     this.state = {
       showLinks: shouldShowLinks,
     };
 
     // Explicitly bind 'this' to those methods that require it.
-    this._getCategories = this._getCategories.bind(this);
-    this._getLinks = this._getLinks.bind(this);
-    this._getSocialMediaLinks = this._getSocialMediaLinks.bind(this);
+    (this:any)._getCategories = this._getCategories.bind(this);
+    (this:any)._getLinks = this._getLinks.bind(this);
+    (this:any)._getSocialMediaLinks = this._getSocialMediaLinks.bind(this);
   };
 
   /**
    * Returns a list of touchable views which lead to new pages of categories
    * of links.
    *
-   * @param categories categories of links.
-   * @return for each index in {categories}, a {TouchableOpacity} with the name
+   * @param {Array<LinkCategoryType>} categories categories of links.
+   * @return {ReactElement} for each index in {categories}, a {TouchableOpacity} with the name
    *         of the category.
    */
-  _getCategories(categories) {
-    let language = Preferences.getSelectedLanguage();
+  _getCategories(categories: Array<LinkCategoryType>): ReactElement {
+    let language: LanguageString = Preferences.getSelectedLanguage();
 
     return (
       <View>
-        {categories.map((category, index) => (
+        {categories.map((category: LinkCategoryType, index: number) => (
           <TouchableOpacity
               onPress={() => this.props.showLinkCategory(category)}
               key={LanguageUtils.getEnglishName(category)}>
@@ -128,15 +144,19 @@ class LinkCategory extends Component {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param links list of links in the current category.
-   * @param Translations translations in the current language of certain text.
-   * @return for each index in {links}, a {TouchableOpacity} with the name
+   * @param {Array<Link>} links list of links in the current category.
+   * @param {Object} Translations translations in the current language of certain text.
+   * @return {ReactElement} for each index in {links}, a {TouchableOpacity} with the name
    *         of the link.
    */
-  _getLinks(links, Translations) {
-    let language = Preferences.getSelectedLanguage();
+  _getLinks(links: Array<Link>, Translations: Object): ReactElement {
+    let language: LanguageString = Preferences.getSelectedLanguage();
 
-    let getLinkIcon = function(link) {
+    let getLinkIcon = function(link: ?string): ?ReactElement {
+      if (link == null) {
+        return null;
+      }
+
       if (link.indexOf('tel:') === 0) {
         return (
           <Icon
@@ -162,41 +182,47 @@ class LinkCategory extends Component {
               style={_styles.linkIcon} />
         );
       }
-    }
+    };
 
-    let listOfLinks = null;
+    let listOfLinks: ?ReactElement = null;
     if (this.state.showLinks) {
       listOfLinks = (
         <View style={_styles.linksContainer}>
-          {links.map((link, index) => (
-            <View key={LanguageUtils.getTranslatedLink(language, link)}>
-              <TouchableOpacity
-                  onPress={() => ExternalUtils.openLink(Linking, LanguageUtils.getTranslatedLink(language, link), Translations)}
-                  style={{flexDirection: 'row', alignItems: 'center'}}>
-                {getLinkIcon(LanguageUtils.getTranslatedLink(language, link))}
-                <View>
-                  <Text style={[_styles.link, Styles.largeText]}>
-                    {LanguageUtils.getTranslatedName(language, link)}
-                  </Text>
-                  {(LanguageUtils.getTranslatedLink(language, link).indexOf('http') !== 0)
-                      ? <Text style={[_styles.linkSubtitle, Styles.smallText]}>
-                          {TextUtils.formatLink(LanguageUtils.getTranslatedLink(language, link))}
-                        </Text>
+          {links.map((link, index) => {
+              let translatedLink: string = LanguageUtils.getTranslatedLink(language, link)
+                  || Configuration.getDefaultLink();
+
+              return (
+                <View key={translatedLink}>
+                  <TouchableOpacity
+                      onPress={() => this._openLink(translatedLink, Translations)}
+                      style={{flexDirection: 'row', alignItems: 'center'}}>
+                    {getLinkIcon(translatedLink)}
+                    <View>
+                      <Text style={[_styles.link, Styles.largeText]}>
+                        {translatedLink}
+                      </Text>
+                      {(translatedLink.indexOf('http') !== 0)
+                          ? <Text style={[_styles.linkSubtitle, Styles.smallText]}>
+                              {TextUtils.formatLink(translatedLink)}
+                            </Text>
+                          : null
+                      }
+                    </View>
+                  </TouchableOpacity>
+                  {(index != links.length - 1) ?
+                      <View style={_styles.divider} />
                       : null
                   }
                 </View>
-              </TouchableOpacity>
-              {(index != links.length - 1) ?
-                  <View style={_styles.divider} />
-                  : null
-              }
-            </View>
-          ))}
+              );
+            }
+          )}
         </View>
       );
     }
 
-    let linksIcon = 'expand-more';
+    let linksIcon: ?string = 'expand-more';
     if (this.props.category.categories == null) {
       linksIcon = null;
     }
@@ -220,41 +246,66 @@ class LinkCategory extends Component {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param socialMediaLinks list of links to social media sites in the current
+   * @param {Array<Link>} socialMediaLinks list of links to social media sites in the current
    *                         category.
-   * @param Translations     translations in the current language of certain text.
-   * @return for each index in {socialMediaLinks}, a {TouchableOpacity} with
+   * @param {Object} Translations     translations in the current language of certain text.
+   * @return {ReactElement} for each index in {socialMediaLinks}, a {TouchableOpacity} with
    *         an icon representing the social media site.
    */
-  _getSocialMediaLinks(socialMediaLinks, Translations) {
+  _getSocialMediaLinks(socialMediaLinks: Array<Link>, Translations: Object): ReactElement {
+    let language: LanguageString = Preferences.getSelectedLanguage();
+
     return (
       <View style={_styles.socialMediaContainer}>
-        {socialMediaLinks.map(socialLink => (
-          <TouchableOpacity onPress={() => ExternalUtils.openLink(Linking, socialLink.link, Translations)} key={socialLink.link}>
-            <Icon
-                color={DisplayUtils.getSocialMediaIconColor(socialLink.name)}
-                name={DisplayUtils.getSocialMediaIconName(socialLink.name)}
-                size={30}
-                style={_styles.socialMediaIcon} />
-          </TouchableOpacity>
-        ))}
+        {socialMediaLinks.map(socialLink => {
+          let translatedLink: string = LanguageUtils.getTranslatedLink(language, socialLink)
+              || Configuration.getDefaultLink();
+          let translatedLinkName: ?string = LanguageUtils.getTranslatedName(language, socialLink);
+
+          if (translatedLinkName != null) {
+            return (
+              <TouchableOpacity
+                  onPress={() => this._openLink(translatedLink, Translations)}
+                  key={translatedLink}>
+                <Icon
+                    color={DisplayUtils.getSocialMediaIconColor(translatedLinkName)}
+                    name={DisplayUtils.getSocialMediaIconName(translatedLinkName)}
+                    size={30}
+                    style={_styles.socialMediaIcon} />
+              </TouchableOpacity>
+            );
+          } else {
+            return null;
+          }
+        })}
       </View>
     )
   };
 
   /**
+   * Attempts to open a URL.
+   *
+   * @param {?string} link the url to open.
+   * @param {Object} Translations language translations.
+   */
+  _openLink(link: ?string, Translations: Object): void {
+    ExternalUtils.openLink(link, Translations, Linking, Alert, Clipboard);
+  }
+
+  /**
    * Hides or shows the list of links in the category.
    */
-  _toggleLinks() {
+  _toggleLinks(): void {
     if (this.props.category.categories == null) {
       return;
     }
 
-    let linksHeader = this.refs.UsefulLinks;
-    let linksIcon = 'expand-less';
+    let linksHeader: SectionHeader = this.refs.UsefulLinks;
+    let linksIcon: string = 'expand-less';
     if (this.state.showLinks) {
       linksIcon = 'expand-more';
     }
+
     linksHeader.updateSubtitle(linksHeader.getSubtitleName(), linksIcon, linksHeader.getSubtitleIconClass());
 
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -266,28 +317,28 @@ class LinkCategory extends Component {
   /**
    * Renders an image, category title, and list of useful links.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     // Get current language for translations
-    let Translations = null;
+    let Translations: Object = {};
     if (Preferences.getSelectedLanguage() === 'fr') {
       Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {
       Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
-    let social = null;
+    let social: ?ReactElement = null;
     if (this.props.category.social) {
       social = this._getSocialMediaLinks(this.props.category.social, Translations);
     }
 
-    let usefulLinks = null;
+    let usefulLinks: ?ReactElement = null;
     if (this.props.category.links) {
       usefulLinks = this._getLinks(this.props.category.links, Translations);
     }
 
-    let categories = null;
+    let categories: ?ReactElement = null;
     if (this.props.category.categories) {
       categories = this._getCategories(this.props.category.categories);
     }

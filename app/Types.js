@@ -140,7 +140,7 @@ export type TransitCampus = {
   name_en: string,
   name_fr: string,
   stops: Array<TransitStop>,
-}
+};
 
 /******************************************************************************
  *    Icons
@@ -154,7 +154,7 @@ export type DefaultIcon = {
 export type PlatformIcon = {
   ios: DefaultIcon,
   android: DefaultIcon,
-}
+};
 
 export type IconObject =
     | DefaultIcon
@@ -180,9 +180,64 @@ export type LanguageString =
  *    Location
  *****************************************************************************/
 
- export type LatLong = {
-   latitude: number,
-   longitude: number,
-   latitudeDelta: number,
-   longitudeDelta: number,
- }
+export type LatLong = {
+ latitude: number,
+ longitude: number,
+ latitudeDelta: number,
+ longitudeDelta: number,
+};
+
+/******************************************************************************
+ *    Links
+ *****************************************************************************/
+
+type LinkWithDefaultNameDefaultLink = {
+  name: string,
+  link: string,
+};
+
+type LinkWithDefaultNameTranslatedLink = {
+  name: string,
+  link_en: string,
+  link_fr: string,
+};
+
+type LinkWithTranslatedNameDefaultLink = {
+  link: string,
+  name_en: string,
+  name_fr: string,
+};
+
+type LinkWithTranslatedNameTranslatedLink = {
+  link_en: string,
+  link_fr: string,
+  name_en: string,
+  name_fr: string,
+};
+
+export type Link =
+    | LinkWithDefaultNameDefaultLink
+    | LinkWithDefaultNameTranslatedLink
+    | LinkWithTranslatedNameDefaultLink
+    | LinkWithTranslatedNameTranslatedLink;
+
+type LinkCategoryWithDefaultName = {
+  name: string,
+  image?: ReactClass,
+  links?: Array<Link>,
+  social?: Array<Link>,
+  categories?: Array<LinkCategory>,
+};
+
+type LinkCategoryWithTranslatedName = {
+  name_en: string,
+  name_fr: string,
+  image?: ReactClass,
+  links?: Array<Link>,
+  social?: Array<Link>,
+  categories?: Array<LinkCategory>,
+};
+
+export type LinkCategoryType =
+    | LinkCategoryWithDefaultName
+    | LinkCategoryWithTranslatedName;

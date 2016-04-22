@@ -37,6 +37,7 @@ import type {
   BusInfo,
 } from '../Types';
 
+let defaultLink = 'http://www.uottawa.ca/';
 let availableSemesters: Array<Semester> = [];
 let university: ?University = null;
 let cityBuses: ?BusInfo = null;
@@ -69,6 +70,15 @@ module.exports = {
    */
   loadConfiguration(): Promise<void> {
     return _requestConfig();
+  },
+
+  /**
+   * Gets a link to use in place of a missing link.
+   *
+   * @return {string} a default link.
+   */
+  getDefaultLink(): string {
+    return defaultLink;
   },
 
   /**
