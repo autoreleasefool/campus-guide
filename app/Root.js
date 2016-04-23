@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * Root.js
  *
@@ -27,12 +24,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -49,12 +44,17 @@ const MainScreen = require('./views/Main');
 const Orientation = require('react-native-orientation');
 const SplashScreen = require('./views/Splash');
 
+// Type definition for routes between views.
+type Route = {
+  id: number,
+};
+
 class CampusGuide extends Component {
 
   /**
    * Default constructor to pass props to parent.
    *
-   * @param props properties passed from container to this component.
+   * @param {{}}props properties passed from container to this component.
    */
   constructor(props: {}) {
     super(props);
@@ -63,9 +63,9 @@ class CampusGuide extends Component {
   /**
    * Defines the transition between views.
    *
-   * @return a configuration for scene transitions in the navigator.
+   * @return {Object} a configuration for scene transitions in the navigator.
    */
-  _configureScene(): {} {
+  _configureScene(): Object {
     return ({
       ...Navigator.SceneConfigs.HorizontalSwipeJump,
       gestures: false,
@@ -75,22 +75,24 @@ class CampusGuide extends Component {
   /**
    * Renders a different view based on the current navigator route.
    *
-   * @param route     object with properties to identify the route to display.
-   * @param navigator navigator object to pass to children.
-   * @return the view to render, based on {route}.
+   * @param {Route} route          object with properties to identify the route to display.
+   * @param {ReactClass} navigator navigator object to pass to children.
+   * @return {ReactElement} the view to render, based on {route}.
    */
-  _renderScene(route: {id: number}, navigator: any) {
+  _renderScene(route: Route, navigator: ReactClass): ReactElement {
     if (route.id === Constants.Views.Splash) {
       return <SplashScreen navigator={navigator} />
     } else if (route.id === Constants.Views.Main) {
       return <MainScreen navigator={navigator} />
+    } else {
+      return <View />
     }
   };
 
   /**
    * Locks the application to portrait orientation.
    */
-  componentDidMount() {
+  componentDidMount(): void {
     Orientation.lockToPortrait();
   };
 
@@ -98,9 +100,9 @@ class CampusGuide extends Component {
    * Renders the root navigator of the app to switch between the splash screen
    * and main screen.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     return (
       <Navigator
           configureScene={this._configureScene}
