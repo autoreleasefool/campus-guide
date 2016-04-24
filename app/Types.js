@@ -226,7 +226,7 @@ type LinkCategoryWithDefaultName = {
   image?: ReactClass,
   links?: Array<Link>,
   social?: Array<Link>,
-  categories?: Array<LinkCategory>,
+  categories?: Array<LinkCategoryType>,
 };
 
 type LinkCategoryWithTranslatedName = {
@@ -235,7 +235,7 @@ type LinkCategoryWithTranslatedName = {
   image?: ReactClass,
   links?: Array<Link>,
   social?: Array<Link>,
-  categories?: Array<LinkCategory>,
+  categories?: Array<LinkCategoryType>,
 };
 
 export type LinkCategoryType =

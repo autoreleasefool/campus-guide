@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * Splash.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -52,6 +47,11 @@ const {
   View,
 } = React;
 
+// Import type definitions.
+import type {
+  LanguageString,
+} from '../Types';
+
 // Imports
 const Configuration = require('../util/Configuration');
 const Constants = require('../Constants');
@@ -60,13 +60,21 @@ const StatusBarUtils = require('../util/StatusBarUtils');
 const Styles = require('../Styles');
 
 // Require both language translations to display items in both languages
-const TranslationsEn = require('../../assets/static/js/Translations.en.js');
-const TranslationsFr = require('../../assets/static/js/Translations.fr.js');
+const TranslationsEn: Object = require('../../assets/static/js/Translations.en.js');
+const TranslationsFr: Object = require('../../assets/static/js/Translations.fr.js');
 
-// Languages which can be selected by the user.
-const validLanguages = ['en', 'fr'];
+// Type definition for component props.
+type Props = {
+  navigator: ReactClass,
+};
+
+// Type definition for component state.
+type State = {
+  isLoading: boolean,
+};
 
 class SplashScreen extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -79,30 +87,25 @@ class SplashScreen extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       isLoading: true,
     };
 
     // Explicitly binding 'this' to all methods that need it
-    this._selectLanguage = this._selectLanguage.bind(this);
+    (this:any)._selectLanguage = this._selectLanguage.bind(this);
   };
 
   /**
    * Sets the language of the app and opens the main screen.
    *
-   * @param language  one of 'en' or 'fr', to specify the language
+   * @param {LanguageString} language  one of 'en' or 'fr', to specify the language
    *                  chosen by the user.
    */
-  _selectLanguage(language) {
-    if (validLanguages.indexOf(language) < 0) {
-      console.log('Invalid language:', language);
-      return;
-    }
-
+  _selectLanguage(language: LanguageString): void {
     Preferences.setSelectedLanguage(language);
     this.props.navigator.push({id: Constants.Views.Main});
   };
@@ -110,16 +113,16 @@ class SplashScreen extends Component {
   /**
    * Calls the startup functions of the application.
    */
-  componentDidMount() {
-    const self = this;
+  componentDidMount(): void {
+    const self: SplashScreen = this;
 
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
     }
 
     StatusBarUtils.setLightStatusBarIOS(Platform, StatusBar, true);
-    Configuration.loadConfiguration().done(function() {
-      Preferences.loadInitialPreferences().done(function() {
+    Configuration.loadConfiguration().then(function() {
+      Preferences.loadInitialPreferences().then(function() {
         if (!Preferences.isLanguageSelected()) {
           self.setState({
             isLoading: false,
@@ -141,13 +144,13 @@ class SplashScreen extends Component {
   /**
    * Displays two buttons to allow the user to select French or English.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     // Get the width and height of the screen
     const {height, width} = Dimensions.get('window');
-    const onlyOnceTextWidth = Math.min(width, 400);
-    const onlyOnceTextLeft = (width - onlyOnceTextWidth) / 2;
+    const onlyOnceTextWidth: number = Math.min(width, 400);
+    const onlyOnceTextLeft: number = (width - onlyOnceTextWidth) / 2;
 
     if (this.state.isLoading) {
       // While checking to see if a language has been selected,
