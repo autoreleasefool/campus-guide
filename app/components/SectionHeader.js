@@ -31,8 +31,8 @@
 'use strict';
 
 // React Native imports
-var React = require('react-native');
-var {
+const React = require('react-native');
+const {
   Component,
   StyleSheet,
   Text,

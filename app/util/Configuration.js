@@ -52,7 +52,7 @@ async function _requestConfig(): Promise<void> {
 
   // Get the current semesters available in the app
   if (configuration.AvailableSemesters) {
-    for (var i = 0; i < configuration.AvailableSemesters.length; i++) {
+    for (let i = 0; i < configuration.AvailableSemesters.length; i++) {
       availableSemesters.push(configuration.AvailableSemesters[i]);
     }
   }

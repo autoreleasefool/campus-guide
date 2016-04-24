@@ -136,8 +136,8 @@ class SettingsHome extends Component {
    * determine when a setting changes.
    */
   _getSettings() {
-    for (var section in settings) {
-      for (var row in settings[section]) {
+    for (let section in settings) {
+      for (let row in settings[section]) {
         settingsCache[settings[section][row]['key']] = Preferences.getSetting(Preferences.getSetting(settings[section][row]['key']));
       }
     }
