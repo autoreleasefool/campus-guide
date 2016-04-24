@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * SettingsHome.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -55,33 +50,52 @@ const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
 
+// Type definition for settings icons.
+type SettingIcons = {
+  checkEnabled: string,
+  checkDisabled: string,
+};
+
 // Declaring icons depending on the platform
-let Icon;
-let settingsIcons;
+let Icon: ReactClass;
+let settingIcons: SettingIcons;
 if (Platform.OS === 'ios') {
   Icon = require('react-native-vector-icons/Ionicons');
-  settingsIcons = {
-    'CheckEnabled': 'ios-circle-outline',
-    'CheckDisabled': 'ios-checkmark',
+  settingIcons = {
+    checkEnabled: 'ios-circle-outline',
+    checkDisabled: 'ios-checkmark',
   };
 } else {
   Icon = require('react-native-vector-icons/MaterialIcons');
-  settingsIcons = {
-    'CheckEnabled': 'check-box-outline-blank',
-    'CheckDisabled': 'check-box',
+  settingIcons = {
+    checkEnabled: 'check-box-outline-blank',
+    checkDisabled: 'check-box',
   };
 }
 
 // Require both language translations to switch between them easily
-const TranslationsEn = require('../../../assets/static/js/Translations.en.js');
-const TranslationsFr = require('../../../assets/static/js/Translations.fr.js');
+const TranslationsEn: Object = require('../../../assets/static/js/Translations.en.js');
+const TranslationsFr: Object = require('../../../assets/static/js/Translations.fr.js');
 
 // Create a cache of settings values to retrieve and update them quickly
-let settings = require('../../../assets/static/json/settings.json');
-let settingsCache = [];
-let keyOfLastSettingChanged = null;
+let settings: Object = require('../../../assets/static/json/settings.json');
+let settingsCache: Object = {};
+let keyOfLastSettingChanged: ?string = null;
+
+// Type definition for component props.
+type Props = {
+  requestTabChange: () => any,
+  refreshParent: () => any,
+};
+
+// Type definition for component state.
+type State = {
+  dataSource: ListView.DataSource,
+  loaded: boolean,
+};
 
 class SettingsHome extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -95,9 +109,9 @@ class SettingsHome extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       dataSource: new ListView.DataSource({
@@ -108,20 +122,20 @@ class SettingsHome extends Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
-    this._getSettings = this._getSettings.bind(this);
-    this._pressRow = this._pressRow.bind(this);
-    this._renderRow = this._renderRow.bind(this);
-    this._renderSectionHeader = this._renderSectionHeader.bind(this);
+    (this:any)._getSettings = this._loadSettings.bind(this);
+    (this:any)._pressRow = this._pressRow.bind(this);
+    (this:any)._renderRow = this._renderRow.bind(this);
+    (this:any)._renderSectionHeader = this._renderSectionHeader.bind(this);
   };
 
   /**
    * Returns true if a setting's current value does not match its cached value,
    * and updates the cached value if so.
    *
-   * @param key identifier for the setting to check
-   * @return true if the value in the cache was updated.
+   * @param {string} key identifier for the setting to check
+   * @return {boolean} true if the value in the cache was updated.
    */
-  _checkChangedSetting(key) {
+  _checkChangedSetting(key: string): boolean {
     let settingValue = Preferences.getSetting(key);
     let changed = settingsCache[key] !== settingValue;
     if (changed) {
@@ -135,10 +149,10 @@ class SettingsHome extends Component {
    * Loads the current settings to setup the views and cache the settings to
    * determine when a setting changes.
    */
-  _getSettings() {
+  _loadSettings(): void {
     for (let section in settings) {
       for (let row in settings[section]) {
-        settingsCache[settings[section][row]['key']] = Preferences.getSetting(Preferences.getSetting(settings[section][row]['key']));
+        settingsCache[settings[section][row].key] = Preferences.getSetting(Preferences.getSetting(settings[section][row].key));
       }
     }
 
@@ -153,9 +167,9 @@ class SettingsHome extends Component {
   /**
    * Updates the setting for the row pressed.
    *
-   * @param key identifier for the setting pressed.
+   * @param {string} key identifier for the setting pressed.
    */
-  _pressRow(key) {
+  _pressRow(key: string): void {
     if (key === 'pref_lang') {
       Preferences.setSelectedLanguage(
         Preferences.getSelectedLanguage() === 'en'
@@ -181,12 +195,10 @@ class SettingsHome extends Component {
   /**
    * Displays a single row, representing a setting which can be changed.
    *
-   * @param setting   defines the setting contents to render.
-   * @param sectionId index of the section the setting is in.
-   * @param rowId     index of the row the setting is in.
-   * @return views to render the setting in the list.
+   * @param {Object{ setting   defines the setting contents to render.
+   * @return {ReactElement} views to render the setting in the list.
    */
-  _renderRow(setting, sectionId, rowId) {
+  _renderRow(setting: Object): ReactElement {
     let content = null;
     if (setting.type === 'multi') {
       content =
@@ -198,8 +210,8 @@ class SettingsHome extends Component {
           <View style={_styles.settingContent}>
             {
               Preferences.getSetting(setting.key)
-                  ? <Icon name={settingsIcons['CheckEnabled']} color={Constants.Colors.charcoalGrey} size={20} />
-                  : <Icon name={settingsIcons['CheckDisabled']} color={Constants.Colors.charcoalGrey} size={20} />
+                  ? <Icon name={settingIcons.checkEnabled} color={Constants.Colors.charcoalGrey} size={20} />
+                  : <Icon name={settingIcons.checkDisabled} color={Constants.Colors.charcoalGrey} size={20} />
             }
           </View>
     }
@@ -221,13 +233,12 @@ class SettingsHome extends Component {
   /**
    * Renders a heading for a section of settings.
    *
-   * @param sectionData section contents
-   * @param sectionId   index of the section.
-   * @return a {SectionHeader} with the name of the section.
+   * @param {Object} sectionData section contents
+   * @param {string} sectionId   index of the section.
+   * @return {ReactElement} a {SectionHeader} with the name of the section.
    */
-  _renderSectionHeader(sectionData, sectionId) {
-    let sectionName = sectionId;
-    let colonIndex = sectionName.indexOf(':');
+  _renderSectionHeader(sectionData: Object, sectionName: string): ReactElement {
+    let colonIndex: number = sectionName.indexOf(':');
     if (colonIndex > -1) {
       if (Preferences.getSelectedLanguage() === 'en') {
         sectionName = sectionName.substring(0, colonIndex);
@@ -246,17 +257,17 @@ class SettingsHome extends Component {
   /**
    * Loads the settings once the view has been mounted.
    */
-  componentDidMount() {
-    this._getSettings();
+  componentDidMount(): void {
+    this._loadSettings();
   };
 
   /**
    * Displays a list of settings.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
-    let CurrentTranslations = (Preferences.getSelectedLanguage() === 'en')
+  render(): ReactElement {
+    let CurrentTranslations: Object = (Preferences.getSelectedLanguage() === 'en')
         ? TranslationsEn
         : TranslationsFr;
 
