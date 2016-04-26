@@ -133,7 +133,15 @@ export type TransitStop = {
   routes: Array<number | DetailedRouteInfo>,
 };
 
-export type TransitCampus = {
+type TransitCampusWithDefaultName = {
+  id: string,
+  lat: number,
+  long: number,
+  name: string,
+  stops: Array<TransitStop>,
+};
+
+type TransitCampusWithTranslatedName = {
   id: string,
   lat: number,
   long: number,
@@ -141,6 +149,88 @@ export type TransitCampus = {
   name_fr: string,
   stops: Array<TransitStop>,
 };
+
+export type TransitCampus =
+    | TransitCampusWithDefaultName
+    | TransitCampusWithTranslatedName;
+
+/******************************************************************************
+ *    Shuttle
+ *****************************************************************************/
+
+export type ScheduleTimes = {
+  days: string,
+  times: Array<string>,
+};
+
+type ShuttleScheduleWithDefaultNameDefaultDirection = {
+  name: string,
+  direction: string,
+  start_date: string,
+  end_date: string,
+  excluded_dates: Array<string>,
+  times: Array<ScheduleTimes>,
+};
+
+type ShuttleScheduleWithTranslatedNameDefaultDirection = {
+  name_en: string,
+  name_fr: string,
+  direction: string,
+  start_date: string,
+  end_date: string,
+  excluded_dates: Array<string>,
+  times: Array<ScheduleTimes>,
+};
+
+type ShuttleScheduleWithDefaultNameTranslatedDirection = {
+  name: string,
+  direction_en: string,
+  direction_fr: string,
+  start_date: string,
+  end_date: string,
+  excluded_dates: Array<string>,
+  times: Array<ScheduleTimes>,
+};
+
+type ShuttleScheduleWithTranslatedNameTranslatedDirection = {
+  name_en: string,
+  name_fr: string,
+  direction_en: string,
+  direction_fr: string,
+  start_date: string,
+  end_date: string,
+  excluded_dates: Array<string>,
+  times: Array<ScheduleTimes>,
+};
+
+export type ShuttleSchedule =
+    | ShuttleScheduleWithDefaultNameDefaultDirection
+    | ShuttleScheduleWithDefaultNameTranslatedDirection
+    | ShuttleScheduleWithTranslatedNameDefaultDirection
+    | ShuttleScheduleWithTranslatedNameTranslatedDirection;
+
+type ShuttleCampusWithDefaultName = {
+  accurate: boolean,
+  id: string,
+  name: string,
+  lat: number,
+  long: number,
+  schedules: Array<ShuttleSchedule>,
+};
+
+type ShuttleCampusWithTranslatedName = {
+  accurate: boolean,
+  id: string,
+  name_en: string,
+  name_fr: string,
+  lat: number,
+  long: number,
+  schedules: Array<ShuttleSchedule>,
+};
+
+export type ShuttleCampus =
+    | ShuttleCampusWithDefaultName
+    | ShuttleCampusWithTranslatedName;
 
 /******************************************************************************
  *    Icons
