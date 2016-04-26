@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * ShuttleCampusInfo.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -45,6 +40,13 @@ const {
   View,
 } = React;
 
+// Import type definitions
+import type {
+  LatLong,
+  ShuttleCampus,
+  University,
+} from '../../Types';
+
 // Imports
 const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
@@ -53,7 +55,20 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const MapView = require('react-native-maps');
 const Preferences = require('../../util/Preferences');
 
+// Type definition for component props.
+type Props = {
+  campusName: string,
+  campusColor: string,
+};
+
+// Type definition for component state.
+type State = {
+  campus: ?ShuttleCampus,
+  region: ?LatLong,
+};
+
 class ShuttleCampusInfo extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -67,43 +82,44 @@ class ShuttleCampusInfo extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
       campus: null,
       region: null,
-    }
+    };
 
     // Explicitly binding 'this' to all methods that need it
-    this._getCampusMap = this._getCampusMap.bind(this);
-    this._loadCampusInfo = this._loadCampusInfo.bind(this);
+    (this:any)._getCampusMap = this._getCampusMap.bind(this);
+    (this:any)._loadCampusInfo = this._loadCampusInfo.bind(this);
   };
 
   /**
    * Renders a map with a list of markers to denote bus stops near the campus.
    *
-   * @param Translations translations in the current language of certain text.
+   * @param {Object} Translations translations in the current language of certain text.
+   * @return {ReactElement} a map view with a marker
    */
-  _getCampusMap(Translations) {
-    let initialRegion = {};
-    let marker = null;
+  _getCampusMap(Translations: Object): ReactElement {
+    let initialRegion: LatLong;
+    let marker: ?ReactElement;
 
     if (this.state.campus == null) {
-      let university = Configuration.getUniversity();
-      let lat = university['lat'];
-      let long = university['long'];
-      initialRegion = {
-        latitude: lat,
-        longitude: long,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      };
+      let university: ?University = Configuration.getUniversity();
+      if (university != null) {
+        initialRegion = {
+          latitude: university.lat,
+          longitude: university.long,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        };
+      }
     } else {
-      let lat = this.state.campus['lat'];
-      let long = this.state.campus['long'];
+      let lat = this.state.campus.lat;
+      let long = this.state.campus.lat;
       initialRegion = {
         latitude: lat,
         longitude: long,
@@ -132,8 +148,8 @@ class ShuttleCampusInfo extends Component {
   /**
    * Retrieves data about the campus provided as this.props.campusName.
    */
-  _loadCampusInfo() {
-    let campuses = require('../../../assets/static/json/shuttle.json');
+  _loadCampusInfo(): void {
+    let campuses: Array<ShuttleCampus> = require('../../../assets/static/json/shuttle.json');
     if (this.props.campusName in campuses) {
       this.setState({
         campus: campuses[this.props.campusName],
@@ -144,7 +160,7 @@ class ShuttleCampusInfo extends Component {
   /**
    * If the campus info has not been loaded yet, then load it.
    */
-  componentDidMount() {
+  componentDidMount(): void {
     if (this.state.campus == null) {
       this._loadCampusInfo();
     }
@@ -154,11 +170,11 @@ class ShuttleCampusInfo extends Component {
    * Renders a map and details about the shuttle drop off times at the campus
    * specified by {this.props.campusName}.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     // Get current language for translations
-    let Translations = null;
+    let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {
       Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {

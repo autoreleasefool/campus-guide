@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * ShuttleInfo.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -41,26 +36,50 @@ const React = require('react-native');
 const {
   Component,
   Image,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
 } = React;
 
+// Import type definitions
+import type {
+  BusCampus,
+  DefaultIcon,
+  LanguageString,
+  PlatformString,
+  ShuttleDetails,
+} from '../../Types';
+
 // Imports
 const Constants = require('../../Constants');
+const DisplayUtils = require('../../util/DisplayUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 
 // Background colors for each campus
-const campuscolors = [
+const campusColors: Array<string> = [
   Constants.Colors.garnet,
   Constants.Colors.charcoalGrey,
   Constants.Colors.lightGrey,
   Constants.Colors.darkGrey
 ];
 
+// Type definition for component props.
+type Props = {
+  showCampus: () => any,
+  showDetails: () => any,
+};
+
+// Type definition for component state.
+type State = {
+  campuses: ?Array<BusCampus>,
+  details: ?Array<ShuttleDetails>,
+};
+
 class ShuttleInfo extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -74,9 +93,9 @@ class ShuttleInfo extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       campuses: null,
@@ -84,16 +103,16 @@ class ShuttleInfo extends Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
-    this._loadCampusesAndDetails = this._loadCampusesAndDetails.bind(this);
+    (this:any)._loadCampusesAndDetails = this._loadCampusesAndDetails.bind(this);
   };
 
   /**
    * Loads a list of campus names and images representing them, as well as
    * details the user can view.
    */
-  _loadCampusesAndDetails() {
-    let campuses = require('../../../assets/static/js/ShuttleCampuses');
-    let details = require('../../../assets/static/js/ShuttleDetails');
+  _loadCampusesAndDetails(): void {
+    let campuses: Array<BusCampus> = require('../../../assets/static/js/ShuttleCampuses');
+    let details: Array<ShuttleDetails> = require('../../../assets/static/js/ShuttleDetails');
     this.setState({
       campuses: campuses,
       details: details,
@@ -103,7 +122,7 @@ class ShuttleInfo extends Component {
   /**
    * Loads the campuses if they haven't been retrieved yet.
    */
-  componentDidMount() {
+  componentDidMount(): void {
     if (this.state.campuses == null) {
       this._loadCampusesAndDetails();
     }
@@ -114,34 +133,39 @@ class ShuttleInfo extends Component {
    * detailed information on them, as well as some other links the user
    * may find useful.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     // Get current language
-    let language = Preferences.getSelectedLanguage();
+    let language: LanguageString = Preferences.getSelectedLanguage();
+    let platform: PlatformString = Platform.OS;
 
     // Get current language for translations
-    let Translations = null;
+    let Translations: Object;
     if (language === 'fr') {
       Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {
       Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
-    let campusDisplayNames = [null, null, null, null];
-    let campusStopNames = [null, null, null, null];
-    let campusImages = [null, null, null, null];
+    let campusDisplayNames: Array<string> = [];
+    let campusStopNames: Array<string> = [];
+    let campusImages: Array<ReactElement> = [];
 
     // If the campuses have been loaded, parse the data
     if (this.state.campuses != null && this.state.details != null) {
-      for (let campus in this.state.campuses) {
-        campusDisplayNames[campus] = LanguageUtils.getTranslatedName(language, this.state.campuses[campus]);
-        campusStopNames[campus] = LanguageUtils.getEnglishName(this.state.campuses[campus]);
-        campusImages[campus] = (
+      for (let i = 0; i < this.state.campuses.length; i++) {
+        let campus = this.state.campuses[i];
+        let displayName: string = LanguageUtils.getTranslatedName(language, campus) || '';
+        let stopName = LanguageUtils.getEnglishName(campus) || '';
+
+        campusDisplayNames.push(displayName);
+        campusStopNames.push(stopName);
+        campusImages.push(
           <Image
               style={_styles.campusImage}
               resizeMode={'cover'}
-              source={this.state.campuses[campus].image} />
+              source={campus.image} />
         );
       }
     } else {
@@ -154,17 +178,17 @@ class ShuttleInfo extends Component {
       <View style={_styles.container}>
         <View style={_styles.campusContainer}>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[0], campuscolors[0])}
+              onPress={() => this.props.showCampus(campusStopNames[0], campusColors[0])}
               style={_styles.campusContainer}>
-            <View style={{flex: 1, backgroundColor: campuscolors[0]}}>
+            <View style={{flex: 1, backgroundColor: campusColors[0]}}>
               <SectionHeader sectionName={campusDisplayNames[0]} />
               {campusImages[0]}
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[1], campuscolors[1])}
+              onPress={() => this.props.showCampus(campusStopNames[1], campusColors[1])}
               style={_styles.campusContainer}>
-            <View style={{flex: 1, backgroundColor: campuscolors[1]}}>
+            <View style={{flex: 1, backgroundColor: campusColors[1]}}>
               <SectionHeader sectionName={campusDisplayNames[1]} />
               {campusImages[1]}
             </View>
@@ -172,39 +196,44 @@ class ShuttleInfo extends Component {
         </View>
         <View style={_styles.campusContainer}>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[2], campuscolors[2])}
+              onPress={() => this.props.showCampus(campusStopNames[2], campusColors[2])}
               style={_styles.campusContainer}>
-            <View style={{flex: 1, backgroundColor: campuscolors[2]}}>
+            <View style={{flex: 1, backgroundColor: campusColors[2]}}>
               <SectionHeader sectionName={campusDisplayNames[2]} />
               {campusImages[2]}
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[3], campuscolors[3])}
+              onPress={() => this.props.showCampus(campusStopNames[3], campusColors[3])}
               style={_styles.campusContainer}>
-            <View style={{flex: 1, backgroundColor: campuscolors[3]}}>
+            <View style={{flex: 1, backgroundColor: campusColors[3]}}>
               <SectionHeader sectionName={campusDisplayNames[3]} />
               {campusImages[3]}
             </View>
           </TouchableOpacity>
         </View>
-        {this.state.details.map((detail, index) => (
-          <TouchableOpacity
-              key={index}
-              onPress={() => this.props.showDetails(
-                LanguageUtils.getTranslatedName(language, detail),
-                detail.image,
-                LanguageUtils.getTranslatedDetails(language, detail),
-                Constants.Colors.darkGrey
-              )}>
-            <SectionHeader
-                sectionName={LanguageUtils.getTranslatedName(language, detail)}
-                sectionIcon={detail.icon}
-                sectionIconClass={detail.iconClass}
-                subtitleIcon={'chevron-right'}
-                subtitleIconClass={'material'} />
-          </TouchableOpacity>
-        ))}
+        {this.state.details.map((detail, index) => {
+          let icon: DefaultIcon = DisplayUtils.getPlatformIcon(platform, detail)
+              || {name: 'help-outline', class: 'material'};
+
+          return (
+            <TouchableOpacity
+                key={index}
+                onPress={() => this.props.showDetails(
+                  LanguageUtils.getTranslatedName(language, detail),
+                  detail.image,
+                  LanguageUtils.getTranslatedDetails(language, detail),
+                  Constants.Colors.darkGrey
+                )}>
+              <SectionHeader
+                  sectionName={LanguageUtils.getTranslatedName(language, detail)}
+                  sectionIcon={icon.name}
+                  sectionIconClass={icon.class}
+                  subtitleIcon={'chevron-right'}
+                  subtitleIconClass={'material'} />
+            </TouchableOpacity>
+          );
+        })}
       </View>
     );
   }

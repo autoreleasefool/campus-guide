@@ -31,6 +31,24 @@
 'use strict';
 
 /******************************************************************************
+ *    Icons
+ *****************************************************************************/
+
+export type DefaultIcon = {
+  name: string,
+  class: string,
+};
+
+export type PlatformIcon = {
+  ios: DefaultIcon,
+  android: DefaultIcon,
+};
+
+export type IconObject =
+    | DefaultIcon
+    | PlatformIcon;
+
+/******************************************************************************
  *    Tabs
  *****************************************************************************/
 
@@ -232,23 +250,43 @@ export type ShuttleCampus =
     | ShuttleCampusWithDefaultName
     | ShuttleCampusWithTranslatedName;
 
-/******************************************************************************
- *    Icons
- *****************************************************************************/
-
-export type DefaultIcon = {
+type ShuttleDetailsWithDefaultNameDefaultDetails = {
+  details: Array<string>,
   name: string,
-  class: string,
+  icon: IconObject,
+  image: ReactClass,
 };
 
-export type PlatformIcon = {
-  ios: DefaultIcon,
-  android: DefaultIcon,
+type ShuttleDetailsWithTranslatedNameDefaultDetails = {
+  details: Array<string>,
+  name_en: string,
+  name_fr: string,
+  icon: IconObject,
+  image: ReactClass,
 };
 
-export type IconObject =
-    | DefaultIcon
-    | PlatformIcon;
+type ShuttleDetailsWithDefaultNameTranslatedDetails = {
+  details_en: Array<string>,
+  details_fr: Array<string>,
+  name: string,
+  icon: IconObject,
+  image: ReactClass,
+};
+
+type ShuttleDetailsWithTranslatedNameTranslatedDetails = {
+  details_en: Array<string>,
+  details_fr: Array<string>,
+  name_en: string,
+  name_fr: string,
+  icon: IconObject,
+  image: ReactClass,
+};
+
+export type ShuttleDetails =
+    | ShuttleDetailsWithDefaultNameDefaultDetails
+    | ShuttleDetailsWithTranslatedNameDefaultDetails
+    | ShuttleDetailsWithDefaultNameTranslatedDetails
+    | ShuttleDetailsWithTranslatedNameTranslatedDetails;
 
 /******************************************************************************
  *    Platforms

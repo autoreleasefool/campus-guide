@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * LinksHome.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -48,13 +43,30 @@ const {
   View,
 } = React;
 
+// Import type definitions
+import type {
+  LinkCategoryType,
+} from '../../Types';
+
 // Imports
 const Constants = require('../../Constants');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const Styles = require('../../Styles');
 
+// Type definition for component props.
+type Props = {
+  showLinkCategory: () => any,
+};
+
+// Type definition for component state.
+type State = {
+  dataSource: ListView.DataSource,
+  loaded: boolean,
+};
+
 class LinksHome extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -67,9 +79,9 @@ class LinksHome extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       dataSource: new ListView.DataSource({
@@ -79,16 +91,16 @@ class LinksHome extends Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
-    this._loadLinkCategories = this._loadLinkCategories.bind(this);
-    this._renderRow = this._renderRow.bind(this);
+    (this:any)._loadLinkCategories = this._loadLinkCategories.bind(this);
+    (this:any)._renderRow = this._renderRow.bind(this);
   };
 
   /**
    * Retrieves the set of categories that the various useful links in the app
    * belong to.
    */
-  _loadLinkCategories() {
-    let linkCategories = require('../../../assets/static/js/UsefulLinks');
+  _loadLinkCategories(): void {
+    let linkCategories: Array<LinkCategoryType> = require('../../../assets/static/js/UsefulLinks');
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(linkCategories),
@@ -99,10 +111,10 @@ class LinksHome extends Component {
   /**
    * Displays a single category name and an image which represents it.
    *
-   * @param category object with properties describing the category.
-   * @return an image and text describing the category.
+   * @param {LinkCategoryType} category object with properties describing the category.
+   * @return {ReactElement} an image and text describing the category.
    */
-  _renderRow(category) {
+  _renderRow(category: LinkCategoryType): ReactElement {
     return (
       <TouchableOpacity onPress={() => this.props.showLinkCategory(category)} style={_styles.categoryContainer}>
         <Image
@@ -121,7 +133,7 @@ class LinksHome extends Component {
   /**
    * Loads the links to display.
    */
-  componentDidMount() {
+  componentDidMount(): void {
     if (!this.state.loaded) {
       this._loadLinkCategories();
     }
@@ -131,9 +143,9 @@ class LinksHome extends Component {
    * Renders a list of images and titles for the user to select, opening a
    * screen with a list of useful links.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     if (!this.state.loaded) {
       return (
         <View style={_styles.container} />

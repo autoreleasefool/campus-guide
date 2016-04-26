@@ -153,11 +153,8 @@ class BusCampuses extends Component {
     if (this.state.campuses != null) {
       for (let i: number = 0; i < this.state.campuses.length; i++) {
         let campus: BusCampus = this.state.campuses[i];
-        let displayName: ?string = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), campus);
-        let stopName: ?string = LanguageUtils.getEnglishName(campus);
-
-        displayName = displayName || '';
-        stopName = stopName || '';
+        let displayName: string = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), campus) || '';
+        let stopName: string = LanguageUtils.getEnglishName(campus) || '';
 
         campusDisplayNames.push(displayName);
         campusStopNames.push(stopName);
