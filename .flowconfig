@@ -59,6 +59,10 @@
 .*/node_modules/isemail/.*\.json
 .*/node_modules/tr46/.*\.json
 
+# Ignoring specific files that don't matter to me
+.*/node_modules/fbjs/lib/Deferred.js.flow
+.*/node_modules/react-native/Libraries/CustomComponents/Navigator/Navigation/NavigationRouteStack.js
+
 [include]
 
 [libs]
