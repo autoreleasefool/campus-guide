@@ -49,6 +49,33 @@ export type IconObject =
     | PlatformIcon;
 
 /******************************************************************************
+ *    Platforms
+ *****************************************************************************/
+
+export type PlatformString =
+    | 'ios'
+    | 'android';
+
+/******************************************************************************
+ *    Languages
+ *****************************************************************************/
+
+export type LanguageString =
+    | 'en'
+    | 'fr';
+
+/******************************************************************************
+ *    Location
+ *****************************************************************************/
+
+export type LatLong = {
+ latitude: number,
+ longitude: number,
+ latitudeDelta: number,
+ longitudeDelta: number,
+};
+
+/******************************************************************************
  *    Tabs
  *****************************************************************************/
 
@@ -289,33 +316,6 @@ export type ShuttleDetails =
     | ShuttleDetailsWithTranslatedNameTranslatedDetails;
 
 /******************************************************************************
- *    Platforms
- *****************************************************************************/
-
-export type PlatformString =
-    | 'ios'
-    | 'android';
-
-/******************************************************************************
- *    Languages
- *****************************************************************************/
-
-export type LanguageString =
-    | 'en'
-    | 'fr';
-
-/******************************************************************************
- *    Location
- *****************************************************************************/
-
-export type LatLong = {
- latitude: number,
- longitude: number,
- latitudeDelta: number,
- longitudeDelta: number,
-};
-
-/******************************************************************************
  *    Links
  *****************************************************************************/
 
@@ -369,3 +369,52 @@ type LinkCategoryWithTranslatedName = {
 export type LinkCategoryType =
     | LinkCategoryWithDefaultName
     | LinkCategoryWithTranslatedName;
+
+/******************************************************************************
+ *    Buildings
+ *****************************************************************************/
+
+export type Facility =
+    | 'atm'
+    | 'food'
+    | 'printer'
+    | 'store'
+    | 'bed'
+    | 'drinks'
+    | 'laundry'
+    | 'library'
+    | 'parking'
+    | 'mail'
+    | 'pharmacy'
+    | 'gym'
+    | 'pool';
+
+export type BuildingRoom = {
+  name: string,
+  type: number,
+};
+
+type BuildingWithDefaultName = {
+  code: string,
+  name: string,
+  image: ReactClass,
+  lat: number,
+  long: number,
+  facilities: Array<Facility>,
+  rooms: Array<BuildingRoom>,
+};
+
+type BuildingWithTranslatedName = {
+  code: string,
+  name_en: string,
+  name_fr: string,
+  image: ReactClass,
+  lat: number,
+  long: number,
+  facilities: Array<Facility>,
+  rooms: Array<BuildingRoom>,
+};
+
+export type Building =
+    | BuildingWithDefaultName
+    | BuildingWithTranslatedName;
