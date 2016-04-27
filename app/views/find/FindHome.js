@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * FindHome.js
  *
@@ -27,12 +24,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -48,6 +43,11 @@ const {
   View,
 } = React;
 
+// Import type definitions
+import type {
+  Building,
+} from '../../Types';
+
 // Imports
 const BuildingGrid = require('./components/BuildingGrid');
 const Constants = require('../../Constants');
@@ -58,6 +58,11 @@ const Upcoming = require('./components/Upcoming');
 
 // Getting dimensions of the device
 const {height, width} = Dimensions.get('window');
+
+// Type definition for component props.
+type Props = {
+  onEditSchedule: () => any,
+};
 
 class FindHome extends Component {
 
@@ -71,30 +76,30 @@ class FindHome extends Component {
   /**
    * Pass props to the parent component and bind methods.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     // Explicitly binding 'this' to all methods that need it
-    this._editSchedule = this._editSchedule.bind(this);
-    this._search = this._search.bind(this);
-    this._showBuilding = this._showBuilding.bind(this);
+    (this:any)._editSchedule = this._editSchedule.bind(this);
+    (this:any)._search = this._search.bind(this);
+    (this:any)._showBuilding = this._showBuilding.bind(this);
   };
 
   /**
    * Opens the app scheduling screen so the user can update their schedule.
    */
-  _editSchedule() {
+  _editSchedule(): void {
     this.props.onEditSchedule();
   };
 
   /**
    * Searches through the buildings, professors, and classes
    *
-   * @param text text of the user's search.
+   * @param {string} text text of the user's search.
    */
-  _search(text) {
+  _search(text: string) {
     // TODO: search for a building, class, or professor
     console.log('TODO: search for a building, class, or professor');
   };
@@ -102,9 +107,9 @@ class FindHome extends Component {
   /**
    * Loads a view to display details about a building.
    *
-   * @param object describing the building.
+   * @param {Building} object describing the building.
    */
-  _showBuilding(building) {
+  _showBuilding(building: Building): void {
     // TODO: display details about a building
     console.log('TODO: display details about a building');
   };
