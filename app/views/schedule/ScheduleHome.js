@@ -1,8 +1,7 @@
-/*************************************************************************
+/**
  *
  * @license
- *
- * Copyright 2016 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *************************************************************************
- *
  * @file
  * ScheduleHome.js
  *
@@ -28,12 +25,10 @@
  * @author
  * Joseph Roque
  *
- *************************************************************************
- *
  * @external
  * @flow
  *
- ************************************************************************/
+ */
 'use strict';
 
 // React Native imports
@@ -60,9 +55,20 @@ const Styles = require('../../Styles');
 
 // Get dimensions of the device
 const {height, width} = Dimensions.get('window');
-const screenWidth = width;
+
+// Type definition for component props.
+type Props = {
+  requestTabChange: () => any,
+  editSchedule: () => any,
+};
+
+// Type definition for component state.
+type State = {
+  showEditButtons: boolean,
+};
 
 class ScheduleHome extends Component {
+  state: State;
 
   /**
    * Properties which the parent component should make available to this component.
@@ -75,12 +81,11 @@ class ScheduleHome extends Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component.
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      dataSource: null,
       showEditButtons: false,
     };
   };
@@ -88,9 +93,9 @@ class ScheduleHome extends Component {
   /**
    * Switches to the next available schedule and updates the views.
    */
-  _changeSemester() {
+  _changeSemester(): void {
     Preferences.setToNextSemester();
-    let header = this.refs.ScheduleHeader;
+    let header: SectionHeader = this.refs.ScheduleHeader;
     header.updateSubtitle(
         LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo()),
         header.getSubtitleIcon(),
@@ -100,7 +105,7 @@ class ScheduleHome extends Component {
   /**
    * Toggles the visibility of buttons for editing the schedule with animation.
    */
-  _toggleEditScheduleButtons() {
+  _toggleEditScheduleButtons(): void {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
       showEditButtons: !this.state.showEditButtons,
@@ -110,7 +115,7 @@ class ScheduleHome extends Component {
   /**
    * Opens a prompt for a user to add a new course.
    */
-  _addCourse() {
+  _addCourse(): void {
     // TODO: add a new course
     console.log('TODO: Add a new course');
   };
@@ -118,7 +123,7 @@ class ScheduleHome extends Component {
   /**
    * Opens a prompt for a user to remove a course.
    */
-  _removeCourse() {
+  _removeCourse(): void {
     // TODO: remove an old course
     console.log('TODO: remove an old course');
   };
@@ -126,11 +131,11 @@ class ScheduleHome extends Component {
   /**
    * Renders the root Schedule view.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     // Get current language for translations
-    let Translations = null;
+    let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {
       Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {
@@ -138,14 +143,14 @@ class ScheduleHome extends Component {
     }
 
     // Use a different icon for the calendar depending on the platform
-    let calendarIcon = null;
+    let calendarIcon: Array<string>;
     if (Platform.OS === 'ios') {
       calendarIcon = ['ionicon', 'ios-calendar-outline'];
     } else {
       calendarIcon = ['material', 'event'];
     }
 
-    let buttons = null;
+    let buttons: ?ReactElement = null;
     if (this.state.showEditButtons) {
       buttons = (
         <View style={_styles.editButtonContainer}>
@@ -213,7 +218,7 @@ const _styles = StyleSheet.create({
   editButtonContainer: {
     flexDirection: 'row',
     height: 70,
-    width: screenWidth,
+    width: width,
     alignItems: 'center',
     justifyContent: 'center',
   },
