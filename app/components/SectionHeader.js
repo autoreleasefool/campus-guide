@@ -63,15 +63,17 @@ type Props = {
   subtitleIcon: ?string,
   subtitleIconClass: ?string,
   backgroundOverride: ?string,
+  useBlackText: ?boolean,
 };
 
 // Type definition for component state.
 type State = {
-  sectionIcon: ?string,
-  sectionIconClass: ?string,
-  subtitleName: ?string,
-  subtitleIcon: ?string,
-  subtitleIconClass: ?string,
+  sectionIcon: string,
+  sectionIconClass: string,
+  subtitleName: string,
+  subtitleIcon: string,
+  subtitleIconClass: string,
+  textAndIconColor: string,
 };
 
 class SectionHeader extends Component {
@@ -90,6 +92,7 @@ class SectionHeader extends Component {
     subtitleIcon: React.PropTypes.string,
     subtitleIconClass: React.PropTypes.oneOf(VALID_ICON_CLASSES),
     backgroundOverride: React.PropTypes.string,
+    useBlackText: React.PropTypes.bool,
   };
 
   /**
@@ -105,6 +108,9 @@ class SectionHeader extends Component {
     let subName = this.props.subtitleName || NULL_SUBTITLE_VALUE;
     let subIcon = this.props.subtitleIcon || NULL_SUBTITLE_VALUE;
     let subIconClass = this.props.subtitleIconClass || NULL_SUBTITLE_VALUE;
+    let textAndIconColor = this.props.useBlackText
+        ? Constants.Colors.primaryBlackText
+        : Constants.Colors.primaryWhiteText;
 
     this.state = {
       sectionIcon: sectIcon,
@@ -112,6 +118,7 @@ class SectionHeader extends Component {
       subtitleName: subName,
       subtitleIcon: subIcon,
       subtitleIconClass: subIconClass,
+      textAndIconColor: textAndIconColor,
     };
 
     // Explicitly binding 'this' to all methods that need it
@@ -180,7 +187,7 @@ class SectionHeader extends Component {
     }
 
     if (iconClass == null) {
-      iconClass == NULL_SUBTITLE_VALUE;
+      iconClass = NULL_SUBTITLE_VALUE;
     }
 
     // Update the state with the parameters
@@ -209,7 +216,7 @@ class SectionHeader extends Component {
           <MaterialIcons
               name={this.state.sectionIcon}
               size={24}
-              color={'white'}
+              color={this.state.textAndIconColor}
               style={_styles.headerIcon} />
         );
       } else {
@@ -217,7 +224,7 @@ class SectionHeader extends Component {
           <Ionicons
               name={this.state.sectionIcon}
               size={24}
-              color={'white'}
+              color={this.state.textAndIconColor}
               style={_styles.headerIcon} />
         );
       }
@@ -234,7 +241,7 @@ class SectionHeader extends Component {
     // Build the subtitle for the section
     if (this.state.subtitleName && this.state.subtitleName !== NULL_SUBTITLE_VALUE) {
       subtitleName = (
-        <Text style={[Styles.smallText, {color: 'white', marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
+        <Text style={[Styles.smallText, {color: this.state.textAndIconColor, marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
           {this.state.subtitleName.toUpperCase()}
         </Text>
       );
@@ -248,7 +255,7 @@ class SectionHeader extends Component {
           <MaterialIcons
               name={this.state.subtitleIcon}
               size={18}
-              color={'white'}
+              color={this.state.textAndIconColor}
               style={{marginTop: 15, marginBottom: 15, marginRight: 20}} />
         );
       } else {
@@ -256,7 +263,7 @@ class SectionHeader extends Component {
           <Ionicons
               name={this.state.subtitleIcon}
               size={18}
-              color={'white'}
+              color={this.state.textAndIconColor}
               style={{marginTop: 15, marginBottom: 15, marginRight: 20}} />
         );
       }
@@ -291,7 +298,7 @@ class SectionHeader extends Component {
     return (
       <View style={[_styles.header, {backgroundColor: headerBackground}]}>
         {icon}
-        <Text style={[Styles.largeText, {color: 'white', marginLeft: 20}]}>
+        <Text style={[Styles.largeText, {color: this.state.textAndIconColor, marginLeft: 20}]}>
           {TextUtils.getTextWithEllipses(this.props.sectionName, 21)}
         </Text>
         {iconAndSubtitle}

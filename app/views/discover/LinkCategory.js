@@ -115,11 +115,15 @@ class LinkCategory extends Component {
    * of links.
    *
    * @param {Array<LinkCategoryType>} categories categories of links.
+   * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
    * @return {ReactElement} for each index in {categories}, a {TouchableOpacity} with the name
    *         of the category.
    */
-  _getCategories(categories: Array<LinkCategoryType>): ReactElement {
+  _getCategories(categories: Array<LinkCategoryType>, isBackgroundDark: boolean): ReactElement {
     let language: LanguageString = Preferences.getSelectedLanguage();
+    let dividerColor: string = (isBackgroundDark)
+        ? Constants.Colors.primaryWhiteText
+        : Constants.Colors.primaryBlackText;
 
     return (
       <View>
@@ -132,7 +136,7 @@ class LinkCategory extends Component {
                 subtitleIcon={'chevron-right'}
                 subtitleIconClass={'material'} />
             {(index != categories.length - 1) ?
-                <View style={_styles.divider} />
+                <View style={[_styles.divider, {backgroundColor: dividerColor}]} />
                 : null
             }
           </TouchableOpacity>
@@ -146,11 +150,18 @@ class LinkCategory extends Component {
    *
    * @param {Array<Link>} links list of links in the current category.
    * @param {Object} Translations translations in the current language of certain text.
+   * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
    * @return {ReactElement} for each index in {links}, a {TouchableOpacity} with the name
    *         of the link.
    */
-  _getLinks(links: Array<Link>, Translations: Object): ReactElement {
+  _getLinks(links: Array<Link>, Translations: Object, isBackgroundDark: boolean): ReactElement {
     let language: LanguageString = Preferences.getSelectedLanguage();
+    let textColor: string = (isBackgroundDark)
+        ? Constants.Colors.primaryWhiteText
+        : Constants.Colors.primaryBlackText;
+    let iconColor: string = (isBackgroundDark)
+        ? Constants.Colors.secondaryWhiteText
+        : Constants.Colors.secondaryBlackText;
 
     let getLinkIcon = function(link: ?string): ?ReactElement {
       if (link == null) {
@@ -160,7 +171,7 @@ class LinkCategory extends Component {
       if (link.indexOf('tel:') === 0) {
         return (
           <Icon
-              color={Constants.Colors.secondaryWhiteText}
+              color={iconColor}
               name={'android-call'}
               size={24}
               style={_styles.linkIcon} />
@@ -168,7 +179,7 @@ class LinkCategory extends Component {
       } else if (link.indexOf('mailto:') === 0) {
         return (
           <Icon
-              color={Constants.Colors.secondaryWhiteText}
+              color={iconColor}
               name={'android-mail'}
               size={24}
               style={_styles.linkIcon} />
@@ -176,7 +187,7 @@ class LinkCategory extends Component {
       } else {
         return (
           <Icon
-              color={Constants.Colors.secondaryWhiteText}
+              color={iconColor}
               name={'android-open'}
               size={24}
               style={_styles.linkIcon} />
@@ -201,11 +212,11 @@ class LinkCategory extends Component {
                       style={{flexDirection: 'row', alignItems: 'center'}}>
                     {getLinkIcon(translatedLink)}
                     <View>
-                      <Text style={[_styles.link, Styles.largeText]}>
+                      <Text style={[_styles.link, Styles.largeText, {color: textColor}]}>
                         {translatedName}
                       </Text>
                       {(translatedLink.indexOf('http') !== 0)
-                          ? <Text style={[_styles.linkSubtitle, Styles.smallText]}>
+                          ? <Text style={[_styles.linkSubtitle, Styles.smallText, {color: textColor}]}>
                               {TextUtils.formatLink(translatedLink)}
                             </Text>
                           : null
@@ -213,7 +224,7 @@ class LinkCategory extends Component {
                     </View>
                   </TouchableOpacity>
                   {(index != links.length - 1) ?
-                      <View style={_styles.divider} />
+                      <View style={[_styles.divider, {backgroundColor: textColor}]} />
                       : null
                   }
                 </View>
@@ -238,7 +249,8 @@ class LinkCategory extends Component {
               sectionIcon={'insert-link'}
               sectionIconClass={'material'}
               subtitleIcon={linksIcon}
-              subtitleIconClass={'material'} />
+              subtitleIconClass={'material'}
+              useBlackText={!isBackgroundDark} />
         </TouchableOpacity>
         {listOfLinks}
       </View>
@@ -330,6 +342,12 @@ class LinkCategory extends Component {
       Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
+    let backgroundColor: string =  Constants.Colors.darkGrey;
+    if (Constants.Colors[this.props.category.id] != null) {
+      backgroundColor = Constants.Colors[this.props.category.id];
+    }
+    let isBackgroundDark: boolean = DisplayUtils.isColorDark(backgroundColor);
+
     let social: ?ReactElement = null;
     if (this.props.category.social) {
       social = this._getSocialMediaLinks(this.props.category.social, Translations);
@@ -337,17 +355,12 @@ class LinkCategory extends Component {
 
     let usefulLinks: ?ReactElement = null;
     if (this.props.category.links) {
-      usefulLinks = this._getLinks(this.props.category.links, Translations);
+      usefulLinks = this._getLinks(this.props.category.links, Translations, isBackgroundDark);
     }
 
     let categories: ?ReactElement = null;
     if (this.props.category.categories) {
-      categories = this._getCategories(this.props.category.categories);
-    }
-
-    let backgroundColor: string =  Constants.Colors.darkGrey;
-    if (Constants.Colors[this.props.category.id] != null) {
-      backgroundColor = Constants.Colors[this.props.category.id];
+      categories = this._getCategories(this.props.category.categories, isBackgroundDark);
     }
 
     return (
@@ -414,11 +427,9 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   link: {
-    color: Constants.Colors.primaryWhiteText,
     margin: 10,
   },
   linkSubtitle: {
-    color: Constants.Colors.primaryWhiteText,
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
@@ -432,7 +443,6 @@ const _styles = StyleSheet.create({
   divider: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: 'white',
   }
 });
 
