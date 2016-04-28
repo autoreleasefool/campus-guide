@@ -350,6 +350,7 @@ export type Link =
     | LinkWithTranslatedNameTranslatedLink;
 
 type LinkCategoryWithDefaultName = {
+  id: string,
   name: string,
   image?: ReactClass,
   links?: Array<Link>,
@@ -358,6 +359,7 @@ type LinkCategoryWithDefaultName = {
 };
 
 type LinkCategoryWithTranslatedName = {
+  id: string,
   name_en: string,
   name_fr: string,
   image?: ReactClass,

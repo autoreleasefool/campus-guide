@@ -191,6 +191,8 @@ class LinkCategory extends Component {
           {links.map((link, index) => {
               let translatedLink: string = LanguageUtils.getTranslatedLink(language, link)
                   || Configuration.getDefaultLink();
+              let translatedName: string = LanguageUtils.getTranslatedName(language, link)
+                  || translatedLink;
 
               return (
                 <View key={translatedLink}>
@@ -200,7 +202,7 @@ class LinkCategory extends Component {
                     {getLinkIcon(translatedLink)}
                     <View>
                       <Text style={[_styles.link, Styles.largeText]}>
-                        {translatedLink}
+                        {translatedName}
                       </Text>
                       {(translatedLink.indexOf('http') !== 0)
                           ? <Text style={[_styles.linkSubtitle, Styles.smallText]}>
@@ -343,8 +345,13 @@ class LinkCategory extends Component {
       categories = this._getCategories(this.props.category.categories);
     }
 
+    let backgroundColor: string =  Constants.Colors.darkGrey;
+    if (Constants.Colors[this.props.category.id] != null) {
+      backgroundColor = Constants.Colors[this.props.category.id];
+    }
+
     return (
-      <View style={_styles.container}>
+      <View style={[_styles.container, {backgroundColor: backgroundColor}]}>
         <View style={_styles.banner}>
           <Image
               resizeMode={'cover'}
@@ -370,7 +377,6 @@ class LinkCategory extends Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.Colors.darkGrey,
   },
   banner: {
     height: 175,
