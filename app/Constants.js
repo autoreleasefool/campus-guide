@@ -97,6 +97,7 @@ module.exports = {
       ShuttleInfo: 305,
       ShuttleCampusInfo: 306,
       ShuttleDetails: 307,
+      HotSpots: 308,
     },
     Settings: {
       Home: 400,

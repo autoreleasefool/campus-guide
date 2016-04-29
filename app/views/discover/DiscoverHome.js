@@ -158,7 +158,7 @@ class DiscoverHome extends Component {
     let onPress: () => any;
     if (section.id === this.state.currentSection) {
       if (section.id === 'pop') {
-        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
+        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.HotSpots);
       } else if (section.id === 'stu') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
       } else if (section.id === 'use') {

@@ -106,7 +106,7 @@ class LinksHome extends Component {
       dataSource: this.state.dataSource.cloneWithRows(linkCategories),
       loaded: true,
     });
-  }
+  };
 
   /**
    * Displays a single category name and an image which represents it.

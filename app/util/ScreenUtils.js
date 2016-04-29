@@ -69,6 +69,7 @@ const DISCOVER_SCREENS: Array<ScreenId> = [
   Constants.Views.Discover.ShuttleInfo,
   Constants.Views.Discover.ShuttleCampusInfo,
   Constants.Views.Discover.ShuttleDetails,
+  Constants.Views.Discover.HotSpots,
 ];
 
 // Screens which are subscreens of the Settings tab
