@@ -77,6 +77,7 @@ module.exports = {
      * TODO: Change default to 100
      */
     Default: 300,
+    DefaultTab: 300,
     Splash: 1,
     Main: 2,
     Find: {
