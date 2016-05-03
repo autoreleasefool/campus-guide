@@ -15,17 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Main.js
- *
- * @description
- * Main navigational point of the application. Provides the primary
- * Navigator instance.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Main.js
+ * @module MainScreen
+ * @description Main navigational point of the application.
  * @flow
  *
  */

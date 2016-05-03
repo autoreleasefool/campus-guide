@@ -15,17 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * SettingsHome.js
- *
- * @description
- * View to allow the user to see and update their settings and
- * preferences.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file SettingsHome.js
+ * @module SettingsHome
+ * @description View to allow the user to see and update their settings and preferences.
  * @flow
  *
  */

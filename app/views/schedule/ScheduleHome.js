@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * ScheduleHome.js
- *
- * @description
- * View for enabling the user to create a schedule of their classes
- * and see the schedule in an organized manner.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file ScheduleHome.js
+ * @module ScheduleHone
+ * @description View for enabling the user to create a schedule of their classes
+ *              and see the schedule in an organized manner.
  * @flow
  *
  */

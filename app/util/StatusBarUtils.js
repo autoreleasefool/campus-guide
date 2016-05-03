@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * StatusBarUtils.js
- *
- * @description
- * Offers utilities for adjusting the status bar.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file StatusBarUtils.js
+ * @description Offers utilities for adjusting the status bar.
  * @flow
  *
  */

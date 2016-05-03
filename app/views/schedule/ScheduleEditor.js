@@ -15,17 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * ScheduleEditor.js
- *
- * @description
- * Views and controls for the user to add or remove classes from their
- * schedule.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file ScheduleEditor.js
+ * @module ScheduleEditor
+ * @description Views and controls for the user to add or remove classes from their schedule.
  * @flow
  *
  */

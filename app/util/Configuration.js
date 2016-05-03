@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Configuration.js
- *
- * @description
- * Manages the configuration of the application.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Configuration.js
+ * @description Manages the configuration of the application.
  * @flow
  *
  */

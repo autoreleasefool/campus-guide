@@ -15,16 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * SectionHeader.js
- *
- * @description
- * Predefined style for section separating headers in the app.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file SectionHeader.js
+ * @module SectionHeader
+ * @description Predefined style for section separating headers in the app.
  * @flow
  *
  */

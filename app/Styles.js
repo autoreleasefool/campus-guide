@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Styles.js
- *
- * @description
- * Defines global styles for the app.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Styles.js
+ * @description Defines global styles for the app.
  * @flow
  *
  */

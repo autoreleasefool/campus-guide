@@ -15,16 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * HotSpots.js
- *
- * @description
- * Provides links and directions to a number of popular locations in the city around the university.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file HotSpots.js
+ * @module HotSpots
+ * @description Provides links and directions to a number of popular locations in the city around the university.
  * @flow
  *
  */

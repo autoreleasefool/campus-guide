@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Tabs.android.js
- *
- * @description
- * Tab bar to manage navigation between the root views in the application.
- * This component will be used exclusively on Android.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Tabs.android.js
+ * @module TabsView
+ * @description Tab bar to manage navigation between the root views in the application.
+ *              This component will be used exclusively on Android.
  * @flow
  *
  */
@@ -75,7 +69,7 @@ type State = {
   currentTab: number,
 };
 
-class TabBar extends Component {
+class TabsView extends Component {
   state: State;
 
   /**
@@ -192,4 +186,4 @@ const _styles = StyleSheet.create({
 });
 
 // Expose component to app
-module.exports = TabBar;
+module.exports = TabsView;

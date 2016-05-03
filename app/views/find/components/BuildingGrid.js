@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * BuildingGrid.js
- *
- * @description
- * Displays the list of buildings in a grid, with the building's
- * name and an image.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file BuildingGrid.js
+ * @module BuildingGrid
+ * @description Displays the list of buildings in a grid, with the building's
+ *              name and an image.
  * @flow
  *
  */

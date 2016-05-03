@@ -15,16 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Tabs.js
- *
- * @description
- * Tab bar to manage navigation between the root views in the application.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Tabs.ios.js
+ * @module TabsView
+ * @description Tab bar to manage navigation between the root views in the application.
  * @flow
  *
  */

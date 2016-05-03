@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * DetailsScreen.js
- *
- * @description
- * Displays a title, an image, and text to the user. These details can be
- * provided so the component can be used multiple times.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file DetailsScreen.js
+ * @module DetailsScreen
+ * @description Displays a title, an image, and text to the user. These details can be
+ *              provided so the component can be used multiple times.
  * @flow
  *
  */

@@ -15,16 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Upcoming.js
- *
- * @description
- * View to display the user's upcoming classes and events for the day.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Upcoming.js
+ * @module Upcoming
+ * @description View to display the user's upcoming classes and events for the day.
  * @flow
  *
  */

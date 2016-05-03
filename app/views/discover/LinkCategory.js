@@ -15,17 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * LinkCategory.js
- *
- * @description
- * Displays the links and subcategories belonging to a category of useful
- * links.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file LinkCategory.js
+ * @module LinkCategory
+ * @description Displays the links and subcategories belonging to a category of useful links.
  * @flow
  *
  */

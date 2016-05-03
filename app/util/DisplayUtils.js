@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * DisplayUtils.js
- *
- * @description
- * Defines a set of methods to manipulate the display and related values.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file DisplayUtils.js
+ * @description Defines a set of methods to manipulate the display and related values.
  * @flow
  *
  */

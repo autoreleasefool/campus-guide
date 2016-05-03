@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * index.ios.js
- *
- * @description
- * Initial entry point for the iOS app.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file index.ios.js
+ * @description Initial entry point for the iOS app.
  * @flow
  *
  */

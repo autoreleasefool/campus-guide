@@ -15,16 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * DiscoverHome.js
- *
- * @description
- * Root view for links which help users become acquainted with the school.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file DiscoverHome.js
+ * @module DiscoverHome
+ * @description Root view for links which help users become acquainted with the school.
  * @flow
  *
  */

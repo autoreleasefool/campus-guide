@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * TextUtils.js
- *
- * @description
- * Defines a set of methods to manipulate strings.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file TextUtils.js
+ * @description Defines a set of methods to manipulate strings.
  * @flow
  *
  */

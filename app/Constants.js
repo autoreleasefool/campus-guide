@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Constants.js
- *
- * @description
- * Constant values for the application.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Constants.js
+ * @description Constant values for the application.
  * @flow
  *
  */

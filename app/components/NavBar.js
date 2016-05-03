@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * NavBar.js
- *
- * @description
- * Navigation and search bar for the top of the app, to allow the user to
- * search from anywhere.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file NavBar.js
+ * @module NavBar
+ * @description Navigation and search bar for the top of the app, to allow the user to
+ *              search from anywhere.
  * @flow
  *
  */
@@ -75,7 +69,7 @@ type State = {
   refresh: ?boolean,
 };
 
-class SearchBar extends Component {
+class NavBar extends Component {
   state: State;
 
   /**
@@ -218,4 +212,4 @@ const _styles = StyleSheet.create({
 });
 
 // Expose component to app
-module.exports = SearchBar;
+module.exports = NavBar;

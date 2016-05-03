@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Splash.js
- *
- * @description
- * Initial entry view for the application. Allows the user to select their
- * preferred language on first run.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Splash.js
+ * @module SplashScreen
+ * @description Initial entry view for the application. Allows the user to select their
+ *              preferred language on first run.
  * @flow
  *
  */

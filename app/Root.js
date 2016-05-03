@@ -15,16 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Root.js
- *
- * @description
- * Base component for the application.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Roots.js
+ * @module CampusGuide
+ * @description Base component for the application.
  * @flow
  *
  */

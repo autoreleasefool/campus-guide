@@ -15,16 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * BusCampuses.js
- *
- * @description
- * Displays the list of campuses with bus stop information.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file BusCampuses.js
+ * @module BusCampuses
+ * @description Displays the list of campuses with bus stop information.
  * @flow
  *
  */

@@ -15,16 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * ScreenUtils.js
- *
- * @description
- * Utility methods for interacting with the screens.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file ScreenUtils.js
+ * @description Utility methods for interacting with the screens.
  * @flow
  *
  */

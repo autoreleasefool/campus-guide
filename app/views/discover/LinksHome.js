@@ -15,17 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * LinksHome.js
- *
- * @description
- * Presents a list of defined, useful links for the user regarding the
- * university.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file LinksHome.js
+ * @module LinksHome
+ * @description Presents a list of defined, useful links for the user regarding the university.
  * @flow
  *
  */

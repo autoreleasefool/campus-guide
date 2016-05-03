@@ -15,16 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * FindHome.js
- *
- * @description
- * View for the root navigation for finding a room on campus.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file FindHome.js
+ * @module FindHome
+ * @description View for the root navigation for finding a room on campus.
  * @flow
  *
  */

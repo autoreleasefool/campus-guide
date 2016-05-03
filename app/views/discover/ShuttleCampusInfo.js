@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * ShuttleCampusInfo.js
- *
- * @description
- * Displays details about the departure times of the shuttle from a
- * single campus.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file ShuttleCampusInfo.js
+ * @module ShuttleCampusInfo
+ * @description Displays details about the departure times of the shuttle from a
+ *              single campus.
  * @flow
  *
  */

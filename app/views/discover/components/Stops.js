@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Stops.js
- *
- * @description
- * Displays details about the stops provided. Navigates between a list of
- * stops and their individual details.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Stops.js
+ * @module Stops
+ * @description Displays details about the stops provided. Navigates between a list of
+ *              stops and their individual details.
  * @flow
  *
  */

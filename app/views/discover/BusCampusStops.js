@@ -15,17 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * BusCampusStop.js
- *
- * @description
- * Displays a campus' location on a map, relative to a user's location, as
- * well as a list of the stops near the campus.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file BusCampusStops.js
+ * @module BusCampusStops
+ * @description Displays a campus' location on a map, relative to a user's location, as
+ *              well as a list of the stops near the campus.
  * @flow
  *
  */
@@ -78,7 +72,7 @@ type MapMarker = {
   },
 };
 
-class CampusStops extends Component {
+class BusCampusStops extends Component {
   state: State;
 
   /**
@@ -287,4 +281,4 @@ const _styles = StyleSheet.create({
 });
 
 // Expose component to app
-module.exports = CampusStops;
+module.exports = BusCampusStops;

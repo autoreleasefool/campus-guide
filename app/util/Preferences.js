@@ -15,19 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * @file
- * Preferences.js
- *
- * @description
- * Manages the application preferences. Loads the preferences upon opening
- * the application then caches their values so they don't need to be
- * reloaded later. When preferences are updated, the cache is updated and
- * the stored preference is updated to the new value.
- *
- * @author
- * Joseph Roque
- *
- * @external
+ * @author Joseph Roque
+ * @file Preferences.js
+ * @description Manages the application preferences. Loads the preferences upon opening
+ *              the application then caches their values so they don't need to be
+ *              reloaded later. When preferences are updated, the cache is updated and
+ *              the stored preference is updated to the new value.
  * @flow
  *
  */
