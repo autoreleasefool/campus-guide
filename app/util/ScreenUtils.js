@@ -80,7 +80,7 @@ module.exports = {
    * @return {boolean} true  if {screenId} is in HOME_SCREENS, false otherwise.
    */
   isRootScreen(screenId: ScreenId): boolean {
-    return HOME_SCREENS.includes(screenId);
+    return HOME_SCREENS.indexOf(screenId) >= 0;
   },
 
   /**
@@ -92,13 +92,13 @@ module.exports = {
    *         the list that contains the id.
    */
   getRootScreen(screenId: ScreenId): ScreenId {
-    if (FIND_SCREENS.includes(screenId)) {
+    if (FIND_SCREENS.indexOf(screenId) >= 0) {
       return Constants.Views.Find.Home;
-    } else if (SCHEDULE_SCREENS.includes(screenId)) {
+    } else if (SCHEDULE_SCREENS.indexOf(screenId) >= 0) {
       return Constants.Views.Schedule.Home;
-    } else if (SETTINGS_SCREENS.includes(screenId)) {
+    } else if (SETTINGS_SCREENS.indexOf(screenId) >= 0) {
       return Constants.Views.Settings.Home;
-    } else if (DISCOVER_SCREENS.includes(screenId)
+    } else if (DISCOVER_SCREENS.indexOf(screenId) >= 0
         || typeof(screenId) === 'string' && screenId.indexOf(Constants.Views.Discover.LinkCategory.toString()) === 0) {
       return Constants.Views.Discover.Home;
     }
