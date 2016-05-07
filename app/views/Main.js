@@ -35,7 +35,6 @@ const {
 
 // Imports
 const Constants = require('../Constants');
-const NavBar = require('../components/NavBar');
 const Preferences = require('../util/Preferences');
 const TabsView = require('../components/Tabs');
 
@@ -48,48 +47,7 @@ class MainScreen extends Component {
    */
   constructor(props: {}) {
     super(props);
-
-    // Explicitly binding 'this' to all methods that need it
-    (this:any)._navigateBack = this._navigateBack.bind(this);
-    (this:any)._onSearch = this._onSearch.bind(this);
-    (this:any)._refreshNavbar = this._refreshNavbar.bind(this);
   };
-
-  /**
-   * Returns to the previous page.
-   */
-  _navigateBack(): void {
-    this.refs.Tabs.navigateBack();
-  };
-
-  /**
-   * Displays the results of the user's search parameters.
-   *
-   * @param {string} searchTerms string of terms to search for.
-   */
-  _onSearch(searchTerms: string): void {
-    // TODO: search...
-    console.log('TODO: search...');
-    this.refs.Tabs.navigateForward(Constants.Views.Find.Search, searchTerms);
-  };
-
-  /**
-   * Forces the navbar to be re-rendered.
-   */
-  _refreshNavbar(): void {
-    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()})
-  }
-
-  /**
-   * Shows or hides the back button in the navbar.
-   *
-   * @param {boolean} show true to show back button, false to hide
-   */
-  _showBackButton(show: boolean): void {
-    this.refs.NavBar.setState({
-      showBackButton: show,
-    });
-  }
 
   /**
    * Displays a pop up when the application opens for the first time after the
@@ -120,11 +78,7 @@ class MainScreen extends Component {
   render(): ReactElement {
     return (
       <View style={_styles.container}>
-        <NavBar ref='NavBar' onSearch={this._onSearch} onBack={this._navigateBack} />
-        <TabsView
-            ref='Tabs'
-            refreshParent={this._refreshNavbar}
-            showBackButton={(show: boolean) => this._showBackButton(show)} />
+        <TabsView />
       </View>
     );
   };

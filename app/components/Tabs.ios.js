@@ -44,6 +44,7 @@ import type {
 
 // Imports
 const Constants = require('../Constants');
+const NavBar = require('./NavBar');
 const ScreenUtils = require('../util/ScreenUtils');
 
 // Screen imports
@@ -76,12 +77,6 @@ const tabIconSize: number = 30;
 // Lists the views currently on the stack in the Navigator.
 let screenStack: Array<number | string> = [Constants.Views.Default];
 
-// Type definition for component props.
-type Props = {
-  refreshParent: () => any,
-  showBackButton: (show: boolean) => any,
-};
-
 // Type definition for component state.
 type State = {
   currentTab: number,
@@ -97,20 +92,11 @@ class TabsView extends Component {
   state: State;
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
-   */
-  static propTypes = {
-    refreshParent: React.PropTypes.func.isRequired,
-    showBackButton: React.PropTypes.func.isRequired,
-  };
-
-  /**
    * Pass props and declares initial state.
    *
-   * @param {Props} props properties passed from container to this component.
+   * @param {{}} props properties passed from container to this component.
    */
-  constructor(props: Props) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       currentTab: Constants.Views.DefaultTab,
@@ -118,9 +104,10 @@ class TabsView extends Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any).getCurrentTab = this.getCurrentTab.bind(this);
-    (this:any).navigateBack = this.navigateBack.bind(this);
     (this:any)._changeTabs = this._changeTabs.bind(this);
+    (this:any)._navigateBack = this._navigateBack.bind(this);
     (this:any)._navigateForward = this._navigateForward.bind(this);
+    (this:any)._onSearch = this._onSearch.bind(this);
     (this:any)._renderScene = this._renderScene.bind(this);
   };
 
@@ -134,27 +121,13 @@ class TabsView extends Component {
   };
 
   /**
-   * Returns to the previous page.
-   */
-  navigateBack(): void {
-    if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-      this.refs.Navigator.pop();
-      screenStack.pop();
-
-      if (ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-        this.props.showBackButton(false);
-      }
-    }
-  };
-
-  /**
    * Switch to the selected tab, as determined by tabId.
    *
    * @param {number} tabId the tab to switch to.
    */
   _changeTabs(tabId: number) {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-      this.props.showBackButton(false);
+      this._showBackButton(false);
     }
 
     this.refs.Navigator.resetTo({id: tabId});
@@ -187,6 +160,20 @@ class TabsView extends Component {
   }
 
   /**
+   * Returns to the previous page.
+   */
+  _navigateBack(): void {
+    if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
+      this.refs.Navigator.pop();
+      screenStack.pop();
+
+      if (ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
+        this._showBackButton(false);
+      }
+    }
+  };
+
+  /**
    * Opens a screen, unless the screen is already showing. Passes data to
    * the new screen.
    *
@@ -196,18 +183,37 @@ class TabsView extends Component {
   _navigateForward(screenId: number | string, data: any): void {
     if (this._getCurrentScreen() === screenId) {
       // Don't push the screen if it's already showing.
+      // TODO: change the search terms if screenId === Constants.Views.Find.Search
       return;
     }
 
     // Show a back button to return to the previous screen, if the screen
     // is not a home screen
     if (ScreenUtils.isRootScreen(this._getCurrentScreen())) {
-      this.props.showBackButton(true);
+      this._showBackButton(true);
     }
 
     this.refs.Navigator.push({id: screenId, data: data});
     screenStack.push(screenId);
   };
+
+  /**
+   * Displays the results of the user's search parameters.
+   *
+   * @param {string} searchTerms string of terms to search for.
+   */
+  _onSearch(searchTerms: string): void {
+    // TODO: search...
+    console.log('TODO: search...');
+    this._navigateForward(Constants.Views.Find.Search, searchTerms);
+  };
+
+  /**
+   * Forces the navbar to be re-rendered.
+   */
+  _refreshNavbar(): void {
+    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()})
+  }
 
   /**
    * Renders a view according to the current route of the navigator.
@@ -265,7 +271,7 @@ class TabsView extends Component {
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
-        <SettingsHome requestTabChange={this._changeTabs} refreshParent={this.props.refreshParent} />
+        <SettingsHome requestTabChange={this._changeTabs} refreshParent={this._refreshNavbar.bind(this)} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
       scene = (
@@ -290,6 +296,17 @@ class TabsView extends Component {
       </View>
     );
   };
+
+  /**
+   * Shows or hides the back button in the navbar.
+   *
+   * @param {boolean} show true to show back button, false to hide
+   */
+  _showBackButton(show: boolean): void {
+    this.refs.NavBar.setState({
+      showBackButton: show,
+    });
+  }
 
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
@@ -325,6 +342,10 @@ class TabsView extends Component {
 
     return (
       <View style={_styles.container}>
+        <NavBar
+            ref='NavBar'
+            onSearch={this._onSearch}
+            onBack={this._navigateBack} />
         <Navigator
             style={_styles.navigator}
             ref='Navigator'

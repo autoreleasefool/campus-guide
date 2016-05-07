@@ -46,6 +46,7 @@ import type {
 
 // Imports
 const Constants = require('../Constants');
+const NavBar = require('./NavBar');
 const Preferences = require('../util/Preferences');
 const ScreenUtils = require('../util/ScreenUtils');
 
@@ -77,11 +78,12 @@ const tabIconSize: number = 30;
 // Lists the views currently on the stack in the Navigator.
 let screenStack: Array<number | string> = [Constants.Views.Default];
 
-// Type definition for component props.
-type Props = {
-  refreshParent: () => any,
-  showBackButton: (show: boolean) => any,
-};
+// Represents a closed navigation drawer.
+const DRAWER_CLOSED: number = 0;
+// Represents an open navigation drawer.
+const DRAWER_OPEN: number = 1;
+// Indicates the current state of the navigation drawer: 0 is closed, 1 is open.
+let drawerState: number = DRAWER_CLOSED;
 
 // Type definition for component state.
 type State = {
@@ -98,20 +100,11 @@ class TabsView extends Component {
   state: State;
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
-   */
-  static propTypes = {
-    refreshParent: React.PropTypes.func.isRequired,
-    showBackButton: React.PropTypes.func.isRequired,
-  };
-
-  /**
    * Pass props and declares initial state.
    *
-   * @param {Props} props properties passed from container to this component.
+   * @param {{}} props properties passed from container to this component.
    */
-  constructor(props: Props) {
+  constructor(props: {}}) {
     super(props);
     this.state = {
       currentTab: Constants.Views.DefaultTab,
@@ -119,8 +112,8 @@ class TabsView extends Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any).getCurrentTab = this.getCurrentTab.bind(this);
-    (this:any).navigateBack = this.navigateBack.bind(this);
     (this:any)._changeTabs = this._changeTabs.bind(this);
+    (this:any)._navigateBack = this._navigateBack.bind(this);
     (this:any)._navigateForward = this._navigateForward.bind(this);
     (this:any)._renderNavigationView = this._renderNavigationView.bind(this);
     (this:any)._renderScene = this._renderScene.bind(this);
@@ -140,13 +133,13 @@ class TabsView extends Component {
    *
    * @return {boolean} true if the app navigated backwards.
    */
-  navigateBack(): boolean {
+  _navigateBack(): boolean {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
       this.refs.Navigator.pop();
       screenStack.pop();
 
       if (ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-        this.props.showBackButton(false);
+        this._showBackButton(false);
       }
 
       return true;
@@ -162,7 +155,7 @@ class TabsView extends Component {
    */
   _changeTabs(tabId: number) {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-      this.props.showBackButton(false);
+      this._showBackButton(false);
     }
 
     this.refs.Navigator.resetTo({id: tabId});
@@ -204,18 +197,59 @@ class TabsView extends Component {
   _navigateForward(screenId: number | string, data: any): void {
     if (this._getCurrentScreen() === screenId) {
       // Don't push the screen if it's already showing.
+      // TODO: change the search terms if screenId === Constants.Views.Find.Search
       return;
     }
 
     // Show a back button to return to the previous screen, if the screen
     // is not a home screen
     if (ScreenUtils.isRootScreen(this._getCurrentScreen())) {
-      this.props.showBackButton(true);
+      this._showBackButton(true);
     }
 
     this.refs.Navigator.push({id: screenId, data: data});
     screenStack.push(screenId);
   };
+
+  /**
+   * Toggles the navigation drawer open or closed.
+   */
+  _toggleDrawer(): void {
+    if (drawerState === DRAWER_OPEN) {
+      this.refs.Drawer.openDrawer();
+    } else {
+      this.refs.Drawer.closeDrawer();
+    }
+  };
+
+  /**
+   * Called when the navigation drawer opens or closes.
+   */
+  _onDrawerToggle(drawerOpen: boolean): void {
+    if (drawerOpen) {
+      drawerState = DRAWER_OPEN;
+    } else {
+      drawerState = DRAWER_CLOSED;
+    }
+  }
+
+  /**
+   * Displays the results of the user's search parameters.
+   *
+   * @param {string} searchTerms string of terms to search for.
+   */
+  _onSearch(searchTerms: string): void {
+    // TODO: search...
+    console.log('TODO: search...');
+    this._navigateForward(Constants.Views.Find.Search, searchTerms);
+  };
+
+  /**
+   * Forces the navbar to be re-rendered.
+   */
+  _refreshNavbar(): void {
+    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()})
+  }
 
   /**
    * Renders the content in the navigation drawer.
@@ -318,7 +352,7 @@ class TabsView extends Component {
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
-        <SettingsHome requestTabChange={this._changeTabs} refreshParent={this.props.refreshParent} />
+        <SettingsHome requestTabChange={this._changeTabs} refreshParent={this._refreshNavbar.bind(this)} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
       scene = (
@@ -345,6 +379,17 @@ class TabsView extends Component {
   };
 
   /**
+   * Shows or hides the back button in the navbar.
+   *
+   * @param {boolean} show true to show back button, false to hide
+   */
+  _showBackButton(show: boolean): void {
+    this.refs.NavBar.setState({
+      showBackButton: show,
+    });
+  }
+
+  /**
    * Attaches a listener to the Android back button.
    */
   componentDidMount(): void {
@@ -369,7 +414,13 @@ class TabsView extends Component {
           ref='Drawer'
           drawerWidth={300}
           drawerPosition={DrawerLayoutAndroid.positions.Left}
+          onDrawerOpen={this._onDrawerToggle.bind(this, true)}
+          onDrawerClose={this._onDrawerToggle.bind(this, false)}
           renderNavigationView={this._renderNavigationView}>
+        <NavBar
+            ref='NavBar'
+            onSearch={this._onSearch}
+            onDrawerToggle={this._onDrawerToggle} />
         <Navigator
             style={_styles.navigator}
             ref='Navigator'

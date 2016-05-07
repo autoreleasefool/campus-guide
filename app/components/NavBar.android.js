@@ -41,31 +41,22 @@ const {
 // Imports
 import TimerMixin from 'react-timer-mixin';
 const Constants = require('../Constants');
-const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../util/Preferences');
 const StatusBarUtils = require('../util/StatusBarUtils');
 
 // Get dimensions of the screen
-const {height, width} = Dimensions.get('window');
-
-// Declaring icons depending on the platform
-let Icon: ReactClass = Ionicons;
-let backIcon: string = 'ios-arrow-back';
-if (Platform.OS !== 'ios') {
-  Icon = require('react-native-vector-icons/MaterialIcons');
-  backIcon = 'arrow-back';
-}
+const { width } = Dimensions.get('window');
 
 // Type definition for component props.
 type Props = {
+  onBack: ?() => any,
+  onDrawerToggle: ?() => any,
   onSearch: () => any,
-  onBack: () => any,
 };
 
 // Type definition for component state.
 type State = {
-  showBackButton: ?boolean,
   refresh: ?boolean,
 };
 
@@ -77,8 +68,9 @@ class NavBar extends Component {
    * component.
    */
   static propTypes = {
+    onBack: React.PropTypes.func,
+    onDrawerToggle: React.PropTypes.func,
     onSearch: React.PropTypes.func.isRequired,
-    onBack: React.PropTypes.func.isRequired,
   };
 
   /**
@@ -89,25 +81,11 @@ class NavBar extends Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showBackButton: false,
       refresh: false,
     };
 
     // Explicitly binding 'this' to certain methods
     (this:any).getRefresh = this.getRefresh.bind(this);
-  };
-
-  /**
-   * Configures the app to animate the next layout change, then updates the
-   * state.
-   *
-   * @param {State} state the new state for the component.
-   */
-  setState(state: State) {
-    setTimeout(() => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      super.setState(state);
-    }, 50);
   };
 
   /**
@@ -125,14 +103,6 @@ class NavBar extends Component {
   };
 
   /**
-   * Clears the search field and requests a back navigation.
-   */
-  _onBack(): void {
-    this.refs.SearchInput.setNativeProps({text: ''});
-    this.props.onBack();
-  };
-
-  /**
    * Prompts the app to search, so long as there is any text to search with.
    *
    * @param {string} text params to search for.
@@ -142,6 +112,15 @@ class NavBar extends Component {
       this.props.onSearch(text);
     }
   };
+
+  /**
+   * Calls the component prop to toggle the navigation drawer.
+   */
+  _toggleDrawer(): void {
+    if (this.props.onDrawerToggle) {
+      this.props.onDrawerToggle();
+    }
+  }
 
   /**
    * Renders a text input field for searching.
@@ -157,26 +136,22 @@ class NavBar extends Component {
       Translations = require('../../assets/static/js/Translations.en.js');
     }
 
-    // Setting position of search bar and back button dependent on if back button is showing.
-    let searchBarLeft = (this.state.showBackButton)
-        ? 50
-        : 10;
-    let searchBarWidth = (this.state.showBackButton)
-        ? width - 60
-        : width - 20;
-    let backButtonLeft = (this.state.showBackButton)
-        ? 0
-        : -60;
+    const searchBarLeft: number = 50;
+    const searchBarWidth: number = width - 60;
 
     return (
       <View style={_styles.container}>
-        <TouchableOpacity onPress={this._onBack.bind(this)} style={{height: 40, alignItems: 'center', left: backButtonLeft}}>
-          <Icon name={backIcon} size={24} color={'white'} style={{marginLeft: 20, marginRight: 20, marginTop: 8}} />
+        <TouchableOpacity onPress={this._toggleDrawer.bind(this)} style={_styles.drawerToggle}>
+          <MaterialIcons
+              color={'white'}
+              name={'menu'}
+              size={24}
+              style={{marginLeft: 20, marginRight: 20, marginTop: 8}} />
         </TouchableOpacity>
-        <View style={[_styles.innerContainer, {position: 'absolute', width: searchBarWidth, left: searchBarLeft, top: 0}]}>
-          <Ionicons
+        <View style={[_styles.innerContainer, _styles.searchContainer, {width: searchBarWidth, left: searchBarLeft}]}>
+          <MaterialIcons
               onPress={() => this.refs.SearchInput.focus()}
-              name={'ios-search'}
+              name={'search'}
               size={24}
               color={'white'}
               style={{marginLeft: 10, marginRight: 10}} />
@@ -208,7 +183,16 @@ const _styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     margin: 10,
     marginLeft: 0,
-  }
+  },
+  searchContainer: {
+    position: 'absolute',
+    top: 0,
+  },
+  drawerToggle: {
+    height: 40,
+    alignItems: 'center',
+    left: 0,
+  },
 });
 
 // Expose component to app
