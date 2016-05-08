@@ -146,7 +146,7 @@ class TabsView extends React.Component {
    *
    * @param {number} tabId the tab to switch to.
    */
-  _changeTabs(tabId: number) {
+  _changeTabs(tabId: number): void {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
       this._showBackButton(false);
     }

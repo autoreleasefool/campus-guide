@@ -94,7 +94,7 @@ class NavBar extends React.Component {
    *
    * @param {State} state the new state for the component.
    */
-  setState(state: State) {
+  setState(state: State): void {
     if (state.showBackButton != null) {
       setTimeout(() => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);

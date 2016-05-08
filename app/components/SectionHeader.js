@@ -165,7 +165,7 @@ class SectionHeader extends React.Component {
    * @param {string} icon      new icon name for the subtitle.
    * @param {string} iconClass new icon class name for the subtitle.
    */
-  updateSubtitle(name: ?string, icon: ?string, iconClass: ?string) {
+  updateSubtitle(name: ?string, icon: ?string, iconClass: ?string): void {
     if (VALID_ICON_CLASSES.indexOf(iconClass) < 0) {
       icon = iconClass = NULL_SUBTITLE_VALUE;
     }
