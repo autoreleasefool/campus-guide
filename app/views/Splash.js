@@ -131,8 +131,8 @@ class SplashScreen extends Component {
           //   isLoading: false
           // });
         }
-      });
-    });
+      }).catch(err => console.error('Unable to load initial preferences in Splash', err));
+    }).catch(err => console.error('Unable to load app configuration in Splash', err));
   };
 
   /**
