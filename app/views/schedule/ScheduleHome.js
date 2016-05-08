@@ -26,22 +26,20 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Dimensions,
   Platform,
   LayoutAnimation,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} = React;
+  View,
+} from 'react-native';
 
 // Imports
-const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
-const Icon = require('react-native-vector-icons/MaterialIcons');
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
@@ -61,7 +59,7 @@ type State = {
   showEditButtons: boolean,
 };
 
-class ScheduleHome extends Component {
+class ScheduleHome extends React.Component {
   state: State;
 
   /**
@@ -150,17 +148,17 @@ class ScheduleHome extends Component {
         <View style={_styles.editButtonContainer}>
           <TouchableOpacity onPress={this._addCourse.bind(this)}>
             <View style={[_styles.editButton, {margin: 10}]}>
-              <Icon name={'add'} size={24} color={'white'} />
+              <MaterialIcons name={'add'} size={24} color={'white'} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._removeCourse.bind(this)}>
             <View style={[_styles.editButton, {marginTop: 10, marginBottom: 10}]}>
-              <Icon name={'remove'} size={24} color={'white'} />
+              <MaterialIcons name={'remove'} size={24} color={'white'} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._toggleEditScheduleButtons.bind(this)}>
             <View style={[_styles.editButton, {margin: 10}]}>
-              <Icon name={'close'} size={24} color={'white'} />
+              <MaterialIcons name={'close'} size={24} color={'white'} />
             </View>
           </TouchableOpacity>
         </View>

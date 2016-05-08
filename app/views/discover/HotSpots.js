@@ -25,12 +25,11 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   StyleSheet,
   View,
-} = React;
+} from 'react-native';
 
 // Imports
 const Constants = require('../../Constants');
@@ -38,7 +37,7 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const Styles = require('../../Styles');
 
-class HotSpots extends Component {
+class HotSpots extends React.Component {
 
   /**
    * Pass props and declares initial state.

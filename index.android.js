@@ -24,9 +24,9 @@
 'use strict';
 
 // React Native imports
-const {
+import {
   AppRegistry,
-} = require('react-native');
+} from 'react-native';
 
 // Imports
 const CampusGuide = require('./app/Root');

@@ -25,13 +25,12 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   View,
-} = React;
+} from 'react-native';
 
-class ScheduleEditor extends Component {
+class ScheduleEditor extends React.Component {
 
   /**
    * Pass props and declares initial state.

@@ -26,44 +26,6 @@
 module.exports = {
 
   /**
-   * If text length is greater than {maxLength}, the text is shortened to
-   * maxLength - 2 and 2 periods are added to the end of the text.
-   *
-   * @param {string} text      string to shorten if too long.
-   * @param {number} maxLength maximum length string to return.
-   * @return {string} a string with a max length of {maxLength}.
-   */
-  getTextWithEllipses(text: string, maxLength: number): string {
-    if (text.length > maxLength) {
-      return text.substr(0, maxLength - 2) + '..';
-    } else {
-      return text;
-    }
-  },
-
-  /**
-   * Pads the beginning of a string with a character until it is of
-   * {desiredLength}. If no character is provided, pads with spaces.
-   *
-   * @param {string} text          string to pad.
-   * @param {number} desiredLength length of string to return.
-   * @param {?string} char          optional argument. Character to pad with.
-   *                      Uses ' ' by default.
-   * @return {string} a string with at least a length of {desiredLength}.
-   */
-  leftPad(text: string, desiredLength: number, char: ?string): string {
-    if (!char) {
-      char = ' ';
-    }
-
-    while (text.length < desiredLength) {
-      text = char + text;
-    }
-
-    return text;
-  },
-
-  /**
    * Formats certain link formats to display.
    *
    * @param {string} link link to format. Accepted formats are 'tel:\d+', 'mailto:.*'.
@@ -102,5 +64,43 @@ module.exports = {
     }
 
     return this.leftPad(hours.toString(), 2, '0') + ':' + minutes;
-  }
+  },
+
+  /**
+   * If text length is greater than {maxLength}, the text is shortened to
+   * maxLength - 2 and 2 periods are added to the end of the text.
+   *
+   * @param {string} text      string to shorten if too long.
+   * @param {number} maxLength maximum length string to return.
+   * @return {string} a string with a max length of {maxLength}.
+   */
+  getTextWithEllipses(text: string, maxLength: number): string {
+    if (text.length > maxLength) {
+      return text.substr(0, maxLength - 2) + '..';
+    } else {
+      return text;
+    }
+  },
+
+  /**
+   * Pads the beginning of a string with a character until it is of
+   * {desiredLength}. If no character is provided, pads with spaces.
+   *
+   * @param {string} text          string to pad.
+   * @param {number} desiredLength length of string to return.
+   * @param {?string} char          optional argument. Character to pad with.
+   *                      Uses ' ' by default.
+   * @return {string} a string with at least a length of {desiredLength}.
+   */
+  leftPad(text: string, desiredLength: number, char: ?string): string {
+    if (!char) {
+      char = ' ';
+    }
+
+    while (text.length < desiredLength) {
+      text = char + text;
+    }
+
+    return text;
+  },
 };

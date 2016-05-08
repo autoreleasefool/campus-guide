@@ -26,15 +26,14 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Image,
   Platform,
   StyleSheet,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definitions
 import type {
@@ -72,7 +71,7 @@ type State = {
   details: ?Array<ShuttleDetails>,
 };
 
-class ShuttleInfo extends Component {
+class ShuttleInfo extends React.Component {
   state: State;
 
   /**

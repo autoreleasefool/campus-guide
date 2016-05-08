@@ -25,12 +25,11 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Navigator,
   View,
-} = React;
+} from 'react-native';
 
 // Imports
 const Constants = require('./Constants');
@@ -43,12 +42,12 @@ type Route = {
   id: number,
 };
 
-class CampusGuide extends Component {
+class CampusGuide extends React.Component {
 
   /**
    * Default constructor to pass props to parent.
    *
-   * @param {{}}props properties passed from container to this component.
+   * @param {{}} props properties passed from container to this component.
    */
   constructor(props: {}) {
     super(props);

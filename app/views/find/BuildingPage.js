@@ -25,18 +25,17 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   View,
-} = React;
+} from 'react-native';
 
 // Type definition for component props.
 type Props = {
   buildingCode: string,
 };
 
-class BuildingPage extends Component {
+class BuildingPage extends React.Component {
 
   /**
    * Properties which the parent component should make available to this

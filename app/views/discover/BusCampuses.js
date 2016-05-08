@@ -25,17 +25,21 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
+import React from 'react';
+import {
   Alert,
   Clipboard,
-  Component,
   Image,
   Linking,
   StyleSheet,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
+
+// Import type definition for bus campus.
+import type {
+  BusCampus,
+} from '../../Types';
 
 // Imports
 const Configuration = require('../../util/Configuration');
@@ -44,11 +48,6 @@ const ExternalUtils = require('../../util/ExternalUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
-
-// Import type definition for bus campus.
-import type {
-  BusCampus,
-} from '../../Types';
 
 // Background colors for each campus
 const campuscolors: Array<string> = [
@@ -68,7 +67,7 @@ type State = {
   campuses: ?Array<BusCampus>,
 };
 
-class BusCampuses extends Component {
+class BusCampuses extends React.Component {
   state: State;
 
   /**

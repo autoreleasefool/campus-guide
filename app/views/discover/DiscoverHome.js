@@ -25,16 +25,15 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Image,
   LayoutAnimation,
   Platform,
   StyleSheet,
   TouchableOpacity,
-  View
-} = React;
+  View,
+} from 'react-native';
 
 // Import type definitions.
 import type {
@@ -43,13 +42,11 @@ import type {
 } from '../../Types';
 
 // Imports
-const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
-const Styles = require('../../Styles');
 
 // Type definition for headers with a 'name' property.
 type DiscoverSectionWithDefaultName = {
@@ -84,7 +81,7 @@ type State = {
   currentSection: string,
 };
 
-class DiscoverHome extends Component {
+class DiscoverHome extends React.Component {
   state: State;
 
   /**

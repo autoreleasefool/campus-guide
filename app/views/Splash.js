@@ -26,12 +26,9 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  AsyncStorage,
-  Component,
+import React from 'react';
+import {
   Dimensions,
-  Navigator,
   Platform,
   StatusBar,
   StyleSheet,
@@ -39,7 +36,7 @@ const {
   TouchableOpacity,
   UIManager,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definitions.
 import type {
@@ -67,7 +64,7 @@ type State = {
   isLoading: boolean,
 };
 
-class SplashScreen extends Component {
+class SplashScreen extends React.Component {
   state: State;
 
   /**

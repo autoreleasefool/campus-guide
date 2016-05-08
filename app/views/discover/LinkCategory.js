@@ -25,11 +25,10 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
+import React from 'react';
+import {
   Alert,
   Clipboard,
-  Component,
   Image,
   LayoutAnimation,
   Linking,
@@ -38,7 +37,7 @@ const {
   Text,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definitions.
 import type {
@@ -52,7 +51,7 @@ const Configuration = require('../../util/Configuration');
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
 const ExternalUtils = require('../../util/ExternalUtils');
-const Icon = require('react-native-vector-icons/Ionicons');
+const Ionicons = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
@@ -71,7 +70,7 @@ type State = {
   showLinks: boolean,
 };
 
-class LinkCategory extends Component {
+class LinkCategory extends React.Component {
   state: State;
 
   /**
@@ -163,7 +162,7 @@ class LinkCategory extends Component {
 
       if (link.indexOf('tel:') === 0) {
         return (
-          <Icon
+          <Ionicons
               color={iconColor}
               name={'android-call'}
               size={24}
@@ -171,7 +170,7 @@ class LinkCategory extends Component {
         );
       } else if (link.indexOf('mailto:') === 0) {
         return (
-          <Icon
+          <Ionicons
               color={iconColor}
               name={'android-mail'}
               size={24}
@@ -179,7 +178,7 @@ class LinkCategory extends Component {
         );
       } else {
         return (
-          <Icon
+          <Ionicons
               color={iconColor}
               name={'android-open'}
               size={24}
@@ -274,7 +273,7 @@ class LinkCategory extends Component {
               <TouchableOpacity
                   onPress={() => this._openLink(translatedLink, Translations)}
                   key={translatedLink}>
-                <Icon
+                <Ionicons
                     color={DisplayUtils.getSocialMediaIconColor(translatedLinkName)}
                     name={DisplayUtils.getSocialMediaIconName(translatedLinkName)}
                     size={30}

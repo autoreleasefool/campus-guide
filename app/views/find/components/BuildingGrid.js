@@ -26,9 +26,8 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Dimensions,
   Image,
   ListView,
@@ -36,7 +35,7 @@ const {
   Text,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definitions
 import type {
@@ -58,7 +57,7 @@ type State = {
   loaded: boolean,
 };
 
-class BuildingGrid extends Component {
+class BuildingGrid extends React.Component {
   state: State;
 
   /*

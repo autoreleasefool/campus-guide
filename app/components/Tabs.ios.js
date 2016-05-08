@@ -25,17 +25,14 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Dimensions,
   Navigator,
-  Platform,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definition for tab icons.
 import type {
@@ -44,6 +41,7 @@ import type {
 
 // Imports
 const Constants = require('../Constants');
+const Ionicons = require('react-native-vector-icons/Ionicons');
 const NavBar = require('./NavBar');
 const ScreenUtils = require('../util/ScreenUtils');
 
@@ -61,8 +59,8 @@ const SettingsHome = require('../views/settings/SettingsHome');
 const ShuttleCampusInfo = require('../views/discover/ShuttleCampusInfo');
 const ShuttleInfo = require('../views/discover/ShuttleInfo');
 
-let Icon: ReactClass = require('react-native-vector-icons/Ionicons');
-let tabIcons: TabIcons = {
+// Icons for tab items
+const tabIcons: TabIcons = {
   find: 'navigate',
   schedule: 'ios-calendar-outline',
   discover: 'compass',
@@ -88,7 +86,7 @@ type Route = {
   data: any,
 };
 
-class TabsView extends Component {
+class TabsView extends React.Component {
   state: State;
 
   /**
@@ -313,7 +311,7 @@ class TabsView extends Component {
    *
    * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     let findColor = Constants.Colors.charcoalGrey;
     let scheduleColor = Constants.Colors.charcoalGrey;
     let discoverColor = Constants.Colors.charcoalGrey;
@@ -354,16 +352,16 @@ class TabsView extends Component {
             renderScene={this._renderScene} />
         <View style={_styles.tabContainer}>
           <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Find.Home)}} style={_styles.tab}>
-            <Icon name={tabIcons.find} size={tabIconSize} color={findColor} />
+            <Ionicons name={tabIcons.find} size={tabIconSize} color={findColor} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Schedule.Home)}} style={_styles.tab}>
-            <Icon name={tabIcons.schedule} size={tabIconSize} color={scheduleColor} />
+            <Ionicons name={tabIcons.schedule} size={tabIconSize} color={scheduleColor} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Discover.Home)}} style={_styles.tab}>
-            <Icon name={tabIcons.discover} size={tabIconSize} color={discoverColor} />
+            <Ionicons name={tabIcons.discover} size={tabIconSize} color={discoverColor} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Settings.Home)}} style={_styles.tab}>
-            <Icon name={tabIcons.settings} size={tabIconSize} color={settingsColor} />
+            <Ionicons name={tabIcons.settings} size={tabIconSize} color={settingsColor} />
           </TouchableOpacity>
           <View style={[_styles.indicator, {left: indicatorLeft}]} />
         </View>

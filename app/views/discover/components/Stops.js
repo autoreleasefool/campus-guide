@@ -26,9 +26,8 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   ListView,
   Navigator,
   Platform,
@@ -36,7 +35,14 @@ const {
   Text,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
+
+// Import type definition icons.
+import type {
+  DetailedRouteInfo,
+  TransitCampus,
+  TransitStop,
+} from '../../../Types';
 
 // Imports
 const Constants = require('../../../Constants');
@@ -45,13 +51,6 @@ const Preferences = require('../../../util/Preferences');
 const SectionHeader = require('../../../components/SectionHeader');
 const Styles = require('../../../Styles');
 const TextUtils = require('../../../util/TextUtils');
-
-// Import type definition icons.
-import type {
-  DetailedRouteInfo,
-  TransitCampus,
-  TransitStop,
-} from '../../../Types';
 
 // Identifier for the navigator, indicating the list of stops is being shown.
 const LIST: number = 0;
@@ -91,7 +90,7 @@ type NavigatorRoute = {
   stop: ?StopInfo,
 };
 
-class Stops extends Component {
+class Stops extends React.Component {
   state: State;
 
   /**
@@ -283,43 +282,6 @@ class Stops extends Component {
   };
 
   /**
-   * Returns a list of times for the current day that will be the next to occur.
-   *
-   * @param {Object} days a dictionary of days mapped to times.
-   * @return {string} a list of up to 3 times, formatted as a string.
-   */
-  _retrieveUpcomingTimes(days: Object): string {
-    let upcomingTimes = [];
-    let now = new Date();
-    let currentDay = now.getDay().toString();
-    let currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0')
-        + ':'
-        + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
-    for (let day in days) {
-      if (day.indexOf(currentDay) > -1) {
-        let i = days[day].length - 1;
-        while (i >= 0) {
-          if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
-            let j = 1;
-            while (j < 4 && i + j < days[day].length) {
-              upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
-              j += 1;
-            }
-            break;
-          }
-          i -= 1;
-        }
-      }
-    }
-
-    if (upcomingTimes.length > 0) {
-      return upcomingTimes.join('   ');
-    } else {
-      return 'No upcoming buses';
-    }
-  }
-
-  /**
    * Renders a view according to the current route of the navigator.
    *
    * @param {NavigatorRoute} route object with properties to identify the route to display.
@@ -366,6 +328,43 @@ class Stops extends Component {
       );
     }
   };
+
+  /**
+   * Returns a list of times for the current day that will be the next to occur.
+   *
+   * @param {Object} days a dictionary of days mapped to times.
+   * @return {string} a list of up to 3 times, formatted as a string.
+   */
+  _retrieveUpcomingTimes(days: Object): string {
+    let upcomingTimes = [];
+    let now = new Date();
+    let currentDay = now.getDay().toString();
+    let currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0')
+        + ':'
+        + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
+    for (let day in days) {
+      if (day.indexOf(currentDay) > -1) {
+        let i = days[day].length - 1;
+        while (i >= 0) {
+          if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
+            let j = 1;
+            while (j < 4 && i + j < days[day].length) {
+              upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
+              j += 1;
+            }
+            break;
+          }
+          i -= 1;
+        }
+      }
+    }
+
+    if (upcomingTimes.length > 0) {
+      return upcomingTimes.join('   ');
+    } else {
+      return 'No upcoming buses';
+    }
+  }
 
   /**
    * If the stops have not beed loaded, then loads them.

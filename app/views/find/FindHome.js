@@ -25,17 +25,14 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Dimensions,
   Platform,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definitions
 import type {
@@ -47,7 +44,6 @@ const BuildingGrid = require('./components/BuildingGrid');
 const Constants = require('../../Constants');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
-const Styles = require('../../Styles');
 const Upcoming = require('./components/Upcoming');
 
 // Getting dimensions of the device
@@ -58,7 +54,7 @@ type Props = {
   onEditSchedule: () => any,
 };
 
-class FindHome extends Component {
+class FindHome extends React.Component {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -112,9 +108,9 @@ class FindHome extends Component {
    * Renders the user's upcoming classes for the day and a list of buildings
    * on campus.
    *
-   * @return the hierarchy of views to render.
+   * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'fr') {

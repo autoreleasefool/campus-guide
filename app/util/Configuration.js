@@ -66,21 +66,30 @@ module.exports = {
   },
 
   /**
-   * Gets a link to use in place of a missing link.
-   *
-   * @return {string} a default link.
-   */
-  getDefaultLink(): string {
-    return defaultLink;
-  },
-
-  /**
    * Gets the list of semesters currently available in the application.
    *
    * @return {Array<Semester>} the list of objects containing semester information.
    */
   getAvailableSemesters(): Array<Semester> {
     return availableSemesters;
+  },
+
+  /**
+   * Returns an object with information about the city buses.
+   *
+   * @return {BusInfo} an object with details about the city bus system.
+   */
+  getCityBusyInfo(): ?BusInfo {
+    return cityBuses;
+  },
+
+  /**
+   * Gets a link to use in place of a missing link.
+   *
+   * @return {string} a default link.
+   */
+  getDefaultLink(): string {
+    return defaultLink;
   },
 
   /**
@@ -100,14 +109,5 @@ module.exports = {
    */
   getUniversity(): ?University {
     return university;
-  },
-
-  /**
-   * Returns an object with information about the city buses.
-   *
-   * @return {BusInfo} an object with details about the city bus system.
-   */
-  getCityBusyInfo(): ?BusInfo {
-    return cityBuses;
   },
 };

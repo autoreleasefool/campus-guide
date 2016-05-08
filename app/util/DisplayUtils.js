@@ -33,24 +33,24 @@ import type {
 module.exports = {
 
   /**
-   * Returns true if a hexadecimal color is 'dark', false otherwise.
+   * Returns the icon and class for an icon to use for the Android platform,
+   * defined in the object.
    *
-   * @param {string} color a hexadecimal string
-   * @return {boolean} true if the color is dark, false otherwise.
+   * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class'
+   *                     properties, or 'icon.name' and 'icon.class' properties.
+   * @return {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
-  isColorDark(color: string): boolean {
-    let hexColor: number = 0;
-    if (color.indexOf('#') == 0) {
-      hexColor = parseInt(color.substring(1, color.length), 16);
-    } else {
-      hexColor = parseInt(color, 16);
+  getAndroidIcon(obj: Object): ?DefaultIcon {
+    if ('icon' in obj) {
+      let icon: IconObject = obj.icon;
+      if (icon.android != null) {
+        return {name: icon.android.name, class: icon.android.class};
+      } else if (icon.name != null && icon.class != null){
+        return {name: icon.name, class: icon.class};
+      }
     }
 
-    const r: number = (hexColor & 0xff0000) >> 16;
-    const g: number = (hexColor & 0xff00) >> 8;
-    const b: number = (hexColor & 0xff);
-
-    return ((r * 0.299 + g * 0.587 + b * 0.114) / 256 < 0.5);
+    return null;
   },
 
   /**
@@ -66,27 +66,6 @@ module.exports = {
       let icon: IconObject = obj.icon;
       if (icon.ios != null) {
         return {name: icon.ios.name, class: icon.ios.class};
-      } else if (icon.name != null && icon.class != null){
-        return {name: icon.name, class: icon.class};
-      }
-    }
-
-    return null;
-  },
-
-  /**
-   * Returns the icon and class for an icon to use for the Android platform,
-   * defined in the object.
-   *
-   * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class'
-   *                     properties, or 'icon.name' and 'icon.class' properties.
-   * @return {?DefaultIcon} an object with 'name' and 'class' properties, or null.
-   */
-  getAndroidIcon(obj: Object): ?DefaultIcon {
-    if ('icon' in obj) {
-      let icon: IconObject = obj.icon;
-      if (icon.android != null) {
-        return {name: icon.android.name, class: icon.android.class};
       } else if (icon.name != null && icon.class != null){
         return {name: icon.name, class: icon.class};
       }
@@ -116,6 +95,32 @@ module.exports = {
   },
 
   /**
+   * Returns a color for the icon for certain social media platforms.
+   *
+   * @param {string} socialMedia a string containing the name of a social media platform.
+   * @return {string} the color for the icon of the provided social media platform,
+   *         or a generic color.
+   */
+  getSocialMediaIconColor(socialMedia: string): string {
+    switch(socialMedia.toLowerCase()) {
+      case 'linkedin':
+        return '#0077B5';
+      case 'twitter':
+        return '#55ACEE';
+      case 'facebook':
+        return '#3D509F';
+      case 'instagram':
+        return '#241F20';
+      case 'youtube':
+        return '#CD201F';
+      case 'tumblr':
+        return '#35465C';
+      default:
+        return '#000000';
+    }
+  },
+
+  /**
    * Returns the icon name for certain social media platforms.
    *
    * @param {string} socialMedia a string containing the name of a social media platform.
@@ -141,28 +146,23 @@ module.exports = {
   },
 
   /**
-   * Returns a color for the icon for certain social media platforms.
+   * Returns true if a hexadecimal color is 'dark', false otherwise.
    *
-   * @param {string} socialMedia a string containing the name of a social media platform.
-   * @return {string} the color for the icon of the provided social media platform,
-   *         or a generic color.
+   * @param {string} color a hexadecimal string
+   * @return {boolean} true if the color is dark, false otherwise.
    */
-  getSocialMediaIconColor(socialMedia: string): string {
-    switch(socialMedia.toLowerCase()) {
-      case 'linkedin':
-        return '#0077B5';
-      case 'twitter':
-        return '#55ACEE';
-      case 'facebook':
-        return '#3D509F';
-      case 'instagram':
-        return '#241F20';
-      case 'youtube':
-        return '#CD201F';
-      case 'tumblr':
-        return '#35465C';
-      default:
-        return '#000000';
+  isColorDark(color: string): boolean {
+    let hexColor: number = 0;
+    if (color.indexOf('#') == 0) {
+      hexColor = parseInt(color.substring(1, color.length), 16);
+    } else {
+      hexColor = parseInt(color, 16);
     }
+
+    const r: number = (hexColor & 0xff0000) >> 16;
+    const g: number = (hexColor & 0xff00) >> 8;
+    const b: number = (hexColor & 0xff);
+
+    return ((r * 0.299 + g * 0.587 + b * 0.114) / 256 < 0.5);
   },
 };

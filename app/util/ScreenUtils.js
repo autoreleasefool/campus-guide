@@ -73,17 +73,6 @@ const SETTINGS_SCREENS: Array<ScreenId> = [
 module.exports = {
 
   /**
-   * Returns true if the screen can be reached directly from the tab bar,
-   * or false otherwise.
-   *
-   * @param {ScreenId} id of the screen to check.
-   * @return {boolean} true  if {screenId} is in HOME_SCREENS, false otherwise.
-   */
-  isRootScreen(screenId: ScreenId): boolean {
-    return HOME_SCREENS.indexOf(screenId) >= 0;
-  },
-
-  /**
    * Returns the screen that can reached directly from the tab bar based on
    * the screenId.
    *
@@ -104,5 +93,16 @@ module.exports = {
     }
 
     return 0;
+  },
+
+  /**
+   * Returns true if the screen can be reached directly from the tab bar,
+   * or false otherwise.
+   *
+   * @param {ScreenId} id of the screen to check.
+   * @return {boolean} true  if {screenId} is in HOME_SCREENS, false otherwise.
+   */
+  isRootScreen(screenId: ScreenId): boolean {
+    return HOME_SCREENS.indexOf(screenId) >= 0;
   },
 };

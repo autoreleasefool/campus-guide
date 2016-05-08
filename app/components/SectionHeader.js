@@ -25,14 +25,13 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Imports
 const Constants = require('../Constants');
@@ -70,7 +69,7 @@ type State = {
   textAndIconColor: string,
 };
 
-class SectionHeader extends Component {
+class SectionHeader extends React.Component {
   state: State;
 
   /**
@@ -198,7 +197,7 @@ class SectionHeader extends Component {
    *
    * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     let icon: ?ReactElement = null;
     let subtitleName: ?ReactElement = null;
     let subtitleIcon: ?ReactElement = null;

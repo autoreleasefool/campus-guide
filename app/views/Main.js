@@ -25,20 +25,19 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
+import React from 'react';
+import {
   Alert,
-  Component,
   StyleSheet,
   View,
-} = React;
+} from 'react-native';
 
 // Imports
 const Constants = require('../Constants');
 const Preferences = require('../util/Preferences');
 const TabsView = require('../components/Tabs');
 
-class MainScreen extends Component {
+class MainScreen extends React.Component {
 
   /**
    * Pass props to parent and declare initial state.

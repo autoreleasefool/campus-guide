@@ -26,6 +26,20 @@
 module.exports = {
 
   /**
+   * Returns an additional padding for the status bar on iOS.
+   *
+   * @param {{OS: string}} Platform an instance of the React Native Platform class.
+   * @return {number} the padding to use for the status bar.
+   */
+  getStatusBarPadding(Platform: {OS: string}): number {
+    if (Platform.OS === 'ios') {
+      return 20;
+    } else {
+      return 0;
+    }
+  },
+
+  /**
    * Changes the status bar text colors on iOS to be either light or dark.
    * True for light, false for dark.
    *
@@ -42,18 +56,4 @@ module.exports = {
       }
     }
   },
-
-  /**
-   * Returns an additional padding for the status bar on iOS.
-   *
-   * @param {{OS: string}} Platform an instance of the React Native Platform class.
-   * @return {number} the padding to use for the status bar.
-   */
-  getStatusBarPadding(Platform: {OS: string}): number {
-    if (Platform.OS === 'ios') {
-      return 20;
-    } else {
-      return 0;
-    }
-  }
 }

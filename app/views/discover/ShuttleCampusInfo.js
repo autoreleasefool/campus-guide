@@ -26,13 +26,11 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
-  Image,
+import React from 'react';
+import {
   StyleSheet,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definitions
 import type {
@@ -43,8 +41,6 @@ import type {
 
 // Imports
 const Configuration = require('../../util/Configuration');
-const Constants = require('../../Constants');
-const DisplayUtils = require('../../util/DisplayUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const MapView = require('react-native-maps');
 const Preferences = require('../../util/Preferences');
@@ -61,7 +57,7 @@ type State = {
   region: ?LatLong,
 };
 
-class ShuttleCampusInfo extends Component {
+class ShuttleCampusInfo extends React.Component {
   state: State;
 
   /**

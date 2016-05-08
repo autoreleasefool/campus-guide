@@ -26,15 +26,14 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
   View,
-} = React;
+} from 'react-native';
 
 // Imports
 const Constants = require('../Constants');
@@ -55,7 +54,7 @@ type State = {
   backgroundColor: string,
 };
 
-class DetailsScreen extends Component {
+class DetailsScreen extends React.Component {
   state: State;
 
   /**
@@ -86,7 +85,7 @@ class DetailsScreen extends Component {
    *
    * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     let banner = null;
     if (this.props.image) {
       if (this.props.title) {

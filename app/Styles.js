@@ -24,10 +24,9 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  StyleSheet
-} = React;
+import {
+  StyleSheet,
+} from 'react-native';
 
 // Expose styles to the app.
 module.exports = StyleSheet.create({

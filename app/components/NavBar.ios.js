@@ -26,9 +26,8 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Dimensions,
   LayoutAnimation,
   Platform,
@@ -36,10 +35,9 @@ const {
   TouchableOpacity,
   TextInput,
   View,
-} = React;
+} from 'react-native';
 
 // Imports
-import TimerMixin from 'react-timer-mixin';
 const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const Preferences = require('../util/Preferences');
@@ -61,7 +59,7 @@ type State = {
   refresh: ?boolean,
 };
 
-class NavBar extends Component {
+class NavBar extends React.Component {
   state: State;
 
   /**
@@ -147,7 +145,7 @@ class NavBar extends Component {
    *
    * @return {ReactElement} the hierarchy of views to render.
    */
-  render() {
+  render(): ReactElement {
     // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'fr') {

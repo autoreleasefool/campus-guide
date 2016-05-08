@@ -27,20 +27,19 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
+import {
   AsyncStorage,
-} = React;
-
-// Imports
-const Configuration = require('./Configuration');
-const LanguageUtils = require('./LanguageUtils');
+} from 'react-native';
 
 // Import type definition for objects.
 import type {
   LanguageString,
   Semester,
 } from '../Types';
+
+// Imports
+const Configuration = require('./Configuration');
+const LanguageUtils = require('./LanguageUtils');
 
 // Represents the number of times the app has been opened
 const TIMES_APP_OPENED: string = 'app_times_opened';

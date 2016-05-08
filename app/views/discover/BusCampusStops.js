@@ -26,13 +26,12 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Image,
   StyleSheet,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definition for bus and map info.
 import type {
@@ -44,7 +43,6 @@ import type {
 
 // Imports
 const Configuration = require('../../util/Configuration');
-const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
 const MapView = require('react-native-maps');
 const Stops = require('./components/Stops');
@@ -72,7 +70,7 @@ type MapMarker = {
   },
 };
 
-class BusCampusStops extends Component {
+class BusCampusStops extends React.Component {
   state: State;
 
   /**

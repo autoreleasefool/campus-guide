@@ -25,16 +25,14 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   Text,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Imports
-const Constants = require('../../../Constants');
 const Preferences = require('../../../util/Preferences');
 const Styles = require('../../../Styles');
 
@@ -48,7 +46,7 @@ type State = {
   loaded: boolean,
 };
 
-class Upcoming extends Component {
+class Upcoming extends React.Component {
   state: State;
 
   /**

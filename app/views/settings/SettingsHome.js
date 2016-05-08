@@ -25,16 +25,15 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
-  Component,
+import React from 'react';
+import {
   ListView,
   Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Imports
 const Constants = require('../../Constants');
@@ -87,7 +86,7 @@ type State = {
   loaded: boolean,
 };
 
-class SettingsHome extends Component {
+class SettingsHome extends React.Component {
   state: State;
 
   /**

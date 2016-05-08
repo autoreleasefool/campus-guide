@@ -25,19 +25,15 @@
 'use strict';
 
 // React Native imports
-const React = require('react-native');
-const {
+import React from 'react';
+import {
   BackAndroid,
-  Component,
-  Dimensions,
   DrawerLayoutAndroid,
   Navigator,
-  Platform,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-} = React;
+} from 'react-native';
 
 // Import type definition for tab icons.
 import type {
@@ -46,6 +42,7 @@ import type {
 
 // Imports
 const Constants = require('../Constants');
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const NavBar = require('./NavBar');
 const Preferences = require('../util/Preferences');
 const ScreenUtils = require('../util/ScreenUtils');
@@ -64,8 +61,8 @@ const SettingsHome = require('../views/settings/SettingsHome');
 const ShuttleCampusInfo = require('../views/discover/ShuttleCampusInfo');
 const ShuttleInfo = require('../views/discover/ShuttleInfo');
 
-let Icon: ReactClass = require('react-native-vector-icons/MaterialIcons');
-let tabIcons: TabIcons = {
+// Icons for items in navigation drawer
+const drawerIcons: TabIcons = {
   find: 'directions',
   schedule: 'event',
   discover: 'near-me',
@@ -96,7 +93,7 @@ type Route = {
   data: any,
 };
 
-class TabsView extends Component {
+class TabsView extends React.Component {
   state: State;
 
   /**
