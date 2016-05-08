@@ -96,7 +96,6 @@ class BusCampusStops extends React.Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
-    (this:any)._busStopSelected = this._busStopSelected.bind(this);
     (this:any)._getCampusMap = this._getCampusMap.bind(this);
     (this:any)._getCampusStops = this._getCampusStops.bind(this);
     (this:any)._loadCampusInfo = this._loadCampusInfo.bind(this);
@@ -210,7 +209,7 @@ class BusCampusStops extends React.Component {
         <Stops
             campus={this.state.campus}
             campusName={this.props.campusName}
-            onStopSelected={this._busStopSelected}
+            onStopSelected={this._busStopSelected.bind(this)}
             backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}/>
       )
     }

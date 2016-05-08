@@ -85,9 +85,6 @@ class SplashScreen extends React.Component {
     this.state = {
       isLoading: true,
     };
-
-    // Explicitly binding 'this' to all methods that need it
-    (this:any)._selectLanguage = this._selectLanguage.bind(this);
   };
 
   /**
@@ -155,7 +152,7 @@ class SplashScreen extends React.Component {
       <View style = {_styles.container}>
         <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => this._selectLanguage('en')}
+            onPress={() => this._selectLanguage.bind(this, 'en')}
             style={{flex: 1}}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <View style={_styles.languageContainer}>
@@ -172,7 +169,7 @@ class SplashScreen extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => this._selectLanguage('fr')}
+            onPress={() => this._selectLanguage.bind(this, 'fr')}
             style={{flex: 1}}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>

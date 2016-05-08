@@ -132,12 +132,8 @@ class Stops extends React.Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
-    (this:any)._clearStop = this._clearStop.bind(this);
     (this:any)._loadStops = this._loadStops.bind(this);
     (this:any)._pressRow = this._pressRow.bind(this);
-    (this:any)._renderStopRow = this._renderStopRow.bind(this);
-    (this:any)._renderTimeRow = this._renderTimeRow.bind(this);
-    (this:any)._renderScene = this._renderScene.bind(this);
   };
 
   /**
@@ -304,14 +300,14 @@ class Stops extends React.Component {
       return (
         <View style={_styles.container}>
           <SectionHeader
+              subtitleName={route.stop.code}
               sectionName={route.stop.name}
               sectionIcon={icon.name}
               sectionIconClass={icon.class}
-              sectionIconOnClick={this._clearStop}
-              subtitleName={route.stop.code} />
+              sectionIconOnClick={this._clearStop.bind(this)} />
           <ListView
               dataSource={this.state.dataSourceTimes}
-              renderRow={this._renderTimeRow} />
+              renderRow={this._renderTimeRow.bind(this)} />
         </View>
       );
     } else {
@@ -323,7 +319,7 @@ class Stops extends React.Component {
               sectionIconClass={'material'} />
           <ListView
               dataSource={this.state.dataSourceStops}
-              renderRow={this._renderStopRow} />
+              renderRow={this._renderStopRow.bind(this)} />
         </View>
       );
     }
@@ -387,7 +383,7 @@ class Stops extends React.Component {
             ref='Navigator'
             configureScene={this._configureScene}
             initialRoute={{id: LIST}}
-            renderScene={this._renderScene} />
+            renderScene={this._renderScene.bind(this)} />
       </View>
     );
   }

@@ -102,11 +102,7 @@ class TabsView extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any).getCurrentTab = this.getCurrentTab.bind(this);
-    (this:any)._changeTabs = this._changeTabs.bind(this);
-    (this:any)._navigateBack = this._navigateBack.bind(this);
     (this:any)._navigateForward = this._navigateForward.bind(this);
-    (this:any)._onSearch = this._onSearch.bind(this);
-    (this:any)._renderScene = this._renderScene.bind(this);
   };
 
   /**
@@ -225,13 +221,13 @@ class TabsView extends React.Component {
     if (route.id === Constants.Views.Find.Home) {
       scene = (
         <FindHome
-            onEditSchedule={() => this._changeTabs(Constants.Views.Schedule.Home)}
+            onEditSchedule={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}
             onShowBuilding={(buildingCode) => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
       );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (
         <ScheduleHome
-            requestTabChange={this._changeTabs}
+            requestTabChange={this._changeTabs.bind(this)}
             editSchedule={() => this._navigateForward(Constants.Views.Schedule.Editor)} />
       );
     } else if (route.id === Constants.Views.Schedule.Editor) {
@@ -269,7 +265,7 @@ class TabsView extends React.Component {
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
-        <SettingsHome requestTabChange={this._changeTabs} refreshParent={this._refreshNavbar.bind(this)} />
+        <SettingsHome requestTabChange={this._changeTabs.bind(this)} refreshParent={this._refreshNavbar.bind(this)} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
       scene = (
@@ -342,25 +338,25 @@ class TabsView extends React.Component {
       <View style={_styles.container}>
         <NavBar
             ref='NavBar'
-            onSearch={this._onSearch}
-            onBack={this._navigateBack} />
+            onSearch={this._onSearch.bind(this)}
+            onBack={this._navigateBack.bind(this)} />
         <Navigator
             style={_styles.navigator}
             ref='Navigator'
             configureScene={this._configureScene}
             initialRoute={{id: Constants.Views.Default}}
-            renderScene={this._renderScene} />
+            renderScene={this._renderScene.bind(this)} />
         <View style={_styles.tabContainer}>
-          <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Find.Home)}} style={_styles.tab}>
+          <TouchableOpacity onPress={this._changeTabs.bind(this, Constants.Views.Find.Home)} style={_styles.tab}>
             <Ionicons name={tabIcons.find} size={tabIconSize} color={findColor} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Schedule.Home)}} style={_styles.tab}>
+          <TouchableOpacity onPress={this._changeTabs.bind(this, Constants.Views.Schedule.Home)} style={_styles.tab}>
             <Ionicons name={tabIcons.schedule} size={tabIconSize} color={scheduleColor} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Discover.Home)}} style={_styles.tab}>
+          <TouchableOpacity onPress={this._changeTabs.bind(this, Constants.Views.Discover.Home)} style={_styles.tab}>
             <Ionicons name={tabIcons.discover} size={tabIconSize} color={discoverColor} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {this._changeTabs(Constants.Views.Settings.Home)}} style={_styles.tab}>
+          <TouchableOpacity onPress={this._changeTabs.bind(this, Constants.Views.Settings.Home)} style={_styles.tab}>
             <Ionicons name={tabIcons.settings} size={tabIconSize} color={settingsColor} />
           </TouchableOpacity>
           <View style={[_styles.indicator, {left: indicatorLeft}]} />

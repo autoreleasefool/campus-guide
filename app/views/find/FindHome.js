@@ -70,11 +70,6 @@ class FindHome extends React.Component {
    */
   constructor(props: Props) {
     super(props);
-
-    // Explicitly binding 'this' to all methods that need it
-    (this:any)._editSchedule = this._editSchedule.bind(this);
-    (this:any)._search = this._search.bind(this);
-    (this:any)._showBuilding = this._showBuilding.bind(this);
   };
 
   /**
@@ -82,16 +77,6 @@ class FindHome extends React.Component {
    */
   _editSchedule(): void {
     this.props.onEditSchedule();
-  };
-
-  /**
-   * Searches through the buildings, professors, and classes
-   *
-   * @param {string} text text of the user's search.
-   */
-  _search(text: string) {
-    // TODO: search for a building, class, or professor
-    console.log('TODO: search for a building, class, or professor');
   };
 
   /**
@@ -133,10 +118,10 @@ class FindHome extends React.Component {
             sectionName={Translations['upcoming_classes']}
             sectionIcon={calendarIcon[1]}
             sectionIconClass={calendarIcon[0]}
-            subtitleOnClick={this._editSchedule}
+            subtitleOnClick={this._editSchedule.bind(this)}
             subtitleName={Translations['edit']} />
         <View style={[_styles.content, {flex: 1}]}>
-          <Upcoming onEdit={this._editSchedule} />
+          <Upcoming onEdit={this._editSchedule.bind(this)} />
         </View>
 
         <SectionHeader
@@ -144,7 +129,7 @@ class FindHome extends React.Component {
             sectionIcon={'store'}
             sectionIconClass={'material'} />
         <View style={[_styles.content, {flex: 2}]}>
-          <BuildingGrid showBuilding={this._showBuilding} />
+          <BuildingGrid showBuilding={this._showBuilding.bind(this)} />
         </View>
       </View>
     );

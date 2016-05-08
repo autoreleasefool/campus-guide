@@ -84,7 +84,6 @@ class BuildingGrid extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any)._loadBuildingsList = this._loadBuildingsList.bind(this);
-    (this:any)._renderRow = this._renderRow.bind(this);
   };
 
   /**
@@ -162,7 +161,7 @@ class BuildingGrid extends React.Component {
       <ListView
           contentContainerStyle={_styles.listview}
           dataSource={this.state.dataSource}
-          renderRow={this._renderRow} />
+          renderRow={this._renderRow.bind(this)} />
     );
   };
 };

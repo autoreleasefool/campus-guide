@@ -109,11 +109,7 @@ class TabsView extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any).getCurrentTab = this.getCurrentTab.bind(this);
-    (this:any)._changeTabs = this._changeTabs.bind(this);
-    (this:any)._navigateBack = this._navigateBack.bind(this);
     (this:any)._navigateForward = this._navigateForward.bind(this);
-    (this:any)._renderNavigationView = this._renderNavigationView.bind(this);
-    (this:any)._renderScene = this._renderScene.bind(this);
   };
 
   /**
@@ -305,13 +301,13 @@ class TabsView extends React.Component {
     if (route.id === Constants.Views.Find.Home) {
       scene = (
         <FindHome
-            onEditSchedule={() => this._changeTabs(Constants.Views.Schedule.Home)}
+            onEditSchedule={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}
             onShowBuilding={(buildingCode) => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
       );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (
         <ScheduleHome
-            requestTabChange={this._changeTabs}
+            requestTabChange={this._changeTabs.bind(this)}
             editSchedule={() => this._navigateForward(Constants.Views.Schedule.Editor)} />
       );
     } else if (route.id === Constants.Views.Schedule.Editor) {
@@ -349,7 +345,7 @@ class TabsView extends React.Component {
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
-        <SettingsHome requestTabChange={this._changeTabs} refreshParent={this._refreshNavbar.bind(this)} />
+        <SettingsHome requestTabChange={this._changeTabs.bind(this)} refreshParent={this._refreshNavbar.bind(this)} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
       scene = (
@@ -390,14 +386,14 @@ class TabsView extends React.Component {
    * Attaches a listener to the Android back button.
    */
   componentDidMount(): void {
-    BackAndroid.addEventListener('hardwareBackPress', this.navigateBack);
+    BackAndroid.addEventListener('hardwareBackPress', this._navigateBack.bind(this));
   };
 
   /**
    * Removes the listener from the Android back button.
    */
   componentWillUnmount(): void {
-    BackAndroid.removeEventListener('hardwareBackPress', this.navigateBack);
+    BackAndroid.removeEventListener('hardwareBackPress', this._navigateBack.bind(this));
   };
 
   /**
@@ -413,7 +409,7 @@ class TabsView extends React.Component {
           drawerPosition={DrawerLayoutAndroid.positions.Left}
           onDrawerOpen={this._onDrawerToggle.bind(this, true)}
           onDrawerClose={this._onDrawerToggle.bind(this, false)}
-          renderNavigationView={this._renderNavigationView}>
+          renderNavigationView={this._renderNavigationView.bind(this)}>
         <NavBar
             ref='NavBar'
             onSearch={this._onSearch}
@@ -423,7 +419,7 @@ class TabsView extends React.Component {
             ref='Navigator'
             configureScene={this._configureScene}
             initialRoute={{id: Constants.Views.Default}}
-            renderScene={this._renderScene} />
+            renderScene={this._renderScene.bind(this)} />
       </DrawerLayoutAndroid>
     );
   };

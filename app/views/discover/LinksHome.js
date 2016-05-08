@@ -84,7 +84,6 @@ class LinksHome extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any)._loadLinkCategories = this._loadLinkCategories.bind(this);
-    (this:any)._renderRow = this._renderRow.bind(this);
   };
 
   /**
@@ -147,7 +146,7 @@ class LinksHome extends React.Component {
         <View style={_styles.container}>
           <ListView
               dataSource={this.state.dataSource}
-              renderRow={this._renderRow} />
+              renderRow={this._renderRow.bind(this)} />
         </View>
       )
     }

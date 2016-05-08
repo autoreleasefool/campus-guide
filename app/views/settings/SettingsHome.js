@@ -114,10 +114,8 @@ class SettingsHome extends React.Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
-    (this:any)._getSettings = this._loadSettings.bind(this);
+    (this:any)._loadSettings = this._loadSettings.bind(this);
     (this:any)._pressRow = this._pressRow.bind(this);
-    (this:any)._renderRow = this._renderRow.bind(this);
-    (this:any)._renderSectionHeader = this._renderSectionHeader.bind(this);
   };
 
   /**
@@ -276,8 +274,8 @@ class SettingsHome extends React.Component {
           </Text>
           <ListView
               dataSource={this.state.dataSource}
-              renderRow={this._renderRow}
-              renderSectionHeader={this._renderSectionHeader}
+              renderRow={this._renderRow.bind(this)}
+              renderSectionHeader={this._renderSectionHeader.bind(this)}
               style={_styles.listview} />
         </View>
       );
