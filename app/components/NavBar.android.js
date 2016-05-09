@@ -44,6 +44,8 @@ const StatusBarUtils = require('../util/StatusBarUtils');
 
 // Get dimensions of the screen
 const {width} = Dimensions.get('window');
+// Size of icons in the navbar
+const NAVBAR_ICON_SIZE: number = 24;
 
 // Type definition for component props.
 type Props = {
@@ -138,7 +140,8 @@ class NavBar extends React.Component {
     }
 
     const searchBarLeft: number = 50;
-    const searchBarWidth: number = width - 60;
+    const toggleIconWidth: number = 50;
+    const searchBarWidth: number = width - toggleIconWidth;
 
     return (
       <View style={_styles.container}>
@@ -148,22 +151,22 @@ class NavBar extends React.Component {
           <MaterialIcons
               color={'white'}
               name={'menu'}
-              size={24}
-              style={{marginLeft: 20, marginRight: 20, marginTop: 8}} />
+              size={NAVBAR_ICON_SIZE}
+              style={_styles.drawerToggleIcon} />
         </TouchableOpacity>
         <View style={[_styles.innerContainer, _styles.searchContainer, {width: searchBarWidth, left: searchBarLeft}]}>
           <MaterialIcons
               color={'white'}
               name={'search'}
-              size={24}
-              style={{marginLeft: 10, marginRight: 10}}
+              size={NAVBAR_ICON_SIZE}
+              style={_styles.searchIcon}
               onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
               autoCorrect={false}
               placeholder={Translations.search_placeholder}
               placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
-              style={{flex: 1, height: 40, color: Constants.Colors.polarGrey}}
+              style={_styles.searchText}
               onChangeText={this._onSearch.bind(this)} />
         </View>
       </View>
@@ -191,10 +194,24 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
   },
+  searchIcon: {
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  searchText: {
+    flex: 1,
+    height: 40,
+    color: Constants.Colors.polarGrey,
+  },
   drawerToggle: {
     height: 40,
     alignItems: 'center',
     left: 0,
+  },
+  drawerToggleIcon: {
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 8,
   },
 });
 

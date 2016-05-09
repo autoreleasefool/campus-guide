@@ -36,7 +36,7 @@ import {
 
 // Import type definition for tab icons.
 import type {
-  TabIcons,
+  TabItems,
 } from '../Types';
 
 // Imports
@@ -60,7 +60,7 @@ const ShuttleCampusInfo = require('../views/discover/ShuttleCampusInfo');
 const ShuttleInfo = require('../views/discover/ShuttleInfo');
 
 // Icons for tab items
-const tabIcons: TabIcons = {
+const tabIcons: TabItems = {
   find: 'navigate',
   schedule: 'ios-calendar-outline',
   discover: 'compass',
@@ -71,6 +71,14 @@ const tabIcons: TabIcons = {
 const {width} = Dimensions.get('window');
 const indicatorWidth: number = Math.ceil(width / Object.keys(tabIcons).length);
 const tabIconSize: number = 30;
+
+// Defines the order in which the tabs should appear
+const tabOrder: TabItems = {
+  find: 0,
+  schedule: 1,
+  discover: 2,
+  settings: 3,
+};
 
 // Lists the views currently on the stack in the Navigator.
 let screenStack: Array<number | string> = [Constants.Views.Default];
@@ -330,19 +338,19 @@ class TabsView extends React.Component {
     // Set the color of the current tab to garnet
     switch (this.state.currentTab) {
       case Constants.Views.Find.Home:
-        indicatorLeft = 0;
+        indicatorLeft = indicatorWidth * tabOrder.find;
         findColor = Constants.Colors.garnet;
         break;
       case Constants.Views.Schedule.Home:
-        indicatorLeft = indicatorWidth;
+        indicatorLeft = indicatorWidth * tabOrder.schedule;
         scheduleColor = Constants.Colors.garnet;
         break;
       case Constants.Views.Discover.Home:
-        indicatorLeft = indicatorWidth * 2;
+        indicatorLeft = indicatorWidth * tabOrder.discover;
         discoverColor = Constants.Colors.garnet;
         break;
       case Constants.Views.Settings.Home:
-        indicatorLeft = indicatorWidth * 3;
+        indicatorLeft = indicatorWidth * tabOrder.settings;
         settingsColor = Constants.Colors.garnet;
         break;
       default:

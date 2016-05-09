@@ -37,7 +37,7 @@ import {
 
 // Import type definition for tab icons.
 import type {
-  TabIcons,
+  TabItems,
 } from '../Types';
 
 // Imports
@@ -62,7 +62,7 @@ const ShuttleCampusInfo = require('../views/discover/ShuttleCampusInfo');
 const ShuttleInfo = require('../views/discover/ShuttleInfo');
 
 // Icons for items in navigation drawer
-const drawerIcons: TabIcons = {
+const drawerIcons: TabItems = {
   find: 'directions',
   schedule: 'event',
   discover: 'near-me',

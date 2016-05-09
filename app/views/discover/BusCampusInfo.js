@@ -167,6 +167,9 @@ class BusCampusInfo extends React.Component {
       }
     }
 
+    // Disabling no-magic-numbers rule for following JSX as the use of magic numbers is consistent and logical
+    /* eslint-disable no-magic-numbers */
+
     return (
       <View style={_styles.container}>
         <TouchableOpacity
@@ -214,6 +217,8 @@ class BusCampusInfo extends React.Component {
         </TouchableOpacity>
       </View>
     );
+
+    /* eslint-enable no-magic-numbers */
   }
 }
 

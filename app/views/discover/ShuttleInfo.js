@@ -163,6 +163,9 @@ class ShuttleInfo extends React.Component {
       );
     }
 
+    // Disabling no-magic-numbers rule for following JSX as the use of magic numbers is consistent and logical
+    /* eslint-disable no-magic-numbers */
+
     return (
       <View style={_styles.container}>
         <View style={_styles.campusContainer}>
@@ -225,6 +228,8 @@ class ShuttleInfo extends React.Component {
         })}
       </View>
     );
+
+    /* eslint-enable no-magic-numbers */
   }
 }
 

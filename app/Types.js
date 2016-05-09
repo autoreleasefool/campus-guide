@@ -72,11 +72,11 @@ export type LatLong = {
 //  Tabs
 //-----------------------------------------------------------------------------
 
-export type TabIcons = {
-  find: string,
-  schedule: string,
-  discover: string,
-  settings: string,
+export type TabItems = {
+  find: any,
+  schedule: any,
+  discover: any,
+  settings: any,
 };
 
 //-----------------------------------------------------------------------------

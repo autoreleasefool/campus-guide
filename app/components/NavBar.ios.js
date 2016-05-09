@@ -45,6 +45,8 @@ const StatusBarUtils = require('../util/StatusBarUtils');
 
 // Get dimensions of the screen
 const {width} = Dimensions.get('window');
+// Size of icons in the navbar
+const NAVBAR_ICON_SIZE: number = 24;
 
 // Number of milliseconds to offset animation by.
 const ANIMATION_OFFSET: number = 50;
@@ -161,16 +163,20 @@ class NavBar extends React.Component {
       Translations = require('../../assets/static/js/Translations.en.js');
     }
 
+    // Width of the back icon when it is visible
+    const backIconWidth = 50;
+    const searchBarPadding = 10;
+
     // Setting position of search bar and back button dependent on if back button is showing.
     const searchBarLeft = (this.state.showBackButton)
-        ? 50
-        : 10;
+        ? backIconWidth
+        : searchBarPadding;
     const searchBarWidth = (this.state.showBackButton)
-        ? width - 60
-        : width - 20;
+        ? width - (searchBarPadding + backIconWidth)
+        : width - (searchBarPadding * 2);
     const backButtonLeft = (this.state.showBackButton)
         ? 0
-        : -60;
+        : -(searchBarPadding + backIconWidth);
 
     return (
       <View style={_styles.container}>
@@ -180,22 +186,22 @@ class NavBar extends React.Component {
           <Ionicons
               color={'white'}
               name={'ios-arrow-back'}
-              size={24}
-              style={{marginLeft: 20, marginRight: 20, marginTop: 8}} />
+              size={NAVBAR_ICON_SIZE}
+              style={_styles.backIcon} />
         </TouchableOpacity>
         <View style={[_styles.innerContainer, _styles.searchContainer, {width: searchBarWidth, left: searchBarLeft}]}>
           <Ionicons
               color={'white'}
               name={'ios-search'}
-              size={24}
-              style={{marginLeft: 10, marginRight: 10}}
+              size={NAVBAR_ICON_SIZE}
+              style={_styles.searchIcon}
               onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
               autoCorrect={false}
               placeholder={Translations.search_placeholder}
               placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
-              style={{flex: 1, height: 40, color: Constants.Colors.polarGrey}}
+              style={_styles.searchText}
               onChangeText={this._onSearch.bind(this)} />
         </View>
       </View>
@@ -222,6 +228,19 @@ const _styles = StyleSheet.create({
   searchContainer: {
     position: 'absolute',
     top: 0,
+  },
+  searchIcon: {
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  searchText: {
+    flex: 1,
+    height: 40,
+    color: Constants.Colors.polarGrey,
+  },
+  backIcon: {
+    marginLeft: 20,
+    marginRight: 20, marginTop: 8,
   },
 });
 
