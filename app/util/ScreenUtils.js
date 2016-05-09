@@ -55,7 +55,7 @@ const SCHEDULE_SCREENS: Array<ScreenId> = [
 // Screens which are subscreens of the Discover tab
 const DISCOVER_SCREENS: Array<ScreenId> = [
   Constants.Views.Discover.Home,
-  Constants.Views.Discover.BusCampuses,
+  Constants.Views.Discover.BusCampusInfo,
   Constants.Views.Discover.BusCampusStops,
   Constants.Views.Discover.LinksHome,
   Constants.Views.Discover.LinkCategory,

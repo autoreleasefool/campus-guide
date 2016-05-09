@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file BusCampuses.js
- * @module BusCampuses
+ * @file BusCampusInfo.js
+ * @module BusCampusInfo
  * @description Displays the list of campuses with bus stop information.
  * @flow
  *
@@ -67,7 +67,7 @@ type State = {
   campuses: ?Array<BusCampus>,
 };
 
-class BusCampuses extends React.Component {
+class BusCampusInfo extends React.Component {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -236,4 +236,4 @@ const _styles = StyleSheet.create({
 });
 
 // Expose component to app
-module.exports = BusCampuses;
+module.exports = BusCampusInfo;

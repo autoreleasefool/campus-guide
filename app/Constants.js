@@ -84,7 +84,7 @@ module.exports = {
     },
     Discover: {
       Home: 300,
-      BusCampuses: 301,
+      BusCampusInfo: 301,
       BusCampusStops: 302,
       LinksHome: 303,
       LinkCategory: 304,

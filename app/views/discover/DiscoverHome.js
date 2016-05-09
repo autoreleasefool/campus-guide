@@ -164,11 +164,11 @@ class DiscoverHome extends React.Component {
       if (section.id === 'pop') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.HotSpots);
       } else if (section.id === 'stu') {
-        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
+        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampusInfo);
       } else if (section.id === 'use') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.LinksHome);
       } else if (section.id === 'bus') {
-        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampuses);
+        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.BusCampusInfo);
       } else if (section.id === 'shu') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.ShuttleInfo);
       }

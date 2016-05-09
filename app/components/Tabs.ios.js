@@ -46,7 +46,7 @@ const NavBar = require('./NavBar');
 const ScreenUtils = require('../util/ScreenUtils');
 
 // Screen imports
-const BusCampuses = require('../views/discover/BusCampuses');
+const BusCampusInfo = require('../views/discover/BusCampusInfo');
 const BusCampusStops = require('../views/discover/BusCampusStops');
 const DetailsScreen = require('./DetailsScreen');
 const DiscoverHome = require('../views/discover/DiscoverHome');
@@ -237,9 +237,9 @@ class TabsView extends React.Component {
       scene = (
         <DiscoverHome onScreenSelected={this._navigateForward} />
       );
-    } else if (route.id === Constants.Views.Discover.BusCampuses) {
+    } else if (route.id === Constants.Views.Discover.BusCampusInfo) {
       scene = (
-        <BusCampuses
+        <BusCampusInfo
             showCampus={(name, color) =>
                 this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: name, color: color})} />
       );
