@@ -23,17 +23,20 @@
  */
 'use strict';
 
+// Padding for status bar on iOS.
+const IOS_STATUS_BAR_PADDING: number = 20;
+
 module.exports = {
 
   /**
    * Returns an additional padding for the status bar on iOS.
    *
    * @param {{OS: string}} Platform an instance of the React Native Platform class.
-   * @return {number} the padding to use for the status bar.
+   * @returns {number} the padding to use for the status bar.
    */
   getStatusBarPadding(Platform: {OS: string}): number {
     if (Platform.OS === 'ios') {
-      return 20;
+      return IOS_STATUS_BAR_PADDING;
     } else {
       return 0;
     }
@@ -56,4 +59,4 @@ module.exports = {
       }
     }
   },
-}
+};

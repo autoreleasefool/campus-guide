@@ -77,7 +77,7 @@ module.exports = {
    * the screenId.
    *
    * @param {ScreenId} screenId id of the screen to check.
-   * @return {ScreenId} the id of the home screen of {screenId}, which is determined by
+   * @returns {ScreenId} the id of the home screen of {screenId}, which is determined by
    *         the list that contains the id.
    */
   getRootScreen(screenId: ScreenId): ScreenId {
@@ -88,7 +88,7 @@ module.exports = {
     } else if (SETTINGS_SCREENS.indexOf(screenId) >= 0) {
       return Constants.Views.Settings.Home;
     } else if (DISCOVER_SCREENS.indexOf(screenId) >= 0
-        || typeof(screenId) === 'string' && screenId.indexOf(Constants.Views.Discover.LinkCategory.toString()) === 0) {
+        || typeof screenId === 'string' && screenId.indexOf(Constants.Views.Discover.LinkCategory.toString()) === 0) {
       return Constants.Views.Discover.Home;
     }
 
@@ -99,8 +99,8 @@ module.exports = {
    * Returns true if the screen can be reached directly from the tab bar,
    * or false otherwise.
    *
-   * @param {ScreenId} id of the screen to check.
-   * @return {boolean} true  if {screenId} is in HOME_SCREENS, false otherwise.
+   * @param {ScreenId} screenId id of the screen to check.
+   * @returns {boolean} true  if {screenId} is in HOME_SCREENS, false otherwise.
    */
   isRootScreen(screenId: ScreenId): boolean {
     return HOME_SCREENS.indexOf(screenId) >= 0;

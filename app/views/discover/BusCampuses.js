@@ -68,7 +68,6 @@ type State = {
 };
 
 class BusCampuses extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this component.
@@ -76,6 +75,11 @@ class BusCampuses extends React.Component {
   static propTypes = {
     showCampus: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -87,8 +91,17 @@ class BusCampuses extends React.Component {
 
     this.state = {
       campuses: null,
+    };
+  }
+
+  /**
+   * If the campuses have not been loaded, then loads them.
+   */
+  componentDidMount(): void {
+    if (this.state.campuses == null) {
+      this._loadCampuses();
     }
-  };
+  }
 
   /**
    * Opens the bus company website.
@@ -112,71 +125,61 @@ class BusCampuses extends React.Component {
     this.setState({
       campuses: campuses,
     });
-  };
+  }
 
   /**
-   * If the campuses have not been loaded, then loads them.
-   */
-  componentDidMount(): void {
-    if (this.state.campuses == null) {
-      this._loadCampuses();
-    }
-  };
-
-  /**
-   * Renders an image and title for each of the campuses which link to more
-   * detailed views.
+   * Renders an image and title for each of the campuses which link to more detailed views.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     // Get current language for translations
-    let Translations: ?Object = null;
+    let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {
       Translations = require('../../../assets/static/js/Translations.fr.js');
     } else {
       Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
-    let campusDisplayNames: Array<string> = [];
-    let campusStopNames: Array<string> = [];
-    let campusImages: Array<ReactElement> = [];
+    const campusDisplayNames: Array<string> = [];
+    const campusStopNames: Array<string> = [];
+    const campusImages: Array<ReactElement> = [];
 
     // If the campuses have been loaded, parse the data
-    if (this.state.campuses != null) {
+    if (this.state.campuses == null) {
+      return (
+        <View style={_styles.container} />
+      );
+    } else {
       for (let i: number = 0; i < this.state.campuses.length; i++) {
-        let campus: BusCampus = this.state.campuses[i];
-        let displayName: string = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), campus) || '';
-        let stopName: string = LanguageUtils.getEnglishName(campus) || '';
+        const campus: BusCampus = this.state.campuses[i];
+        const displayName: string = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), campus) || '';
+        const stopName: string = LanguageUtils.getEnglishName(campus) || '';
 
         campusDisplayNames.push(displayName);
         campusStopNames.push(stopName);
         campusImages.push(
           <Image
-              style={_styles.campusImage}
               resizeMode={'cover'}
-              source={campus.image} />
+              source={campus.image}
+              style={_styles.campusImage} />
         );
       }
-    } else {
-      return (
-        <View style={_styles.container} />
-      );
     }
 
     return (
       <View style={_styles.container}>
         <TouchableOpacity
-            onPress={() => this.props.showCampus(campusStopNames[0], campuscolors[0])}
-            style={_styles.campusContainer}>
+            style={_styles.campusContainer}
+            onPress={() => this.props.showCampus(campusStopNames[0], campuscolors[0])}>
           <View style={{flex: 1, backgroundColor: campuscolors[0]}}>
             <SectionHeader sectionName={campusDisplayNames[0]} />
             {campusImages[0]}
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-            onPress={() => this.props.showCampus(campusStopNames[1], campuscolors[1])}
-            style={_styles.campusContainer}>
+            style={_styles.campusContainer}
+            onPress={() => this.props.showCampus(campusStopNames[1], campuscolors[1])}>
           <View style={{flex: 1, backgroundColor: campuscolors[1]}}>
             <SectionHeader sectionName={campusDisplayNames[1]} />
             {campusImages[1]}
@@ -184,36 +187,35 @@ class BusCampuses extends React.Component {
         </TouchableOpacity>
         <View style={_styles.campusContainer}>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[2], campuscolors[2])}
-              style={_styles.campusContainer}>
+              style={_styles.campusContainer}
+              onPress={() => this.props.showCampus(campusStopNames[2], campuscolors[2])}>
             <View style={{flex: 1, backgroundColor: campuscolors[2]}}>
               <SectionHeader sectionName={campusDisplayNames[2]} />
               {campusImages[2]}
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[3], campuscolors[3])}
-              style={_styles.campusContainer}>
+              style={_styles.campusContainer}
+              onPress={() => this.props.showCampus(campusStopNames[3], campuscolors[3])}>
             <View style={{flex: 1, backgroundColor: campuscolors[3]}}>
               <SectionHeader sectionName={campusDisplayNames[3]} />
               {campusImages[3]}
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-            onPress={() => this._goToBusWebsite(Translations || {})}>
+        <TouchableOpacity onPress={() => this._goToBusWebsite(Translations || {})}>
           <SectionHeader
-              sectionName={Translations['bus_company']}
+              backgroundOverride={Constants.Colors.garnet}
               sectionIcon={'android-open'}
               sectionIconClass={'ionicon'}
+              sectionName={Translations.bus_company}
               subtitleIcon={'chevron-right'}
-              subtitleIconClass={'material'}
-              backgroundOverride={Constants.Colors.garnet} />
+              subtitleIconClass={'material'} />
         </TouchableOpacity>
       </View>
     );
-  };
-};
+  }
+}
 
 const _styles = StyleSheet.create({
   container: {

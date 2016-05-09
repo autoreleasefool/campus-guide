@@ -56,7 +56,7 @@ const campusColors: Array<string> = [
   Constants.Colors.garnet,
   Constants.Colors.charcoalGrey,
   Constants.Colors.lightGrey,
-  Constants.Colors.darkGrey
+  Constants.Colors.darkGrey,
 ];
 
 // Type definition for component props.
@@ -72,7 +72,6 @@ type State = {
 };
 
 class ShuttleInfo extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -82,6 +81,11 @@ class ShuttleInfo extends React.Component {
     showCampus: React.PropTypes.func.isRequired,
     showDetails: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -97,20 +101,7 @@ class ShuttleInfo extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any)._loadCampusesAndDetails = this._loadCampusesAndDetails.bind(this);
-  };
-
-  /**
-   * Loads a list of campus names and images representing them, as well as
-   * details the user can view.
-   */
-  _loadCampusesAndDetails(): void {
-    let campuses: Array<BusCampus> = require('../../../assets/static/js/ShuttleCampuses');
-    let details: Array<ShuttleDetails> = require('../../../assets/static/js/ShuttleDetails');
-    this.setState({
-      campuses: campuses,
-      details: details,
-    });
-  };
+  }
 
   /**
    * Loads the campuses if they haven't been retrieved yet.
@@ -119,46 +110,51 @@ class ShuttleInfo extends React.Component {
     if (this.state.campuses == null) {
       this._loadCampusesAndDetails();
     }
-  };
+  }
+
+  /**
+   * Loads a list of campus names and images representing them, as well as
+   * details the user can view.
+   */
+  _loadCampusesAndDetails(): void {
+    const shuttleCampuses: Array<BusCampus> = require('../../../assets/static/js/ShuttleCampuses');
+    const shuttleDetails: Array<ShuttleDetails> = require('../../../assets/static/js/ShuttleDetails');
+    this.setState({
+      campuses: shuttleCampuses,
+      details: shuttleDetails,
+    });
+  }
 
   /**
    * Renders views for each of the campuses which leads to screens with more
    * detailed information on them, as well as some other links the user
    * may find useful.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     // Get current language
-    let language: LanguageString = Preferences.getSelectedLanguage();
-    let platform: PlatformString = Platform.OS;
+    const language: LanguageString = Preferences.getSelectedLanguage();
+    const platform: PlatformString = Platform.OS;
 
-    // Get current language for translations
-    let Translations: Object;
-    if (language === 'fr') {
-      Translations = require('../../../assets/static/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/static/js/Translations.en.js');
-    }
-
-    let campusDisplayNames: Array<string> = [];
-    let campusStopNames: Array<string> = [];
-    let campusImages: Array<ReactElement> = [];
+    const campusDisplayNames: Array<string> = [];
+    const campusStopNames: Array<string> = [];
+    const campusImages: Array<ReactElement> = [];
 
     // If the campuses have been loaded, parse the data
     if (this.state.campuses != null && this.state.details != null) {
       for (let i = 0; i < this.state.campuses.length; i++) {
-        let campus = this.state.campuses[i];
-        let displayName: string = LanguageUtils.getTranslatedName(language, campus) || '';
-        let stopName = LanguageUtils.getEnglishName(campus) || '';
+        const campus = this.state.campuses[i];
+        const displayName: string = LanguageUtils.getTranslatedName(language, campus) || '';
+        const stopName = LanguageUtils.getEnglishName(campus) || '';
 
         campusDisplayNames.push(displayName);
         campusStopNames.push(stopName);
         campusImages.push(
           <Image
-              style={_styles.campusImage}
               resizeMode={'cover'}
-              source={campus.image} />
+              source={campus.image}
+              style={_styles.campusImage} />
         );
       }
     } else {
@@ -171,16 +167,16 @@ class ShuttleInfo extends React.Component {
       <View style={_styles.container}>
         <View style={_styles.campusContainer}>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[0], campusColors[0])}
-              style={_styles.campusContainer}>
+              style={_styles.campusContainer}
+              onPress={() => this.props.showCampus(campusStopNames[0], campusColors[0])}>
             <View style={{flex: 1, backgroundColor: campusColors[0]}}>
               <SectionHeader sectionName={campusDisplayNames[0]} />
               {campusImages[0]}
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[1], campusColors[1])}
-              style={_styles.campusContainer}>
+              style={_styles.campusContainer}
+              onPress={() => this.props.showCampus(campusStopNames[1], campusColors[1])}>
             <View style={{flex: 1, backgroundColor: campusColors[1]}}>
               <SectionHeader sectionName={campusDisplayNames[1]} />
               {campusImages[1]}
@@ -189,16 +185,16 @@ class ShuttleInfo extends React.Component {
         </View>
         <View style={_styles.campusContainer}>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[2], campusColors[2])}
-              style={_styles.campusContainer}>
+              style={_styles.campusContainer}
+              onPress={() => this.props.showCampus(campusStopNames[2], campusColors[2])}>
             <View style={{flex: 1, backgroundColor: campusColors[2]}}>
               <SectionHeader sectionName={campusDisplayNames[2]} />
               {campusImages[2]}
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              onPress={() => this.props.showCampus(campusStopNames[3], campusColors[3])}
-              style={_styles.campusContainer}>
+              style={_styles.campusContainer}
+              onPress={() => this.props.showCampus(campusStopNames[3], campusColors[3])}>
             <View style={{flex: 1, backgroundColor: campusColors[3]}}>
               <SectionHeader sectionName={campusDisplayNames[3]} />
               {campusImages[3]}
@@ -206,7 +202,7 @@ class ShuttleInfo extends React.Component {
           </TouchableOpacity>
         </View>
         {this.state.details.map((detail, index) => {
-          let icon: DefaultIcon = DisplayUtils.getPlatformIcon(platform, detail)
+          const icon: DefaultIcon = DisplayUtils.getPlatformIcon(platform, detail)
               || {name: 'help-outline', class: 'material'};
 
           return (
@@ -219,9 +215,9 @@ class ShuttleInfo extends React.Component {
                   Constants.Colors.darkGrey
                 )}>
               <SectionHeader
-                  sectionName={LanguageUtils.getTranslatedName(language, detail)}
                   sectionIcon={icon.name}
                   sectionIconClass={icon.class}
+                  sectionName={LanguageUtils.getTranslatedName(language, detail)}
                   subtitleIcon={'chevron-right'}
                   subtitleIconClass={'material'} />
             </TouchableOpacity>
@@ -230,7 +226,7 @@ class ShuttleInfo extends React.Component {
       </View>
     );
   }
-};
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({

@@ -27,10 +27,8 @@
 // React Native imports
 import React from 'react';
 import {
-  Dimensions,
   Platform,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -45,9 +43,6 @@ const Constants = require('../../Constants');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 const Upcoming = require('./components/Upcoming');
-
-// Getting dimensions of the device
-const {height, width} = Dimensions.get('window');
 
 // Type definition for component props.
 type Props = {
@@ -70,30 +65,30 @@ class FindHome extends React.Component {
    */
   constructor(props: Props) {
     super(props);
-  };
+  }
 
   /**
    * Opens the app scheduling screen so the user can update their schedule.
    */
   _editSchedule(): void {
     this.props.onEditSchedule();
-  };
+  }
 
   /**
    * Loads a view to display details about a building.
    *
-   * @param {Building} object describing the building.
+   * @param {Building} building object describing the building.
    */
   _showBuilding(building: Building): void {
     // TODO: display details about a building
-    console.log('TODO: display details about a building');
-  };
+    console.log('TODO: display details about a building', building);
+  }
 
   /**
    * Renders the user's upcoming classes for the day and a list of buildings
    * on campus.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     // Get current language for translations
@@ -115,26 +110,26 @@ class FindHome extends React.Component {
     return (
       <View style={_styles.container}>
         <SectionHeader
-            sectionName={Translations['upcoming_classes']}
             sectionIcon={calendarIcon[1]}
             sectionIconClass={calendarIcon[0]}
-            subtitleOnClick={this._editSchedule.bind(this)}
-            subtitleName={Translations['edit']} />
+            sectionName={Translations.upcoming_classes}
+            subtitleName={Translations.edit}
+            subtitleOnClick={this._editSchedule.bind(this)} />
         <View style={[_styles.content, {flex: 1}]}>
           <Upcoming onEdit={this._editSchedule.bind(this)} />
         </View>
 
         <SectionHeader
-            sectionName={Translations['building_directory']}
             sectionIcon={'store'}
-            sectionIconClass={'material'} />
+            sectionIconClass={'material'}
+            sectionName={Translations.building_directory} />
         <View style={[_styles.content, {flex: 2}]}>
           <BuildingGrid showBuilding={this._showBuilding.bind(this)} />
         </View>
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({

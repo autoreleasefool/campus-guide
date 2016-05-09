@@ -42,21 +42,23 @@ module.exports = {
            Linking: ReactClass,
            Alert: ReactClass,
            Clipboard: Object): void {
-    let formattedUrl = TextUtils.formatLink(url);
+    const formattedUrl = TextUtils.formatLink(url);
 
-    Linking.canOpenURL(url).then(supported => {
-      if (supported) {
-        return Linking.openURL(url);
-      } else {
-        return Alert.alert(
-          Translations['cannot_open_url'],
-          formattedUrl,
-          [
-            {text: Translations['cancel'], style: 'cancel'},
-            {text: Translations['copy_link'], onPress: () => Clipboard.setString(formattedUrl)},
-          ],
-        );
-      }
-    }).catch(err => console.error('An error occurred opening the link.', err));
+    Linking.canOpenURL(url)
+        .then(supported => {
+          if (supported) {
+            return Linking.openURL(url);
+          } else {
+            return Alert.alert(
+              Translations.cannot_open_url,
+              formattedUrl,
+              [
+                {text: Translations.cancel, style: 'cancel'},
+                {text: Translations.copy_link, onPress: () => Clipboard.setString(formattedUrl)},
+              ],
+            );
+          }
+        })
+        .catch(err => console.error('An error occurred opening the link.', err));
   },
-}
+};

@@ -28,7 +28,6 @@
 // React Native imports
 import React from 'react';
 import {
-  Dimensions,
   Platform,
   StatusBar,
   StyleSheet,
@@ -65,7 +64,6 @@ type State = {
 };
 
 class SplashScreen extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -74,6 +72,11 @@ class SplashScreen extends React.Component {
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -85,18 +88,7 @@ class SplashScreen extends React.Component {
     this.state = {
       isLoading: true,
     };
-  };
-
-  /**
-   * Sets the language of the app and opens the main screen.
-   *
-   * @param {LanguageString} language  one of 'en' or 'fr', to specify the language
-   *                  chosen by the user.
-   */
-  _selectLanguage(language: LanguageString): void {
-    Preferences.setSelectedLanguage(language);
-    this.props.navigator.push({id: Constants.Views.Main});
-  };
+  }
 
   /**
    * Calls the startup functions of the application.
@@ -109,59 +101,69 @@ class SplashScreen extends React.Component {
     }
 
     StatusBarUtils.setLightStatusBarIOS(Platform, StatusBar, true);
-    Configuration.loadConfiguration().then(function() {
-      Preferences.loadInitialPreferences().then(function() {
-        if (!Preferences.isLanguageSelected()) {
-          self.setState({
-            isLoading: false,
-          });
-        } else {
-          // If a lanuage has been selected, remove this language select
-          // screen, open the main screen
-          self.props.navigator.replace({id: 2});
-          // TODO: comment above and uncomment below to always show splash
-          // screen
-          // this.setState({
-          //   isLoading: false
-          // });
-        }
-      }).catch(err => console.error('Unable to load initial preferences in Splash', err));
-    }).catch(err => console.error('Unable to load app configuration in Splash', err));
-  };
+    Configuration.loadConfiguration()
+        .then(function onConfigLoaded() {
+          Preferences.loadInitialPreferences()
+              .then(function onPreferencesLoaded() {
+                if (Preferences.isLanguageSelected()) {
+                  // If a lanuage has been selected, remove this language select
+                  // screen, open the main screen
+                  self.props.navigator.replace({id: 2});
+                  // TODO: comment above and uncomment below to always show splash
+                  // screen
+                  // this.setState({
+                  //   isLoading: false
+                  // });
+                } else {
+                  self.setState({
+                    isLoading: false,
+                  });
+                }
+              })
+              .catch(err => console.error('Unable to load initial preferences in Splash', err));
+        })
+        .catch(err => console.error('Unable to load app configuration in Splash', err));
+  }
+
+  /**
+   * Sets the language of the app and opens the main screen.
+   *
+   * @param {LanguageString} language  one of 'en' or 'fr', to specify the language
+   *                  chosen by the user.
+   */
+  _selectLanguage(language: LanguageString): void {
+    Preferences.setSelectedLanguage(language);
+    this.props.navigator.push({id: Constants.Views.Main});
+  }
 
   /**
    * Displays two buttons to allow the user to select French or English.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
-    // Get the width and height of the screen
-    const {height, width} = Dimensions.get('window');
-    const onlyOnceTextWidth: number = Math.min(width, 400);
-    const onlyOnceTextLeft: number = (width - onlyOnceTextWidth) / 2;
-
     if (this.state.isLoading) {
       // While checking to see if a language has been selected,
       // display an empty view
       return (
-        <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}></View>
+        <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}} />
       );
     }
 
     return (
-      <View style = {_styles.container}>
+      <View style={_styles.container}>
         <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => this._selectLanguage.bind(this, 'en')}
-            style={{flex: 1}}>
+            style={{flex: 1}}
+            onPress={() => this._selectLanguage.bind(this, 'en')}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <View style={_styles.languageContainer}>
               <Text style={[Styles.mediumText, {color: 'white'}]}>
-                {TranslationsEn['continue_in']}
+                {TranslationsEn.continue_in}
               </Text>
               <View style={{padding: 5}}>
                 <Text style={[Styles.titleText, {color: 'white'}]}>
-                  {TranslationsEn['language']}
+                  {TranslationsEn.language}
                 </Text>
               </View>
             </View>
@@ -169,16 +171,16 @@ class SplashScreen extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => this._selectLanguage.bind(this, 'fr')}
-            style={{flex: 1}}>
+            style={{flex: 1}}
+            onPress={() => this._selectLanguage.bind(this, 'fr')}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
               <Text style={[Styles.mediumText, {color: 'white'}]}>
-                {TranslationsFr['continue_in']}
+                {TranslationsFr.continue_in}
               </Text>
               <View style={{padding: 5}}>
                 <Text style={[Styles.titleText, {color: 'white'}]}>
-                  {TranslationsFr['language']}
+                  {TranslationsFr.language}
                 </Text>
               </View>
             </View>
@@ -186,8 +188,8 @@ class SplashScreen extends React.Component {
         </TouchableOpacity>
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({

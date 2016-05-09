@@ -43,8 +43,10 @@ import type {
 } from '../../../Types';
 
 // Determining size of building icons based on the screen size.
-const {height, width} = Dimensions.get('window');
-const buildingIconSize: number = Math.floor((width - 60) / 3);
+const {width} = Dimensions.get('window');
+const BUILDING_BASE_PADDING: number = 60;
+const BUILDING_GRID_SIZE: number = 3;
+const buildingIconSize: number = Math.floor((width - BUILDING_BASE_PADDING) / BUILDING_GRID_SIZE);
 
 // Type definition for component props.
 type Props = {
@@ -58,7 +60,6 @@ type State = {
 };
 
 class BuildingGrid extends React.Component {
-  state: State;
 
   /*
    * Properties which the parent component should make available to this
@@ -67,6 +68,11 @@ class BuildingGrid extends React.Component {
   static propTypes = {
     showBuilding: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -84,55 +90,7 @@ class BuildingGrid extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any)._loadBuildingsList = this._loadBuildingsList.bind(this);
-  };
-
-  /**
-   * Loads the names and images of the buildings from the assets to display
-   * them.
-   */
-  _loadBuildingsList(): void {
-    let buildingsList: Array<Building> = require('../../../../assets/static/js/Buildings');
-
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(buildingsList),
-      loaded: true,
-    });
-  };
-
-  /**
-   * Displays a single building with its name and image.
-   *
-   * @param {Building} building information about the building to display.
-   * @param {string} sectionId  index of the section the building is in.
-   * @param {number} rowId      index of the row the building is in.
-   * @return {ReactElement} an image and name for the building.
-   */
-  _renderRow(building: Building, sectionId: string, rowIndex: number): ReactElement {
-    let iconLeftMargin: number = 5;
-    let iconRightMargin: number = 5;
-    let iconTopMargin: number = 0;
-
-    // Add additional left and right spacing to items on the edges
-    if (rowIndex % 3 === 0) {
-      iconLeftMargin += 5;
-    } else if (rowIndex % 3 === 2) {
-      iconRightMargin += 5;
-    }
-
-    // Add additional top margin to the first row
-    if (rowIndex < 3) {
-      iconTopMargin = 10;
-    }
-
-    return (
-      <TouchableOpacity onPress={() => this.props.showBuilding(building)}>
-        <View style={{width: buildingIconSize, marginLeft: iconLeftMargin, marginRight: iconRightMargin, marginTop: iconTopMargin, marginBottom: 15}}>
-          <Image style={_styles.buildingIcon} source={building.image} />
-          <Text style={_styles.buildingCode}>{building.code}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  }
 
   /**
    * Loads the buildings once the view has been mounted.
@@ -141,13 +99,65 @@ class BuildingGrid extends React.Component {
     if (!this.state.loaded) {
       this._loadBuildingsList();
     }
-  };
+  }
+
+  /**
+   * Loads the names and images of the buildings from the assets to display
+   * them.
+   */
+  _loadBuildingsList(): void {
+    const buildingsList: Array<Building> = require('../../../../assets/static/js/Buildings');
+
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(buildingsList),
+      loaded: true,
+    });
+  }
+
+  /**
+   * Displays a single building with its name and image.
+   *
+   * @param {Building} building information about the building to display.
+   * @param {string} sectionId  index of the section the building is in.
+   * @param {number} rowIndex   index of the row the building is in.
+   * @returns {ReactElement} an image and name for the building.
+   */
+  _renderRow(building: Building, sectionId: string, rowIndex: number): ReactElement {
+    const ICON_MARGIN_OFFSET: number = 5;
+
+    let leftMargin: number = ICON_MARGIN_OFFSET;
+    let rightMargin: number = ICON_MARGIN_OFFSET;
+    let topMargin: number = 0;
+
+    // Add additional left and right spacing to items on the edges
+    if (rowIndex % BUILDING_GRID_SIZE === 0) {
+      leftMargin += ICON_MARGIN_OFFSET;
+    } else if (rowIndex % BUILDING_GRID_SIZE === 2) {
+      rightMargin += ICON_MARGIN_OFFSET;
+    }
+
+    // Add additional top margin to the first row
+    if (rowIndex < BUILDING_GRID_SIZE) {
+      topMargin = ICON_MARGIN_OFFSET * 2;
+    }
+
+    return (
+      <TouchableOpacity onPress={() => this.props.showBuilding(building)}>
+        <View style={[_styles.building, {marginLeft: leftMargin, marginRight: rightMargin, marginTop: topMargin}]}>
+          <Image
+              source={building.image}
+              style={_styles.buildingIcon} />
+          <Text style={_styles.buildingCode}>{building.code}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   /**
    * Renders the view. Displays an empty view before the buildings have loaded and a list of the building names
    * and icons once they have.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     if (!this.state.loaded) {
@@ -163,23 +173,22 @@ class BuildingGrid extends React.Component {
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)} />
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({
   listview: {
     flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
   building: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: buildingIconSize,
+    marginBottom: 15,
   },
   buildingIcon: {
-    width: (width - 60) / 3,
-    height: (width - 60) / 3,
+    width: (width - BUILDING_BASE_PADDING) / BUILDING_GRID_SIZE,
+    height: (width - BUILDING_BASE_PADDING) / BUILDING_GRID_SIZE,
   },
   buildingCode: {
     textAlign: 'center',

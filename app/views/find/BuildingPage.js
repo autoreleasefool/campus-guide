@@ -52,8 +52,19 @@ class BuildingPage extends React.Component {
    */
   constructor(props: Props) {
     super(props);
-  };
-};
+  }
+
+  /**
+   * TODO: Add description of method
+   *
+   * @returns {ReactElement} an empty view.
+   */
+  render(): ReactElement {
+    return (
+      <View />
+    );
+  }
+}
 
 // Expose component to app
 module.exports = BuildingPage;

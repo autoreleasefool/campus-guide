@@ -43,7 +43,7 @@ const Preferences = require('../util/Preferences');
 const StatusBarUtils = require('../util/StatusBarUtils');
 
 // Get dimensions of the screen
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 // Type definition for component props.
 type Props = {
@@ -58,7 +58,6 @@ type State = {
 };
 
 class NavBar extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -69,6 +68,11 @@ class NavBar extends React.Component {
     onDrawerToggle: React.PropTypes.func,
     onSearch: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -83,13 +87,13 @@ class NavBar extends React.Component {
 
     // Explicitly binding 'this' to certain methods
     (this:any).getRefresh = this.getRefresh.bind(this);
-  };
+  }
 
   /**
    * Returns the current state of the refresh variable, to allow it to be
    * flipped to re-render the view.
    *
-   * @return {boolean} the value of {this.state.refresh}.
+   * @returns {boolean} the value of {this.state.refresh}.
    */
   getRefresh(): boolean {
     if (this.state.refresh == null) {
@@ -97,7 +101,7 @@ class NavBar extends React.Component {
     }
 
     return this.state.refresh;
-  };
+  }
 
   /**
    * Prompts the app to search, so long as there is any text to search with.
@@ -108,7 +112,7 @@ class NavBar extends React.Component {
     if (text && text.length > 0) {
       this.props.onSearch(text);
     }
-  };
+  }
 
   /**
    * Calls the component prop to toggle the navigation drawer.
@@ -122,7 +126,7 @@ class NavBar extends React.Component {
   /**
    * Renders a text input field for searching.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     // Get current language for translations
@@ -138,7 +142,9 @@ class NavBar extends React.Component {
 
     return (
       <View style={_styles.container}>
-        <TouchableOpacity onPress={this._toggleDrawer.bind(this)} style={_styles.drawerToggle}>
+        <TouchableOpacity
+            style={_styles.drawerToggle}
+            onPress={this._toggleDrawer.bind(this)}>
           <MaterialIcons
               color={'white'}
               name={'menu'}
@@ -147,23 +153,23 @@ class NavBar extends React.Component {
         </TouchableOpacity>
         <View style={[_styles.innerContainer, _styles.searchContainer, {width: searchBarWidth, left: searchBarLeft}]}>
           <MaterialIcons
-              onPress={() => this.refs.SearchInput.focus()}
+              color={'white'}
               name={'search'}
               size={24}
-              color={'white'}
-              style={{marginLeft: 10, marginRight: 10}} />
+              style={{marginLeft: 10, marginRight: 10}}
+              onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
+              autoCorrect={false}
+              placeholder={Translations.search_placeholder}
+              placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
               style={{flex: 1, height: 40, color: Constants.Colors.polarGrey}}
-              onChangeText={this._onSearch.bind(this)}
-              autoCorrect={false}
-              placeholder={Translations['search_placeholder']}
-              placeholderTextColor={Constants.Colors.lightGrey} />
+              onChangeText={this._onSearch.bind(this)} />
         </View>
       </View>
-    )
-  };
-};
+    );
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({

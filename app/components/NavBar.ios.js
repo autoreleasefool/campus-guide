@@ -44,7 +44,10 @@ const Preferences = require('../util/Preferences');
 const StatusBarUtils = require('../util/StatusBarUtils');
 
 // Get dimensions of the screen
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
+
+// Number of milliseconds to offset animation by.
+const ANIMATION_OFFSET: number = 50;
 
 // Type definition for component props.
 type Props = {
@@ -60,7 +63,6 @@ type State = {
 };
 
 class NavBar extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -71,6 +73,11 @@ class NavBar extends React.Component {
     onDrawerToggle: React.PropTypes.func,
     onSearch: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -86,7 +93,7 @@ class NavBar extends React.Component {
 
     // Explicitly binding 'this' to certain methods
     (this:any).getRefresh = this.getRefresh.bind(this);
-  };
+  }
 
   /**
    * Configures the app to animate the next layout change, then updates the
@@ -95,21 +102,21 @@ class NavBar extends React.Component {
    * @param {State} state the new state for the component.
    */
   setState(state: State): void {
-    if (state.showBackButton != null) {
+    if (state.showBackButton == null) {
+      super.setState(state);
+    } else {
       setTimeout(() => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         super.setState(state);
-      }, 50);
-    } else {
-      super.setState(state);
+      }, ANIMATION_OFFSET);
     }
-  };
+  }
 
   /**
    * Returns the current state of the refresh variable, to allow it to be
    * flipped to re-render the view.
    *
-   * @return {boolean} the value of {this.state.refresh}.
+   * @returns {boolean} the value of {this.state.refresh}.
    */
   getRefresh(): boolean {
     if (this.state.refresh == null) {
@@ -117,7 +124,7 @@ class NavBar extends React.Component {
     }
 
     return this.state.refresh;
-  };
+  }
 
   /**
    * Clears the search field and requests a back navigation.
@@ -127,7 +134,7 @@ class NavBar extends React.Component {
     if (this.props.onBack) {
       this.props.onBack();
     }
-  };
+  }
 
   /**
    * Prompts the app to search, so long as there is any text to search with.
@@ -138,12 +145,12 @@ class NavBar extends React.Component {
     if (text && text.length > 0) {
       this.props.onSearch(text);
     }
-  };
+  }
 
   /**
    * Renders a text input field for searching.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     // Get current language for translations
@@ -155,19 +162,21 @@ class NavBar extends React.Component {
     }
 
     // Setting position of search bar and back button dependent on if back button is showing.
-    let searchBarLeft = (this.state.showBackButton)
+    const searchBarLeft = (this.state.showBackButton)
         ? 50
         : 10;
-    let searchBarWidth = (this.state.showBackButton)
+    const searchBarWidth = (this.state.showBackButton)
         ? width - 60
         : width - 20;
-    let backButtonLeft = (this.state.showBackButton)
+    const backButtonLeft = (this.state.showBackButton)
         ? 0
         : -60;
 
     return (
       <View style={_styles.container}>
-        <TouchableOpacity onPress={this._onBack.bind(this)} style={{height: 40, alignItems: 'center', left: backButtonLeft}}>
+        <TouchableOpacity
+            style={{height: 40, alignItems: 'center', left: backButtonLeft}}
+            onPress={this._onBack.bind(this)}>
           <Ionicons
               color={'white'}
               name={'ios-arrow-back'}
@@ -176,23 +185,23 @@ class NavBar extends React.Component {
         </TouchableOpacity>
         <View style={[_styles.innerContainer, _styles.searchContainer, {width: searchBarWidth, left: searchBarLeft}]}>
           <Ionicons
-              onPress={() => this.refs.SearchInput.focus()}
+              color={'white'}
               name={'ios-search'}
               size={24}
-              color={'white'}
-              style={{marginLeft: 10, marginRight: 10}} />
+              style={{marginLeft: 10, marginRight: 10}}
+              onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
+              autoCorrect={false}
+              placeholder={Translations.search_placeholder}
+              placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
               style={{flex: 1, height: 40, color: Constants.Colors.polarGrey}}
-              onChangeText={this._onSearch.bind(this)}
-              autoCorrect={false}
-              placeholder={Translations['search_placeholder']}
-              placeholderTextColor={Constants.Colors.lightGrey} />
+              onChangeText={this._onSearch.bind(this)} />
         </View>
       </View>
-    )
-  };
-};
+    );
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({

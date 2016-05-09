@@ -33,9 +33,6 @@ import {
 
 // Imports
 const Constants = require('../../Constants');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const Styles = require('../../Styles');
 
 class HotSpots extends React.Component {
 
@@ -46,18 +43,18 @@ class HotSpots extends React.Component {
    */
   constructor(props: {}) {
     super(props);
-  };
+  }
 
   /**
    * Renders the component
    * TODO: describe render method when finished
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     return (
       <View style={_styles.container} />
-    )
+    );
   }
 }
 

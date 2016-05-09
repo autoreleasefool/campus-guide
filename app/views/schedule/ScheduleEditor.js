@@ -39,20 +39,20 @@ class ScheduleEditor extends React.Component {
    */
   constructor(props: {}) {
     super(props);
-  };
+  }
 
   /**
    * Renders components for the user to interact with to define their courses
    * for the semester.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     return (
       <View style={{flex: 1, backgroundColor: 'black'}} />
     );
-  };
-};
+  }
+}
 
 // Expose component to app
 module.exports = ScheduleEditor;

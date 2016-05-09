@@ -58,7 +58,6 @@ type State = {
 };
 
 class LinksHome extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -67,6 +66,11 @@ class LinksHome extends React.Component {
   static propTypes = {
     showLinkCategory: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -84,30 +88,41 @@ class LinksHome extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any)._loadLinkCategories = this._loadLinkCategories.bind(this);
-  };
+  }
+
+  /**
+   * Loads the links to display.
+   */
+  componentDidMount(): void {
+    if (!this.state.loaded) {
+      this._loadLinkCategories();
+    }
+  }
 
   /**
    * Retrieves the set of categories that the various useful links in the app
    * belong to.
    */
   _loadLinkCategories(): void {
-    let linkCategories: Array<LinkCategoryType> = require('../../../assets/static/js/UsefulLinks');
+    const linkCategories: Array<LinkCategoryType> = require('../../../assets/static/js/UsefulLinks');
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(linkCategories),
       loaded: true,
     });
-  };
+  }
 
   /**
    * Displays a single category name and an image which represents it.
    *
    * @param {LinkCategoryType} category object with properties describing the category.
-   * @return {ReactElement} an image and text describing the category.
+   * @returns {ReactElement} an image and text describing the category.
    */
   _renderRow(category: LinkCategoryType): ReactElement {
     return (
-      <TouchableOpacity onPress={() => this.props.showLinkCategory(category)} style={_styles.categoryContainer}>
+      <TouchableOpacity
+          style={_styles.categoryContainer}
+          onPress={() => this.props.showLinkCategory(category)}>
         <Image
             resizeMode={'cover'}
             source={category.image}
@@ -118,37 +133,28 @@ class LinksHome extends React.Component {
           </Text>
         </View>
       </TouchableOpacity>
-    )
-  };
-
-  /**
-   * Loads the links to display.
-   */
-  componentDidMount(): void {
-    if (!this.state.loaded) {
-      this._loadLinkCategories();
-    }
-  };
+    );
+  }
 
   /**
    * Renders a list of images and titles for the user to select, opening a
    * screen with a list of useful links.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
-    if (!this.state.loaded) {
-      return (
-        <View style={_styles.container} />
-      );
-    } else {
+    if (this.state.loaded) {
       return (
         <View style={_styles.container}>
           <ListView
               dataSource={this.state.dataSource}
               renderRow={this._renderRow.bind(this)} />
         </View>
-      )
+      );
+    } else {
+      return (
+        <View style={_styles.container} />
+      );
     }
   }
 }

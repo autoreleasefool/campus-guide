@@ -44,18 +44,20 @@ const TextUtils = require('../util/TextUtils');
 const NULL_SUBTITLE_VALUE: string = 'value_null';
 // List of icon families that the subtitle icon can belong to.
 const VALID_ICON_CLASSES: Array<?string> = ['material', 'ionicon'];
+// Maximum number of characters in the section name.
+const MAX_NAME_LENGTH: number = 21;
 
 // Type definition for component props.
 type Props = {
-  sectionName: string,
+  backgroundOverride: ?string,
   sectionIcon: ?string,
   sectionIconClass: ?string,
   sectionIconOnClick: () => any,
-  subtitleOnClick: () => any,
-  subtitleName: ?string,
+  sectionName: string,
   subtitleIcon: ?string,
   subtitleIconClass: ?string,
-  backgroundOverride: ?string,
+  subtitleName: ?string,
+  subtitleOnClick: () => any,
   useBlackText: ?boolean,
 };
 
@@ -63,30 +65,34 @@ type Props = {
 type State = {
   sectionIcon: string,
   sectionIconClass: string,
-  subtitleName: string,
   subtitleIcon: string,
   subtitleIconClass: string,
+  subtitleName: string,
   textAndIconColor: string,
 };
 
 class SectionHeader extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
-    sectionName: React.PropTypes.string.isRequired,
+    backgroundOverride: React.PropTypes.string,
     sectionIcon: React.PropTypes.string,
     sectionIconClass: React.PropTypes.oneOf(VALID_ICON_CLASSES),
     sectionIconOnClick: React.PropTypes.func,
-    subtitleOnClick: React.PropTypes.func,
-    subtitleName: React.PropTypes.string,
+    sectionName: React.PropTypes.string.isRequired,
     subtitleIcon: React.PropTypes.string,
     subtitleIconClass: React.PropTypes.oneOf(VALID_ICON_CLASSES),
-    backgroundOverride: React.PropTypes.string,
+    subtitleName: React.PropTypes.string,
+    subtitleOnClick: React.PropTypes.func,
     useBlackText: React.PropTypes.bool,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -96,12 +102,12 @@ class SectionHeader extends React.Component {
   constructor(props: Props) {
     super(props);
 
-    let sectIcon = this.props.sectionIcon || NULL_SUBTITLE_VALUE;
-    let sectIconClass = this.props.sectionIconClass || NULL_SUBTITLE_VALUE;
-    let subName = this.props.subtitleName || NULL_SUBTITLE_VALUE;
-    let subIcon = this.props.subtitleIcon || NULL_SUBTITLE_VALUE;
-    let subIconClass = this.props.subtitleIconClass || NULL_SUBTITLE_VALUE;
-    let textAndIconColor = this.props.useBlackText
+    const sectIcon = this.props.sectionIcon || NULL_SUBTITLE_VALUE;
+    const sectIconClass = this.props.sectionIconClass || NULL_SUBTITLE_VALUE;
+    const subName = this.props.subtitleName || NULL_SUBTITLE_VALUE;
+    const subIcon = this.props.subtitleIcon || NULL_SUBTITLE_VALUE;
+    const subIconClass = this.props.subtitleIconClass || NULL_SUBTITLE_VALUE;
+    const textAndIconColor = this.props.useBlackText
         ? Constants.Colors.primaryBlackText
         : Constants.Colors.primaryWhiteText;
 
@@ -119,44 +125,44 @@ class SectionHeader extends React.Component {
     (this:any).getSubtitleIcon = this.getSubtitleIcon.bind(this);
     (this:any).getSubtitleIconClass = this.getSubtitleIconClass.bind(this);
     (this:any).updateSubtitle = this.updateSubtitle.bind(this);
-  };
+  }
 
   /**
    * Gets the subtitle of the header.
    *
-   * @return {?string} the subtitle name from the state.
+   * @returns {?string} the subtitle name from the state.
    */
   getSubtitleName(): ?string {
     return this.state.subtitleName;
-  };
+  }
 
   /**
    * Gets the name of the icon on the subtitle.
    *
-   * @return {?string} the subtitle icon name from the state.
+   * @returns {?string} the subtitle icon name from the state.
    */
   getSubtitleIcon(): ?string {
     return this.state.subtitleIcon;
-  };
+  }
 
   /**
    * Gets the string representation of the icon class.
    *
-   * @return {?string} the subtitle icon class from the state.
+   * @returns {?string} the subtitle icon class from the state.
    */
   getSubtitleIconClass(): ?string {
     return this.state.subtitleIconClass;
-  };
+  }
 
   /**
    * Returns a value which can be used in updateSubtitle(name, icon, iconClass)
    * to remove a subtitle value.
    *
-   * @return {string} {NULL_SUBTITLE_VALUE}.
+   * @returns {string} {NULL_SUBTITLE_VALUE}.
    */
   getEmptySubtitleValue(): string {
     return NULL_SUBTITLE_VALUE;
-  };
+  }
 
   /**
    * Update properties of the subtitle in the header.
@@ -166,36 +172,40 @@ class SectionHeader extends React.Component {
    * @param {string} iconClass new icon class name for the subtitle.
    */
   updateSubtitle(name: ?string, icon: ?string, iconClass: ?string): void {
+    let updatedName: ?string = name;
+    let updatedIcon: ?string = icon;
+    let updatedIconClass: ?string = iconClass;
+
     if (VALID_ICON_CLASSES.indexOf(iconClass) < 0) {
-      icon = iconClass = NULL_SUBTITLE_VALUE;
+      updatedIcon = updatedIconClass = NULL_SUBTITLE_VALUE;
     }
 
     // Set the subtitle params to {NULL_SUBTITLE_VALUE} if they are invalid.
-    if (name == null) {
-      name = NULL_SUBTITLE_VALUE;
+    if (updatedName == null) {
+      updatedName = NULL_SUBTITLE_VALUE;
     }
 
-    if (icon == null) {
-      icon = NULL_SUBTITLE_VALUE;
+    if (updatedIcon == null) {
+      updatedIcon = NULL_SUBTITLE_VALUE;
     }
 
-    if (iconClass == null) {
-      iconClass = NULL_SUBTITLE_VALUE;
+    if (updatedIconClass == null) {
+      updatedIconClass = NULL_SUBTITLE_VALUE;
     }
 
     // Update the state with the parameters
     this.setState({
-      subtitleName: name,
-      subtitleIcon: icon,
-      subtitleIconClass: iconClass,
+      subtitleName: updatedName,
+      subtitleIcon: updatedIcon,
+      subtitleIconClass: updatedIconClass,
     });
-  };
+  }
 
   /**
    * Builds the components of the section header, including the title, icon,
    * subtitle, and subtitle icon.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     let icon: ?ReactElement = null;
@@ -207,17 +217,17 @@ class SectionHeader extends React.Component {
       if (this.state.sectionIconClass === 'material') {
         icon = (
           <MaterialIcons
+              color={this.state.textAndIconColor}
               name={this.state.sectionIcon}
               size={24}
-              color={this.state.textAndIconColor}
               style={_styles.headerIcon} />
         );
       } else {
         icon = (
           <Ionicons
+              color={this.state.textAndIconColor}
               name={this.state.sectionIcon}
               size={24}
-              color={this.state.textAndIconColor}
               style={_styles.headerIcon} />
         );
       }
@@ -234,7 +244,7 @@ class SectionHeader extends React.Component {
     // Build the subtitle for the section
     if (this.state.subtitleName && this.state.subtitleName !== NULL_SUBTITLE_VALUE) {
       subtitleName = (
-        <Text style={[Styles.smallText, {color: this.state.textAndIconColor, marginTop: 17, marginBottom: 16, marginLeft: 20, marginRight: 20}]}>
+        <Text style={[Styles.smallText, _styles.subtitleName, {color: this.state.textAndIconColor}]}>
           {this.state.subtitleName.toUpperCase()}
         </Text>
       );
@@ -246,18 +256,18 @@ class SectionHeader extends React.Component {
       if (this.state.subtitleIconClass === 'material') {
         subtitleIcon = (
           <MaterialIcons
+              color={this.state.textAndIconColor}
               name={this.state.subtitleIcon}
               size={18}
-              color={this.state.textAndIconColor}
-              style={{marginTop: 15, marginBottom: 15, marginRight: 20}} />
+              style={_styles.subtitleIcon} />
         );
       } else {
         subtitleIcon = (
           <Ionicons
+              color={this.state.textAndIconColor}
               name={this.state.subtitleIcon}
               size={18}
-              color={this.state.textAndIconColor}
-              style={{marginTop: 15, marginBottom: 15, marginRight: 20}} />
+              style={_styles.subtitleIcon} />
         );
       }
     }
@@ -268,37 +278,37 @@ class SectionHeader extends React.Component {
       if (this.props.subtitleOnClick) {
         iconAndSubtitle = (
           <TouchableOpacity
-              onPress={this.props.subtitleOnClick}
               activeOpacity={0.4}
-              style={_styles.iconAndSubtitle}>
+              style={_styles.iconAndSubtitle}
+              onPress={this.props.subtitleOnClick}>
             {subtitleName}
             {subtitleIcon}
           </TouchableOpacity>
-        )
+        );
       } else {
         iconAndSubtitle = (
           <View style={_styles.iconAndSubtitle}>
             {subtitleName}
             {subtitleIcon}
           </View>
-        )
+        );
       }
     }
 
     // Set the background color of the header to a default value if not provided
-    let headerBackground = this.props.backgroundOverride || Constants.Colors.defaultComponentBackgroundColor;
+    const headerBackground = this.props.backgroundOverride || Constants.Colors.defaultComponentBackgroundColor;
 
     return (
       <View style={[_styles.header, {backgroundColor: headerBackground}]}>
         {icon}
         <Text style={[Styles.largeText, {color: this.state.textAndIconColor, marginLeft: 20}]}>
-          {TextUtils.getTextWithEllipses(this.props.sectionName, 21)}
+          {TextUtils.getTextWithEllipses(this.props.sectionName, MAX_NAME_LENGTH)}
         </Text>
         {iconAndSubtitle}
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({
@@ -317,6 +327,17 @@ const _styles = StyleSheet.create({
     right: 0,
     flex: 1,
     flexDirection: 'row',
+  },
+  subtitleName: {
+    marginTop: 17,
+    marginRight: 20,
+    marginBottom: 16,
+    marginLeft: 20,
+  },
+  subtitleIcon: {
+    marginTop: 15,
+    marginBottom: 15,
+    marginRight: 20,
   },
 });
 

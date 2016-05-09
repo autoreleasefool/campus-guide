@@ -82,7 +82,6 @@ type State = {
 };
 
 class DiscoverHome extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this component.
@@ -90,6 +89,11 @@ class DiscoverHome extends React.Component {
   static propTypes = {
     onScreenSelected: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -107,7 +111,16 @@ class DiscoverHome extends React.Component {
     (this:any)._focusSection = this._focusSection.bind(this);
     (this:any)._getSectionView = this._getSectionView.bind(this);
     (this:any)._loadDiscoverSections = this._loadDiscoverSections.bind(this);
-  };
+  }
+
+  /**
+   * If the sections have not been loaded, then loads them.
+   */
+  componentDidMount(): void {
+    if (this.state.sections == null) {
+      this._loadDiscoverSections();
+    }
+  }
 
   /**
    * Focuses a new section for the user, hides the old section's image and
@@ -120,13 +133,13 @@ class DiscoverHome extends React.Component {
       return;
     }
 
-    let currentSectionHeader: SectionHeader = this.refs['Header-' + this.state.currentSection];
+    const currentSectionHeader: SectionHeader = this.refs['Header-' + this.state.currentSection];
     currentSectionHeader.updateSubtitle(
         currentSectionHeader.getSubtitleName(),
         'expand-more',
         currentSectionHeader.getSubtitleIconClass());
 
-    let newSectionHeader: SectionHeader = this.refs['Header-' + sectionId];
+    const newSectionHeader: SectionHeader = this.refs['Header-' + sectionId];
     newSectionHeader.updateSubtitle(
         newSectionHeader.getSubtitleName(),
         'chevron-right',
@@ -136,14 +149,14 @@ class DiscoverHome extends React.Component {
     this.setState({
       currentSection: sectionId,
     });
-  };
+  }
 
   /**
    * Returns a view for a section which displays the section name and icon, as
    * well as an image if the section is currently selected.
    *
    * @param {DiscoverSection} section section to render.
-   * @return {ReactElement} a view with an image and title which is clickable by the user.
+   * @returns {ReactElement} a view with an image and title which is clickable by the user.
    */
   _getSectionView(section: DiscoverSection): ReactElement {
     let onPress: () => any;
@@ -169,62 +182,55 @@ class DiscoverHome extends React.Component {
     if (section.id === this.state.currentSection) {
       sectionImage = (
         <Image
-            style={_styles.sectionImage}
             resizeMode={'cover'}
-            source={section.image} />
+            source={section.image}
+            style={_styles.sectionImage} />
       );
       touchableStyle = {flex: 1, overflow: 'hidden'};
       subtitleIcon = 'chevron-right';
     }
 
-    let sectionIcon: ?DefaultIcon = DisplayUtils.getPlatformIcon(Platform.OS, section);
-    let iconName: ?string = sectionIcon != null
-        ? sectionIcon.name
-        : null;
-    let iconClass: ?string = sectionIcon != null
-        ? sectionIcon.class
-        : null;
+    const sectionIcon: ?DefaultIcon = DisplayUtils.getPlatformIcon(Platform.OS, section);
+    const iconName: ?string = sectionIcon == null
+        ? null
+        : sectionIcon.name;
+    const iconClass: ?string = sectionIcon == null
+        ? null
+        : sectionIcon.class;
 
     return (
-      <TouchableOpacity onPress={onPress} key={section.id} style={touchableStyle}>
+      <TouchableOpacity
+          key={section.id}
+          style={touchableStyle}
+          onPress={onPress}>
         {sectionImage}
         <SectionHeader
             ref={'Header-' + section.id}
-            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), section)}
             sectionIcon={iconName}
             sectionIconClass={iconClass}
+            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), section)}
             subtitleIcon={subtitleIcon}
             subtitleIconClass={'material'} />
       </TouchableOpacity>
     );
-  };
+  }
 
   /**
    * Retrieves information about the sections in the discover tab and refreshes
    * the view.
    */
   _loadDiscoverSections(): void {
-    let sections: Array<DiscoverSection> = require('../../../assets/static/js/DiscoverSections');
+    const discoverSections: Array<DiscoverSection> = require('../../../assets/static/js/DiscoverSections');
     this.setState({
-      sections: sections,
-      currentSection: sections[0].id,
+      sections: discoverSections,
+      currentSection: discoverSections[0].id,
     });
-  };
+  }
 
   /**
-   * If the sections have not been loaded, then loads them.
-   */
-  componentDidMount(): void {
-    if (this.state.sections == null) {
-      this._loadDiscoverSections();
-    }
-  };
-
-  /**
-   * Renders each of the sections, with one of them focused and showing an
-   * image.
+   * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     if (this.state.sections == null) {
@@ -240,14 +246,14 @@ class DiscoverHome extends React.Component {
         </View>
       );
     }
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.Colors.darkGrey
+    backgroundColor: Constants.Colors.darkGrey,
   },
   sectionImage: {
     flex: 1,

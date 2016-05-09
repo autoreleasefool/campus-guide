@@ -43,10 +43,10 @@ const Styles = require('../Styles');
 
 // Type definition for component props.
 type Props = {
-  title: string,
+  backgroundColor: string,
   image: ReactElement,
   text: Array<string>,
-  backgroundColor: string,
+  title: string,
 };
 
 // Type definition for component state.
@@ -55,18 +55,22 @@ type State = {
 };
 
 class DetailsScreen extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
    * component.
    */
   static propTypes = {
-    title: React.PropTypes.string,
+    backgroundColor: React.PropTypes.string,
     image: React.PropTypes.any,
     text: React.PropTypes.array,
-    backgroundColor: React.PropTypes.string,
+    title: React.PropTypes.string,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -77,13 +81,13 @@ class DetailsScreen extends React.Component {
     super(props);
     this.state = {
       backgroundColor: this.props.backgroundColor || Constants.Colors.garnet,
-    }
-  };
+    };
+  }
 
   /**
    * Renders an image, a title, and a set of paragraphs of text (the details).
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     let banner = null;
@@ -120,13 +124,15 @@ class DetailsScreen extends React.Component {
 
     let details = null;
     if (this.props.text) {
-      let textColor = DisplayUtils.isColorDark(this.state.backgroundColor)
+      const textColor = DisplayUtils.isColorDark(this.state.backgroundColor)
           ? Constants.Colors.primaryWhiteText
           : Constants.Colors.primaryBlackText;
       details = (
         <ScrollView style={_styles.scrollview}>
           {this.props.text.map((text, index) => (
-            <Text key={index} style={[Styles.mediumText, _styles.text, {color: textColor}]}>
+            <Text
+                key={index}
+                style={[Styles.mediumText, _styles.text, {color: textColor}]}>
               {text}
             </Text>
           ))}
@@ -141,7 +147,7 @@ class DetailsScreen extends React.Component {
       </View>
     );
   }
-};
+}
 
 // Private styles for the component
 const _styles = StyleSheet.create({

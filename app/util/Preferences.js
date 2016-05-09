@@ -66,26 +66,26 @@ async function _loadInitialPreferences(): Promise<void> {
   try {
     // Number of times the app has been used. Either null or integer greater than or equal to 0
     let value: any = await AsyncStorage.getItem(TIMES_APP_OPENED);
-    timesAppOpened = (value !== null)
-        ? parseInt(value)
-        : 0;
+    timesAppOpened = (value === null)
+        ? 0
+        : parseInt(value);
 
     // Language chosen by the user. Either null (if no language has been selected), 'en' for English, 'fr' for French
     value = await AsyncStorage.getItem(SELECTED_LANGUAGE);
-    selectedLanguage = (value !== null)
-        ? value
-        : null;
+    selectedLanguage = (value === null)
+        ? null
+        : value;
 
     value = await AsyncStorage.getItem(CURRENT_SEMESTER);
-    currentSemester = (value !== null)
-        ? parseInt(value)
-        : 0;
+    currentSemester = (value === null)
+        ? 0
+        : parseInt(value);
 
     // If the user prefers wheelchair accessible routes
     value = await AsyncStorage.getItem(PREFER_WHEELCHAIR);
-    preferWheelchair = (value !== null)
-        ? (value === 'true')
-        : false;
+    preferWheelchair = (value === null)
+        ? false
+        : (value === 'true');
   } catch (e) {
     console.log('Caught error loading preferences.', e);
 
@@ -98,14 +98,14 @@ async function _loadInitialPreferences(): Promise<void> {
 
   timesAppOpened += 1;
   AsyncStorage.setItem(TIMES_APP_OPENED, timesAppOpened.toString());
-};
+}
 
 module.exports = {
 
   /**
    * Wrapper method for _loadInitialPreferences.
    *
-   * @return {Promise<void>} the Promise from the async function {_loadInitialPreferences}.
+   * @returns {Promise<void>} the Promise from the async function {_loadInitialPreferences}.
    */
   loadInitialPreferences(): Promise<void> {
     return _loadInitialPreferences();
@@ -114,16 +114,16 @@ module.exports = {
   /**
    * Checks if the app is being opened for the first time.
    *
-   * @return {boolean} true if the app has not been opened before, false otherwise.
+   * @returns {boolean} true if the app has not been opened before, false otherwise.
    */
   isFirstTimeOpened(): boolean {
-    return timesAppOpened == 1;
+    return timesAppOpened === 1;
   },
 
   /**
    * Checks if a language has been selected by the user.
    *
-   * @return {boolean} true if a language has been selected, false otherwise.
+   * @returns {boolean} true if a language has been selected, false otherwise.
    */
   isLanguageSelected(): boolean {
     return selectedLanguage === 'en' || selectedLanguage === 'fr';
@@ -132,7 +132,7 @@ module.exports = {
   /**
    * Gets the preferred language selected by the user.
    *
-   * @return {LanguageString} 'en' for English, 'fr' for French, or 'en' if no language has
+   * @returns {LanguageString} 'en' for English, 'fr' for French, or 'en' if no language has
    *         been selected yet.
    */
   getSelectedLanguage(): LanguageString {
@@ -147,7 +147,7 @@ module.exports = {
    * @param {LanguageString} language the new language, either 'en' or 'fr'.
    */
   setSelectedLanguage(language: LanguageString): void {
-    if (language !== 'en' && language !=='fr') {
+    if (language !== 'en' && language !== 'fr') {
       return;
     }
 
@@ -158,7 +158,7 @@ module.exports = {
   /**
    * Indicates if the user prefers wheelchair accessible routes or doesn't care.
    *
-   * @return {boolean} true if the user prefers accessible routes, false otherwise.
+   * @returns {boolean} true if the user prefers accessible routes, false otherwise.
    */
   isWheelchairRoutePreferred(): boolean {
     return preferWheelchair;
@@ -204,7 +204,7 @@ module.exports = {
   /**
    * Returns the index of the current semester.
    *
-   * @return {number} the index of the current semester.
+   * @returns {number} the index of the current semester.
    */
   getCurrentSemester(): number {
     return currentSemester;
@@ -213,7 +213,7 @@ module.exports = {
   /**
    * Returns information about the current semester.
    *
-   * @return {Semester} details about the current semester.
+   * @returns {Semester} details about the current semester.
    */
   getCurrentSemesterInfo(): Semester {
     return Configuration.getSemester(currentSemester);
@@ -225,7 +225,7 @@ module.exports = {
    * to the type of the setting.
    *
    * @param {string} key the setting value to return.
-   * @return {any} the value of the setting corresponding to {key}, or null.
+   * @returns {any} the value of the setting corresponding to {key}, or null.
    */
   getSetting(key: string): any {
     if (key === 'pref_lang') {

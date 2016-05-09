@@ -23,13 +23,15 @@
  */
 'use strict';
 
+/* eslint-disable no-magic-numbers */
+
 module.exports = {
 
   /**
    * Formats certain link formats to display.
    *
    * @param {string} link link to format. Accepted formats are 'tel:\d+', 'mailto:.*'.
-   * @return {string} a link which is better for display, or the original.
+   * @returns {string} a link which is better for display, or the original.
    */
   formatLink(link: ?string): string {
     if (link == null) {
@@ -54,13 +56,13 @@ module.exports = {
    * hours.
    *
    * @param {string} time time to convert, in '00:00' format.
-   * @return {string} a time between 00:00 and 23:59.
+   * @returns {string} a time between 00:00 and 23:59.
    */
   get24HourAdjustedTime(time: string): string {
+    const minutes = time.substring(3, 5);
     let hours = parseInt(time.substring(0, 2));
-    let minutes = time.substring(3, 5);
     if (hours > 23) {
-      hours = hours - 24;
+      hours -= 24;
     }
 
     return this.leftPad(hours.toString(), 2, '0') + ':' + minutes;
@@ -72,7 +74,7 @@ module.exports = {
    *
    * @param {string} text      string to shorten if too long.
    * @param {number} maxLength maximum length string to return.
-   * @return {string} a string with a max length of {maxLength}.
+   * @returns {string} a string with a max length of {maxLength}.
    */
   getTextWithEllipses(text: string, maxLength: number): string {
     if (text.length > maxLength) {
@@ -88,17 +90,16 @@ module.exports = {
    *
    * @param {string} text          string to pad.
    * @param {number} desiredLength length of string to return.
-   * @param {?string} char          optional argument. Character to pad with.
-   *                      Uses ' ' by default.
-   * @return {string} a string with at least a length of {desiredLength}.
+   * @param {?string} char         optional argument. Character to pad with.
+   *                               Uses ' ' by default.
+   * @returns {string} a string with at least a length of {desiredLength}.
    */
   leftPad(text: string, desiredLength: number, char: ?string): string {
-    if (!char) {
-      char = ' ';
-    }
+    const replacementChar = char || ' ';
+    let replacedString = text;
 
     while (text.length < desiredLength) {
-      text = char + text;
+      replacedString = replacementChar + replacedString;
     }
 
     return text;

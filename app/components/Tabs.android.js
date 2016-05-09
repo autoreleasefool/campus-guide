@@ -101,7 +101,7 @@ class TabsView extends React.Component {
    *
    * @param {{}} props properties passed from container to this component.
    */
-  constructor(props: {}}) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       currentTab: Constants.Views.DefaultTab,
@@ -110,21 +110,35 @@ class TabsView extends React.Component {
     // Explicitly binding 'this' to all methods that need it
     (this:any).getCurrentTab = this.getCurrentTab.bind(this);
     (this:any)._navigateForward = this._navigateForward.bind(this);
-  };
+  }
+
+  /**
+   * Attaches a listener to the Android back button.
+   */
+  componentDidMount(): void {
+    BackAndroid.addEventListener('hardwareBackPress', this._navigateBack.bind(this));
+  }
+
+  /**
+   * Removes the listener from the Android back button.
+   */
+  componentWillUnmount(): void {
+    BackAndroid.removeEventListener('hardwareBackPress', this._navigateBack.bind(this));
+  }
 
   /**
    * Retrieves the current tab.
    *
-   * @return {number} the current tab in the state.
+   * @returns {number} the current tab in the state.
    */
   getCurrentTab(): number {
     return this.state.currentTab;
-  };
+  }
 
   /**
    * Returns to the previous page.
    *
-   * @return {boolean} true if the app navigated backwards.
+   * @returns {boolean} true if the app navigated backwards.
    */
   _navigateBack(): boolean {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
@@ -139,7 +153,7 @@ class TabsView extends React.Component {
     }
 
     return false;
-  };
+  }
 
   /**
    * Switch to the selected tab, as determined by tabId.
@@ -154,27 +168,27 @@ class TabsView extends React.Component {
     this.refs.Navigator.resetTo({id: tabId});
     this.setState({
       currentTab: tabId,
-    })
+    });
     screenStack = [tabId];
-  };
+  }
 
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @return {Object} a configuration for the transition between scenes.
+   * @returns {Object} a configuration for the transition between scenes.
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
-  };
+  }
 
   /**
    * Returns the current screen being displayed, or 0 if there isn't one.
    *
-   * @return {number | string} the screen at the top of {screenStack}, or 0.
+   * @returns {number | string} the screen at the top of {screenStack}, or 0.
    */
   _getCurrentScreen(): number | string {
     if (screenStack !== null && screenStack.length > 0) {
-      return screenStack[screenStack.length - 1]
+      return screenStack[screenStack.length - 1];
     } else {
       return 0;
     }
@@ -202,7 +216,7 @@ class TabsView extends React.Component {
 
     this.refs.Navigator.push({id: screenId, data: data});
     screenStack.push(screenId);
-  };
+  }
 
   /**
    * Toggles the navigation drawer open or closed.
@@ -213,10 +227,12 @@ class TabsView extends React.Component {
     } else {
       this.refs.Drawer.closeDrawer();
     }
-  };
+  }
 
   /**
    * Called when the navigation drawer opens or closes.
+   *
+   * @param {boolean} drawerOpen true to open the drawer, false to close.
    */
   _onDrawerToggle(drawerOpen: boolean): void {
     if (drawerOpen) {
@@ -235,19 +251,19 @@ class TabsView extends React.Component {
     // TODO: search...
     console.log('TODO: search...');
     this._navigateForward(Constants.Views.Find.Search, searchTerms);
-  };
+  }
 
   /**
    * Forces the navbar to be re-rendered.
    */
   _refreshNavbar(): void {
-    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()})
+    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()});
   }
 
   /**
    * Renders the content in the navigation drawer.
    *
-   * @return {ReactElement} a list of navigation items for the drawer.
+   * @returns {ReactElement} a list of navigation items for the drawer.
    */
   _renderNavigationView(): ReactElement {
     // Get current language for translations
@@ -277,38 +293,40 @@ class TabsView extends React.Component {
       case Constants.Views.Settings.Home:
         settingsColor = Constants.Colors.garnet;
         break;
+      default:
+        console.log('Invalid tab:', this.state.currentTab);
+        break;
     }
 
     return (
       <View style={_styles.navigationDrawer}>
-        <Text style={{color: findColor}}>{Translations['find']}</Text>
-        <Text style={{color: scheduleColor}}>{Translations['schedule']}</Text>
-        <Text style={{color: discoverColor}}>{Translations['discover']}</Text>
-        <Text style={{color: settingsColor}}>{Translations['settings']}</Text>
+        <Text style={{color: findColor}}>{Translations.find}</Text>
+        <Text style={{color: scheduleColor}}>{Translations.schedule}</Text>
+        <Text style={{color: discoverColor}}>{Translations.discover}</Text>
+        <Text style={{color: settingsColor}}>{Translations.settings}</Text>
       </View>
     );
-  };
+  }
 
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {Route} route         object with properties to identify the route to display.
-   * @param {ReactClas} navigator navigator object to pass to children.
-   * @return {ReactElement} the view to render, based on {route}.
+   * @param {Route} route object with properties to identify the route to display.
+   * @returns {ReactElement} the view to render, based on {route}.
    */
-  _renderScene(route: Route, navigator: ReactClass): ReactElement {
+  _renderScene(route: Route): ReactElement {
     let scene = null;
     if (route.id === Constants.Views.Find.Home) {
       scene = (
         <FindHome
             onEditSchedule={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}
-            onShowBuilding={(buildingCode) => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
+            onShowBuilding={buildingCode => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
       );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (
         <ScheduleHome
-            requestTabChange={this._changeTabs.bind(this)}
-            editSchedule={() => this._navigateForward(Constants.Views.Schedule.Editor)} />
+            editSchedule={() => this._navigateForward(Constants.Views.Schedule.Editor)}
+            requestTabChange={this._changeTabs.bind(this)} />
       );
     } else if (route.id === Constants.Views.Schedule.Editor) {
       scene = (
@@ -321,46 +339,60 @@ class TabsView extends React.Component {
     } else if (route.id === Constants.Views.Discover.BusCampuses) {
       scene = (
         <BusCampuses
-            showCampus={(campusName, campusColor) => this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: campusName, color: campusColor})} />
+            showCampus={(name, color) =>
+                this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: name, color: color})} />
       );
     } else if (route.id === Constants.Views.Discover.BusCampusStops) {
       scene = (
-        <BusCampusStops campusName={route.data.name} campusColor={route.data.color} />
+        <BusCampusStops
+            campusColor={route.data.color}
+            campusName={route.data.name} />
       );
     } else if (route.id === Constants.Views.Discover.LinksHome) {
       scene = (
-        <LinksHome showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory + '-0', {category: category, categoryImage: category.image, index: 0})} />
+        <LinksHome
+            showLinkCategory={category =>
+                this._navigateForward(Constants.Views.Discover.LinkCategory + '-0',
+                    {category: category, categoryImage: category.image, index: 0})} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleInfo) {
       scene = (
         <ShuttleInfo
-            showCampus={(campusName, campusColor) => this._navigateForward(Constants.Views.Discover.ShuttleCampusInfo, {name: campusName, color: campusColor})}
-            showDetails={(title, image, text, backgroundColor) => this._navigateForward(Constants.Views.Discover.ShuttleDetails, {title: title, image: image, text: text, backgroundColor: backgroundColor})}/>
+            showCampus={(campusName, campusColor) =>
+                  this._navigateForward(Constants.Views.Discover.ShuttleCampusInfo,
+                      {name: campusName, color: campusColor})}
+            showDetails={(title, image, text, backgroundColor) =>
+                this._navigateForward(Constants.Views.Discover.ShuttleDetails,
+                    {title: title, image: image, text: text, backgroundColor: backgroundColor})} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleCampusInfo) {
       scene = (
         <ShuttleCampusInfo
-            campusName={route.data.name}
-            campusColor={route.data.color} />
+            campusColor={route.data.color}
+            campusName={route.data.name} />
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
-        <SettingsHome requestTabChange={this._changeTabs.bind(this)} refreshParent={this._refreshNavbar.bind(this)} />
+        <SettingsHome
+            refreshParent={this._refreshNavbar.bind(this)}
+            requestTabChange={this._changeTabs.bind(this)} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
       scene = (
         <DetailsScreen
-            title={route.data.title}
+            backgroundColor={route.data.backgroundColor}
             image={route.data.image}
             text={route.data.text}
-            backgroundColor={route.data.backgroundColor} />
+            title={route.data.title} />
       );
-    } else if (typeof(route.id) === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
+    } else if (typeof route.id === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
       scene = (
         <LinkCategory
             category={route.data.category}
             categoryImage={route.data.categoryImage}
-            showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1), {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
+            showLinkCategory={category =>
+                this._navigateForward(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1),
+                    {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
       );
     }
 
@@ -369,7 +401,7 @@ class TabsView extends React.Component {
         {scene}
       </View>
     );
-  };
+  }
 
   /**
    * Shows or hides the back button in the navbar.
@@ -383,67 +415,38 @@ class TabsView extends React.Component {
   }
 
   /**
-   * Attaches a listener to the Android back button.
-   */
-  componentDidMount(): void {
-    BackAndroid.addEventListener('hardwareBackPress', this._navigateBack.bind(this));
-  };
-
-  /**
-   * Removes the listener from the Android back button.
-   */
-  componentWillUnmount(): void {
-    BackAndroid.removeEventListener('hardwareBackPress', this._navigateBack.bind(this));
-  };
-
-  /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     return (
       <DrawerLayoutAndroid
-          ref='Drawer'
-          drawerWidth={300}
           drawerPosition={DrawerLayoutAndroid.positions.Left}
-          onDrawerOpen={this._onDrawerToggle.bind(this, true)}
+          drawerWidth={300}
+          ref='Drawer'
+          renderNavigationView={this._renderNavigationView.bind(this)}
           onDrawerClose={this._onDrawerToggle.bind(this, false)}
-          renderNavigationView={this._renderNavigationView.bind(this)}>
+          onDrawerOpen={this._onDrawerToggle.bind(this, true)}>
         <NavBar
             ref='NavBar'
-            onSearch={this._onSearch}
-            onDrawerToggle={this._onDrawerToggle} />
+            onDrawerToggle={this._onDrawerToggle}
+            onSearch={this._onSearch} />
         <Navigator
-            style={_styles.navigator}
-            ref='Navigator'
             configureScene={this._configureScene}
             initialRoute={{id: Constants.Views.Default}}
-            renderScene={this._renderScene.bind(this)} />
+            ref='Navigator'
+            renderScene={this._renderScene.bind(this)}
+            style={_styles.navigator} />
       </DrawerLayoutAndroid>
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   navigator: {
     flex: 1,
-  },
-  tabContainer: {
-    height: 60,
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: Constants.Colors.rootElementBorder,
-    backgroundColor: Constants.Colors.polarGrey,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   navigationDrawer: {
     flex: 1,

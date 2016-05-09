@@ -35,11 +35,15 @@ module.exports = {
    * default of the variant. If neither is available, returns null.
    *
    * @param {string} property the prefix of the property to look for.
-   * @param {Object} obj      the object to look in for the property.
-   * @return {?string} the French property in obj, the default property in obj, or null.
+   * @param {?Object} obj     the object to look in for the property.
+   * @returns {?string} the French property in obj, the default property in obj, or null.
    */
-  _getFrenchVariant(property: string, obj: Object): ?string {
-    let frenchProperty = property + '_fr';
+  _getFrenchVariant(property: string, obj: ?Object): ?string {
+    if (obj == null) {
+      return null;
+    }
+
+    const frenchProperty = property + '_fr';
     if (frenchProperty in obj) {
       return obj[frenchProperty];
     } else if (property in obj) {
@@ -54,15 +58,15 @@ module.exports = {
    * default of the variant. If neither is available, returns null.
    *
    * @param {string} property the prefix of the property to look for.
-   * @param {Object} obj      the object to look in for the property.
-   * @return {?string} the English property in obj, the default property in obj, or null.
+   * @param {?Object} obj     the object to look in for the property.
+   * @returns {?string} the English property in obj, the default property in obj, or null.
    */
   _getEnglishVariant(property: string, obj: ?Object): ?string {
     if (obj == null) {
       return null;
     }
 
-    let englishProperty = property + '_en';
+    const englishProperty = property + '_en';
     if (englishProperty in obj) {
       return obj[englishProperty];
     } else if (property in obj) {
@@ -77,7 +81,7 @@ module.exports = {
    * neither is available, returns null.
    *
    * @param {?Object} obj the object to look in for the name.
-   * @return {?string} the French name, the default name, or null.
+   * @returns {?string} the French name, the default name, or null.
    */
   getFrenchName(obj: ?Object): ?string {
     return this._getFrenchVariant('name', obj);
@@ -88,7 +92,7 @@ module.exports = {
    * neither is available, returns null.
    *
    * @param {?Object} obj the object to look in for the name.
-   * @return {?string} the English name, the default name, or null.
+   * @returns {?string} the English name, the default name, or null.
    */
   getEnglishName(obj: ?Object): ?string {
     return this._getEnglishVariant('name', obj);
@@ -99,7 +103,7 @@ module.exports = {
    * neither is available, returns null.
    *
    * @param {?Object} obj the object to look in for the link.
-   * @return {?string} the French link, the default link, or null.
+   * @returns {?string} the French link, the default link, or null.
    */
   getFrenchLink(obj: ?Object): ?string {
     return this._getFrenchVariant('link', obj);
@@ -110,7 +114,7 @@ module.exports = {
    * neither is available, returns null.
    *
    * @param {?Object} obj the object to look in for the link.
-   * @return {?string} the English link, the default link, or null.
+   * @returns {?string} the English link, the default link, or null.
    */
   getEnglishLink(obj: ?Object): ?string {
     return this._getEnglishVariant('link', obj);
@@ -121,7 +125,7 @@ module.exports = {
    * neither is available, returns null.
    *
    * @param {?Object} obj the object to look in for the details.
-   * @return {?string} the French details, the default details, or null.
+   * @returns {?string} the French details, the default details, or null.
    */
   getFrenchDetails(obj: ?Object): ?string {
     return this._getFrenchVariant('details', obj);
@@ -132,7 +136,7 @@ module.exports = {
    * neither is available, returns null.
    *
    * @param {?Object} obj the object to look in for the details.
-   * @return {?string} the English details, the default details, or null.
+   * @returns {?string} the English details, the default details, or null.
    */
   getEnglishDetails(obj: ?Object): ?string {
     return this._getEnglishVariant('details', obj);
@@ -143,7 +147,7 @@ module.exports = {
    *
    * @param {LanguageString} language either 'en' or 'fr'
    * @param {?Object} obj             the object to get the name from.
-   * @return {?string} the French or English name of the object, or null.
+   * @returns {?string} the French or English name of the object, or null.
    */
   getTranslatedName(language: LanguageString, obj: ?Object): ?string {
     if (language === 'en') {
@@ -160,7 +164,7 @@ module.exports = {
    *
    * @param {LanguageString} language either 'en' or 'fr'
    * @param {?Object} obj             the object to get the link from.
-   * @return {?string} the French or English link of the object, or null.
+   * @returns {?string} the French or English link of the object, or null.
    */
   getTranslatedLink(language: LanguageString, obj: ?Object): ?string {
     if (language === 'en') {
@@ -178,7 +182,7 @@ module.exports = {
    *
    * @param {LanguageString} language either 'en' or 'fr'
    * @param {?Object} obj             the object to get the details from.
-   * @return {?string} the French or English details of the object, or null.
+   * @returns {?string} the French or English details of the object, or null.
    */
   getTranslatedDetails(language: LanguageString, obj: ?Object): ?string {
     if (language === 'en') {
@@ -189,4 +193,4 @@ module.exports = {
       return null;
     }
   },
-}
+};

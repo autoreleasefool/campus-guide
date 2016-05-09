@@ -45,55 +45,52 @@ type Route = {
 class CampusGuide extends React.Component {
 
   /**
-   * Default constructor to pass props to parent.
-   *
-   * @param {{}} props properties passed from container to this component.
+   * Locks the application to portrait orientation.
    */
-  constructor(props: {}) {
-    super(props);
-  };
+  componentDidMount(): void {
+    Orientation.lockToPortrait();
+  }
 
   /**
    * Defines the transition between views.
    *
-   * @return {Object} a configuration for scene transitions in the navigator.
+   * @returns {Object} a configuration for scene transitions in the navigator.
    */
   _configureScene(): Object {
     return ({
       ...Navigator.SceneConfigs.HorizontalSwipeJump,
       gestures: false,
     });
-  };
+  }
 
   /**
    * Renders a different view based on the current navigator route.
    *
    * @param {Route} route          object with properties to identify the route to display.
    * @param {ReactClass} navigator navigator object to pass to children.
-   * @return {ReactElement} the view to render, based on {route}.
+   * @returns {ReactElement} the view to render, based on {route}.
    */
   _renderScene(route: Route, navigator: ReactClass): ReactElement {
     if (route.id === Constants.Views.Splash) {
-      return <SplashScreen navigator={navigator} />
+      return (
+        <SplashScreen navigator={navigator} />
+      );
     } else if (route.id === Constants.Views.Main) {
-      return <MainScreen navigator={navigator} />
+      return (
+        <MainScreen navigator={navigator} />
+      );
     } else {
-      return <View />
+      return (
+        <View />
+      );
     }
-  };
-
-  /**
-   * Locks the application to portrait orientation.
-   */
-  componentDidMount(): void {
-    Orientation.lockToPortrait();
-  };
+  }
 
   /**
    * Renders the root navigator of the app to switch between the splash screen
    * and main screen.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     return (
@@ -102,8 +99,8 @@ class CampusGuide extends React.Component {
           initialRoute={{id: 1}}
           renderScene={this._renderScene} />
     );
-  };
-};
+  }
+}
 
 // Expose component to app
 module.exports = CampusGuide;

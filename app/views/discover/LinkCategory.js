@@ -71,7 +71,6 @@ type State = {
 };
 
 class LinkCategory extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -84,6 +83,11 @@ class LinkCategory extends React.Component {
   };
 
   /**
+   * Define type for the component state.
+   */
+  state: State;
+
+  /**
    * Pass props and declares initial state.
    *
    * @param {Props} props properties passed from container to this component.
@@ -91,7 +95,7 @@ class LinkCategory extends React.Component {
   constructor(props: Props) {
     super(props);
 
-    let shouldShowLinks: boolean = this.props.category.categories == null;
+    const shouldShowLinks: boolean = this.props.category.categories == null;
     this.state = {
       showLinks: shouldShowLinks,
     };
@@ -100,7 +104,7 @@ class LinkCategory extends React.Component {
     (this:any)._getCategories = this._getCategories.bind(this);
     (this:any)._getLinks = this._getLinks.bind(this);
     (this:any)._getSocialMediaLinks = this._getSocialMediaLinks.bind(this);
-  };
+  }
 
   /**
    * Returns a list of touchable views which lead to new pages of categories
@@ -108,12 +112,12 @@ class LinkCategory extends React.Component {
    *
    * @param {Array<LinkCategoryType>} categories categories of links.
    * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
-   * @return {ReactElement} for each index in {categories}, a {TouchableOpacity} with the name
+   * @returns {ReactElement} for each index in {categories}, a {TouchableOpacity} with the name
    *         of the category.
    */
   _getCategories(categories: Array<LinkCategoryType>, isBackgroundDark: boolean): ReactElement {
-    let language: LanguageString = Preferences.getSelectedLanguage();
-    let dividerColor: string = (isBackgroundDark)
+    const language: LanguageString = Preferences.getSelectedLanguage();
+    const dividerColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
         : Constants.Colors.primaryBlackText;
 
@@ -121,21 +125,79 @@ class LinkCategory extends React.Component {
       <View>
         {categories.map((category: LinkCategoryType, index: number) => (
           <TouchableOpacity
-              onPress={() => this.props.showLinkCategory(category)}
-              key={LanguageUtils.getEnglishName(category)}>
+              key={LanguageUtils.getEnglishName(category)}
+              onPress={() => this.props.showLinkCategory(category)}>
             <SectionHeader
                 sectionName={LanguageUtils.getTranslatedName(language, category)}
                 subtitleIcon={'chevron-right'}
                 subtitleIconClass={'material'} />
-            {(index != categories.length - 1) ?
-                <View style={[_styles.divider, {backgroundColor: dividerColor}]} />
-                : null
+            {(index < categories.length - 1) ?
+              <View style={[_styles.divider, {backgroundColor: dividerColor}]} />
+              : null
             }
           </TouchableOpacity>
         ))}
       </View>
     );
-  };
+  }
+
+  /**
+   * Gets an icon based on the link type.
+   *
+   * @param {?string} link     the link to represent with an icon.
+   * @param {string} iconColor color for the icon.
+   * @returns {?ReactElement} an icon for the link.
+   */
+  _getLinkIcon(link: ?string, iconColor: string): ?ReactElement {
+    if (link == null) {
+      return null;
+    }
+
+    if (link.indexOf('tel:') === 0) {
+      return (
+        <Ionicons
+            color={iconColor}
+            name={'android-call'}
+            size={24}
+            style={_styles.linkIcon} />
+      );
+    } else if (link.indexOf('mailto:') === 0) {
+      return (
+        <Ionicons
+            color={iconColor}
+            name={'android-mail'}
+            size={24}
+            style={_styles.linkIcon} />
+      );
+    } else {
+      return (
+        <Ionicons
+            color={iconColor}
+            name={'android-open'}
+            size={24}
+            style={_styles.linkIcon} />
+      );
+    }
+  }
+
+  /**
+   * Constructs a view to display a formatted link, if the link does not begin with "http".
+   *
+   * @param {string} link      the link to format
+   * @param {string} textColor color of the text to display link in.
+   * @returns {?ReactElement} a formatted link in a text view.
+   */
+  _getFormattedLink(link: string, textColor: string): ?ReactElement {
+    if (link.indexOf('http') === 0) {
+      return null;
+    } else {
+      return (
+        <Text style={[_styles.linkSubtitle, Styles.smallText, {color: textColor}]}>
+          {TextUtils.formatLink(link)}
+        </Text>
+      );
+    }
+  }
 
   /**
    * Returns a list of touchable views which open links in the web browser.
@@ -143,86 +205,48 @@ class LinkCategory extends React.Component {
    * @param {Array<Link>} links list of links in the current category.
    * @param {Object} Translations translations in the current language of certain text.
    * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
-   * @return {ReactElement} for each index in {links}, a {TouchableOpacity} with the name
+   * @returns {ReactElement} for each index in {links}, a {TouchableOpacity} with the name
    *         of the link.
    */
   _getLinks(links: Array<Link>, Translations: Object, isBackgroundDark: boolean): ReactElement {
-    let language: LanguageString = Preferences.getSelectedLanguage();
-    let textColor: string = (isBackgroundDark)
+    const language: LanguageString = Preferences.getSelectedLanguage();
+    const textColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
         : Constants.Colors.primaryBlackText;
-    let iconColor: string = (isBackgroundDark)
+    const iconColor: string = (isBackgroundDark)
         ? Constants.Colors.secondaryWhiteText
         : Constants.Colors.secondaryBlackText;
-
-    let getLinkIcon = function(link: ?string): ?ReactElement {
-      if (link == null) {
-        return null;
-      }
-
-      if (link.indexOf('tel:') === 0) {
-        return (
-          <Ionicons
-              color={iconColor}
-              name={'android-call'}
-              size={24}
-              style={_styles.linkIcon} />
-        );
-      } else if (link.indexOf('mailto:') === 0) {
-        return (
-          <Ionicons
-              color={iconColor}
-              name={'android-mail'}
-              size={24}
-              style={_styles.linkIcon} />
-        );
-      } else {
-        return (
-          <Ionicons
-              color={iconColor}
-              name={'android-open'}
-              size={24}
-              style={_styles.linkIcon} />
-        );
-      }
-    };
 
     let listOfLinks: ?ReactElement = null;
     if (this.state.showLinks) {
       listOfLinks = (
         <View style={_styles.linksContainer}>
           {links.map((link, index) => {
-              let translatedLink: string = LanguageUtils.getTranslatedLink(language, link)
-                  || Configuration.getDefaultLink();
-              let translatedName: string = LanguageUtils.getTranslatedName(language, link)
-                  || translatedLink;
+            let translatedLink: string = LanguageUtils.getTranslatedLink(language, link)
+                || Configuration.getDefaultLink();
+            let translatedName: string = LanguageUtils.getTranslatedName(language, link)
+                || translatedLink;
 
-              return (
-                <View key={translatedLink}>
-                  <TouchableOpacity
-                      onPress={() => this._openLink(translatedLink, Translations)}
-                      style={{flexDirection: 'row', alignItems: 'center'}}>
-                    {getLinkIcon(translatedLink)}
-                    <View>
-                      <Text style={[_styles.link, Styles.largeText, {color: textColor}]}>
-                        {translatedName}
-                      </Text>
-                      {(translatedLink.indexOf('http') !== 0)
-                          ? <Text style={[_styles.linkSubtitle, Styles.smallText, {color: textColor}]}>
-                              {TextUtils.formatLink(translatedLink)}
-                            </Text>
-                          : null
-                      }
-                    </View>
-                  </TouchableOpacity>
-                  {(index != links.length - 1) ?
-                      <View style={[_styles.divider, {backgroundColor: textColor}]} />
-                      : null
-                  }
-                </View>
-              );
-            }
-          )}
+            return (
+              <View key={translatedLink}>
+                <TouchableOpacity
+                    style={{flexDirection: 'row', alignItems: 'center'}}
+                    onPress={() => this._openLink(translatedLink, Translations)}>
+                  {this._getLinkIcon(translatedLink, iconColor)}
+                  <View>
+                    <Text style={[_styles.link, Styles.largeText, {color: textColor}]}>
+                      {translatedName}
+                    </Text>
+                    {this._getFormattedLink(translatedLink, textColor)}
+                  </View>
+                </TouchableOpacity>
+                {(index < links.length - 1) ?
+                  <View style={[_styles.divider, {backgroundColor: textColor}]} />
+                  : null
+                }
+              </View>
+            );
+          })}
         </View>
       );
     }
@@ -237,9 +261,9 @@ class LinkCategory extends React.Component {
         <TouchableOpacity onPress={this._toggleLinks.bind(this)}>
           <SectionHeader
               ref='UsefulLinks'
-              sectionName={Translations['useful_links']}
               sectionIcon={'insert-link'}
               sectionIconClass={'material'}
+              sectionName={Translations.useful_links}
               subtitleIcon={linksIcon}
               subtitleIconClass={'material'}
               useBlackText={!isBackgroundDark} />
@@ -247,32 +271,33 @@ class LinkCategory extends React.Component {
         {listOfLinks}
       </View>
     );
-  };
+  }
 
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param {Array<Link>} socialMediaLinks list of links to social media sites in the current
-   *                         category.
-   * @param {Object} Translations     translations in the current language of certain text.
-   * @return {ReactElement} for each index in {socialMediaLinks}, a {TouchableOpacity} with
-   *         an icon representing the social media site.
+   * @param {Array<Link>} socialMediaLinks list of links to social media sites in the current category.
+   * @param {Object} Translations          translations in the current language of certain text.
+   * @returns {ReactElement} for each index in {socialMediaLinks}, a {TouchableOpacity} with
+   *          an icon representing the social media site.
    */
   _getSocialMediaLinks(socialMediaLinks: Array<Link>, Translations: Object): ReactElement {
-    let language: LanguageString = Preferences.getSelectedLanguage();
+    const language: LanguageString = Preferences.getSelectedLanguage();
 
     return (
       <View style={_styles.socialMediaContainer}>
         {socialMediaLinks.map(socialLink => {
-          let translatedLink: string = LanguageUtils.getTranslatedLink(language, socialLink)
+          const translatedLink: string = LanguageUtils.getTranslatedLink(language, socialLink)
               || Configuration.getDefaultLink();
-          let translatedLinkName: ?string = LanguageUtils.getTranslatedName(language, socialLink);
+          const translatedLinkName: ?string = LanguageUtils.getTranslatedName(language, socialLink);
 
-          if (translatedLinkName != null) {
+          if (translatedLinkName == null) {
+            return null;
+          } else {
             return (
               <TouchableOpacity
-                  onPress={() => this._openLink(translatedLink, Translations)}
-                  key={translatedLink}>
+                  key={translatedLink}
+                  onPress={() => this._openLink(translatedLink, Translations)}>
                 <Ionicons
                     color={DisplayUtils.getSocialMediaIconColor(translatedLinkName)}
                     name={DisplayUtils.getSocialMediaIconName(translatedLinkName)}
@@ -280,18 +305,16 @@ class LinkCategory extends React.Component {
                     style={_styles.socialMediaIcon} />
               </TouchableOpacity>
             );
-          } else {
-            return null;
           }
         })}
       </View>
-    )
-  };
+    );
+  }
 
   /**
    * Attempts to open a URL.
    *
-   * @param {?string} link the url to open.
+   * @param {?string} link        the url to open.
    * @param {Object} Translations language translations.
    */
   _openLink(link: ?string, Translations: Object): void {
@@ -306,7 +329,7 @@ class LinkCategory extends React.Component {
       return;
     }
 
-    let linksHeader: SectionHeader = this.refs.UsefulLinks;
+    const linksHeader: SectionHeader = this.refs.UsefulLinks;
     let linksIcon: string = 'expand-less';
     if (this.state.showLinks) {
       linksIcon = 'expand-more';
@@ -318,12 +341,12 @@ class LinkCategory extends React.Component {
     this.setState({
       showLinks: !this.state.showLinks,
     });
-  };
+  }
 
   /**
    * Renders an image, category title, and list of useful links.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     // Get current language for translations
@@ -334,11 +357,11 @@ class LinkCategory extends React.Component {
       Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
-    let backgroundColor: string =  Constants.Colors.darkGrey;
+    let categoryBackgroundColor: string = Constants.Colors.darkGrey;
     if (Constants.Colors[this.props.category.id] != null) {
-      backgroundColor = Constants.Colors[this.props.category.id];
+      categoryBackgroundColor = Constants.Colors[this.props.category.id];
     }
-    let isBackgroundDark: boolean = DisplayUtils.isColorDark(backgroundColor);
+    const isBackgroundDark: boolean = DisplayUtils.isColorDark(categoryBackgroundColor);
 
     let social: ?ReactElement = null;
     if (this.props.category.social) {
@@ -356,7 +379,7 @@ class LinkCategory extends React.Component {
     }
 
     return (
-      <View style={[_styles.container, {backgroundColor: backgroundColor}]}>
+      <View style={[_styles.container, {backgroundColor: categoryBackgroundColor}]}>
         <View style={_styles.banner}>
           <Image
               resizeMode={'cover'}
@@ -375,8 +398,8 @@ class LinkCategory extends React.Component {
         </ScrollView>
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({
@@ -435,7 +458,7 @@ const _styles = StyleSheet.create({
   divider: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-  }
+  },
 });
 
 // Expose component to app

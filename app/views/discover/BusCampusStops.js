@@ -28,7 +28,6 @@
 // React Native imports
 import React from 'react';
 import {
-  Image,
   StyleSheet,
   View,
 } from 'react-native';
@@ -49,8 +48,8 @@ const Stops = require('./components/Stops');
 
 // Type definition for component props.
 type Props = {
-  campusName: string,
   campusColor: string,
+  campusName: string,
 };
 
 // Type definition for component state.
@@ -71,16 +70,20 @@ type MapMarker = {
 };
 
 class BusCampusStops extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
    * component.
    */
   static propTypes = {
-    campusName: React.PropTypes.string.isRequired,
     campusColor: React.PropTypes.string.isRequired,
+    campusName: React.PropTypes.string.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -99,7 +102,16 @@ class BusCampusStops extends React.Component {
     (this:any)._getCampusMap = this._getCampusMap.bind(this);
     (this:any)._getCampusStops = this._getCampusStops.bind(this);
     (this:any)._loadCampusInfo = this._loadCampusInfo.bind(this);
-  };
+  }
+
+  /**
+   * If the campus details have not been loaded, then loads them.
+   */
+  componentDidMount(): void {
+    if (this.state.campus == null) {
+      this._loadCampusInfo();
+    }
+  }
 
   /**
    * Invoked when the user selects a stop.
@@ -126,30 +138,29 @@ class BusCampusStops extends React.Component {
   /**
    * Renders a map with a list of markers to denote bus stops near the campus.
    *
-   * @return {ReactElement} a {MapView} with a list of markers placed at the stops on the
-   *         campus.
+   * @returns {ReactElement} a {MapView} with a list of markers placed at the stops on the campus.
    */
   _getCampusMap(): ReactElement {
+    const markers: Array<MapMarker> = [];
     let lat: number = 0;
     let long: number = 0;
-    let markers: Array<MapMarker> = [];
     let initialRegion: LatLong;
 
     if (this.state.campus == null) {
-      let university: ?University = Configuration.getUniversity();
-      if (university != null) {
+      const university: ?University = Configuration.getUniversity();
+      if (university == null) {
+        initialRegion = {
+          latitude: 45.4222,
+          longitude: -75.6824,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        };
+      } else {
         lat = university.lat;
         long = university.long;
         initialRegion = {
           latitude: lat,
           longitude: long,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        };
-      } else {
-        initialRegion = {
-          latitude: 45.4222,
-          longitude: -75.6824,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         };
@@ -179,25 +190,24 @@ class BusCampusStops extends React.Component {
 
     return (
       <MapView
-          style={_styles.map}
-          region={this.state.region || initialRegion}>
-        {markers.map((marker) => (
+          region={this.state.region || initialRegion}
+          style={_styles.map}>
+        {markers.map(marker => (
           <MapView.Marker
-              key={marker.id}
               coordinate={marker.latlng}
-              title={marker.title}
-              description={marker.desc}>
-          </MapView.Marker>
+              description={marker.desc}
+              key={marker.id}
+              title={marker.title} />
         ))}
       </MapView>
     );
-  };
+  }
 
   /**
    * Returns a view containing a header and list with the stops surrounding the
    * campus provided by {this.props.campusName}.
    *
-   * @return {ReactElement} a {Stops} view with details about the various stops on the campus.
+   * @returns {ReactElement} a {Stops} view with details about the various stops on the campus.
    */
   _getCampusStops(): ReactElement {
     if (this.state.campus == null) {
@@ -207,13 +217,13 @@ class BusCampusStops extends React.Component {
     } else {
       return (
         <Stops
+            backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}
             campus={this.state.campus}
             campusName={this.props.campusName}
-            onStopSelected={this._busStopSelected.bind(this)}
-            backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}/>
-      )
+            onStopSelected={this._busStopSelected.bind(this)} />
+      );
     }
-  };
+  }
 
   /**
    * Retrieves data about the campus provided as {this.props.campusName}.
@@ -227,21 +237,12 @@ class BusCampusStops extends React.Component {
         });
       }
     }
-  };
-
-  /**
-   * If the campus details have not been loaded, then loads them.
-   */
-  componentDidMount(): void {
-    if (this.state.campus == null) {
-      this._loadCampusInfo();
-    }
-  };
+  }
 
   /**
    * Renders a map and list of routes and stop times at the various stops.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     return (
@@ -254,8 +255,8 @@ class BusCampusStops extends React.Component {
         </View>
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for the component
 const _styles = StyleSheet.create({

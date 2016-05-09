@@ -38,14 +38,14 @@ module.exports = {
    *
    * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class'
    *                     properties, or 'icon.name' and 'icon.class' properties.
-   * @return {?DefaultIcon} an object with 'name' and 'class' properties, or null.
+   * @returns {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
   getAndroidIcon(obj: Object): ?DefaultIcon {
     if ('icon' in obj) {
-      let icon: IconObject = obj.icon;
+      const icon: IconObject = obj.icon;
       if (icon.android != null) {
         return {name: icon.android.name, class: icon.android.class};
-      } else if (icon.name != null && icon.class != null){
+      } else if (icon.name != null && icon.class != null) {
         return {name: icon.name, class: icon.class};
       }
     }
@@ -59,14 +59,14 @@ module.exports = {
    *
    * @param {Object} obj the object with either 'icon.ios.name' and 'icon.ios.class'
    *                     properties, or 'icon.name' and 'icon.class' properties.
-   * @return {?DefaultIcon} an object with 'name' and 'class' properties, or null.
+   * @returns {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
   getIOSIcon(obj: Object): ?DefaultIcon {
     if ('icon' in obj) {
-      let icon: IconObject = obj.icon;
+      const icon: IconObject = obj.icon;
       if (icon.ios != null) {
         return {name: icon.ios.name, class: icon.ios.class};
-      } else if (icon.name != null && icon.class != null){
+      } else if (icon.name != null && icon.class != null) {
         return {name: icon.name, class: icon.class};
       }
     }
@@ -82,7 +82,7 @@ module.exports = {
    * @param {Object} obj              the object with either 'icon.{platform}.name' and
    *                                  'icon.{platform}.class' properties, or 'icon.name' and
    *                                  'icon.class' properties.
-   * @return {?DefaultIcon} an object with 'name' and 'class' properties, or null.
+   * @returns {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
   getPlatformIcon(platform: PlatformString, obj: Object): ?DefaultIcon {
     if (platform === 'ios') {
@@ -98,11 +98,11 @@ module.exports = {
    * Returns a color for the icon for certain social media platforms.
    *
    * @param {string} socialMedia a string containing the name of a social media platform.
-   * @return {string} the color for the icon of the provided social media platform,
+   * @returns {string} the color for the icon of the provided social media platform,
    *         or a generic color.
    */
   getSocialMediaIconColor(socialMedia: string): string {
-    switch(socialMedia.toLowerCase()) {
+    switch (socialMedia.toLowerCase()) {
       case 'linkedin':
         return '#0077B5';
       case 'twitter':
@@ -124,10 +124,10 @@ module.exports = {
    * Returns the icon name for certain social media platforms.
    *
    * @param {string} socialMedia a string containing the name of a social media platform.
-   * @return {string} the icon of the provided social media platform, or a generic icon.
+   * @returns {string} the icon of the provided social media platform, or a generic icon.
    */
   getSocialMediaIconName(socialMedia: string): string {
-    switch(socialMedia.toLowerCase()) {
+    switch (socialMedia.toLowerCase()) {
       case 'linkedin':
         return 'social-linkedin';
       case 'twitter':
@@ -149,20 +149,43 @@ module.exports = {
    * Returns true if a hexadecimal color is 'dark', false otherwise.
    *
    * @param {string} color a hexadecimal string
-   * @return {boolean} true if the color is dark, false otherwise.
+   * @returns {boolean} true if the color is dark, false otherwise.
    */
   isColorDark(color: string): boolean {
+    // Base value for hexadecimal
+    const HEX_BASE: number = 16;
+
+    // Bit shift values for color parts
+    const RED_BIT_SHIFT: number = 16;
+    const GREEN_BIT_SHIFT: number = 8;
+
+    // Hexedemical value to extract bits pertaining to certain colors
+    const RED_HEX: number = 0xff0000;
+    const GREEN_HEX: number = 0xff00;
+    const BLUE_HEX: number = 0xff;
+
+    // Threshold values for what is light and dark in a color
+    const RED_THRESHOLD: number = 0.299;
+    const GREEN_THRESHOLD: number = 0.587;
+    const BLUE_THRESHOLD: number = 0.114;
+
+    // Possible value range for colors
+    const COLOR_RANGE: number = 256;
+
+    // Light vs dark range
+    const LIGHT_DARK_SPLIT: number = 0.5;
+
     let hexColor: number = 0;
     if (color.indexOf('#') == 0) {
-      hexColor = parseInt(color.substring(1, color.length), 16);
+      hexColor = parseInt(color.substring(1, color.length), HEX_BASE);
     } else {
-      hexColor = parseInt(color, 16);
+      hexColor = parseInt(color, HEX_BASE);
     }
 
-    const r: number = (hexColor & 0xff0000) >> 16;
-    const g: number = (hexColor & 0xff00) >> 8;
-    const b: number = (hexColor & 0xff);
+    const r: number = (hexColor & RED_HEX) >> RED_BIT_SHIFT;
+    const g: number = (hexColor & GREEN_HEX) >> GREEN_BIT_SHIFT;
+    const b: number = (hexColor & BLUE_HEX);
 
-    return ((r * 0.299 + g * 0.587 + b * 0.114) / 256 < 0.5);
+    return ((r * RED_THRESHOLD + g * GREEN_THRESHOLD + b * BLUE_THRESHOLD) / COLOR_RANGE < LIGHT_DARK_SPLIT);
   },
 };

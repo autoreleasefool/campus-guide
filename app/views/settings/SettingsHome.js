@@ -70,14 +70,14 @@ const TranslationsEn: Object = require('../../../assets/static/js/Translations.e
 const TranslationsFr: Object = require('../../../assets/static/js/Translations.fr.js');
 
 // Create a cache of settings values to retrieve and update them quickly
-let settings: Object = require('../../../assets/static/json/settings.json');
-let settingsCache: Object = {};
+const settings: Object = require('../../../assets/static/json/settings.json');
+const settingsCache: Object = {};
 let keyOfLastSettingChanged: ?string = null;
 
 // Type definition for component props.
 type Props = {
-  requestTabChange: () => any,
   refreshParent: () => any,
+  requestTabChange: () => any,
 };
 
 // Type definition for component state.
@@ -87,16 +87,20 @@ type State = {
 };
 
 class SettingsHome extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
    * component.
    */
   static propTypes = {
-    requestTabChange: React.PropTypes.func.isRequired,
     refreshParent: React.PropTypes.func,
+    requestTabChange: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -107,7 +111,7 @@ class SettingsHome extends React.Component {
     super(props);
     this.state = {
       dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => this._checkChangedSetting(r1.key) || keyOfLastSettingChanged === 'pref_lang',
+        rowHasChanged: r1 => this._checkChangedSetting(r1.key) || keyOfLastSettingChanged === 'pref_lang',
         sectionHeaderHasChanged: (s1, s2) => s1 !== s2 || keyOfLastSettingChanged === 'pref_lang',
       }),
       loaded: false,
@@ -116,33 +120,45 @@ class SettingsHome extends React.Component {
     // Explicitly binding 'this' to all methods that need it
     (this:any)._loadSettings = this._loadSettings.bind(this);
     (this:any)._pressRow = this._pressRow.bind(this);
-  };
+  }
+
+  /**
+   * Loads the settings once the view has been mounted.
+   */
+  componentDidMount(): void {
+    this._loadSettings();
+  }
 
   /**
    * Returns true if a setting's current value does not match its cached value,
    * and updates the cached value if so.
    *
    * @param {string} key identifier for the setting to check
-   * @return {boolean} true if the value in the cache was updated.
+   * @returns {boolean} true if the value in the cache was updated.
    */
   _checkChangedSetting(key: string): boolean {
-    let settingValue = Preferences.getSetting(key);
-    let changed = settingsCache[key] !== settingValue;
+    const settingValue = Preferences.getSetting(key);
+    const changed = settingsCache[key] !== settingValue;
     if (changed) {
       settingsCache[key] = settingValue;
     }
 
     return changed;
-  };
+  }
 
   /*
    * Loads the current settings to setup the views and cache the settings to
    * determine when a setting changes.
    */
   _loadSettings(): void {
-    for (let section in settings) {
-      for (let row in settings[section]) {
-        settingsCache[settings[section][row].key] = Preferences.getSetting(Preferences.getSetting(settings[section][row].key));
+    for (const section in settings) {
+      if ({}.hasOwnProperty.call(settings, section)) {
+        for (const row in settings[section]) {
+          if ({}.hasOwnProperty.call(settings[section], row)) {
+            settingsCache[settings[section][row].key] =
+                Preferences.getSetting(Preferences.getSetting(settings[section][row].key));
+          }
+        }
       }
     }
 
@@ -152,7 +168,7 @@ class SettingsHome extends React.Component {
         loaded: true,
       });
     }
-  };
+  }
 
   /**
    * Updates the setting for the row pressed.
@@ -180,30 +196,38 @@ class SettingsHome extends React.Component {
     this.setState({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(settings),
     });
-  };
+  }
 
   /**
    * Displays a single row, representing a setting which can be changed.
    *
-   * @param {Object{ setting   defines the setting contents to render.
-   * @return {ReactElement} views to render the setting in the list.
+   * @param {Object} setting defines the setting contents to render.
+   * @returns {ReactElement} views to render the setting in the list.
    */
   _renderRow(setting: Object): ReactElement {
     let content = null;
     if (setting.type === 'multi') {
-      content =
-          <View style={_styles.settingContent}>
-            <Text style={[Styles.mediumText, {color: 'black'}]}>{Preferences.getSetting(setting.key)}</Text>
-          </View>
+      content = (
+        <View style={_styles.settingContent}>
+          <Text style={[Styles.mediumText, {color: 'black'}]}>{Preferences.getSetting(setting.key)}</Text>
+        </View>
+      );
     } else if (setting.type === 'boolean') {
-      content =
-          <View style={_styles.settingContent}>
-            {
-              Preferences.getSetting(setting.key)
-                  ? <Icon name={settingIcons.checkEnabled} color={Constants.Colors.charcoalGrey} size={20} />
-                  : <Icon name={settingIcons.checkDisabled} color={Constants.Colors.charcoalGrey} size={20} />
-            }
-          </View>
+      content = (
+        <View style={_styles.settingContent}>
+          {
+            Preferences.getSetting(setting.key)
+                ? <Icon
+                    color={Constants.Colors.charcoalGrey}
+                    name={settingIcons.checkEnabled}
+                    size={20} />
+                : <Icon
+                    color={Constants.Colors.charcoalGrey}
+                    name={settingIcons.checkDisabled}
+                    size={20} />
+          }
+        </View>
+      );
     }
 
     return (
@@ -218,59 +242,48 @@ class SettingsHome extends React.Component {
         </TouchableOpacity>
       </View>
     );
-  };
+  }
 
   /**
    * Renders a heading for a section of settings.
    *
    * @param {Object} sectionData section contents
-   * @param {string} sectionId   index of the section.
-   * @return {ReactElement} a {SectionHeader} with the name of the section.
+   * @param {string} sectionName index of the section.
+   * @returns {ReactElement} a {SectionHeader} with the name of the section.
    */
   _renderSectionHeader(sectionData: Object, sectionName: string): ReactElement {
-    let colonIndex: number = sectionName.indexOf(':');
+    const colonIndex: number = sectionName.indexOf(':');
+    let sectionNameTranslated;
     if (colonIndex > -1) {
       if (Preferences.getSelectedLanguage() === 'en') {
-        sectionName = sectionName.substring(0, colonIndex);
+        sectionNameTranslated = sectionName.substring(0, colonIndex);
       } else {
-        sectionName = sectionName.substring(colonIndex + 1);
+        sectionNameTranslated = sectionName.substring(colonIndex + 1);
       }
     }
 
     return (
       <SectionHeader
-          sectionName={sectionName}
-          backgroundOverride={Constants.Colors.lightGrey} />
+          backgroundOverride={Constants.Colors.lightGrey}
+          sectionName={sectionNameTranslated} />
     );
-  };
-
-  /**
-   * Loads the settings once the view has been mounted.
-   */
-  componentDidMount(): void {
-    this._loadSettings();
-  };
+  }
 
   /**
    * Displays a list of settings.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
-    let CurrentTranslations: Object = (Preferences.getSelectedLanguage() === 'en')
+    const Translations: Object = (Preferences.getSelectedLanguage() === 'en')
         ? TranslationsEn
         : TranslationsFr;
 
-    if (!this.state.loaded) {
-      // Return an empty view until the data has been loaded
-      return (
-        <View style={_styles.container} />
-      );
-    } else {
+    if (this.state.loaded) {
       return (
         <View style={_styles.container}>
           <Text style={[_styles.title, Styles.titleText, {color: 'black'}]}>
-            {CurrentTranslations['settings']}
+            {Translations.settings}
           </Text>
           <ListView
               dataSource={this.state.dataSource}
@@ -279,9 +292,14 @@ class SettingsHome extends React.Component {
               style={_styles.listview} />
         </View>
       );
+    } else {
+      // Return an empty view until the data has been loaded
+      return (
+        <View style={_styles.container} />
+      );
     }
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({

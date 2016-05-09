@@ -47,8 +47,8 @@ const Preferences = require('../../util/Preferences');
 
 // Type definition for component props.
 type Props = {
-  campusName: string,
   campusColor: string,
+  campusName: string,
 };
 
 // Type definition for component state.
@@ -58,16 +58,20 @@ type State = {
 };
 
 class ShuttleCampusInfo extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
    * component.
    */
   static propTypes = {
-    campusName: React.PropTypes.string.isRequired,
     campusColor: React.PropTypes.string.isRequired,
+    campusName: React.PropTypes.string.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -85,20 +89,29 @@ class ShuttleCampusInfo extends React.Component {
     // Explicitly binding 'this' to all methods that need it
     (this:any)._getCampusMap = this._getCampusMap.bind(this);
     (this:any)._loadCampusInfo = this._loadCampusInfo.bind(this);
-  };
+  }
+
+  /**
+   * If the campus info has not been loaded yet, then load it.
+   */
+  componentDidMount(): void {
+    if (this.state.campus == null) {
+      this._loadCampusInfo();
+    }
+  }
 
   /**
    * Renders a map with a list of markers to denote bus stops near the campus.
    *
    * @param {Object} Translations translations in the current language of certain text.
-   * @return {ReactElement} a map view with a marker
+   * @returns {ReactElement} a map view with a marker
    */
   _getCampusMap(Translations: Object): ReactElement {
     let initialRegion: LatLong;
     let marker: ?ReactElement;
 
     if (this.state.campus == null) {
-      let university: ?University = Configuration.getUniversity();
+      const university: ?University = Configuration.getUniversity();
       if (university != null) {
         initialRegion = {
           latitude: university.lat,
@@ -108,8 +121,8 @@ class ShuttleCampusInfo extends React.Component {
         };
       }
     } else {
-      let lat = this.state.campus.lat;
-      let long = this.state.campus.lat;
+      const lat = this.state.campus.lat;
+      const long = this.state.campus.lat;
       initialRegion = {
         latitude: lat,
         longitude: long,
@@ -121,46 +134,36 @@ class ShuttleCampusInfo extends React.Component {
         <MapView.Marker
             coordinate={initialRegion}
             description={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campus)}
-            title={Translations['shuttle_stop']}>
-        </MapView.Marker>
+            title={Translations.shuttle_stop} />
       );
     }
 
     return (
       <MapView
-          style={_styles.map}
-          region={initialRegion}>
+          region={initialRegion}
+          style={_styles.map}>
         {marker}
       </MapView>
     );
-  };
+  }
 
   /**
    * Retrieves data about the campus provided as this.props.campusName.
    */
   _loadCampusInfo(): void {
-    let campuses: Array<ShuttleCampus> = require('../../../assets/static/json/shuttle.json');
+    const campuses: Array<ShuttleCampus> = require('../../../assets/static/json/shuttle.json');
     if (this.props.campusName in campuses) {
       this.setState({
         campus: campuses[this.props.campusName],
       });
     }
-  };
-
-  /**
-   * If the campus info has not been loaded yet, then load it.
-   */
-  componentDidMount(): void {
-    if (this.state.campus == null) {
-      this._loadCampusInfo();
-    }
-  };
+  }
 
   /**
    * Renders a map and details about the shuttle drop off times at the campus
    * specified by {this.props.campusName}.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     // Get current language for translations
@@ -179,8 +182,8 @@ class ShuttleCampusInfo extends React.Component {
         <View style={_styles.timeContainer} />
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for the component
 const _styles = StyleSheet.create({

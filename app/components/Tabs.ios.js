@@ -68,8 +68,8 @@ const tabIcons: TabIcons = {
 };
 
 // Determining the size of the current tab indicator based on the screen size
-const {height, width} = Dimensions.get('window');
-const indicatorWidth: number = Math.ceil(width / 4);
+const {width} = Dimensions.get('window');
+const indicatorWidth: number = Math.ceil(width / Object.keys(tabIcons).length);
 const tabIconSize: number = 30;
 
 // Lists the views currently on the stack in the Navigator.
@@ -103,16 +103,16 @@ class TabsView extends React.Component {
     // Explicitly binding 'this' to all methods that need it
     (this:any).getCurrentTab = this.getCurrentTab.bind(this);
     (this:any)._navigateForward = this._navigateForward.bind(this);
-  };
+  }
 
   /**
    * Retrieves the current tab.
    *
-   * @return {number} the current tab in the state.
+   * @returns {number} the current tab in the state.
    */
   getCurrentTab(): number {
     return this.state.currentTab;
-  };
+  }
 
   /**
    * Switch to the selected tab, as determined by tabId.
@@ -127,27 +127,27 @@ class TabsView extends React.Component {
     this.refs.Navigator.resetTo({id: tabId});
     this.setState({
       currentTab: tabId,
-    })
+    });
     screenStack = [tabId];
-  };
+  }
 
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @return {Object} a configuration for the transition between scenes.
+   * @returns {Object} a configuration for the transition between scenes.
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
-  };
+  }
 
   /**
    * Returns the current screen being displayed, or 0 if there isn't one.
    *
-   * @return {number | string} the screen at the top of {screenStack}, or 0.
+   * @returns {number | string} the screen at the top of {screenStack}, or 0.
    */
   _getCurrentScreen(): number | string {
     if (screenStack !== null && screenStack.length > 0) {
-      return screenStack[screenStack.length - 1]
+      return screenStack[screenStack.length - 1];
     } else {
       return 0;
     }
@@ -165,7 +165,7 @@ class TabsView extends React.Component {
         this._showBackButton(false);
       }
     }
-  };
+  }
 
   /**
    * Opens a screen, unless the screen is already showing. Passes data to
@@ -189,7 +189,7 @@ class TabsView extends React.Component {
 
     this.refs.Navigator.push({id: screenId, data: data});
     screenStack.push(screenId);
-  };
+  }
 
   /**
    * Displays the results of the user's search parameters.
@@ -200,35 +200,34 @@ class TabsView extends React.Component {
     // TODO: search...
     console.log('TODO: search...');
     this._navigateForward(Constants.Views.Find.Search, searchTerms);
-  };
+  }
 
   /**
    * Forces the navbar to be re-rendered.
    */
   _refreshNavbar(): void {
-    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()})
+    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()});
   }
 
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {Route} route         object with properties to identify the route to display.
-   * @param {ReactClas} navigator navigator object to pass to children.
-   * @return {ReactElement} the view to render, based on {route}.
+   * @param {Route} route object with properties to identify the route to display.
+   * @returns {ReactElement} the view to render, based on {route}.
    */
-  _renderScene(route: Route, navigator: ReactClass): ReactElement {
+  _renderScene(route: Route): ReactElement {
     let scene = null;
     if (route.id === Constants.Views.Find.Home) {
       scene = (
         <FindHome
             onEditSchedule={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}
-            onShowBuilding={(buildingCode) => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
+            onShowBuilding={buildingCode => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
       );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (
         <ScheduleHome
-            requestTabChange={this._changeTabs.bind(this)}
-            editSchedule={() => this._navigateForward(Constants.Views.Schedule.Editor)} />
+            editSchedule={() => this._navigateForward(Constants.Views.Schedule.Editor)}
+            requestTabChange={this._changeTabs.bind(this)} />
       );
     } else if (route.id === Constants.Views.Schedule.Editor) {
       scene = (
@@ -241,46 +240,60 @@ class TabsView extends React.Component {
     } else if (route.id === Constants.Views.Discover.BusCampuses) {
       scene = (
         <BusCampuses
-            showCampus={(campusName, campusColor) => this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: campusName, color: campusColor})} />
+            showCampus={(name, color) =>
+                this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: name, color: color})} />
       );
     } else if (route.id === Constants.Views.Discover.BusCampusStops) {
       scene = (
-        <BusCampusStops campusName={route.data.name} campusColor={route.data.color} />
+        <BusCampusStops
+            campusColor={route.data.color}
+            campusName={route.data.name} />
       );
     } else if (route.id === Constants.Views.Discover.LinksHome) {
       scene = (
-        <LinksHome showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory + '-0', {category: category, categoryImage: category.image, index: 0})} />
+        <LinksHome
+            showLinkCategory={category =>
+                this._navigateForward(Constants.Views.Discover.LinkCategory + '-0',
+                    {category: category, categoryImage: category.image, index: 0})} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleInfo) {
       scene = (
         <ShuttleInfo
-            showCampus={(campusName, campusColor) => this._navigateForward(Constants.Views.Discover.ShuttleCampusInfo, {name: campusName, color: campusColor})}
-            showDetails={(title, image, text, backgroundColor) => this._navigateForward(Constants.Views.Discover.ShuttleDetails, {title: title, image: image, text: text, backgroundColor: backgroundColor})}/>
+            showCampus={(campusName, campusColor) =>
+                this._navigateForward(Constants.Views.Discover.ShuttleCampusInfo,
+                    {name: campusName, color: campusColor})}
+            showDetails={(title, image, text, backgroundColor) =>
+                this._navigateForward(Constants.Views.Discover.ShuttleDetails,
+                    {title: title, image: image, text: text, backgroundColor: backgroundColor})} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleCampusInfo) {
       scene = (
         <ShuttleCampusInfo
-            campusName={route.data.name}
-            campusColor={route.data.color} />
+            campusColor={route.data.color}
+            campusName={route.data.name} />
       );
     } else if (route.id === Constants.Views.Settings.Home) {
       scene = (
-        <SettingsHome requestTabChange={this._changeTabs.bind(this)} refreshParent={this._refreshNavbar.bind(this)} />
+        <SettingsHome
+            refreshParent={this._refreshNavbar.bind(this)}
+            requestTabChange={this._changeTabs.bind(this)} />
       );
     } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
       scene = (
         <DetailsScreen
-            title={route.data.title}
+            backgroundColor={route.data.backgroundColor}
             image={route.data.image}
             text={route.data.text}
-            backgroundColor={route.data.backgroundColor} />
+            title={route.data.title} />
       );
-    } else if (typeof(route.id) === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
+    } else if (typeof route.id === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
       scene = (
         <LinkCategory
             category={route.data.category}
             categoryImage={route.data.categoryImage}
-            showLinkCategory={(category) => this._navigateForward(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1), {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
+            showLinkCategory={category =>
+                this._navigateForward(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1),
+                    {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
       );
     }
 
@@ -289,7 +302,7 @@ class TabsView extends React.Component {
         {scene}
       </View>
     );
-  };
+  }
 
   /**
    * Shows or hides the back button in the navbar.
@@ -305,7 +318,7 @@ class TabsView extends React.Component {
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     let findColor = Constants.Colors.charcoalGrey;
@@ -332,39 +345,62 @@ class TabsView extends React.Component {
         indicatorLeft = indicatorWidth * 3;
         settingsColor = Constants.Colors.garnet;
         break;
+      default:
+        console.log('Invalid tab:', this.state.currentTab);
+        break;
     }
 
     return (
       <View style={_styles.container}>
         <NavBar
             ref='NavBar'
-            onSearch={this._onSearch.bind(this)}
-            onBack={this._navigateBack.bind(this)} />
+            onBack={this._navigateBack.bind(this)}
+            onSearch={this._onSearch.bind(this)} />
         <Navigator
-            style={_styles.navigator}
-            ref='Navigator'
             configureScene={this._configureScene}
             initialRoute={{id: Constants.Views.Default}}
-            renderScene={this._renderScene.bind(this)} />
+            ref='Navigator'
+            renderScene={this._renderScene.bind(this)}
+            style={_styles.navigator} />
         <View style={_styles.tabContainer}>
-          <TouchableOpacity onPress={this._changeTabs.bind(this, Constants.Views.Find.Home)} style={_styles.tab}>
-            <Ionicons name={tabIcons.find} size={tabIconSize} color={findColor} />
+          <TouchableOpacity
+              style={_styles.tab}
+              onPress={this._changeTabs.bind(this, Constants.Views.Find.Home)}>
+            <Ionicons
+                color={findColor}
+                name={tabIcons.find}
+                size={tabIconSize} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._changeTabs.bind(this, Constants.Views.Schedule.Home)} style={_styles.tab}>
-            <Ionicons name={tabIcons.schedule} size={tabIconSize} color={scheduleColor} />
+          <TouchableOpacity
+              style={_styles.tab}
+              onPress={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}>
+            <Ionicons
+                color={scheduleColor}
+                name={tabIcons.schedule}
+                size={tabIconSize} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._changeTabs.bind(this, Constants.Views.Discover.Home)} style={_styles.tab}>
-            <Ionicons name={tabIcons.discover} size={tabIconSize} color={discoverColor} />
+          <TouchableOpacity
+              style={_styles.tab}
+              onPress={this._changeTabs.bind(this, Constants.Views.Discover.Home)}>
+            <Ionicons
+                color={discoverColor}
+                name={tabIcons.discover}
+                size={tabIconSize} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._changeTabs.bind(this, Constants.Views.Settings.Home)} style={_styles.tab}>
-            <Ionicons name={tabIcons.settings} size={tabIconSize} color={settingsColor} />
+          <TouchableOpacity
+              style={_styles.tab}
+              onPress={this._changeTabs.bind(this, Constants.Views.Settings.Home)}>
+            <Ionicons
+                color={settingsColor}
+                name={tabIcons.settings}
+                size={tabIconSize} />
           </TouchableOpacity>
           <View style={[_styles.indicator, {left: indicatorLeft}]} />
         </View>
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({
@@ -392,7 +428,7 @@ const _styles = StyleSheet.create({
     width: indicatorWidth,
     height: 5,
     backgroundColor: Constants.Colors.garnet,
-  }
+  },
 });
 
 // Expose component to app

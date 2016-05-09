@@ -47,7 +47,6 @@ type State = {
 };
 
 class Upcoming extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
@@ -56,6 +55,11 @@ class Upcoming extends React.Component {
   static propTypes = {
     onEdit: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -67,13 +71,13 @@ class Upcoming extends React.Component {
     this.state = {
       loaded: false,
     };
-  };
+  }
 
   /**
    * Renders a list of the user's upcoming classes, or a view which links to the Schedule tab so the user
    * can update their schedule.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     // Get current language for translations
@@ -84,21 +88,23 @@ class Upcoming extends React.Component {
       Translations = require('../../../../assets/static/js/Translations.en.js');
     }
 
-    if (!this.state.loaded) {
-      return (
-        <TouchableOpacity onPress={this.props.onEdit} style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={[Styles.mediumText, {color: 'white', textAlign: 'center'}]}>
-            {Translations['no_courses_added']}
-          </Text>
-        </TouchableOpacity>
-      );
-    } else {
+    if (this.state.loaded) {
       return (
         <View />
       );
+    } else {
+      return (
+        <TouchableOpacity
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
+            onPress={this.props.onEdit}>
+          <Text style={[Styles.mediumText, {color: 'white', textAlign: 'center'}]}>
+            {Translations.no_courses_added}
+          </Text>
+        </TouchableOpacity>
+      );
     }
-  };
-};
+  }
+}
 
 // Expose component to app
 module.exports = Upcoming;

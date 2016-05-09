@@ -40,15 +40,6 @@ const TabsView = require('../components/Tabs');
 class MainScreen extends React.Component {
 
   /**
-   * Pass props to parent and declare initial state.
-   *
-   * @param {{}} props properties passed from container to this component.
-   */
-  constructor(props: {}) {
-    super(props);
-  };
-
-  /**
    * Displays a pop up when the application opens for the first time after the
    * user selects their preferred language.
    */
@@ -63,16 +54,16 @@ class MainScreen extends React.Component {
 
     if (Preferences.isFirstTimeOpened()) {
       Alert.alert(
-        Translations['only_once_title'],
-        Translations['only_once_message'],
+        Translations.only_once_title,
+        Translations.only_once_message,
       );
     }
-  };
+  }
 
   /**
    * Renders a tab bar to switch between the app's tabs, and a search bar.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     return (
@@ -80,8 +71,8 @@ class MainScreen extends React.Component {
         <TabsView />
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({

@@ -46,12 +46,13 @@ const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
 
 // Get dimensions of the device
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
+const screenWidth: number = width;
 
 // Type definition for component props.
 type Props = {
-  requestTabChange: () => any,
   editSchedule: () => any,
+  requestTabChange: () => any,
 };
 
 // Type definition for component state.
@@ -60,15 +61,19 @@ type State = {
 };
 
 class ScheduleHome extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
-    requestTabChange: React.PropTypes.func.isRequired,
     editSchedule: React.PropTypes.func.isRequired,
+    requestTabChange: React.PropTypes.func.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -80,19 +85,19 @@ class ScheduleHome extends React.Component {
     this.state = {
       showEditButtons: false,
     };
-  };
+  }
 
   /**
    * Switches to the next available schedule and updates the views.
    */
   _changeSemester(): void {
     Preferences.setToNextSemester();
-    let header: SectionHeader = this.refs.ScheduleHeader;
+    const header: SectionHeader = this.refs.ScheduleHeader;
     header.updateSubtitle(
         LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo()),
         header.getSubtitleIcon(),
         header.getSubtitleIconClass());
-  };
+  }
 
   /**
    * Toggles the visibility of buttons for editing the schedule with animation.
@@ -102,7 +107,7 @@ class ScheduleHome extends React.Component {
     this.setState({
       showEditButtons: !this.state.showEditButtons,
     });
-  };
+  }
 
   /**
    * Opens a prompt for a user to add a new course.
@@ -110,7 +115,7 @@ class ScheduleHome extends React.Component {
   _addCourse(): void {
     // TODO: add a new course
     console.log('TODO: Add a new course');
-  };
+  }
 
   /**
    * Opens a prompt for a user to remove a course.
@@ -118,7 +123,7 @@ class ScheduleHome extends React.Component {
   _removeCourse(): void {
     // TODO: remove an old course
     console.log('TODO: remove an old course');
-  };
+  }
 
   /**
    * Renders the root Schedule view.
@@ -148,17 +153,26 @@ class ScheduleHome extends React.Component {
         <View style={_styles.editButtonContainer}>
           <TouchableOpacity onPress={this._addCourse.bind(this)}>
             <View style={[_styles.editButton, {margin: 10}]}>
-              <MaterialIcons name={'add'} size={24} color={'white'} />
+              <MaterialIcons
+                  color={'white'}
+                  name={'add'}
+                  size={24} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._removeCourse.bind(this)}>
             <View style={[_styles.editButton, {marginTop: 10, marginBottom: 10}]}>
-              <MaterialIcons name={'remove'} size={24} color={'white'} />
+              <MaterialIcons
+                  color={'white'}
+                  name={'remove'}
+                  size={24} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._toggleEditScheduleButtons.bind(this)}>
             <View style={[_styles.editButton, {margin: 10}]}>
-              <MaterialIcons name={'close'} size={24} color={'white'} />
+              <MaterialIcons
+                  color={'white'}
+                  name={'close'}
+                  size={24} />
             </View>
           </TouchableOpacity>
         </View>
@@ -168,7 +182,7 @@ class ScheduleHome extends React.Component {
         <TouchableOpacity onPress={this._toggleEditScheduleButtons.bind(this)}>
           <View style={_styles.editScheduleButton}>
             <Text style={[Styles.mediumText, {color: 'white'}]}>
-              {Translations['edit_schedule']}
+              {Translations.edit_schedule}
             </Text>
           </View>
         </TouchableOpacity>
@@ -179,20 +193,22 @@ class ScheduleHome extends React.Component {
       <View style={_styles.container}>
         <SectionHeader
             ref='ScheduleHeader'
-            sectionName={Translations['schedule']}
             sectionIcon={calendarIcon[1]}
             sectionIconClass={calendarIcon[0]}
-            subtitleOnClick={this._changeSemester.bind(this)}
-            subtitleName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo())}
+            sectionName={Translations.schedule}
             subtitleIcon={'arrow-swap'}
-            subtitleIconClass={'ionicon'} />
+            subtitleIconClass={'ionicon'}
+            subtitleName={LanguageUtils.getTranslatedName(
+              Preferences.getSelectedLanguage(),
+              Preferences.getCurrentSemesterInfo())}
+            subtitleOnClick={this._changeSemester.bind(this)} />
         {/* TODO: replace with scroll view for schedule */}
         <View style={{flex: 1}} />
         {buttons}
       </View>
     );
-  };
-};
+  }
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({
@@ -210,7 +226,7 @@ const _styles = StyleSheet.create({
   editButtonContainer: {
     flexDirection: 'row',
     height: 70,
-    width: width,
+    width: screenWidth,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -220,7 +236,7 @@ const _styles = StyleSheet.create({
     width: 50,
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
 });
 
 // Expose component to app

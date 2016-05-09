@@ -41,7 +41,6 @@ import {
 import type {
   DetailedRouteInfo,
   TransitCampus,
-  TransitStop,
 } from '../../../Types';
 
 // Imports
@@ -56,6 +55,8 @@ const TextUtils = require('../../../util/TextUtils');
 const LIST: number = 0;
 // Identifier for the navigator, indicating the details of a stop are shown.
 const DETAILS: number = 1;
+// Maximum number of upcoming bus arrival times to show.
+const MAX_UPCOMING_TIMES: number = 4;
 
 // Type definition for component props.
 type Props = {
@@ -91,18 +92,22 @@ type NavigatorRoute = {
 };
 
 class Stops extends React.Component {
-  state: State;
 
   /**
    * Properties which the parent component should make available to this
    * component.
    */
   static propTypes = {
+    backgroundIsDark: React.PropTypes.bool,
     campus: React.PropTypes.object.isRequired,
     campusName: React.PropTypes.string.isRequired,
     onStopSelected: React.PropTypes.func,
-    backgroundIsDark: React.PropTypes.bool,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -112,10 +117,10 @@ class Stops extends React.Component {
   constructor(props: Props) {
     super(props);
 
-    let primaryTextColor = (this.props.backgroundIsDark)
+    const primaryTextColor = (this.props.backgroundIsDark)
         ? Constants.Colors.primaryWhiteText
         : Constants.Colors.primaryBlackText;
-    let secondaryTextColor = (this.props.backgroundIsDark)
+    const secondaryTextColor = (this.props.backgroundIsDark)
         ? Constants.Colors.secondaryWhiteText
         : Constants.Colors.secondaryBlackText;
 
@@ -134,7 +139,16 @@ class Stops extends React.Component {
     // Explicitly binding 'this' to all methods that need it
     (this:any)._loadStops = this._loadStops.bind(this);
     (this:any)._pressRow = this._pressRow.bind(this);
-  };
+  }
+
+  /**
+   * If the stops have not beed loaded, then loads them.
+   */
+  componentDidMount(): void {
+    if (!this.state.loaded) {
+      this._loadStops();
+    }
+  }
 
   /**
    * Informs parent that no stop is selected.
@@ -149,20 +163,19 @@ class Stops extends React.Component {
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @return {Object} a configuration for transitions between scenes.
+   * @returns {Object} a configuration for transitions between scenes.
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
-  };
+  }
 
   /**
-   * Loads information about each of the stops on the campus into a list to
-   * display.
+   * Loads information about each of the stops on the campus into a list to display.
    */
   _loadStops(): void {
-    let stops: Array<StopInfo> = [];
+    const stops: Array<StopInfo> = [];
     for (let i = 0; i < this.props.campus.stops.length; i++) {
-      let stopInfo: StopInfo = {
+      const stopInfo: StopInfo = {
         code: this.props.campus.stops[i].code,
         name: this.props.campus.stops[i].name,
         lat: this.props.campus.stops[i].lat,
@@ -183,7 +196,7 @@ class Stops extends React.Component {
   /**
    * Displays details about a single stop.
    *
-   * @param {TransitStop} stop details about the stop to display.
+   * @param {StopInfo} stop details about the stop to display.
    */
   _pressRow(stop: StopInfo): void {
     if (this.props.onStopSelected) {
@@ -194,12 +207,12 @@ class Stops extends React.Component {
     let routeInfo: ?Array<DetailedRouteInfo> = null;
     for (let i = 0; i < campuses.length; i++) {
       if (campuses[i].id === this.props.campusName) {
-        routeInfo = campuses[i]['stops'][stop.key]['routes'];
+        routeInfo = campuses[i].stops[stop.key].routes;
         break;
       }
     }
 
-    let routesAndTimes: Array<DetailedRouteInfo> = [];
+    const routesAndTimes: Array<DetailedRouteInfo> = [];
     if (routeInfo != null) {
       for (let i = 0; i < routeInfo.length; i++) {
         routesAndTimes.push({
@@ -213,19 +226,19 @@ class Stops extends React.Component {
     this.refs.Navigator.push({id: DETAILS, stop: stop});
     this.setState({
       dataSourceTimes: this.state.dataSourceTimes.cloneWithRows(routesAndTimes),
-    })
-  };
+    });
+  }
 
   /**
    * Shows partial details about a stop.
    *
    * @param {StopInfo} stop       details about the stop to display.
    * @param {string} sectionIndex index of the section the stop is in.
-   * @param {string} rowIndex     index of the row the stop is in.
-   * @return {ReactElement} Pthe name of the stop, its unique code, and the list of routes
+   * @param {number} rowIndex     index of the row the stop is in.
+   * @returns {ReactElement} Pthe name of the stop, its unique code, and the list of routes
    *         that serve the stop.
    */
-  _renderStopRow(stop: StopInfo, sectionIndex: string, rowIndex: string): ReactElement {
+  _renderStopRow(stop: StopInfo, sectionIndex: string, rowIndex: number): ReactElement {
     return (
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>
@@ -241,22 +254,22 @@ class Stops extends React.Component {
             {stop.routes.join(', ')}
           </Text>
         </TouchableOpacity>
-        {(rowIndex != this.state.dataSourceStops.getRowCount() - 1)
+        {(rowIndex < this.state.dataSourceStops.getRowCount() - 1)
             ? <View style={_styles.divider} />
             : null}
       </View>
     );
-  };
+  }
 
   /**
    * Shows partial details about a route.
    *
    * @param {DetailedRouteInfo} route details about the route to display.
    * @param {string} sectionIndex     index of the section the route is in.
-   * @param {string} rowIndex         index of the row the route is in.
-   * @return {ReactElement} the headline and number of the route, and the upcoming times.
+   * @param {number} rowIndex         index of the row the route is in.
+   * @returns {ReactElement} the headline and number of the route, and the upcoming times.
    */
-  _renderTimeRow(route: DetailedRouteInfo, sectionIndex: string, rowIndex: string): ReactElement {
+  _renderTimeRow(route: DetailedRouteInfo, sectionIndex: string, rowIndex: number): ReactElement {
     return (
       <View>
         <View style={_styles.header}>
@@ -270,22 +283,22 @@ class Stops extends React.Component {
         <Text style={[Styles.mediumText, _styles.stopTimes, {color: this.state.primaryTextColor}]}>
           {this._retrieveUpcomingTimes(route.days)}
         </Text>
-        {(rowIndex != this.state.dataSourceTimes.getRowCount() - 1)
+        {(rowIndex < this.state.dataSourceTimes.getRowCount() - 1)
             ? <View style={_styles.divider} />
             : null}
       </View>
     );
-  };
+  }
 
   /**
    * Renders a view according to the current route of the navigator.
    *
    * @param {NavigatorRoute} route object with properties to identify the route to display.
-   * @param {ReactClass} navigator navigator object to pass to children.
-   * @return {ReactElement} the view to render, based on {route}.
+   * @returns {ReactElement} the view to render, based on {route}.
    */
-  _renderScene(route: NavigatorRoute, navigator: ReactClass): ReactElement {
+  _renderScene(route: NavigatorRoute): ReactElement {
     if (route.id === DETAILS && route.stop != null) {
+      const routeStop = route.stop;
       let icon = {
         class: 'material',
         name: 'arrow-back',
@@ -300,11 +313,11 @@ class Stops extends React.Component {
       return (
         <View style={_styles.container}>
           <SectionHeader
-              subtitleName={route.stop.code}
-              sectionName={route.stop.name}
               sectionIcon={icon.name}
               sectionIconClass={icon.class}
-              sectionIconOnClick={this._clearStop.bind(this)} />
+              sectionIconOnClick={this._clearStop.bind(this)}
+              sectionName={routeStop.name}
+              subtitleName={routeStop.code} />
           <ListView
               dataSource={this.state.dataSourceTimes}
               renderRow={this._renderTimeRow.bind(this)} />
@@ -314,37 +327,45 @@ class Stops extends React.Component {
       return (
         <View style={_styles.container}>
           <SectionHeader
-              sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.campus)}
               sectionIcon={'directions-bus'}
-              sectionIconClass={'material'} />
+              sectionIconClass={'material'}
+              sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.campus)} />
           <ListView
               dataSource={this.state.dataSourceStops}
               renderRow={this._renderStopRow.bind(this)} />
         </View>
       );
     }
-  };
+  }
 
   /**
    * Returns a list of times for the current day that will be the next to occur.
    *
-   * @param {Object} days a dictionary of days mapped to times.
-   * @return {string} a list of up to 3 times, formatted as a string.
+   * @param {Object} days         a dictionary of days mapped to times.
+   * @returns {string} a list of up to 3 times, formatted as a string.
    */
   _retrieveUpcomingTimes(days: Object): string {
-    let upcomingTimes = [];
-    let now = new Date();
-    let currentDay = now.getDay().toString();
-    let currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0')
+    // Get current language for translations
+    let Translations: Object = {};
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../../assets/static/js/Translations.fr.js');
+    } else {
+      Translations = require('../../../../assets/static/js/Translations.en.js');
+    }
+
+    const upcomingTimes = [];
+    const now = new Date();
+    const currentDay = now.getDay().toString();
+    const currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0')
         + ':'
         + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
-    for (let day in days) {
+    for (const day in days) {
       if (day.indexOf(currentDay) > -1) {
         let i = days[day].length - 1;
         while (i >= 0) {
           if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
             let j = 1;
-            while (j < 4 && i + j < days[day].length) {
+            while (j < MAX_UPCOMING_TIMES && i + j < days[day].length) {
               upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
               j += 1;
             }
@@ -358,36 +379,27 @@ class Stops extends React.Component {
     if (upcomingTimes.length > 0) {
       return upcomingTimes.join('   ');
     } else {
-      return 'No upcoming buses';
+      return Translations.no_upcoming_buses;
     }
   }
 
   /**
-   * If the stops have not beed loaded, then loads them.
-   */
-  componentDidMount(): void {
-    if (!this.state.loaded) {
-      this._loadStops();
-    }
-  };
-
-  /**
    * Renders a navigator which handles the scene rendering.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
     return (
       <View style={_styles.container}>
         <Navigator
-            ref='Navigator'
             configureScene={this._configureScene}
             initialRoute={{id: LIST}}
+            ref='Navigator'
             renderScene={this._renderScene.bind(this)} />
       </View>
     );
   }
-};
+}
 
 // Private styles for component
 const _styles = StyleSheet.create({
