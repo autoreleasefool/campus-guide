@@ -16,9 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file Configuration-testLoadConfiguration.js
+ * @file Configuration_testLoadConfiguration.js
  * @description Test the loading of the configuration file for the application.
- * @flow
  *
  */
 'use strict';
@@ -29,6 +28,7 @@ jest.unmock('../Configuration')
 describe('testLoadConfiguration', () => {
   pit('tests the loading of the configuration file for the application.', () => {
     const Configuration = require('../Configuration');
+
     return Configuration.loadConfiguration().then(() => {
       expect(Configuration.getAvailableSemesters().length).toBeGreaterThan(0);
       expect(Configuration.getDefaultLink()).toBe('http://www.uottawa.ca/');
