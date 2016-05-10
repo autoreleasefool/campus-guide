@@ -22,6 +22,7 @@
  */
 'use strict';
 
+// Unmock modules so the real module is used.
 jest.unmock('../DisplayUtils');
 
 // Example object containing an icon object which describes the android and iOS icons.

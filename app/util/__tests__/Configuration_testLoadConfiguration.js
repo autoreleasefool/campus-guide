@@ -22,6 +22,7 @@
  */
 'use strict';
 
+// Unmock modules so the real module is used.
 jest.unmock('../Configuration')
     .unmock('../../../assets/static/json/config.json');
 
