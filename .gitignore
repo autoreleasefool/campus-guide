@@ -107,3 +107,6 @@ target/
 /assets/
 /scraper/
 strings_secret.xml
+
+# Code coverage
+coverage/
