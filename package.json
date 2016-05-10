@@ -24,6 +24,9 @@
     "jest-cli": "^12.0.2"
   },
   "jest": {
+    "globals": {
+      "__DEV__": true
+    },
     "haste": {
       "defaultPlatform": "ios",
       "platforms": [

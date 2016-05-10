@@ -36,15 +36,16 @@ module.exports = {
    * @param {ReactClass} Linking an instance of the React Native Linking class.
    * @param {ReactClass} Alert an instance of the React Native Alert class.
    * @param {ReactClass} Clipboard an instance of the React Native Clipboard class.
+   * @returns {Promise<void>} a promise indicating the result of whether the link was opened.
    */
   openLink(url: ?string,
            Translations: Object,
            Linking: ReactClass,
            Alert: ReactClass,
-           Clipboard: Object): void {
+           Clipboard: Object): Promise<void> {
     const formattedUrl = TextUtils.formatLink(url);
 
-    Linking.canOpenURL(url)
+    return Linking.canOpenURL(url)
         .then(supported => {
           if (supported) {
             return Linking.openURL(url);
