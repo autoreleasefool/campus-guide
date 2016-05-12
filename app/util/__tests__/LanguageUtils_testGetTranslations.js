@@ -42,10 +42,16 @@ const objectWithTranslatedProperties = {
   name_fr: 'french_name',
 };
 
+// An object with invalid details, link, and name values.
+const invalidObject = {
+  no_details: "invalid",
+  no_link: "invalid",
+  no_name: "invalid",
+};
+
 describe('testGetTranslations', () => {
   it('tests retrieving French and English names.', () => {
     const LanguageUtils = require('../LanguageUtils');
-
 
     expect(LanguageUtils.getEnglishName(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
@@ -55,6 +61,8 @@ describe('testGetTranslations', () => {
         .toBe(objectWithDefaultProperties.name);
     expect(LanguageUtils.getTranslatedName('en', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_en);
+    expect(LanguageUtils.getTranslatedName('en', invalidObject))
+        .toBeNull();
 
     expect(LanguageUtils.getFrenchName(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
@@ -64,5 +72,91 @@ describe('testGetTranslations', () => {
         .toBe(objectWithDefaultProperties.name);
     expect(LanguageUtils.getTranslatedName('fr', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_fr);
+    expect(LanguageUtils.getTranslatedName('fr', invalidObject))
+        .toBeNull();
+
+    expect(LanguageUtils.getTranslatedName('invalid_language', objectWithDefaultProperties))
+        .toBeNull();
+  });
+
+  it('tests retrieving French and English links.', () => {
+    const LanguageUtils = require('../LanguageUtils');
+
+    expect(LanguageUtils.getEnglishLink(objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.link);
+    expect(LanguageUtils.getEnglishLink(objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.link_en);
+    expect(LanguageUtils.getTranslatedLink('en', objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.link);
+    expect(LanguageUtils.getTranslatedLink('en', objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.link_en);
+    expect(LanguageUtils.getTranslatedLink('en', invalidObject))
+        .toBeNull();
+
+    expect(LanguageUtils.getFrenchLink(objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.link);
+    expect(LanguageUtils.getFrenchLink(objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.link_fr);
+    expect(LanguageUtils.getTranslatedLink('fr', objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.link);
+    expect(LanguageUtils.getTranslatedLink('fr', objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.link_fr);
+    expect(LanguageUtils.getTranslatedLink('fr', invalidObject))
+        .toBeNull();
+
+    expect(LanguageUtils.getTranslatedLink('invalid_language', objectWithDefaultProperties))
+        .toBeNull();
+  });
+
+  it('tests retrieving French and English details.', () => {
+    const LanguageUtils = require('../LanguageUtils');
+
+    expect(LanguageUtils.getEnglishDetails(objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.details);
+    expect(LanguageUtils.getEnglishDetails(objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.details_en);
+    expect(LanguageUtils.getTranslatedDetails('en', objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.details);
+    expect(LanguageUtils.getTranslatedDetails('en', objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.details_en);
+    expect(LanguageUtils.getTranslatedDetails('en', invalidObject))
+        .toBeNull();
+
+    expect(LanguageUtils.getFrenchDetails(objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.details);
+    expect(LanguageUtils.getFrenchDetails(objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.details_fr);
+    expect(LanguageUtils.getTranslatedDetails('fr', objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.details);
+    expect(LanguageUtils.getTranslatedDetails('fr', objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.details_fr);
+    expect(LanguageUtils.getTranslatedDetails('fr', invalidObject))
+        .toBeNull();
+
+    expect(LanguageUtils.getTranslatedDetails('invalid_language', objectWithDefaultProperties))
+        .toBeNull();
+  });
+
+  it('tests retrieving French and English variants of different properties.', () => {
+    const LanguageUtils = require('../LanguageUtils');
+
+    expect(LanguageUtils._getEnglishVariant('name', objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.name);
+    expect(LanguageUtils._getEnglishVariant('name', objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.name_en);
+    expect(LanguageUtils._getFrenchVariant('name', invalidObject))
+        .toBeNull();
+
+    expect(LanguageUtils._getFrenchVariant('name', objectWithDefaultProperties))
+        .toBe(objectWithDefaultProperties.name);
+    expect(LanguageUtils._getFrenchVariant('name', objectWithTranslatedProperties))
+        .toBe(objectWithTranslatedProperties.name_fr);
+    expect(LanguageUtils._getFrenchVariant('name', invalidObject))
+        .toBeNull();
+
+    expect(LanguageUtils._getEnglishVariant('name', null))
+        .toBeNull();
+    expect(LanguageUtils._getFrenchVariant('name', null))
+        .toBeNull();
   });
 });
