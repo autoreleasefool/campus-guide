@@ -28,6 +28,7 @@
 // React Native imports
 import React from 'react';
 import {
+  AsyncStorage,
   Platform,
   StatusBar,
   StyleSheet,
@@ -103,7 +104,7 @@ class SplashScreen extends React.Component {
     StatusBarUtils.setLightStatusBarIOS(Platform, StatusBar, true);
     Configuration.loadConfiguration()
         .then(function onConfigLoaded() {
-          Preferences.loadInitialPreferences()
+          Preferences.loadInitialPreferences(AsyncStorage)
               .then(function onPreferencesLoaded() {
                 if (Preferences.isLanguageSelected()) {
                   // If a lanuage has been selected, remove this language select
@@ -132,7 +133,7 @@ class SplashScreen extends React.Component {
    *                  chosen by the user.
    */
   _selectLanguage(language: LanguageString): void {
-    Preferences.setSelectedLanguage(language);
+    Preferences.setSelectedLanguage(AsyncStorage, language);
     this.props.navigator.push({id: Constants.Views.Main});
   }
 

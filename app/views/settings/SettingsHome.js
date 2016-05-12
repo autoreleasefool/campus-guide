@@ -27,6 +27,7 @@
 // React Native imports
 import React from 'react';
 import {
+  AsyncStorage,
   ListView,
   Platform,
   StyleSheet,
@@ -178,6 +179,7 @@ class SettingsHome extends React.Component {
   _pressRow(key: string): void {
     if (key === 'pref_lang') {
       Preferences.setSelectedLanguage(
+        AsyncStorage,
         Preferences.getSelectedLanguage() === 'en'
             ? 'fr'
             : 'en'
@@ -187,7 +189,7 @@ class SettingsHome extends React.Component {
         this.props.refreshParent();
       }
     } else if (key === 'pref_wheel') {
-      Preferences.setWheelchairRoutePreferred(!Preferences.isWheelchairRoutePreferred());
+      Preferences.setWheelchairRoutePreferred(AsyncStorage, !Preferences.isWheelchairRoutePreferred());
     } else if (key === 'pref_semester') {
       Preferences.setToNextSemester();
     }
