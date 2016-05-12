@@ -197,9 +197,11 @@ module.exports = {
 
   /**
    * Sets semester to be the next in chronologically.
+   *
+   * @param {ReactClass} AsyncStorage instance of asynchronous storage class.
    */
-  setToNextSemester(): void {
-    this.setCurrentSemester(currentSemester + 1);
+  setToNextSemester(AsyncStorage: ReactClass): void {
+    this.setCurrentSemester(AsyncStorage, currentSemester + 1);
   },
 
   /**

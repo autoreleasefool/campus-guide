@@ -28,6 +28,7 @@
 // React Native imports
 import React from 'react';
 import {
+  AsyncStorage,
   Dimensions,
   Platform,
   LayoutAnimation,
@@ -91,7 +92,7 @@ class ScheduleHome extends React.Component {
    * Switches to the next available schedule and updates the views.
    */
   _changeSemester(): void {
-    Preferences.setToNextSemester();
+    Preferences.setToNextSemester(AsyncStorage);
     const header: SectionHeader = this.refs.ScheduleHeader;
     header.updateSubtitle(
         LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo()),

@@ -191,7 +191,7 @@ class SettingsHome extends React.Component {
     } else if (key === 'pref_wheel') {
       Preferences.setWheelchairRoutePreferred(AsyncStorage, !Preferences.isWheelchairRoutePreferred());
     } else if (key === 'pref_semester') {
-      Preferences.setToNextSemester();
+      Preferences.setToNextSemester(AsyncStorage);
     }
 
     keyOfLastSettingChanged = key;
