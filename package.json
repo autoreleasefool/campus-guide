@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "eslint": "^2.10.1",
     "react": "^0.14.7",
     "react-native": "^0.25.1",
     "react-native-maps": "^0.3.1",
