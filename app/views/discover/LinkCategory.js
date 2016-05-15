@@ -157,7 +157,7 @@ class LinkCategory extends React.Component {
       return (
         <Ionicons
             color={iconColor}
-            name={'android-call'}
+            name={'md-call'}
             size={24}
             style={_styles.linkIcon} />
       );
@@ -165,7 +165,7 @@ class LinkCategory extends React.Component {
       return (
         <Ionicons
             color={iconColor}
-            name={'android-mail'}
+            name={'md-mail'}
             size={24}
             style={_styles.linkIcon} />
       );
@@ -173,7 +173,7 @@ class LinkCategory extends React.Component {
       return (
         <Ionicons
             color={iconColor}
-            name={'android-open'}
+            name={'md-open'}
             size={24}
             style={_styles.linkIcon} />
       );

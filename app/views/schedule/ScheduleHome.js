@@ -197,7 +197,7 @@ class ScheduleHome extends React.Component {
             sectionIcon={calendarIcon[1]}
             sectionIconClass={calendarIcon[0]}
             sectionName={Translations.schedule}
-            subtitleIcon={'arrow-swap'}
+            subtitleIcon={'ios-swap'}
             subtitleIconClass={'ionicon'}
             subtitleName={LanguageUtils.getTranslatedName(
               Preferences.getSelectedLanguage(),

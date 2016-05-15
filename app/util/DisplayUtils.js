@@ -129,19 +129,19 @@ module.exports = {
   getSocialMediaIconName(socialMedia: string): string {
     switch (socialMedia.toLowerCase()) {
       case 'linkedin':
-        return 'social-linkedin';
+        return 'logo-linkedin';
       case 'twitter':
-        return 'social-twitter';
+        return 'logo-twitter';
       case 'facebook':
-        return 'social-facebook';
+        return 'logo-facebook';
       case 'instagram':
-        return 'social-instagram-outline';
+        return 'logo-instagram';
       case 'youtube':
-        return 'social-youtube';
+        return 'logo-youtube';
       case 'tumblr':
-        return 'social-tumblr';
+        return 'logo-tumblr';
       default:
-        return 'android-open';
+        return 'md-open';
     }
   },
 

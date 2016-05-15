@@ -55,8 +55,8 @@ let settingIcons: SettingIcons;
 if (Platform.OS === 'ios') {
   Icon = require('react-native-vector-icons/Ionicons');
   settingIcons = {
-    checkEnabled: 'ios-circle-outline',
-    checkDisabled: 'ios-checkmark',
+    checkEnabled: 'md-checkbox',
+    checkDisabled: 'md-square',
   };
 } else {
   Icon = require('react-native-vector-icons/MaterialIcons');
@@ -255,7 +255,7 @@ class SettingsHome extends React.Component {
    */
   _renderSectionHeader(sectionData: Object, sectionName: string): ReactElement {
     const colonIndex: number = sectionName.indexOf(':');
-    let sectionNameTranslated;
+    let sectionNameTranslated = sectionName;
     if (colonIndex > -1) {
       if (Preferences.getSelectedLanguage() === 'en') {
         sectionNameTranslated = sectionName.substring(0, colonIndex);

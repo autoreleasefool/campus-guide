@@ -61,10 +61,10 @@ const ShuttleInfo = require('../views/discover/ShuttleInfo');
 
 // Icons for tab items
 const tabIcons: TabItems = {
-  find: 'navigate',
+  find: 'ios-navigate',
   schedule: 'ios-calendar-outline',
-  discover: 'compass',
-  settings: 'ios-gear',
+  discover: 'ios-compass',
+  settings: 'ios-settings',
 };
 
 // Determining the size of the current tab indicator based on the screen size

@@ -209,7 +209,7 @@ class BusCampusInfo extends React.Component {
         <TouchableOpacity onPress={() => this._goToBusWebsite(Translations || {})}>
           <SectionHeader
               backgroundOverride={Constants.Colors.garnet}
-              sectionIcon={'android-open'}
+              sectionIcon={'md-open'}
               sectionIconClass={'ionicon'}
               sectionName={Translations.bus_company}
               subtitleIcon={'chevron-right'}
