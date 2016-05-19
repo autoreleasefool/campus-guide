@@ -145,7 +145,7 @@ module.exports = {
    * @param {ReactClass} AsyncStorage instance of asynchronous storage class.
    * @param {LanguageString} language the new language, either 'en' or 'fr'.
    */
-  setSelectedLanguage(AsyncStorage: ReactClass,language: LanguageString): void {
+  setSelectedLanguage(AsyncStorage: ReactClass, language: LanguageString): void {
     if (language !== 'en' && language !== 'fr') {
       return;
     }

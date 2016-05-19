@@ -23,26 +23,26 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../Configuration')
-    .unmock('../LanguageUtils')
-    .unmock('../Preferences')
-    .unmock('../../../assets/static/json/config.json');
+jest.unmock('../Configuration');
+jest.unmock('../LanguageUtils');
+jest.unmock('../Preferences');
+jest.unmock('../../../assets/static/json/config.json');
 
 // Mock various modules required in testing.
 jest.setMock('AsyncStorage', {
-      getItem: jest.fn(async (item) => {
-        if (item != null && item in temporaryAsyncStorage) {
-          return temporaryAsyncStorage[item]
-        } else {
-          return null;
-        }
-      }),
-      setItem: jest.fn((item, value) => {
-        if (item != null && typeof value === 'string') {
-          temporaryAsyncStorage[item] = value;
-        }
-      }),
-    });
+  getItem: jest.fn(async (item) => {
+    if (item != null && item in temporaryAsyncStorage) {
+      return temporaryAsyncStorage[item];
+    } else {
+      return null;
+    }
+  }),
+  setItem: jest.fn((item, value) => {
+    if (item != null && typeof value === 'string') {
+      temporaryAsyncStorage[item] = value;
+    }
+  }),
+});
 
 // Dictionary of values to store.
 let temporaryAsyncStorage = {};
@@ -61,6 +61,7 @@ describe('testGetSettings', () => {
 
     // Load the configuration file for the application.
     Configuration.loadConfiguration();
+    temporaryAsyncStorage = {};
   });
 
   pit('tests the retrieval of settings.', () => {

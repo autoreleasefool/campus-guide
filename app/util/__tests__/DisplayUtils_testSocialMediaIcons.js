@@ -41,7 +41,9 @@ describe('testSocialMediaIcons', () => {
     const DisplayUtils = require('../DisplayUtils');
 
     for (const socialMedia in SOCIAL_MEDIA_PLATFORMS) {
-      expect(DisplayUtils.getSocialMediaIconName(SOCIAL_MEDIA_PLATFORMS[socialMedia])).toBeDefined();
+      if ({}.hasOwnProperty(SOCIAL_MEDIA_PLATFORMS, socialMedia)) {
+        expect(DisplayUtils.getSocialMediaIconName(SOCIAL_MEDIA_PLATFORMS[socialMedia])).toBeDefined();
+      }
     }
   });
 
@@ -49,7 +51,9 @@ describe('testSocialMediaIcons', () => {
     const DisplayUtils = require('../DisplayUtils');
 
     for (const socialMedia in SOCIAL_MEDIA_PLATFORMS) {
-      expect(DisplayUtils.getSocialMediaIconColor(SOCIAL_MEDIA_PLATFORMS[socialMedia])).toBeDefined();
+      if ({}.hasOwnProperty(SOCIAL_MEDIA_PLATFORMS, socialMedia)) {
+        expect(DisplayUtils.getSocialMediaIconColor(SOCIAL_MEDIA_PLATFORMS[socialMedia])).toBeDefined();
+      }
     }
   });
 });

@@ -44,9 +44,9 @@ const objectWithTranslatedProperties = {
 
 // An object with invalid details, link, and name values.
 const invalidObject = {
-  no_details: "invalid",
-  no_link: "invalid",
-  no_name: "invalid",
+  no_details: 'invalid',
+  no_link: 'invalid',
+  no_name: 'invalid',
 };
 
 describe('testGetTranslations', () => {

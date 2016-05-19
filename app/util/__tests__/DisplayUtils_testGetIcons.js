@@ -35,7 +35,7 @@ const exampleObjectWithPlatformSpecificIcons = {
     ios: {
       name: 'ios_example_name',
       class: 'ios_example_class',
-    }
+    },
   },
 };
 
@@ -44,7 +44,7 @@ const exampleObjectWithDefaultIcon = {
   icon: {
     name: 'example_name',
     class: 'example_class',
-  }
+  },
 };
 
 // An object with no icon object.

@@ -38,17 +38,19 @@ const invalidURL = 'thisisnotavalidURL';
 
 // Mock various modules required in testing.
 jest.setMock('Alert', {
-      alert: jest.fn((title, body, options) => {}),
-    })
-    .setMock('Clipboard', {
-      setString: jest.fn((url) => {}),
-    })
-    .setMock('Linking', {
-      canOpenURL: jest.fn(async (url) => {
-        return url !== invalidURL;
-      }),
-      openURL: jest.fn((url) => {}),
-    });
+  alert: jest.fn(),
+});
+
+jest.setMock('Clipboard', {
+  setString: jest.fn(),
+});
+
+jest.setMock('Linking', {
+  canOpenURL: jest.fn(async (url) => {
+    return url !== invalidURL;
+  }),
+  openURL: jest.fn(),
+});
 
 const Alert = require('Alert');
 const Clipboard = require('Clipboard');
@@ -76,7 +78,6 @@ describe('testLinks', () => {
 
   pit('tests that invalid links are not opened.', () => {
     const ExternalUtils = require('../ExternalUtils');
-    const TextUtils = require('../TextUtils');
     const Translations = require('../../../assets/static/js/Translations.en.js');
 
     return ExternalUtils.openLink(invalidURL, Translations, Linking, Alert, Clipboard)

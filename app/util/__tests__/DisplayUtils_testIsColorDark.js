@@ -46,5 +46,5 @@ describe('testIsColorDark', () => {
     expect(DisplayUtils.isColorDark('333333')).toBeTruthy();
     expect(DisplayUtils.isColorDark('#611405')).toBeTruthy();
     expect(DisplayUtils.isColorDark('611405')).toBeTruthy();
-  })
+  });
 });
