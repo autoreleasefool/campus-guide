@@ -78,7 +78,7 @@ module.exports = {
    */
   getTextWithEllipses(text: string, maxLength: number): string {
     if (text.length > maxLength) {
-      return text.substr(0, maxLength - 2) + '..';
+      return text.substr(0, Math.max(maxLength - 2, 0)) + '..';
     } else {
       return text;
     }
@@ -98,10 +98,14 @@ module.exports = {
     const replacementChar = char || ' ';
     let replacedString = text;
 
-    while (text.length < desiredLength) {
+    if (replacementChar.length !== 1) {
+      return text;
+    }
+
+    while (replacedString.length < desiredLength) {
       replacedString = replacementChar + replacedString;
     }
 
-    return text;
+    return replacedString;
   },
 };
