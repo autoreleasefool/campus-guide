@@ -97,4 +97,15 @@ module.exports = {
       Home: 400,
     },
   },
+
+  /*
+   * Defines the order of tabs in the app.
+   * Tabs added here should also be accounted for in Types.TabItems, Tabs.ios.js, and Tabs.android.js
+   */
+  Tabs: [
+    'find',
+    // 'schedule',
+    'discover',
+    'settings',
+  ]
 };

@@ -274,36 +274,32 @@ class TabsView extends React.Component {
       Translations = require('../../assets/static/js/Translations.en.js');
     }
 
-    let findColor = Constants.Colors.charcoalGrey;
-    let scheduleColor = Constants.Colors.charcoalGrey;
-    let discoverColor = Constants.Colors.charcoalGrey;
-    let settingsColor = Constants.Colors.charcoalGrey;
+    let tabs: Array<ReactElement> = [];
+    for (let i = 0; i < Constants.Tabs.length; i++) {
+      let tabColor: string = Constants.Colors.charcoalGrey;
+      if (this.state.currentTab === tabScreens[Constants.Tabs[i]]) {
+        tabColor = Constants.Colors.garnet;
+      }
 
-    // Set the color of the current tab to garnet
-    switch (this.state.currentTab) {
-      case Constants.Views.Find.Home:
-        findColor = Constants.Colors.garnet;
-        break;
-      case Constants.Views.Schedule.Home:
-        scheduleColor = Constants.Colors.garnet;
-        break;
-      case Constants.Views.Discover.Home:
-        discoverColor = Constants.Colors.garnet;
-        break;
-      case Constants.Views.Settings.Home:
-        settingsColor = Constants.Colors.garnet;
-        break;
-      default:
-        console.log('Invalid tab:', this.state.currentTab);
-        break;
+      tabs.push(
+        <TouchableOpacity
+            key={Constants.Tabs[i]}
+            style={_styles.tab}
+            onPress={this._changeTabs.bind(this, tabScreens[Constants.Tabs[i]])}>
+          <Ionicons
+              color={tabColor}
+              name={tabIcons[Constants.Tabs[i]]}
+              size={tabIconSize} />
+          <Text style={{color: tabColor}}>{Translations[Constants.Tabs[i]]}</Text>
+        </TouchableOpacity>
+      );
     }
 
     return (
       <View style={_styles.navigationDrawer}>
-        <Text style={{color: findColor}}>{Translations.find}</Text>
-        <Text style={{color: scheduleColor}}>{Translations.schedule}</Text>
-        <Text style={{color: discoverColor}}>{Translations.discover}</Text>
-        <Text style={{color: settingsColor}}>{Translations.settings}</Text>
+        {tabs.map(tab => (
+          tab
+        ))}
       </View>
     );
   }

@@ -67,18 +67,18 @@ const tabIcons: TabItems = {
   settings: 'ios-settings',
 };
 
+// Screen which a tab should open
+const tabScreens: TabItems = {
+  find: Constants.Views.Find.Home,
+  schedule: Constants.Views.Schedule.Home,
+  discover: Constants.Views.Discover.Home,
+  settings: Constants.Views.Settings.Home,
+};
+
 // Determining the size of the current tab indicator based on the screen size
 const {width} = Dimensions.get('window');
-const indicatorWidth: number = Math.ceil(width / Object.keys(tabIcons).length);
+const indicatorWidth: number = Math.ceil(width / Constants.Tabs.length);
 const tabIconSize: number = 30;
-
-// Defines the order in which the tabs should appear
-const tabOrder: TabItems = {
-  find: 0,
-  schedule: 1,
-  discover: 2,
-  settings: 3,
-};
 
 // Lists the views currently on the stack in the Navigator.
 let screenStack: Array<number | string> = [Constants.Views.Default];
@@ -329,33 +329,27 @@ class TabsView extends React.Component {
    * @returns {ReactElement} the hierarchy of views to render.
    */
   render(): ReactElement {
-    let findColor = Constants.Colors.charcoalGrey;
-    let scheduleColor = Constants.Colors.charcoalGrey;
-    let discoverColor = Constants.Colors.charcoalGrey;
-    let settingsColor = Constants.Colors.charcoalGrey;
-    let indicatorLeft = 0;
+    let indicatorLeft: number = 0;
 
-    // Set the color of the current tab to garnet
-    switch (this.state.currentTab) {
-      case Constants.Views.Find.Home:
-        indicatorLeft = indicatorWidth * tabOrder.find;
-        findColor = Constants.Colors.garnet;
-        break;
-      case Constants.Views.Schedule.Home:
-        indicatorLeft = indicatorWidth * tabOrder.schedule;
-        scheduleColor = Constants.Colors.garnet;
-        break;
-      case Constants.Views.Discover.Home:
-        indicatorLeft = indicatorWidth * tabOrder.discover;
-        discoverColor = Constants.Colors.garnet;
-        break;
-      case Constants.Views.Settings.Home:
-        indicatorLeft = indicatorWidth * tabOrder.settings;
-        settingsColor = Constants.Colors.garnet;
-        break;
-      default:
-        console.log('Invalid tab:', this.state.currentTab);
-        break;
+    let tabs: Array<ReactElement> = [];
+    for (let i = 0; i < Constants.Tabs.length; i++) {
+      let tabColor: string = Constants.Colors.charcoalGrey;
+      if (this.state.currentTab === tabScreens[Constants.Tabs[i]]) {
+        tabColor = Constants.Colors.garnet;
+        indicatorLeft = indicatorWidth * i;
+      }
+
+      tabs.push(
+        <TouchableOpacity
+            key={Constants.Tabs[i]}
+            style={_styles.tab}
+            onPress={this._changeTabs.bind(this, tabScreens[Constants.Tabs[i]])}>
+          <Ionicons
+              color={tabColor}
+              name={tabIcons[Constants.Tabs[i]]}
+              size={tabIconSize} />
+        </TouchableOpacity>
+      );
     }
 
     return (
@@ -371,38 +365,9 @@ class TabsView extends React.Component {
             renderScene={this._renderScene.bind(this)}
             style={_styles.navigator} />
         <View style={_styles.tabContainer}>
-          <TouchableOpacity
-              style={_styles.tab}
-              onPress={this._changeTabs.bind(this, Constants.Views.Find.Home)}>
-            <Ionicons
-                color={findColor}
-                name={tabIcons.find}
-                size={tabIconSize} />
-          </TouchableOpacity>
-          <TouchableOpacity
-              style={_styles.tab}
-              onPress={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}>
-            <Ionicons
-                color={scheduleColor}
-                name={tabIcons.schedule}
-                size={tabIconSize} />
-          </TouchableOpacity>
-          <TouchableOpacity
-              style={_styles.tab}
-              onPress={this._changeTabs.bind(this, Constants.Views.Discover.Home)}>
-            <Ionicons
-                color={discoverColor}
-                name={tabIcons.discover}
-                size={tabIconSize} />
-          </TouchableOpacity>
-          <TouchableOpacity
-              style={_styles.tab}
-              onPress={this._changeTabs.bind(this, Constants.Views.Settings.Home)}>
-            <Ionicons
-                color={settingsColor}
-                name={tabIcons.settings}
-                size={tabIconSize} />
-          </TouchableOpacity>
+          {tabs.map(tab => (
+            tab
+          ))}
           <View style={[_styles.indicator, {left: indicatorLeft}]} />
         </View>
       </View>
