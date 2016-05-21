@@ -375,7 +375,7 @@ export type Facility =
     | 'printer'
     | 'store'
     | 'bed'
-    | 'drinks'
+    | 'alcohol'
     | 'laundry'
     | 'library'
     | 'parking'
