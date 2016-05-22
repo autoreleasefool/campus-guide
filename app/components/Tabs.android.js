@@ -37,6 +37,7 @@ import {
 
 // Import type definition for tab icons.
 import type {
+  Route,
   TabItems,
 } from '../Types';
 
@@ -85,12 +86,6 @@ let drawerState: number = DRAWER_CLOSED;
 // Type definition for component state.
 type State = {
   currentTab: number,
-};
-
-// Type definition for navigator routes
-type Route = {
-  id: number | string,
-  data: any,
 };
 
 class TabsView extends React.Component {
