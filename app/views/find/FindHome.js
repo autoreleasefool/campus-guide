@@ -99,18 +99,26 @@ class FindHome extends React.Component {
       calendarIcon = ['material', 'event'];
     }
 
+    let upcomingClasses: ?ReactElement = null;
+    if (Constants.Tabs.indexOf('schedule') >= 0) {
+      upcomingClasses = (
+        <View>
+          <SectionHeader
+              sectionIcon={calendarIcon[1]}
+              sectionIconClass={calendarIcon[0]}
+              sectionName={Translations.upcoming_classes}
+              subtitleName={Translations.edit}
+              subtitleOnClick={this._editSchedule.bind(this)} />
+          <View style={[_styles.content, {flex: 1}]}>
+            <Upcoming onEdit={this._editSchedule.bind(this)} />
+          </View>
+        </View>
+      );
+    }
+
     return (
       <View style={_styles.container}>
-        <SectionHeader
-            sectionIcon={calendarIcon[1]}
-            sectionIconClass={calendarIcon[0]}
-            sectionName={Translations.upcoming_classes}
-            subtitleName={Translations.edit}
-            subtitleOnClick={this._editSchedule.bind(this)} />
-        <View style={[_styles.content, {flex: 1}]}>
-          <Upcoming onEdit={this._editSchedule.bind(this)} />
-        </View>
-
+        {upcomingClasses}
         <SectionHeader
             sectionIcon={'store'}
             sectionIconClass={'material'}
