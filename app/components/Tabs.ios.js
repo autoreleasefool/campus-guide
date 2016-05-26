@@ -224,7 +224,11 @@ class TabsView extends React.Component {
       scene = (
         <FindHome
             onEditSchedule={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}
-            onShowBuilding={buildingCode => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
+            onShowBuilding={building => this._navigateForward(Constants.Views.Find.Building, building)} />
+      );
+    } else if (route.id === Constants.Views.Find.Building) {
+      scene = (
+        <BuildingPage buildingDetails={route.data} />
       );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (

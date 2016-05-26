@@ -47,6 +47,7 @@ const Upcoming = require('./components/Upcoming');
 // Type definition for component props.
 type Props = {
   onEditSchedule: () => any,
+  onShowBuilding: () => any,
 };
 
 class FindHome extends React.Component {
@@ -56,6 +57,7 @@ class FindHome extends React.Component {
    */
   static propTypes = {
     onEditSchedule: React.PropTypes.func.isRequired,
+    onShowBuilding: React.PropTypes.func.isRequired,
   };
 
   /**
@@ -80,8 +82,7 @@ class FindHome extends React.Component {
    * @param {Building} building object describing the building.
    */
   _showBuilding(building: Building): void {
-    // TODO: display details about a building
-    console.log('TODO: display details about a building', building);
+    this.props.onShowBuilding(building);
   }
 
   /**

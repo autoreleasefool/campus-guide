@@ -313,6 +313,10 @@ class TabsView extends React.Component {
             onEditSchedule={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}
             onShowBuilding={buildingCode => this._navigateForward(Constants.Views.Find.Building, buildingCode)} />
       );
+    } else if (route.id === Constants.Views.Find.Building) {
+      scene = (
+        <BuildingPage buildingDetails={route.data} />
+      );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (
         <ScheduleHome

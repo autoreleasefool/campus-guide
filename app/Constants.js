@@ -69,8 +69,8 @@ module.exports = {
     /*
      * TODO: Change default to 100
      */
-    Default: 300,
-    DefaultTab: 300,
+    Default: 100,
+    DefaultTab: 100,
     Splash: 1,
     Main: 2,
     Find: {
@@ -107,5 +107,5 @@ module.exports = {
     // 'schedule',
     'discover',
     'settings',
-  ]
+  ],
 };
