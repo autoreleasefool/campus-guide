@@ -30,9 +30,14 @@ import {
   View,
 } from 'react-native';
 
+// Import type definitions
+import type {
+  Building,
+} from '../../Types';
+
 // Type definition for component props.
 type Props = {
-  buildingCode: string,
+  buildingDetails: Building,
 };
 
 class BuildingPage extends React.Component {
@@ -42,7 +47,7 @@ class BuildingPage extends React.Component {
    * component.
    */
   static propTypes = {
-    buildingCode: React.PropTypes.string.isRequired,
+    buildingDetails: React.PropTypes.any.isRequired,
   };
 
   /**

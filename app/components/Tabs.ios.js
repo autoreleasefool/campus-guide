@@ -34,7 +34,7 @@ import {
   View,
 } from 'react-native';
 
-// Import type definition for tab icons.
+// Import type definitions.
 import type {
   Route,
   TabItems,
@@ -45,20 +45,7 @@ const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const NavBar = require('./NavBar');
 const ScreenUtils = require('../util/ScreenUtils');
-
-// Screen imports
-const BusCampusInfo = require('../views/discover/BusCampusInfo');
-const BusCampusStops = require('../views/discover/BusCampusStops');
-const DetailsScreen = require('./DetailsScreen');
-const DiscoverHome = require('../views/discover/DiscoverHome');
-const FindHome = require('../views/find/FindHome');
-const LinkCategory = require('../views/discover/LinkCategory');
-const LinksHome = require('../views/discover/LinksHome');
-const ScheduleHome = require('../views/schedule/ScheduleHome');
-const ScheduleEditor = require('../views/schedule/ScheduleEditor');
-const SettingsHome = require('../views/settings/SettingsHome');
-const ShuttleCampusInfo = require('../views/discover/ShuttleCampusInfo');
-const ShuttleInfo = require('../views/discover/ShuttleInfo');
+const TabRouter = require('./TabRouter');
 
 // Icons for tab items
 const tabIcons: TabItems = {
@@ -105,7 +92,6 @@ class TabsView extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any).getCurrentTab = this.getCurrentTab.bind(this);
-    (this:any)._navigateForward = this._navigateForward.bind(this);
   }
 
   /**
@@ -202,7 +188,7 @@ class TabsView extends React.Component {
   _onSearch(searchTerms: string): void {
     // TODO: search...
     console.log('TODO: search...');
-    this._navigateForward(Constants.Views.Find.Search, searchTerms);
+    this._navigateForward.bind(this, Constants.Views.Find.Search, searchTerms);
   }
 
   /**
@@ -219,96 +205,10 @@ class TabsView extends React.Component {
    * @returns {ReactElement} the view to render, based on {route}.
    */
   _renderScene(route: Route): ReactElement {
-    let scene = null;
-    if (route.id === Constants.Views.Find.Home) {
-      scene = (
-        <FindHome
-            onEditSchedule={this._changeTabs.bind(this, Constants.Views.Schedule.Home)}
-            onShowBuilding={building => this._navigateForward(Constants.Views.Find.Building, building)} />
-      );
-    } else if (route.id === Constants.Views.Find.Building) {
-      scene = (
-        <BuildingPage buildingDetails={route.data} />
-      );
-    } else if (route.id === Constants.Views.Schedule.Home) {
-      scene = (
-        <ScheduleHome
-            editSchedule={() => this._navigateForward(Constants.Views.Schedule.Editor)}
-            requestTabChange={this._changeTabs.bind(this)} />
-      );
-    } else if (route.id === Constants.Views.Schedule.Editor) {
-      scene = (
-        <ScheduleEditor />
-      );
-    } else if (route.id === Constants.Views.Discover.Home) {
-      scene = (
-        <DiscoverHome onScreenSelected={this._navigateForward} />
-      );
-    } else if (route.id === Constants.Views.Discover.BusCampusInfo) {
-      scene = (
-        <BusCampusInfo
-            showCampus={(name, color) =>
-                this._navigateForward(Constants.Views.Discover.BusCampusStops, {name: name, color: color})} />
-      );
-    } else if (route.id === Constants.Views.Discover.BusCampusStops) {
-      scene = (
-        <BusCampusStops
-            campusColor={route.data.color}
-            campusName={route.data.name} />
-      );
-    } else if (route.id === Constants.Views.Discover.LinksHome) {
-      scene = (
-        <LinksHome
-            showLinkCategory={category =>
-                this._navigateForward(Constants.Views.Discover.LinkCategory + '-0',
-                    {category: category, categoryImage: category.image, index: 0})} />
-      );
-    } else if (route.id === Constants.Views.Discover.ShuttleInfo) {
-      scene = (
-        <ShuttleInfo
-            showCampus={(campusName, campusColor) =>
-                this._navigateForward(Constants.Views.Discover.ShuttleCampusInfo,
-                    {name: campusName, color: campusColor})}
-            showDetails={(title, image, text, backgroundColor) =>
-                this._navigateForward(Constants.Views.Discover.ShuttleDetails,
-                    {title: title, image: image, text: text, backgroundColor: backgroundColor})} />
-      );
-    } else if (route.id === Constants.Views.Discover.ShuttleCampusInfo) {
-      scene = (
-        <ShuttleCampusInfo
-            campusColor={route.data.color}
-            campusName={route.data.name} />
-      );
-    } else if (route.id === Constants.Views.Settings.Home) {
-      scene = (
-        <SettingsHome
-            refreshParent={this._refreshNavbar.bind(this)}
-            requestTabChange={this._changeTabs.bind(this)} />
-      );
-    } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
-      scene = (
-        <DetailsScreen
-            backgroundColor={route.data.backgroundColor}
-            image={route.data.image}
-            text={route.data.text}
-            title={route.data.title} />
-      );
-    } else if (typeof route.id === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
-      scene = (
-        <LinkCategory
-            category={route.data.category}
-            categoryImage={route.data.categoryImage}
-            showLinkCategory={category =>
-                this._navigateForward(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1),
-                    {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
-      );
-    }
-
-    return (
-      <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
-        {scene}
-      </View>
-    );
+    return TabRouter.renderScene(route,
+        this._changeTabs.bind(this),
+        this._navigateForward.bind(this),
+        this._refreshNavbar.bind(this));
   }
 
   /**
@@ -330,7 +230,7 @@ class TabsView extends React.Component {
   render(): ReactElement {
     let indicatorLeft: number = 0;
 
-    let tabs: Array<ReactElement> = [];
+    const tabs: Array<ReactElement> = [];
     for (let i = 0; i < Constants.Tabs.length; i++) {
       let tabColor: string = Constants.Colors.charcoalGrey;
       if (this.state.currentTab === tabScreens[Constants.Tabs[i]]) {
