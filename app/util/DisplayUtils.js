@@ -26,6 +26,7 @@
 // Import type definition icons.
 import type {
   DefaultIcon,
+  Facility,
   IconObject,
   PlatformString,
 } from '../Types';
@@ -65,6 +66,73 @@ module.exports = {
       duration: LayoutAnimation.Presets.easeInEaseOut.duration,
       update: LayoutAnimation.Presets.easeInEaseOut.update,
     };
+  },
+
+  /**
+   * Returns the icon class to represent a provided facility.
+   *
+   * @param {Facility} facility the identifier of the facility.
+   * @returns {string} a string with the class of the icon, or null.
+   */
+  getFacilityIconClass(facility: Facility): string {
+    switch (facility) {
+      case 'atm':
+      case 'food':
+      case 'printer':
+      case 'store':
+      case 'bed':
+      case 'alcohol':
+      case 'laundry':
+      case 'library':
+      case 'parking':
+      case 'mail':
+      case 'pharmacy':
+      case 'gym':
+      case 'pool':
+        return 'material';
+      default:
+        return null;
+    }
+  },
+
+
+  /**
+   * Returns the icon name to represent a provided facility.
+   *
+   * @param {Facility} facility the identifier of the facility.
+   * @returns {string} a string with the name of the icon, or null.
+   */
+  getFacilityIconName(facility: Facility): string {
+    switch (facility) {
+      case 'atm':
+        return 'local-atm';
+      case 'food':
+        return 'local-dining';
+      case 'printer':
+        return 'local-printshop';
+      case 'store':
+        return 'local-convenience-store';
+      case 'bed':
+        return 'hotel';
+      case 'alcohol':
+        return 'local-bar';
+      case 'laundry':
+        return 'local-laundry-service';
+      case 'library':
+        return 'local-library';
+      case 'parking':
+        return 'local-parking';
+      case 'mail':
+        return 'local-post-office';
+      case 'pharmacy':
+        return 'local-pharmacy';
+      case 'gym':
+        return 'fitness-center';
+      case 'pool':
+        return 'pool';
+      default:
+        return null;
+    }
   },
 
   /**
