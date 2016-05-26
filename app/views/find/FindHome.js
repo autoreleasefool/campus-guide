@@ -61,15 +61,6 @@ class FindHome extends React.Component {
   };
 
   /**
-   * Pass props to the parent component and bind methods.
-   *
-   * @param {Props} props properties passed from container to this component.
-   */
-  constructor(props: Props) {
-    super(props);
-  }
-
-  /**
    * Opens the app scheduling screen so the user can update their schedule.
    */
   _editSchedule(): void {

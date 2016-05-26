@@ -54,6 +54,20 @@ module.exports = {
   },
 
   /**
+   * Returns a pre-configured LayoutAnimation type with ease in/out settings.
+   *
+   * @param {ReactClass} LayoutAnimation the LayoutAnimation object from React Native
+   * @returns {Object} a LayoutAnimation animation configuration.
+   */
+  getEaseInEaseOutLayoutAnimation(LayoutAnimation: ReactClass) {
+    return {
+      create: LayoutAnimation.Presets.easeInEaseOut.create,
+      duration: LayoutAnimation.Presets.easeInEaseOut.duration,
+      update: LayoutAnimation.Presets.easeInEaseOut.update,
+    };
+  },
+
+  /**
    * Returns the icon and class for an icon to use for the iOS platform,
    * defined in the object.
    *

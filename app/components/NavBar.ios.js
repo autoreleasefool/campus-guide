@@ -39,6 +39,7 @@ import {
 
 // Imports
 const Constants = require('../Constants');
+const DisplayUtils = require('../util/DisplayUtils');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const Preferences = require('../util/Preferences');
 const StatusBarUtils = require('../util/StatusBarUtils');
@@ -108,7 +109,7 @@ class NavBar extends React.Component {
       super.setState(state);
     } else {
       setTimeout(() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        LayoutAnimation.configureNext(DisplayUtils.getEaseInEaseOutLayoutAnimation(LayoutAnimation));
         super.setState(state);
       }, ANIMATION_OFFSET);
     }

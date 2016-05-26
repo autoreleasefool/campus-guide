@@ -40,6 +40,7 @@ import {
 
 // Imports
 const Constants = require('../../Constants');
+const DisplayUtils = require('../../util/DisplayUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
@@ -104,7 +105,7 @@ class ScheduleHome extends React.Component {
    * Toggles the visibility of buttons for editing the schedule with animation.
    */
   _toggleEditScheduleButtons(): void {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    LayoutAnimation.configureNext(DisplayUtils.getEaseInEaseOutLayoutAnimation(LayoutAnimation));
     this.setState({
       showEditButtons: !this.state.showEditButtons,
     });
