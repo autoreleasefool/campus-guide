@@ -31,6 +31,7 @@ import {
   Dimensions,
   Image,
   ListView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -40,6 +41,7 @@ import {
 // Import type definitions
 import type {
   Building,
+  BuildingRoom,
 } from '../../Types';
 
 // Imports
@@ -48,10 +50,14 @@ const DisplayUtils = require('../../util/DisplayUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
+const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
 
 const {width} = Dimensions.get('window');
 const screenWidth: number = width;
+
+const ROOM_MARGIN: number = 10;
+const ROOM_WIDTH: number = (screenWidth - 20) / 2;
 
 // Type definition for component props.
 type Props = {
@@ -120,11 +126,10 @@ class BuildingPage extends React.Component {
   }
 
   /**
-   * Returns a list of touchable views which open links in the web browser.
+   * Returns a list of touchable views which describe facilities in the building.
    *
-   * @param {Object} Translations          translations in the current language of certain text.
-   * @returns {ReactElement} for each index in {socialMediaLinks}, a {TouchableOpacity} with
-   *          an icon representing the social media site.
+   * @param {Object} Translations translations in the current language of certain text.
+   * @returns {ReactElement} an icon representing each of the facilities in this building
    */
   _getFacilityIcons(Translations: Object): ReactElement {
     return (
@@ -147,6 +152,46 @@ class BuildingPage extends React.Component {
   }
 
   /**
+   * Returns a list of touchable views listing the room names.
+   *
+   * @returns {ReactElement} a ScrollView containing a ListView.
+   */
+  _getRoomList(): ReactElement {
+    return (
+      <ListView
+          contentContainerStyle={_styles.roomList}
+          dataSource={this.state.buildingRooms}
+          renderRow={this._renderRow.bind(this)} />
+    );
+  }
+
+  /**
+   * Renders an item describing a single room in the building.
+   *
+   * @param {BuildingRoom} room the identifier of the room.
+   * @param {string} sectionId  index of the section the room is in.
+   * @param {number} rowIndex   index of the row the room is in.
+   * @returns {ReactElement} a view describing a room.
+   */
+  _renderRow(room: BuildingRoom, sectionId: string, rowIndex: number): ReactElement {
+    let rowColor: string = Constants.Colors.garnet;
+    const rowPosition = rowIndex % 4;
+    if (rowPosition === 1 || rowPosition === 2) {
+      rowColor = Constants.Colors.defaultComponentBackgroundColor;
+    }
+
+    return (
+      <TouchableOpacity>
+        <View style={{width: ROOM_WIDTH, backgroundColor: rowColor}}>
+          <Text style={[Styles.mediumText, _styles.room]}>
+            {room.name}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  /**
    * Renders a view containing an image of the building, it's name, and a list of its rooms and facilities.
    *
    * @returns {ReactElement} a view describing a building.
@@ -160,22 +205,25 @@ class BuildingPage extends React.Component {
       Translations = require('../../../assets/static/js/Translations.en.js');
     }
 
-    let facilityIcons: ReactElement = this._getFacilityIcons(Translations);
+    const building = this.props.buildingDetails;
+    const facilityIcons: ReactElement = this._getFacilityIcons(Translations);
+    const roomList: ReactElement = this._getRoomList();
 
     return (
       <View style={_styles.container}>
-        <View style={_styles.banner}>
-          <Image
-              resizeMode={'cover'}
-              source={this.props.buildingDetails.image}
-              style={_styles.bannerImage} />
-          <View style={_styles.bannerTextContainer}>
-            <Text style={[_styles.bannerText, Styles.titleText]}>
-              {LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)}
-            </Text>
+        <ScrollView style={_styles.scrollView}>
+          <View style={_styles.banner}>
+            <Image
+                resizeMode={'cover'}
+                source={this.props.buildingDetails.image}
+                style={_styles.bannerImage} />
           </View>
-        </View>
-        {facilityIcons}
+          {facilityIcons}
+          {roomList}
+        </ScrollView>
+        <SectionHeader
+            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), building)}
+            subtitleName={building.code} />
       </View>
     );
   }
@@ -188,8 +236,6 @@ const _styles = StyleSheet.create({
   },
   banner: {
     height: 175,
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
   },
   bannerImage: {
     position: 'absolute',
@@ -200,15 +246,12 @@ const _styles = StyleSheet.create({
     width: null,
     height: null,
   },
-  bannerTextContainer: {
-    backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
-  },
-  bannerText: {
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 20,
-    marginRight: 20,
-    color: Constants.Colors.primaryWhiteText,
+  scrollView: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
   },
   facilitiesContainer: {
     backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
@@ -220,6 +263,16 @@ const _styles = StyleSheet.create({
   facilitiesIcon: {
     margin: 10,
   },
+  roomList: {
+    margin: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  room: {
+    margin: 15,
+    alignSelf: 'center',
+    color: Constants.Colors.primaryWhiteText,
+  }
 });
 
 // Expose component to app
