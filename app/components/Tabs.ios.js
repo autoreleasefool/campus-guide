@@ -34,18 +34,11 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
-import type {
-  Route,
-  TabItems,
-} from '../Types';
-
 // Imports
+const CommonTabs = require('./CommonTabs');
 const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const NavBar = require('./NavBar');
-const ScreenUtils = require('../util/ScreenUtils');
-const TabRouter = require('./TabRouter');
 
 // Icons for tab items
 const tabIcons: TabItems = {
@@ -55,172 +48,12 @@ const tabIcons: TabItems = {
   settings: 'ios-settings',
 };
 
-// Screen which a tab should open
-const tabScreens: TabItems = {
-  find: Constants.Views.Find.Home,
-  schedule: Constants.Views.Schedule.Home,
-  discover: Constants.Views.Discover.Home,
-  settings: Constants.Views.Settings.Home,
-};
-
 // Determining the size of the current tab indicator based on the screen size
 const {width} = Dimensions.get('window');
 const indicatorWidth: number = Math.ceil(width / Constants.Tabs.length);
 const tabIconSize: number = 30;
 
-// Lists the views currently on the stack in the Navigator.
-let screenStack: Array<number | string> = [Constants.Views.Default];
-
-// Type definition for component state.
-type State = {
-  currentTab: number,
-};
-
-class TabsView extends React.Component {
-  state: State;
-
-  /**
-   * Pass props and declares initial state.
-   *
-   * @param {{}} props properties passed from container to this component.
-   */
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      currentTab: Constants.Views.DefaultTab,
-    };
-
-    // Explicitly binding 'this' to all methods that need it
-    (this:any).getCurrentTab = this.getCurrentTab.bind(this);
-  }
-
-  /**
-   * Retrieves the current tab.
-   *
-   * @returns {number} the current tab in the state.
-   */
-  getCurrentTab(): number {
-    return this.state.currentTab;
-  }
-
-  /**
-   * Switch to the selected tab, as determined by tabId.
-   *
-   * @param {number} tabId the tab to switch to.
-   */
-  _changeTabs(tabId: number): void {
-    if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-      this._showBackButton(false);
-    }
-
-    this.refs.Navigator.resetTo({id: tabId});
-    this.setState({
-      currentTab: tabId,
-    });
-    screenStack = [tabId];
-  }
-
-  /**
-   * Sets the transition between two views in the navigator.
-   *
-   * @returns {Object} a configuration for the transition between scenes.
-   */
-  _configureScene(): Object {
-    return Navigator.SceneConfigs.PushFromRight;
-  }
-
-  /**
-   * Returns the current screen being displayed, or 0 if there isn't one.
-   *
-   * @returns {number | string} the screen at the top of {screenStack}, or 0.
-   */
-  _getCurrentScreen(): number | string {
-    if (screenStack !== null && screenStack.length > 0) {
-      return screenStack[screenStack.length - 1];
-    } else {
-      return 0;
-    }
-  }
-
-  /**
-   * Returns to the previous page.
-   */
-  _navigateBack(): void {
-    if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-      this.refs.Navigator.pop();
-      screenStack.pop();
-
-      if (ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-        this._showBackButton(false);
-      }
-    }
-  }
-
-  /**
-   * Opens a screen, unless the screen is already showing. Passes data to
-   * the new screen.
-   *
-   * @param {number | string} screenId  id of the screen to display
-   * @param {Object} data     optional parameters to pass to the renderScene method.
-   */
-  _navigateForward(screenId: number | string, data: any): void {
-    if (this._getCurrentScreen() === screenId) {
-      // Don't push the screen if it's already showing.
-      // TODO: change the search terms if screenId === Constants.Views.Find.Search
-      return;
-    }
-
-    // Show a back button to return to the previous screen, if the screen
-    // is not a home screen
-    if (ScreenUtils.isRootScreen(this._getCurrentScreen())) {
-      this._showBackButton(true);
-    }
-
-    this.refs.Navigator.push({id: screenId, data: data});
-    screenStack.push(screenId);
-  }
-
-  /**
-   * Displays the results of the user's search parameters.
-   *
-   * @param {string} searchTerms string of terms to search for.
-   */
-  _onSearch(searchTerms: string): void {
-    // TODO: search...
-    console.log('TODO: search...');
-    this._navigateForward.bind(this, Constants.Views.Find.Search, searchTerms);
-  }
-
-  /**
-   * Forces the navbar to be re-rendered.
-   */
-  _refreshNavbar(): void {
-    this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()});
-  }
-
-  /**
-   * Renders a view according to the current route of the navigator.
-   *
-   * @param {Route} route object with properties to identify the route to display.
-   * @returns {ReactElement} the view to render, based on {route}.
-   */
-  _renderScene(route: Route): ReactElement {
-    return TabRouter.renderScene(route,
-        this._changeTabs.bind(this),
-        this._navigateForward.bind(this),
-        this._refreshNavbar.bind(this));
-  }
-
-  /**
-   * Shows or hides the back button in the navbar.
-   *
-   * @param {boolean} show true to show back button, false to hide
-   */
-  _showBackButton(show: boolean): void {
-    this.refs.NavBar.setState({
-      showBackButton: show,
-    });
-  }
+class TabsView extends CommonTabs {
 
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
@@ -233,7 +66,7 @@ class TabsView extends React.Component {
     const tabs: Array<ReactElement> = [];
     for (let i = 0; i < Constants.Tabs.length; i++) {
       let tabColor: string = Constants.Colors.charcoalGrey;
-      if (this.state.currentTab === tabScreens[Constants.Tabs[i]]) {
+      if (this.state.currentTab === this.tabScreens[Constants.Tabs[i]]) {
         tabColor = Constants.Colors.garnet;
         indicatorLeft = indicatorWidth * i;
       }
@@ -242,7 +75,7 @@ class TabsView extends React.Component {
         <TouchableOpacity
             key={Constants.Tabs[i]}
             style={_styles.tab}
-            onPress={this._changeTabs.bind(this, tabScreens[Constants.Tabs[i]])}>
+            onPress={this._changeTabs.bind(this, this.tabScreens[Constants.Tabs[i]])}>
           <Ionicons
               color={tabColor}
               name={tabIcons[Constants.Tabs[i]]}

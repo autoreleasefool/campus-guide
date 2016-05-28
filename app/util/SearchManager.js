@@ -24,7 +24,9 @@
 'use strict';
 
 // Definition of a search listener.
-export type SearchListener = (text) => void;
+export type SearchListener = {
+  onSearch: (text: string) => void,
+};
 
 // List of current search listeners. Components can register a listener with addSearchListener.
 let searchListeners: Array<SearchListener> = [];
