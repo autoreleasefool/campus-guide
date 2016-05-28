@@ -41,6 +41,7 @@ import {
 
 // Import type definitions.
 import type {
+  DefaultFunction,
   LanguageString,
   Link,
   LinkCategoryType,
@@ -62,7 +63,7 @@ const TextUtils = require('../../util/TextUtils');
 type Props = {
   category: LinkCategoryType,
   categoryImage: ReactClass,
-  showLinkCategory: () => any;
+  showLinkCategory: DefaultFunction;
 };
 
 // Type definition for component state.

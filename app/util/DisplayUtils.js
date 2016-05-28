@@ -72,9 +72,9 @@ module.exports = {
    * Returns the icon class to represent a provided facility.
    *
    * @param {Facility} facility the identifier of the facility.
-   * @returns {string} a string with the class of the icon, or null.
+   * @returns {?string} a string with the class of the icon, or null.
    */
-  getFacilityIconClass(facility: Facility): string {
+  getFacilityIconClass(facility: Facility): ?string {
     switch (facility) {
       case 'atm':
       case 'food':
@@ -100,9 +100,9 @@ module.exports = {
    * Returns the icon name to represent a provided facility.
    *
    * @param {Facility} facility the identifier of the facility.
-   * @returns {string} a string with the name of the icon, or null.
+   * @returns {?string} a string with the name of the icon, or null.
    */
-  getFacilityIconName(facility: Facility): string {
+  getFacilityIconName(facility: Facility): ?string {
     switch (facility) {
       case 'atm':
         return 'local-atm';

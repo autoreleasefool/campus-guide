@@ -40,6 +40,7 @@ import {
 // Import type definitions
 import type {
   Building,
+  DefaultFunction,
 } from '../../../Types';
 
 // Determining size of building icons based on the screen size.
@@ -50,7 +51,7 @@ const buildingIconSize: number = Math.floor((width - BUILDING_BASE_PADDING) / BU
 
 // Type definition for component props.
 type Props = {
-  showBuilding: () => any,
+  showBuilding: DefaultFunction,
 };
 
 // Type definition for component state.

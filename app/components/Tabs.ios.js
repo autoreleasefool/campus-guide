@@ -34,6 +34,11 @@ import {
   View,
 } from 'react-native';
 
+// Import type definitions.
+import type {
+  TabItems,
+} from '../Types';
+
 // Imports
 const CommonTabs = require('./CommonTabs');
 const Constants = require('../Constants');

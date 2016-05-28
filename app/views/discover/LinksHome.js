@@ -37,6 +37,7 @@ import {
 
 // Import type definitions
 import type {
+  DefaultFunction,
   LinkCategoryType,
 } from '../../Types';
 
@@ -48,7 +49,7 @@ const Styles = require('../../Styles');
 
 // Type definition for component props.
 type Props = {
-  showLinkCategory: () => any,
+  showLinkCategory: DefaultFunction,
 };
 
 // Type definition for component state.

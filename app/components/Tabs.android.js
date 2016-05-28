@@ -29,17 +29,24 @@ import React from 'react';
 import {
   BackAndroid,
   DrawerLayoutAndroid,
+  Navigator,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 
+// Import type definitions.
+import type {
+  TabItems,
+} from '../Types';
+
 // Imports
 const CommonTabs = require('./CommonTabs');
 const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const NavBar = require('./NavBar');
+const Preferences = require('../util/Preferences');
 
 // Icons for items in navigation drawer
 const drawerIcons: TabItems = {
@@ -116,7 +123,7 @@ class TabsView extends CommonTabs {
     const tabs: Array<ReactElement> = [];
     for (let i = 0; i < Constants.Tabs.length; i++) {
       let tabColor: string = Constants.Colors.charcoalGrey;
-      if (this.state.currentTab === tabScreens[Constants.Tabs[i]]) {
+      if (this.state.currentTab === this.tabScreens[Constants.Tabs[i]]) {
         tabColor = Constants.Colors.garnet;
       }
 
@@ -124,7 +131,7 @@ class TabsView extends CommonTabs {
         <TouchableOpacity
             key={Constants.Tabs[i]}
             style={_styles.tab}
-            onPress={this._changeTabs.bind(this, tabScreens[Constants.Tabs[i]])}>
+            onPress={this._changeTabs.bind(this, this.tabScreens[Constants.Tabs[i]])}>
           <Ionicons
               color={tabColor}
               name={drawerIcons[Constants.Tabs[i]]}

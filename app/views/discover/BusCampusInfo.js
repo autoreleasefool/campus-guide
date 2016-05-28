@@ -39,6 +39,7 @@ import {
 // Import type definition for bus campus.
 import type {
   BusCampus,
+  DefaultFunction,
 } from '../../Types';
 
 // Imports
@@ -59,7 +60,7 @@ const campuscolors: Array<string> = [
 
 // Type definition for component props.
 type Props = {
-  showCampus: () => any,
+  showCampus: DefaultFunction,
 };
 
 // Type definition for component state.

@@ -42,11 +42,13 @@ import {
 import type {
   Building,
   BuildingRoom,
+  Facility,
 } from '../../Types';
 
 // Imports
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
+const Ionicons = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
@@ -66,7 +68,7 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  dataSource: ListView.DataSource,
+  buildingRooms: ListView.DataSource,
   loaded: boolean,
 };
 
@@ -79,6 +81,11 @@ class BuildingPage extends React.Component {
   static propTypes = {
     buildingDetails: React.PropTypes.any.isRequired,
   };
+
+  /**
+   * Define type for the component state.
+   */
+  state: State;
 
   /**
    * Pass props and declares initial state.
@@ -211,19 +218,19 @@ class BuildingPage extends React.Component {
 
     return (
       <View style={_styles.container}>
+        <View style={_styles.banner}>
+          <Image
+              resizeMode={'cover'}
+              source={this.props.buildingDetails.image}
+              style={_styles.bannerImage} />
+          <SectionHeader
+              sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), building)}
+              subtitleName={building.code} />
+        </View>
         <ScrollView style={_styles.scrollView}>
-          <View style={_styles.banner}>
-            <Image
-                resizeMode={'cover'}
-                source={this.props.buildingDetails.image}
-                style={_styles.bannerImage} />
-          </View>
           {facilityIcons}
           {roomList}
         </ScrollView>
-        <SectionHeader
-            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), building)}
-            subtitleName={building.code} />
       </View>
     );
   }
@@ -272,7 +279,7 @@ const _styles = StyleSheet.create({
     margin: 15,
     alignSelf: 'center',
     color: Constants.Colors.primaryWhiteText,
-  }
+  },
 });
 
 // Expose component to app

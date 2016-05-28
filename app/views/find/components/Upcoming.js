@@ -32,13 +32,18 @@ import {
   View,
 } from 'react-native';
 
+// Import type definitions.
+import type {
+  DefaultFunction,
+} from '../../../Types';
+
 // Imports
 const Preferences = require('../../../util/Preferences');
 const Styles = require('../../../Styles');
 
 // Type definition for component props.
 type Props = {
-  onEdit: () => any,
+  onEdit: DefaultFunction,
 };
 
 // Type definition for component state.

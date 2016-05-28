@@ -28,9 +28,6 @@
 import React from 'react';
 import {
   Navigator,
-  StyleSheet,
-  TouchableOpacity,
-  View,
 } from 'react-native';
 
 // Import type definitions.
@@ -41,8 +38,6 @@ import type {
 
 // Imports
 const Constants = require('../Constants');
-const Ionicons = require('react-native-vector-icons/Ionicons');
-const NavBar = require('./NavBar');
 const ScreenUtils = require('../util/ScreenUtils');
 const SearchManager = require('../util/SearchManager');
 const TabRouter = require('./TabRouter');
@@ -57,14 +52,6 @@ type State = {
 
 class CommonTabs extends React.Component {
   state: State;
-
-  // Screen which a tab should open
-  tabScreens: TabItems = {
-    find: Constants.Views.Find.Home,
-    schedule: Constants.Views.Schedule.Home,
-    discover: Constants.Views.Discover.Home,
-    settings: Constants.Views.Settings.Home,
-  };
 
   /**
    * Pass props and declares initial state.
@@ -97,6 +84,14 @@ class CommonTabs extends React.Component {
   componentWillUnmount(): void {
     SearchManager.setDefaultSearchListener(null);
   }
+
+  // Screen which a tab should open
+  tabScreens: TabItems = {
+    find: Constants.Views.Find.Home,
+    schedule: Constants.Views.Schedule.Home,
+    discover: Constants.Views.Discover.Home,
+    settings: Constants.Views.Settings.Home,
+  };
 
   /**
    * Retrieves the current tab.
@@ -199,11 +194,15 @@ class CommonTabs extends React.Component {
     const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
     if (numberOfSearchListeners > 0) {
       for (let i = 0; i < numberOfSearchListeners; i++) {
-        SearchManager.getSearchListener(i).onSearch(searchTerms);
+        const searchListener = SearchManager.getSearchListener(i);
+        if (searchListener != null) {
+          searchListener.onSearch(searchTerms);
+        }
       }
-    } else {
-      if (SearchManager.getDefaultSearchListener() != null) {
-        SearchManager.getDefaultSearchListener().onSearch(searchTerms);
+    } else if (SearchManager.getDefaultSearchListener() != null) {
+      const searchListener = SearchManager.getDefaultSearchListener();
+      if (searchListener != null) {
+        searchListener.onSearch(searchTerms);
       }
     }
   }
@@ -249,7 +248,7 @@ class CommonTabs extends React.Component {
       showBackButton: show,
     });
   }
-};
+}
 
 // Expose component to app
 module.exports = CommonTabs;

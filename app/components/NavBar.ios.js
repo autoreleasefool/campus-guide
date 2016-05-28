@@ -37,6 +37,11 @@ import {
   View,
 } from 'react-native';
 
+// Import type definitions.
+import type {
+  DefaultFunction,
+} from '../Types';
+
 // Imports
 const Constants = require('../Constants');
 const DisplayUtils = require('../util/DisplayUtils');
@@ -54,9 +59,9 @@ const ANIMATION_OFFSET: number = 50;
 
 // Type definition for component props.
 type Props = {
-  onSearch: () => any,
-  onBack: ?() => any,
-  onDrawerToggle: ?() => any,
+  onSearch: DefaultFunction,
+  onBack: ?DefaultFunction,
+  onDrawerToggle: ?DefaultFunction,
 };
 
 // Type definition for component state.

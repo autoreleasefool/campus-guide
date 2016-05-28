@@ -38,6 +38,7 @@ import {
 // Import type definitions.
 import type {
   IconObject,
+  DefaultFunction,
   DefaultIcon,
 } from '../../Types';
 
@@ -72,7 +73,7 @@ type DiscoverSection =
 
 // Type definition for component props.
 type Props = {
-  onScreenSelected: () => any,
+  onScreenSelected: DefaultFunction,
 };
 
 // Type definition for component state.
@@ -159,7 +160,7 @@ class DiscoverHome extends React.Component {
    * @returns {ReactElement} a view with an image and title which is clickable by the user.
    */
   _getSectionView(section: DiscoverSection): ReactElement {
-    let onPress: () => any;
+    let onPress: DefaultFunction;
     if (section.id === this.state.currentSection) {
       if (section.id === 'pop') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.HotSpots);

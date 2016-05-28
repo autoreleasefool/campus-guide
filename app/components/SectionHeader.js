@@ -33,6 +33,11 @@ import {
   View,
 } from 'react-native';
 
+// Import type definitions.
+import type {
+  DefaultFunction,
+} from '../Types';
+
 // Imports
 const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
@@ -52,12 +57,12 @@ type Props = {
   backgroundOverride: ?string,
   sectionIcon: ?string,
   sectionIconClass: ?string,
-  sectionIconOnClick: () => any,
+  sectionIconOnClick: DefaultFunction,
   sectionName: string,
   subtitleIcon: ?string,
   subtitleIconClass: ?string,
   subtitleName: ?string,
-  subtitleOnClick: () => any,
+  subtitleOnClick: DefaultFunction,
   useBlackText: ?boolean,
 };
 

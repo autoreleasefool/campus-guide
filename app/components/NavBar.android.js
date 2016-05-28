@@ -36,6 +36,11 @@ import {
   View,
 } from 'react-native';
 
+// Import type definitions.
+import {
+  DefaultFunction,
+} from '../Types';
+
 // Imports
 const Constants = require('../Constants');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -49,9 +54,9 @@ const NAVBAR_ICON_SIZE: number = 24;
 
 // Type definition for component props.
 type Props = {
-  onBack: ?() => any,
-  onDrawerToggle: ?() => any,
-  onSearch: () => any,
+  onBack: ?DefaultFunction,
+  onDrawerToggle: ?DefaultFunction,
+  onSearch: DefaultFunction,
 };
 
 // Type definition for component state.

@@ -6,6 +6,7 @@ import {
 
 // Import type definitions.
 import type {
+  DefaultFunction,
   Route,
 } from '../Types';
 
@@ -32,10 +33,16 @@ module.exports = {
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {Route} route object with properties to identify the route to display.
+   * @param {Route} route               object with properties to identify the route to display.
+   * @param {DefaultFunction} changeTabs      function to change tabs in the tab manager.
+   * @param {DefaultFunction} navigateForward function to navigate to a new screen in the tab manager.
+   * @param {DefaultFunction} refreshNavbar   function to update the NavBar.
    * @returns {ReactElement} the view to render, based on {route}.
    */
-  renderScene(route: Route, changeTabs, navigateForward, refreshNavbar): ReactElement {
+  renderScene(route: Route,
+      changeTabs: DefaultFunction,
+      navigateForward: DefaultFunction,
+      refreshNavbar: DefaultFunction): ReactElement {
     let scene = null;
     if (route.id === Constants.Views.Find.Home) {
       scene = (

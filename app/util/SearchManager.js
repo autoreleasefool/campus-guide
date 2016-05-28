@@ -32,7 +32,7 @@ export type SearchListener = {
 let searchListeners: Array<SearchListener> = [];
 
 // The default SearchListener, when no others are available.
-let defaultSearchListener: SearchListener = null;
+let defaultSearchListener: ?SearchListener = null;
 
 module.exports = {
 
@@ -78,7 +78,7 @@ module.exports = {
   /**
    * Counts the total number of search listeners and returns it.
    *
-   * @return {number} number of search listeners added and not removed.
+   * @returns {number} number of search listeners added and not removed.
    */
   numberOfSearchListeners(): number {
     return searchListeners.length;
@@ -98,7 +98,7 @@ module.exports = {
    * @returns {boolean} true if the listener was removed, false otherwise.
    */
   removeSearchListener(listener: SearchListener): boolean {
-    let listenerIndex = searchListeners.indexOf(listener);
+    const listenerIndex = searchListeners.indexOf(listener);
     if (listenerIndex >= 0) {
       delete searchListeners[listenerIndex];
       return true;

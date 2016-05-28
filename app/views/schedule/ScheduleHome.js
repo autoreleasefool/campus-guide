@@ -38,6 +38,11 @@ import {
   View,
 } from 'react-native';
 
+// Import type definitions.
+import type {
+  DefaultFunction,
+} from '../../Types';
+
 // Imports
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
@@ -53,8 +58,8 @@ const screenWidth: number = width;
 
 // Type definition for component props.
 type Props = {
-  editSchedule: () => any,
-  requestTabChange: () => any,
+  editSchedule: DefaultFunction,
+  requestTabChange: DefaultFunction,
 };
 
 // Type definition for component state.

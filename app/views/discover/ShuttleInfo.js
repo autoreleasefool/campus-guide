@@ -38,6 +38,7 @@ import {
 // Import type definitions
 import type {
   BusCampus,
+  DefaultFunction,
   DefaultIcon,
   LanguageString,
   PlatformString,
@@ -61,8 +62,8 @@ const campusColors: Array<string> = [
 
 // Type definition for component props.
 type Props = {
-  showCampus: () => any,
-  showDetails: () => any,
+  showCampus: DefaultFunction,
+  showDetails: DefaultFunction,
 };
 
 // Type definition for component state.
