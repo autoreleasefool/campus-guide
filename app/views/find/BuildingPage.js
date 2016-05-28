@@ -45,6 +45,10 @@ import type {
   Facility,
 } from '../../Types';
 
+import type {
+  SearchListener
+} from '../../util/SearchManager';
+
 // Imports
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
@@ -52,6 +56,7 @@ const Ionicons = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
+const SearchManager = require('../../util/SearchManager');
 const SectionHeader = require('../../components/SectionHeader');
 const Styles = require('../../Styles');
 
@@ -60,6 +65,9 @@ const screenWidth: number = width;
 
 const ROOM_MARGIN: number = 10;
 const ROOM_WIDTH: number = (screenWidth - 20) / 2;
+
+// Listener for search input
+let buildingSearchListener: ?SearchListener = null;
 
 // Type definition for component props.
 type Props = {
@@ -94,21 +102,63 @@ class BuildingPage extends React.Component {
    */
   constructor(props: Props) {
     super(props);
+    console.log(this.props.buildingDetails);
     this.state = {
       buildingRooms: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
       }),
       loaded: false,
     };
+
+    // Explicitly bind 'this' to methods that require it
+    (this:any)._onBuildingSearch = this._onBuildingSearch.bind(this);
   }
 
   /**
-   * Loads the links to display.
+   * Loads the links to display, registers the search listener.
    */
   componentDidMount(): void {
+    SearchManager.addSearchListener(this._getBuildingSearchListener());
+
     if (!this.state.loaded) {
       this._parseBuildingRooms();
     }
+  }
+
+  /**
+   * Removes the search listener.
+   */
+  componentWillUnmount(): void {
+    SearchManager.removeSearchListener(this._getBuildingSearchListener());
+  }
+
+  _getBuildingSearchListener(): SearchListener {
+    if (buildingSearchListener == null) {
+      buildingSearchListener = {
+        onSearch: this._onBuildingSearch,
+      };
+    }
+
+    return buildingSearchListener;
+  }
+
+  /**
+   * Filters the rooms in the building and displays them to the user.
+   *
+   * @param {string} searchTerms user input filter terms.
+   */
+  _onBuildingSearch(searchTerms: string): void {
+    const filteredRooms: Array<BuildingRoom> = [];
+    const rooms: Array<BuildingRoom> = this.props.buildingDetails.rooms;
+    for (let i = 0; i < rooms.length; i++) {
+      if (rooms[i].name.indexOf(searchTerms) >= 0) {
+        filteredRooms.push(rooms[i]);
+      }
+    }
+
+    this.setState({
+      buildingRooms: this.state.buildingRooms.cloneWithRows(filteredRooms),
+    });
   }
 
   /**
@@ -183,7 +233,7 @@ class BuildingPage extends React.Component {
   _renderRow(room: BuildingRoom, sectionId: string, rowIndex: number): ReactElement {
     let rowColor: string = Constants.Colors.garnet;
     const rowPosition = rowIndex % 4;
-    if (rowPosition === 1 || rowPosition === 2) {
+    if (rowPosition === 0 || rowPosition === 3) {
       rowColor = Constants.Colors.defaultComponentBackgroundColor;
     }
 
