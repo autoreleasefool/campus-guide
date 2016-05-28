@@ -218,19 +218,19 @@ class BuildingPage extends React.Component {
 
     return (
       <View style={_styles.container}>
-        <View style={_styles.banner}>
-          <Image
-              resizeMode={'cover'}
-              source={this.props.buildingDetails.image}
-              style={_styles.bannerImage} />
-          <SectionHeader
-              sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), building)}
-              subtitleName={building.code} />
-        </View>
         <ScrollView style={_styles.scrollView}>
+          <View style={_styles.banner}>
+            <Image
+                resizeMode={'cover'}
+                source={this.props.buildingDetails.image}
+                style={_styles.bannerImage} />
+          </View>
           {facilityIcons}
           {roomList}
         </ScrollView>
+        <SectionHeader
+            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), building)}
+            subtitleName={building.code} />
       </View>
     );
   }
