@@ -29,6 +29,9 @@ export type SearchListener = (text) => void;
 // List of current search listeners. Components can register a listener with addSearchListener.
 let searchListeners: Array<SearchListener> = [];
 
+// The default SearchListener, when no others are available.
+let defaultSearchListener: SearchListener = null;
+
 module.exports = {
 
   /**
@@ -37,7 +40,7 @@ module.exports = {
    * @param {SearchListener} listener instance of SearchListener.
    * @returns {boolean} true if the listener was added, false otherwise.
    */
-  addSearchListener(listener: SearchListener: boolean {
+  addSearchListener(listener: SearchListener): boolean {
     if (searchListeners.indexOf(listener) < 0) {
       searchListeners.push(listener);
       return true;
@@ -47,11 +50,20 @@ module.exports = {
   },
 
   /**
+   * Gets the default search listener.
+   *
+   * @returns {?SearchListener} the default search listener, if it has been set.
+   */
+  getDefaultSearchListener(): ?SearchListener {
+    return defaultSearchListener;
+  },
+
+  /**
    * Retrieves a search listener that has been added.
    *
    * @param {number} index index of search listener to retrieve. Must be greater than or equal to 0
    *                       and less than numberOfSearchListeners.
-   * @returns {SearchListener} the SearchListener at index or null.
+   * @returns {?SearchListener} the search listener at index or null.
    */
   getSearchListener(index: number): ?SearchListener {
     if (index < 0 || index >= this.numberOfSearchListeners()) {
@@ -83,7 +95,7 @@ module.exports = {
    * @param {SearchListener} listener instance of SearchListener.
    * @returns {boolean} true if the listener was removed, false otherwise.
    */
-  removeSearchListener(listener: SearchListener: boolean {
+  removeSearchListener(listener: SearchListener): boolean {
     let listenerIndex = searchListeners.indexOf(listener);
     if (listenerIndex >= 0) {
       delete searchListeners[listenerIndex];
@@ -91,5 +103,14 @@ module.exports = {
     }
 
     return false;
+  },
+
+  /**
+   * Sets a default search listener to use when there are no other listeners available.
+   *
+   * @param {SearchListener} listener the new default search listener. Can be null.
+   */
+  setDefaultSearchListener(listener: ?SearchListener): void {
+    defaultSearchListener = listener;
   },
 };
