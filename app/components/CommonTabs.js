@@ -188,9 +188,9 @@ class CommonTabs extends React.Component {
   /**
    * Passes search params onto search listeners, or the default search listener if there are no others.
    *
-   * @param {string} searchTerms string of terms to search for.
+   * @param {?string} searchTerms string of terms to search for.
    */
-  _onSearch(searchTerms: string): void {
+  _onSearch(searchTerms: ?string): void {
     const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
     if (numberOfSearchListeners > 0) {
       for (let i = 0; i < numberOfSearchListeners; i++) {
@@ -230,9 +230,9 @@ class CommonTabs extends React.Component {
   /**
    * Searches all components of the app and displays the results.
    *
-   * @param {string} searchTerms string of terms to search for.
+   * @param {?string} searchTerms string of terms to search for.
    */
-  _searchAll(searchTerms: string): void {
+  _searchAll(searchTerms: ?string): void {
     // TODO: search...
     console.log('TODO: search...');
     this._navigateForward.bind(this, Constants.Views.Find.Search, searchTerms);

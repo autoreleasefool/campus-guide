@@ -102,7 +102,6 @@ class BuildingPage extends React.Component {
    */
   constructor(props: Props) {
     super(props);
-    console.log(this.props.buildingDetails);
     this.state = {
       buildingRooms: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
@@ -147,7 +146,15 @@ class BuildingPage extends React.Component {
    *
    * @param {string} searchTerms user input filter terms.
    */
-  _onBuildingSearch(searchTerms: string): void {
+  _onBuildingSearch(searchTerms: ?string): void {
+    if (searchTerms == null || searchTerms.length === 0) {
+      this.setState({
+        buildingRooms: this.state.buildingRooms.cloneWithRows(this.props.buildingDetails.rooms),
+      });
+
+      return;
+    }
+
     const filteredRooms: Array<BuildingRoom> = [];
     const rooms: Array<BuildingRoom> = this.props.buildingDetails.rooms;
     for (let i = 0; i < rooms.length; i++) {

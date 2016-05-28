@@ -25,7 +25,7 @@
 
 // Definition of a search listener.
 export type SearchListener = {
-  onSearch: (text: string) => void,
+  onSearch: (text: ?string) => void,
 };
 
 // List of current search listeners. Components can register a listener with addSearchListener.

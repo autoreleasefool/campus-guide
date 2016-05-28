@@ -59,9 +59,9 @@ const ANIMATION_OFFSET: number = 50;
 
 // Type definition for component props.
 type Props = {
-  onSearch: DefaultFunction,
   onBack: ?DefaultFunction,
   onDrawerToggle: ?DefaultFunction,
+  onSearch: (text: ?string) => any,
 };
 
 // Type definition for component state.
@@ -145,14 +145,12 @@ class NavBar extends React.Component {
   }
 
   /**
-   * Prompts the app to search, so long as there is any text to search with.
+   * Prompts the app to search.
    *
-   * @param {string} text params to search for.
+   * @param {?string} text params to search for.
    */
-  _onSearch(text: string): void {
-    if (text && text.length > 0) {
-      this.props.onSearch(text);
-    }
+  _onSearch(text: ?string): void {
+    this.props.onSearch(text);
   }
 
   /**
