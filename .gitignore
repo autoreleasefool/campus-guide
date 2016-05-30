@@ -116,3 +116,6 @@ strings_secret.xml
 
 # Code coverage
 coverage/
+
+# Build/bundle
+ios/main.jsbundle

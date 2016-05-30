@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "flow": "flow .",
+    "lint": "eslint .",
+    "react-native:ios": "react-native bundle --entry-file index.ios.js --bundle-output ios/main.jsbundle --platform ios --dev false",
+    "react-native:android": "react-native bundle --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --platform android --dev false",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest --coverage",
-    "lint": "eslint ."
+    "test": "jest --coverage"
   },
   "dependencies": {
     "react": "^15.0.2",
