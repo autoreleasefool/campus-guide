@@ -4,8 +4,10 @@ node_js:
   - "5.0"
 
 script:
-  - npm run react-native:ios
-  - npm run react-native:android
+  # Ignoring the following commands since they fail without resources
+  # Resources are being kept private until the release
+  # npm run react-native:ios
+  # npm run react-native:android
   - npm run lint
   - npm run flow
   - npm run test
