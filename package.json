@@ -21,6 +21,7 @@
     "babel-eslint": "^6.0.4",
     "babel-jest": "^12.1.0",
     "babel-polyfill": "^6.9.1",
+    "empty": "^0.10.1",
     "eslint": "^2.11.0",
     "eslint-plugin-react": "^5.1.1",
     "eslint-plugin-react-native": "^1.0.2",

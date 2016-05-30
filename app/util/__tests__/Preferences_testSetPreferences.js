@@ -25,7 +25,7 @@
 // Unmock modules so the real module is used.
 jest.unmock('../Configuration');
 jest.unmock('../Preferences');
-jest.unmock('../../../assets/static/json/config.json');
+jest.unmock('../../../assets/json/config.json');
 
 // Mock various modules required in testing.
 jest.setMock('AsyncStorage', {

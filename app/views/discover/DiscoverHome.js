@@ -221,7 +221,7 @@ class DiscoverHome extends React.Component {
    * the view.
    */
   _loadDiscoverSections(): void {
-    const discoverSections: Array<DiscoverSection> = require('../../../assets/static/js/DiscoverSections');
+    const discoverSections: Array<DiscoverSection> = require('../../../assets/js/DiscoverSections');
     this.setState({
       sections: discoverSections,
       currentSection: discoverSections[0].id,

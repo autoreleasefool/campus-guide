@@ -137,9 +137,9 @@ class NavBar extends React.Component {
     // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../assets/static/js/Translations.fr.js');
+      Translations = require('../../assets/js/Translations.fr.js');
     } else {
-      Translations = require('../../assets/static/js/Translations.en.js');
+      Translations = require('../../assets/js/Translations.en.js');
     }
 
     const searchBarLeft: number = 50;

@@ -46,7 +46,7 @@ let cityBuses: ?BusInfo = null;
  */
 async function _requestConfig(): Promise<void> {
   // Get the configuration file
-  const configuration: Object = require('../../assets/static/json/config.json');
+  const configuration: Object = require('../../assets/json/config.json');
 
   // Get the current semesters available in the app
   if (configuration.AvailableSemesters) {

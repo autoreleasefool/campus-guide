@@ -24,7 +24,7 @@
 
 // Unmock modules so the real module is used.
 jest.unmock('../Configuration')
-    .unmock('../../../assets/static/json/config.json');
+    .unmock('../../../assets/json/config.json');
 
 describe('testLoadConfiguration', () => {
   pit('tests the loading of the configuration file for the application.', () => {

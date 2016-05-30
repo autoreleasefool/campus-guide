@@ -67,11 +67,11 @@ if (Platform.OS === 'ios') {
 }
 
 // Require both language translations to switch between them easily
-const TranslationsEn: Object = require('../../../assets/static/js/Translations.en.js');
-const TranslationsFr: Object = require('../../../assets/static/js/Translations.fr.js');
+const TranslationsEn: Object = require('../../../assets/js/Translations.en.js');
+const TranslationsFr: Object = require('../../../assets/js/Translations.fr.js');
 
 // Create a cache of settings values to retrieve and update them quickly
-const settings: Object = require('../../../assets/static/json/settings.json');
+const settings: Object = require('../../../assets/json/settings.json');
 const settingsCache: Object = {};
 let keyOfLastSettingChanged: ?string = null;
 

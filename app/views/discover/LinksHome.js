@@ -105,7 +105,7 @@ class LinksHome extends React.Component {
    * belong to.
    */
   _loadLinkCategories(): void {
-    const linkCategories: Array<LinkCategoryType> = require('../../../assets/static/js/UsefulLinks');
+    const linkCategories: Array<LinkCategoryType> = require('../../../assets/js/UsefulLinks');
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(linkCategories),

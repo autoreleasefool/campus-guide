@@ -151,7 +151,7 @@ class ShuttleCampusInfo extends React.Component {
    * Retrieves data about the campus provided as this.props.campusName.
    */
   _loadCampusInfo(): void {
-    const campuses: Array<ShuttleCampus> = require('../../../assets/static/json/shuttle.json');
+    const campuses: Array<ShuttleCampus> = require('../../../assets/json/shuttle.json');
     if (this.props.campusName in campuses) {
       this.setState({
         campus: campuses[this.props.campusName],
@@ -169,9 +169,9 @@ class ShuttleCampusInfo extends React.Component {
     // Get current language for translations
     let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/static/js/Translations.fr.js');
+      Translations = require('../../../assets/js/Translations.fr.js');
     } else {
-      Translations = require('../../../assets/static/js/Translations.en.js');
+      Translations = require('../../../assets/js/Translations.en.js');
     }
 
     return (

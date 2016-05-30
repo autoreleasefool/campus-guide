@@ -26,7 +26,7 @@
 jest.unmock('../Configuration');
 jest.unmock('../LanguageUtils');
 jest.unmock('../Preferences');
-jest.unmock('../../../assets/static/json/config.json');
+jest.unmock('../../../assets/json/config.json');
 
 // Mock various modules required in testing.
 jest.setMock('AsyncStorage', {
@@ -47,7 +47,7 @@ jest.setMock('AsyncStorage', {
 // Dictionary of values to store.
 let temporaryAsyncStorage = {};
 
-// Should be identical to the first item in <root>/assets/static/json/config.json
+// Should be identical to the first item in <root>/assets/json/config.json
 const firstSemester = {
   code: '20161',
   name_en: 'Winter 2016',

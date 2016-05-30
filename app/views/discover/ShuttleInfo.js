@@ -118,8 +118,8 @@ class ShuttleInfo extends React.Component {
    * details the user can view.
    */
   _loadCampusesAndDetails(): void {
-    const shuttleCampuses: Array<BusCampus> = require('../../../assets/static/js/ShuttleCampuses');
-    const shuttleDetails: Array<ShuttleDetails> = require('../../../assets/static/js/ShuttleDetails');
+    const shuttleCampuses: Array<BusCampus> = require('../../../assets/js/ShuttleCampuses');
+    const shuttleDetails: Array<ShuttleDetails> = require('../../../assets/js/ShuttleDetails');
     this.setState({
       campuses: shuttleCampuses,
       details: shuttleDetails,

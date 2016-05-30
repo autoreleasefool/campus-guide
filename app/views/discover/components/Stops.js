@@ -203,7 +203,7 @@ class Stops extends React.Component {
       this.props.onStopSelected(stop);
     }
 
-    const campuses: Array<TransitCampus> = require('../../../../assets/static/json/transit_times.json');
+    const campuses: Array<TransitCampus> = require('../../../../assets/json/transit_times.json');
     let routeInfo: ?Array<DetailedRouteInfo> = null;
     for (let i = 0; i < campuses.length; i++) {
       if (campuses[i].id === this.props.campusName) {
@@ -348,9 +348,9 @@ class Stops extends React.Component {
     // Get current language for translations
     let Translations: Object = {};
     if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../../assets/static/js/Translations.fr.js');
+      Translations = require('../../../../assets/js/Translations.fr.js');
     } else {
-      Translations = require('../../../../assets/static/js/Translations.en.js');
+      Translations = require('../../../../assets/js/Translations.en.js');
     }
 
     const upcomingTimes = [];

@@ -229,7 +229,7 @@ class BusCampusStops extends React.Component {
    * Retrieves data about the campus provided as {this.props.campusName}.
    */
   _loadCampusInfo(): void {
-    const campuses: Array<TransitCampus> = require('../../../assets/static/json/transit_stops.json');
+    const campuses: Array<TransitCampus> = require('../../../assets/json/transit_stops.json');
     for (let i = 0; i < campuses.length; i++) {
       if (campuses[i].id === this.props.campusName) {
         this.setState({

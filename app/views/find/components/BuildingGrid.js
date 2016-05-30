@@ -107,7 +107,7 @@ class BuildingGrid extends React.Component {
    * them.
    */
   _loadBuildingsList(): void {
-    const buildingsList: Array<Building> = require('../../../../assets/static/js/Buildings');
+    const buildingsList: Array<Building> = require('../../../../assets/js/Buildings');
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(buildingsList),

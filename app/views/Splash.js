@@ -51,8 +51,8 @@ const StatusBarUtils = require('../util/StatusBarUtils');
 const Styles = require('../Styles');
 
 // Require both language translations to display items in both languages
-const TranslationsEn: Object = require('../../assets/static/js/Translations.en.js');
-const TranslationsFr: Object = require('../../assets/static/js/Translations.fr.js');
+const TranslationsEn: Object = require('../../assets/js/Translations.en.js');
+const TranslationsFr: Object = require('../../assets/js/Translations.fr.js');
 
 // Type definition for component props.
 type Props = {

@@ -80,7 +80,7 @@ class TabsView extends CommonTabs {
         <TouchableOpacity
             key={Constants.Tabs[i]}
             style={_styles.tab}
-            onPress={this._changeTabs.bind(this, this.tabScreens[Constants.Tabs[i]])}>
+            onPress={super._changeTabs.bind(this, this.tabScreens[Constants.Tabs[i]])}>
           <Ionicons
               color={tabColor}
               name={tabIcons[Constants.Tabs[i]]}
@@ -93,13 +93,13 @@ class TabsView extends CommonTabs {
       <View style={_styles.container}>
         <NavBar
             ref='NavBar'
-            onBack={this._navigateBack.bind(this)}
-            onSearch={this._onSearch.bind(this)} />
+            onBack={super._navigateBack.bind(this)}
+            onSearch={super._onSearch.bind(this)} />
         <Navigator
-            configureScene={this._configureScene}
+            configureScene={super._configureScene}
             initialRoute={{id: Constants.Views.Default}}
             ref='Navigator'
-            renderScene={this._renderScene.bind(this)}
+            renderScene={super._renderScene.bind(this)}
             style={_styles.navigator} />
         <View style={_styles.tabContainer}>
           {tabs.map(tab => (

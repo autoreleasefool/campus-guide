@@ -122,7 +122,7 @@ class BusCampusInfo extends React.Component {
    * Loads a list of campus names and images representing them.
    */
   _loadCampuses(): void {
-    const campuses: Array<BusCampus> = require('../../../assets/static/js/BusCampuses');
+    const campuses: Array<BusCampus> = require('../../../assets/js/BusCampuses');
     this.setState({
       campuses: campuses,
     });
@@ -137,9 +137,9 @@ class BusCampusInfo extends React.Component {
     // Get current language for translations
     let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/static/js/Translations.fr.js');
+      Translations = require('../../../assets/js/Translations.fr.js');
     } else {
-      Translations = require('../../../assets/static/js/Translations.en.js');
+      Translations = require('../../../assets/js/Translations.en.js');
     }
 
     const campusDisplayNames: Array<string> = [];

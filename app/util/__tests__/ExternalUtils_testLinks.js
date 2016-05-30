@@ -61,7 +61,7 @@ describe('testLinks', () => {
   it('tests that links are formatted before opening.', () => {
     const ExternalUtils = require('../ExternalUtils');
     const TextUtils = require('../TextUtils');
-    const Translations = require('../../../assets/static/js/Translations.en.js');
+    const Translations = require('../../../assets/js/Translations.en.js');
 
     ExternalUtils.openLink(exampleURL, Translations, Linking, Alert, Clipboard);
     expect(TextUtils.formatLink).toBeCalledWith(exampleURL);
@@ -78,7 +78,7 @@ describe('testLinks', () => {
 
   pit('tests that invalid links are not opened.', () => {
     const ExternalUtils = require('../ExternalUtils');
-    const Translations = require('../../../assets/static/js/Translations.en.js');
+    const Translations = require('../../../assets/js/Translations.en.js');
 
     return ExternalUtils.openLink(invalidURL, Translations, Linking, Alert, Clipboard)
         .then(() => {
