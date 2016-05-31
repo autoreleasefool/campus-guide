@@ -35,7 +35,6 @@ import {
 // Import type definitions
 import type {
   Building,
-  DefaultFunction,
 } from '../../Types';
 
 // Imports
@@ -44,12 +43,6 @@ const Constants = require('../../Constants');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
 const Upcoming = require('./components/Upcoming');
-
-// Type definition for component props.
-type Props = {
-  onEditSchedule: DefaultFunction,
-  onShowBuilding: DefaultFunction,
-};
 
 class FindHome extends React.Component {
 

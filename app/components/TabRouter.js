@@ -23,7 +23,6 @@ const FindHome = require('../views/find/FindHome');
 const LinkCategory = require('../views/discover/LinkCategory');
 const LinksHome = require('../views/discover/LinksHome');
 const ScheduleHome = require('../views/schedule/ScheduleHome');
-const ScheduleEditor = require('../views/schedule/ScheduleEditor');
 const SettingsHome = require('../views/settings/SettingsHome');
 const ShuttleCampusInfo = require('../views/discover/ShuttleCampusInfo');
 const ShuttleInfo = require('../views/discover/ShuttleInfo');
@@ -59,10 +58,6 @@ module.exports = {
         <ScheduleHome
             editSchedule={() => navigateForward(Constants.Views.Schedule.Editor)}
             requestTabChange={changeTabs} />
-      );
-    } else if (route.id === Constants.Views.Schedule.Editor) {
-      scene = (
-        <ScheduleEditor />
       );
     } else if (route.id === Constants.Views.Discover.Home) {
       scene = (

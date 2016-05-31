@@ -46,13 +46,12 @@ import type {
 } from '../../Types';
 
 import type {
-  SearchListener
+  SearchListener,
 } from '../../util/SearchManager';
 
 // Imports
 const Constants = require('../../Constants');
 const DisplayUtils = require('../../util/DisplayUtils');
-const Ionicons = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
@@ -63,8 +62,21 @@ const Styles = require('../../Styles');
 const {width} = Dimensions.get('window');
 const screenWidth: number = width;
 
+// Size of room buttons
 const ROOM_MARGIN: number = 10;
-const ROOM_WIDTH: number = (screenWidth - 20) / 2;
+const ROOM_WIDTH: number = (screenWidth - ROOM_MARGIN * 2) / 2;
+
+/* eslint-disable no-magic-numbers */
+/* Not worried about the magic number in the array definition below */
+
+// Defines how rooms will be colored.
+const LENGTH_OF_ROOM_PATTERN: number = 4;
+const DARKENED_ROOMS: Array<number> = [
+  0,
+  3,
+];
+
+/* eslint-enable no-magic-numbers */
 
 // Listener for search input
 let buildingSearchListener: ?SearchListener = null;
@@ -131,6 +143,12 @@ class BuildingPage extends React.Component {
     SearchManager.removeSearchListener(this._getBuildingSearchListener());
   }
 
+  /**
+   * Gets an object containing the search listener method. If the object does not exist yet, it is created
+   * and returned from that time on.
+   *
+   * @returns {SearchListener} the building search listener
+   */
   _getBuildingSearchListener(): SearchListener {
     if (buildingSearchListener == null) {
       buildingSearchListener = {
@@ -155,10 +173,13 @@ class BuildingPage extends React.Component {
       return;
     }
 
+    // Ignore the case of the search terms
+    const adjustedSearchTerms = searchTerms.toUpperCase();
+
     const filteredRooms: Array<BuildingRoom> = [];
     const rooms: Array<BuildingRoom> = this.props.buildingDetails.rooms;
     for (let i = 0; i < rooms.length; i++) {
-      if (rooms[i].name.indexOf(searchTerms) >= 0) {
+      if (rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
         filteredRooms.push(rooms[i]);
       }
     }
@@ -172,6 +193,7 @@ class BuildingPage extends React.Component {
    * Displays a pop-up to the user, describing what a certain facility icon means.
    *
    * @param {Facility} facility id of the facility
+   * @param {Object} Translations translations in the current language of certain text.
    */
   _openFacilityDescription(facility: Facility, Translations: Object): void {
     Alert.alert(
@@ -239,8 +261,8 @@ class BuildingPage extends React.Component {
    */
   _renderRow(room: BuildingRoom, sectionId: string, rowIndex: number): ReactElement {
     let rowColor: string = Constants.Colors.garnet;
-    const rowPosition = rowIndex % 4;
-    if (rowPosition === 0 || rowPosition === 3) {
+    const rowPosition = rowIndex % LENGTH_OF_ROOM_PATTERN;
+    if (DARKENED_ROOMS.indexOf(rowPosition) >= 0) {
       rowColor = Constants.Colors.defaultComponentBackgroundColor;
     }
 
@@ -264,9 +286,9 @@ class BuildingPage extends React.Component {
     // Get current language for translations
     let Translations: Object = {};
     if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/static/js/Translations.fr.js');
+      Translations = require('../../../assets/js/Translations.fr.js');
     } else {
-      Translations = require('../../../assets/static/js/Translations.en.js');
+      Translations = require('../../../assets/js/Translations.en.js');
     }
 
     const building = this.props.buildingDetails;
@@ -275,7 +297,9 @@ class BuildingPage extends React.Component {
 
     return (
       <View style={_styles.container}>
-        <ScrollView style={_styles.scrollView}>
+        <ScrollView
+            keyboardDismissMode={'on-drag'}
+            style={_styles.scrollView}>
           <View style={_styles.banner}>
             <Image
                 resizeMode={'cover'}
