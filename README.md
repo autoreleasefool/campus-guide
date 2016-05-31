@@ -10,6 +10,33 @@ This app is currently in progress. You can follow its progress here, view some s
 
 While the app is in development, all of the data collected about the University of Ottawa, the courses, and the buildings, will be kept in a separate repository. When the app is released, expect that data to be documented and open sourced alongside this application.
 
+## Contributing
+
+### Setup
+
+1. Clone the repository: `git clone https://github.com/joseph-roque/campus-guide`
+2. The recommended development environment is [Nuclide](https://nuclide.io/). With this IDE, you can utilize live updates of the Flow type checker.
+3. Make your changes.
+4. Ensure the following requirements for a contribution are met when running these commands:
+    - `npm run flow`: There should be no issues within the project (some React Native components throw errors, which can be ignored).
+    - `npm run lint`: There should be no errors (warnings are OK).
+    - `npm test`: All tests should pass.
+    - `npm build:ios`: The build should succeed.
+    - `npm build:android`: The build should succeed.
+
+### Travis CI
+
+Currently, the Travis CI build will run the following commands:
+
+- `npm run lint`
+
+Additional tests and checks will be run in the future, when the resources for the app have been released. For now, these commands fail due to the missing resources and have been disabled for the time being:
+
+- `npm run build:ios`
+- `npm run build:android`
+- `npm run flow`
+- `npm test`
+
 ## Screenshots
 
 | Splash Screen | Finding a class | Your schedule |

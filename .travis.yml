@@ -6,8 +6,8 @@ node_js:
 script:
   # Ignoring the following commands since they fail without resources
   # Resources are being kept private until the release
-  # npm run react-native:ios
-  # npm run react-native:android
+  # npm run build:ios
+  # npm run build:android
   - npm run lint
-  - npm run flow
-  - npm run test
+  # - npm run flow
+  # - npm run test
