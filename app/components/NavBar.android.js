@@ -51,6 +51,8 @@ const StatusBarUtils = require('../util/StatusBarUtils');
 const {width} = Dimensions.get('window');
 // Size of icons in the navbar
 const NAVBAR_ICON_SIZE: number = 24;
+// Size of large icons in the navbar
+const NAVBAR_LARGE_ICON: number = 30;
 
 // Type definition for component props.
 type Props = {
@@ -61,7 +63,8 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  refresh: ?boolean,
+  refresh?: boolean,
+  showClearButton?: boolean,
 };
 
 class NavBar extends React.Component {
@@ -90,6 +93,7 @@ class NavBar extends React.Component {
     super(props);
     this.state = {
       refresh: false,
+      showClearButton: false,
     };
 
     // Explicitly binding 'this' to certain methods
@@ -111,12 +115,30 @@ class NavBar extends React.Component {
   }
 
   /**
+   * Clears the search field.
+   */
+  _clearSearch(): void {
+    this.refs.SearchInput.clear();
+    this.refs.SearchInput.blur();
+    this._onSearch(null);
+  }
+
+  /**
    * Prompts the app to search.
    *
    * @param {?string} text params to search for.
    */
   _onSearch(text: ?string): void {
     this.props.onSearch(text);
+    if (text != null && text.length > 0) {
+      this.setState({
+        showClearButton: true,
+      });
+    } else {
+      this.setState({
+        showClearButton: false,
+      });
+    }
   }
 
   /**
@@ -171,6 +193,14 @@ class NavBar extends React.Component {
               ref='SearchInput'
               style={_styles.searchText}
               onChangeText={this._onSearch.bind(this)} />
+          {(this.state.showClearButton)
+                ? <MaterialIcons
+                    color={'white'}
+                    name={'close'}
+                    size={NAVBAR_LARGE_ICON}
+                    style={_styles.clearIcon}
+                    onPress={this._clearSearch.bind(this)} />
+                : null}
         </View>
       </View>
     );
@@ -200,6 +230,9 @@ const _styles = StyleSheet.create({
   searchIcon: {
     marginLeft: 10,
     marginRight: 10,
+  },
+  clearIcon: {
+    width: 30,
   },
   searchText: {
     flex: 1,

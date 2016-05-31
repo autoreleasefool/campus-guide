@@ -53,6 +53,8 @@ const StatusBarUtils = require('../util/StatusBarUtils');
 const {width} = Dimensions.get('window');
 // Size of icons in the navbar
 const NAVBAR_ICON_SIZE: number = 24;
+// Size of large icons in the navbar
+const NAVBAR_LARGE_ICON: number = 30;
 
 // Number of milliseconds to offset animation by.
 const ANIMATION_OFFSET: number = 50;
@@ -66,8 +68,9 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  showBackButton: ?boolean,
-  refresh: ?boolean,
+  refresh?: boolean,
+  showBackButton?: boolean,
+  showClearButton?: boolean,
 };
 
 class NavBar extends React.Component {
@@ -95,8 +98,9 @@ class NavBar extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showBackButton: false,
       refresh: false,
+      showBackButton: false,
+      showClearButton: false,
     };
 
     // Explicitly binding 'this' to certain methods
@@ -135,10 +139,20 @@ class NavBar extends React.Component {
   }
 
   /**
+   * Clears the search field.
+   */
+  _clearSearch(): void {
+    this.refs.SearchInput.clear();
+    this.refs.SearchInput.blur();
+    this._onSearch(null);
+  }
+
+  /**
    * Clears the search field and requests a back navigation.
    */
   _onBack(): void {
-    this.refs.SearchInput.setNativeProps({text: ''});
+    this.refs.SearchInput.clear();
+    this.refs.SearchInput.blur();
     if (this.props.onBack) {
       this.props.onBack();
     }
@@ -151,6 +165,15 @@ class NavBar extends React.Component {
    */
   _onSearch(text: ?string): void {
     this.props.onSearch(text);
+    if (text != null && text.length > 0) {
+      this.setState({
+        showClearButton: true,
+      });
+    } else {
+      this.setState({
+        showClearButton: false,
+      });
+    }
   }
 
   /**
@@ -207,6 +230,14 @@ class NavBar extends React.Component {
               ref='SearchInput'
               style={_styles.searchText}
               onChangeText={this._onSearch.bind(this)} />
+          {(this.state.showClearButton)
+                ? <Ionicons
+                    color={'white'}
+                    name={'ios-close'}
+                    size={NAVBAR_LARGE_ICON}
+                    style={_styles.clearIcon}
+                    onPress={this._clearSearch.bind(this)} />
+                : null}
         </View>
       </View>
     );
@@ -237,6 +268,9 @@ const _styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
+  clearIcon: {
+    width: 30,
+  },
   searchText: {
     flex: 1,
     height: 40,
@@ -244,7 +278,8 @@ const _styles = StyleSheet.create({
   },
   backIcon: {
     marginLeft: 20,
-    marginRight: 20, marginTop: 8,
+    marginRight: 20,
+    marginTop: 8,
   },
 });
 
