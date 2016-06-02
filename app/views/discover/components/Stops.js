@@ -360,18 +360,20 @@ class Stops extends React.Component {
         + ':'
         + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
     for (const day in days) {
-      if (day.indexOf(currentDay) > -1) {
-        let i = days[day].length - 1;
-        while (i >= 0) {
-          if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
-            let j = 1;
-            while (j < MAX_UPCOMING_TIMES && i + j < days[day].length) {
-              upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
-              j += 1;
+      if (days.hasOwnProperty(day)) {
+        if (day.indexOf(currentDay) > -1) {
+          let i = days[day].length - 1;
+          while (i >= 0) {
+            if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
+              let j = 1;
+              while (j < MAX_UPCOMING_TIMES && i + j < days[day].length) {
+                upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
+                j += 1;
+              }
+              break;
             }
-            break;
+            i -= 1;
           }
-          i -= 1;
         }
       }
     }

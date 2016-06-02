@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file DisplayUtils_testSocialMediaIcons.js
- * @description Tests retrieving social media icons and colors.
+ * @file DisplayUtils_testFacilityIcons.js
+ * @description Tests retrieving icons for building facilities.
  *
  */
 'use strict';
@@ -26,30 +26,37 @@
 jest.unmock('../DisplayUtils');
 
 // List of social media platforms to test.
-const SOCIAL_MEDIA_PLATFORMS = [
-  'linkedin',
-  'twitter',
-  'facebook',
-  'instagram',
-  'youtube',
-  'tumblr',
-  'other',
+const FACILITIES = [
+  'atm',
+  'food',
+  'printer',
+  'store',
+  'bed',
+  'alcohol',
+  'laundry',
+  'library',
+  'parking',
+  'mail',
+  'pharmacy',
+  'gym',
+  'pool',
+  'invalid',
 ];
 
-describe('testSocialMediaIcons', () => {
-  it('tests retrieving social media icon names.', () => {
+describe('testFacilityIcons', () => {
+  it('tests retrieving facility icon names.', () => {
     const DisplayUtils = require('../DisplayUtils');
 
-    for (let i = 0; i < SOCIAL_MEDIA_PLATFORMS.length; i++) {
-      expect(DisplayUtils.getSocialMediaIconName(SOCIAL_MEDIA_PLATFORMS[i])).toBeDefined();
+    for (let i = 0; i < FACILITIES.length; i++) {
+      expect(DisplayUtils.getFacilityIconName(FACILITIES[i])).toBeDefined();
     }
   });
 
-  it('tests retrieving social media icon colors.', () => {
+  it('tests retrieving facility icon classes.', () => {
     const DisplayUtils = require('../DisplayUtils');
 
-    for (let i = 0; i < SOCIAL_MEDIA_PLATFORMS.length; i++) {
-      expect(DisplayUtils.getSocialMediaIconColor(SOCIAL_MEDIA_PLATFORMS[i])).toBeDefined();
+    for (let i = 0; i < FACILITIES.length; i++) {
+      expect(DisplayUtils.getFacilityIconClass(FACILITIES[i])).toBeDefined();
     }
   });
 });

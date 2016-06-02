@@ -41,7 +41,7 @@ describe('testTimeFormatting', () => {
     const TextUtils = require('../TextUtils');
 
     for (const time in expectedTimeFormats) {
-      if ({}.hasOwnProperty(expectedTimeFormats, time)) {
+      if (expectedTimeFormats.hasOwnProperty(time)) {
         expect(TextUtils.get24HourAdjustedTime(time)).toBe(expectedTimeFormats[time]);
       }
     }
