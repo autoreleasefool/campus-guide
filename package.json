@@ -11,8 +11,8 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "react": "15.0.2",
-    "react-native": "^0.26.2",
+    "react": "^15.1.0",
+    "react-native": "0.27.0",
     "react-native-maps": "^0.4.2",
     "react-native-orientation": "^1.16.0",
     "react-native-vector-icons": "^2.0.3"

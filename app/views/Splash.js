@@ -89,6 +89,8 @@ class SplashScreen extends React.Component {
     this.state = {
       isLoading: true,
     };
+
+    (this:any)._selectLanguage = this._selectLanguage.bind(this);
   }
 
   /**
@@ -96,6 +98,8 @@ class SplashScreen extends React.Component {
    */
   componentDidMount(): void {
     const self: SplashScreen = this;
+
+    console.log('here');
 
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -156,7 +160,7 @@ class SplashScreen extends React.Component {
         <TouchableOpacity
             activeOpacity={0.6}
             style={{flex: 1}}
-            onPress={() => this._selectLanguage.bind(this, 'en')}>
+            onPress={() => this._selectLanguage('en')}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <View style={_styles.languageContainer}>
               <Text style={[Styles.mediumText, {color: 'white'}]}>
@@ -173,7 +177,7 @@ class SplashScreen extends React.Component {
         <TouchableOpacity
             activeOpacity={0.6}
             style={{flex: 1}}
-            onPress={() => this._selectLanguage.bind(this, 'fr')}>
+            onPress={() => this._selectLanguage('fr')}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
               <Text style={[Styles.mediumText, {color: 'white'}]}>

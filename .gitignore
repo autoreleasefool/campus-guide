@@ -119,3 +119,7 @@ coverage/
 
 # Build/bundle
 ios/main.jsbundle
+
+# Keystores
+
+*/keystores/*
