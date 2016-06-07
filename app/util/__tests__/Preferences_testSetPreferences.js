@@ -63,10 +63,13 @@ describe('testSetPreferences', () => {
     const Preferences = require('../Preferences');
 
     return Preferences.loadInitialPreferences(AsyncStorage).then(() => {
+      expect(Preferences.isLanguageSelected()).toBeFalsy();
       Preferences.setSelectedLanguage(AsyncStorage, 'en');
       expect(Preferences.getSelectedLanguage()).toBe('en');
+      expect(Preferences.isLanguageSelected()).toBeTruthy();
       Preferences.setSelectedLanguage(AsyncStorage, 'fr');
       expect(Preferences.getSelectedLanguage()).toBe('fr');
+      expect(Preferences.isLanguageSelected()).toBeTruthy();
       Preferences.setSelectedLanguage(AsyncStorage, 'invalid_language');
       expect(Preferences.getSelectedLanguage()).toBe('fr');
 

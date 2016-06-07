@@ -87,4 +87,24 @@ describe('testGetSettings', () => {
       expect(Preferences.getSetting('invalid_setting')).toBeNull();
     });
   });
+
+  pit('tests the retrieval of non-default settings.', () => {
+    const AsyncStorage = require('AsyncStorage');
+    const Preferences = require('../Preferences');
+
+    // Set defaults for the app to load
+    temporaryAsyncStorage = {
+      app_times_opened: '2',
+      app_selected_langauge: 'en',
+      app_current_semester: '0',
+      app_pref_wheel: 'true',
+    };
+
+    return Preferences.loadInitialPreferences(AsyncStorage).then(() => {
+      expect(Preferences.getSetting('pref_lang')).toBe('English');
+      expect(Preferences.getSetting('pref_wheel')).toBeTruthy();
+      expect(Preferences.getSetting('pref_semester')).toBe(firstSemester.name_en);
+      expect(Preferences.isFirstTimeOpened()).toBeFalsy();
+    });
+  });
 });
