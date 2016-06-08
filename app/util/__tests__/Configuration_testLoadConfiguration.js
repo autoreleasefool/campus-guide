@@ -63,9 +63,9 @@ describe('testLoadConfiguration', () => {
     return Configuration.loadConfiguration().then(() => {
       expect(Configuration.getAvailableSemesters().length).toBe(0);
       expect(Configuration.getDefaultLink()).toBe('http://www.uottawa.ca/');
-      expect(Configuration.getCityBusyInfo()).not.toBeDefined();
-      expect(Configuration.getSemester(0)).not.toBeDefined();
-      expect(Configuration.getUniversity()).not.toBeDefined();
+      expect(Configuration.getCityBusyInfo()).toBeUndefined();
+      expect(Configuration.getSemester(0)).toBeUndefined();
+      expect(Configuration.getUniversity()).toBeUndefined();
     });
   });
 });

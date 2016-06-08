@@ -35,6 +35,8 @@ const exampleShortTelephone = 'tel:123';
 const exampleEmail = 'mailto:google@google.com';
 // An example of an invalid URL.
 const invalidURL = 'thisisnotavalidURL';
+// When this URL is requested, an error is thrown.
+const exceptionURL = 'throwAnExceptionURL';
 
 // Mock various modules required in testing.
 jest.setMock('Alert', {
@@ -47,9 +49,17 @@ jest.setMock('Clipboard', {
 
 jest.setMock('Linking', {
   canOpenURL: jest.fn(async (url) => {
-    return url !== invalidURL;
+    if (url === exceptionURL) {
+      throw new Error('Error!');
+    } else {
+      return url !== invalidURL;
+    }
   }),
   openURL: jest.fn(),
+});
+
+jest.setMock('../TextUtils', {
+  formatLink: jest.fn(url => url),
 });
 
 const Alert = require('Alert');
@@ -58,31 +68,69 @@ const Linking = require('Linking');
 
 describe('testLinks', () => {
 
-  it('tests that links are formatted before opening.', () => {
+  beforeEach(() => {
+    Alert.alert.mockClear();
+    Clipboard.setString.mockClear();
+    Linking.canOpenURL.mockClear();
+    Linking.openURL.mockClear();
+  });
+
+  it('tests that links are formatted before opening.', async () => {
     const ExternalUtils = require('../ExternalUtils');
     const TextUtils = require('../TextUtils');
     const Translations = require('../../../assets/js/Translations.en.js');
 
-    ExternalUtils.openLink(exampleURL, Translations, Linking, Alert, Clipboard);
-    expect(TextUtils.formatLink).toBeCalledWith(exampleURL);
+    try {
+      await ExternalUtils.openLink(exampleURL, Translations, Linking, Alert, Clipboard);
+      expect(TextUtils.formatLink).toBeCalledWith(exampleURL);
 
-    ExternalUtils.openLink(exampleTelephone, Translations, Linking, Alert, Clipboard);
-    expect(TextUtils.formatLink).toBeCalledWith(exampleTelephone);
+      await ExternalUtils.openLink(exampleTelephone, Translations, Linking, Alert, Clipboard);
+      expect(TextUtils.formatLink).toBeCalledWith(exampleTelephone);
 
-    ExternalUtils.openLink(exampleShortTelephone, Translations, Linking, Alert, Clipboard);
-    expect(TextUtils.formatLink).toBeCalledWith(exampleShortTelephone);
+      await ExternalUtils.openLink(exampleShortTelephone, Translations, Linking, Alert, Clipboard);
+      expect(TextUtils.formatLink).toBeCalledWith(exampleShortTelephone);
 
-    ExternalUtils.openLink(exampleEmail, Translations, Linking, Alert, Clipboard);
-    expect(TextUtils.formatLink).toBeCalledWith(exampleEmail);
+      await ExternalUtils.openLink(exampleEmail, Translations, Linking, Alert, Clipboard);
+      expect(TextUtils.formatLink).toBeCalledWith(exampleEmail);
+
+      expect(Alert.alert).not.toBeCalled();
+      expect(Clipboard.setString).not.toBeCalled();
+      expect(Linking.openURL).toBeCalled();
+    } catch (object) {
+      console.log('An error should not be thrown.', object);
+    }
   });
 
-  pit('tests that invalid links are not opened.', () => {
+  it('tests that invalid links are not opened.', async () => {
     const ExternalUtils = require('../ExternalUtils');
     const Translations = require('../../../assets/js/Translations.en.js');
 
-    return ExternalUtils.openLink(invalidURL, Translations, Linking, Alert, Clipboard)
-        .then(() => {
-          expect(Alert.alert).toBeCalled();
-        });
+    try {
+      await ExternalUtils.openLink(invalidURL, Translations, Linking, Alert, Clipboard);
+
+      expect(Alert.alert).toBeCalled();
+      expect(Clipboard.setString).not.toBeCalled();
+      expect(Linking.openURL).not.toBeCalled();
+
+      Alert.alert.mock.calls[0][2][1].onPress();
+      expect(Clipboard.setString).toBeCalledWith(invalidURL);
+    } catch (object) {
+      console.log('An error should not be thrown.', object);
+    }
+  });
+
+  it('tests that errors in links are handled.', async () => {
+    const ExternalUtils = require('../ExternalUtils');
+    const Translations = require('../../../assets/js/Translations.en.js');
+
+    try {
+      await ExternalUtils.openLink(exceptionURL, Translations, Linking, Alert, Clipboard);
+
+      expect(Alert.alert).not.toBeCalled();
+      expect(Clipboard.setString).not.toBeCalled();
+      expect(Linking.openURL).not.toBeCalled();
+    } catch (object) {
+      console.log('An error should not be thrown.', object);
+    }
   });
 });
