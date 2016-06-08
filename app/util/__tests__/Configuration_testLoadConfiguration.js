@@ -23,11 +23,25 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../Configuration')
-    .unmock('../../../assets/json/config.json');
+jest.unmock('../Configuration');
 
 describe('testLoadConfiguration', () => {
   pit('tests the loading of the configuration file for the application.', () => {
+    // Mock config.json
+    jest.setMock('../../../assets/json/config.json', {
+      AvailableSemesters: [
+        {
+          code: '0',
+          name_en: 'name_en',
+          name_fr: 'name_fr',
+          current: true,
+        },
+      ],
+      University: {},
+      Bus: {},
+    });
+
+    // Require the configuration
     const Configuration = require('../Configuration');
 
     return Configuration.loadConfiguration().then(() => {
@@ -36,6 +50,22 @@ describe('testLoadConfiguration', () => {
       expect(Configuration.getCityBusyInfo()).toBeDefined();
       expect(Configuration.getSemester(0)).toBeDefined();
       expect(Configuration.getUniversity()).toBeDefined();
+    });
+  });
+
+  pit('tests the loading of an empty configuration.', () => {
+    // Define an empty configuration.
+    jest.setMock('../../../assets/json/config.json', {});
+
+    // Require the configuration
+    const Configuration = require('../Configuration');
+
+    return Configuration.loadConfiguration().then(() => {
+      expect(Configuration.getAvailableSemesters().length).toBe(0);
+      expect(Configuration.getDefaultLink()).toBe('http://www.uottawa.ca/');
+      expect(Configuration.getCityBusyInfo()).not.toBeDefined();
+      expect(Configuration.getSemester(0)).not.toBeDefined();
+      expect(Configuration.getUniversity()).not.toBeDefined();
     });
   });
 });
