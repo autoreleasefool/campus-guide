@@ -48,9 +48,17 @@ const exampleObjectWithDefaultIcon = {
 };
 
 // An object with no icon object.
-const invalidIconObject = {
+const noIconObject = {
   name: 'example_name',
   class: 'example_class',
+};
+
+// An object with an invalid icon object.
+const invalidIconObject = {
+  icon: {
+    invalid_name: 'invalid_name',
+    invalid_class: 'invalid_class',
+  },
 };
 
 // The expected icon to be returned for the Android platform.
@@ -100,6 +108,12 @@ describe('testGetIcons', () => {
 
   it('tests the failed retrieval of icons', () => {
     const DisplayUtils = require('../DisplayUtils');
+
+    expect(DisplayUtils.getPlatformIcon('android', noIconObject)).toBeNull();
+    expect(DisplayUtils.getPlatformIcon('ios', noIconObject)).toBeNull();
+    expect(DisplayUtils.getPlatformIcon('invalidPlatform', noIconObject)).toBeNull();
+    expect(DisplayUtils.getAndroidIcon(noIconObject)).toBeNull();
+    expect(DisplayUtils.getIOSIcon(noIconObject)).toBeNull();
 
     expect(DisplayUtils.getPlatformIcon('android', invalidIconObject)).toBeNull();
     expect(DisplayUtils.getPlatformIcon('ios', invalidIconObject)).toBeNull();
