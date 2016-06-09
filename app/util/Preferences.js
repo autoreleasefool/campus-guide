@@ -84,7 +84,7 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass): Promise<void> 
         ? false
         : (value === 'true');
   } catch (e) {
-    console.log('Caught error loading preferences.', e);
+    console.error('Caught error loading preferences.', e);
 
     // Setting variables to their default values
     timesAppOpened = 0;

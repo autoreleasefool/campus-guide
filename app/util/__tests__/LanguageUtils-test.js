@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file LanguageUtils_testGetTranslations.js
+ * @file LanguageUtils-test.js
  * @description Tests retrieving translations from objects.
  *
  */
@@ -49,10 +49,12 @@ const invalidObject = {
   no_name: 'invalid',
 };
 
-describe('testGetTranslations', () => {
-  it('tests retrieving French and English names.', () => {
-    const LanguageUtils = require('../LanguageUtils');
+// Require modules for testing
+const LanguageUtils = require('../LanguageUtils');
 
+describe('LanguageUtils-test', () => {
+
+  it('tests retrieving French and English names.', () => {
     expect(LanguageUtils.getEnglishName(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
     expect(LanguageUtils.getEnglishName(objectWithTranslatedProperties))
@@ -80,8 +82,6 @@ describe('testGetTranslations', () => {
   });
 
   it('tests retrieving French and English links.', () => {
-    const LanguageUtils = require('../LanguageUtils');
-
     expect(LanguageUtils.getEnglishLink(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.link);
     expect(LanguageUtils.getEnglishLink(objectWithTranslatedProperties))
@@ -109,8 +109,6 @@ describe('testGetTranslations', () => {
   });
 
   it('tests retrieving French and English details.', () => {
-    const LanguageUtils = require('../LanguageUtils');
-
     expect(LanguageUtils.getEnglishDetails(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.details);
     expect(LanguageUtils.getEnglishDetails(objectWithTranslatedProperties))
@@ -138,8 +136,6 @@ describe('testGetTranslations', () => {
   });
 
   it('tests retrieving French and English variants of different properties.', () => {
-    const LanguageUtils = require('../LanguageUtils');
-
     expect(LanguageUtils._getEnglishVariant('name', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
     expect(LanguageUtils._getEnglishVariant('name', objectWithTranslatedProperties))

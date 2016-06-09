@@ -108,4 +108,36 @@ module.exports = {
     'discover',
     'settings',
   ],
+
+  /*
+   * List of available building facilities
+   */
+  Facilities: [
+    'atm',
+    'food',
+    'printer',
+    'store',
+    'bed',
+    'alcohol',
+    'laundry',
+    'library',
+    'parking',
+    'mail',
+    'pharmacy',
+    'gym',
+    'pool',
+    'invalid',
+  ],
+
+  /*
+   * List of common social media platforms
+   */
+  SocialMediaPlatforms: [
+    'linkedin',
+    'twitter',
+    'facebook',
+    'instagram',
+    'youtube',
+    'tumblr',
+  ],
 };

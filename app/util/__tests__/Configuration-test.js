@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file Configuration_testLoadConfiguration.js
+ * @file Configuration-test.js
  * @description Test the loading of the configuration file for the application.
  *
  */
@@ -25,8 +25,18 @@
 // Unmock modules so the real module is used.
 jest.unmock('../Configuration');
 
-describe('testLoadConfiguration', () => {
+describe('Configuration-test', () => {
+
+  // Configuration module for testing
+  let Configuration;
+
+  beforeEach(() => {
+    // Refresh module between tests
+    Configuration = require('../Configuration');
+  })
+
   pit('tests the loading of the configuration file for the application.', () => {
+
     // Mock config.json
     jest.setMock('../../../assets/json/config.json', {
       AvailableSemesters: [
@@ -41,9 +51,6 @@ describe('testLoadConfiguration', () => {
       Bus: {},
     });
 
-    // Require the configuration
-    const Configuration = require('../Configuration');
-
     return Configuration.loadConfiguration().then(() => {
       expect(Configuration.getAvailableSemesters().length).toBeGreaterThan(0);
       expect(Configuration.getDefaultLink()).toBe('http://www.uottawa.ca/');
@@ -54,11 +61,9 @@ describe('testLoadConfiguration', () => {
   });
 
   pit('tests the loading of an empty configuration.', () => {
+
     // Define an empty configuration.
     jest.setMock('../../../assets/json/config.json', {});
-
-    // Require the configuration
-    const Configuration = require('../Configuration');
 
     return Configuration.loadConfiguration().then(() => {
       expect(Configuration.getAvailableSemesters().length).toBe(0);

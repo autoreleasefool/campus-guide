@@ -16,21 +16,22 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file ScreenUtils_testRootScreens.js
- * @description Tests the accessing and comparing of root screens.
+ * @file ScreenUtils-test.js
+ * @description Tests the screen utility methods.
  *
  */
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../../Constants')
-    .unmock('../ScreenUtils');
+jest.unmock('../../Constants');
+jest.unmock('../ScreenUtils');
 
-describe('testRootScreens', () => {
+// Require modules for testing
+const Constants = require('../../Constants');
+const ScreenUtils = require('../ScreenUtils');
+
+describe('ScreenUtils-test', () => {
   it('tests the accessing and comparing of root screens.', () => {
-    const Constants = require('../../Constants');
-    const ScreenUtils = require('../ScreenUtils');
-
     expect(ScreenUtils.getRootScreen(Constants.Views.Find.Home)).toBe(Constants.Views.Find.Home);
     expect(ScreenUtils.getRootScreen(Constants.Views.Find.Search)).toBe(Constants.Views.Find.Home);
     expect(ScreenUtils.getRootScreen(Constants.Views.Schedule.Home)).toBe(Constants.Views.Schedule.Home);
@@ -42,9 +43,6 @@ describe('testRootScreens', () => {
   });
 
   it('tests whether certain screens are recognized as root screens or not.', () => {
-    const Constants = require('../../Constants');
-    const ScreenUtils = require('../ScreenUtils');
-
     expect(ScreenUtils.isRootScreen(Constants.Views.Find.Home)).toBeTruthy();
     expect(ScreenUtils.isRootScreen(Constants.Views.Find.Search)).toBeFalsy();
     expect(ScreenUtils.isRootScreen(Constants.Views.Schedule.Home)).toBeTruthy();

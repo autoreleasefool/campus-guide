@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file ExternalUtils_testLinks.js
- * @description Tests opening links in the external browser.
+ * @file ExternalUtils-test.js
+ * @description Tests the interaction of the application with external mediums.
  *
  */
 'use strict';
@@ -62,11 +62,17 @@ jest.setMock('../TextUtils', {
   formatLink: jest.fn(url => url),
 });
 
+// Require dummy modules
 const Alert = require('Alert');
 const Clipboard = require('Clipboard');
 const Linking = require('Linking');
+const TextUtils = require('../TextUtils');
 
-describe('testLinks', () => {
+// Require modules used in testing
+const ExternalUtils = require('../ExternalUtils');
+const Translations = {};
+
+describe('ExternalUtils-test', () => {
 
   beforeEach(() => {
     Alert.alert.mockClear();
@@ -76,10 +82,6 @@ describe('testLinks', () => {
   });
 
   it('tests that links are formatted before opening.', async () => {
-    const ExternalUtils = require('../ExternalUtils');
-    const TextUtils = require('../TextUtils');
-    const Translations = require('../../../assets/js/Translations.en.js');
-
     try {
       await ExternalUtils.openLink(exampleURL, Translations, Linking, Alert, Clipboard);
       expect(TextUtils.formatLink).toBeCalledWith(exampleURL);
@@ -97,14 +99,11 @@ describe('testLinks', () => {
       expect(Clipboard.setString).not.toBeCalled();
       expect(Linking.openURL).toBeCalled();
     } catch (object) {
-      console.log('An error should not be thrown.', object);
+      console.error('An error should not be thrown.', object);
     }
   });
 
   it('tests that invalid links are not opened.', async () => {
-    const ExternalUtils = require('../ExternalUtils');
-    const Translations = require('../../../assets/js/Translations.en.js');
-
     try {
       await ExternalUtils.openLink(invalidURL, Translations, Linking, Alert, Clipboard);
 
@@ -115,14 +114,11 @@ describe('testLinks', () => {
       Alert.alert.mock.calls[0][2][1].onPress();
       expect(Clipboard.setString).toBeCalledWith(invalidURL);
     } catch (object) {
-      console.log('An error should not be thrown.', object);
+      console.error('An error should not be thrown.', object);
     }
   });
 
   it('tests that errors in links are handled.', async () => {
-    const ExternalUtils = require('../ExternalUtils');
-    const Translations = require('../../../assets/js/Translations.en.js');
-
     try {
       await ExternalUtils.openLink(exceptionURL, Translations, Linking, Alert, Clipboard);
 
@@ -130,7 +126,7 @@ describe('testLinks', () => {
       expect(Clipboard.setString).not.toBeCalled();
       expect(Linking.openURL).not.toBeCalled();
     } catch (object) {
-      console.log('An error should not be thrown.', object);
+      console.error('An error should not be thrown.', object);
     }
   });
 });

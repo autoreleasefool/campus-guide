@@ -16,14 +16,26 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file DisplayUtils_testGetIcons.js
- * @description Test the retrieval of icons.
+ * @file DisplayUtils-test.js
+ * @description Tests the functionality of DisplayUtils
  *
  */
 'use strict';
 
 // Unmock modules so the real module is used.
 jest.unmock('../DisplayUtils');
+jest.unmock('../../Constants');
+
+// Create a mock for the LayoutAnimation class
+jest.setMock('LayoutAnimation', {
+  Presets: {
+    easeInEaseOut: {
+      create: jest.fn(),
+      duration: 0,
+      update: jest.fn(),
+    },
+  },
+});
 
 // Example object containing an icon object which describes the android and iOS icons.
 const exampleObjectWithPlatformSpecificIcons = {
@@ -79,10 +91,30 @@ const expectedDefaultIcon = {
   class: 'example_class',
 };
 
-describe('testGetIcons', () => {
-  it('tests the successful retrieval of iOS icons', () => {
-    const DisplayUtils = require('../DisplayUtils');
+// Require the modules used in testing
+const Constants = require('../../Constants');
+const DisplayUtils = require('../DisplayUtils');
+const LayoutAnimation = require('LayoutAnimation');
 
+describe('DisplayUtils-test', () => {
+
+  it('tests retrieving facility icon names.', () => {
+    for (let i = 0; i < Constants.Facilities.length; i++) {
+      expect(DisplayUtils.getFacilityIconName(Constants.Facilities[i])).toBeDefined();
+    }
+  });
+
+  it('tests retrieving facility icon classes.', () => {
+    for (let i = 0; i < Constants.Facilities.length; i++) {
+      expect(DisplayUtils.getFacilityIconClass(Constants.Facilities[i])).toBeDefined();
+    }
+  });
+
+  it('tests the retrieval of animations.', () => {
+    expect(DisplayUtils.getEaseInEaseOutLayoutAnimation(LayoutAnimation)).toBeDefined();
+  });
+
+  it('tests the successful retrieval of iOS icons.', () => {
     expect(DisplayUtils.getPlatformIcon('ios', exampleObjectWithPlatformSpecificIcons))
         .toEqual(expectedIOSIcon);
     expect(DisplayUtils.getIOSIcon(exampleObjectWithPlatformSpecificIcons))
@@ -93,9 +125,7 @@ describe('testGetIcons', () => {
         .toEqual(expectedDefaultIcon);
   });
 
-  it('tests the successful retrieval of Android icons', () => {
-    const DisplayUtils = require('../DisplayUtils');
-
+  it('tests the successful retrieval of Android icons.', () => {
     expect(DisplayUtils.getPlatformIcon('android', exampleObjectWithPlatformSpecificIcons))
         .toEqual(expectedAndroidIcon);
     expect(DisplayUtils.getAndroidIcon(exampleObjectWithPlatformSpecificIcons))
@@ -106,9 +136,7 @@ describe('testGetIcons', () => {
         .toEqual(expectedDefaultIcon);
   });
 
-  it('tests the failed retrieval of icons', () => {
-    const DisplayUtils = require('../DisplayUtils');
-
+  it('tests the failed retrieval of icons.', () => {
     expect(DisplayUtils.getPlatformIcon('android', noIconObject)).toBeNull();
     expect(DisplayUtils.getPlatformIcon('ios', noIconObject)).toBeNull();
     expect(DisplayUtils.getPlatformIcon('invalidPlatform', noIconObject)).toBeNull();
@@ -120,5 +148,39 @@ describe('testGetIcons', () => {
     expect(DisplayUtils.getPlatformIcon('invalidPlatform', invalidIconObject)).toBeNull();
     expect(DisplayUtils.getAndroidIcon(invalidIconObject)).toBeNull();
     expect(DisplayUtils.getIOSIcon(invalidIconObject)).toBeNull();
+  });
+
+  it('tests the proper recognition of light colors.', () => {
+    expect(DisplayUtils.isColorDark('#ffffff')).toBeFalsy();
+    expect(DisplayUtils.isColorDark('ffffff')).toBeFalsy();
+    expect(DisplayUtils.isColorDark('#B2B2B2')).toBeFalsy();
+    expect(DisplayUtils.isColorDark('B2B2B2')).toBeFalsy();
+    expect(DisplayUtils.isColorDark('#E6DDB3')).toBeFalsy();
+    expect(DisplayUtils.isColorDark('E6DDB3')).toBeFalsy();
+  });
+
+  it('tests the proper recognition of dark colors.', () => {
+    expect(DisplayUtils.isColorDark('#000000')).toBeTruthy();
+    expect(DisplayUtils.isColorDark('000000')).toBeTruthy();
+    expect(DisplayUtils.isColorDark('#333333')).toBeTruthy();
+    expect(DisplayUtils.isColorDark('333333')).toBeTruthy();
+    expect(DisplayUtils.isColorDark('#611405')).toBeTruthy();
+    expect(DisplayUtils.isColorDark('611405')).toBeTruthy();
+  });
+
+  it('tests retrieving social media icon names.', () => {
+    for (let i = 0; i < Constants.SocialMediaPlatforms.length; i++) {
+      expect(DisplayUtils.getSocialMediaIconName(Constants.SocialMediaPlatforms[i])).toBeDefined();
+    }
+
+    expect(DisplayUtils.getSocialMediaIconName('other')).toBeDefined();
+  });
+
+  it('tests retrieving social media icon colors.', () => {
+    for (let i = 0; i < Constants.SocialMediaPlatforms.length; i++) {
+      expect(DisplayUtils.getSocialMediaIconColor(Constants.SocialMediaPlatforms[i])).toBeDefined();
+    }
+
+    expect(DisplayUtils.getSocialMediaIconColor('other')).toBeDefined();
   });
 });

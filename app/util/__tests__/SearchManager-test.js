@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file SearchManager_testSearchListener.js
+ * @file SearchManager-test.js
  * @description Tests setting and retrieving search listeners for the application.
  *
  */
@@ -51,8 +51,15 @@ const searchListeners: Array<SearchListener> = [
 // Text which will be used to invoke a search.
 const DEFAULT_SEARCH_TEXT = 'This is a search.';
 
-describe('testSearchListener', () => {
+describe('SearchManager-test', () => {
+
+  // SearchManager utility class
+  let SearchManager;
+
   beforeEach(() => {
+    // Re-require the class each time to prevent persistence between tests
+    SearchManager = require('../SearchManager');
+
     // Clear mock calls
     defaultSearchListener.onSearch.mockClear();
     for (let i = 0; i < searchListeners.length; i++) {
@@ -61,8 +68,6 @@ describe('testSearchListener', () => {
   });
 
   it('tests the setting and retrieval of a default search listener.', () => {
-    const SearchManager = require('../SearchManager');
-
     // Make sure there isn't already a search listener
     expect(SearchManager.getDefaultSearchListener()).toBeNull();
 
@@ -80,8 +85,6 @@ describe('testSearchListener', () => {
   });
 
   it('tests setting multiple search listeners.', () => {
-    const SearchManager = require('../SearchManager');
-
     // Add all of the search listeners
     for (let i = 0; i < searchListeners.length; i++) {
       SearchManager.addSearchListener(searchListeners[i]);
@@ -100,8 +103,6 @@ describe('testSearchListener', () => {
   });
 
   it ('tests adding then removing a search listener.', () => {
-    const SearchManager = require('../SearchManager');
-
     // Add all of the search listeners
     for (let i = 0; i < searchListeners.length; i++) {
       SearchManager.addSearchListener(searchListeners[i]);
@@ -149,8 +150,6 @@ describe('testSearchListener', () => {
   });
 
   it('fails to add a search listener more than once.', () => {
-    const SearchManager = require('../SearchManager');
-
     // Add all of the search listeners, with success
     for (let i = 0; i < searchListeners.length; i++) {
       expect(SearchManager.addSearchListener(searchListeners[i])).toBeTruthy();
@@ -163,8 +162,6 @@ describe('testSearchListener', () => {
   });
 
   it('fails to remove a search listener more than once.', () => {
-    const SearchManager = require('../SearchManager');
-
     // Add all of the search listeners
     for (let i = 0; i < searchListeners.length; i++) {
       SearchManager.addSearchListener(searchListeners[i]);
@@ -182,8 +179,6 @@ describe('testSearchListener', () => {
   });
 
   it('fails to retrieve a search listener that doesn\'t exist.', () => {
-    const SearchManager = require('../SearchManager');
-
     // Add all of the search listeners
     for (let i = 0; i < searchListeners.length; i++) {
       SearchManager.addSearchListener(searchListeners[i]);
