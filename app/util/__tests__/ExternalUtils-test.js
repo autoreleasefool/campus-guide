@@ -22,6 +22,9 @@
  */
 'use strict';
 
+/* async seems to cause an issue with this rule. */
+/* eslint-disable arrow-parens */
+
 // Unmock modules so the real module is used.
 jest.unmock('../ExternalUtils');
 

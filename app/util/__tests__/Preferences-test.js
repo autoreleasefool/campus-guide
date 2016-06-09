@@ -68,7 +68,7 @@ jest.setMock('../Configuration', {
 });
 
 jest.setMock('../LanguageUtils', {
-  getTranslatedName: jest.fn((language, object) => {
+  getTranslatedName: jest.fn(language => {
     return (language === 'en')
         ? NAME_ENGLISH
         : NAME_FRENCH;
@@ -198,4 +198,4 @@ describe('Preferences-test', () => {
       expect(Preferences.getCurrentSemesterInfo()).toBeDefined();
     });
   });
-})
+});

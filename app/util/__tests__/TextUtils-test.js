@@ -68,6 +68,7 @@ describe('TextUtils-test', () => {
   });
 
   it('tests that left padding a string returns the proper value.', () => {
+
     /* Magic numbers are used here for simplicity's sake */
     /* eslint-disable no-magic-numbers */
     expect(TextUtils.leftPad('Hello', 20)).toBe('               Hello');
@@ -75,10 +76,13 @@ describe('TextUtils-test', () => {
     expect(TextUtils.leftPad('Hello, world!', 20, 'e')).toBe('eeeeeeeHello, world!');
     expect(TextUtils.leftPad('12345', 10, '0')).toBe('0000012345');
     expect(TextUtils.leftPad('CampusGuide', 10, 'too_long')).toBe('CampusGuide');
+
     /* eslint-enable no-magic-numbers */
+
   });
 
   it('tests that concatenating a string with ellipses returns the proper value.', () => {
+
     /* Magic numbers are used here for simplicity's sake */
     /* eslint-disable no-magic-numbers */
     expect(TextUtils.getTextWithEllipses('Hello', 20)).toBe('Hello');
@@ -87,7 +91,9 @@ describe('TextUtils-test', () => {
     expect(TextUtils.getTextWithEllipses('Goodbye', 100)).toBe('Goodbye');
     expect(TextUtils.getTextWithEllipses('CampusGuide', 2)).toBe('..');
     expect(TextUtils.getTextWithEllipses('ReactNative', 1)).toBe('..');
+
     /* eslint-enable no-magic-numbers */
+
   });
 
   it('tests getting a 24 hour adjusted time works', () => {

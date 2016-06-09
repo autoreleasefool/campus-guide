@@ -33,7 +33,7 @@ describe('Configuration-test', () => {
   beforeEach(() => {
     // Refresh module between tests
     Configuration = require('../Configuration');
-  })
+  });
 
   pit('tests the loading of the configuration file for the application.', () => {
 
