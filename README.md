@@ -3,6 +3,8 @@
 [![Build status](https://travis-ci.org/joseph-roque/campus-guide.svg?branch=master)](https://travis-ci.org/joseph-roque/campus-guide)
 [![Dependency Status](https://david-dm.org/joseph-roque/campus-guide.svg)](https://david-dm.org/joseph-roque/campus-guide)
 [![devDependency Status](https://david-dm.org/joseph-roque/campus-guide/dev-status.svg)](https://david-dm.org/joseph-roque/campus-guide#info=devDependencies)
+[![codecov](https://codecov.io/gh/joseph-roque/campus-guide/branch/master/graph/badge.svg)](https://codecov.io/gh/joseph-roque/campus-guide)
+
 
 A mobile app, developed with React Native, to help students of the University of Ottawa find their classes on campus.
 
