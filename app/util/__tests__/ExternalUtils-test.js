@@ -50,7 +50,7 @@ jest.setMock('Clipboard', {
 jest.setMock('Linking', {
   canOpenURL: jest.fn(async (url) => {
     if (url === exceptionURL) {
-      throw new Error('Error!');
+      throw new Error('This error is being thrown for testing purposes.');
     } else {
       return url !== invalidURL;
     }

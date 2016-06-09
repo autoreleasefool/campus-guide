@@ -39,7 +39,7 @@ const LanguageUtils = require('./LanguageUtils');
 // Represents the number of times the app has been opened
 const TIMES_APP_OPENED: string = 'app_times_opened';
 // Represents the language selected by the user to use the app in
-const SELECTED_LANGUAGE: string = 'app_selected_langauge';
+const SELECTED_LANGUAGE: string = 'app_selected_language';
 // Represents the current study semester selected by the user
 const CURRENT_SEMESTER: string = 'app_current_semester';
 // Represents if the user prefers routes with wheelchair access

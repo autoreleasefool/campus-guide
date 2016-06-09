@@ -23,16 +23,13 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../Configuration');
-jest.unmock('../LanguageUtils');
 jest.unmock('../Preferences');
-jest.unmock('../../../assets/json/config.json');
 
 // Mock various modules required in testing.
 jest.setMock('AsyncStorage', {
   getItem: jest.fn(async (item) => {
     if (shouldThrowError) {
-      throw new Error('Error!');
+      throw new Error('This error is being thrown for testing purposes.');
     }
 
     if (item != null && item in temporaryAsyncStorage) {
@@ -48,35 +45,64 @@ jest.setMock('AsyncStorage', {
   }),
 });
 
+jest.setMock('../Configuration', {
+  getAvailableSemesters: jest.fn(() => {
+    return [
+      {
+        code: '0',
+        name_en: NAME_ENGLISH,
+        name_fr: NAME_FRENCH,
+        current: true,
+      },
+      {
+        code: '1',
+        name_en: NAME_ENGLISH,
+        name_fr: NAME_FRENCH,
+        current: false,
+      },
+    ];
+  }),
+  getSemester: jest.fn(semester => {
+    return require('../Configuration').getAvailableSemesters()[semester];
+  }),
+});
+
+jest.setMock('../LanguageUtils', {
+  getTranslatedName: jest.fn((language, object) => {
+    return (language === 'en')
+        ? NAME_ENGLISH
+        : NAME_FRENCH;
+  }),
+});
+
+// Default English name
+const NAME_ENGLISH = 'name_en';
+// Default French name
+const NAME_FRENCH = 'name_fr';
+
 // A number which cannot exist as a semester
 const INVALID_SEMESTER = 999;
+// Dictionary of values to store.
+let temporaryAsyncStorage = {};
+// Indicates if the method getItem in the AsyncStorage mock should thrown an error
+let shouldThrowError: boolean = false;
 
 // Require modules for testing
 const AsyncStorage = require('AsyncStorage');
 
-// Dictionary of values to store.
-let temporaryAsyncStorage = {};
-
-// Indicates if the method getItem in the AsyncStorage mock should thrown an error
-let shouldThrowError: boolean = false;
-
 describe('Preferences-test', () => {
 
-  // Configuration module for tests
-  let Configuration;
-  // Preferences module for testLoadPreferences
+  // Preferences module for tests
   let Preferences;
 
   beforeEach(() => {
     // Refresh modules between tests
-    Configuration = require('../Configuration');
     Preferences = require('../Preferences');
 
     // In most cases, we don't want an error to be thrown in AsyncStorage
     shouldThrowError = false;
 
-    // Load the configuration file for the application.
-    Configuration.loadConfiguration();
+    // Reset AsyncStorage
     temporaryAsyncStorage = {};
   });
 
@@ -105,7 +131,7 @@ describe('Preferences-test', () => {
     // Set defaults for the app to load
     temporaryAsyncStorage = {
       app_times_opened: '2',
-      app_selected_langauge: 'en',
+      app_selected_language: 'en',
       app_current_semester: '0',
       app_pref_wheel: 'true',
     };
