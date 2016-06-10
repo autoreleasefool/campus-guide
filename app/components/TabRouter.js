@@ -71,7 +71,7 @@ module.exports = {
       scene = (
         <FindHome
             onEditSchedule={() => changeTabs(Constants.Views.Schedule.Home)}
-            onShowBuilding={(buildingCode: number) => navigateForward(Constants.Views.Find.Building, buildingCode)} />
+            onShowBuilding={buildingCode => navigateForward(Constants.Views.Find.Building, buildingCode)} />
       );
     } else if (route.id === Constants.Views.Find.Building) {
       scene = (
