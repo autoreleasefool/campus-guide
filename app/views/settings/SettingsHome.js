@@ -41,7 +41,6 @@ const Constants = require('../../Constants');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
-const Styles = require('../../Styles');
 
 // Type definition for settings icons.
 type SettingIcons = {
@@ -211,7 +210,9 @@ class SettingsHome extends React.Component {
     if (setting.type === 'multi') {
       content = (
         <View style={_styles.settingContent}>
-          <Text style={[Styles.mediumText, {color: 'black'}]}>{Preferences.getSetting(setting.key)}</Text>
+          <Text style={{color: 'black', fontSize: Constants.Text.Medium}}>
+            {Preferences.getSetting(setting.key)}
+          </Text>
         </View>
       );
     } else if (setting.type === 'boolean') {
@@ -236,7 +237,7 @@ class SettingsHome extends React.Component {
       <View style={_styles.settingContainer}>
         <TouchableOpacity onPress={() => this._pressRow(setting.key)}>
           <View style={_styles.setting}>
-            <Text style={[_styles.settingText, Styles.mediumText, {color: 'black'}]}>
+            <Text style={[_styles.settingText, {color: 'black', fontSize: Constants.Text.Medium}]}>
               {LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), setting)}
             </Text>
             {content}
@@ -284,7 +285,7 @@ class SettingsHome extends React.Component {
     if (this.state.loaded) {
       return (
         <View style={_styles.container}>
-          <Text style={[_styles.title, Styles.titleText, {color: 'black'}]}>
+          <Text style={_styles.title}>
             {Translations.settings}
           </Text>
           <ListView
@@ -314,6 +315,8 @@ const _styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 5,
     textAlign: 'center',
+    fontSize: Constants.Text.Title,
+    color: Constants.Colors.primaryBlackText,
   },
   settingContainer: {
     backgroundColor: Constants.Colors.charcoalGrey,

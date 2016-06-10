@@ -56,7 +56,6 @@ const Ionicons = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
-const Styles = require('../../Styles');
 const TextUtils = require('../../util/TextUtils');
 
 // Type definition for component props.
@@ -193,7 +192,7 @@ class LinkCategory extends React.Component {
       return null;
     } else {
       return (
-        <Text style={[_styles.linkSubtitle, Styles.smallText, {color: textColor}]}>
+        <Text style={[_styles.linkSubtitle, {color: textColor}]}>
           {TextUtils.formatLink(link)}
         </Text>
       );
@@ -235,7 +234,7 @@ class LinkCategory extends React.Component {
                     onPress={() => this._openLink(translatedLink, Translations)}>
                   {this._getLinkIcon(translatedLink, iconColor)}
                   <View>
-                    <Text style={[_styles.link, Styles.largeText, {color: textColor}]}>
+                    <Text style={[_styles.link, {color: textColor}]}>
                       {translatedName}
                     </Text>
                     {this._getFormattedLink(translatedLink, textColor)}
@@ -387,7 +386,7 @@ class LinkCategory extends React.Component {
               source={this.props.categoryImage}
               style={_styles.bannerImage} />
           <View style={_styles.bannerTextContainer}>
-            <Text style={[_styles.bannerText, Styles.titleText]}>
+            <Text style={_styles.bannerText}>
               {LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.category)}
             </Text>
           </View>
@@ -430,6 +429,7 @@ const _styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Text.Title,
   },
   socialMediaContainer: {
     backgroundColor: Constants.Colors.whiteComponentBackgroundColor,
@@ -444,11 +444,13 @@ const _styles = StyleSheet.create({
   },
   link: {
     margin: 10,
+    fontSize: Constants.Text.Large,
   },
   linkSubtitle: {
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
+    fontSize: Constants.Text.Small,
   },
   linkIcon: {
     marginLeft: 20,

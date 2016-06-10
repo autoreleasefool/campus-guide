@@ -50,7 +50,6 @@ const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
 const SectionHeader = require('../../components/SectionHeader');
-const Styles = require('../../Styles');
 
 // Get dimensions of the device
 const {width} = Dimensions.get('window');
@@ -188,7 +187,7 @@ class ScheduleHome extends React.Component {
       buttons = (
         <TouchableOpacity onPress={this._toggleEditScheduleButtons.bind(this)}>
           <View style={_styles.editScheduleButton}>
-            <Text style={[Styles.mediumText, {color: 'white'}]}>
+            <Text style={{color: 'white', fontSize: Constants.Text.Medium}}>
               {Translations.edit_schedule}
             </Text>
           </View>

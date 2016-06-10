@@ -48,7 +48,6 @@ const Constants = require('../../../Constants');
 const LanguageUtils = require('../../../util/LanguageUtils');
 const Preferences = require('../../../util/Preferences');
 const SectionHeader = require('../../../components/SectionHeader');
-const Styles = require('../../../Styles');
 const TextUtils = require('../../../util/TextUtils');
 
 // Identifier for the navigator, indicating the list of stops is being shown.
@@ -243,14 +242,14 @@ class Stops extends React.Component {
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>
           <View style={_styles.header}>
-            <Text style={[Styles.largeText, _styles.headerTitle, {color: this.state.primaryTextColor}]}>
+            <Text style={[_styles.headerTitle, {color: this.state.primaryTextColor}]}>
               {stop.name}
             </Text>
-            <Text style={[Styles.smallText, _styles.headerSubtitle, {color: this.state.secondaryTextColor}]}>
+            <Text style={[_styles.headerSubtitle, {color: this.state.secondaryTextColor}]}>
               {stop.code}
             </Text>
           </View>
-          <Text style={[Styles.mediumText, _styles.stopRoutes, {color: this.state.primaryTextColor}]}>
+          <Text style={[_styles.stopRoutes, {color: this.state.primaryTextColor}]}>
             {stop.routes.join(', ')}
           </Text>
         </TouchableOpacity>
@@ -273,14 +272,14 @@ class Stops extends React.Component {
     return (
       <View>
         <View style={_styles.header}>
-          <Text style={[Styles.largeText, _styles.headerTitle, {color: this.state.primaryTextColor}]}>
+          <Text style={[_styles.headerTitle, {color: this.state.primaryTextColor}]}>
             {route.sign}
           </Text>
-          <Text style={[Styles.smallText, _styles.headerSubtitle, {color: this.state.secondaryTextColor}]}>
+          <Text style={[_styles.headerSubtitle, {color: this.state.secondaryTextColor}]}>
             {route.number}
           </Text>
         </View>
-        <Text style={[Styles.mediumText, _styles.stopTimes, {color: this.state.primaryTextColor}]}>
+        <Text style={[_styles.stopTimes, {color: this.state.primaryTextColor}]}>
           {this._retrieveUpcomingTimes(route.days)}
         </Text>
         {(rowIndex < this.state.dataSourceTimes.getRowCount() - 1)
@@ -416,20 +415,24 @@ const _styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     textAlign: 'left',
+    fontSize: Constants.Text.Large,
   },
   headerSubtitle: {
     textAlign: 'right',
+    fontSize: Constants.Text.Small,
   },
   stopRoutes: {
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
+    fontSize: Constants.Text.Medium,
   },
   stopTimes: {
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
     fontStyle: 'italic',
+    fontSize: Constants.Text.Medium,
   },
   divider: {
     flex: 1,

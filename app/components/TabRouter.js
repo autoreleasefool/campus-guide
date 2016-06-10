@@ -1,3 +1,27 @@
+/**
+ *
+ * @license
+ * Copyright (C) 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Joseph Roque
+ * @file TabRouter.js
+ * @module TabRouter
+ * @description Manages view changes in the application. Common to Android and iOS.
+ * @flow
+ *
+ */
 // React Native imports
 import React from 'react';
 import {
@@ -39,15 +63,15 @@ module.exports = {
    * @returns {ReactElement} the view to render, based on {route}.
    */
   renderScene(route: Route,
-      changeTabs: DefaultFunction,
-      navigateForward: DefaultFunction,
+      changeTabs: (tabId: number) => any,
+      navigateForward: (screenId: number | string, data: any) => any,
       refreshNavbar: DefaultFunction): ReactElement {
     let scene = null;
     if (route.id === Constants.Views.Find.Home) {
       scene = (
         <FindHome
             onEditSchedule={() => changeTabs(Constants.Views.Schedule.Home)}
-            onShowBuilding={buildingCode => navigateForward(Constants.Views.Find.Building, buildingCode)} />
+            onShowBuilding={(buildingCode: number) => navigateForward(Constants.Views.Find.Building, buildingCode)} />
       );
     } else if (route.id === Constants.Views.Find.Building) {
       scene = (

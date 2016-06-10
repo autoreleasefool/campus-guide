@@ -57,7 +57,6 @@ const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
 const SearchManager = require('../../util/SearchManager');
 const SectionHeader = require('../../components/SectionHeader');
-const Styles = require('../../Styles');
 
 const {width} = Dimensions.get('window');
 const screenWidth: number = width;
@@ -269,7 +268,7 @@ class BuildingPage extends React.Component {
     return (
       <TouchableOpacity>
         <View style={{width: ROOM_WIDTH, backgroundColor: rowColor}}>
-          <Text style={[Styles.mediumText, _styles.room]}>
+          <Text style={_styles.room}>
             {room.name}
           </Text>
         </View>
@@ -360,6 +359,7 @@ const _styles = StyleSheet.create({
     margin: 15,
     alignSelf: 'center',
     color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Text.Medium,
   },
 });
 

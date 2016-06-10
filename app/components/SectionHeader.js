@@ -42,7 +42,6 @@ import type {
 const Constants = require('../Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const Styles = require('../Styles');
 const TextUtils = require('../util/TextUtils');
 
 // Represents a value in the subtitle which should not be used.
@@ -249,7 +248,7 @@ class SectionHeader extends React.Component {
     // Build the subtitle for the section
     if (this.state.subtitleName && this.state.subtitleName !== NULL_SUBTITLE_VALUE) {
       subtitleName = (
-        <Text style={[Styles.smallText, _styles.subtitleName, {color: this.state.textAndIconColor}]}>
+        <Text style={[_styles.subtitleName, {color: this.state.textAndIconColor}]}>
           {this.state.subtitleName.toUpperCase()}
         </Text>
       );
@@ -306,7 +305,7 @@ class SectionHeader extends React.Component {
     return (
       <View style={[_styles.header, {backgroundColor: headerBackground}]}>
         {icon}
-        <Text style={[Styles.largeText, {color: this.state.textAndIconColor, marginLeft: 20}]}>
+        <Text style={{color: this.state.textAndIconColor, marginLeft: 20, fontSize: Constants.Text.Large}}>
           {TextUtils.getTextWithEllipses(this.props.sectionName, MAX_NAME_LENGTH)}
         </Text>
         {iconAndSubtitle}
@@ -338,6 +337,7 @@ const _styles = StyleSheet.create({
     marginRight: 20,
     marginBottom: 16,
     marginLeft: 20,
+    fontSize: Constants.Text.Small,
   },
   subtitleIcon: {
     marginTop: 15,

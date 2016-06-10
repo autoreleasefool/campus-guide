@@ -38,8 +38,8 @@ import type {
 } from '../../../Types';
 
 // Imports
+const Constants = require('../../../Constants');
 const Preferences = require('../../../util/Preferences');
-const Styles = require('../../../Styles');
 
 // Type definition for component props.
 type Props = {
@@ -102,7 +102,7 @@ class Upcoming extends React.Component {
         <TouchableOpacity
             style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
             onPress={this.props.onEdit}>
-          <Text style={[Styles.mediumText, {color: 'white', textAlign: 'center'}]}>
+          <Text style={{color: 'white', textAlign: 'center', fontSize: Constants.Text.Medium}}>
             {Translations.no_courses_added}
           </Text>
         </TouchableOpacity>

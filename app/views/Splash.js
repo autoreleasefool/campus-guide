@@ -48,7 +48,6 @@ const Configuration = require('../util/Configuration');
 const Constants = require('../Constants');
 const Preferences = require('../util/Preferences');
 const StatusBarUtils = require('../util/StatusBarUtils');
-const Styles = require('../Styles');
 
 // Require both language translations to display items in both languages
 const TranslationsEn: Object = require('../../assets/js/Translations.en.js');
@@ -163,11 +162,11 @@ class SplashScreen extends React.Component {
             onPress={() => this._selectLanguage('en')}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <View style={_styles.languageContainer}>
-              <Text style={[Styles.mediumText, {color: 'white'}]}>
+              <Text style={_styles.languageSubtitle}>
                 {TranslationsEn.continue_in}
               </Text>
               <View style={{padding: 5}}>
-                <Text style={[Styles.titleText, {color: 'white'}]}>
+                <Text style={{color: 'white', fontSize: Constants.Text.Title}}>
                   {TranslationsEn.language}
                 </Text>
               </View>
@@ -180,11 +179,11 @@ class SplashScreen extends React.Component {
             onPress={() => this._selectLanguage('fr')}>
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
-              <Text style={[Styles.mediumText, {color: 'white'}]}>
+              <Text style={_styles.languageSubtitle}>
                 {TranslationsFr.continue_in}
               </Text>
               <View style={{padding: 5}}>
-                <Text style={[Styles.titleText, {color: 'white'}]}>
+                <Text style={_styles.languageTitle}>
                   {TranslationsFr.language}
                 </Text>
               </View>
@@ -211,6 +210,14 @@ const _styles = StyleSheet.create({
     left: 0,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  languageTitle: {
+    color: 'white',
+    fontSize: Constants.Text.Title,
+  },
+  languageSubtitle: {
+    color: 'white',
+    fontSize: Constants.Text.Medium,
   },
 });
 

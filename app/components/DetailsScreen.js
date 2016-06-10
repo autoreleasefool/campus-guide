@@ -39,7 +39,6 @@ import {
 const Constants = require('../Constants');
 const DisplayUtils = require('../util/DisplayUtils');
 const SectionHeader = require('./SectionHeader');
-const Styles = require('../Styles');
 
 // Type definition for component props.
 type Props = {
@@ -100,7 +99,7 @@ class DetailsScreen extends React.Component {
                 source={this.props.image}
                 style={_styles.bannerImage} />
             <View style={_styles.bannerTextContainer}>
-              <Text style={[_styles.bannerText, Styles.titleText]}>
+              <Text style={_styles.bannerText}>
                 {this.props.title}
               </Text>
             </View>
@@ -132,7 +131,7 @@ class DetailsScreen extends React.Component {
           {this.props.text.map((text, index) => (
             <Text
                 key={index}
-                style={[Styles.mediumText, _styles.text, {color: textColor}]}>
+                style={[_styles.text, {color: textColor}]}>
               {text}
             </Text>
           ))}
@@ -174,12 +173,14 @@ const _styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Text.Title,
   },
   scrollview: {
     flex: 1,
   },
   text: {
     margin: 10,
+    fontSize: Constants.Text.Medium,
   },
 });
 

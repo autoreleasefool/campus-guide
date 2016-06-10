@@ -45,7 +45,6 @@ import type {
 const Constants = require('../../Constants');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');
-const Styles = require('../../Styles');
 
 // Type definition for component props.
 type Props = {
@@ -129,7 +128,7 @@ class LinksHome extends React.Component {
             source={category.image}
             style={_styles.categoryImage} />
         <View style={_styles.categoryTextContainer}>
-          <Text style={[_styles.categoryText, Styles.titleText]}>
+          <Text style={_styles.categoryText}>
             {LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), category)}
           </Text>
         </View>
@@ -189,6 +188,7 @@ const _styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Text.Title,
   },
 });
 

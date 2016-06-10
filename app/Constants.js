@@ -99,6 +99,16 @@ module.exports = {
   },
 
   /*
+   * Common text sizes to use throughout the application.
+   */
+  Text: {
+    Small: 14,
+    Medium: 16,
+    Large: 20,
+    Title: 24,
+  },
+
+  /*
    * Defines the order of tabs in the app.
    * Tabs added here should also be accounted for in Types.TabItems, Tabs.ios.js, and Tabs.android.js
    */
