@@ -52,7 +52,7 @@
       ]
     },
     "moduleNameMapper": {
-      "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "<rootDir>/tests/__mocks__/EmptyAsset.json"
+      "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
     }
   }
 }
