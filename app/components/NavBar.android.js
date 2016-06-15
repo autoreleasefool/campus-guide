@@ -124,6 +124,15 @@ class NavBar extends React.Component {
   }
 
   /**
+   * Calls the component prop to toggle the navigation drawer.
+   */
+  _toggleDrawer(): void {
+    if (this.props.onDrawerToggle) {
+      this.props.onDrawerToggle();
+    }
+  }
+
+  /**
    * Prompts the app to search.
    *
    * @param {?string} text params to search for.
@@ -138,15 +147,6 @@ class NavBar extends React.Component {
       this.setState({
         showClearButton: false,
       });
-    }
-  }
-
-  /**
-   * Calls the component prop to toggle the navigation drawer.
-   */
-  _toggleDrawer(): void {
-    if (this.props.onDrawerToggle) {
-      this.props.onDrawerToggle();
     }
   }
 

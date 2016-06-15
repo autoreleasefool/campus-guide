@@ -229,6 +229,53 @@ class Stops extends React.Component {
   }
 
   /**
+   * Returns a list of times for the current day that will be the next to occur.
+   *
+   * @param {Object} days         a dictionary of days mapped to times.
+   * @returns {string} a list of up to 3 times, formatted as a string.
+   */
+  _retrieveUpcomingTimes(days: Object): string {
+    // Get current language for translations
+    let Translations: Object = {};
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../../assets/js/Translations.fr.js');
+    } else {
+      Translations = require('../../../../assets/js/Translations.en.js');
+    }
+
+    const upcomingTimes = [];
+    const now = new Date();
+    const currentDay = now.getDay().toString();
+    const currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0')
+        + ':'
+        + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
+    for (const day in days) {
+      if (days.hasOwnProperty(day)) {
+        if (day.indexOf(currentDay) > -1) {
+          let i = days[day].length - 1;
+          while (i >= 0) {
+            if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
+              let j = 1;
+              while (j < MAX_UPCOMING_TIMES && i + j < days[day].length) {
+                upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
+                j += 1;
+              }
+              break;
+            }
+            i -= 1;
+          }
+        }
+      }
+    }
+
+    if (upcomingTimes.length > 0) {
+      return upcomingTimes.join('   ');
+    } else {
+      return Translations.no_upcoming_buses;
+    }
+  }
+
+  /**
    * Shows partial details about a stop.
    *
    * @param {StopInfo} stop       details about the stop to display.
@@ -334,53 +381,6 @@ class Stops extends React.Component {
               renderRow={this._renderStopRow.bind(this)} />
         </View>
       );
-    }
-  }
-
-  /**
-   * Returns a list of times for the current day that will be the next to occur.
-   *
-   * @param {Object} days         a dictionary of days mapped to times.
-   * @returns {string} a list of up to 3 times, formatted as a string.
-   */
-  _retrieveUpcomingTimes(days: Object): string {
-    // Get current language for translations
-    let Translations: Object = {};
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../../assets/js/Translations.en.js');
-    }
-
-    const upcomingTimes = [];
-    const now = new Date();
-    const currentDay = now.getDay().toString();
-    const currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0')
-        + ':'
-        + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
-    for (const day in days) {
-      if (days.hasOwnProperty(day)) {
-        if (day.indexOf(currentDay) > -1) {
-          let i = days[day].length - 1;
-          while (i >= 0) {
-            if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
-              let j = 1;
-              while (j < MAX_UPCOMING_TIMES && i + j < days[day].length) {
-                upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
-                j += 1;
-              }
-              break;
-            }
-            i -= 1;
-          }
-        }
-      }
-    }
-
-    if (upcomingTimes.length > 0) {
-      return upcomingTimes.join('   ');
-    } else {
-      return Translations.no_upcoming_buses;
     }
   }
 

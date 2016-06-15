@@ -301,6 +301,7 @@
     "react/no-deprecated": "warn",
     "react/no-did-mount-set-state": ["error", "allow-in-func"],
     "react/no-did-update-set-state": ["error", "allow-in-func"],
+    "react/no-direct-mutation-state": "error",
     "react/no-is-mounted": "off",
     "react/no-multi-comp": "error",
     "react/no-set-state": "off",
@@ -313,12 +314,13 @@
     "react/require-extension": "off",
     "react/require-render-return": "error",
     "react/self-closing-comp": "error",
-    "react/sort-comp": ["warn", {
+    "react/sort-comp": ["error", {
       "order": [
         "static-methods",
         "lifecycle",
         "everything-else",
-        "render"
+        "/^_?on.+$/",
+        "rendering"
       ],
       "groups": {
         "lifecycle": [
@@ -340,6 +342,10 @@
           "componentWillUpdate",
           "componentDidUpdate",
           "componentWillUnmount"
+        ],
+        "rendering": [
+          "/^_?render.+$/",
+          "render"
         ]
       }
     }],

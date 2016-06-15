@@ -94,15 +94,6 @@ class CommonTabs extends React.Component {
   };
 
   /**
-   * Retrieves the current tab.
-   *
-   * @returns {number} the current tab in the state.
-   */
-  getCurrentTab(): number {
-    return this.state.currentTab;
-  }
-
-  /**
    * Switch to the selected tab, as determined by tabId.
    *
    * @param {number} tabId the tab to switch to.
@@ -117,6 +108,15 @@ class CommonTabs extends React.Component {
       currentTab: tabId,
     });
     screenStack = [tabId];
+  }
+
+  /**
+   * Retrieves the current tab.
+   *
+   * @returns {number} the current tab in the state.
+   */
+  getCurrentTab(): number {
+    return this.state.currentTab;
   }
 
   /**
@@ -186,45 +186,10 @@ class CommonTabs extends React.Component {
   }
 
   /**
-   * Passes search params onto search listeners, or the default search listener if there are no others.
-   *
-   * @param {?string} searchTerms string of terms to search for.
-   */
-  _onSearch(searchTerms: ?string): void {
-    const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
-    if (numberOfSearchListeners > 0) {
-      for (let i = 0; i < numberOfSearchListeners; i++) {
-        const searchListener = SearchManager.getSearchListener(i);
-        if (searchListener != null) {
-          searchListener.onSearch(searchTerms);
-        }
-      }
-    } else if (SearchManager.getDefaultSearchListener() != null) {
-      const searchListener = SearchManager.getDefaultSearchListener();
-      if (searchListener != null) {
-        searchListener.onSearch(searchTerms);
-      }
-    }
-  }
-
-  /**
    * Forces the navbar to be re-rendered.
    */
   _refreshNavbar(): void {
     this.refs.NavBar.setState({refresh: !this.refs.NavBar.getRefresh()});
-  }
-
-  /**
-   * Renders a view according to the current route of the navigator.
-   *
-   * @param {Route} route object with properties to identify the route to display.
-   * @returns {ReactElement} the view to render, based on {route}.
-   */
-  _renderScene(route: Route): ReactElement {
-    return TabRouter.renderScene(route,
-        this._changeTabs.bind(this),
-        this._navigateForward.bind(this),
-        this._refreshNavbar.bind(this));
   }
 
   /**
@@ -247,6 +212,41 @@ class CommonTabs extends React.Component {
     this.refs.NavBar.setState({
       showBackButton: show,
     });
+  }
+
+  /**
+   * Passes search params onto search listeners, or the default search listener if there are no others.
+   *
+   * @param {?string} searchTerms string of terms to search for.
+   */
+  _onSearch(searchTerms: ?string): void {
+    const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
+    if (numberOfSearchListeners > 0) {
+      for (let i = 0; i < numberOfSearchListeners; i++) {
+        const searchListener = SearchManager.getSearchListener(i);
+        if (searchListener != null) {
+          searchListener.onSearch(searchTerms);
+        }
+      }
+    } else if (SearchManager.getDefaultSearchListener() != null) {
+      const searchListener = SearchManager.getDefaultSearchListener();
+      if (searchListener != null) {
+        searchListener.onSearch(searchTerms);
+      }
+    }
+  }
+
+  /**
+   * Renders a view according to the current route of the navigator.
+   *
+   * @param {Route} route object with properties to identify the route to display.
+   * @returns {ReactElement} the view to render, based on {route}.
+   */
+  _renderScene(route: Route): ReactElement {
+    return TabRouter.renderScene(route,
+        this._changeTabs.bind(this),
+        this._navigateForward.bind(this),
+        this._refreshNavbar.bind(this));
   }
 }
 

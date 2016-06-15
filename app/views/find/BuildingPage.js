@@ -159,58 +159,6 @@ class BuildingPage extends React.Component {
   }
 
   /**
-   * Filters the rooms in the building and displays them to the user.
-   *
-   * @param {string} searchTerms user input filter terms.
-   */
-  _onBuildingSearch(searchTerms: ?string): void {
-    if (searchTerms == null || searchTerms.length === 0) {
-      this.setState({
-        buildingRooms: this.state.buildingRooms.cloneWithRows(this.props.buildingDetails.rooms),
-      });
-
-      return;
-    }
-
-    // Ignore the case of the search terms
-    const adjustedSearchTerms = searchTerms.toUpperCase();
-
-    const filteredRooms: Array<BuildingRoom> = [];
-    const rooms: Array<BuildingRoom> = this.props.buildingDetails.rooms;
-    for (let i = 0; i < rooms.length; i++) {
-      if (rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        filteredRooms.push(rooms[i]);
-      }
-    }
-
-    this.setState({
-      buildingRooms: this.state.buildingRooms.cloneWithRows(filteredRooms),
-    });
-  }
-
-  /**
-   * Displays a pop-up to the user, describing what a certain facility icon means.
-   *
-   * @param {Facility} facility id of the facility
-   * @param {Object} Translations translations in the current language of certain text.
-   */
-  _openFacilityDescription(facility: Facility, Translations: Object): void {
-    Alert.alert(
-      Translations.whats_this_icon,
-      Translations[facility],
-    );
-  }
-
-  /**
-   * Retrieves a ListView.DataSource from the array containing the building's rooms.
-   */
-  _parseBuildingRooms(): void {
-    this.setState({
-      buildingRooms: this.state.buildingRooms.cloneWithRows(this.props.buildingDetails.rooms),
-    });
-  }
-
-  /**
    * Returns a list of touchable views which describe facilities in the building.
    *
    * @param {Object} Translations translations in the current language of certain text.
@@ -248,6 +196,58 @@ class BuildingPage extends React.Component {
           dataSource={this.state.buildingRooms}
           renderRow={this._renderRow.bind(this)} />
     );
+  }
+
+  /**
+   * Displays a pop-up to the user, describing what a certain facility icon means.
+   *
+   * @param {Facility} facility id of the facility
+   * @param {Object} Translations translations in the current language of certain text.
+   */
+  _openFacilityDescription(facility: Facility, Translations: Object): void {
+    Alert.alert(
+      Translations.whats_this_icon,
+      Translations[facility],
+    );
+  }
+
+  /**
+   * Retrieves a ListView.DataSource from the array containing the building's rooms.
+   */
+  _parseBuildingRooms(): void {
+    this.setState({
+      buildingRooms: this.state.buildingRooms.cloneWithRows(this.props.buildingDetails.rooms),
+    });
+  }
+
+  /**
+   * Filters the rooms in the building and displays them to the user.
+   *
+   * @param {string} searchTerms user input filter terms.
+   */
+  _onBuildingSearch(searchTerms: ?string): void {
+    if (searchTerms == null || searchTerms.length === 0) {
+      this.setState({
+        buildingRooms: this.state.buildingRooms.cloneWithRows(this.props.buildingDetails.rooms),
+      });
+
+      return;
+    }
+
+    // Ignore the case of the search terms
+    const adjustedSearchTerms = searchTerms.toUpperCase();
+
+    const filteredRooms: Array<BuildingRoom> = [];
+    const rooms: Array<BuildingRoom> = this.props.buildingDetails.rooms;
+    for (let i = 0; i < rooms.length; i++) {
+      if (rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+        filteredRooms.push(rooms[i]);
+      }
+    }
+
+    this.setState({
+      buildingRooms: this.state.buildingRooms.cloneWithRows(filteredRooms),
+    });
   }
 
   /**
