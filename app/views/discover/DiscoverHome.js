@@ -53,7 +53,7 @@ const SectionHeader = require('../../components/SectionHeader');
 type DiscoverSectionWithDefaultName = {
   icon: IconObject,
   id: string,
-  image: ReactClass,
+  image: ReactClass<any>,
   name: string,
 };
 
@@ -61,7 +61,7 @@ type DiscoverSectionWithDefaultName = {
 type DiscoverSectionWithTranslatedName = {
   icon: IconObject,
   id: string,
-  image: ReactClass,
+  image: ReactClass<any>,
   name_en: string,
   name_fr: string,
 };
@@ -157,9 +157,9 @@ class DiscoverHome extends React.Component {
    * well as an image if the section is currently selected.
    *
    * @param {DiscoverSection} section section to render.
-   * @returns {ReactElement} a view with an image and title which is clickable by the user.
+   * @returns {ReactElement<any>} a view with an image and title which is clickable by the user.
    */
-  _getSectionView(section: DiscoverSection): ReactElement {
+  _getSectionView(section: DiscoverSection): ReactElement<any> {
     let onPress: DefaultFunction;
     if (section.id === this.state.currentSection) {
       if (section.id === 'pop') {
@@ -177,7 +177,7 @@ class DiscoverHome extends React.Component {
       onPress = () => this._focusSection(section.id);
     }
 
-    let sectionImage: ?ReactElement = null;
+    let sectionImage: ?ReactElement<any> = null;
     let touchableStyle: Object = {};
     let subtitleIcon: string = 'expand-more';
     if (section.id === this.state.currentSection) {
@@ -231,9 +231,9 @@ class DiscoverHome extends React.Component {
   /**
    * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     if (this.state.sections == null) {
       return (
         <View style={_styles.container} />

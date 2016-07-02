@@ -240,9 +240,9 @@ class CommonTabs extends React.Component {
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display.
-   * @returns {ReactElement} the view to render, based on {route}.
+   * @returns {ReactElement<any>} the view to render, based on {route}.
    */
-  _renderScene(route: Route): ReactElement {
+  _renderScene(route: Route): ReactElement<any> {
     return TabRouter.renderScene(route,
         this._changeTabs.bind(this),
         this._navigateForward.bind(this),

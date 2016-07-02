@@ -33,15 +33,15 @@ module.exports = {
    *
    * @param {?string} url URL to open.
    * @param {Object} Translations translations in the current language of certain text.
-   * @param {ReactClass} Linking an instance of the React Native Linking class.
-   * @param {ReactClass} Alert an instance of the React Native Alert class.
-   * @param {ReactClass} Clipboard an instance of the React Native Clipboard class.
+   * @param {ReactClass<any>} Linking an instance of the React Native Linking class.
+   * @param {ReactClass<any>} Alert an instance of the React Native Alert class.
+   * @param {ReactClass<any>} Clipboard an instance of the React Native Clipboard class.
    * @returns {Promise<void>} a promise indicating the result of whether the link was opened.
    */
   openLink(url: ?string,
            Translations: Object,
-           Linking: ReactClass,
-           Alert: ReactClass,
+           Linking: ReactClass<any>,
+           Alert: ReactClass<any>,
            Clipboard: Object): Promise<void> {
     const formattedUrl = TextUtils.formatLink(url);
 

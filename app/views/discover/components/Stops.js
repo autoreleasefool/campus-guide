@@ -67,8 +67,8 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  dataSourceStops: ReactClass,
-  dataSourceTimes: ReactClass,
+  dataSourceStops: ReactClass<any>,
+  dataSourceTimes: ReactClass<any>,
   loaded: boolean,
   primaryTextColor: string,
   secondaryTextColor: string,
@@ -281,10 +281,10 @@ class Stops extends React.Component {
    * @param {StopInfo} stop       details about the stop to display.
    * @param {string} sectionIndex index of the section the stop is in.
    * @param {number} rowIndex     index of the row the stop is in.
-   * @returns {ReactElement} Pthe name of the stop, its unique code, and the list of routes
+   * @returns {ReactElement<any>} Pthe name of the stop, its unique code, and the list of routes
    *         that serve the stop.
    */
-  _renderStopRow(stop: StopInfo, sectionIndex: string, rowIndex: number): ReactElement {
+  _renderStopRow(stop: StopInfo, sectionIndex: string, rowIndex: number): ReactElement<any> {
     return (
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>
@@ -313,9 +313,9 @@ class Stops extends React.Component {
    * @param {DetailedRouteInfo} route details about the route to display.
    * @param {string} sectionIndex     index of the section the route is in.
    * @param {number} rowIndex         index of the row the route is in.
-   * @returns {ReactElement} the headline and number of the route, and the upcoming times.
+   * @returns {ReactElement<any>} the headline and number of the route, and the upcoming times.
    */
-  _renderTimeRow(route: DetailedRouteInfo, sectionIndex: string, rowIndex: number): ReactElement {
+  _renderTimeRow(route: DetailedRouteInfo, sectionIndex: string, rowIndex: number): ReactElement<any> {
     return (
       <View>
         <View style={_styles.header}>
@@ -340,9 +340,9 @@ class Stops extends React.Component {
    * Renders a view according to the current route of the navigator.
    *
    * @param {NavigatorRoute} route object with properties to identify the route to display.
-   * @returns {ReactElement} the view to render, based on {route}.
+   * @returns {ReactElement<any>} the view to render, based on {route}.
    */
-  _renderScene(route: NavigatorRoute): ReactElement {
+  _renderScene(route: NavigatorRoute): ReactElement<any> {
     if (route.id === DETAILS && route.stop != null) {
       const routeStop = route.stop;
       let icon = {
@@ -387,9 +387,9 @@ class Stops extends React.Component {
   /**
    * Renders a navigator which handles the scene rendering.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     return (
       <View style={_styles.container}>
         <Navigator

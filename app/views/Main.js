@@ -63,9 +63,9 @@ class MainScreen extends React.Component {
   /**
    * Renders a tab bar to switch between the app's tabs, and a search bar.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     return (
       <View style={_styles.container}>
         <TabsView />

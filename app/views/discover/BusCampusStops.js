@@ -138,9 +138,9 @@ class BusCampusStops extends React.Component {
   /**
    * Renders a map with a list of markers to denote bus stops near the campus.
    *
-   * @returns {ReactElement} a {MapView} with a list of markers placed at the stops on the campus.
+   * @returns {ReactElement<any>} a {MapView} with a list of markers placed at the stops on the campus.
    */
-  _getCampusMap(): ReactElement {
+  _getCampusMap(): ReactElement<any> {
     const markers: Array<MapMarker> = [];
     let lat: number = 0;
     let long: number = 0;
@@ -207,9 +207,9 @@ class BusCampusStops extends React.Component {
    * Returns a view containing a header and list with the stops surrounding the
    * campus provided by {this.props.campusName}.
    *
-   * @returns {ReactElement} a {Stops} view with details about the various stops on the campus.
+   * @returns {ReactElement<any>} a {Stops} view with details about the various stops on the campus.
    */
-  _getCampusStops(): ReactElement {
+  _getCampusStops(): ReactElement<any> {
     if (this.state.campus == null) {
       return (
         <View style={_styles.container} />
@@ -242,9 +242,9 @@ class BusCampusStops extends React.Component {
   /**
    * Renders a map and list of routes and stop times at the various stops.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     return (
       <View style={[_styles.container, {backgroundColor: this.props.campusColor}]}>
         <View style={_styles.mapContainer}>

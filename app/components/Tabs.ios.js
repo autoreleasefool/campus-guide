@@ -63,12 +63,12 @@ class TabsView extends CommonTabs {
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     let indicatorLeft: number = 0;
 
-    const tabs: Array<ReactElement> = [];
+    const tabs: Array<ReactElement<any>> = [];
     for (let i = 0; i < Constants.Tabs.length; i++) {
       let tabColor: string = Constants.Colors.charcoalGrey;
       if (this.state.currentTab === this.tabScreens[Constants.Tabs[i]]) {

@@ -60,12 +60,12 @@ module.exports = {
    * @param {DefaultFunction} changeTabs      function to change tabs in the tab manager.
    * @param {DefaultFunction} navigateForward function to navigate to a new screen in the tab manager.
    * @param {DefaultFunction} refreshNavbar   function to update the NavBar.
-   * @returns {ReactElement} the view to render, based on {route}.
+   * @returns {ReactElement<any>} the view to render, based on {route}.
    */
   renderScene(route: Route,
       changeTabs: (tabId: number) => any,
       navigateForward: (screenId: number | string, data: any) => any,
-      refreshNavbar: DefaultFunction): ReactElement {
+      refreshNavbar: DefaultFunction): ReactElement<any> {
     let scene = null;
     if (route.id === Constants.Views.Find.Home) {
       scene = (

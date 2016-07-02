@@ -43,7 +43,7 @@ const SectionHeader = require('./SectionHeader');
 // Type definition for component props.
 type Props = {
   backgroundColor: string,
-  image: ReactElement,
+  image: ReactElement<any>,
   text: Array<string>,
   title: string,
 };
@@ -86,9 +86,9 @@ class DetailsScreen extends React.Component {
   /**
    * Renders an image, a title, and a set of paragraphs of text (the details).
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     let banner = null;
     if (this.props.image) {
       if (this.props.title) {

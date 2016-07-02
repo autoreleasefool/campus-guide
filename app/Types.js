@@ -154,13 +154,13 @@ export type BusInfo =
 
 type BusCampusWithDefaultName = {
   name: string,
-  image: ReactClass,
+  image: ReactClass<any>,
 };
 
 type BusCampusWithTranslatedName = {
   name_en: string,
   name_fr: string,
-  image: ReactClass,
+  image: ReactClass<any>,
 };
 
 export type BusCampus =
@@ -285,7 +285,7 @@ type ShuttleDetailsWithDefaultNameDefaultDetails = {
   details: Array<string>,
   name: string,
   icon: IconObject,
-  image: ReactClass,
+  image: ReactClass<any>,
 };
 
 type ShuttleDetailsWithTranslatedNameDefaultDetails = {
@@ -293,7 +293,7 @@ type ShuttleDetailsWithTranslatedNameDefaultDetails = {
   name_en: string,
   name_fr: string,
   icon: IconObject,
-  image: ReactClass,
+  image: ReactClass<any>,
 };
 
 type ShuttleDetailsWithDefaultNameTranslatedDetails = {
@@ -301,7 +301,7 @@ type ShuttleDetailsWithDefaultNameTranslatedDetails = {
   details_fr: Array<string>,
   name: string,
   icon: IconObject,
-  image: ReactClass,
+  image: ReactClass<any>,
 };
 
 type ShuttleDetailsWithTranslatedNameTranslatedDetails = {
@@ -310,7 +310,7 @@ type ShuttleDetailsWithTranslatedNameTranslatedDetails = {
   name_en: string,
   name_fr: string,
   icon: IconObject,
-  image: ReactClass,
+  image: ReactClass<any>,
 };
 
 export type ShuttleDetails =
@@ -356,7 +356,7 @@ export type Link =
 type LinkCategoryWithDefaultName = {
   id: string,
   name: string,
-  image?: ReactClass,
+  image?: ReactClass<any>,
   links?: Array<Link>,
   social?: Array<Link>,
   categories?: Array<LinkCategoryType>,
@@ -366,7 +366,7 @@ type LinkCategoryWithTranslatedName = {
   id: string,
   name_en: string,
   name_fr: string,
-  image?: ReactClass,
+  image?: ReactClass<any>,
   links?: Array<Link>,
   social?: Array<Link>,
   categories?: Array<LinkCategoryType>,
@@ -403,7 +403,7 @@ export type BuildingRoom = {
 type BuildingWithDefaultName = {
   code: string,
   name: string,
-  image: ReactClass,
+  image: ReactClass<any>,
   lat: number,
   long: number,
   facilities: Array<Facility>,
@@ -414,7 +414,7 @@ type BuildingWithTranslatedName = {
   code: string,
   name_en: string,
   name_fr: string,
-  image: ReactClass,
+  image: ReactClass<any>,
   lat: number,
   long: number,
   facilities: Array<Facility>,

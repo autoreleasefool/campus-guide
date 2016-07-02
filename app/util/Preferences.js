@@ -56,9 +56,9 @@ let preferWheelchair: boolean = false;
  * keep a running track of how many times the app has been opened,
  * the user's preferred language, etc.
  *
- * @param {ReactClass} AsyncStorage instance of asynchronous storage class.
+ * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
  */
-async function _loadInitialPreferences(AsyncStorage: ReactClass): Promise<void> {
+async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<void> {
   // If any errors occur, just use the default values of the preferences
   try {
     // Number of times the app has been used. Either null or integer greater than or equal to 0
@@ -102,10 +102,10 @@ module.exports = {
   /**
    * Wrapper method for _loadInitialPreferences.
    *
-   * @param {ReactClass} AsyncStorage instance of asynchronous storage class.
+   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @returns {Promise<void>} the Promise from the async function {_loadInitialPreferences}.
    */
-  loadInitialPreferences(AsyncStorage: ReactClass): Promise<void> {
+  loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<void> {
     return _loadInitialPreferences(AsyncStorage);
   },
 
@@ -142,10 +142,10 @@ module.exports = {
   /**
    * Updates the user's preferred language.
    *
-   * @param {ReactClass} AsyncStorage instance of asynchronous storage class.
+   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @param {LanguageString} language the new language, either 'en' or 'fr'.
    */
-  setSelectedLanguage(AsyncStorage: ReactClass, language: LanguageString): void {
+  setSelectedLanguage(AsyncStorage: ReactClass<any>, language: LanguageString): void {
     if (language !== 'en' && language !== 'fr') {
       return;
     }
@@ -166,10 +166,10 @@ module.exports = {
   /**
    * Updates the user's preference to wheelchair accessible routes.
    *
-   * @param {ReactClass} AsyncStorage instance of asynchronous storage class.
+   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @param {boolean} preferred the new preference for wheelchair accessible routes.
    */
-  setWheelchairRoutePreferred(AsyncStorage: ReactClass, preferred: boolean): void {
+  setWheelchairRoutePreferred(AsyncStorage: ReactClass<any>, preferred: boolean): void {
     if (preferred !== true && preferred !== false) {
       return;
     }
@@ -182,10 +182,10 @@ module.exports = {
    * Sets the current semester. If the provided value is not a valid index,
    * the current semester is set to 0.
    *
-   * @param {ReactClass} AsyncStorage instance of asynchronous storage class.
+   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @param {number} semester the new current semester.
    */
-  setCurrentSemester(AsyncStorage: ReactClass, semester: number): void {
+  setCurrentSemester(AsyncStorage: ReactClass<any>, semester: number): void {
     if (semester >= Configuration.getAvailableSemesters().length || semester < 0) {
       currentSemester = 0;
     } else {
@@ -198,9 +198,9 @@ module.exports = {
   /**
    * Sets semester to be the next in chronologically.
    *
-   * @param {ReactClass} AsyncStorage instance of asynchronous storage class.
+   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    */
-  setToNextSemester(AsyncStorage: ReactClass): void {
+  setToNextSemester(AsyncStorage: ReactClass<any>): void {
     this.setCurrentSemester(AsyncStorage, currentSemester + 1);
   },
 

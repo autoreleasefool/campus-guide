@@ -179,9 +179,9 @@ class NavBar extends React.Component {
   /**
    * Renders a text input field for searching.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'fr') {

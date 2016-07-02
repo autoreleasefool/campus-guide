@@ -162,9 +162,9 @@ class BuildingPage extends React.Component {
    * Returns a list of touchable views which describe facilities in the building.
    *
    * @param {Object} Translations translations in the current language of certain text.
-   * @returns {ReactElement} an icon representing each of the facilities in this building
+   * @returns {ReactElement<any>} an icon representing each of the facilities in this building
    */
-  _getFacilityIcons(Translations: Object): ReactElement {
+  _getFacilityIcons(Translations: Object): ReactElement<any> {
     return (
       <View style={_styles.facilitiesContainer}>
         {this.props.buildingDetails.facilities.map(facility => {
@@ -187,9 +187,9 @@ class BuildingPage extends React.Component {
   /**
    * Returns a list of touchable views listing the room names.
    *
-   * @returns {ReactElement} a ScrollView containing a ListView.
+   * @returns {ReactElement<any>} a ScrollView containing a ListView.
    */
-  _getRoomList(): ReactElement {
+  _getRoomList(): ReactElement<any> {
     return (
       <ListView
           contentContainerStyle={_styles.roomList}
@@ -256,9 +256,9 @@ class BuildingPage extends React.Component {
    * @param {BuildingRoom} room the identifier of the room.
    * @param {string} sectionId  index of the section the room is in.
    * @param {number} rowIndex   index of the row the room is in.
-   * @returns {ReactElement} a view describing a room.
+   * @returns {ReactElement<any>} a view describing a room.
    */
-  _renderRow(room: BuildingRoom, sectionId: string, rowIndex: number): ReactElement {
+  _renderRow(room: BuildingRoom, sectionId: string, rowIndex: number): ReactElement<any> {
     let rowColor: string = Constants.Colors.garnet;
     const rowPosition = rowIndex % LENGTH_OF_ROOM_PATTERN;
     if (DARKENED_ROOMS.indexOf(rowPosition) >= 0) {
@@ -279,9 +279,9 @@ class BuildingPage extends React.Component {
   /**
    * Renders a view containing an image of the building, it's name, and a list of its rooms and facilities.
    *
-   * @returns {ReactElement} a view describing a building.
+   * @returns {ReactElement<any>} a view describing a building.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language for translations
     let Translations: Object = {};
     if (Preferences.getSelectedLanguage() === 'fr') {
@@ -291,8 +291,8 @@ class BuildingPage extends React.Component {
     }
 
     const building = this.props.buildingDetails;
-    const facilityIcons: ReactElement = this._getFacilityIcons(Translations);
-    const roomList: ReactElement = this._getRoomList();
+    const facilityIcons: ReactElement<any> = this._getFacilityIcons(Translations);
+    const roomList: ReactElement<any> = this._getRoomList();
 
     return (
       <View style={_styles.container}>

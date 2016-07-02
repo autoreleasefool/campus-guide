@@ -74,9 +74,9 @@ class FindHome extends React.Component {
    * Renders the user's upcoming classes for the day and a list of buildings
    * on campus.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language for translations
     let Translations = null;
     if (Preferences.getSelectedLanguage() === 'fr') {
@@ -93,7 +93,7 @@ class FindHome extends React.Component {
       calendarIcon = ['material', 'event'];
     }
 
-    let upcomingClasses: ?ReactElement = null;
+    let upcomingClasses: ?ReactElement<any> = null;
     if (Constants.Tabs.indexOf('schedule') >= 0) {
       upcomingClasses = (
         <View>

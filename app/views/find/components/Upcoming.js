@@ -82,9 +82,9 @@ class Upcoming extends React.Component {
    * Renders a list of the user's upcoming classes, or a view which links to the Schedule tab so the user
    * can update their schedule.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language for translations
     let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {

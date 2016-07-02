@@ -131,16 +131,16 @@ class ShuttleInfo extends React.Component {
    * detailed information on them, as well as some other links the user
    * may find useful.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language
     const language: LanguageString = Preferences.getSelectedLanguage();
     const platform: PlatformString = Platform.OS;
 
     const campusDisplayNames: Array<string> = [];
     const campusStopNames: Array<string> = [];
-    const campusImages: Array<ReactElement> = [];
+    const campusImages: Array<ReactElement<any>> = [];
 
     // If the campuses have been loaded, parse the data
     if (this.state.campuses != null && this.state.details != null) {

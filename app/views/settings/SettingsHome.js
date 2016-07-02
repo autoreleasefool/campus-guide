@@ -49,7 +49,7 @@ type SettingIcons = {
 };
 
 // Declaring icons depending on the platform
-let Icon: ReactClass;
+let Icon: ReactClass<any>;
 let settingIcons: SettingIcons;
 if (Platform.OS === 'ios') {
   Icon = require('react-native-vector-icons/Ionicons');
@@ -203,9 +203,9 @@ class SettingsHome extends React.Component {
    * Displays a single row, representing a setting which can be changed.
    *
    * @param {Object} setting defines the setting contents to render.
-   * @returns {ReactElement} views to render the setting in the list.
+   * @returns {ReactElement<any>} views to render the setting in the list.
    */
-  _renderRow(setting: Object): ReactElement {
+  _renderRow(setting: Object): ReactElement<any> {
     let content = null;
     if (setting.type === 'multi') {
       content = (
@@ -252,9 +252,9 @@ class SettingsHome extends React.Component {
    *
    * @param {Object} sectionData section contents
    * @param {string} sectionName index of the section.
-   * @returns {ReactElement} a {SectionHeader} with the name of the section.
+   * @returns {ReactElement<any>} a {SectionHeader} with the name of the section.
    */
-  _renderSectionHeader(sectionData: Object, sectionName: string): ReactElement {
+  _renderSectionHeader(sectionData: Object, sectionName: string): ReactElement<any> {
     const colonIndex: number = sectionName.indexOf(':');
     let sectionNameTranslated = sectionName;
     if (colonIndex > -1) {
@@ -275,9 +275,9 @@ class SettingsHome extends React.Component {
   /**
    * Displays a list of settings.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     const Translations: Object = (Preferences.getSelectedLanguage() === 'en')
         ? TranslationsEn
         : TranslationsFr;

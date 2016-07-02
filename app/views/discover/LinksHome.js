@@ -116,9 +116,9 @@ class LinksHome extends React.Component {
    * Displays a single category name and an image which represents it.
    *
    * @param {LinkCategoryType} category object with properties describing the category.
-   * @returns {ReactElement} an image and text describing the category.
+   * @returns {ReactElement<any>} an image and text describing the category.
    */
-  _renderRow(category: LinkCategoryType): ReactElement {
+  _renderRow(category: LinkCategoryType): ReactElement<any> {
     return (
       <TouchableOpacity
           style={_styles.categoryContainer}
@@ -140,9 +140,9 @@ class LinksHome extends React.Component {
    * Renders a list of images and titles for the user to select, opening a
    * screen with a list of useful links.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     if (this.state.loaded) {
       return (
         <View style={_styles.container}>

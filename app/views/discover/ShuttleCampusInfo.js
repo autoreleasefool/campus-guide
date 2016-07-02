@@ -104,11 +104,11 @@ class ShuttleCampusInfo extends React.Component {
    * Renders a map with a list of markers to denote bus stops near the campus.
    *
    * @param {Object} Translations translations in the current language of certain text.
-   * @returns {ReactElement} a map view with a marker
+   * @returns {ReactElement<any>} a map view with a marker
    */
-  _getCampusMap(Translations: Object): ReactElement {
+  _getCampusMap(Translations: Object): ReactElement<any> {
     let initialRegion: LatLong;
-    let marker: ?ReactElement;
+    let marker: ?ReactElement<any>;
 
     if (this.state.campus == null) {
       const university: ?University = Configuration.getUniversity();
@@ -163,9 +163,9 @@ class ShuttleCampusInfo extends React.Component {
    * Renders a map and details about the shuttle drop off times at the campus
    * specified by {this.props.campusName}.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language for translations
     let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {

@@ -121,9 +121,9 @@ class BuildingGrid extends React.Component {
    * @param {Building} building information about the building to display.
    * @param {string} sectionId  index of the section the building is in.
    * @param {number} rowIndex   index of the row the building is in.
-   * @returns {ReactElement} an image and name for the building.
+   * @returns {ReactElement<any>} an image and name for the building.
    */
-  _renderRow(building: Building, sectionId: string, rowIndex: number): ReactElement {
+  _renderRow(building: Building, sectionId: string, rowIndex: number): ReactElement<any> {
     const ICON_MARGIN_OFFSET: number = 5;
 
     let leftMargin: number = ICON_MARGIN_OFFSET;
@@ -158,9 +158,9 @@ class BuildingGrid extends React.Component {
    * Renders the view. Displays an empty view before the buildings have loaded and a list of the building names
    * and icons once they have.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     if (!this.state.loaded) {
       // Return an empty view until the data has been loaded
       return (

@@ -61,7 +61,7 @@ const TextUtils = require('../../util/TextUtils');
 // Type definition for component props.
 type Props = {
   category: LinkCategoryType,
-  categoryImage: ReactClass,
+  categoryImage: ReactClass<any>,
   showLinkCategory: DefaultFunction;
 };
 
@@ -112,10 +112,10 @@ class LinkCategory extends React.Component {
    *
    * @param {Array<LinkCategoryType>} categories categories of links.
    * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
-   * @returns {ReactElement} for each index in {categories}, a {TouchableOpacity} with the name
+   * @returns {ReactElement<any>} for each index in {categories}, a {TouchableOpacity} with the name
    *         of the category.
    */
-  _getCategories(categories: Array<LinkCategoryType>, isBackgroundDark: boolean): ReactElement {
+  _getCategories(categories: Array<LinkCategoryType>, isBackgroundDark: boolean): ReactElement<any> {
     const language: LanguageString = Preferences.getSelectedLanguage();
     const dividerColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
@@ -146,9 +146,9 @@ class LinkCategory extends React.Component {
    *
    * @param {?string} link     the link to represent with an icon.
    * @param {string} iconColor color for the icon.
-   * @returns {?ReactElement} an icon for the link.
+   * @returns {?ReactElement<any>} an icon for the link.
    */
-  _getLinkIcon(link: ?string, iconColor: string): ?ReactElement {
+  _getLinkIcon(link: ?string, iconColor: string): ?ReactElement<any> {
     if (link == null) {
       return null;
     }
@@ -185,9 +185,9 @@ class LinkCategory extends React.Component {
    *
    * @param {string} link      the link to format
    * @param {string} textColor color of the text to display link in.
-   * @returns {?ReactElement} a formatted link in a text view.
+   * @returns {?ReactElement<any>} a formatted link in a text view.
    */
-  _getFormattedLink(link: string, textColor: string): ?ReactElement {
+  _getFormattedLink(link: string, textColor: string): ?ReactElement<any> {
     if (link.indexOf('http') === 0) {
       return null;
     } else {
@@ -205,10 +205,10 @@ class LinkCategory extends React.Component {
    * @param {Array<Link>} links list of links in the current category.
    * @param {Object} Translations translations in the current language of certain text.
    * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
-   * @returns {ReactElement} for each index in {links}, a {TouchableOpacity} with the name
+   * @returns {ReactElement<any>} for each index in {links}, a {TouchableOpacity} with the name
    *         of the link.
    */
-  _getLinks(links: Array<Link>, Translations: Object, isBackgroundDark: boolean): ReactElement {
+  _getLinks(links: Array<Link>, Translations: Object, isBackgroundDark: boolean): ReactElement<any> {
     const language: LanguageString = Preferences.getSelectedLanguage();
     const textColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
@@ -217,7 +217,7 @@ class LinkCategory extends React.Component {
         ? Constants.Colors.secondaryWhiteText
         : Constants.Colors.secondaryBlackText;
 
-    let listOfLinks: ?ReactElement = null;
+    let listOfLinks: ?ReactElement<any> = null;
     if (this.state.showLinks) {
       listOfLinks = (
         <View style={_styles.linksContainer}>
@@ -278,10 +278,10 @@ class LinkCategory extends React.Component {
    *
    * @param {Array<Link>} socialMediaLinks list of links to social media sites in the current category.
    * @param {Object} Translations          translations in the current language of certain text.
-   * @returns {ReactElement} for each index in {socialMediaLinks}, a {TouchableOpacity} with
+   * @returns {ReactElement<any>} for each index in {socialMediaLinks}, a {TouchableOpacity} with
    *          an icon representing the social media site.
    */
-  _getSocialMediaLinks(socialMediaLinks: Array<Link>, Translations: Object): ReactElement {
+  _getSocialMediaLinks(socialMediaLinks: Array<Link>, Translations: Object): ReactElement<any> {
     const language: LanguageString = Preferences.getSelectedLanguage();
 
     return (
@@ -346,9 +346,9 @@ class LinkCategory extends React.Component {
   /**
    * Renders an image, category title, and list of useful links.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language for translations
     let Translations: Object = {};
     if (Preferences.getSelectedLanguage() === 'fr') {
@@ -363,17 +363,17 @@ class LinkCategory extends React.Component {
     }
     const isBackgroundDark: boolean = DisplayUtils.isColorDark(categoryBackgroundColor);
 
-    let social: ?ReactElement = null;
+    let social: ?ReactElement<any> = null;
     if (this.props.category.social) {
       social = this._getSocialMediaLinks(this.props.category.social, Translations);
     }
 
-    let usefulLinks: ?ReactElement = null;
+    let usefulLinks: ?ReactElement<any> = null;
     if (this.props.category.links) {
       usefulLinks = this._getLinks(this.props.category.links, Translations, isBackgroundDark);
     }
 
-    let categories: ?ReactElement = null;
+    let categories: ?ReactElement<any> = null;
     if (this.props.category.categories) {
       categories = this._getCategories(this.props.category.categories, isBackgroundDark);
     }

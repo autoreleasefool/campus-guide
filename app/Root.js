@@ -67,10 +67,10 @@ class CampusGuide extends React.Component {
    * Renders a different view based on the current navigator route.
    *
    * @param {Route} route          object with properties to identify the route to display.
-   * @param {ReactClass} navigator navigator object to pass to children.
-   * @returns {ReactElement} the view to render, based on {route}.
+   * @param {ReactClass<any>} navigator navigator object to pass to children.
+   * @returns {ReactElement<any>} the view to render, based on {route}.
    */
-  _renderScene(route: Route, navigator: ReactClass): ReactElement {
+  _renderScene(route: Route, navigator: ReactClass<any>): ReactElement<any> {
     if (route.id === Constants.Views.Splash) {
       return (
         <SplashScreen navigator={navigator} />
@@ -90,9 +90,9 @@ class CampusGuide extends React.Component {
    * Renders the root navigator of the app to switch between the splash screen
    * and main screen.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     return (
       <Navigator
           configureScene={this._configureScene}

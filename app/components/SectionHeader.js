@@ -209,12 +209,12 @@ class SectionHeader extends React.Component {
    * Builds the components of the section header, including the title, icon,
    * subtitle, and subtitle icon.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
-    let icon: ?ReactElement = null;
-    let subtitleName: ?ReactElement = null;
-    let subtitleIcon: ?ReactElement = null;
+  render(): ReactElement<any> {
+    let icon: ?ReactElement<any> = null;
+    let subtitleName: ?ReactElement<any> = null;
+    let subtitleIcon: ?ReactElement<any> = null;
 
     // Build the icon for the section
     if (this.state.sectionIcon !== NULL_SUBTITLE_VALUE && this.state.sectionIconClass !== NULL_SUBTITLE_VALUE) {

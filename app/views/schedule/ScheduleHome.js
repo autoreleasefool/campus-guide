@@ -134,9 +134,9 @@ class ScheduleHome extends React.Component {
   /**
    * Renders the root Schedule view.
    *
-   * @return {ReactElement} the hierarchy of views to render.
+   * @return {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language for translations
     let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {
@@ -153,7 +153,7 @@ class ScheduleHome extends React.Component {
       calendarIcon = ['material', 'event'];
     }
 
-    let buttons: ?ReactElement = null;
+    let buttons: ?ReactElement<any> = null;
     if (this.state.showEditButtons) {
       buttons = (
         <View style={_styles.editButtonContainer}>

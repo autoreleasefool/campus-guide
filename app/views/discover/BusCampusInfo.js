@@ -131,9 +131,9 @@ class BusCampusInfo extends React.Component {
   /**
    * Renders an image and title for each of the campuses which link to more detailed views.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     // Get current language for translations
     let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {
@@ -144,7 +144,7 @@ class BusCampusInfo extends React.Component {
 
     const campusDisplayNames: Array<string> = [];
     const campusStopNames: Array<string> = [];
-    const campusImages: Array<ReactElement> = [];
+    const campusImages: Array<ReactElement<any>> = [];
 
     // If the campuses have been loaded, parse the data
     if (this.state.campuses == null) {

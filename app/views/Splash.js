@@ -55,7 +55,7 @@ const TranslationsFr: Object = require('../../assets/js/Translations.fr.js');
 
 // Type definition for component props.
 type Props = {
-  navigator: ReactClass,
+  navigator: ReactClass<any>,
 };
 
 // Type definition for component state.
@@ -143,9 +143,9 @@ class SplashScreen extends React.Component {
   /**
    * Displays two buttons to allow the user to select French or English.
    *
-   * @returns {ReactElement} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement {
+  render(): ReactElement<any> {
     if (this.state.isLoading) {
       // While checking to see if a language has been selected,
       // display an empty view
