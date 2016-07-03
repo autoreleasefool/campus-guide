@@ -23,12 +23,12 @@
  */
 'use strict';
 
-// React Native imports
+// React imports
 import {
   AppRegistry,
 } from 'react-native';
 
 // Imports
-const CampusGuide = require('./app/Root');
+const CampusGuide = require('./js/Root');
 
 AppRegistry.registerComponent('CampusGuide', () => CampusGuide);
