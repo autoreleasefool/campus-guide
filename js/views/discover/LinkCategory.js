@@ -19,12 +19,12 @@
  * @file LinkCategory.js
  * @module LinkCategory
  * @description Displays the links and subcategories belonging to a category of useful links.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Alert,
@@ -39,24 +39,13 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   DefaultFunction,
-  LanguageString,
+  Language,
   Link,
   LinkCategoryType,
-} from '../../Types';
-
-// Imports
-const Configuration = require('../../util/Configuration');
-const Constants = require('../../Constants');
-const DisplayUtils = require('../../util/DisplayUtils');
-const ExternalUtils = require('../../util/ExternalUtils');
-const Ionicons = require('react-native-vector-icons/Ionicons');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
-const TextUtils = require('../../util/TextUtils');
+} from '../../types';
 
 // Type definition for component props.
 type Props = {
@@ -70,11 +59,21 @@ type State = {
   showLinks: boolean,
 };
 
+// Imports
+const Configuration = require('../../util/Configuration');
+const Constants = require('../../Constants');
+const DisplayUtils = require('../../util/DisplayUtils');
+const ExternalUtils = require('../../util/ExternalUtils');
+const Ionicons = require('react-native-vector-icons/Ionicons');
+const LanguageUtils = require('../../util/LanguageUtils');
+const Preferences = require('../../util/Preferences');
+const SectionHeader = require('../../components/SectionHeader');
+const TextUtils = require('../../util/TextUtils');
+
 class LinkCategory extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     category: React.PropTypes.object.isRequired,
@@ -107,16 +106,14 @@ class LinkCategory extends React.Component {
   }
 
   /**
-   * Returns a list of touchable views which lead to new pages of categories
-   * of links.
+   * Returns a list of touchable views which lead to new pages of categories of links.
    *
    * @param {Array<LinkCategoryType>} categories categories of links.
-   * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
-   * @returns {ReactElement<any>} for each index in {categories}, a {TouchableOpacity} with the name
-   *         of the category.
+   * @param {boolean} isBackgroundDark           indicates if the background color of the category is dark.
+   * @returns {ReactElement<any>} for each index in {categories}, a {TouchableOpacity} with the name of the category.
    */
   _getCategories(categories: Array<LinkCategoryType>, isBackgroundDark: boolean): ReactElement<any> {
-    const language: LanguageString = Preferences.getSelectedLanguage();
+    const language: Language = Preferences.getSelectedLanguage();
     const dividerColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
         : Constants.Colors.primaryBlackText;
@@ -202,14 +199,13 @@ class LinkCategory extends React.Component {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param {Array<Link>} links list of links in the current category.
-   * @param {Object} Translations translations in the current language of certain text.
+   * @param {Array<Link>} links        list of links in the current category.
+   * @param {Object} Translations      translations in the current language of certain text.
    * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
-   * @returns {ReactElement<any>} for each index in {links}, a {TouchableOpacity} with the name
-   *         of the link.
+   * @returns {ReactElement<any>} for each index in {links}, a {TouchableOpacity} with the name of the link.
    */
   _getLinks(links: Array<Link>, Translations: Object, isBackgroundDark: boolean): ReactElement<any> {
-    const language: LanguageString = Preferences.getSelectedLanguage();
+    const language: Language = Preferences.getSelectedLanguage();
     const textColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
         : Constants.Colors.primaryBlackText;
@@ -278,11 +274,11 @@ class LinkCategory extends React.Component {
    *
    * @param {Array<Link>} socialMediaLinks list of links to social media sites in the current category.
    * @param {Object} Translations          translations in the current language of certain text.
-   * @returns {ReactElement<any>} for each index in {socialMediaLinks}, a {TouchableOpacity} with
-   *          an icon representing the social media site.
+   * @returns {ReactElement<any>} for each index in {socialMediaLinks}, a {TouchableOpacity} with an icon representing
+   *                              the social media site.
    */
   _getSocialMediaLinks(socialMediaLinks: Array<Link>, Translations: Object): ReactElement<any> {
-    const language: LanguageString = Preferences.getSelectedLanguage();
+    const language: Language = Preferences.getSelectedLanguage();
 
     return (
       <View style={_styles.socialMediaContainer}>
@@ -464,5 +460,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = LinkCategory;

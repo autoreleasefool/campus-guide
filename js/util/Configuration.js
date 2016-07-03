@@ -18,17 +18,17 @@
  * @author Joseph Roque
  * @file Configuration.js
  * @description Manages the configuration of the application.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// Import type definition for objects.
+// Import types
 import type {
   Semester,
   University,
   BusInfo,
-} from '../Types';
+} from '../types';
 
 // Default link to return
 const DEFAULT_LINK: string = 'http://www.uottawa.ca/';
@@ -41,8 +41,8 @@ let university: ?University = null;
 let cityBuses: ?BusInfo = null;
 
 /**
- * Asynchronously gets the configuration for the application and loads the
- * various config values into their respective variables.
+ * Asynchronously gets the configuration for the application and loads the various config values into their
+ * respective variables.
  */
 async function _requestConfig(): Promise<void> {
   // Get the configuration file
@@ -82,7 +82,7 @@ module.exports = {
   /**
    * Returns an object with information about the city buses.
    *
-   * @returns {BusInfo} an object with details about the city bus system.
+   * @returns {?BusInfo} an object with details about the city bus system.
    */
   getCityBusyInfo(): ?BusInfo {
     return cityBuses;
@@ -110,7 +110,7 @@ module.exports = {
   /**
    * Gets a object with information about the university.
    *
-   * @returns {University} an object with details about the university.
+   * @returns {?University} an object with details about the university.
    */
   getUniversity(): ?University {
     return university;

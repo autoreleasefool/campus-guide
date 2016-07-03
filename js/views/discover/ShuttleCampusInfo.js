@@ -18,32 +18,25 @@
  * @author Joseph Roque
  * @file ShuttleCampusInfo.js
  * @module ShuttleCampusInfo
- * @description Displays details about the departure times of the shuttle from a
- *              single campus.
- * @flow
+ * @description Displays details about the departure times of the shuttle from a single campus.
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   StyleSheet,
   View,
 } from 'react-native';
 
-// Import type definitions
+// Type imports
 import type {
   LatLong,
   ShuttleCampus,
   University,
-} from '../../Types';
-
-// Imports
-const Configuration = require('../../util/Configuration');
-const LanguageUtils = require('../../util/LanguageUtils');
-const MapView = require('react-native-maps');
-const Preferences = require('../../util/Preferences');
+} from '../../types';
 
 // Type definition for component props.
 type Props = {
@@ -57,11 +50,16 @@ type State = {
   region: ?LatLong,
 };
 
+// Imports
+const Configuration = require('../../util/Configuration');
+const LanguageUtils = require('../../util/LanguageUtils');
+const MapView = require('react-native-maps');
+const Preferences = require('../../util/Preferences');
+
 class ShuttleCampusInfo extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     campusColor: React.PropTypes.string.isRequired,
@@ -160,8 +158,7 @@ class ShuttleCampusInfo extends React.Component {
   }
 
   /**
-   * Renders a map and details about the shuttle drop off times at the campus
-   * specified by {this.props.campusName}.
+   * Renders a map and details about the shuttle drop off times at the campus specified by {this.props.campusName}.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
@@ -205,5 +202,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = ShuttleCampusInfo;

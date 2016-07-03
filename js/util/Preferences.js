@@ -21,16 +21,16 @@
  *              the application then caches their values so they don't need to be
  *              reloaded later. When preferences are updated, the cache is updated and
  *              the stored preference is updated to the new value.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// Import type definition for objects.
+// Type imports
 import type {
-  LanguageString,
+  Language,
   Semester,
-} from '../Types';
+} from '../types';
 
 // Imports
 const Configuration = require('./Configuration');
@@ -47,14 +47,13 @@ const PREFER_WHEELCHAIR: string = 'app_pref_wheel';
 
 // Cached values of preferences
 let timesAppOpened: number = 0;
-let selectedLanguage: ?LanguageString = null;
+let selectedLanguage: ?Language = null;
 let currentSemester: number = 0;
 let preferWheelchair: boolean = false;
 
 /**
- * Method which should be invoked each time the app is opened, to
- * keep a running track of how many times the app has been opened,
- * the user's preferred language, etc.
+ * Method which should be invoked each time the app is opened, to keep a running track of how many times the app has
+ * been opened, the user's preferred language, etc.
  *
  * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
  */
@@ -100,7 +99,7 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<v
 module.exports = {
 
   /**
-   * Wrapper method for _loadInitialPreferences.
+   * Public wrapper method for _loadInitialPreferences.
    *
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @returns {Promise<void>} the Promise from the async function {_loadInitialPreferences}.
@@ -130,10 +129,9 @@ module.exports = {
   /**
    * Gets the preferred language selected by the user.
    *
-   * @returns {LanguageString} 'en' for English, 'fr' for French, or 'en' if no language has
-   *         been selected yet.
+   * @returns {Language} 'en' for English, 'fr' for French, or 'en' if no language has been selected yet.
    */
-  getSelectedLanguage(): LanguageString {
+  getSelectedLanguage(): Language {
     return (this.isLanguageSelected() && selectedLanguage != null
         ? selectedLanguage
         : 'en');
@@ -143,9 +141,9 @@ module.exports = {
    * Updates the user's preferred language.
    *
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
-   * @param {LanguageString} language the new language, either 'en' or 'fr'.
+   * @param {Language} language the new language, either 'en' or 'fr'.
    */
-  setSelectedLanguage(AsyncStorage: ReactClass<any>, language: LanguageString): void {
+  setSelectedLanguage(AsyncStorage: ReactClass<any>, language: Language): void {
     if (language !== 'en' && language !== 'fr') {
       return;
     }
@@ -179,8 +177,7 @@ module.exports = {
   },
 
   /**
-   * Sets the current semester. If the provided value is not a valid index,
-   * the current semester is set to 0.
+   * Sets the current semester. If the provided value is not a valid index, the current semester is set to 0.
    *
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @param {number} semester the new current semester.
@@ -223,9 +220,8 @@ module.exports = {
   },
 
   /**
-   * Returns the value of a setting based on the provided key. The returned
-   * value may be a string, boolean, integer, or object, and should correspond
-   * to the type of the setting.
+   * Returns the value of a setting based on the provided key. The returned value may be a string, boolean, integer,
+   * or object, and should correspond to the type of the setting.
    *
    * @param {string} key the setting value to return.
    * @returns {any} the value of the setting corresponding to {key}, or null.

@@ -19,12 +19,12 @@
  * @file FindHome.js
  * @module FindHome
  * @description View for the root navigation for finding a room on campus.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Platform,
@@ -32,10 +32,10 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions
+// Type imports
 import type {
   Building,
-} from '../../Types';
+} from '../../types';
 
 // Imports
 const BuildingGrid = require('./components/BuildingGrid');
@@ -71,8 +71,7 @@ class FindHome extends React.Component {
   }
 
   /**
-   * Renders the user's upcoming classes for the day and a list of buildings
-   * on campus.
+   * Renders the user's upcoming classes for the day and a list of buildings on campus.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
@@ -137,5 +136,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = FindHome;

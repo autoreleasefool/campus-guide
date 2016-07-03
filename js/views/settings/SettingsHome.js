@@ -19,12 +19,12 @@
  * @file SettingsHome.js
  * @module SettingsHome
  * @description View to allow the user to see and update their settings and preferences.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   AsyncStorage,
@@ -36,17 +36,29 @@ import {
   View,
 } from 'react-native';
 
-// Imports
-const Constants = require('../../Constants');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
-
 // Type definition for settings icons.
 type SettingIcons = {
   checkEnabled: string,
   checkDisabled: string,
 };
+
+// Type definition for component props.
+type Props = {
+  refreshParent: () => any,
+  requestTabChange: () => any,
+};
+
+// Type definition for component state.
+type State = {
+  dataSource: ListView.DataSource,
+  loaded: boolean,
+};
+
+// Imports
+const Constants = require('../../Constants');
+const LanguageUtils = require('../../util/LanguageUtils');
+const Preferences = require('../../util/Preferences');
+const SectionHeader = require('../../components/SectionHeader');
 
 // Declaring icons depending on the platform
 let Icon: ReactClass<any>;
@@ -74,23 +86,10 @@ const settings: Object = require('../../../assets/json/settings.json');
 const settingsCache: Object = {};
 let keyOfLastSettingChanged: ?string = null;
 
-// Type definition for component props.
-type Props = {
-  refreshParent: () => any,
-  requestTabChange: () => any,
-};
-
-// Type definition for component state.
-type State = {
-  dataSource: ListView.DataSource,
-  loaded: boolean,
-};
-
 class SettingsHome extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     refreshParent: React.PropTypes.func,
@@ -130,8 +129,7 @@ class SettingsHome extends React.Component {
   }
 
   /**
-   * Returns true if a setting's current value does not match its cached value,
-   * and updates the cached value if so.
+   * Returns true if a setting's current value does not match its cached value, and updates the cached value if so.
    *
    * @param {string} key identifier for the setting to check
    * @returns {boolean} true if the value in the cache was updated.
@@ -146,9 +144,8 @@ class SettingsHome extends React.Component {
     return changed;
   }
 
-  /*
-   * Loads the current settings to setup the views and cache the settings to
-   * determine when a setting changes.
+  /**
+   * Loads the current settings to setup the views and cache the settings to determine when a setting changes.
    */
   _loadSettings(): void {
     for (const section in settings) {
@@ -337,5 +334,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = SettingsHome;

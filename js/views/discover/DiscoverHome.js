@@ -19,12 +19,12 @@
  * @file DiscoverHome.js
  * @module DiscoverHome
  * @description Root view for links which help users become acquainted with the school.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Image,
@@ -35,19 +35,12 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   IconObject,
   DefaultFunction,
   DefaultIcon,
-} from '../../Types';
-
-// Imports
-const Constants = require('../../Constants');
-const DisplayUtils = require('../../util/DisplayUtils');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
+} from '../../types';
 
 // Type definition for headers with a 'name' property.
 type DiscoverSectionWithDefaultName = {
@@ -81,6 +74,13 @@ type State = {
   sections: ?Array<DiscoverSection>,
   currentSection: string,
 };
+
+// Imports
+const Constants = require('../../Constants');
+const DisplayUtils = require('../../util/DisplayUtils');
+const LanguageUtils = require('../../util/LanguageUtils');
+const Preferences = require('../../util/Preferences');
+const SectionHeader = require('../../components/SectionHeader');
 
 class DiscoverHome extends React.Component {
 
@@ -124,8 +124,7 @@ class DiscoverHome extends React.Component {
   }
 
   /**
-   * Focuses a new section for the user, hides the old section's image and
-   * shows the new section's image.
+   * Focuses a new section for the user, hides the old section's image and shows the new section's image.
    *
    * @param {number} sectionId new section to focus.
    */
@@ -153,8 +152,8 @@ class DiscoverHome extends React.Component {
   }
 
   /**
-   * Returns a view for a section which displays the section name and icon, as
-   * well as an image if the section is currently selected.
+   * Returns a view for a section which displays the section name and icon, as well as an image if the section is
+   * currently selected.
    *
    * @param {DiscoverSection} section section to render.
    * @returns {ReactElement<any>} a view with an image and title which is clickable by the user.
@@ -217,8 +216,7 @@ class DiscoverHome extends React.Component {
   }
 
   /**
-   * Retrieves information about the sections in the discover tab and refreshes
-   * the view.
+   * Retrieves information about the sections in the discover tab and refreshes the view.
    */
   _loadDiscoverSections(): void {
     const discoverSections: Array<DiscoverSection> = require('../../../assets/js/DiscoverSections');
@@ -268,5 +266,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = DiscoverHome;

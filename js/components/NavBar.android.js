@@ -18,14 +18,13 @@
  * @author Joseph Roque
  * @file NavBar.js
  * @module NavBar
- * @description Navigation and search bar for the top of the app, to allow the user to
- *              search from anywhere.
- * @flow
+ * @description Navigation and search bar for the top of the app, to allow the user to search from anywhere.
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Dimensions,
@@ -36,23 +35,10 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import {
   DefaultFunction,
-} from '../Types';
-
-// Imports
-const Constants = require('../Constants');
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const Preferences = require('../util/Preferences');
-const StatusBarUtils = require('../util/StatusBarUtils');
-
-// Get dimensions of the screen
-const {width} = Dimensions.get('window');
-// Size of icons in the navbar
-const NAVBAR_ICON_SIZE: number = 24;
-// Size of large icons in the navbar
-const NAVBAR_LARGE_ICON: number = 30;
+} from '../types';
 
 // Type definition for component props.
 type Props = {
@@ -67,11 +53,23 @@ type State = {
   showClearButton?: boolean,
 };
 
+// Imports
+const Constants = require('../Constants');
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
+const Preferences = require('../util/Preferences');
+const StatusBarUtils = require('../util/StatusBarUtils');
+
+// Get dimensions of the screen
+const {width} = Dimensions.get('window');
+// Size of icons in the navbar
+const NAVBAR_ICON_SIZE: number = 24;
+// Size of large icons in the navbar
+const NAVBAR_LARGE_ICON: number = 30;
+
 class NavBar extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     onBack: React.PropTypes.func,
@@ -101,8 +99,7 @@ class NavBar extends React.Component {
   }
 
   /**
-   * Returns the current state of the refresh variable, to allow it to be
-   * flipped to re-render the view.
+   * Returns the current state of the refresh variable, to allow it to be flipped to re-render the view.
    *
    * @returns {boolean} the value of {this.state.refresh}.
    */
@@ -251,5 +248,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = NavBar;

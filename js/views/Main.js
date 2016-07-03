@@ -19,12 +19,12 @@
  * @file Main.js
  * @module MainScreen
  * @description Main navigational point of the application.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Alert,
@@ -40,8 +40,7 @@ const TabsView = require('../components/Tabs');
 class MainScreen extends React.Component {
 
   /**
-   * Displays a pop up when the application opens for the first time after the
-   * user selects their preferred language.
+   * Displays a pop up when the application opens for the first time after the user selects their preferred language.
    */
   componentDidMount(): void {
     // Get current language for translations
@@ -82,5 +81,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = MainScreen;

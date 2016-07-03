@@ -20,12 +20,12 @@
  * @module DetailsScreen
  * @description Displays a title, an image, and text to the user. These details can be
  *              provided so the component can be used multiple times.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Image,
@@ -34,11 +34,6 @@ import {
   Text,
   View,
 } from 'react-native';
-
-// Imports
-const Constants = require('../Constants');
-const DisplayUtils = require('../util/DisplayUtils');
-const SectionHeader = require('./SectionHeader');
 
 // Type definition for component props.
 type Props = {
@@ -53,11 +48,15 @@ type State = {
   backgroundColor: string,
 };
 
+// Imports
+const Constants = require('../Constants');
+const DisplayUtils = require('../util/DisplayUtils');
+const SectionHeader = require('./SectionHeader');
+
 class DetailsScreen extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     backgroundColor: React.PropTypes.string,
@@ -84,14 +83,17 @@ class DetailsScreen extends React.Component {
   }
 
   /**
-   * Renders an image, a title, and a set of paragraphs of text (the details).
+   * Constructs a banner to display at the top of the view. The type of banner changes depending on whether the
+   * instance has image and/or title props defined.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {?ReactElement<any>} a banner for the view
    */
-  render(): ReactElement<any> {
-    let banner = null;
+  _renderBanner(): ?ReactElement<any> {
+    let banner: ?ReactElement<any> = null;
+
     if (this.props.image) {
       if (this.props.title) {
+        // Create a banner out of the image and the text
         banner = (
           <View style={_styles.banner}>
             <Image
@@ -106,6 +108,7 @@ class DetailsScreen extends React.Component {
           </View>
         );
       } else {
+        // Create a banner with only the image
         banner = (
           <View style={_styles.banner}>
             <Image
@@ -116,16 +119,30 @@ class DetailsScreen extends React.Component {
         );
       }
     } else if (this.props.title) {
+      // Create a banner with only the text
       banner = (
         <SectionHeader sectionName={this.props.title} />
       );
     }
 
-    let details = null;
+    return banner;
+  }
+
+  /**
+   * Constructs a scrollable text view containing the text props.
+   *
+   * @returns {?ReactElement<any>} details for the view
+   */
+  _renderDetails(): ?ReactElement<any> {
+    let details: ?ReactElement<any> = null;
+
+    // Only create a details view if there is any text defined.
     if (this.props.text) {
+      // Change color of the body text depending on the darkness of the background color
       const textColor = DisplayUtils.isColorDark(this.state.backgroundColor)
           ? Constants.Colors.primaryWhiteText
           : Constants.Colors.primaryBlackText;
+
       details = (
         <ScrollView style={_styles.scrollview}>
           {this.props.text.map((text, index) => (
@@ -139,10 +156,19 @@ class DetailsScreen extends React.Component {
       );
     }
 
+    return details;
+  }
+
+  /**
+   * Renders an image, a title, and a set of paragraphs of text (the details).
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render.
+   */
+  render(): ReactElement<any> {
     return (
       <View style={{flex: 1, backgroundColor: this.state.backgroundColor}}>
-        {banner}
-        {details}
+        {this._renderBanner.call(this)}
+        {this._renderDetails.call(this)}
       </View>
     );
   }
@@ -184,5 +210,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = DetailsScreen;

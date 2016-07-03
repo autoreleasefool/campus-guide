@@ -18,14 +18,13 @@
  * @author Joseph Roque
  * @file Splash.js
  * @module SplashScreen
- * @description Initial entry view for the application. Allows the user to select their
- *              preferred language on first run.
- * @flow
+ * @description Initial entry view for the application. Allows the user to select their preferred language on first run.
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   AsyncStorage,
@@ -38,20 +37,10 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
-  LanguageString,
-} from '../Types';
-
-// Imports
-const Configuration = require('../util/Configuration');
-const Constants = require('../Constants');
-const Preferences = require('../util/Preferences');
-const StatusBarUtils = require('../util/StatusBarUtils');
-
-// Require both language translations to display items in both languages
-const TranslationsEn: Object = require('../../assets/js/Translations.en.js');
-const TranslationsFr: Object = require('../../assets/js/Translations.fr.js');
+  Language,
+} from '../types';
 
 // Type definition for component props.
 type Props = {
@@ -63,11 +52,20 @@ type State = {
   isLoading: boolean,
 };
 
+// Imports
+const Configuration = require('../util/Configuration');
+const Constants = require('../Constants');
+const Preferences = require('../util/Preferences');
+const StatusBarUtils = require('../util/StatusBarUtils');
+
+// Require both language translations to display items in both languages
+const TranslationsEn: Object = require('../../assets/js/Translations.en.js');
+const TranslationsFr: Object = require('../../assets/js/Translations.fr.js');
+
 class SplashScreen extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     navigator: React.PropTypes.object.isRequired,
@@ -97,8 +95,6 @@ class SplashScreen extends React.Component {
    */
   componentDidMount(): void {
     const self: SplashScreen = this;
-
-    console.log('here');
 
     if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -132,10 +128,9 @@ class SplashScreen extends React.Component {
   /**
    * Sets the language of the app and opens the main screen.
    *
-   * @param {LanguageString} language  one of 'en' or 'fr', to specify the language
-   *                  chosen by the user.
+   * @param {Language} language  one of 'en' or 'fr', to specify the language chosen by the user.
    */
-  _selectLanguage(language: LanguageString): void {
+  _selectLanguage(language: Language): void {
     Preferences.setSelectedLanguage(AsyncStorage, language);
     this.props.navigator.push({id: Constants.Views.Main});
   }
@@ -147,8 +142,7 @@ class SplashScreen extends React.Component {
    */
   render(): ReactElement<any> {
     if (this.state.isLoading) {
-      // While checking to see if a language has been selected,
-      // display an empty view
+      // While checking to see if a language has been selected, display an empty view
       return (
         <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}} />
       );
@@ -221,5 +215,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = SplashScreen;

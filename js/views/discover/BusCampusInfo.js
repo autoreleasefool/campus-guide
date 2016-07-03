@@ -19,12 +19,12 @@
  * @file BusCampusInfo.js
  * @module BusCampusInfo
  * @description Displays the list of campuses with bus stop information.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Alert,
@@ -36,11 +36,21 @@ import {
   View,
 } from 'react-native';
 
-// Import type definition for bus campus.
+// Type imports
 import type {
   BusCampus,
   DefaultFunction,
-} from '../../Types';
+} from '../../types';
+
+// Type definition for component props.
+type Props = {
+  showCampus: DefaultFunction,
+};
+
+// Type definition for component state.
+type State = {
+  campuses: ?Array<BusCampus>,
+};
 
 // Imports
 const Configuration = require('../../util/Configuration');
@@ -57,16 +67,6 @@ const campuscolors: Array<string> = [
   Constants.Colors.lightGrey,
   Constants.Colors.darkGrey,
 ];
-
-// Type definition for component props.
-type Props = {
-  showCampus: DefaultFunction,
-};
-
-// Type definition for component state.
-type State = {
-  campuses: ?Array<BusCampus>,
-};
 
 class BusCampusInfo extends React.Component {
 
@@ -223,6 +223,7 @@ class BusCampusInfo extends React.Component {
   }
 }
 
+// Private styles for the component
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -241,5 +242,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = BusCampusInfo;

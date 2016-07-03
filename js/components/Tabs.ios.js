@@ -19,12 +19,12 @@
  * @file Tabs.ios.js
  * @module TabsView
  * @description Tab bar to manage navigation between the root views in the application.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Dimensions,
@@ -34,10 +34,10 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   TabItems,
-} from '../Types';
+} from '../types';
 
 // Imports
 const CommonTabs = require('./CommonTabs');
@@ -55,7 +55,9 @@ const tabIcons: TabItems = {
 
 // Determining the size of the current tab indicator based on the screen size
 const {width} = Dimensions.get('window');
+// Width of indicator which indicates current tab
 const indicatorWidth: number = Math.ceil(width / Constants.Tabs.length);
+// Size of the icons within the tabs
 const tabIconSize: number = 30;
 
 class TabsView extends CommonTabs {
@@ -141,5 +143,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = TabsView;

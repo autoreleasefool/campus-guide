@@ -18,14 +18,13 @@
  * @author Joseph Roque
  * @file BuildingGrid.js
  * @module BuildingGrid
- * @description Displays the list of buildings in a grid, with the building's
- *              name and an image.
- * @flow
+ * @description Displays the list of buildings in a grid, with the building's name and an image.
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Dimensions,
@@ -37,17 +36,11 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions
+// Type imports
 import type {
   Building,
   DefaultFunction,
-} from '../../../Types';
-
-// Determining size of building icons based on the screen size.
-const {width} = Dimensions.get('window');
-const BUILDING_BASE_PADDING: number = 60;
-const BUILDING_GRID_SIZE: number = 3;
-const buildingIconSize: number = Math.floor((width - BUILDING_BASE_PADDING) / BUILDING_GRID_SIZE);
+} from '../../../types';
 
 // Type definition for component props.
 type Props = {
@@ -60,11 +53,19 @@ type State = {
   loaded: boolean,
 };
 
+// Determining size of building icons based on the screen size.
+const {width} = Dimensions.get('window');
+// Padding at edges for building icons
+const BUILDING_BASE_PADDING: number = 60;
+// Number of columns to show buildings in
+const BUILDING_COLUMNS: number = 3;
+// Size of a single icon in the grid
+const buildingIconSize: number = Math.floor((width - BUILDING_BASE_PADDING) / BUILDING_COLUMNS);
+
 class BuildingGrid extends React.Component {
 
-  /*
-   * Properties which the parent component should make available to this
-   * component.
+  /**
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     showBuilding: React.PropTypes.func.isRequired,
@@ -103,8 +104,7 @@ class BuildingGrid extends React.Component {
   }
 
   /**
-   * Loads the names and images of the buildings from the assets to display
-   * them.
+   * Loads the names and images of the buildings from the assets to display them.
    */
   _loadBuildingsList(): void {
     const buildingsList: Array<Building> = require('../../../../assets/js/Buildings');
@@ -131,14 +131,14 @@ class BuildingGrid extends React.Component {
     let topMargin: number = 0;
 
     // Add additional left and right spacing to items on the edges
-    if (rowIndex % BUILDING_GRID_SIZE === 0) {
+    if (rowIndex % BUILDING_COLUMNS === 0) {
       leftMargin += ICON_MARGIN_OFFSET;
-    } else if (rowIndex % BUILDING_GRID_SIZE === 2) {
+    } else if (rowIndex % BUILDING_COLUMNS === 2) {
       rightMargin += ICON_MARGIN_OFFSET;
     }
 
     // Add additional top margin to the first row
-    if (rowIndex < BUILDING_GRID_SIZE) {
+    if (rowIndex < BUILDING_COLUMNS) {
       topMargin = ICON_MARGIN_OFFSET * 2;
     }
 
@@ -155,8 +155,8 @@ class BuildingGrid extends React.Component {
   }
 
   /**
-   * Renders the view. Displays an empty view before the buildings have loaded and a list of the building names
-   * and icons once they have.
+   * Renders the view. Displays an empty view before the buildings have loaded and a list of the building names and
+   * icons once they have.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
@@ -188,8 +188,8 @@ const _styles = StyleSheet.create({
     marginBottom: 15,
   },
   buildingIcon: {
-    width: (width - BUILDING_BASE_PADDING) / BUILDING_GRID_SIZE,
-    height: (width - BUILDING_BASE_PADDING) / BUILDING_GRID_SIZE,
+    width: (width - BUILDING_BASE_PADDING) / BUILDING_COLUMNS,
+    height: (width - BUILDING_BASE_PADDING) / BUILDING_COLUMNS,
   },
   buildingCode: {
     textAlign: 'center',
@@ -198,5 +198,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = BuildingGrid;

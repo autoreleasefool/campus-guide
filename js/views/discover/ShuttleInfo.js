@@ -18,14 +18,13 @@
  * @author Joseph Roque
  * @file ShuttleInfo.js
  * @module ShuttleInfo
- * @description Displays info about shuttles provided by the university across the
- *              various campuses.
- * @flow
+ * @description Displays info about shuttles provided by the university across the various campuses.
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Image,
@@ -35,15 +34,27 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions
+// Type imports
 import type {
   BusCampus,
   DefaultFunction,
   DefaultIcon,
-  LanguageString,
+  Language,
   PlatformString,
   ShuttleDetails,
-} from '../../Types';
+} from '../../types';
+
+// Type definition for component props.
+type Props = {
+  showCampus: DefaultFunction,
+  showDetails: DefaultFunction,
+};
+
+// Type definition for component state.
+type State = {
+  campuses: ?Array<BusCampus>,
+  details: ?Array<ShuttleDetails>,
+};
 
 // Imports
 const Constants = require('../../Constants');
@@ -60,23 +71,10 @@ const campusColors: Array<string> = [
   Constants.Colors.darkGrey,
 ];
 
-// Type definition for component props.
-type Props = {
-  showCampus: DefaultFunction,
-  showDetails: DefaultFunction,
-};
-
-// Type definition for component state.
-type State = {
-  campuses: ?Array<BusCampus>,
-  details: ?Array<ShuttleDetails>,
-};
-
 class ShuttleInfo extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     showCampus: React.PropTypes.func.isRequired,
@@ -114,8 +112,7 @@ class ShuttleInfo extends React.Component {
   }
 
   /**
-   * Loads a list of campus names and images representing them, as well as
-   * details the user can view.
+   * Loads a list of campus names and images representing them, as well as details the user can view.
    */
   _loadCampusesAndDetails(): void {
     const shuttleCampuses: Array<BusCampus> = require('../../../assets/js/ShuttleCampuses');
@@ -127,15 +124,14 @@ class ShuttleInfo extends React.Component {
   }
 
   /**
-   * Renders views for each of the campuses which leads to screens with more
-   * detailed information on them, as well as some other links the user
-   * may find useful.
+   * Renders views for each of the campuses which leads to screens with more detailed information on them, as well as
+   * some other links the user may find useful.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement<any> {
     // Get current language
-    const language: LanguageString = Preferences.getSelectedLanguage();
+    const language: Language = Preferences.getSelectedLanguage();
     const platform: PlatformString = Platform.OS;
 
     const campusDisplayNames: Array<string> = [];
@@ -253,5 +249,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = ShuttleInfo;

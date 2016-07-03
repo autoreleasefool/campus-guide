@@ -18,33 +18,27 @@
  * @author Joseph Roque
  * @file BusCampusStops.js
  * @module BusCampusStops
- * @description Displays a campus' location on a map, relative to a user's location, as
- *              well as a list of the stops near the campus.
- * @flow
+ * @description Displays a campus' location on a map, relative to a user's location, as well as a list of the stops
+ *              near the campus.
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   StyleSheet,
   View,
 } from 'react-native';
 
-// Import type definition for bus and map info.
+// Type imports
 import type {
   LatLong,
   TransitCampus,
   TransitStop,
   University,
-} from '../../Types';
-
-// Imports
-const Configuration = require('../../util/Configuration');
-const DisplayUtils = require('../../util/DisplayUtils');
-const MapView = require('react-native-maps');
-const Stops = require('./components/Stops');
+} from '../../types';
 
 // Type definition for component props.
 type Props = {
@@ -69,11 +63,16 @@ type MapMarker = {
   },
 };
 
+// Imports
+const Configuration = require('../../util/Configuration');
+const DisplayUtils = require('../../util/DisplayUtils');
+const MapView = require('react-native-maps');
+const Stops = require('./components/Stops');
+
 class BusCampusStops extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     campusColor: React.PropTypes.string.isRequired,
@@ -204,10 +203,10 @@ class BusCampusStops extends React.Component {
   }
 
   /**
-   * Returns a view containing a header and list with the stops surrounding the
-   * campus provided by {this.props.campusName}.
+   * Returns a view containing a header and list with the stops surrounding the campus provided by
+   * {this.props.campusName}.
    *
-   * @returns {ReactElement<any>} a {Stops} view with details about the various stops on the campus.
+   * @returns {ReactElement<any>} a {Stops} view with details about the various stops on the campus, or an empty view
    */
   _getCampusStops(): ReactElement<any> {
     if (this.state.campus == null) {
@@ -278,5 +277,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = BusCampusStops;

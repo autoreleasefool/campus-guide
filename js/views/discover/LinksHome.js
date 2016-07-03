@@ -19,12 +19,12 @@
  * @file LinksHome.js
  * @module LinksHome
  * @description Presents a list of defined, useful links for the user regarding the university.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Image,
@@ -35,16 +35,11 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions
+// Type imports
 import type {
   DefaultFunction,
   LinkCategoryType,
-} from '../../Types';
-
-// Imports
-const Constants = require('../../Constants');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
+} from '../../types';
 
 // Type definition for component props.
 type Props = {
@@ -57,11 +52,15 @@ type State = {
   loaded: boolean,
 };
 
+// Imports
+const Constants = require('../../Constants');
+const LanguageUtils = require('../../util/LanguageUtils');
+const Preferences = require('../../util/Preferences');
+
 class LinksHome extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     showLinkCategory: React.PropTypes.func.isRequired,
@@ -100,8 +99,7 @@ class LinksHome extends React.Component {
   }
 
   /**
-   * Retrieves the set of categories that the various useful links in the app
-   * belong to.
+   * Retrieves the set of categories that the various useful links in the app belong to.
    */
   _loadLinkCategories(): void {
     const linkCategories: Array<LinkCategoryType> = require('../../../assets/js/UsefulLinks');
@@ -137,8 +135,7 @@ class LinksHome extends React.Component {
   }
 
   /**
-   * Renders a list of images and titles for the user to select, opening a
-   * screen with a list of useful links.
+   * Renders a list of images and titles for the user to select, opening a screen with a list of useful links.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
@@ -192,5 +189,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = LinksHome;

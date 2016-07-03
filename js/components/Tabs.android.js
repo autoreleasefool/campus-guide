@@ -19,12 +19,12 @@
  * @file Tabs.android.js
  * @module TabsView
  * @description Tab bar to manage navigation between the root views in the application.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   BackAndroid,
@@ -36,10 +36,10 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   TabItems,
-} from '../Types';
+} from '../types';
 
 // Imports
 const CommonTabs = require('./CommonTabs');
@@ -58,7 +58,6 @@ const drawerIcons: TabItems = {
 
 // Determining the size of the current tab indicator based on the screen size
 const tabIconSize: number = 30;
-
 // Represents a closed navigation drawer.
 const DRAWER_CLOSED: number = 0;
 // Represents an open navigation drawer.
@@ -190,5 +189,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = TabsView;

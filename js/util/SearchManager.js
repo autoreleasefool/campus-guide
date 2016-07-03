@@ -18,8 +18,8 @@
  * @author Joseph Roque
  * @file SearchManager.js
  * @description Provides methods for interacting with the NavBar search input from throughout the app.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
@@ -30,7 +30,6 @@ export type SearchListener = {
 
 // List of current search listeners. Components can register a listener with addSearchListener.
 let searchListeners: Array<SearchListener> = [];
-
 // The default SearchListener, when no others are available.
 let defaultSearchListener: ?SearchListener = null;
 
@@ -63,8 +62,8 @@ module.exports = {
   /**
    * Retrieves a search listener that has been added.
    *
-   * @param {number} index index of search listener to retrieve. Must be greater than or equal to 0
-   *                       and less than numberOfSearchListeners.
+   * @param {number} index index of search listener to retrieve. Must be greater than or equal to 0 and less than
+   *                       numberOfSearchListeners.
    * @returns {?SearchListener} the search listener at index or null.
    */
   getSearchListener(index: number): ?SearchListener {

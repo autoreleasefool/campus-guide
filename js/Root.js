@@ -19,28 +19,28 @@
  * @file Roots.js
  * @module CampusGuide
  * @description Base component for the application.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Navigator,
   View,
 } from 'react-native';
 
+// Type imports
+import type {
+  Route,
+} from './types';
+
 // Imports
 const Constants = require('./Constants');
 const MainScreen = require('./views/Main');
 const Orientation = require('react-native-orientation');
 const SplashScreen = require('./views/Splash');
-
-// Type definition for routes between views.
-type Route = {
-  id: number,
-};
 
 class CampusGuide extends React.Component {
 
@@ -66,7 +66,7 @@ class CampusGuide extends React.Component {
   /**
    * Renders a different view based on the current navigator route.
    *
-   * @param {Route} route          object with properties to identify the route to display.
+   * @param {Route} route               object with properties to identify the route to display.
    * @param {ReactClass<any>} navigator navigator object to pass to children.
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
@@ -87,8 +87,7 @@ class CampusGuide extends React.Component {
   }
 
   /**
-   * Renders the root navigator of the app to switch between the splash screen
-   * and main screen.
+   * Renders the root navigator of the app to switch between the splash screen and main screen.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
@@ -102,5 +101,4 @@ class CampusGuide extends React.Component {
   }
 }
 
-// Expose component to app
 module.exports = CampusGuide;

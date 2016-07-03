@@ -18,18 +18,18 @@
  * @author Joseph Roque
  * @file ScreenUtils.js
  * @description Utility methods for interacting with the screens.
- * @flow
  *
+ * @flow
  */
 'use strict';
-
-// Imports
-const Constants = require('../Constants');
 
 // Valid types of screen ids.
 type ScreenId =
     | number
     | string;
+
+// Imports
+const Constants = require('../Constants');
 
 // Screens which can be reached from the tab bar
 const HOME_SCREENS: Array<ScreenId> = [
@@ -73,12 +73,10 @@ const SETTINGS_SCREENS: Array<ScreenId> = [
 module.exports = {
 
   /**
-   * Returns the screen that can reached directly from the tab bar based on
-   * the screenId.
+   * Returns the screen that can reached directly from the tab bar based on the screenId.
    *
    * @param {ScreenId} screenId id of the screen to check.
-   * @returns {ScreenId} the id of the home screen of {screenId}, which is determined by
-   *         the list that contains the id.
+   * @returns {ScreenId} the id of the home screen of {screenId}, which is determined by the list that contains the id.
    */
   getRootScreen(screenId: ScreenId): ScreenId {
     if (FIND_SCREENS.indexOf(screenId) >= 0) {
@@ -96,8 +94,7 @@ module.exports = {
   },
 
   /**
-   * Returns true if the screen can be reached directly from the tab bar,
-   * or false otherwise.
+   * Returns true if the screen can be reached directly from the tab bar, or false otherwise.
    *
    * @param {ScreenId} screenId id of the screen to check.
    * @returns {boolean} true  if {screenId} is in HOME_SCREENS, false otherwise.

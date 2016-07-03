@@ -18,14 +18,14 @@
  * @author Joseph Roque
  * @file ScheduleHome.js
  * @module ScheduleHone
- * @description View for enabling the user to create a schedule of their classes
- *              and see the schedule in an organized manner.
- * @flow
+ * @description View for enabling the user to create a schedule of their classes and see the schedule in an organized
+ *              manner.
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   AsyncStorage,
@@ -38,10 +38,21 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   DefaultFunction,
-} from '../../Types';
+} from '../../types';
+
+// Type definition for component props.
+type Props = {
+  editSchedule: DefaultFunction,
+  requestTabChange: DefaultFunction,
+};
+
+// Type definition for component state.
+type State = {
+  showEditButtons: boolean,
+};
 
 // Imports
 const Constants = require('../../Constants');
@@ -54,17 +65,6 @@ const SectionHeader = require('../../components/SectionHeader');
 // Get dimensions of the device
 const {width} = Dimensions.get('window');
 const screenWidth: number = width;
-
-// Type definition for component props.
-type Props = {
-  editSchedule: DefaultFunction,
-  requestTabChange: DefaultFunction,
-};
-
-// Type definition for component state.
-type State = {
-  showEditButtons: boolean,
-};
 
 class ScheduleHome extends React.Component {
 
@@ -208,7 +208,7 @@ class ScheduleHome extends React.Component {
               Preferences.getSelectedLanguage(),
               Preferences.getCurrentSemesterInfo())}
             subtitleOnClick={this._changeSemester.bind(this)} />
-        {/* TODO: replace with scroll view for schedule */}
+        {/** TODO: replace with scroll view for schedule */}
         <View style={{flex: 1}} />
         {buttons}
       </View>
@@ -245,5 +245,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = ScheduleHome;

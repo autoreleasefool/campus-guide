@@ -18,14 +18,14 @@
  * @author Joseph Roque
  * @file Stops.js
  * @module Stops
- * @description Displays details about the stops provided. Navigates between a list of
- *              stops and their individual details.
- * @flow
+ * @description Displays details about the stops provided. Navigates between a list of stops and their individual
+ *              details.
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   ListView,
@@ -37,25 +37,11 @@ import {
   View,
 } from 'react-native';
 
-// Import type definition icons.
+// Type imports
 import type {
   DetailedRouteInfo,
   TransitCampus,
-} from '../../../Types';
-
-// Imports
-const Constants = require('../../../Constants');
-const LanguageUtils = require('../../../util/LanguageUtils');
-const Preferences = require('../../../util/Preferences');
-const SectionHeader = require('../../../components/SectionHeader');
-const TextUtils = require('../../../util/TextUtils');
-
-// Identifier for the navigator, indicating the list of stops is being shown.
-const LIST: number = 0;
-// Identifier for the navigator, indicating the details of a stop are shown.
-const DETAILS: number = 1;
-// Maximum number of upcoming bus arrival times to show.
-const MAX_UPCOMING_TIMES: number = 4;
+} from '../../../types';
 
 // Type definition for component props.
 type Props = {
@@ -90,11 +76,24 @@ type NavigatorRoute = {
   stop: ?StopInfo,
 };
 
+// Imports
+const Constants = require('../../../Constants');
+const LanguageUtils = require('../../../util/LanguageUtils');
+const Preferences = require('../../../util/Preferences');
+const SectionHeader = require('../../../components/SectionHeader');
+const TextUtils = require('../../../util/TextUtils');
+
+// Identifier for the navigator, indicating the list of stops is being shown.
+const LIST: number = 0;
+// Identifier for the navigator, indicating the details of a stop are shown.
+const DETAILS: number = 1;
+// Maximum number of upcoming bus arrival times to show.
+const MAX_UPCOMING_TIMES: number = 4;
+
 class Stops extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     backgroundIsDark: React.PropTypes.bool,
@@ -281,7 +280,7 @@ class Stops extends React.Component {
    * @param {StopInfo} stop       details about the stop to display.
    * @param {string} sectionIndex index of the section the stop is in.
    * @param {number} rowIndex     index of the row the stop is in.
-   * @returns {ReactElement<any>} Pthe name of the stop, its unique code, and the list of routes
+   * @returns {ReactElement<any>} the name of the stop, its unique code, and the list of routes
    *         that serve the stop.
    */
   _renderStopRow(stop: StopInfo, sectionIndex: string, rowIndex: number): ReactElement<any> {
@@ -443,5 +442,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = Stops;

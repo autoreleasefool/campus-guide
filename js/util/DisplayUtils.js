@@ -18,27 +18,26 @@
  * @author Joseph Roque
  * @file DisplayUtils.js
  * @description Defines a set of methods to manipulate the display and related values.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// Import type definition icons.
+// Import types
 import type {
   DefaultIcon,
   Facility,
   IconObject,
   PlatformString,
-} from '../Types';
+} from '../types';
 
 module.exports = {
 
   /**
-   * Returns the icon and class for an icon to use for the Android platform,
-   * defined in the object.
+   * Returns the icon and class for an icon to use for the Android platform, defined in the object.
    *
-   * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class'
-   *                     properties, or 'icon.name' and 'icon.class' properties.
+   * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class' properties, or
+   *                     'icon.name' and 'icon.class' properties.
    * @returns {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
   getAndroidIcon(obj: Object): ?DefaultIcon {
@@ -60,7 +59,7 @@ module.exports = {
    * @param {ReactClass<any>} LayoutAnimation the LayoutAnimation object from React Native
    * @returns {Object} a LayoutAnimation animation configuration.
    */
-  getEaseInEaseOutLayoutAnimation(LayoutAnimation: ReactClass<any>) {
+  getEaseInEaseOutLayoutAnimation(LayoutAnimation: ReactClass<any>): Object {
     return {
       create: LayoutAnimation.Presets.easeInEaseOut.create,
       duration: LayoutAnimation.Presets.easeInEaseOut.duration,
@@ -139,8 +138,8 @@ module.exports = {
    * Returns the icon and class for an icon to use for the iOS platform,
    * defined in the object.
    *
-   * @param {Object} obj the object with either 'icon.ios.name' and 'icon.ios.class'
-   *                     properties, or 'icon.name' and 'icon.class' properties.
+   * @param {Object} obj the object with either 'icon.ios.name' and 'icon.ios.class' properties, or 'icon.name' and
+   *                     'icon.class' properties.
    * @returns {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
   getIOSIcon(obj: Object): ?DefaultIcon {
@@ -157,13 +156,12 @@ module.exports = {
   },
 
   /**
-   * Returns the icon and class defined for an object, for the platform specified.
-   * Platform should be 'ios' or 'android'.
+   * Returns the icon and class defined for an object, for the platform specified. Platform should be 'ios' or
+   * 'android'.
    *
    * @param {PlatformString} platform either 'ios' or 'android'.
-   * @param {Object} obj              the object with either 'icon.{platform}.name' and
-   *                                  'icon.{platform}.class' properties, or 'icon.name' and
-   *                                  'icon.class' properties.
+   * @param {Object} obj              the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
+   *                                  properties, or 'icon.name' and 'icon.class' properties.
    * @returns {?DefaultIcon} an object with 'name' and 'class' properties, or null.
    */
   getPlatformIcon(platform: PlatformString, obj: Object): ?DefaultIcon {
@@ -180,8 +178,7 @@ module.exports = {
    * Returns a color for the icon for certain social media platforms.
    *
    * @param {string} socialMedia a string containing the name of a social media platform.
-   * @returns {string} the color for the icon of the provided social media platform,
-   *         or a generic color.
+   * @returns {string} the color for the icon of the provided social media platform, or a generic color.
    */
   getSocialMediaIconColor(socialMedia: string): string {
     switch (socialMedia.toLowerCase()) {

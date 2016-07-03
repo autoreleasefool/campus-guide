@@ -18,8 +18,8 @@
  * @author Joseph Roque
  * @file TextUtils.js
  * @description Defines a set of methods to manipulate strings.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
@@ -52,8 +52,7 @@ module.exports = {
   },
 
   /**
-   * If a time has an hour greater than 23, it is adjusted to be within 24
-   * hours.
+   * If a time has an hour greater than 23, it is adjusted to be within 24 hours.
    *
    * @param {string} time time to convert, in '00:00' format.
    * @returns {string} a time between 00:00 and 23:59.
@@ -69,8 +68,8 @@ module.exports = {
   },
 
   /**
-   * If text length is greater than {maxLength}, the text is shortened to
-   * maxLength - 2 and 2 periods are added to the end of the text.
+   * If text length is greater than {maxLength}, the text is shortened to maxLength - 2 and 2 periods are added to the
+   * end of the text.
    *
    * @param {string} text      string to shorten if too long.
    * @param {number} maxLength maximum length string to return.
@@ -85,25 +84,26 @@ module.exports = {
   },
 
   /**
-   * Pads the beginning of a string with a character until it is of
-   * {desiredLength}. If no character is provided, pads with spaces.
+   * Pads the beginning of a string with a character until it is of {desiredLength}. If no character is provided,
+   * pads with spaces.
    *
    * @param {string} text          string to pad.
    * @param {number} desiredLength length of string to return.
-   * @param {?string} char         optional argument. Character to pad with.
-   *                               Uses ' ' by default.
+   * @param {?string} char         optional argument. Character to pad with. Uses ' ' by default.
    * @returns {string} a string with at least a length of {desiredLength}.
    */
   leftPad(text: string, desiredLength: number, char: ?string): string {
     const replacementChar = char || ' ';
     let replacedString = text;
+    let replacedStringLength = replacedString.length;
 
     if (replacementChar.length !== 1) {
       return text;
     }
 
-    while (replacedString.length < desiredLength) {
+    while (replacedStringLength < desiredLength) {
       replacedString = replacementChar + replacedString;
+      replacedStringLength++;
     }
 
     return replacedString;

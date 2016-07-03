@@ -19,20 +19,20 @@
  * @file TabRouter.js
  * @module TabRouter
  * @description Manages view changes in the application. Common to Android and iOS.
- * @flow
  *
+ * @flow
  */
-// React Native imports
+// React imports
 import React from 'react';
 import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   DefaultFunction,
   Route,
-} from '../Types';
+} from '../types';
 
 // Imports
 const Constants = require('../Constants');
@@ -56,7 +56,7 @@ module.exports = {
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {Route} route               object with properties to identify the route to display.
+   * @param {Route} route                     object with properties to identify the route to display.
    * @param {DefaultFunction} changeTabs      function to change tabs in the tab manager.
    * @param {DefaultFunction} navigateForward function to navigate to a new screen in the tab manager.
    * @param {DefaultFunction} refreshNavbar   function to update the NavBar.

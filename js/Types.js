@@ -18,8 +18,8 @@
  * @author Joseph Roque
  * @file Types.js
  * @description Variable type definitions for use throughout the app.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
@@ -59,7 +59,7 @@ export type PlatformString =
 //  Languages
 //-----------------------------------------------------------------------------
 
-export type LanguageString =
+export type Language =
     | 'en'
     | 'fr';
 
@@ -88,7 +88,7 @@ export type TabItems = {
 export type Route = {
   id: number | string,
   data: any,
-}
+};
 
 //-----------------------------------------------------------------------------
 //  Semesters

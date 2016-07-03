@@ -18,8 +18,8 @@
  * @author Joseph Roque
  * @file ExternalUtils.js
  * @description Defines a set of methods for interacting with elements outside of the application.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
@@ -31,12 +31,12 @@ module.exports = {
   /**
    * Opens a URL if the URL is valid.
    *
-   * @param {?string} url URL to open.
-   * @param {Object} Translations translations in the current language of certain text.
-   * @param {ReactClass<any>} Linking an instance of the React Native Linking class.
-   * @param {ReactClass<any>} Alert an instance of the React Native Alert class.
+   * @param {?string} url               URL to open.
+   * @param {Object} Translations       translations in the current language of certain text.
+   * @param {ReactClass<any>} Linking   an instance of the React Native Linking class.
+   * @param {ReactClass<any>} Alert     an instance of the React Native Alert class.
    * @param {ReactClass<any>} Clipboard an instance of the React Native Clipboard class.
-   * @returns {Promise<void>} a promise indicating the result of whether the link was opened.
+   * @returns {Promise<void>} a promise indicating the result of whether the link was opened
    */
   openLink(url: ?string,
            Translations: Object,

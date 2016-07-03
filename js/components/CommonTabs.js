@@ -19,22 +19,27 @@
  * @file CommonTabs.js
  * @module CommonTabs
  * @description Provides tab functionality common to both Android and iOS.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Navigator,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   Route,
   TabItems,
-} from '../Types';
+} from '../types';
+
+// Type definition for component state.
+type State = {
+  currentTab: number,
+};
 
 // Imports
 const Constants = require('../Constants');
@@ -45,12 +50,11 @@ const TabRouter = require('./TabRouter');
 // Lists the views currently on the stack in the Navigator.
 let screenStack: Array<number | string> = [Constants.Views.Default];
 
-// Type definition for component state.
-type State = {
-  currentTab: number,
-};
-
 class CommonTabs extends React.Component {
+
+  /**
+   * Define type for the component state.
+   */
   state: State;
 
   /**
@@ -86,6 +90,7 @@ class CommonTabs extends React.Component {
   }
 
   // Screen which a tab should open
+  // Made as a member variable so subclasses can see it
   tabScreens: TabItems = {
     find: Constants.Views.Find.Home,
     schedule: Constants.Views.Schedule.Home,
@@ -96,27 +101,18 @@ class CommonTabs extends React.Component {
   /**
    * Switch to the selected tab, as determined by tabId.
    *
-   * @param {number} tabId the tab to switch to.
+   * @param {number} tab the tab to switch to.
    */
-  _changeTabs(tabId: number): void {
+  _changeTabs(tab: number): void {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
       this._showBackButton(false);
     }
 
-    this.refs.Navigator.resetTo({id: tabId});
+    this.refs.Navigator.resetTo({id: tab});
     this.setState({
-      currentTab: tabId,
+      currentTab: tab,
     });
-    screenStack = [tabId];
-  }
-
-  /**
-   * Retrieves the current tab.
-   *
-   * @returns {number} the current tab in the state.
-   */
-  getCurrentTab(): number {
-    return this.state.currentTab;
+    screenStack = [tab];
   }
 
   /**
@@ -142,6 +138,15 @@ class CommonTabs extends React.Component {
   }
 
   /**
+   * Retrieves the current tab.
+   *
+   * @returns {number} the current tab in the state.
+   */
+  getCurrentTab(): number {
+    return this.state.currentTab;
+  }
+
+  /**
    * Returns to the previous page.
    *
    * @returns {boolean} true if the app navigated backwards.
@@ -162,10 +167,9 @@ class CommonTabs extends React.Component {
   }
 
   /**
-   * Opens a screen, unless the screen is already showing. Passes data to
-   * the new screen.
+   * Opens a screen, unless the screen is already showing. Passes data to the new screen.
    *
-   * @param {number | string} screenId  id of the screen to display
+   * @param {number | string} screenId id of the screen to display
    * @param {Object} data     optional parameters to pass to the renderScene method.
    */
   _navigateForward(screenId: number | string, data: any): void {
@@ -222,6 +226,7 @@ class CommonTabs extends React.Component {
   _onSearch(searchTerms: ?string): void {
     const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
     if (numberOfSearchListeners > 0) {
+      // Iterate over each search listener and pass the search terms to each one
       for (let i = 0; i < numberOfSearchListeners; i++) {
         const searchListener = SearchManager.getSearchListener(i);
         if (searchListener != null) {
@@ -229,6 +234,7 @@ class CommonTabs extends React.Component {
         }
       }
     } else if (SearchManager.getDefaultSearchListener() != null) {
+      // If there are no search listeners except for a default one, then send terms to the default
       const searchListener = SearchManager.getDefaultSearchListener();
       if (searchListener != null) {
         searchListener.onSearch(searchTerms);
@@ -250,5 +256,4 @@ class CommonTabs extends React.Component {
   }
 }
 
-// Expose component to app
 module.exports = CommonTabs;

@@ -18,8 +18,8 @@
  * @author Joseph Roque
  * @file StatusBarUtils.js
  * @description Offers utilities for adjusting the status bar.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
@@ -31,10 +31,10 @@ module.exports = {
   /**
    * Returns an additional padding for the status bar on iOS.
    *
-   * @param {{OS: string}} Platform an instance of the React Native Platform class.
+   * @param {Object} Platform an instance of the React Native Platform class.
    * @returns {number} the padding to use for the status bar.
    */
-  getStatusBarPadding(Platform: {OS: string}): number {
+  getStatusBarPadding(Platform: Object): number {
     if (Platform.OS === 'ios') {
       return IOS_STATUS_BAR_PADDING;
     } else {
@@ -43,8 +43,7 @@ module.exports = {
   },
 
   /**
-   * Changes the status bar text colors on iOS to be either light or dark.
-   * True for light, false for dark.
+   * Changes the status bar text colors on iOS to be either light or dark. True for light, false for dark.
    *
    * @param {{OS: string}} Platform an instance of the React Native Platform class.
    * @param {ReactClass<any>} StatusBar an instance of the React Native StatusBar class.

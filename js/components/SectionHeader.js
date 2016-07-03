@@ -19,12 +19,12 @@
  * @file SectionHeader.js
  * @module SectionHeader
  * @description Predefined style for section separating headers in the app.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   StyleSheet,
@@ -33,10 +33,34 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   DefaultFunction,
-} from '../Types';
+} from '../types';
+
+// Type definition for component props.
+type Props = {
+  backgroundOverride: ?string,
+  sectionIcon: ?string,
+  sectionIconClass: ?string,
+  sectionIconOnClick: ?DefaultFunction,
+  sectionName: string,
+  subtitleIcon: ?string,
+  subtitleIconClass: ?string,
+  subtitleName: ?string,
+  subtitleOnClick: ?DefaultFunction,
+  useBlackText: ?boolean,
+};
+
+// Type definition for component state.
+type State = {
+  sectionIcon: string,
+  sectionIconClass: string,
+  subtitleIcon: string,
+  subtitleIconClass: string,
+  subtitleName: string,
+  textAndIconColor: string,
+};
 
 // Imports
 const Constants = require('../Constants');
@@ -50,30 +74,6 @@ const NULL_SUBTITLE_VALUE: string = 'value_null';
 const VALID_ICON_CLASSES: Array<?string> = ['material', 'ionicon'];
 // Maximum number of characters in the section name.
 const MAX_NAME_LENGTH: number = 21;
-
-// Type definition for component props.
-type Props = {
-  backgroundOverride: ?string,
-  sectionIcon: ?string,
-  sectionIconClass: ?string,
-  sectionIconOnClick: DefaultFunction,
-  sectionName: string,
-  subtitleIcon: ?string,
-  subtitleIconClass: ?string,
-  subtitleName: ?string,
-  subtitleOnClick: DefaultFunction,
-  useBlackText: ?boolean,
-};
-
-// Type definition for component state.
-type State = {
-  sectionIcon: string,
-  sectionIconClass: string,
-  subtitleIcon: string,
-  subtitleIconClass: string,
-  subtitleName: string,
-  textAndIconColor: string,
-};
 
 class SectionHeader extends React.Component {
 
@@ -159,8 +159,7 @@ class SectionHeader extends React.Component {
   }
 
   /**
-   * Returns a value which can be used in updateSubtitle(name, icon, iconClass)
-   * to remove a subtitle value.
+   * Returns a value which can be used in updateSubtitle(name, icon, iconClass) to remove a subtitle value.
    *
    * @returns {string} {NULL_SUBTITLE_VALUE}.
    */
@@ -206,17 +205,13 @@ class SectionHeader extends React.Component {
   }
 
   /**
-   * Builds the components of the section header, including the title, icon,
-   * subtitle, and subtitle icon.
+   * Creates a view containing this SectionHeader's icon, so long as it is not null.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {?ReactElement<any>} a view with the SectionHeader's icon, or null
    */
-  render(): ReactElement<any> {
+  _renderIcon(): ?ReactElement<any> {
     let icon: ?ReactElement<any> = null;
-    let subtitleName: ?ReactElement<any> = null;
-    let subtitleIcon: ?ReactElement<any> = null;
 
-    // Build the icon for the section
     if (this.state.sectionIcon !== NULL_SUBTITLE_VALUE && this.state.sectionIconClass !== NULL_SUBTITLE_VALUE) {
       if (this.state.sectionIconClass === 'material') {
         icon = (
@@ -236,6 +231,7 @@ class SectionHeader extends React.Component {
         );
       }
 
+      // Wrap the icon in a TouchableOpacity if there an onClick function
       if (this.props.sectionIconOnClick) {
         icon = (
           <TouchableOpacity onPress={this.props.sectionIconOnClick}>
@@ -245,16 +241,17 @@ class SectionHeader extends React.Component {
       }
     }
 
-    // Build the subtitle for the section
-    if (this.state.subtitleName && this.state.subtitleName !== NULL_SUBTITLE_VALUE) {
-      subtitleName = (
-        <Text style={[_styles.subtitleName, {color: this.state.textAndIconColor}]}>
-          {this.state.subtitleName.toUpperCase()}
-        </Text>
-      );
-    }
+    return icon;
+  }
 
-    // Build the icon for the subtitle
+  /**
+   * Creates a view containing this SectionHeader's subtitle icon, so long as it is not null.
+   *
+   * @returns {?ReactElement<any>} a view with the SectionHeader's subtitle icon, or null
+   */
+  _renderSubtitleIcon(): ?ReactElement<any> {
+    let subtitleIcon: ?ReactElement<any> = null;
+
     if (this.state.subtitleIcon && this.state.subtitleIcon !== NULL_SUBTITLE_VALUE
         && this.state.subtitleIconClass && this.state.subtitleIconClass !== NULL_SUBTITLE_VALUE) {
       if (this.state.subtitleIconClass === 'material') {
@@ -276,10 +273,42 @@ class SectionHeader extends React.Component {
       }
     }
 
-    // Combine the subtitle name and icon
-    let iconAndSubtitle = null;
+    return subtitleIcon;
+  }
+
+  /**
+   * Creates a text view containing this SectionHeader's subtitle name, so long as it is not null.
+   *
+   * @returns {?ReactElement<any>} a text view with the SectionHeader's subtitle name, or null
+   */
+  _renderSubtitleName(): ?ReactElement<any> {
+    let subtitleName: ?ReactElement<any> = null;
+
+    if (this.state.subtitleName && this.state.subtitleName !== NULL_SUBTITLE_VALUE) {
+      subtitleName = (
+        <Text style={[_styles.subtitleName, {color: this.state.textAndIconColor}]}>
+          {this.state.subtitleName.toUpperCase()}
+        </Text>
+      );
+    }
+
+    return subtitleName;
+  }
+
+  /**
+   * Builds a view containing the SectionHeader's subtitle name and icon, as long as one of them is defined.
+   *
+   * @returns {?ReactElement<any>} a view with the subtitle name and icon, or null if neither exists.
+   */
+  _renderSubtitleWithIcon(): ?ReactElement<any> {
+    let iconAndSubtitle: ?ReactElement<any> = null;
+    let subtitleName: ?ReactElement<any> = this._renderSubtitleName.call(this);
+    let subtitleIcon: ?ReactElement<any> = this._renderSubtitleIcon.call(this);
+
+    // If the SectionHeader has a subtitle name or icon, then create this element
     if (subtitleName !== null || subtitleIcon !== null) {
       if (this.props.subtitleOnClick) {
+        // If there is an action that occurs when a subtitle is clicked, add a TouchableOpacity
         iconAndSubtitle = (
           <TouchableOpacity
               activeOpacity={0.4}
@@ -290,6 +319,7 @@ class SectionHeader extends React.Component {
           </TouchableOpacity>
         );
       } else {
+        // Otherwise, just draw the name and icon
         iconAndSubtitle = (
           <View style={_styles.iconAndSubtitle}>
             {subtitleName}
@@ -299,16 +329,25 @@ class SectionHeader extends React.Component {
       }
     }
 
+    return iconAndSubtitle;
+  }
+
+  /**
+   * Builds the components of the section header, including the title, icon, subtitle, and subtitle icon.
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render.
+   */
+  render(): ReactElement<any> {
     // Set the background color of the header to a default value if not provided
     const headerBackground = this.props.backgroundOverride || Constants.Colors.defaultComponentBackgroundColor;
 
     return (
       <View style={[_styles.header, {backgroundColor: headerBackground}]}>
-        {icon}
+        {this._renderIcon.call(this)}
         <Text style={{color: this.state.textAndIconColor, marginLeft: 20, fontSize: Constants.Text.Large}}>
           {TextUtils.getTextWithEllipses(this.props.sectionName, MAX_NAME_LENGTH)}
         </Text>
-        {iconAndSubtitle}
+        {this._renderSubtitleWithIcon.call(this)}
       </View>
     );
   }
@@ -346,5 +385,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = SectionHeader;

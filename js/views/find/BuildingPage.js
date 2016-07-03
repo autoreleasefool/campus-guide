@@ -19,12 +19,12 @@
  * @file BuildingPage.js
  * @module BuildingPage
  * @description View for the root navigation for finding a room on campus.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Alert,
@@ -38,16 +38,27 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions
+// Type imports
 import type {
   Building,
   BuildingRoom,
   Facility,
-} from '../../Types';
+} from '../../types';
 
 import type {
   SearchListener,
 } from '../../util/SearchManager';
+
+// Type definition for component props.
+type Props = {
+  buildingDetails: Building,
+};
+
+// Type definition for component state.
+type State = {
+  buildingRooms: ListView.DataSource,
+  loaded: boolean,
+};
 
 // Imports
 const Constants = require('../../Constants');
@@ -60,6 +71,9 @@ const SectionHeader = require('../../components/SectionHeader');
 
 const {width} = Dimensions.get('window');
 const screenWidth: number = width;
+
+// Listener for search input
+let buildingSearchListener: ?SearchListener = null;
 
 // Size of room buttons
 const ROOM_MARGIN: number = 10;
@@ -77,25 +91,10 @@ const DARKENED_ROOMS: Array<number> = [
 
 /* eslint-enable no-magic-numbers */
 
-// Listener for search input
-let buildingSearchListener: ?SearchListener = null;
-
-// Type definition for component props.
-type Props = {
-  buildingDetails: Building,
-};
-
-// Type definition for component state.
-type State = {
-  buildingRooms: ListView.DataSource,
-  loaded: boolean,
-};
-
 class BuildingPage extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     buildingDetails: React.PropTypes.any.isRequired,
@@ -143,8 +142,8 @@ class BuildingPage extends React.Component {
   }
 
   /**
-   * Gets an object containing the search listener method. If the object does not exist yet, it is created
-   * and returned from that time on.
+   * Gets an object containing the search listener method. If the object does not exist yet, it is created and returned
+   * from that time on.
    *
    * @returns {SearchListener} the building search listener
    */
@@ -201,7 +200,7 @@ class BuildingPage extends React.Component {
   /**
    * Displays a pop-up to the user, describing what a certain facility icon means.
    *
-   * @param {Facility} facility id of the facility
+   * @param {Facility} facility   id of the facility
    * @param {Object} Translations translations in the current language of certain text.
    */
   _openFacilityDescription(facility: Facility, Translations: Object): void {
@@ -363,5 +362,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Expose component to app
 module.exports = BuildingPage;

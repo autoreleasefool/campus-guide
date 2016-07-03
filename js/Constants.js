@@ -18,14 +18,14 @@
  * @author Joseph Roque
  * @file Constants.js
  * @description Constant values for the application.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
 module.exports = {
 
-  /*
+  /**
    * Base color definitions for components.
    */
   Colors: {
@@ -43,7 +43,7 @@ module.exports = {
     primaryBlackText: 'black',
     secondaryBlackText: 'rgba(0, 0, 0, 0.7)',
 
-    /*
+    /**
      * School faculty colours
      */
 
@@ -59,14 +59,13 @@ module.exports = {
     socialSciences: '#009D93',
   },
 
-  /*
+  /**
    * Identifiers for the views throughout the application.
-   * NOTE: When adding a new view here, make sure you also
-   * update app/util/ScreenUtils.js
+   * NOTE: When adding a new view here, make sure you also update js/util/ScreenUtils.js
    */
   Views: {
 
-    /*
+    /**
      * TODO: Change default to 100
      */
     Default: 100,
@@ -98,7 +97,7 @@ module.exports = {
     },
   },
 
-  /*
+  /**
    * Common text sizes to use throughout the application.
    */
   Text: {
@@ -108,7 +107,7 @@ module.exports = {
     Title: 24,
   },
 
-  /*
+  /**
    * Defines the order of tabs in the app.
    * Tabs added here should also be accounted for in Types.TabItems, Tabs.ios.js, and Tabs.android.js
    */
@@ -119,7 +118,7 @@ module.exports = {
     'settings',
   ],
 
-  /*
+  /**
    * List of available building facilities
    */
   Facilities: [
@@ -139,7 +138,7 @@ module.exports = {
     'invalid',
   ],
 
-  /*
+  /**
    * List of common social media platforms
    */
   SocialMediaPlatforms: [

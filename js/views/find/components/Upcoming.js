@@ -19,12 +19,12 @@
  * @file Upcoming.js
  * @module Upcoming
  * @description View to display the user's upcoming classes and events for the day.
- * @flow
  *
+ * @flow
  */
 'use strict';
 
-// React Native imports
+// React imports
 import React from 'react';
 import {
   Text,
@@ -32,14 +32,10 @@ import {
   View,
 } from 'react-native';
 
-// Import type definitions.
+// Type imports
 import type {
   DefaultFunction,
-} from '../../../Types';
-
-// Imports
-const Constants = require('../../../Constants');
-const Preferences = require('../../../util/Preferences');
+} from '../../../types';
 
 // Type definition for component props.
 type Props = {
@@ -51,11 +47,14 @@ type State = {
   loaded: boolean,
 };
 
+// Imports
+const Constants = require('../../../Constants');
+const Preferences = require('../../../util/Preferences');
+
 class Upcoming extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this
-   * component.
+   * Properties which the parent component should make available to this component.
    */
   static propTypes = {
     onEdit: React.PropTypes.func.isRequired,
@@ -79,8 +78,8 @@ class Upcoming extends React.Component {
   }
 
   /**
-   * Renders a list of the user's upcoming classes, or a view which links to the Schedule tab so the user
-   * can update their schedule.
+   * Renders a list of the user's upcoming classes, or a view which links to the Schedule tab so the user can update
+   * their schedule.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
@@ -111,5 +110,4 @@ class Upcoming extends React.Component {
   }
 }
 
-// Expose component to app
 module.exports = Upcoming;
