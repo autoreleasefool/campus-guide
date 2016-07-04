@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 
 import com.facebook.react.ReactActivity;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.github.yamill.orientation.OrientationPackage;
 import com.AirMaps.AirPackage;
@@ -41,8 +42,9 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
-            new VectorIconsPackage(),
             new OrientationPackage(this),
+            new MapsPackage(),
+            new VectorIconsPackage(),
             new AirPackage()
         );
     }
