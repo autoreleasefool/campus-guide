@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - "5.0"
+  - "6"
 
 script:
   # Ignoring the following commands since they fail without resources
