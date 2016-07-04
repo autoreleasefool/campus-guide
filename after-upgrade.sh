@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Append additional files and directories to ignore
+echo "
+# Assets
+/assets/
+/scraper/
+strings_secret.xml
+
+# Code coverage
+coverage/
+
+# Build/bundle
+ios/main.jsbundle
+
+# Keystores
+*/keystores/*" >> .gitignore
+
+# Update the package name of the app
+sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/build.gradle
+
+# Update .flowconfig to map filenames
+sed -i '' 's/[[]options[]]/[options]\'$'\n''module.name_mapper='"'"'\/Tabs'"'"' -> '"'"'\/Tabs.ios'"'"'\'$'\n''module.name_mapper='"'"'\/NavBar'"'"' -> '"'"'\/NavBar.ios'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/csv\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/js\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/json\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''/g' ./.flowconfig
+
+# Remove the MainActivity files added in the new package
+rm -r ./android/app/src/main/java/com/
+
+# Link react-native dependencies
+rnpm link react-native-vector-icons
+rnpm link react-native-maps
+rnpm link react-native-orientation
