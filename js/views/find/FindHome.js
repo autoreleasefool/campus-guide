@@ -131,7 +131,6 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.garnet,
   },
   content: {
-    margin: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
 });

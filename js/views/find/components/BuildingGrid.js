@@ -53,14 +53,14 @@ type State = {
   loaded: boolean,
 };
 
+const Constants = require('../../../Constants');
+
 // Determining size of building icons based on the screen size.
 const {width} = Dimensions.get('window');
-// Padding at edges for building icons
-const BUILDING_BASE_PADDING: number = 60;
 // Number of columns to show buildings in
 const BUILDING_COLUMNS: number = 3;
 // Size of a single icon in the grid
-const buildingIconSize: number = Math.floor((width - BUILDING_BASE_PADDING) / BUILDING_COLUMNS);
+const BUILDING_IMAGE_SIZE: number = Math.floor(width / BUILDING_COLUMNS);
 
 class BuildingGrid extends React.Component {
 
@@ -119,38 +119,20 @@ class BuildingGrid extends React.Component {
    * Displays a single building with its name and image.
    *
    * @param {Building} building information about the building to display.
-   * @param {string} sectionId  index of the section the building is in.
-   * @param {number} rowIndex   index of the row the building is in.
    * @returns {ReactElement<any>} an image and name for the building.
    */
-  _renderRow(building: Building, sectionId: string, rowIndex: number): ReactElement<any> {
-    const ICON_MARGIN_OFFSET: number = 5;
-
-    let leftMargin: number = ICON_MARGIN_OFFSET;
-    let rightMargin: number = ICON_MARGIN_OFFSET;
-    let topMargin: number = 0;
-
-    // Add additional left and right spacing to items on the edges
-    if (rowIndex % BUILDING_COLUMNS === 0) {
-      leftMargin += ICON_MARGIN_OFFSET;
-    } else if (rowIndex % BUILDING_COLUMNS === 2) {
-      rightMargin += ICON_MARGIN_OFFSET;
-    }
-
-    // Add additional top margin to the first row
-    if (rowIndex < BUILDING_COLUMNS) {
-      topMargin = ICON_MARGIN_OFFSET * 2;
-    }
-
+  _renderRow(building: Building): ReactElement<any> {
     return (
-      <TouchableOpacity onPress={() => this.props.showBuilding(building)}>
-        <View style={[_styles.building, {marginLeft: leftMargin, marginRight: rightMargin, marginTop: topMargin}]}>
-          <Image
-              source={building.image}
-              style={_styles.buildingIcon} />
-          <Text style={_styles.buildingCode}>{building.code}</Text>
-        </View>
-      </TouchableOpacity>
+      <View style={{backgroundColor: Constants.Colors.whiteComponentBackgroundColor}}>
+        <TouchableOpacity onPress={() => this.props.showBuilding(building)}>
+          <View style={_styles.building}>
+            <Image
+                source={building.image}
+                style={_styles.buildingIcon} />
+            <Text style={_styles.buildingCode}>{building.code}</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -172,6 +154,7 @@ class BuildingGrid extends React.Component {
       <ListView
           contentContainerStyle={_styles.listview}
           dataSource={this.state.dataSource}
+          pageSize={BUILDING_COLUMNS}
           renderRow={this._renderRow.bind(this)} />
     );
   }
@@ -184,17 +167,26 @@ const _styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   building: {
-    width: buildingIconSize,
-    marginBottom: 15,
+    justifyContent: 'flex-end',
+    width: BUILDING_IMAGE_SIZE,
+    height: BUILDING_IMAGE_SIZE,
   },
   buildingIcon: {
-    width: (width - BUILDING_BASE_PADDING) / BUILDING_COLUMNS,
-    height: (width - BUILDING_BASE_PADDING) / BUILDING_COLUMNS,
+    position: 'absolute',
+    width: width / BUILDING_COLUMNS,
+    height: width / BUILDING_COLUMNS,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
   },
   buildingCode: {
-    textAlign: 'center',
+    backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
     color: 'white',
-    marginTop: 5,
+    fontSize: Constants.Text.Medium,
+    textAlign: 'center',
+    paddingTop: 5,
+    paddingBottom: 5,
   },
 });
 
