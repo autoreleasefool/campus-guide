@@ -40,8 +40,8 @@ module.exports = {
    */
   openLink(url: ?string,
            Translations: Object,
-           Linking: ReactClass<any>,
-           Alert: ReactClass<any>,
+           Linking: Object,
+           Alert: Object,
            Clipboard: Object): Promise<void> {
     const formattedUrl = TextUtils.formatLink(url);
 
