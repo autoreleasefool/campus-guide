@@ -344,22 +344,12 @@ class Stops extends React.Component {
   _renderScene(route: NavigatorRoute): ReactElement<any> {
     if (route.id === DETAILS && route.stop != null) {
       const routeStop = route.stop;
-      let icon = {
-        class: 'material',
-        name: 'arrow-back',
-      };
-      if (Platform.OS === 'ios') {
-        icon = {
-          class: 'ionicon',
-          name: 'ios-arrow-back',
-        };
-      }
 
       return (
         <View style={_styles.container}>
           <SectionHeader
-              sectionIcon={icon.name}
-              sectionIconClass={icon.class}
+              sectionIcon={'ios-arrow-back'}
+              sectionIconClass={'ionicon'}
               sectionIconOnClick={this._clearStop.bind(this)}
               sectionName={routeStop.name}
               subtitleName={routeStop.code} />
