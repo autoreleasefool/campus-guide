@@ -23,8 +23,8 @@ While the app is in development, all of the data collected about the University 
     - `npm run flow`: There should be no issues within the project.
     - `npm run lint`: There should be no errors (warnings are OK).
     - `npm test`: All tests should pass.
-    - `npm build:ios`: The build should succeed.
-    - `npm build:android`: The build should succeed.
+    - `npm run build:ios`: The build should succeed.
+    - `npm run build:android`: The build should succeed.
 
 ### Travis CI
 
