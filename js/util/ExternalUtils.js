@@ -31,11 +31,11 @@ module.exports = {
   /**
    * Opens a URL if the URL is valid.
    *
-   * @param {?string} url               URL to open.
-   * @param {Object} Translations       translations in the current language of certain text.
-   * @param {ReactClass<any>} Linking   an instance of the React Native Linking class.
-   * @param {ReactClass<any>} Alert     an instance of the React Native Alert class.
-   * @param {ReactClass<any>} Clipboard an instance of the React Native Clipboard class.
+   * @param {?string} url         URL to open.
+   * @param {Object} Translations translations in the current language of certain text.
+   * @param {Object} Linking      an instance of the React Native Linking class.
+   * @param {Object} Alert        an instance of the React Native Alert class.
+   * @param {Object} Clipboard    an instance of the React Native Clipboard class.
    * @returns {Promise<void>} a promise indicating the result of whether the link was opened
    */
   openLink(url: ?string,

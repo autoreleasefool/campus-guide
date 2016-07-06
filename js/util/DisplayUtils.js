@@ -56,7 +56,7 @@ module.exports = {
   /**
    * Returns a pre-configured LayoutAnimation type with ease in/out settings.
    *
-   * @param {ReactClass<any>} LayoutAnimation the LayoutAnimation object from React Native
+   * @param {Object} LayoutAnimation the LayoutAnimation object from React Native
    * @returns {Object} a LayoutAnimation animation configuration.
    */
   getEaseInEaseOutLayoutAnimation(LayoutAnimation: Object): Object {
