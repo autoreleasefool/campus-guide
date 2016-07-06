@@ -37,7 +37,7 @@ describe('ScreenUtils-test', () => {
     expect(ScreenUtils.getRootScreen(Constants.Views.Schedule.Home)).toBe(Constants.Views.Schedule.Home);
     expect(ScreenUtils.getRootScreen(Constants.Views.Schedule.Editor)).toBe(Constants.Views.Schedule.Home);
     expect(ScreenUtils.getRootScreen(Constants.Views.Discover.Home)).toBe(Constants.Views.Discover.Home);
-    expect(ScreenUtils.getRootScreen(Constants.Views.Discover.BusCampusInfo)).toBe(Constants.Views.Discover.Home);
+    expect(ScreenUtils.getRootScreen(Constants.Views.Discover.BusCampusList)).toBe(Constants.Views.Discover.Home);
     expect(ScreenUtils.getRootScreen(Constants.Views.Settings.Home)).toBe(Constants.Views.Settings.Home);
     expect(ScreenUtils.getRootScreen('invalid_room')).toBe(0);
   });
@@ -46,6 +46,6 @@ describe('ScreenUtils-test', () => {
     expect(ScreenUtils.isRootScreen(Constants.Views.Find.Home)).toBeTruthy();
     expect(ScreenUtils.isRootScreen(Constants.Views.Find.Search)).toBeFalsy();
     expect(ScreenUtils.isRootScreen(Constants.Views.Schedule.Home)).toBeTruthy();
-    expect(ScreenUtils.isRootScreen(Constants.Views.Discover.BusCampusInfo)).toBeFalsy();
+    expect(ScreenUtils.isRootScreen(Constants.Views.Discover.BusCampusList)).toBeFalsy();
   });
 });
