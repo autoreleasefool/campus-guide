@@ -39,8 +39,8 @@ const Constants = require('../Constants');
 
 // Screen imports
 const BuildingPage = require('../views/find/BuildingPage');
-const BusCampusInfo = require('../views/discover/BusCampusInfo');
-const BusCampusStops = require('../views/discover/BusCampusStops');
+const BusCampusDetails = require('../views/discover/BusCampusDetails');
+const BusCampusList = require('../views/discover/BusCampusList');
 const DetailsScreen = require('./DetailsScreen');
 const DiscoverHome = require('../views/discover/DiscoverHome');
 const FindHome = require('../views/find/FindHome');
@@ -48,8 +48,8 @@ const LinkCategory = require('../views/discover/LinkCategory');
 const LinksHome = require('../views/discover/LinksHome');
 const ScheduleHome = require('../views/schedule/ScheduleHome');
 const SettingsHome = require('../views/settings/SettingsHome');
-const ShuttleCampusInfo = require('../views/discover/ShuttleCampusInfo');
-const ShuttleInfo = require('../views/discover/ShuttleInfo');
+const ShuttleCampusList = require('../views/discover/ShuttleCampusList');
+const ShuttleCampusDetails = require('../views/discover/ShuttleCampusDetails');
 
 module.exports = {
 
@@ -87,15 +87,15 @@ module.exports = {
       scene = (
         <DiscoverHome onScreenSelected={navigateForward} />
       );
-    } else if (route.id === Constants.Views.Discover.BusCampusInfo) {
+    } else if (route.id === Constants.Views.Discover.BusCampusList) {
       scene = (
-        <BusCampusInfo
+        <BusCampusList
             showCampus={(name, color) =>
-                navigateForward(Constants.Views.Discover.BusCampusStops, {name: name, color: color})} />
+                navigateForward(Constants.Views.Discover.BusCampusDetails, {name: name, color: color})} />
       );
-    } else if (route.id === Constants.Views.Discover.BusCampusStops) {
+    } else if (route.id === Constants.Views.Discover.BusCampusDetails) {
       scene = (
-        <BusCampusStops
+        <BusCampusDetails
             campusColor={route.data.color}
             campusName={route.data.name} />
       );
@@ -106,35 +106,35 @@ module.exports = {
                 navigateForward(Constants.Views.Discover.LinkCategory + '-0',
                     {category: category, categoryImage: category.image, index: 0})} />
       );
-    } else if (route.id === Constants.Views.Discover.ShuttleInfo) {
+    } else if (route.id === Constants.Views.Discover.ShuttleCampusList) {
       scene = (
-        <ShuttleInfo
+        <ShuttleCampusList
             showCampus={(campusName, campusColor) =>
-                navigateForward(Constants.Views.Discover.ShuttleCampusInfo,
+                navigateForward(Constants.Views.Discover.ShuttleCampusDetails,
                     {name: campusName, color: campusColor})}
             showDetails={(title, image, text, backgroundColor) =>
-                navigateForward(Constants.Views.Discover.ShuttleDetails,
+                navigateForward(Constants.Views.Discover.ShuttleInfo,
                     {title: title, image: image, text: text, backgroundColor: backgroundColor})} />
       );
-    } else if (route.id === Constants.Views.Discover.ShuttleCampusInfo) {
+    } else if (route.id === Constants.Views.Discover.ShuttleCampusDetails) {
       scene = (
-        <ShuttleCampusInfo
+        <ShuttleCampusDetails
             campusColor={route.data.color}
             campusName={route.data.name} />
       );
-    } else if (route.id === Constants.Views.Settings.Home) {
-      scene = (
-        <SettingsHome
-            refreshParent={refreshNavbar}
-            requestTabChange={changeTabs} />
-      );
-    } else if (route.id === Constants.Views.Discover.ShuttleDetails) {
+    } else if (route.id === Constants.Views.Discover.ShuttleInfo) {
       scene = (
         <DetailsScreen
             backgroundColor={route.data.backgroundColor}
             image={route.data.image}
             text={route.data.text}
             title={route.data.title} />
+      );
+    } else if (route.id === Constants.Views.Settings.Home) {
+      scene = (
+        <SettingsHome
+            refreshParent={refreshNavbar}
+            requestTabChange={changeTabs} />
       );
     } else if (typeof route.id === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
       scene = (

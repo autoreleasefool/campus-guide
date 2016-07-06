@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file ShuttleCampusInfo.js
- * @module ShuttleCampusInfo
+ * @file ShuttleCampusDetails.js
+ * @module ShuttleCampusDetails
  * @description Displays details about the departure times of the shuttle from a single campus.
  *
  * @flow
@@ -56,7 +56,7 @@ const LanguageUtils = require('../../util/LanguageUtils');
 const MapView = require('react-native-maps');
 const Preferences = require('../../util/Preferences');
 
-class ShuttleCampusInfo extends React.Component {
+class ShuttleCampusDetails extends React.Component {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -202,4 +202,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-module.exports = ShuttleCampusInfo;
+module.exports = ShuttleCampusDetails;

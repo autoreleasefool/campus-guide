@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file ShuttleInfo.js
- * @module ShuttleInfo
+ * @file ShuttleCampusList.js
+ * @module ShuttleCampusList
  * @description Displays info about shuttles provided by the university across the various campuses.
  *
  * @flow
@@ -71,7 +71,7 @@ const campusColors: Array<string> = [
   Constants.Colors.darkGrey,
 ];
 
-class ShuttleInfo extends React.Component {
+class ShuttleCampusList extends React.Component {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -249,4 +249,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-module.exports = ShuttleInfo;
+module.exports = ShuttleCampusList;

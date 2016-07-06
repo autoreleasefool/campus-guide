@@ -367,7 +367,7 @@ const _styles = StyleSheet.create({
   sectionIcon: {
     marginLeft: 20,
     marginTop: 12,
-    marginBottom: 10
+    marginBottom: 10,
   },
   iconAndSubtitle: {
     position: 'absolute',

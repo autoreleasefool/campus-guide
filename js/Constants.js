@@ -83,13 +83,13 @@ module.exports = {
     },
     Discover: {
       Home: 300,
-      BusCampusInfo: 301,
-      BusCampusStops: 302,
+      BusCampusList: 301,
+      BusCampusDetails: 302,
       LinksHome: 303,
       LinkCategory: 304,
-      ShuttleInfo: 305,
-      ShuttleCampusInfo: 306,
-      ShuttleDetails: 307,
+      ShuttleCampusList: 305,
+      ShuttleCampusDetails: 306,
+      ShuttleInfo: 307,
       HotSpots: 308,
     },
     Settings: {

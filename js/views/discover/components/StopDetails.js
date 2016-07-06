@@ -30,7 +30,6 @@ import React from 'react';
 import {
   ListView,
   Navigator,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,

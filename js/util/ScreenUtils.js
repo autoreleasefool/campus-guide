@@ -55,13 +55,13 @@ const SCHEDULE_SCREENS: Array<ScreenId> = [
 // Screens which are subscreens of the Discover tab
 const DISCOVER_SCREENS: Array<ScreenId> = [
   Constants.Views.Discover.Home,
-  Constants.Views.Discover.BusCampusInfo,
-  Constants.Views.Discover.BusCampusStops,
+  Constants.Views.Discover.BusCampusList,
+  Constants.Views.Discover.BusCampusDetails,
   Constants.Views.Discover.LinksHome,
   Constants.Views.Discover.LinkCategory,
+  Constants.Views.Discover.ShuttleCampusList,
+  Constants.Views.Discover.ShuttleCampusDetails,
   Constants.Views.Discover.ShuttleInfo,
-  Constants.Views.Discover.ShuttleCampusInfo,
-  Constants.Views.Discover.ShuttleDetails,
   Constants.Views.Discover.HotSpots,
 ];
 
@@ -79,6 +79,7 @@ module.exports = {
    * @returns {ScreenId} the id of the home screen of {screenId}, which is determined by the list that contains the id.
    */
   getRootScreen(screenId: ScreenId): ScreenId {
+    // FIXME: make better use of objects in Constants.js - no need to create arrays (duplication)
     if (FIND_SCREENS.indexOf(screenId) >= 0) {
       return Constants.Views.Find.Home;
     } else if (SCHEDULE_SCREENS.indexOf(screenId) >= 0) {

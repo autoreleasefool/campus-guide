@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file BusCampusStops.js
- * @module BusCampusStops
+ * @file BusCampusDetails.js
+ * @module BusCampusDetails
  * @description Displays a campus' location on a map, relative to a user's location, as well as a list of the stops
  *              near the campus.
  *
@@ -67,9 +67,9 @@ type MapMarker = {
 const Configuration = require('../../util/Configuration');
 const DisplayUtils = require('../../util/DisplayUtils');
 const MapView = require('react-native-maps');
-const Stops = require('./components/Stops');
+const StopDetails = require('./components/StopDetails');
 
-class BusCampusStops extends React.Component {
+class BusCampusDetails extends React.Component {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -215,7 +215,7 @@ class BusCampusStops extends React.Component {
       );
     } else {
       return (
-        <Stops
+        <StopDetails
             backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}
             campus={this.state.campus}
             campusName={this.props.campusName}
@@ -277,4 +277,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-module.exports = BusCampusStops;
+module.exports = BusCampusDetails;
