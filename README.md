@@ -20,7 +20,7 @@ While the app is in development, all of the data collected about the University 
 2. The recommended development environment is [Nuclide](https://nuclide.io/). With this IDE, you can utilize live updates of the Flow type checker.
 3. Make your changes.
 4. Ensure the following requirements for a contribution are met when running these commands:
-    - `npm run flow`: There should be no issues within the project (some React Native components throw errors, which can be ignored).
+    - `npm run flow`: There should be no issues within the project.
     - `npm run lint`: There should be no errors (warnings are OK).
     - `npm test`: All tests should pass.
     - `npm build:ios`: The build should succeed.
@@ -30,14 +30,14 @@ While the app is in development, all of the data collected about the University 
 
 Currently, the Travis CI build will run the following commands:
 
+- `npm run flow`
 - `npm run lint`
+- `npm test`
 
 Additional tests and checks will be run in the future, when the resources for the app have been released. For now, these commands fail due to the missing resources and have been disabled for the time being:
 
 - `npm run build:ios`
 - `npm run build:android`
-- `npm run flow`
-- `npm test`
 
 ## Screenshots
 
