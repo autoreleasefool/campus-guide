@@ -74,6 +74,10 @@ const NULL_SUBTITLE_VALUE: string = 'value_null';
 const VALID_ICON_CLASSES: Array<?string> = ['material', 'ionicon'];
 // Maximum number of characters in the section name.
 const MAX_NAME_LENGTH: number = 21;
+// Size of the section icon
+const SECTION_ICON_SIZE: number = 24;
+// Size of the subtitle icon
+const SUBTITLE_ICON_SIZE: number = 18;
 
 class SectionHeader extends React.Component {
 
@@ -218,16 +222,16 @@ class SectionHeader extends React.Component {
           <MaterialIcons
               color={this.state.textAndIconColor}
               name={this.state.sectionIcon}
-              size={24}
-              style={_styles.headerIcon} />
+              size={SECTION_ICON_SIZE}
+              style={_styles.sectionIcon} />
         );
       } else {
         icon = (
           <Ionicons
               color={this.state.textAndIconColor}
               name={this.state.sectionIcon}
-              size={24}
-              style={_styles.headerIcon} />
+              size={SECTION_ICON_SIZE}
+              style={_styles.sectionIcon} />
         );
       }
 
@@ -259,7 +263,7 @@ class SectionHeader extends React.Component {
           <MaterialIcons
               color={this.state.textAndIconColor}
               name={this.state.subtitleIcon}
-              size={18}
+              size={SUBTITLE_ICON_SIZE}
               style={_styles.subtitleIcon} />
         );
       } else {
@@ -267,7 +271,7 @@ class SectionHeader extends React.Component {
           <Ionicons
               color={this.state.textAndIconColor}
               name={this.state.subtitleIcon}
-              size={18}
+              size={SUBTITLE_ICON_SIZE}
               style={_styles.subtitleIcon} />
         );
       }
@@ -360,10 +364,10 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  headerIcon: {
+  sectionIcon: {
     marginLeft: 20,
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 12,
+    marginBottom: 10
   },
   iconAndSubtitle: {
     position: 'absolute',
