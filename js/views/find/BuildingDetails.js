@@ -130,7 +130,7 @@ class BuildingDetails extends React.Component {
   }
 
   /* Listener for search input. */
-  _roomSearchListener: SearchListener = null;
+  _roomSearchListener: SearchListener;
 
   /**
    * Returns a list of touchable views which describe facilities in the building.

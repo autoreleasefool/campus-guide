@@ -124,10 +124,10 @@ class BuildingGrid extends React.Component {
   }
 
   /* Listener for search input. */
-  _roomSearchListener: SearchListener;
+  _buildingSearchListener: SearchListener;
 
   /* List of buildings on the campus. */
-  _buildingsList: ?Array< Building >;
+  _buildingsList: Array < Object >;
 
   /**
    * Loads the names and images of the buildings from the assets to display them. Only shows buildings which names or
