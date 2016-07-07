@@ -38,7 +38,7 @@ import type {
 const Constants = require('../Constants');
 
 // Screen imports
-const BuildingPage = require('../views/find/BuildingPage');
+const BuildingDetails = require('../views/find/BuildingDetails');
 const BusCampusDetails = require('../views/discover/BusCampusDetails');
 const BusCampusList = require('../views/discover/BusCampusList');
 const DetailsScreen = require('./DetailsScreen');
@@ -75,7 +75,7 @@ module.exports = {
       );
     } else if (route.id === Constants.Views.Find.Building) {
       scene = (
-        <BuildingPage buildingDetails={route.data} />
+        <BuildingDetails buildingDetails={route.data} />
       );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (

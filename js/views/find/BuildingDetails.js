@@ -16,9 +16,9 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file BuildingPage.js
- * @module BuildingPage
- * @description View for the root navigation for finding a room on campus.
+ * @file BuildingDetails.js
+ * @module BuildingDetails
+ * @description Provides details on a single building on campus.
  *
  * @flow
  */
@@ -91,7 +91,7 @@ const DARKENED_ROOMS: Array<number> = [
 
 /* eslint-enable no-magic-numbers */
 
-class BuildingPage extends React.Component {
+class BuildingDetails extends React.Component {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -362,4 +362,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-module.exports = BuildingPage;
+module.exports = BuildingDetails;
