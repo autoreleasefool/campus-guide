@@ -53,6 +53,7 @@ type State = {
   loaded: boolean,
 };
 
+// Imports
 const Constants = require('../../../Constants');
 
 // Determining size of building icons based on the screen size.
@@ -108,30 +109,46 @@ class BuildingGrid extends React.Component {
    */
   _loadBuildingsList(): void {
     const buildingsList: Array<Building> = require('../../../../assets/js/Buildings');
+    const buildingSetList: Array<Array<Building>> = [];
+    for (let i = 0; i < buildingsList.length; i += BUILDING_COLUMNS) {
+
+      // Create a list of buildings with up to BUILDING_COLUMNS indices
+      const intermediateList: Array<Building> = [];
+      for (let j = 0; j + i < buildingsList.length && j < BUILDING_COLUMNS; j++) {
+        intermediateList.push(buildingsList[i + j]);
+      }
+
+      buildingSetList.push(intermediateList);
+    }
 
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(buildingsList),
+      dataSource: this.state.dataSource.cloneWithRows(buildingSetList),
       loaded: true,
     });
   }
 
   /**
-   * Displays a single building with its name and image.
+   * Displays a row of buildings with their names and images.
    *
-   * @param {Building} building information about the building to display.
+   * @param {Array<Building>} buildingSet information about the buildings to display.
    * @returns {ReactElement<any>} an image and name for the building.
    */
-  _renderRow(building: Building): ReactElement<any> {
+  _renderRow(buildingSet: Array<Building>): ReactElement<any> {
+
     return (
-      <View style={{backgroundColor: Constants.Colors.whiteComponentBackgroundColor}}>
-        <TouchableOpacity onPress={() => this.props.showBuilding(building)}>
-          <View style={_styles.building}>
-            <Image
-                source={building.image}
-                style={_styles.buildingIcon} />
-            <Text style={_styles.buildingCode}>{building.code}</Text>
-          </View>
-        </TouchableOpacity>
+      <View style={_styles.buildingSet}>
+        {buildingSet.map((building, index) => (
+          <TouchableOpacity
+              key={index}
+              onPress={() => this.props.showBuilding(building)}>
+            <View style={_styles.building}>
+              <Image
+                  source={building.image}
+                  style={_styles.buildingIcon} />
+              <Text style={_styles.buildingCode}>{building.code}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     );
   }
@@ -152,9 +169,7 @@ class BuildingGrid extends React.Component {
 
     return (
       <ListView
-          contentContainerStyle={_styles.listview}
           dataSource={this.state.dataSource}
-          pageSize={BUILDING_COLUMNS}
           renderRow={this._renderRow.bind(this)} />
     );
   }
@@ -162,10 +177,6 @@ class BuildingGrid extends React.Component {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  listview: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
   building: {
     justifyContent: 'flex-end',
     width: BUILDING_IMAGE_SIZE,
@@ -187,6 +198,9 @@ const _styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 5,
     paddingBottom: 5,
+  },
+  buildingSet: {
+    flexDirection: 'row',
   },
 });
 
