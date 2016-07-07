@@ -42,6 +42,10 @@ import type {
   DefaultFunction,
 } from '../../../types';
 
+import type {
+  SearchListener,
+} from '../../../util/SearchManager';
+
 // Type definition for component props.
 type Props = {
   showBuilding: DefaultFunction,
@@ -55,6 +59,7 @@ type State = {
 
 // Imports
 const Constants = require('../../../Constants');
+const SearchManager = require('../../../util/SearchManager');
 
 // Determining size of building icons based on the screen size.
 const {width} = Dimensions.get('window');
@@ -91,40 +96,93 @@ class BuildingGrid extends React.Component {
       loaded: false,
     };
 
+    // Create the room search listener
+    this._buildingSearchListener = {
+      onSearch: this._onBuildingSearch.bind(this),
+    };
+
     // Explicitly binding 'this' to all methods that need it
-    (this:any)._loadBuildingsList = this._loadBuildingsList.bind(this);
+    (this:any)._filterBuildings = this._filterBuildings.bind(this);
   }
 
   /**
-   * Loads the buildings once the view has been mounted.
+   * Loads the buildings once the view has been mounted, and registers a search listener.
    */
   componentDidMount(): void {
+    SearchManager.addSearchListener(this._buildingSearchListener);
+
     if (!this.state.loaded) {
-      this._loadBuildingsList();
+      this._filterBuildings();
     }
   }
 
   /**
-   * Loads the names and images of the buildings from the assets to display them.
+   * Removes the search listener.
    */
-  _loadBuildingsList(): void {
-    const buildingsList: Array<Building> = require('../../../../assets/js/Buildings');
-    const buildingSetList: Array<Array<Building>> = [];
-    for (let i = 0; i < buildingsList.length; i += BUILDING_COLUMNS) {
+  componentWillUnmount(): void {
+    SearchManager.removeSearchListener(this._buildingSearchListener);
+  }
 
-      // Create a list of buildings with up to BUILDING_COLUMNS indices
-      const intermediateList: Array<Building> = [];
-      for (let j = 0; j + i < buildingsList.length && j < BUILDING_COLUMNS; j++) {
-        intermediateList.push(buildingsList[i + j]);
-      }
+  /* Listener for search input. */
+  _roomSearchListener: SearchListener;
 
-      buildingSetList.push(intermediateList);
+  /* List of buildings on the campus. */
+  _buildingsList: ?Array< Building >;
+
+  /**
+   * Loads the names and images of the buildings from the assets to display them. Only shows buildings which names or
+   * codes contain the search terms.
+   *
+   * @param {?string} searchTerms user input search terms.
+   */
+  _filterBuildings(searchTerms: ?string): void {
+    if (this._buildingsList == null) {
+      this._buildingsList = require('../../../../assets/js/Buildings');
     }
 
+    // Ignore the case of the search terms
+    const adjustedSearchTerms: ?string = (searchTerms == null || searchTerms.length === 0)
+        ? null
+        : searchTerms.toUpperCase();
+
+    // Create array for sets of buildings
+    const buildingSets: Array<Array<Building>> = [];
+
+    // Create a temporary set of buildings with up to BUILDING_COLUMNS buildings in it
+    let tempSet: Array<Building> = [];
+    let buildingsInSet = 0;
+
+    for (let i = 0; i < this._buildingsList.length; i++) {
+      if (buildingsInSet === BUILDING_COLUMNS) {
+        // After the temporary set has reached its max length, add it to the building set and clear the temporary set
+        buildingSets.push(tempSet);
+        tempSet = [];
+        buildingsInSet = 0;
+      }
+
+      // If the search terms are empty, or the building name contains the terms, add it to the list
+      if (adjustedSearchTerms == null
+          // TODO: || this._buildingsList[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0
+          || this._buildingsList[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+        tempSet.push(this._buildingsList[i]);
+        buildingsInSet++;
+      }
+    }
+
+    // Add the final set, if any buildings were added to it
+    if (tempSet.length > 0) {
+      buildingSets.push(tempSet);
+    }
+
+    // Update the state so the app reflects the changes made
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(buildingSetList),
+      dataSource: this.state.dataSource.cloneWithRows(buildingSets),
       loaded: true,
     });
+  }
+
+  _onBuildingSearch(searchTerms: ?string): void {
+    this._filterBuildings(searchTerms);
   }
 
   /**
