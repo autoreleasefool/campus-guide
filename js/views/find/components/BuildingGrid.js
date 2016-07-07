@@ -161,8 +161,12 @@ class BuildingGrid extends React.Component {
       }
 
       // If the search terms are empty, or the building name contains the terms, add it to the list
+      const translated: boolean = !('name' in this._buildingsList[i]);
+
       if (adjustedSearchTerms == null
-          // TODO: || this._buildingsList[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0
+          || (!translated && this._buildingsList[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
+          || (translated && (this._buildingsList[i].name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
+          || this._buildingsList[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
           || this._buildingsList[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
         tempSet.push(this._buildingsList[i]);
         buildingsInSet++;
