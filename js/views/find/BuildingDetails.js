@@ -223,7 +223,7 @@ class BuildingDetails extends React.Component {
       }
 
       // If the search terms are empty, or the room contains the terms, add it to the list
-      if (adjustedSearchTerms === null || rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+      if (adjustedSearchTerms == null || rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
         tempSet.push(rooms[i]);
         roomsInSet++;
       }
