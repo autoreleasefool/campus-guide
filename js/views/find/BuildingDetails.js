@@ -70,9 +70,6 @@ const SectionHeader = require('../../components/SectionHeader');
 
 const {width} = Dimensions.get('window');
 
-// Listener for search input
-let buildingSearchListener: ?SearchListener = null;
-
 // Size of room buttons
 const ROOM_WIDTH: number = Math.floor(width / 2);
 const ROOM_COLUMNS: number = 2;
@@ -105,19 +102,23 @@ class BuildingDetails extends React.Component {
       loaded: false,
     };
 
+    // Create the room search listener
+    this._roomSearchListener = {
+      onSearch: this._onRoomSearch.bind(this),
+    };
+
     // Explicitly bind 'this' to methods that require it
-    (this:any)._onBuildingSearch = this._onBuildingSearch.bind(this);
-    (this:any)._filterBuildingRooms = this._filterBuildingRooms.bind(this);
+    (this:any)._filterRooms = this._filterRooms.bind(this);
   }
 
   /**
    * Loads the links to display, registers the search listener.
    */
   componentDidMount(): void {
-    SearchManager.addSearchListener(this._getBuildingSearchListener());
+    SearchManager.addSearchListener(this._roomSearchListener);
 
     if (!this.state.loaded) {
-      this._filterBuildingRooms(this.props.buildingDetails.rooms, null);
+      this._filterRooms(this.props.buildingDetails.rooms, null);
     }
   }
 
@@ -125,24 +126,11 @@ class BuildingDetails extends React.Component {
    * Removes the search listener.
    */
   componentWillUnmount(): void {
-    SearchManager.removeSearchListener(this._getBuildingSearchListener());
+    SearchManager.removeSearchListener(this._roomSearchListener);
   }
 
-  /**
-   * Gets an object containing the search listener method. If the object does not exist yet, it is created and returned
-   * from that time on.
-   *
-   * @returns {SearchListener} the building search listener
-   */
-  _getBuildingSearchListener(): SearchListener {
-    if (buildingSearchListener == null) {
-      buildingSearchListener = {
-        onSearch: this._onBuildingSearch,
-      };
-    }
-
-    return buildingSearchListener;
-  }
+  /* Listener for search input. */
+  _roomSearchListener: SearchListener = null;
 
   /**
    * Returns a list of touchable views which describe facilities in the building.
@@ -203,7 +191,7 @@ class BuildingDetails extends React.Component {
    * @param {Array<BuildingRoom>} rooms list of filtered rooms in the building to display.
    * @param {?string} searchTerms       user input filter terms.
    */
-  _filterBuildingRooms(rooms: Array<BuildingRoom>, searchTerms: ?string): void {
+  _filterRooms(rooms: Array<BuildingRoom>, searchTerms: ?string): void {
     // Ignore the case of the search terms
     const adjustedSearchTerms: ?string = (searchTerms == null) ? null : searchTerms.toUpperCase();
 
@@ -237,16 +225,17 @@ class BuildingDetails extends React.Component {
     // Update the state so the app reflects the changes made
     this.setState({
       buildingRooms: this.state.buildingRooms.cloneWithRows(roomSets),
+      loaded: true,
     });
   }
 
   /**
-   * Calls _filterBuildingRooms with all rooms, and the search terms.
+   * Calls _filterRooms with all rooms, and the search terms.
    *
    * @param {string} searchTerms user input filter terms.
    */
-  _onBuildingSearch(searchTerms: ?string): void {
-    this._filterBuildingRooms(this.props.buildingDetails.rooms, searchTerms);
+  _onRoomSearch(searchTerms: ?string): void {
+    this._filterRooms(this.props.buildingDetails.rooms, searchTerms);
   }
 
   /**
