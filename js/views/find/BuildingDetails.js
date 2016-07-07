@@ -31,7 +31,6 @@ import {
   Dimensions,
   Image,
   ListView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -70,26 +69,13 @@ const SearchManager = require('../../util/SearchManager');
 const SectionHeader = require('../../components/SectionHeader');
 
 const {width} = Dimensions.get('window');
-const screenWidth: number = width;
 
 // Listener for search input
 let buildingSearchListener: ?SearchListener = null;
 
 // Size of room buttons
-const ROOM_MARGIN: number = 10;
-const ROOM_WIDTH: number = (screenWidth - ROOM_MARGIN * 2) / 2;
-
-/* eslint-disable no-magic-numbers */
-/* Not worried about the magic number in the array definition below */
-
-// Defines how rooms will be colored.
-const LENGTH_OF_ROOM_PATTERN: number = 4;
-const DARKENED_ROOMS: Array<number> = [
-  0,
-  3,
-];
-
-/* eslint-enable no-magic-numbers */
+const ROOM_WIDTH: number = Math.floor(width / 2);
+const ROOM_COLUMNS: number = 2;
 
 class BuildingDetails extends React.Component {
 
@@ -121,6 +107,7 @@ class BuildingDetails extends React.Component {
 
     // Explicitly bind 'this' to methods that require it
     (this:any)._onBuildingSearch = this._onBuildingSearch.bind(this);
+    (this:any)._filterBuildingRooms = this._filterBuildingRooms.bind(this);
   }
 
   /**
@@ -130,7 +117,7 @@ class BuildingDetails extends React.Component {
     SearchManager.addSearchListener(this._getBuildingSearchListener());
 
     if (!this.state.loaded) {
-      this._parseBuildingRooms();
+      this._filterBuildingRooms(this.props.buildingDetails.rooms, null);
     }
   }
 
@@ -170,12 +157,12 @@ class BuildingDetails extends React.Component {
           return (
             <TouchableOpacity
                 key={facility}
+                style={_styles.facilitiesIcon}
                 onPress={() => this._openFacilityDescription(facility, Translations)}>
               <MaterialIcons
                   color={'white'}
                   name={DisplayUtils.getFacilityIconName(facility, Translations)}
-                  size={30}
-                  style={_styles.facilitiesIcon} />
+                  size={24} />
             </TouchableOpacity>
           );
         })}
@@ -191,8 +178,8 @@ class BuildingDetails extends React.Component {
   _getRoomList(): ReactElement<any> {
     return (
       <ListView
-          contentContainerStyle={_styles.roomList}
           dataSource={this.state.buildingRooms}
+          enableEmptySections={true}
           renderRow={this._renderRow.bind(this)} />
     );
   }
@@ -211,67 +198,86 @@ class BuildingDetails extends React.Component {
   }
 
   /**
-   * Retrieves a ListView.DataSource from the array containing the building's rooms.
+   * Filters the rooms in the building and displays them to the user.
+   *
+   * @param {Array<BuildingRoom>} rooms list of filtered rooms in the building to display.
+   * @param {?string} searchTerms       user input filter terms.
    */
-  _parseBuildingRooms(): void {
+  _filterBuildingRooms(rooms: Array<BuildingRoom>, searchTerms: ?string): void {
+    // Ignore the case of the search terms
+    const adjustedSearchTerms: ?string = (searchTerms == null) ? null : searchTerms.toUpperCase();
+
+    // Create array for sets of rooms
+    const roomSets: Array<Array<BuildingRoom>> = [];
+
+    // Create a temporary set of rooms with up to ROOM_COLUMNS rooms in it
+    let tempSet: Array<BuildingRoom> = [];
+    let roomsInSet = 0;
+
+    for (let i = 0; i < rooms.length; i++) {
+      if (roomsInSet === ROOM_COLUMNS) {
+        // After the temporary set has reached its max length, add it to the rooms and clear the temporary set
+        roomSets.push(tempSet);
+        tempSet = [];
+        roomsInSet = 0;
+      }
+
+      // If the search terms are empty, or the room contains the terms, add it to the list
+      if (adjustedSearchTerms === null || rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+        tempSet.push(rooms[i]);
+        roomsInSet++;
+      }
+    }
+
+    // Add the final set, if any rooms were added to it
+    if (tempSet.length > 0) {
+      roomSets.push(tempSet);
+    }
+
+    // Update the state so the app reflects the changes made
     this.setState({
-      buildingRooms: this.state.buildingRooms.cloneWithRows(this.props.buildingDetails.rooms),
+      buildingRooms: this.state.buildingRooms.cloneWithRows(roomSets),
     });
   }
 
   /**
-   * Filters the rooms in the building and displays them to the user.
+   * Calls _filterBuildingRooms with all rooms, and the search terms.
    *
    * @param {string} searchTerms user input filter terms.
    */
   _onBuildingSearch(searchTerms: ?string): void {
-    if (searchTerms == null || searchTerms.length === 0) {
-      this.setState({
-        buildingRooms: this.state.buildingRooms.cloneWithRows(this.props.buildingDetails.rooms),
-      });
-
-      return;
-    }
-
-    // Ignore the case of the search terms
-    const adjustedSearchTerms = searchTerms.toUpperCase();
-
-    const filteredRooms: Array<BuildingRoom> = [];
-    const rooms: Array<BuildingRoom> = this.props.buildingDetails.rooms;
-    for (let i = 0; i < rooms.length; i++) {
-      if (rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        filteredRooms.push(rooms[i]);
-      }
-    }
-
-    this.setState({
-      buildingRooms: this.state.buildingRooms.cloneWithRows(filteredRooms),
-    });
+    this._filterBuildingRooms(this.props.buildingDetails.rooms, searchTerms);
   }
 
   /**
    * Renders an item describing a single room in the building.
    *
-   * @param {BuildingRoom} room the identifier of the room.
-   * @param {string} sectionId  index of the section the room is in.
-   * @param {number} rowIndex   index of the row the room is in.
-   * @returns {ReactElement<any>} a view describing a room.
+   * @param {Array<BuildingRoom>} rooms a list of rooms to display in this row.
+   * @param {string} sectionId          index of the section the room is in.
+   * @param {number} rowIndex           index of the row the room is in.
+   * @returns {ReactElement<any>} a view describing a set of room.
    */
-  _renderRow(room: BuildingRoom, sectionId: string, rowIndex: number): ReactElement<any> {
-    let rowColor: string = Constants.Colors.garnet;
-    const rowPosition = rowIndex % LENGTH_OF_ROOM_PATTERN;
-    if (DARKENED_ROOMS.indexOf(rowPosition) >= 0) {
-      rowColor = Constants.Colors.defaultComponentBackgroundColor;
-    }
+  _renderRow(rooms: Array<BuildingRoom>, sectionId: string, rowIndex: number): ReactElement<any> {
+    const darkenEvenElements = (Math.floor(rowIndex / ROOM_COLUMNS * 2) % ROOM_COLUMNS === 0);
 
     return (
-      <TouchableOpacity>
-        <View style={{width: ROOM_WIDTH, backgroundColor: rowColor}}>
-          <Text style={_styles.room}>
-            {room.name}
-          </Text>
-        </View>
-      </TouchableOpacity>
+      <View style={_styles.roomSet}>
+        {rooms.map((room, index) => {
+          const rowColor: string = ((darkenEvenElements && index % 2 === 0) || (!darkenEvenElements && index % 2 === 1))
+              ? Constants.Colors.defaultComponentBackgroundColor
+              : Constants.Colors.garnet;
+          return (
+            <TouchableOpacity
+                key={index}>
+              <View style={{width: ROOM_WIDTH, backgroundColor: rowColor}}>
+                <Text style={_styles.room}>
+                  {room.name}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     );
   }
 
@@ -295,21 +301,18 @@ class BuildingDetails extends React.Component {
 
     return (
       <View style={_styles.container}>
-        <ScrollView
-            keyboardDismissMode={'on-drag'}
-            style={_styles.scrollView}>
-          <View style={_styles.banner}>
-            <Image
-                resizeMode={'cover'}
-                source={this.props.buildingDetails.image}
-                style={_styles.bannerImage} />
-          </View>
-          {facilityIcons}
-          {roomList}
-        </ScrollView>
-        <SectionHeader
-            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), building)}
-            subtitleName={building.code} />
+        <View style={_styles.banner}>
+          <Image
+              resizeMode={'cover'}
+              source={this.props.buildingDetails.image}
+              style={_styles.bannerImage} />
+          <SectionHeader
+              sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), building)}
+              style={_styles.header}
+              subtitleName={building.code} />
+        </View>
+        {facilityIcons}
+        {roomList}
       </View>
     );
   }
@@ -332,33 +335,30 @@ const _styles = StyleSheet.create({
     width: null,
     height: null,
   },
-  scrollView: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-  },
   facilitiesContainer: {
     backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    width: screenWidth,
+    width: width,
   },
   facilitiesIcon: {
     margin: 10,
   },
-  roomList: {
-    margin: 10,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
   room: {
     margin: 15,
     alignSelf: 'center',
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
+  },
+  roomSet: {
+    flexDirection: 'row',
   },
 });
 
