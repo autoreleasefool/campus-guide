@@ -149,9 +149,9 @@ class SettingsHome extends React.Component {
    */
   _loadSettings(): void {
     for (const section in settings) {
-      if ({}.hasOwnProperty.call(settings, section)) {
+      if (settings.hasOwnProperty(section)) {
         for (const row in settings[section]) {
-          if ({}.hasOwnProperty.call(settings[section], row)) {
+          if (settings[section].hasOwnProperty(row)) {
             settingsCache[settings[section][row].key] =
                 Preferences.getSetting(Preferences.getSetting(settings[section][row].key));
           }
@@ -188,6 +188,10 @@ class SettingsHome extends React.Component {
       Preferences.setWheelchairRoutePreferred(AsyncStorage, !Preferences.isWheelchairRoutePreferred());
     } else if (key === 'pref_semester') {
       Preferences.setToNextSemester(AsyncStorage);
+    } else if (key === 'pref_search_all_always') {
+      Preferences.setAlwaysSearchAll(AsyncStorage, !Preferences.getAlwaysSearchAll());
+    } else if (key === 'pref_prompt_search_all') {
+      Preferences.setPromptSearchAll(AsyncStorage, !Preferences.shouldPromptSearchAll());
     }
 
     keyOfLastSettingChanged = key;
