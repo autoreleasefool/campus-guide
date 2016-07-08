@@ -26,17 +26,6 @@
 jest.unmock('../DisplayUtils');
 jest.unmock('../../Constants');
 
-// Create a mock for the LayoutAnimation class
-jest.setMock('LayoutAnimation', {
-  Presets: {
-    easeInEaseOut: {
-      create: jest.fn(),
-      duration: 0,
-      update: jest.fn(),
-    },
-  },
-});
-
 // Example object containing an icon object which describes the android and iOS icons.
 const exampleObjectWithPlatformSpecificIcons = {
   icon: {
@@ -94,7 +83,6 @@ const expectedDefaultIcon = {
 // Require the modules used in testing
 const Constants = require('../../Constants');
 const DisplayUtils = require('../DisplayUtils');
-const LayoutAnimation = require('LayoutAnimation');
 
 describe('DisplayUtils-test', () => {
 
@@ -108,10 +96,6 @@ describe('DisplayUtils-test', () => {
     for (let i = 0; i < Constants.Facilities.length; i++) {
       expect(DisplayUtils.getFacilityIconClass(Constants.Facilities[i])).toBeDefined();
     }
-  });
-
-  it('tests the retrieval of animations.', () => {
-    expect(DisplayUtils.getEaseInEaseOutLayoutAnimation(LayoutAnimation)).toBeDefined();
   });
 
   it('tests the successful retrieval of iOS icons.', () => {

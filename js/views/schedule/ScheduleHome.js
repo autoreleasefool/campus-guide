@@ -109,7 +109,7 @@ class ScheduleHome extends React.Component {
    * Toggles the visibility of buttons for editing the schedule with animation.
    */
   _toggleEditScheduleButtons(): void {
-    LayoutAnimation.configureNext(DisplayUtils.getEaseInEaseOutLayoutAnimation(LayoutAnimation));
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       showEditButtons: !this.state.showEditButtons,
     });

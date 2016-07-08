@@ -145,7 +145,7 @@ class DiscoverHome extends React.Component {
         'chevron-right',
         newSectionHeader.getSubtitleIconClass());
 
-    LayoutAnimation.configureNext(DisplayUtils.getEaseInEaseOutLayoutAnimation(LayoutAnimation));
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       currentSection: sectionId,
     });

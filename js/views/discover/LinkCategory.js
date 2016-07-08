@@ -333,7 +333,7 @@ class LinkCategory extends React.Component {
 
     linksHeader.updateSubtitle(linksHeader.getSubtitleName(), linksIcon, linksHeader.getSubtitleIconClass());
 
-    LayoutAnimation.configureNext(DisplayUtils.getEaseInEaseOutLayoutAnimation(LayoutAnimation));
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       showLinks: !this.state.showLinks,
     });

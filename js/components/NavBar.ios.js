@@ -115,7 +115,7 @@ class NavBar extends React.Component {
       super.setState(state);
     } else {
       setTimeout(() => {
-        LayoutAnimation.configureNext(DisplayUtils.getEaseInEaseOutLayoutAnimation(LayoutAnimation));
+        LayoutAnimation.easeInEaseOut();
         super.setState(state);
       }, ANIMATION_OFFSET);
     }
