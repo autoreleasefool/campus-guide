@@ -33,6 +33,9 @@ let searchListeners: Array<SearchListener> = [];
 // The default SearchListener, when no others are available.
 let defaultSearchListener: ?SearchListener = null;
 
+// The TextInput the app will use for searching.
+let searchInput: Object = null;
+
 module.exports = {
 
   /**
@@ -113,5 +116,28 @@ module.exports = {
    */
   setDefaultSearchListener(listener: ?SearchListener): void {
     defaultSearchListener = listener;
+  },
+
+  /**
+   * Sets a TextInput for user searches for the entire app.
+   *
+   * @param {Object} input TextInput for user searches.
+   */
+  setSearchInput(input: Object): void {
+    searchInput = input;
+  },
+
+  /**
+   * Requests focus on the search input, if one has been set.
+   *
+   * @returns {boolean} true if the text was focused, false otherwise
+   */
+  focusSearch(): boolean {
+    if (searchInput != null) {
+      searchInput.focus();
+      return true;
+    }
+
+    return false;
   },
 };
