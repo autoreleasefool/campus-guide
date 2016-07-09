@@ -187,4 +187,27 @@ describe('SearchManager-test', () => {
     expect(SearchManager.getSearchListener(-1)).toBeNull();
     expect(SearchManager.getSearchListener(searchListeners.length)).toBeNull();
   });
+
+  it('tests pausing the search listeners', () => {
+    // Add all of the search listeners
+    for (let i = 0; i < searchListeners.length; i++) {
+      SearchManager.addSearchListener(searchListeners[i]);
+    }
+
+    // All search listeners should be available
+    expect(SearchManager.numberOfSearchListeners()).toBe(searchListeners.length);
+
+    // No search listeners should be available
+    SearchManager.pauseAllSearchListeners();
+    expect(SearchManager.numberOfSearchListeners()).toBe(0);
+
+    // Iterate over the listeners, which should return null
+    for (let i = 0; i < searchListeners.length; i++) {
+      expect(SearchManager.getSearchListener(i)).toBeNull();
+    }
+
+    // All search listeners should be available again
+    SearchManager.resumeAllSearchListeners();
+    expect(SearchManager.numberOfSearchListeners()).toBe(searchListeners.length);
+  });
 });
