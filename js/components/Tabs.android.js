@@ -167,12 +167,17 @@ class TabsView extends CommonTabs {
             ref='NavBar'
             onDrawerToggle={this._onDrawerToggle}
             onSearch={this._onSearch} />
-        <Navigator
-            configureScene={this._configureScene}
-            initialRoute={{id: Constants.Views.Default}}
-            ref='Navigator'
-            renderScene={this._renderScene.bind(this)}
-            style={_styles.navigator} />
+        <View
+            style={_styles.container}
+            onMoveShouldSetResponder={super._dismissKeyboard.bind(this)}
+            onStartShouldSetResponder={super._dismissKeyboard.bind(this)}>
+          <Navigator
+              configureScene={this._configureScene}
+              initialRoute={{id: Constants.Views.Default}}
+              ref='Navigator'
+              renderScene={this._renderScene.bind(this)}
+              style={_styles.container} />
+        </View>
       </DrawerLayoutAndroid>
     );
   }
@@ -180,7 +185,7 @@ class TabsView extends CommonTabs {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  navigator: {
+  container: {
     flex: 1,
   },
   navigationDrawer: {

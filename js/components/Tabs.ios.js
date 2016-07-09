@@ -91,23 +91,30 @@ class TabsView extends CommonTabs {
       );
     }
 
+    const snackbarStyle = (this.state.snackbarShown) ? {height: tabBarHeight} : {height: 0};
+
     return (
       <View style={_styles.container}>
         <NavBar
             ref='NavBar'
             onBack={super._navigateBack.bind(this)}
             onSearch={super._onSearch.bind(this)} />
-        <Navigator
-            configureScene={super._configureScene}
-            initialRoute={{id: Constants.Views.Default}}
-            ref='Navigator'
-            renderScene={super._renderScene.bind(this)}
-            style={_styles.navigator} />
-        <View style={_styles.tabContainer}>
-          {tabs.map(tab => (
-            tab
-          ))}
-          <View style={[_styles.indicator, {left: indicatorLeft}]} />
+        <View
+            style={_styles.container}
+            onMoveShouldSetResponder={super._dismissKeyboard.bind(this)}
+            onStartShouldSetResponder={super._dismissKeyboard.bind(this)}>
+          <Navigator
+              configureScene={super._configureScene}
+              initialRoute={{id: Constants.Views.Default}}
+              ref='Navigator'
+              renderScene={super._renderScene.bind(this)}
+              style={_styles.container} />
+          <View style={_styles.tabContainer}>
+            {tabs.map(tab => (
+              tab
+            ))}
+            <View style={[_styles.indicator, {left: indicatorLeft}]} />
+          </View>
         </View>
       </View>
     );

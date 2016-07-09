@@ -43,6 +43,7 @@ type State = {
 
 // Imports
 const Constants = require('../Constants');
+const dismissKeyboard = require('dismissKeyboard');
 const ScreenUtils = require('../util/ScreenUtils');
 const SearchManager = require('../util/SearchManager');
 const TabRouter = require('./TabRouter');
@@ -122,6 +123,16 @@ class CommonTabs extends React.Component {
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
+  }
+
+  /**
+   * Dismisses the keyboard.
+   *
+   * @returns {boolean} false
+   */
+  _dismissKeyboard(): boolean {
+    dismissKeyboard();
+    return false;
   }
 
   /**
