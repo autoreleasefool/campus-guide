@@ -91,8 +91,6 @@ class TabsView extends CommonTabs {
       );
     }
 
-    const snackbarStyle = (this.state.snackbarShown) ? {height: tabBarHeight} : {height: 0};
-
     return (
       <View style={_styles.container}>
         <NavBar
@@ -124,9 +122,6 @@ class TabsView extends CommonTabs {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  navigator: {
     flex: 1,
   },
   tabContainer: {

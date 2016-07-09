@@ -59,6 +59,7 @@ type State = {
 
 // Imports
 const Constants = require('../../../Constants');
+const Preferences = require('../../../util/Preferences');
 const SearchManager = require('../../../util/SearchManager');
 
 // Determining size of building icons based on the screen size.
@@ -109,7 +110,10 @@ class BuildingGrid extends React.Component {
    * Loads the buildings once the view has been mounted, and registers a search listener.
    */
   componentDidMount(): void {
-    SearchManager.addSearchListener(this._buildingSearchListener);
+    // Register search listener if the app should not search all by default
+    if (!Preferences.getAlwaysSearchAll()) {
+      SearchManager.addSearchListener(this._buildingSearchListener);
+    }
 
     if (!this.state.loaded) {
       this._filterBuildings();
@@ -232,6 +236,7 @@ class BuildingGrid extends React.Component {
     return (
       <ListView
           dataSource={this.state.dataSource}
+          enableEmptySections={true}
           renderRow={this._renderRow.bind(this)} />
     );
   }

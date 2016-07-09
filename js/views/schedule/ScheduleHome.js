@@ -56,7 +56,6 @@ type State = {
 
 // Imports
 const Constants = require('../../Constants');
-const DisplayUtils = require('../../util/DisplayUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const LanguageUtils = require('../../util/LanguageUtils');
 const Preferences = require('../../util/Preferences');

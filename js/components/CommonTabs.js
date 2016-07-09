@@ -44,6 +44,7 @@ type State = {
 // Imports
 const Constants = require('../Constants');
 const dismissKeyboard = require('dismissKeyboard');
+const Preferences = require('../util/Preferences');
 const ScreenUtils = require('../util/ScreenUtils');
 const SearchManager = require('../util/SearchManager');
 const TabRouter = require('./TabRouter');
@@ -71,6 +72,7 @@ class CommonTabs extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any).getCurrentTab = this.getCurrentTab.bind(this);
+    (this:any)._navigateForward = this._navigateForward.bind(this);
     (this:any)._searchAll = this._searchAll.bind(this);
   }
 
@@ -90,8 +92,7 @@ class CommonTabs extends React.Component {
     SearchManager.setDefaultSearchListener(null);
   }
 
-  // Screen which a tab should open
-  // Made as a member variable so subclasses can see it
+  /** Screen which a tab should open. Made as a member variable so subclasses can see it. */
   tabScreens: TabItems = {
     find: Constants.Views.Find.Home,
     schedule: Constants.Views.Schedule.Home,
@@ -106,9 +107,12 @@ class CommonTabs extends React.Component {
    */
   _changeTabs(tab: number): void {
     if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
+      // FIXME: shouldn't this always be called?
       this._showBackButton(false);
     }
 
+    SearchManager.resumeAllSearchListeners();
+    this.refs.NavBar.clearSearch();
     this.refs.Navigator.resetTo({id: tab});
     this.setState({
       currentTab: tab,
@@ -215,7 +219,7 @@ class CommonTabs extends React.Component {
   _searchAll(searchTerms: ?string): void {
     // TODO: search...
     console.log('TODO: search...');
-    this._navigateForward.bind(this, Constants.Views.Find.Search, searchTerms);
+    this._navigateForward(Constants.Views.Find.Search, searchTerms);
   }
 
   /**
@@ -236,7 +240,7 @@ class CommonTabs extends React.Component {
    */
   _onSearch(searchTerms: ?string): void {
     const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
-    if (numberOfSearchListeners > 0) {
+    if (numberOfSearchListeners > 0 && !Preferences.getAlwaysSearchAll()) {
       // Iterate over each search listener and pass the search terms to each one
       for (let i = 0; i < numberOfSearchListeners; i++) {
         const searchListener = SearchManager.getSearchListener(i);
@@ -262,7 +266,7 @@ class CommonTabs extends React.Component {
   _renderScene(route: Route): ReactElement<any> {
     return TabRouter.renderScene(route,
         this._changeTabs.bind(this),
-        this._navigateForward.bind(this),
+        this._navigateForward,
         this._refreshNavbar.bind(this));
   }
 }

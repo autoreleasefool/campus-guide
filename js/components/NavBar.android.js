@@ -27,7 +27,7 @@
 // React imports
 import React from 'react';
 import {
-  Dimensions,
+  LayoutAnimation,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -50,21 +50,22 @@ type Props = {
 // Type definition for component state.
 type State = {
   refresh?: boolean,
-  showClearButton?: boolean,
+  searching?: boolean,
 };
 
 // Imports
 const Constants = require('../Constants');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../util/Preferences');
+const SearchManager = require('../util/SearchManager');
 const StatusBarUtils = require('../util/StatusBarUtils');
 
-// Get dimensions of the screen
-const {width} = Dimensions.get('window');
 // Size of icons in the navbar
 const NAVBAR_ICON_SIZE: number = 24;
 // Size of large icons in the navbar
 const NAVBAR_LARGE_ICON: number = 30;
+// Number of milliseconds to offset animation by.
+const ANIMATION_OFFSET: number = 50;
 
 class NavBar extends React.Component {
 
@@ -91,11 +92,27 @@ class NavBar extends React.Component {
     super(props);
     this.state = {
       refresh: false,
-      showClearButton: false,
+      searching: false,
     };
 
     // Explicitly binding 'this' to certain methods
     (this:any).getRefresh = this.getRefresh.bind(this);
+  }
+
+  /**
+   * Configures the app to animate the next layout change, then updates the state.
+   *
+   * @param {State} state the new state for the component.
+   */
+  setState(state: State): void {
+    if (state.searching == null) {
+      super.setState(state);
+    } else {
+      setTimeout(() => {
+        LayoutAnimation.easeInEaseOut();
+        super.setState(state);
+      }, ANIMATION_OFFSET);
+    }
   }
 
   /**
@@ -114,10 +131,18 @@ class NavBar extends React.Component {
   /**
    * Clears the search field.
    */
-  _clearSearch(): void {
+  clearSearch(): void {
     this.refs.SearchInput.clear();
     this.refs.SearchInput.blur();
     this._onSearch(null);
+  }
+
+  /**
+   * Removes all search listeners.
+   */
+  _searchAll(): void {
+    SearchManager.pauseAllSearchListeners();
+    this._onSearch(this.refs.SearchInput.value);
   }
 
   /**
@@ -137,12 +162,16 @@ class NavBar extends React.Component {
   _onSearch(text: ?string): void {
     this.props.onSearch(text);
     if (text != null && text.length > 0) {
+      if (!this.state.searching) {
+        LayoutAnimation.easeInEaseOut();
+        this.setState({
+          searching: true,
+        });
+      }
+    } else if (this.state.searching) {
+      LayoutAnimation.easeInEaseOut();
       this.setState({
-        showClearButton: true,
-      });
-    } else {
-      this.setState({
-        showClearButton: false,
+        searching: false,
       });
     }
   }
@@ -161,9 +190,14 @@ class NavBar extends React.Component {
       Translations = require('../../assets/js/Translations.en.js');
     }
 
-    const searchBarLeft: number = 50;
-    const toggleIconWidth: number = 50;
-    const searchBarWidth: number = width - toggleIconWidth;
+    const searchMargin = 10;
+    let searchRightMargin: number = searchMargin;
+    let searchAllIconStyle: Object = {width: 0};
+
+    if (this.state.searching && SearchManager.numberOfSearchListeners() > 0 && !Preferences.getAlwaysSearchAll()) {
+      searchAllIconStyle = {width: 50};
+      searchRightMargin = 0;
+    }
 
     return (
       <View style={_styles.container}>
@@ -176,7 +210,7 @@ class NavBar extends React.Component {
               size={NAVBAR_ICON_SIZE}
               style={_styles.drawerToggleIcon} />
         </TouchableOpacity>
-        <View style={[_styles.innerContainer, _styles.searchContainer, {width: searchBarWidth, left: searchBarLeft}]}>
+        <View style={[_styles.searchContainer, {marginRight: searchRightMargin}]}>
           <MaterialIcons
               color={'white'}
               name={'search'}
@@ -199,6 +233,15 @@ class NavBar extends React.Component {
                     onPress={this._clearSearch.bind(this)} />
                 : null}
         </View>
+        <TouchableOpacity
+            style={[_styles.iconWrapper, searchAllIconStyle]}
+            onPress={this._searchAll.bind(this)}>
+          <MaterialIcons
+              color={'white'}
+              name={'public'}
+              size={NAVBAR_ICON_SIZE}
+              style={_styles.moreIcon} />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -212,17 +255,13 @@ const _styles = StyleSheet.create({
     height: 60,
     marginTop: StatusBarUtils.getStatusBarPadding(Platform),
   },
-  innerContainer: {
+  searchContainer: {
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
     borderRadius: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     margin: 10,
-    marginLeft: 0,
-  },
-  searchContainer: {
-    position: 'absolute',
-    top: 0,
   },
   searchIcon: {
     marginLeft: 10,
@@ -239,11 +278,13 @@ const _styles = StyleSheet.create({
   drawerToggle: {
     height: 40,
     alignItems: 'center',
-    left: 0,
   },
   drawerToggleIcon: {
     marginLeft: 20,
     marginRight: 20,
+    marginTop: 8,
+  },
+  moreIcon: {
     marginTop: 8,
   },
 });

@@ -48,11 +48,6 @@ const searchListeners: Array<SearchListener> = [
   },
 ];
 
-// Search input for testing
-const searchInput: Object = {
-  focus: jest.fn(),
-};
-
 // Text which will be used to invoke a search.
 const DEFAULT_SEARCH_TEXT = 'This is a search.';
 
@@ -191,25 +186,5 @@ describe('SearchManager-test', () => {
 
     expect(SearchManager.getSearchListener(-1)).toBeNull();
     expect(SearchManager.getSearchListener(searchListeners.length)).toBeNull();
-  });
-
-  it('sets a search input and tests focusing it', () => {
-    // Make sure the search hasn't been focused
-    expect(SearchManager.focusSearch()).toBeFalsy();
-    expect(searchInput.focus).not.toBeCalled();
-
-    // Add the search input
-    SearchManager.setSearchInput(searchInput);
-
-    // Make sure the search has been focused
-    expect(SearchManager.focusSearch()).toBeTruthy();
-    expect(searchInput.focus.mock.calls.length).toBe(1);
-
-    // Remove the search input
-    SearchManager.setSearchInput(null);
-
-    // Make sure the search hasn't been focused
-    expect(SearchManager.focusSearch()).toBeFalsy();
-    expect(searchInput.focus.mock.calls.length).toBe(1);
   });
 });

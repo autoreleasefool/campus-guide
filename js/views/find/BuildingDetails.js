@@ -115,7 +115,10 @@ class BuildingDetails extends React.Component {
    * Loads the links to display, registers the search listener.
    */
   componentDidMount(): void {
-    SearchManager.addSearchListener(this._roomSearchListener);
+    // Register search listener if the app should not search all by default
+    if (!Preferences.getAlwaysSearchAll()) {
+      SearchManager.addSearchListener(this._roomSearchListener);
+    }
 
     if (!this.state.loaded) {
       this._filterRooms(this.props.buildingDetails.rooms, null);

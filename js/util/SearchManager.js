@@ -32,9 +32,9 @@ export type SearchListener = {
 let searchListeners: Array<SearchListener> = [];
 // The default SearchListener, when no others are available.
 let defaultSearchListener: ?SearchListener = null;
+// Indicates if all searchListeners except defaultSearchListener should be ignored.
+let searchListenersPaused: boolean = false;
 
-// The TextInput the app will use for searching.
-let searchInput: Object = null;
 
 module.exports = {
 
@@ -70,7 +70,7 @@ module.exports = {
    * @returns {?SearchListener} the search listener at index or null.
    */
   getSearchListener(index: number): ?SearchListener {
-    if (index < 0 || index >= this.numberOfSearchListeners()) {
+    if (index < 0 || index >= this.numberOfSearchListeners() || searchListenersPaused) {
       return null;
     }
 
@@ -78,12 +78,27 @@ module.exports = {
   },
 
   /**
-   * Counts the total number of search listeners and returns it.
+   * Counts the total number of search listeners and returns it. Returns 0 if pauseAllSearchListeners was called.
    *
    * @returns {number} number of search listeners added and not removed.
    */
   numberOfSearchListeners(): number {
-    return searchListeners.length;
+    return (searchListenersPaused) ? 0 : searchListeners.length;
+  },
+
+  /**
+   * Causes all search listeners to stop taking input except defaultSearchListener, and causes
+   * numberOfSearchListeners() to return 0, until resumeAllSearchListeners() is called.
+   */
+  pauseAllSearchListeners(): void {
+    searchListenersPaused = true;
+  },
+
+  /**
+   * Reverses the effects of pauseAllSearchListeners, or does nothing if pauseAllSearchListeners has not been called.
+   */
+  resumeAllSearchListeners(): void {
+    searchListenersPaused = false;
   },
 
   /**
@@ -116,28 +131,5 @@ module.exports = {
    */
   setDefaultSearchListener(listener: ?SearchListener): void {
     defaultSearchListener = listener;
-  },
-
-  /**
-   * Sets a TextInput for user searches for the entire app.
-   *
-   * @param {Object} input TextInput for user searches.
-   */
-  setSearchInput(input: Object): void {
-    searchInput = input;
-  },
-
-  /**
-   * Requests focus on the search input, if one has been set.
-   *
-   * @returns {boolean} true if the text was focused, false otherwise
-   */
-  focusSearch(): boolean {
-    if (searchInput != null) {
-      searchInput.focus();
-      return true;
-    }
-
-    return false;
   },
 };

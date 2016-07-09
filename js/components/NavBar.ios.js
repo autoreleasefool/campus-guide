@@ -28,7 +28,6 @@
 // React imports
 import React from 'react';
 import {
-  Dimensions,
   LayoutAnimation,
   Platform,
   StyleSheet,
@@ -53,18 +52,16 @@ type Props = {
 type State = {
   refresh?: boolean,
   showBackButton?: boolean,
-  showClearButton?: boolean,
+  searching?: boolean,
 };
 
 // Imports
 const Constants = require('../Constants');
-const DisplayUtils = require('../util/DisplayUtils');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const Preferences = require('../util/Preferences');
+const SearchManager = require('../util/SearchManager');
 const StatusBarUtils = require('../util/StatusBarUtils');
 
-// Get dimensions of the screen
-const {width} = Dimensions.get('window');
 // Size of icons in the navbar
 const NAVBAR_ICON_SIZE: number = 24;
 // Size of large icons in the navbar
@@ -98,7 +95,7 @@ class NavBar extends React.Component {
     this.state = {
       refresh: false,
       showBackButton: false,
-      showClearButton: false,
+      searching: false,
     };
 
     // Explicitly binding 'this' to certain methods
@@ -111,7 +108,7 @@ class NavBar extends React.Component {
    * @param {State} state the new state for the component.
    */
   setState(state: State): void {
-    if (state.showBackButton == null) {
+    if (state.showBackButton == null && state.searching == null) {
       super.setState(state);
     } else {
       setTimeout(() => {
@@ -137,18 +134,26 @@ class NavBar extends React.Component {
   /**
    * Clears the search field.
    */
-  _clearSearch(): void {
+  clearSearch(): void {
     this.refs.SearchInput.clear();
     this.refs.SearchInput.blur();
     this._onSearch(null);
   }
 
   /**
+   * Removes all search listeners.
+   */
+  _searchAll(): void {
+    SearchManager.pauseAllSearchListeners();
+    this._onSearch(this.refs.SearchInput.value);
+  }
+
+  /**
    * Clears the search field and requests a back navigation.
    */
   _onBack(): void {
-    this.refs.SearchInput.clear();
-    this.refs.SearchInput.blur();
+    SearchManager.resumeAllSearchListeners();
+    this.clearSearch();
     if (this.props.onBack) {
       this.props.onBack();
     }
@@ -162,12 +167,16 @@ class NavBar extends React.Component {
   _onSearch(text: ?string): void {
     this.props.onSearch(text);
     if (text != null && text.length > 0) {
+      if (!this.state.searching) {
+        LayoutAnimation.easeInEaseOut();
+        this.setState({
+          searching: true,
+        });
+      }
+    } else if (this.state.searching) {
+      LayoutAnimation.easeInEaseOut();
       this.setState({
-        showClearButton: true,
-      });
-    } else {
-      this.setState({
-        showClearButton: false,
+        searching: false,
       });
     }
   }
@@ -186,33 +195,34 @@ class NavBar extends React.Component {
       Translations = require('../../assets/js/Translations.en.js');
     }
 
-    // Width of the back icon when it is visible
-    const backIconWidth = 50;
-    const searchBarPadding = 10;
+    const searchMargin = 10;
+    let searchLeftMargin: number = searchMargin;
+    let searchRightMargin: number = searchMargin;
+    let backIconStyle: Object = {width: 0};
+    let searchAllIconStyle: Object = {width: 0};
 
-    // Setting position of search bar and back button dependent on if back button is showing.
-    const searchBarLeft = (this.state.showBackButton)
-        ? backIconWidth
-        : searchBarPadding;
-    const searchBarWidth = (this.state.showBackButton)
-        ? width - (searchBarPadding + backIconWidth)
-        : width - (searchBarPadding * 2);
-    const backButtonLeft = (this.state.showBackButton)
-        ? 0
-        : -(searchBarPadding + backIconWidth);
+    if (this.state.showBackButton) {
+      backIconStyle = {width: 50};
+      searchLeftMargin = 0;
+    }
+
+    if (this.state.searching && SearchManager.numberOfSearchListeners() > 0 && !Preferences.getAlwaysSearchAll()) {
+      searchAllIconStyle = {width: 50};
+      searchRightMargin = 0;
+    }
 
     return (
       <View style={_styles.container}>
         <TouchableOpacity
-            style={{height: 40, alignItems: 'center', left: backButtonLeft}}
+            style={[_styles.iconWrapper, backIconStyle]}
             onPress={this._onBack.bind(this)}>
           <Ionicons
               color={'white'}
               name={'ios-arrow-back'}
               size={NAVBAR_ICON_SIZE}
-              style={_styles.backIcon} />
+              style={_styles.navBarIcon} />
         </TouchableOpacity>
-        <View style={[_styles.innerContainer, _styles.searchContainer, {width: searchBarWidth, left: searchBarLeft}]}>
+        <View style={[_styles.searchContainer, {marginLeft: searchLeftMargin, marginRight: searchRightMargin}]}>
           <Ionicons
               color={'white'}
               name={'ios-search'}
@@ -226,15 +236,23 @@ class NavBar extends React.Component {
               ref='SearchInput'
               style={_styles.searchText}
               onChangeText={this._onSearch.bind(this)} />
-          {(this.state.showClearButton)
-                ? <Ionicons
-                    color={'white'}
-                    name={'ios-close'}
-                    size={NAVBAR_LARGE_ICON}
-                    style={_styles.clearIcon}
-                    onPress={this._clearSearch.bind(this)} />
-                : null}
+          {(this.state.searching)
+              ? <Ionicons
+                  color={'white'}
+                  name={'ios-close'}
+                  size={NAVBAR_LARGE_ICON}
+                  style={_styles.clearIcon}
+                  onPress={this.clearSearch.bind(this)} /> : null}
         </View>
+        <TouchableOpacity
+            style={[_styles.iconWrapper, searchAllIconStyle]}
+            onPress={this._searchAll.bind(this)}>
+          <Ionicons
+              color={'white'}
+              name={'md-globe'}
+              size={NAVBAR_ICON_SIZE}
+              style={_styles.navBarIcon} />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -248,17 +266,13 @@ const _styles = StyleSheet.create({
     height: 60,
     marginTop: StatusBarUtils.getStatusBarPadding(Platform),
   },
-  innerContainer: {
+  searchContainer: {
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
     borderRadius: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     margin: 10,
-    marginLeft: 0,
-  },
-  searchContainer: {
-    position: 'absolute',
-    top: 0,
   },
   searchIcon: {
     marginLeft: 10,
@@ -272,10 +286,12 @@ const _styles = StyleSheet.create({
     height: 40,
     color: Constants.Colors.polarGrey,
   },
-  backIcon: {
-    marginLeft: 20,
-    marginRight: 20,
+  navBarIcon: {
     marginTop: 8,
+  },
+  iconWrapper: {
+    height: 40,
+    alignItems: 'center',
   },
 });
 
