@@ -106,12 +106,8 @@ class CommonTabs extends React.Component {
    * @param {number} tab the tab to switch to.
    */
   _changeTabs(tab: number): void {
-    if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-      // FIXME: shouldn't this always be called?
-      this._showBackButton(false);
-    }
-
     SearchManager.resumeAllSearchListeners();
+    this._showBackButton(false);
     this.refs.NavBar.clearSearch();
     this.refs.Navigator.resetTo({id: tab});
     this.setState({
