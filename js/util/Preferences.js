@@ -46,8 +46,6 @@ const CURRENT_SEMESTER: string = 'app_current_semester';
 const PREFER_WHEELCHAIR: string = 'app_pref_wheel';
 // Represents if the user wants the app to always search all, without being prompted
 const ALWAYS_SEARCH_ALL: string = 'app_search_all_always';
-// Represents if the user wants the app to prompt them to search all instead
-const PROMPT_SEARCH_ALL: string = 'app_prompt_search_all';
 
 // Cached values of preferences
 let timesAppOpened: number = 0;
@@ -55,7 +53,6 @@ let selectedLanguage: ?Language = null;
 let currentSemester: number = 0;
 let preferWheelchair: boolean = false;
 let alwaysSearchAll: boolean = false;
-let promptSearchAll: boolean = true;
 
 /**
  * Method which should be invoked each time the app is opened, to keep a running track of how many times the app has
@@ -94,12 +91,6 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<v
     alwaysSearchAll = (value === null)
         ? false
         : (value === 'true');
-
-    // If the user wants to be prompted to search the entire app instead
-    value = await AsyncStorage.getItem(PROMPT_SEARCH_ALL);
-    promptSearchAll = (value === null)
-        ? true
-        : (value === 'true');
   } catch (e) {
     console.error('Caught error loading preferences.', e);
 
@@ -109,7 +100,6 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<v
     currentSemester = 0;
     preferWheelchair = false;
     alwaysSearchAll = false;
-    promptSearchAll = true;
   }
 
   timesAppOpened += 1;
@@ -221,30 +211,6 @@ module.exports = {
   },
 
   /**
-   * Updates the user's preference to promp them to search all when they are filtering.
-   *
-   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
-   * @param {boolean} prompt               the new preference for prompting to search all.
-   */
-  setPromptSearchAll(AsyncStorage: ReactClass< any >, prompt: boolean): void {
-    if (prompt !== true && prompt !== false) {
-      return;
-    }
-
-    promptSearchAll = prompt;
-    AsyncStorage.setItem(PROMPT_SEARCH_ALL, prompt.toString());
-  },
-
-  /**
-   * Indicates if the user does or does not want to be prompted to search the entire app when filtering.
-   *
-   * @returns {boolean} true if the user should be prompted to search all instead, false otherwise
-   */
-  shouldPromptSearchAll(): boolean {
-    return promptSearchAll;
-  },
-
-  /**
    * Sets the current semester. If the provided value is not a valid index, the current semester is set to 0.
    *
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
@@ -305,8 +271,6 @@ module.exports = {
       return LanguageUtils.getTranslatedName(this.getSelectedLanguage(), this.getCurrentSemesterInfo());
     } else if (key === 'pref_search_all_always') {
       return this.getAlwaysSearchAll();
-    } else if (key === 'pref_prompt_search_all') {
-      return this.shouldPromptSearchAll();
     }
 
     return null;

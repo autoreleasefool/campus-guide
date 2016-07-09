@@ -190,8 +190,6 @@ class SettingsHome extends React.Component {
       Preferences.setToNextSemester(AsyncStorage);
     } else if (key === 'pref_search_all_always') {
       Preferences.setAlwaysSearchAll(AsyncStorage, !Preferences.getAlwaysSearchAll());
-    } else if (key === 'pref_prompt_search_all') {
-      Preferences.setPromptSearchAll(AsyncStorage, !Preferences.shouldPromptSearchAll());
     }
 
     keyOfLastSettingChanged = key;

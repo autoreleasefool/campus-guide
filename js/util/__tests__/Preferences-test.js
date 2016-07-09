@@ -101,7 +101,6 @@ function expectDefaultPreferences(Preferences: Object) {
   expect(Preferences.getSelectedLanguage()).toBe('en');
   expect(Preferences.isWheelchairRoutePreferred()).toBeFalsy();
   expect(Preferences.getAlwaysSearchAll()).toBeFalsy();
-  expect(Preferences.shouldPromptSearchAll()).toBeTruthy();
   expect(Preferences.getCurrentSemester()).toBe(0);
   expect(Preferences.getCurrentSemesterInfo()).toBeDefined();
 }
@@ -139,11 +138,6 @@ describe('Preferences-test', () => {
       Preferences.setAlwaysSearchAll(AsyncStorage, true);
       expect(Preferences.getSetting('pref_search_all_always')).toBeTruthy();
 
-      Preferences.setPromptSearchAll(AsyncStorage, false);
-      expect(Preferences.getSetting('pref_prompt_search_all')).toBeFalsy();
-      Preferences.setPromptSearchAll(AsyncStorage, true);
-      expect(Preferences.getSetting('pref_prompt_search_all')).toBeTruthy();
-
       Preferences.setSelectedLanguage(AsyncStorage, 'en');
       expect(Preferences.getSetting('pref_semester')).toBeDefined();
       Preferences.setSelectedLanguage(AsyncStorage, 'fr');
@@ -161,14 +155,12 @@ describe('Preferences-test', () => {
       app_current_semester: '0',
       app_pref_wheel: 'true',
       app_search_all_always: 'true',
-      app_prompt_search_all: 'false',
     };
 
     return Preferences.loadInitialPreferences(AsyncStorage).then(() => {
       expect(Preferences.getSetting('pref_lang')).toBe('English');
       expect(Preferences.getSetting('pref_wheel')).toBeTruthy();
       expect(Preferences.getSetting('pref_search_all_always')).toBeTruthy();
-      expect(Preferences.getSetting('pref_prompt_search_all')).toBeFalsy();
       expect(Preferences.getSetting('pref_semester')).toBeDefined();
       expect(Preferences.isFirstTimeOpened()).toBeFalsy();
     });
@@ -199,13 +191,6 @@ describe('Preferences-test', () => {
       expect(Preferences.getAlwaysSearchAll()).toBeTruthy();
       Preferences.setAlwaysSearchAll(AsyncStorage, 'invalid_boolean');
       expect(Preferences.getAlwaysSearchAll()).toBeTruthy();
-
-      Preferences.setPromptSearchAll(AsyncStorage, false);
-      expect(Preferences.shouldPromptSearchAll()).toBeFalsy();
-      Preferences.setPromptSearchAll(AsyncStorage, true);
-      expect(Preferences.shouldPromptSearchAll()).toBeTruthy();
-      Preferences.setPromptSearchAll(AsyncStorage, 'invalid_boolean');
-      expect(Preferences.shouldPromptSearchAll()).toBeTruthy();
 
       Preferences.setCurrentSemester(AsyncStorage, 0);
       expect(Preferences.getCurrentSemester()).toBe(0);
