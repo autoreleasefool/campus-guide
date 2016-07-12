@@ -118,6 +118,8 @@ class NavBar extends React.Component {
     }
   }
 
+  _searchText: string;
+
   /**
    * Returns the current state of the refresh variable, to allow it to be flipped to re-render the view.
    *
@@ -145,7 +147,7 @@ class NavBar extends React.Component {
    */
   _searchAll(): void {
     SearchManager.pauseAllSearchListeners();
-    this._onSearch(this.refs.SearchInput.value);
+    this._onSearch(this._searchText);
   }
 
   /**
@@ -165,6 +167,7 @@ class NavBar extends React.Component {
    * @param {?string} text params to search for.
    */
   _onSearch(text: ?string): void {
+    this._searchText = text;
     this.props.onSearch(text);
     if (text != null && text.length > 0) {
       if (!this.state.searching) {

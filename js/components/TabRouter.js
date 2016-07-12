@@ -145,6 +145,14 @@ module.exports = {
                 navigateForward(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1),
                     {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
       );
+    } else if (route.id === Constants.Views.Find.Search) {
+      const Searchable = require('../search/Searchable');
+      const results = Searchable.getResults(route.data);
+      scene = (
+        <View style={{flex: 1}}>
+          {results.map(result => Searchable.renderResult(result))}
+        </View>
+      );
     }
 
     return (
