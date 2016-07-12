@@ -328,6 +328,7 @@ const _styles = StyleSheet.create({
     height: null,
   },
   facilitiesContainer: {
+    alignItems: 'flex-start',
     backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
     flexDirection: 'row',
     flexWrap: 'wrap',
