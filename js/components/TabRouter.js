@@ -47,6 +47,7 @@ const FindHome = require('FindHome');
 const LinkCategory = require('LinkCategory');
 const LinksHome = require('LinksHome');
 const ScheduleHome = require('ScheduleHome');
+const SearchResults = require('SearchResults');
 const SettingsHome = require('SettingsHome');
 const ShuttleCampusList = require('ShuttleCampusList');
 const ShuttleCampusDetails = require('ShuttleCampusDetails');
@@ -136,6 +137,10 @@ module.exports = {
             refreshParent={refreshNavbar}
             requestTabChange={changeTabs} />
       );
+    } else if (route.id === Constants.Views.Search) {
+      scene = (
+        <SearchResults initialSearch={route.data} />
+      );
     } else if (typeof route.id === 'string' && route.id.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
       scene = (
         <LinkCategory
@@ -144,14 +149,6 @@ module.exports = {
             showLinkCategory={category =>
                 navigateForward(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1),
                     {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
-      );
-    } else if (route.id === Constants.Views.Find.Search) {
-      const Searchable = require('../search/Searchable');
-      const results = Searchable.getResults(route.data);
-      scene = (
-        <View style={{flex: 1}}>
-          {results.map(result => Searchable.renderResult(result))}
-        </View>
       );
     }
 

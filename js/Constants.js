@@ -73,10 +73,10 @@ module.exports = {
     DefaultTab: 100,
     Splash: 1,
     Main: 2,
+    Search: 3,
     Find: {
       Home: 100,
       Building: 101,
-      Search: 102,
     },
     Schedule: {
       Home: 200,

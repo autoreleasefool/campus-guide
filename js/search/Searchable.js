@@ -17,6 +17,7 @@
  *
  * @author Joseph Roque
  * @file Searchable.js
+ * @providesModule Searchable
  * @description Exports the various sources the app should search and present results for.
  *
  * @flow
@@ -24,14 +25,16 @@
 'use strict';
 
 // React imports
+import React from 'react';
 import {
   Text,
   View,
 } from 'react-native';
 
+// Type imports
 import type {
   IconObject,
-} from '../types';
+} from 'types';
 
 /** Defines the information provided by a search result. */
 export type SearchResult = {
@@ -64,7 +67,6 @@ module.exports = {
     const results: Array< SearchResult > = [];
 
     for (let i = 0; i < sources.length; i++) {
-      console.log('Source: ' + sources[i].name);
       const sourceResults: Array< SearchResult > = sources[i].content.getResults(searchTerms);
       for (let j = 0; j < sourceResults.length; j++) {
         results.push(sourceResults[j]);
@@ -101,8 +103,8 @@ module.exports = {
     const sources: Array< SearchSource > = [];
 
     sources.push({
-      name: './SearchableBuilding',
-      content: require('./SearchableBuilding'),
+      name: 'SearchableBuilding',
+      content: require('SearchableBuilding'),
     });
 
     return sources;

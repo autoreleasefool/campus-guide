@@ -24,20 +24,14 @@
  */
 'use strict';
 
-// React imports
-import React from 'react';
-import {
-  View,
-} from 'react-native';
-
 // Type imports
 import type {
   Building,
-} from '../types';
+} from 'types';
 
 import type {
   SearchResult,
-} from './Searchable';
+} from 'Searchable';
 
 module.exports = {
 
@@ -54,21 +48,18 @@ module.exports = {
 
     // Ignore the case of the search terms
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
-    console.log('adjusted: ' + adjustedSearchTerms);
     const buildings: Array<Building> = require('../../assets/js/Buildings');
     const results: Array<SearchResult> = [];
 
     for (let i = 0; i < buildings.length; i++) {
-      console.log('Building code: ' + buildings[i].code);
       const translated: boolean = !('name' in buildings[i]);
 
       if ((!translated && buildings[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (translated && (buildings[i].name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
           || buildings[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
           || buildings[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        console.log('Building accepted: ' + buildings[i].code);
         results.push({
-          description: buildings[i].name,
+          description: (translated) ? buildings[i].name_fr + buildings[i].name_en : buildings[i].name,
           icon: {
             name: 'store',
             class: 'material',

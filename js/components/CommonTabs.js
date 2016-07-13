@@ -215,7 +215,9 @@ class CommonTabs extends React.Component {
   _searchAll(searchTerms: ?string): void {
     // TODO: search...
     console.log('TODO: search...');
-    this._navigateForward(Constants.Views.Find.Search, searchTerms);
+    if (this._getCurrentScreen() !== Constants.Views.Search) {
+      this._navigateForward(Constants.Views.Search, searchTerms);
+    }
   }
 
   /**
