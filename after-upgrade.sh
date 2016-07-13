@@ -22,6 +22,9 @@ sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/build.
 # Update .flowconfig to map filenames
 sed -i '' 's/[[]options[]]/[options]\'$'\n''module.name_mapper='"'"'\/Tabs'"'"' -> '"'"'\/Tabs.ios'"'"'\'$'\n''module.name_mapper='"'"'\/NavBar'"'"' -> '"'"'\/NavBar.ios'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/csv\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/js\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/json\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''/g' ./.flowconfig
 
+# Add additional flow ignore comment
+sed -i '' 's/suppress_type=[$]FixMe/suppress_type=$FixMe\'$'\n''\'$'\n''suppress_comment=\\\\(.\\\\|\\n\\\\)*\\\\$FlowIgnore\'$'\n''/g' ./.flowconfig
+
 # Remove the MainActivity files added in the new package
 rm -r ./android/app/src/main/java/com/
 
