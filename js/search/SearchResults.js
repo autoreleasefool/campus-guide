@@ -122,9 +122,14 @@ class SearchResults extends React.Component {
    * @param {?string} searchTerms user search query
    */
   _updateSearch(searchTerms: ?string): void {
-    // TODO: narrow the search results instead of completing resetting them
-    // this._searchResults = Searchable.narrowResults(this._searchResults, searchTerms);
-    this._searchResults = Searchable.getResults(searchTerms);
+    if (this.state.loaded
+        && this.state.searchTerms != null && this.state.searchTerms.length > 0
+        && searchTerms != null && searchTerms.length > 0
+        && searchTerms.indexOf(this.state.searchTerms) >= 0) {
+      Searchable.narrowResults(searchTerms, this._searchResults);
+    } else {
+      this._searchResults = Searchable.getResults(searchTerms);
+    }
 
     this.setState({
       loaded: true,

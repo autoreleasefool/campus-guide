@@ -33,6 +33,10 @@ import type {
   SearchResult,
 } from 'Searchable';
 
+// Imports
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
+
 module.exports = {
 
   /**
@@ -45,6 +49,9 @@ module.exports = {
     if (searchTerms == null || searchTerms.length === 0) {
       return [];
     }
+
+    // Cache the language
+    const language = Preferences.getSelectedLanguage();
 
     // Ignore the case of the search terms
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
@@ -59,12 +66,12 @@ module.exports = {
           || buildings[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
           || buildings[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
         results.push({
-          description: (translated) ? buildings[i].name_fr + buildings[i].name_en : buildings[i].name,
+          description: LanguageUtils.getTranslatedName(language, buildings[i]),
           icon: {
             name: 'store',
             class: 'material',
           },
-          matchedTerms: (translated) ? buildings[i].name_fr + buildings[i].name_en : buildings[i].name,
+          matchedTerms: (translated) ? [buildings[i].name_fr, buildings[i].name_en] : [buildings[i].name],
           title: buildings[i].code,
         });
       }

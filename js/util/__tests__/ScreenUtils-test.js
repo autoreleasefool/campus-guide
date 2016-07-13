@@ -33,7 +33,7 @@ const ScreenUtils = require('ScreenUtils');
 describe('ScreenUtils-test', () => {
   it('tests the accessing and comparing of root screens.', () => {
     expect(ScreenUtils.getRootScreen(Constants.Views.Find.Home)).toBe(Constants.Views.Find.Home);
-    expect(ScreenUtils.getRootScreen(Constants.Views.Find.Search)).toBe(Constants.Views.Find.Home);
+    expect(ScreenUtils.getRootScreen(Constants.Views.Find.Building)).toBe(Constants.Views.Find.Home);
     expect(ScreenUtils.getRootScreen(Constants.Views.Schedule.Home)).toBe(Constants.Views.Schedule.Home);
     expect(ScreenUtils.getRootScreen(Constants.Views.Schedule.Editor)).toBe(Constants.Views.Schedule.Home);
     expect(ScreenUtils.getRootScreen(Constants.Views.Discover.Home)).toBe(Constants.Views.Discover.Home);

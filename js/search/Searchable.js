@@ -27,12 +27,14 @@
 // React imports
 import React from 'react';
 import {
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
 
 // Type imports
 import type {
+  DefaultIcon,
   IconObject,
 } from 'types';
 
@@ -40,7 +42,7 @@ import type {
 export type SearchResult = {
   description: string,
   icon: IconObject,
-  matchedTerms: string,
+  matchedTerms: Array < string >,
   title: string,
 };
 
@@ -49,6 +51,15 @@ export type SearchSource = {
   name: string,
   content: Object,
 };
+
+// Imports
+const Constants = require('Constants');
+const DisplayUtils = require('DisplayUtils');
+const Ionicons = require('react-native-vector-icons/Ionicons');
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
+
+// Size of the icon representing a result's source
+const RESULT_ICON_SIZE: number = 24;
 
 module.exports = {
 
@@ -88,7 +99,14 @@ module.exports = {
     }
 
     for (let i = existingResults.length - 1; i >= 0; i--) {
-      if (existingResults[i].matchedTerms.indexOf(searchTerms) < 0) {
+      let stillMatches: boolean = false;
+      for (let j = 0; j < existingResults[i].matchedTerms.length; j++) {
+        if (existingResults[i].matchedTerms[j].indexOf(searchTerms) >= 0) {
+          stillMatches = true;
+        }
+      }
+
+      if (!stillMatches) {
         existingResults.splice(i, 1);
       }
     }
@@ -117,11 +135,55 @@ module.exports = {
    * @returns {?ReactElement<any>} a view describing the result, or null
    */
   renderResult(result: SearchResult): ?ReactElement< any > {
+
+    // Construct the icon view for the result
+    const iconObject: ?DefaultIcon = DisplayUtils.getPlatformIcon(result);
+    let iconView: ?ReactElement<any> = null;
+    if (iconObject != null) {
+      if (iconObject.class === 'MaterialIcons') {
+        iconView = (
+          <MaterialIcons
+              color={Constants.Colors.primaryWhiteText}
+              name={iconObject.name}
+              size={RESULT_ICON_SIZE} />
+        );
+      } else {
+        iconView = (
+          <Ionicons
+              color={Constants.Colors.primaryWhiteText}
+              name={iconObject.name}
+              size={RESULT_ICON_SIZE} />
+        );
+      }
+    }
+
+    console.log(iconObject);
+
     return (
-      <View>
-        <Text>{result.title}</Text>
-        <Text>{result.description}</Text>
+      <View style={_styles.result}>
+        {iconView}
+        <View style={_styles.text}>
+          <Text style={_styles.title}>{result.title}</Text>
+          <Text style={_styles.body}>{result.description}</Text>
+        </View>
       </View>
     );
   },
 };
+
+const _styles = StyleSheet.create({
+  result: {
+    flexDirection: 'row',
+  },
+  text: {
+    flexDirection: 'column',
+  },
+  title: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Text.Large,
+  },
+  body: {
+    color: Constants.Colors.secondaryWhiteText,
+    fontSize: Constants.Text.Medium,
+  },
+});
