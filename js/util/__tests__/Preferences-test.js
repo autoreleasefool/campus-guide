@@ -23,7 +23,7 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../Preferences');
+jest.unmock('Preferences');
 
 // Mock various modules required in testing.
 jest.setMock('AsyncStorage', {
@@ -112,7 +112,7 @@ describe('Preferences-test', () => {
 
   beforeEach(() => {
     // Refresh modules between tests
-    Preferences = require('../Preferences');
+    Preferences = require('Preferences');
 
     // In most cases, we don't want an error to be thrown in AsyncStorage
     shouldThrowError = false;

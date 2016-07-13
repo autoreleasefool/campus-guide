@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file Stops.js
- * @module Stops
+ * @file StopDetails.js
+ * @providesModule StopDetails
  * @description Displays details about the stops provided. Navigates between a list of stops and their individual
  *              details.
  *
@@ -40,7 +40,7 @@ import {
 import type {
   DetailedRouteInfo,
   TransitCampus,
-} from '../../../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -76,11 +76,11 @@ type NavigatorRoute = {
 };
 
 // Imports
-const Constants = require('../../../Constants');
-const LanguageUtils = require('../../../util/LanguageUtils');
-const Preferences = require('../../../util/Preferences');
-const SectionHeader = require('../../../components/SectionHeader');
-const TextUtils = require('../../../util/TextUtils');
+const Constants = require('Constants');
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
+const SectionHeader = require('SectionHeader');
+const TextUtils = require('TextUtils');
 
 // Identifier for the navigator, indicating the list of stops is being shown.
 const LIST: number = 0;

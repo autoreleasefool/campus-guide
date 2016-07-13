@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file ShuttleCampusList.js
- * @module ShuttleCampusList
+ * @providesModule ShuttleCampusList
  * @description Displays info about shuttles provided by the university across the various campuses.
  *
  * @flow
@@ -57,11 +57,11 @@ type State = {
 };
 
 // Imports
-const Constants = require('../../Constants');
-const DisplayUtils = require('../../util/DisplayUtils');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
+const Constants = require('Constants');
+const DisplayUtils = require('DisplayUtils');
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
+const SectionHeader = require('SectionHeader');
 
 // Background colors for each campus
 const campusColors: Array<string> = [

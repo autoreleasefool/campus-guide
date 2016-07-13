@@ -17,6 +17,7 @@
  *
  * @author Joseph Roque
  * @file Constants.js
+ * @providesModule Constants
  * @description Constant values for the application.
  *
  * @flow

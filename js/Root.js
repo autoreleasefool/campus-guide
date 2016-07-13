@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file Roots.js
- * @module CampusGuide
  * @description Base component for the application.
  *
  * @flow
@@ -34,13 +33,13 @@ import {
 // Type imports
 import type {
   Route,
-} from './types';
+} from 'types';
 
 // Imports
-const Constants = require('./Constants');
-const MainScreen = require('./views/Main');
+const Constants = require('Constants');
+const MainScreen = require('MainScreen');
 const Orientation = require('react-native-orientation');
-const SplashScreen = require('./views/Splash');
+const SplashScreen = require('SplashScreen');
 
 class CampusGuide extends React.Component {
 

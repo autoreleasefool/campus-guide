@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file LinkCategory.js
- * @module LinkCategory
+ * @providesModule LinkCategory
  * @description Displays the links and subcategories belonging to a category of useful links.
  *
  * @flow
@@ -45,7 +45,7 @@ import type {
   Language,
   Link,
   LinkCategoryType,
-} from '../../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -60,15 +60,15 @@ type State = {
 };
 
 // Imports
-const Configuration = require('../../util/Configuration');
-const Constants = require('../../Constants');
-const DisplayUtils = require('../../util/DisplayUtils');
-const ExternalUtils = require('../../util/ExternalUtils');
+const Configuration = require('Configuration');
+const Constants = require('Constants');
+const DisplayUtils = require('DisplayUtils');
+const ExternalUtils = require('ExternalUtils');
 const Ionicons = require('react-native-vector-icons/Ionicons');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
-const TextUtils = require('../../util/TextUtils');
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
+const SectionHeader = require('SectionHeader');
+const TextUtils = require('TextUtils');
 
 class LinkCategory extends React.Component {
 

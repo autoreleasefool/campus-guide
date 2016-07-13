@@ -17,6 +17,7 @@
  *
  * @author Joseph Roque
  * @file Preferences.js
+ * @providesModule Preferences
  * @description Manages the application preferences. Loads the preferences upon opening
  *              the application then caches their values so they don't need to be
  *              reloaded later. When preferences are updated, the cache is updated and
@@ -33,8 +34,8 @@ import type {
 } from '../types';
 
 // Imports
-const Configuration = require('./Configuration');
-const LanguageUtils = require('./LanguageUtils');
+const Configuration = require('Configuration');
+const LanguageUtils = require('LanguageUtils');
 
 // Represents the number of times the app has been opened
 const TIMES_APP_OPENED: string = 'app_times_opened';

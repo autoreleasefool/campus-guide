@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file BusCampusDetails.js
- * @module BusCampusDetails
+ * @providesModule BusCampusDetails
  * @description Displays a campus' location on a map, relative to a user's location, as well as a list of the stops
  *              near the campus.
  *
@@ -64,10 +64,10 @@ type MapMarker = {
 };
 
 // Imports
-const Configuration = require('../../util/Configuration');
-const DisplayUtils = require('../../util/DisplayUtils');
+const Configuration = require('Configuration');
+const DisplayUtils = require('DisplayUtils');
 const MapView = require('react-native-maps');
-const StopDetails = require('./components/StopDetails');
+const StopDetails = require('StopDetails');
 
 class BusCampusDetails extends React.Component {
 

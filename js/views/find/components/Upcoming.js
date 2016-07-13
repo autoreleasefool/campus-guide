@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file Upcoming.js
- * @module Upcoming
+ * @providesModule Upcoming
  * @description View to display the user's upcoming classes and events for the day.
  *
  * @flow
@@ -35,7 +35,7 @@ import {
 // Type imports
 import type {
   DefaultFunction,
-} from '../../../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -48,8 +48,8 @@ type State = {
 };
 
 // Imports
-const Constants = require('../../../Constants');
-const Preferences = require('../../../util/Preferences');
+const Constants = require('Constants');
+const Preferences = require('Preferences');
 
 class Upcoming extends React.Component {
 

@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file TabRouter.js
- * @module TabRouter
+ * @providesModule TabRouter
  * @description Manages view changes in the application. Common to Android and iOS.
  *
  * @flow
@@ -32,24 +32,24 @@ import {
 import type {
   DefaultFunction,
   Route,
-} from '../types';
+} from 'types';
 
 // Imports
-const Constants = require('../Constants');
+const Constants = require('Constants');
 
 // Screen imports
-const BuildingDetails = require('../views/find/BuildingDetails');
-const BusCampusDetails = require('../views/discover/BusCampusDetails');
-const BusCampusList = require('../views/discover/BusCampusList');
-const DetailsScreen = require('./DetailsScreen');
-const DiscoverHome = require('../views/discover/DiscoverHome');
-const FindHome = require('../views/find/FindHome');
-const LinkCategory = require('../views/discover/LinkCategory');
-const LinksHome = require('../views/discover/LinksHome');
-const ScheduleHome = require('../views/schedule/ScheduleHome');
-const SettingsHome = require('../views/settings/SettingsHome');
-const ShuttleCampusList = require('../views/discover/ShuttleCampusList');
-const ShuttleCampusDetails = require('../views/discover/ShuttleCampusDetails');
+const BuildingDetails = require('BuildingDetails');
+const BusCampusDetails = require('BusCampusDetails');
+const BusCampusList = require('BusCampusList');
+const DetailsScreen = require('DetailsScreen');
+const DiscoverHome = require('DiscoverHome');
+const FindHome = require('FindHome');
+const LinkCategory = require('LinkCategory');
+const LinksHome = require('LinksHome');
+const ScheduleHome = require('ScheduleHome');
+const SettingsHome = require('SettingsHome');
+const ShuttleCampusList = require('ShuttleCampusList');
+const ShuttleCampusDetails = require('ShuttleCampusDetails');
 
 module.exports = {
 

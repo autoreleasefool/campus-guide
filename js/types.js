@@ -16,7 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file Types.js
+ * @file types.js
+ * @providesModule types
  * @description Variable type definitions for use throughout the app.
  *
  * @flow

@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file Splash.js
- * @module SplashScreen
+ * @file SplashScreen.js
+ * @providesModule SplashScreen
  * @description Initial entry view for the application. Allows the user to select their preferred language on first run.
  *
  * @flow
@@ -40,7 +40,7 @@ import {
 // Type imports
 import type {
   Language,
-} from '../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -53,10 +53,10 @@ type State = {
 };
 
 // Imports
-const Configuration = require('../util/Configuration');
-const Constants = require('../Constants');
-const Preferences = require('../util/Preferences');
-const StatusBarUtils = require('../util/StatusBarUtils');
+const Configuration = require('Configuration');
+const Constants = require('Constants');
+const Preferences = require('Preferences');
+const StatusBarUtils = require('StatusBarUtils');
 
 // Require both language translations to display items in both languages
 const TranslationsEn: Object = require('../../assets/js/Translations.en.js');

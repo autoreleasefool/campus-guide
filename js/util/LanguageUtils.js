@@ -17,6 +17,7 @@
  *
  * @author Joseph Roque
  * @file LanguageUtils.js
+ * @providesModule LanguageUtils
  * @description Defines a set of methods to easily get translations from objects.
  *
  * @flow
@@ -26,7 +27,7 @@
 // Type imports
 import type {
   Language,
-} from '../types';
+} from 'types';
 
 module.exports = {
 

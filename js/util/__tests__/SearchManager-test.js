@@ -23,7 +23,7 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../SearchManager');
+jest.unmock('SearchManager');
 
 // Import type definitions.
 import type {
@@ -58,7 +58,7 @@ describe('SearchManager-test', () => {
 
   beforeEach(() => {
     // Re-require the class each time to prevent persistence between tests
-    SearchManager = require('../SearchManager');
+    SearchManager = require('SearchManager');
 
     // Clear mock calls
     defaultSearchListener.onSearch.mockClear();

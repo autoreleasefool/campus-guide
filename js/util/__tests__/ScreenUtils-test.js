@@ -23,12 +23,12 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../../Constants');
-jest.unmock('../ScreenUtils');
+jest.unmock('Constants');
+jest.unmock('ScreenUtils');
 
 // Require modules for testing
-const Constants = require('../../Constants');
-const ScreenUtils = require('../ScreenUtils');
+const Constants = require('Constants');
+const ScreenUtils = require('ScreenUtils');
 
 describe('ScreenUtils-test', () => {
   it('tests the accessing and comparing of root screens.', () => {

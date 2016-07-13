@@ -23,7 +23,7 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../StatusBarUtils');
+jest.unmock('StatusBarUtils');
 
 // Sets up mocked methods for required classes
 jest.setMock('StatusBar', {
@@ -42,7 +42,7 @@ const PLATFORM_IOS = {
 
 // Require modules for testing
 const StatusBar = require('StatusBar');
-const StatusBarUtils = require('../StatusBarUtils');
+const StatusBarUtils = require('StatusBarUtils');
 
 describe('StatusBarUtils-test', () => {
 

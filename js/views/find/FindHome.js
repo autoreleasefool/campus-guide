@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file FindHome.js
- * @module FindHome
+ * @providesModule FindHome
  * @description View for the root navigation for finding a room on campus.
  *
  * @flow
@@ -38,11 +38,11 @@ import type {
 } from '../../types';
 
 // Imports
-const BuildingGrid = require('./components/BuildingGrid');
-const Constants = require('../../Constants');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
-const Upcoming = require('./components/Upcoming');
+const BuildingGrid = require('BuildingGrid');
+const Constants = require('Constants');
+const Preferences = require('Preferences');
+const SectionHeader = require('SectionHeader');
+const Upcoming = null; // require('Upcoming');
 
 class FindHome extends React.Component {
 
@@ -93,7 +93,7 @@ class FindHome extends React.Component {
     }
 
     let upcomingClasses: ?ReactElement<any> = null;
-    if (Constants.Tabs.indexOf('schedule') >= 0) {
+    if (Constants.Tabs.indexOf('schedule') >= 0 && Upcoming != null) {
       upcomingClasses = (
         <View>
           <SectionHeader

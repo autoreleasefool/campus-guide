@@ -23,8 +23,8 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../DisplayUtils');
-jest.unmock('../../Constants');
+jest.unmock('DisplayUtils');
+jest.unmock('Constants');
 
 // Example object containing an icon object which describes the android and iOS icons.
 const exampleObjectWithPlatformSpecificIcons = {
@@ -81,8 +81,8 @@ const expectedDefaultIcon = {
 };
 
 // Require the modules used in testing
-const Constants = require('../../Constants');
-const DisplayUtils = require('../DisplayUtils');
+const Constants = require('Constants');
+const DisplayUtils = require('DisplayUtils');
 
 describe('DisplayUtils-test', () => {
 

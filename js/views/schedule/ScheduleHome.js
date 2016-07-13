@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file ScheduleHome.js
- * @module ScheduleHone
+ * @providesModule ScheduleHome
  * @description View for enabling the user to create a schedule of their classes and see the schedule in an organized
  *              manner.
  *
@@ -41,7 +41,7 @@ import {
 // Type imports
 import type {
   DefaultFunction,
-} from '../../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -55,11 +55,11 @@ type State = {
 };
 
 // Imports
-const Constants = require('../../Constants');
+const Constants = require('Constants');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
+const SectionHeader = require('SectionHeader');
 
 // Get dimensions of the device
 const {width} = Dimensions.get('window');

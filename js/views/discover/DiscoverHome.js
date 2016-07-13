@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file DiscoverHome.js
- * @module DiscoverHome
+ * @providesModule DiscoverHome
  * @description Root view for links which help users become acquainted with the school.
  *
  * @flow
@@ -40,7 +40,7 @@ import type {
   IconObject,
   DefaultFunction,
   DefaultIcon,
-} from '../../types';
+} from 'types';
 
 // Type definition for headers with a 'name' property.
 type DiscoverSectionWithDefaultName = {
@@ -76,11 +76,11 @@ type State = {
 };
 
 // Imports
-const Constants = require('../../Constants');
-const DisplayUtils = require('../../util/DisplayUtils');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
+const Constants = require('Constants');
+const DisplayUtils = require('DisplayUtils');
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
+const SectionHeader = require('SectionHeader');
 
 class DiscoverHome extends React.Component {
 
