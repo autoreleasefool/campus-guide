@@ -67,10 +67,8 @@ const DisplayUtils = require('../../util/DisplayUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
-const reactMixin = require('react-mixin');
 const SearchManager = require('../../util/SearchManager');
 const SectionHeader = require('../../components/SectionHeader');
-const TimerMixin = require('react-timer-mixin');
 
 const {width} = Dimensions.get('window');
 
@@ -131,8 +129,7 @@ class BuildingDetails extends React.Component {
       SearchManager.addSearchListener(this._roomSearchListener);
     }
 
-    // $FlowIgnore: this.setTimeout provided by TimerMixin
-    this.setTimeout(() => {
+    this._swapBannerTimer = setTimeout(() => {
       this._swapBanner();
     }, BANNER_SWAP_TIME);
 
@@ -146,9 +143,13 @@ class BuildingDetails extends React.Component {
    */
   componentWillUnmount(): void {
     SearchManager.removeSearchListener(this._roomSearchListener);
+    clearTimeout(this._swapBannerTimer);
   }
 
-  /* Listener for search input. */
+  /** Timer which swaps the banner after a set amount of time. */
+  _swapBannerTimer: number;
+
+  /** Listener for search input. */
   _roomSearchListener: SearchListener;
 
   /**
@@ -202,8 +203,7 @@ class BuildingDetails extends React.Component {
       bannerPosition: (this.state.bannerPosition + 1) % TOTAL_BANNER_POSITIONS,
     });
 
-    // $FlowIgnore: this.setTimeout provided by TimerMixin
-    this.setTimeout(() => {
+    this._swapBannerTimer = setTimeout(() => {
       this._swapBanner();
     }, BANNER_SWAP_TIME);
   }
@@ -385,8 +385,5 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Text.Medium,
   },
 });
-
-// Add the timer mixin to the class so setTimeout will respect unmounting
-reactMixin(BuildingDetails.prototype, TimerMixin);
 
 module.exports = BuildingDetails;

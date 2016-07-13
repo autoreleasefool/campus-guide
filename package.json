@@ -13,12 +13,10 @@
   },
   "dependencies": {
     "react": "^15.1.0",
-    "react-mixin": "^3.0.5",
     "react-native": "^0.29.0",
     "react-native-maps": "^0.7.1",
     "react-native-orientation": "^1.17.0",
-    "react-native-vector-icons": "^2.0.3",
-    "react-timer-mixin": "^0.13.3"
+    "react-native-vector-icons": "^2.0.3"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.0",
