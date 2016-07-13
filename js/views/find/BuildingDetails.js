@@ -137,7 +137,7 @@ class BuildingDetails extends React.Component {
     }, BANNER_SWAP_TIME);
 
     if (!this.state.loaded) {
-      this._filterRooms(this.props.buildingDetails.rooms, null);
+      this._filterRooms(null);
     }
   }
 
@@ -167,43 +167,28 @@ class BuildingDetails extends React.Component {
   /**
    * Filters the rooms in the building and displays them to the user.
    *
-   * @param {Array<BuildingRoom>} rooms list of filtered rooms in the building to display.
    * @param {?string} searchTerms       user input filter terms.
    */
-  _filterRooms(rooms: Array<BuildingRoom>, searchTerms: ?string): void {
+  _filterRooms(searchTerms: ?string): void {
     // Ignore the case of the search terms
     const adjustedSearchTerms: ?string = (searchTerms == null) ? null : searchTerms.toUpperCase();
 
-    // Create array for sets of rooms
-    const roomSets: Array<Array<BuildingRoom>> = [];
+    // Get the list of rooms in the building
+    const rooms: Array<BuildingRoom> = this.props.buildingDetails.rooms;
 
-    // Create a temporary set of rooms with up to ROOM_COLUMNS rooms in it
-    let tempSet: Array<BuildingRoom> = [];
-    let roomsInSet = 0;
+    // Create array for sets of rooms
+    const filteredRooms: Array<BuildingRoom> = [];
 
     for (let i = 0; i < rooms.length; i++) {
-      if (roomsInSet === ROOM_COLUMNS) {
-        // After the temporary set has reached its max length, add it to the rooms and clear the temporary set
-        roomSets.push(tempSet);
-        tempSet = [];
-        roomsInSet = 0;
-      }
-
       // If the search terms are empty, or the room contains the terms, add it to the list
       if (adjustedSearchTerms == null || rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        tempSet.push(rooms[i]);
-        roomsInSet++;
+        filteredRooms.push(rooms[i]);
       }
-    }
-
-    // Add the final set, if any rooms were added to it
-    if (tempSet.length > 0) {
-      roomSets.push(tempSet);
     }
 
     // Update the state so the app reflects the changes made
     this.setState({
-      buildingRooms: this.state.buildingRooms.cloneWithRows(roomSets),
+      buildingRooms: this.state.buildingRooms.cloneWithRows(filteredRooms),
       loaded: true,
     });
   }
@@ -229,7 +214,7 @@ class BuildingDetails extends React.Component {
    * @param {string} searchTerms user input filter terms.
    */
   _onRoomSearch(searchTerms: ?string): void {
-    this._filterRooms(this.props.buildingDetails.rooms, searchTerms);
+    this._filterRooms(searchTerms);
   }
 
   /**
@@ -298,8 +283,10 @@ class BuildingDetails extends React.Component {
   _renderRoomList(): ReactElement< any > {
     return (
       <ListView
+          contentContainerStyle={_styles.listView}
           dataSource={this.state.buildingRooms}
           enableEmptySections={true}
+          pageSize={ROOM_COLUMNS}
           renderRow={this._renderRow.bind(this)} />
     );
   }
@@ -307,32 +294,25 @@ class BuildingDetails extends React.Component {
   /**
    * Renders an item describing a single room in the building.
    *
-   * @param {Array<BuildingRoom>} rooms a list of rooms to display in this row.
-   * @param {string} sectionId          index of the section the room is in.
-   * @param {number} rowIndex           index of the row the room is in.
+   * @param {BuildingRoom} room a room to display in this row.
+   * @param {string} sectionId  index of the section the room is in.
+   * @param {number} rowIndex   index of the row the room is in.
    * @returns {ReactElement<any>} a view describing a set of room.
    */
-  _renderRow(rooms: Array< BuildingRoom >, sectionId: string, rowIndex: number): ReactElement<any> {
-    const darkenEvenElements = (Math.floor(rowIndex / ROOM_COLUMNS * 2) % ROOM_COLUMNS === 0);
-
-    return (
-      <View style={_styles.roomSet}>
-        {rooms.map((room, index) => {
-          const rowColor: string = ((darkenEvenElements && index % 2 === 0) || (!darkenEvenElements && index % 2 === 1))
+  _renderRow(room: BuildingRoom, sectionId: string, rowIndex: number): ReactElement<any> {
+    const darkenEvenElements = (Math.floor(rowIndex / (ROOM_COLUMNS * 2)) % ROOM_COLUMNS === 0);
+    const rowColor: string = ((darkenEvenElements && rowIndex % 2 === 0) || (!darkenEvenElements && rowIndex % 2 === 1))
               ? Constants.Colors.defaultComponentBackgroundColor
               : Constants.Colors.garnet;
-          return (
-            <TouchableOpacity
-                key={index}>
-              <View style={{width: ROOM_WIDTH, backgroundColor: rowColor}}>
-                <Text style={_styles.room}>
-                  {room.name}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+
+    return (
+      <TouchableOpacity>
+        <View style={{width: ROOM_WIDTH, backgroundColor: rowColor}}>
+          <Text style={_styles.room}>
+            {room.name}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 
@@ -393,14 +373,16 @@ const _styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
+  listView: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
   room: {
     margin: 15,
     alignSelf: 'center',
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
-  },
-  roomSet: {
-    flexDirection: 'row',
   },
 });
 

@@ -149,20 +149,10 @@ class BuildingGrid extends React.Component {
         ? null
         : searchTerms.toUpperCase();
 
-    // Create array for sets of buildings
-    const buildingSets: Array<Array<Building>> = [];
-
-    // Create a temporary set of buildings with up to BUILDING_COLUMNS buildings in it
-    let tempSet: Array<Building> = [];
-    let buildingsInSet = 0;
+    // Create array for buildings
+    const filteredBuildings: Array<Building> = [];
 
     for (let i = 0; i < this._buildingsList.length; i++) {
-      if (buildingsInSet === BUILDING_COLUMNS) {
-        // After the temporary set has reached its max length, add it to the building set and clear the temporary set
-        buildingSets.push(tempSet);
-        tempSet = [];
-        buildingsInSet = 0;
-      }
 
       // If the search terms are empty, or the building name contains the terms, add it to the list
       const translated: boolean = !('name' in this._buildingsList[i]);
@@ -172,19 +162,13 @@ class BuildingGrid extends React.Component {
           || (translated && (this._buildingsList[i].name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
           || this._buildingsList[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
           || this._buildingsList[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        tempSet.push(this._buildingsList[i]);
-        buildingsInSet++;
+        filteredBuildings.push(this._buildingsList[i]);
       }
-    }
-
-    // Add the final set, if any buildings were added to it
-    if (tempSet.length > 0) {
-      buildingSets.push(tempSet);
     }
 
     // Update the state so the app reflects the changes made
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(buildingSets),
+      dataSource: this.state.dataSource.cloneWithRows(filteredBuildings),
       loaded: true,
     });
   }
@@ -194,28 +178,22 @@ class BuildingGrid extends React.Component {
   }
 
   /**
-   * Displays a row of buildings with their names and images.
+   * Displays a building's name and image.
    *
-   * @param {Array<Building>} buildingSet information about the buildings to display.
+   * @param {Building} building information about the building to display.
    * @returns {ReactElement<any>} an image and name for the building.
    */
-  _renderRow(buildingSet: Array<Building>): ReactElement<any> {
-
+  _renderRow(building: Building): ReactElement<any> {
     return (
-      <View style={_styles.buildingSet}>
-        {buildingSet.map((building, index) => (
-          <TouchableOpacity
-              key={index}
-              onPress={() => this.props.showBuilding(building)}>
-            <View style={_styles.building}>
-              <Image
-                  source={building.image}
-                  style={_styles.buildingIcon} />
-              <Text style={_styles.buildingCode}>{building.code}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <TouchableOpacity
+          onPress={() => this.props.showBuilding(building)}>
+        <View style={_styles.building}>
+          <Image
+              source={building.image}
+              style={_styles.buildingIcon} />
+          <Text style={_styles.buildingCode}>{building.code}</Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 
@@ -235,8 +213,10 @@ class BuildingGrid extends React.Component {
 
     return (
       <ListView
+          contentContainerStyle={_styles.listView}
           dataSource={this.state.dataSource}
           enableEmptySections={true}
+          pageSize={BUILDING_COLUMNS}
           renderRow={this._renderRow.bind(this)} />
     );
   }
@@ -266,8 +246,10 @@ const _styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
   },
-  buildingSet: {
+  listView: {
+    alignItems: 'flex-start',
     flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 });
 
