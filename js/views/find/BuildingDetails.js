@@ -30,6 +30,7 @@ import {
   Alert,
   Dimensions,
   Image,
+  LayoutAnimation,
   ListView,
   StyleSheet,
   Text,
@@ -55,6 +56,7 @@ type Props = {
 
 // Type definition for component state.
 type State = {
+  bannerPosition: number,
   buildingRooms: ListView.DataSource,
   loaded: boolean,
 };
@@ -65,14 +67,21 @@ const DisplayUtils = require('../../util/DisplayUtils');
 const LanguageUtils = require('../../util/LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('../../util/Preferences');
+const reactMixin = require('react-mixin');
 const SearchManager = require('../../util/SearchManager');
 const SectionHeader = require('../../components/SectionHeader');
+const TimerMixin = require('react-timer-mixin');
 
 const {width} = Dimensions.get('window');
 
 // Size of room buttons
 const ROOM_WIDTH: number = Math.floor(width / 2);
 const ROOM_COLUMNS: number = 2;
+
+// Number of milliseconds before the banner swaps
+const BANNER_SWAP_TIME: number = 4000;
+// Number of views in the banner
+const TOTAL_BANNER_POSITIONS: number = 2;
 
 class BuildingDetails extends React.Component {
 
@@ -96,6 +105,7 @@ class BuildingDetails extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
+      bannerPosition: 0,
       buildingRooms: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
       }),
@@ -109,6 +119,7 @@ class BuildingDetails extends React.Component {
 
     // Explicitly bind 'this' to methods that require it
     (this:any)._filterRooms = this._filterRooms.bind(this);
+    (this:any)._swapBanner = this._swapBanner.bind(this);
   }
 
   /**
@@ -119,6 +130,11 @@ class BuildingDetails extends React.Component {
     if (!Preferences.getAlwaysSearchAll()) {
       SearchManager.addSearchListener(this._roomSearchListener);
     }
+
+    // $FlowIgnore: this.setTimeout provided by TimerMixin
+    this.setTimeout(() => {
+      this._swapBanner();
+    }, BANNER_SWAP_TIME);
 
     if (!this.state.loaded) {
       this._filterRooms(this.props.buildingDetails.rooms, null);
@@ -134,46 +150,6 @@ class BuildingDetails extends React.Component {
 
   /* Listener for search input. */
   _roomSearchListener: SearchListener;
-
-  /**
-   * Returns a list of touchable views which describe facilities in the building.
-   *
-   * @param {Object} Translations translations in the current language of certain text.
-   * @returns {ReactElement<any>} an icon representing each of the facilities in this building
-   */
-  _getFacilityIcons(Translations: Object): ReactElement<any> {
-    return (
-      <View style={_styles.facilitiesContainer}>
-        {this.props.buildingDetails.facilities.map(facility => {
-          return (
-            <TouchableOpacity
-                key={facility}
-                style={_styles.facilitiesIcon}
-                onPress={() => this._openFacilityDescription(facility, Translations)}>
-              <MaterialIcons
-                  color={'white'}
-                  name={DisplayUtils.getFacilityIconName(facility, Translations)}
-                  size={24} />
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    );
-  }
-
-  /**
-   * Returns a list of touchable views listing the room names.
-   *
-   * @returns {ReactElement<any>} a ScrollView containing a ListView.
-   */
-  _getRoomList(): ReactElement<any> {
-    return (
-      <ListView
-          dataSource={this.state.buildingRooms}
-          enableEmptySections={true}
-          renderRow={this._renderRow.bind(this)} />
-    );
-  }
 
   /**
    * Displays a pop-up to the user, describing what a certain facility icon means.
@@ -233,12 +209,99 @@ class BuildingDetails extends React.Component {
   }
 
   /**
+   * Moves to the next view in the banner.
+   */
+  _swapBanner(): void {
+    LayoutAnimation.easeInEaseOut();
+    this.setState({
+      bannerPosition: (this.state.bannerPosition + 1) % TOTAL_BANNER_POSITIONS,
+    });
+
+    // $FlowIgnore: this.setTimeout provided by TimerMixin
+    this.setTimeout(() => {
+      this._swapBanner();
+    }, BANNER_SWAP_TIME);
+  }
+
+  /**
    * Calls _filterRooms with all rooms, and the search terms.
    *
    * @param {string} searchTerms user input filter terms.
    */
   _onRoomSearch(searchTerms: ?string): void {
     this._filterRooms(this.props.buildingDetails.rooms, searchTerms);
+  }
+
+  /**
+   * Returns an image and text description of the building.
+   *
+   * @returns {ReactElement<any>} a banner describing the building
+   */
+  _renderBanner(): ReactElement< any > {
+    // TODO: replace second image with text description of building
+    return (
+      <View style={_styles.banner}>
+        <Image
+            resizeMode={'cover'}
+            source={this.props.buildingDetails.image}
+            style={[_styles.bannerImage, {right: (this.state.bannerPosition === 0) ? 0 : width}]} />
+        <Image
+            resizeMode={'cover'}
+            source={require('../../../assets/images/buildings/outer_placeholder_2.jpg')}
+            style={[_styles.bannerText, {left: (this.state.bannerPosition === 1) ? 0 : width}]} />
+        <SectionHeader
+            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)}
+            style={_styles.header}
+            subtitleName={this.props.buildingDetails.code} />
+      </View>
+    );
+  }
+
+  /**
+   * Returns a list of touchable views which describe facilities in the building.
+   *
+   * @returns {ReactElement<any>} an icon representing each of the facilities in this building
+   */
+  _renderFacilityIcons(): ReactElement< any > {
+    // Get current language for translations
+    let Translations: Object = {};
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../assets/js/Translations.fr.js');
+    } else {
+      Translations = require('../../../assets/js/Translations.en.js');
+    }
+
+    return (
+      <View style={_styles.facilitiesContainer}>
+        {this.props.buildingDetails.facilities.map(facility => {
+          return (
+            <TouchableOpacity
+                key={facility}
+                style={_styles.facilitiesIcon}
+                onPress={() => this._openFacilityDescription(facility, Translations)}>
+              <MaterialIcons
+                  color={'white'}
+                  name={DisplayUtils.getFacilityIconName(facility, Translations)}
+                  size={24} />
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  }
+
+  /**
+   * Returns a list of touchable views listing the room names.
+   *
+   * @returns {ReactElement<any>} a ScrollView containing a ListView.
+   */
+  _renderRoomList(): ReactElement< any > {
+    return (
+      <ListView
+          dataSource={this.state.buildingRooms}
+          enableEmptySections={true}
+          renderRow={this._renderRow.bind(this)} />
+    );
   }
 
   /**
@@ -249,7 +312,7 @@ class BuildingDetails extends React.Component {
    * @param {number} rowIndex           index of the row the room is in.
    * @returns {ReactElement<any>} a view describing a set of room.
    */
-  _renderRow(rooms: Array<BuildingRoom>, sectionId: string, rowIndex: number): ReactElement<any> {
+  _renderRow(rooms: Array< BuildingRoom >, sectionId: string, rowIndex: number): ReactElement<any> {
     const darkenEvenElements = (Math.floor(rowIndex / ROOM_COLUMNS * 2) % ROOM_COLUMNS === 0);
 
     return (
@@ -278,33 +341,12 @@ class BuildingDetails extends React.Component {
    *
    * @returns {ReactElement<any>} a view describing a building.
    */
-  render(): ReactElement<any> {
-    // Get current language for translations
-    let Translations: Object = {};
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
-
-    const building = this.props.buildingDetails;
-    const facilityIcons: ReactElement<any> = this._getFacilityIcons(Translations);
-    const roomList: ReactElement<any> = this._getRoomList();
-
+  render(): ReactElement< any > {
     return (
       <View style={_styles.container}>
-        <View style={_styles.banner}>
-          <Image
-              resizeMode={'cover'}
-              source={this.props.buildingDetails.image}
-              style={_styles.bannerImage} />
-          <SectionHeader
-              sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), building)}
-              style={_styles.header}
-              subtitleName={building.code} />
-        </View>
-        {facilityIcons}
-        {roomList}
+        {this._renderBanner()}
+        {this._renderFacilityIcons()}
+        {this._renderRoomList()}
       </View>
     );
   }
@@ -321,9 +363,16 @@ const _styles = StyleSheet.create({
   bannerImage: {
     position: 'absolute',
     top: 0,
-    right: 0,
     bottom: 0,
     left: 0,
+    width: null,
+    height: null,
+  },
+  bannerText: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
     width: null,
     height: null,
   },
@@ -354,5 +403,8 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
 });
+
+// Add the timer mixin to the class so setTimeout will respect unmounting
+reactMixin(BuildingDetails.prototype, TimerMixin);
 
 module.exports = BuildingDetails;
