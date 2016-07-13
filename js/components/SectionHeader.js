@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file SectionHeader.js
- * @module SectionHeader
+ * @providesModule SectionHeader
  * @description Predefined style for section separating headers in the app.
  *
  * @flow
@@ -36,7 +36,7 @@ import {
 // Type imports
 import type {
   DefaultFunction,
-} from '../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -63,10 +63,10 @@ type State = {
 };
 
 // Imports
-const Constants = require('../Constants');
+const Constants = require('Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const TextUtils = require('../util/TextUtils');
+const TextUtils = require('TextUtils');
 
 // Represents a value in the subtitle which should not be used.
 const NULL_SUBTITLE_VALUE: string = 'value_null';

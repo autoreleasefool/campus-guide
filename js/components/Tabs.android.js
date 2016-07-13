@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file Tabs.android.js
- * @module TabsView
+ * @providesModule Tabs
  * @description Tab bar to manage navigation between the root views in the application.
  *
  * @flow
@@ -39,14 +39,14 @@ import {
 // Type imports
 import type {
   TabItems,
-} from '../types';
+} from 'types';
 
 // Imports
-const CommonTabs = require('./CommonTabs');
-const Constants = require('../Constants');
+const CommonTabs = require('CommonTabs');
+const Constants = require('Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
-const NavBar = require('./NavBar');
-const Preferences = require('../util/Preferences');
+const NavBar = require('NavBar');
+const Preferences = require('Preferences');
 
 // Icons for items in navigation drawer
 const drawerIcons: TabItems = {

@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file SettingsHome.js
- * @module SettingsHome
+ * @providesModule SettingsHome
  * @description View to allow the user to see and update their settings and preferences.
  *
  * @flow
@@ -55,10 +55,10 @@ type State = {
 };
 
 // Imports
-const Constants = require('../../Constants');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
+const Constants = require('Constants');
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
+const SectionHeader = require('SectionHeader');
 
 // Declaring icons depending on the platform
 let Icon: ReactClass<any>;

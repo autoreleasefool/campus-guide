@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file BuildingDetails.js
- * @module BuildingDetails
+ * @providesModule BuildingDetails
  * @description Provides details on a single building on campus.
  *
  * @flow
@@ -43,11 +43,11 @@ import type {
   Building,
   BuildingRoom,
   Facility,
-} from '../../types';
+} from 'types';
 
 import type {
   SearchListener,
-} from '../../util/SearchManager';
+} from 'SearchManager';
 
 // Type definition for component props.
 type Props = {
@@ -62,13 +62,13 @@ type State = {
 };
 
 // Imports
-const Constants = require('../../Constants');
-const DisplayUtils = require('../../util/DisplayUtils');
-const LanguageUtils = require('../../util/LanguageUtils');
+const Constants = require('Constants');
+const DisplayUtils = require('DisplayUtils');
+const LanguageUtils = require('LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const Preferences = require('../../util/Preferences');
-const SearchManager = require('../../util/SearchManager');
-const SectionHeader = require('../../components/SectionHeader');
+const Preferences = require('Preferences');
+const SearchManager = require('SearchManager');
+const SectionHeader = require('SectionHeader');
 
 const {width} = Dimensions.get('window');
 

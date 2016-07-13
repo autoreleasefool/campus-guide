@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file Main.js
- * @module MainScreen
+ * @file MainScreen.js
+ * @providesModule MainScreen
  * @description Main navigational point of the application.
  *
  * @flow
@@ -33,9 +33,9 @@ import {
 } from 'react-native';
 
 // Imports
-const Constants = require('../Constants');
-const Preferences = require('../util/Preferences');
-const TabsView = require('../components/Tabs');
+const Constants = require('Constants');
+const Preferences = require('Preferences');
+const TabsView = require('Tabs');
 
 class MainScreen extends React.Component {
 

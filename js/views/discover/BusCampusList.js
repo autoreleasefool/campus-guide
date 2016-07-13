@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file BusCampusList.js
- * @module BusCampusList
+ * @providesModule BusCampusList
  * @description Displays the list of campuses with bus stop information.
  *
  * @flow
@@ -53,12 +53,12 @@ type State = {
 };
 
 // Imports
-const Configuration = require('../../util/Configuration');
-const Constants = require('../../Constants');
-const ExternalUtils = require('../../util/ExternalUtils');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
-const SectionHeader = require('../../components/SectionHeader');
+const Configuration = require('Configuration');
+const Constants = require('Constants');
+const ExternalUtils = require('ExternalUtils');
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
+const SectionHeader = require('SectionHeader');
 
 // Background colors for each campus
 const campuscolors: Array<string> = [

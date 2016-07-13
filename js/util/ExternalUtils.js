@@ -17,6 +17,7 @@
  *
  * @author Joseph Roque
  * @file ExternalUtils.js
+ * @providesModule ExternalUtils
  * @description Defines a set of methods for interacting with elements outside of the application.
  *
  * @flow
@@ -24,7 +25,7 @@
 'use strict';
 
 // Imports
-const TextUtils = require('./TextUtils');
+const TextUtils = require('TextUtils');
 
 module.exports = {
 

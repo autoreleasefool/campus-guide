@@ -23,7 +23,7 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../TextUtils');
+jest.unmock('TextUtils');
 
 // An example valid URL to open.
 const exampleURL = 'http://google.com';
@@ -54,7 +54,7 @@ const expectedTimeFormats = {
 };
 
 // Require modules for testing
-const TextUtils = require('../TextUtils');
+const TextUtils = require('TextUtils');
 
 describe('TextUtils-test', () => {
   it('tests that formatting a link returns the proper value.', () => {

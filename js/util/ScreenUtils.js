@@ -17,6 +17,7 @@
  *
  * @author Joseph Roque
  * @file ScreenUtils.js
+ * @providesModule ScreenUtils
  * @description Utility methods for interacting with the screens.
  *
  * @flow
@@ -24,7 +25,7 @@
 'use strict';
 
 // Imports
-const Constants = require('../Constants');
+const Constants = require('Constants');
 
 // Screens which can be reached from the tab bar
 const HOME_SCREENS: Array<number | string> = [

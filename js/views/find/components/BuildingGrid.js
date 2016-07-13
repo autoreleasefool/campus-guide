@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file BuildingGrid.js
- * @module BuildingGrid
+ * @providesModule BuildingGrid
  * @description Displays the list of buildings in a grid, with the building's name and an image.
  *
  * @flow
@@ -40,11 +40,11 @@ import {
 import type {
   Building,
   DefaultFunction,
-} from '../../../types';
+} from 'types';
 
 import type {
   SearchListener,
-} from '../../../util/SearchManager';
+} from 'SearchManager';
 
 // Type definition for component props.
 type Props = {
@@ -58,9 +58,9 @@ type State = {
 };
 
 // Imports
-const Constants = require('../../../Constants');
-const Preferences = require('../../../util/Preferences');
-const SearchManager = require('../../../util/SearchManager');
+const Constants = require('Constants');
+const Preferences = require('Preferences');
+const SearchManager = require('SearchManager');
 
 // Determining size of building icons based on the screen size.
 const {width} = Dimensions.get('window');

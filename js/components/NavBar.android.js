@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file NavBar.js
- * @module NavBar
+ * @providesModule NavBar
  * @description Navigation and search bar for the top of the app, to allow the user to search from anywhere.
  *
  * @flow
@@ -38,7 +38,7 @@ import {
 // Type imports
 import {
   DefaultFunction,
-} from '../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -54,11 +54,11 @@ type State = {
 };
 
 // Imports
-const Constants = require('../Constants');
+const Constants = require('Constants');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const Preferences = require('../util/Preferences');
-const SearchManager = require('../util/SearchManager');
-const StatusBarUtils = require('../util/StatusBarUtils');
+const Preferences = require('Preferences');
+const SearchManager = require('SearchManager');
+const StatusBarUtils = require('StatusBarUtils');
 
 // Size of icons in the navbar
 const NAVBAR_ICON_SIZE: number = 24;

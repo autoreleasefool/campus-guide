@@ -23,7 +23,7 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../LanguageUtils');
+jest.unmock('LanguageUtils');
 
 // An object with non-translated properties.
 const objectWithDefaultProperties = {
@@ -50,7 +50,7 @@ const invalidObject = {
 };
 
 // Require modules for testing
-const LanguageUtils = require('../LanguageUtils');
+const LanguageUtils = require('LanguageUtils');
 
 describe('LanguageUtils-test', () => {
 

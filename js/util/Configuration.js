@@ -17,6 +17,7 @@
  *
  * @author Joseph Roque
  * @file Configuration.js
+ * @providesModule Configuration
  * @description Manages the configuration of the application.
  *
  * @flow
@@ -28,7 +29,7 @@ import type {
   Semester,
   University,
   BusInfo,
-} from '../types';
+} from 'types';
 
 // Default link to return
 const DEFAULT_LINK: string = 'http://www.uottawa.ca/';

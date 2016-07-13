@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file ShuttleCampusDetails.js
- * @module ShuttleCampusDetails
+ * @providesModule ShuttleCampusDetails
  * @description Displays details about the departure times of the shuttle from a single campus.
  *
  * @flow
@@ -51,10 +51,10 @@ type State = {
 };
 
 // Imports
-const Configuration = require('../../util/Configuration');
-const LanguageUtils = require('../../util/LanguageUtils');
+const Configuration = require('Configuration');
+const LanguageUtils = require('LanguageUtils');
 const MapView = require('react-native-maps');
-const Preferences = require('../../util/Preferences');
+const Preferences = require('Preferences');
 
 class ShuttleCampusDetails extends React.Component {
 

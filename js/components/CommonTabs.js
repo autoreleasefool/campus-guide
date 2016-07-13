@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file CommonTabs.js
- * @module CommonTabs
+ * @providesModule CommonTabs
  * @description Provides tab functionality common to both Android and iOS.
  *
  * @flow
@@ -34,7 +34,7 @@ import {
 import type {
   Route,
   TabItems,
-} from '../types';
+} from 'types';
 
 // Type definition for component state.
 type State = {
@@ -42,12 +42,12 @@ type State = {
 };
 
 // Imports
-const Constants = require('../Constants');
+const Constants = require('Constants');
 const dismissKeyboard = require('dismissKeyboard');
-const Preferences = require('../util/Preferences');
-const ScreenUtils = require('../util/ScreenUtils');
-const SearchManager = require('../util/SearchManager');
-const TabRouter = require('./TabRouter');
+const Preferences = require('Preferences');
+const ScreenUtils = require('ScreenUtils');
+const SearchManager = require('SearchManager');
+const TabRouter = require('TabRouter');
 
 // Lists the views currently on the stack in the Navigator.
 let screenStack: Array<number | string> = [Constants.Views.Default];

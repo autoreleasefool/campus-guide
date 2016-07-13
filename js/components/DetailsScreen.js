@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file DetailsScreen.js
- * @module DetailsScreen
+ * @providesModule DetailsScreen
  * @description Displays a title, an image, and text to the user. These details can be
  *              provided so the component can be used multiple times.
  *

@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file Tabs.ios.js
- * @module TabsView
+ * @providesModule Tabs
  * @description Tab bar to manage navigation between the root views in the application.
  *
  * @flow
@@ -40,10 +40,10 @@ import type {
 } from '../types';
 
 // Imports
-const CommonTabs = require('./CommonTabs');
-const Constants = require('../Constants');
+const CommonTabs = require('CommonTabs');
+const Constants = require('Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
-const NavBar = require('./NavBar');
+const NavBar = require('NavBar');
 
 // Icons for tab items
 const tabIcons: TabItems = {

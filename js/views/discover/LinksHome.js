@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @file LinksHome.js
- * @module LinksHome
+ * @providesModule LinksHome
  * @description Presents a list of defined, useful links for the user regarding the university.
  *
  * @flow
@@ -39,7 +39,7 @@ import {
 import type {
   DefaultFunction,
   LinkCategoryType,
-} from '../../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -53,9 +53,9 @@ type State = {
 };
 
 // Imports
-const Constants = require('../../Constants');
-const LanguageUtils = require('../../util/LanguageUtils');
-const Preferences = require('../../util/Preferences');
+const Constants = require('Constants');
+const LanguageUtils = require('LanguageUtils');
+const Preferences = require('Preferences');
 
 class LinksHome extends React.Component {
 

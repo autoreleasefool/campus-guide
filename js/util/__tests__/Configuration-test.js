@@ -23,7 +23,7 @@
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('../Configuration');
+jest.unmock('Configuration');
 
 describe('Configuration-test', () => {
 
@@ -32,7 +32,7 @@ describe('Configuration-test', () => {
 
   beforeEach(() => {
     // Refresh module between tests
-    Configuration = require('../Configuration');
+    Configuration = require('Configuration');
   });
 
   pit('tests the loading of the configuration file for the application.', () => {

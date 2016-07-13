@@ -26,7 +26,7 @@
 /* eslint-disable arrow-parens */
 
 // Unmock modules so the real module is used.
-jest.unmock('../ExternalUtils');
+jest.unmock('ExternalUtils');
 
 // An example valid URL to open.
 const exampleURL = 'http://google.com';
@@ -69,10 +69,10 @@ jest.setMock('../TextUtils', {
 const Alert = require('Alert');
 const Clipboard = require('Clipboard');
 const Linking = require('Linking');
-const TextUtils = require('../TextUtils');
+const TextUtils = require('TextUtils');
 
 // Require modules used in testing
-const ExternalUtils = require('../ExternalUtils');
+const ExternalUtils = require('ExternalUtils');
 const Translations = {};
 
 describe('ExternalUtils-test', () => {
