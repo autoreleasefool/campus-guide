@@ -154,13 +154,13 @@ export type BusInfo =
 
 type BusCampusWithDefaultName = {
   name: string,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
 };
 
 type BusCampusWithTranslatedName = {
   name_en: string,
   name_fr: string,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
 };
 
 export type BusCampus =
@@ -187,7 +187,7 @@ type TransitCampusWithDefaultName = {
   lat: number,
   long: number,
   name: string,
-  stops: Array<TransitStop>,
+  stops: Array< TransitStop >,
 };
 
 type TransitCampusWithTranslatedName = {
@@ -196,7 +196,7 @@ type TransitCampusWithTranslatedName = {
   long: number,
   name_en: string,
   name_fr: string,
-  stops: Array<TransitStop>,
+  stops: Array< TransitStop >,
 };
 
 export type TransitCampus =
@@ -209,7 +209,7 @@ export type TransitCampus =
 
 export type ScheduleTimes = {
   days: string,
-  times: Array<string>,
+  times: Array< string >,
 };
 
 type ShuttleScheduleWithDefaultNameDefaultDirection = {
@@ -217,8 +217,8 @@ type ShuttleScheduleWithDefaultNameDefaultDirection = {
   direction: string,
   start_date: string,
   end_date: string,
-  excluded_dates: Array<string>,
-  times: Array<ScheduleTimes>,
+  excluded_dates: Array< string >,
+  times: Array< ScheduleTimes >,
 };
 
 type ShuttleScheduleWithTranslatedNameDefaultDirection = {
@@ -227,8 +227,8 @@ type ShuttleScheduleWithTranslatedNameDefaultDirection = {
   direction: string,
   start_date: string,
   end_date: string,
-  excluded_dates: Array<string>,
-  times: Array<ScheduleTimes>,
+  excluded_dates: Array< string >,
+  times: Array< ScheduleTimes >,
 };
 
 type ShuttleScheduleWithDefaultNameTranslatedDirection = {
@@ -237,8 +237,8 @@ type ShuttleScheduleWithDefaultNameTranslatedDirection = {
   direction_fr: string,
   start_date: string,
   end_date: string,
-  excluded_dates: Array<string>,
-  times: Array<ScheduleTimes>,
+  excluded_dates: Array< string >,
+  times: Array< ScheduleTimes >,
 };
 
 type ShuttleScheduleWithTranslatedNameTranslatedDirection = {
@@ -248,8 +248,8 @@ type ShuttleScheduleWithTranslatedNameTranslatedDirection = {
   direction_fr: string,
   start_date: string,
   end_date: string,
-  excluded_dates: Array<string>,
-  times: Array<ScheduleTimes>,
+  excluded_dates: Array< string >,
+  times: Array< ScheduleTimes >,
 };
 
 export type ShuttleSchedule =
@@ -264,7 +264,7 @@ type ShuttleCampusWithDefaultName = {
   name: string,
   lat: number,
   long: number,
-  schedules: Array<ShuttleSchedule>,
+  schedules: Array< ShuttleSchedule >,
 };
 
 type ShuttleCampusWithTranslatedName = {
@@ -274,7 +274,7 @@ type ShuttleCampusWithTranslatedName = {
   name_fr: string,
   lat: number,
   long: number,
-  schedules: Array<ShuttleSchedule>,
+  schedules: Array< ShuttleSchedule >,
 };
 
 export type ShuttleCampus =
@@ -282,35 +282,35 @@ export type ShuttleCampus =
     | ShuttleCampusWithTranslatedName;
 
 type ShuttleDetailsWithDefaultNameDefaultDetails = {
-  details: Array<string>,
+  details: Array< string >,
   name: string,
   icon: IconObject,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
 };
 
 type ShuttleDetailsWithTranslatedNameDefaultDetails = {
-  details: Array<string>,
+  details: Array< string >,
   name_en: string,
   name_fr: string,
   icon: IconObject,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
 };
 
 type ShuttleDetailsWithDefaultNameTranslatedDetails = {
-  details_en: Array<string>,
-  details_fr: Array<string>,
+  details_en: Array< string >,
+  details_fr: Array< string >,
   name: string,
   icon: IconObject,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
 };
 
 type ShuttleDetailsWithTranslatedNameTranslatedDetails = {
-  details_en: Array<string>,
-  details_fr: Array<string>,
+  details_en: Array< string >,
+  details_fr: Array< string >,
   name_en: string,
   name_fr: string,
   icon: IconObject,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
 };
 
 export type ShuttleDetails =
@@ -356,20 +356,20 @@ export type Link =
 type LinkCategoryWithDefaultName = {
   id: string,
   name: string,
-  image?: ReactClass<any>,
-  links?: Array<Link>,
-  social?: Array<Link>,
-  categories?: Array<LinkCategoryType>,
+  image?: ReactClass< any >,
+  links?: Array< Link >,
+  social?: Array< Link >,
+  categories?: Array< LinkCategoryType >,
 };
 
 type LinkCategoryWithTranslatedName = {
   id: string,
   name_en: string,
   name_fr: string,
-  image?: ReactClass<any>,
-  links?: Array<Link>,
-  social?: Array<Link>,
-  categories?: Array<LinkCategoryType>,
+  image?: ReactClass< any >,
+  links?: Array< Link >,
+  social?: Array< Link >,
+  categories?: Array< LinkCategoryType >,
 };
 
 export type LinkCategoryType =
@@ -403,22 +403,22 @@ export type BuildingRoom = {
 type BuildingWithDefaultName = {
   code: string,
   name: string,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
   lat: number,
   long: number,
-  facilities: Array<Facility>,
-  rooms: Array<BuildingRoom>,
+  facilities: Array< Facility >,
+  rooms: Array< BuildingRoom >,
 };
 
 type BuildingWithTranslatedName = {
   code: string,
   name_en: string,
   name_fr: string,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
   lat: number,
   long: number,
-  facilities: Array<Facility>,
-  rooms: Array<BuildingRoom>,
+  facilities: Array< Facility >,
+  rooms: Array< BuildingRoom >,
 };
 
 export type Building =
