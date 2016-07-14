@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -137,30 +138,30 @@ module.exports = {
   renderResult(result: SearchResult): ?ReactElement< any > {
 
     // Construct the icon view for the result
-    const iconObject: ?DefaultIcon = DisplayUtils.getPlatformIcon(result);
+    const iconObject: ?DefaultIcon = DisplayUtils.getPlatformIcon(Platform.OS, result);
     let iconView: ?ReactElement<any> = null;
     if (iconObject != null) {
-      if (iconObject.class === 'MaterialIcons') {
+      if (iconObject.class === 'material') {
         iconView = (
           <MaterialIcons
               color={Constants.Colors.primaryWhiteText}
               name={iconObject.name}
-              size={RESULT_ICON_SIZE} />
+              size={RESULT_ICON_SIZE}
+              style={_styles.icon} />
         );
       } else {
         iconView = (
           <Ionicons
               color={Constants.Colors.primaryWhiteText}
               name={iconObject.name}
-              size={RESULT_ICON_SIZE} />
+              size={RESULT_ICON_SIZE}
+              style={_styles.icon} />
         );
       }
     }
 
-    console.log(iconObject);
-
     return (
-      <View style={_styles.result}>
+      <View style={[_styles.result, {}]}>
         {iconView}
         <View style={_styles.text}>
           <Text style={_styles.title}>{result.title}</Text>
@@ -173,7 +174,10 @@ module.exports = {
 
 const _styles = StyleSheet.create({
   result: {
+    alignItems: 'center',
     flexDirection: 'row',
+    marginBottom: 10,
+    marginTop: 10,
   },
   text: {
     flexDirection: 'column',
@@ -185,5 +189,8 @@ const _styles = StyleSheet.create({
   body: {
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Text.Medium,
+  },
+  icon: {
+    margin: 10,
   },
 });
