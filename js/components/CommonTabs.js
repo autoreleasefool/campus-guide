@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  LayoutAnimation,
   Navigator,
 } from 'react-native';
 
@@ -100,6 +101,9 @@ class CommonTabs extends React.Component {
     settings: Constants.Views.Settings.Home,
   };
 
+  /** When set to true, the next call to _onSearch will be ignored. */
+  _ignoreNextSearch: boolean;
+
   /**
    * Switch to the selected tab, as determined by tabId.
    *
@@ -107,9 +111,11 @@ class CommonTabs extends React.Component {
    */
   _changeTabs(tab: number): void {
     SearchManager.resumeAllSearchListeners();
+    this._ignoreNextSearch = true;
     this._showBackButton(false);
     this.refs.NavBar.clearSearch();
     this.refs.Navigator.resetTo({id: tab});
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       currentTab: tab,
     });
@@ -237,6 +243,11 @@ class CommonTabs extends React.Component {
    * @param {?string} searchTerms string of terms to search for.
    */
   _onSearch(searchTerms: ?string): void {
+    if (this._ignoreNextSearch) {
+      this._ignoreNextSearch = false;
+      return;
+    }
+
     const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
     if (numberOfSearchListeners > 0 && !Preferences.getAlwaysSearchAll()) {
       // Iterate over each search listener and pass the search terms to each one

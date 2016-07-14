@@ -28,13 +28,7 @@
 import React from 'react';
 import {
   ListView,
-  StyleSheet,
 } from 'react-native';
-
-// Type imports
-import type {
-  IconObject,
-} from 'types';
 
 import type {
   SearchListener,
@@ -111,7 +105,7 @@ class SearchResults extends React.Component {
   }
 
   /** Stores a reference to the default search listener that was mounted before this one was applied. */
-  _oldDefaultSearchListener: SearchListener;
+  _oldDefaultSearchListener: ?SearchListener;
 
   /** List of currently displayed search results */
   _searchResults: Array < SearchResult >;

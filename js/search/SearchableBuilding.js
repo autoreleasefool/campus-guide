@@ -26,7 +26,7 @@
 
 // Type imports
 import type {
-  Building,
+  Language,
 } from 'types';
 
 import type {
@@ -51,22 +51,23 @@ module.exports = {
     }
 
     // Cache the language
-    const language = Preferences.getSelectedLanguage();
+    const language: Language = Preferences.getSelectedLanguage();
 
     // Ignore the case of the search terms
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
-    const buildings: Array<Building> = require('../../assets/js/Buildings');
+    const buildings: Array<Object> = require('../../assets/js/Buildings');
     const results: Array<SearchResult> = [];
 
     for (let i = 0; i < buildings.length; i++) {
       const translated: boolean = !('name' in buildings[i]);
+      const name: string = LanguageUtils.getTranslatedName(language, buildings[i]) || '';
 
       if ((!translated && buildings[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (translated && (buildings[i].name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
           || buildings[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
           || buildings[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
         results.push({
-          description: LanguageUtils.getTranslatedName(language, buildings[i]),
+          description: name,
           icon: {
             name: 'store',
             class: 'material',

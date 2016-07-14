@@ -94,7 +94,7 @@ module.exports = {
    * @param {?string} searchTerms                 the search terms for the query.
    * @param {Array<SearchResult>} existingResults results to narrow.
    */
-  narrowResults(searchTerms: ?string, existingResults: ?Array< SearchResult >): Array< SearchResult > {
+  narrowResults(searchTerms: ?string, existingResults: ?Array< SearchResult >): void {
     if (existingResults == null || existingResults.length === 0 || searchTerms == null || searchTerms.length === 0) {
       return;
     }

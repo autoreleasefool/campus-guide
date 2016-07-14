@@ -118,7 +118,7 @@ class NavBar extends React.Component {
     }
   }
 
-  _searchText: string;
+  _searchText: ?string;
 
   /**
    * Returns the current state of the refresh variable, to allow it to be flipped to re-render the view.
