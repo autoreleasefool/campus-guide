@@ -40,6 +40,7 @@ const Constants = require('Constants');
 const MainScreen = require('MainScreen');
 const Orientation = require('react-native-orientation');
 const SplashScreen = require('SplashScreen');
+const Tooltip = require('Tooltip');
 
 class CampusGuide extends React.Component {
 
@@ -92,10 +93,13 @@ class CampusGuide extends React.Component {
    */
   render(): ReactElement<any> {
     return (
-      <Navigator
-          configureScene={this._configureScene}
-          initialRoute={{id: 1}}
-          renderScene={this._renderScene} />
+      <View style={{flex: 1}}>
+        <Navigator
+            configureScene={this._configureScene}
+            initialRoute={{id: 1}}
+            renderScene={this._renderScene} />
+        <Tooltip />
+      </View>
     );
   }
 }

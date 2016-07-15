@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  AsyncStorage,
   LayoutAnimation,
   Platform,
   StyleSheet,
@@ -53,6 +54,11 @@ type State = {
   searching?: boolean,
 };
 
+// Get the showTooltip function
+import {
+  showTooltip,
+} from 'Tooltip';
+
 // Imports
 const Constants = require('Constants');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
@@ -66,6 +72,8 @@ const NAVBAR_ICON_SIZE: number = 24;
 const NAVBAR_LARGE_ICON: number = 30;
 // Number of milliseconds to offset animation by.
 const ANIMATION_OFFSET: number = 50;
+// Height of the navbar
+const NAVBAR_HEIGHT: number = 60;
 
 class NavBar extends React.Component {
 
@@ -146,6 +154,24 @@ class NavBar extends React.Component {
   }
 
   /**
+   * Displays a tooltip that informs user of the purpose of the search all button, if they have not been shown the
+   * message before.
+   */
+  _showSearchAllTooltip(): void {
+    if (// !Preferences.hasSeenSearchAll()
+        SearchManager.numberOfSearchListeners() > 0
+        && !Preferences.getAlwaysSearchAll()) {
+      showTooltip(
+        'Click the button above to search the entire app instead',
+        'right',
+        0,
+        NAVBAR_HEIGHT + StatusBarUtils.getStatusBarPadding(Platform),
+        () => Preferences.setHasSeenSearchAll(AsyncStorage, true),
+      );
+    }
+  }
+
+  /**
    * Calls the component prop to toggle the navigation drawer.
    */
   _toggleDrawer(): void {
@@ -162,6 +188,7 @@ class NavBar extends React.Component {
   _onSearch(text: ?string): void {
     this.props.onSearch(text);
     if (text != null && text.length > 0) {
+      this._showSearchAllTooltip();
       if (!this.state.searching) {
         LayoutAnimation.easeInEaseOut();
         this.setState({
@@ -252,7 +279,7 @@ const _styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 60,
+    height: NAVBAR_HEIGHT,
     marginTop: StatusBarUtils.getStatusBarPadding(Platform),
   },
   searchContainer: {
