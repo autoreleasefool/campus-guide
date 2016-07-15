@@ -29,13 +29,14 @@ import type {
   Language,
 } from 'types';
 
-import type {
-  SearchResult,
-} from 'Searchable';
-
 // Imports
 const LanguageUtils = require('LanguageUtils');
 const Preferences = require('Preferences');
+
+// Section name for buildings
+const BUILDINGS_SECTION: string = 'Buildings';
+// Section name for rooms
+const ROOMS_SECTION: string = 'Rooms';
 
 module.exports = {
 
@@ -43,9 +44,9 @@ module.exports = {
    * Returns a list of buildings which match the search terms.
    *
    * @param {?string} searchTerms the search terms for the query.
-   * @returns {Array<SearchResult>} the results of the search, containing buildings
+   * @returns {Object} the results of the search, containing buildings and rooms
    */
-  getResults(searchTerms: ?string): Array< SearchResult > {
+  getResults(searchTerms: ?string): Object {
     if (searchTerms == null || searchTerms.length === 0) {
       return [];
     }
@@ -56,25 +57,59 @@ module.exports = {
     // Ignore the case of the search terms
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
     const buildings: Array<Object> = require('../../assets/js/Buildings');
-    const results: Array<SearchResult> = [];
+    const results: Object = {};
 
     for (let i = 0; i < buildings.length; i++) {
       const translated: boolean = !('name' in buildings[i]);
       const name: string = LanguageUtils.getTranslatedName(language, buildings[i]) || '';
 
+      // Compare building properties to search terms to add to results
       if ((!translated && buildings[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (translated && (buildings[i].name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
           || buildings[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
           || buildings[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        results.push({
+        if (!(BUILDINGS_SECTION in results)) {
+          results[BUILDINGS_SECTION] = [];
+        }
+
+        results[BUILDINGS_SECTION].push({
           description: name,
           icon: {
             name: 'store',
             class: 'material',
           },
-          matchedTerms: (translated) ? [buildings[i].name_fr, buildings[i].name_en] : [buildings[i].name],
+          matchedTerms: (translated)
+              ? [
+                buildings[i].code.toUpperCase(),
+                buildings[i].name_fr.toUpperCase(),
+                buildings[i].name_en.toUpperCase(),
+              ]
+              : [
+                buildings[i].code.toUpperCase(),
+                buildings[i].name.toUpperCase(),
+              ],
           title: buildings[i].code,
         });
+      }
+
+      // Search the rooms in the building and add them to results as well
+      for (let j = 0; j < buildings[i].rooms.length; j++) {
+        const room = buildings[i].rooms[j];
+        if (room.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+          if (!(ROOMS_SECTION in results)) {
+            results[ROOMS_SECTION] = [];
+          }
+
+          results[ROOMS_SECTION].push({
+            description: name, // TODO: change depending on room type
+            icon: {
+              name: 'local-library', // TODO: change depending on room type
+              class: 'material',
+            },
+            matchedTerms: [room.name.toUpperCase()],
+            title: room.name,
+          });
+        }
       }
     }
 
