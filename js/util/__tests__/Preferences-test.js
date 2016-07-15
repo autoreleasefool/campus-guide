@@ -103,6 +103,7 @@ function expectDefaultPreferences(Preferences: Object) {
   expect(Preferences.getAlwaysSearchAll()).toBeFalsy();
   expect(Preferences.getCurrentSemester()).toBe(0);
   expect(Preferences.getCurrentSemesterInfo()).toBeDefined();
+  expect(Preferences.hasSeenSearchAll()).toBeFalsy();
 }
 
 describe('Preferences-test', () => {
@@ -155,6 +156,7 @@ describe('Preferences-test', () => {
       app_current_semester: '0',
       app_pref_wheel: 'true',
       app_search_all_always: 'true',
+      app_seen_search_all: 'true',
     };
 
     return Preferences.loadInitialPreferences(AsyncStorage).then(() => {
@@ -163,6 +165,7 @@ describe('Preferences-test', () => {
       expect(Preferences.getSetting('pref_search_all_always')).toBeTruthy();
       expect(Preferences.getSetting('pref_semester')).toBeDefined();
       expect(Preferences.isFirstTimeOpened()).toBeFalsy();
+      expect(Preferences.hasSeenSearchAll()).toBeTruthy();
     });
   });
 
@@ -191,6 +194,13 @@ describe('Preferences-test', () => {
       expect(Preferences.getAlwaysSearchAll()).toBeTruthy();
       Preferences.setAlwaysSearchAll(AsyncStorage, 'invalid_boolean');
       expect(Preferences.getAlwaysSearchAll()).toBeTruthy();
+
+      Preferences.setHasSeenSearchAll(AsyncStorage, false);
+      expect(Preferences.hasSeenSearchAll()).toBeFalsy();
+      Preferences.setHasSeenSearchAll(AsyncStorage, true);
+      expect(Preferences.hasSeenSearchAll()).toBeTruthy();
+      Preferences.setHasSeenSearchAll(AsyncStorage, 'invalid_boolean');
+      expect(Preferences.hasSeenSearchAll()).toBeTruthy();
 
       Preferences.setCurrentSemester(AsyncStorage, 0);
       expect(Preferences.getCurrentSemester()).toBe(0);

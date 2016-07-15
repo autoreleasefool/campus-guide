@@ -277,7 +277,7 @@ module.exports = {
    * Updates whether the user has dismissed the search all info tooltip.
    *
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
-   * @param {boolean} always               true when the user dismisses the tooltip.
+   * @param {boolean} seen                 true when the user dismisses the tooltip.
    */
   setHasSeenSearchAll(AsyncStorage: ReactClass< any >, seen: boolean): void {
     if (seen !== true && seen !== false) {

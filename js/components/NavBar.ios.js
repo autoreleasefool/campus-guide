@@ -56,17 +56,13 @@ type State = {
   searching?: boolean,
 };
 
-// Get the showTooltip function
-import {
-  showTooltip,
-} from 'Tooltip';
-
 // Imports
 const Constants = require('Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const Preferences = require('Preferences');
 const SearchManager = require('SearchManager');
 const StatusBarUtils = require('StatusBarUtils');
+const Tooltip = require('Tooltip');
 
 // Size of icons in the navbar
 const NAVBAR_ICON_SIZE: number = 24;
@@ -163,10 +159,11 @@ class NavBar extends React.Component {
    * message before.
    */
   _showSearchAllTooltip(): void {
-    if (// !Preferences.hasSeenSearchAll()
-        SearchManager.numberOfSearchListeners() > 0
+    if (!Preferences.hasSeenSearchAll()
+        && !Tooltip.isTooltipActive()
+        && SearchManager.numberOfSearchListeners() > 0
         && !Preferences.getAlwaysSearchAll()) {
-      showTooltip(
+      Tooltip.showTooltip(
         'Click the button above to search the entire app instead',
         'right',
         0,

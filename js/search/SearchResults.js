@@ -126,7 +126,7 @@ class SearchResults extends React.Component {
   _oldDefaultSearchListener: ?SearchListener;
 
   /** List of currently displayed search results */
-  _searchResults: Array < SearchResult >;
+  _searchResults: Object;
 
   /**
    * Updates the results displayed of the search through the entire app.

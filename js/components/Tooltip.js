@@ -68,9 +68,40 @@ if (Platform.OS === 'ios') {
 }
 
 /** Instance of the tooltip. */
-let globalTooltip: ?ReactElement< any >;
+let globalTooltip: any;
 
 class Tooltip extends React.Component {
+
+  /**
+   * Returns true if and only if a tooltip is currently shown.
+   *
+   * @returns {boolean} false if the tooltip is null or not active, true otherwise.
+   */
+  static isTooltipActive(): boolean {
+    return globalTooltip != null && globalTooltip.state.active;
+  }
+
+  /**
+   * Shows the tooltip overlaying a certain position, with the text provided.
+   *
+   * @param {string} text         text to display in tooltip
+   * @param {Alignment} alignment 'left' to set the left of the tooltip to x, 'right' to set the right to x
+   * @param {number} x            horizontal position of the tooltip
+   * @param {number} y            vertical position of the tooltip
+   * @param {?function} callback   callback function for when tooltip is dismissed
+   */
+  static showTooltip(text: string, alignment: Alignment, x: number, y: number, callback: ?() => any): void {
+    if (globalTooltip != null) {
+      globalTooltip.setState({
+        active: true,
+        alignment: alignment,
+        callback: callback,
+        text: text,
+        x: x,
+        y: y,
+      });
+    }
+  }
 
   /** State of the component. */
   state: State;
@@ -80,7 +111,7 @@ class Tooltip extends React.Component {
    *
    * @param {{}} props props of the component
    */
-  constructor(props) {
+  constructor(props: {}) {
     super(props);
 
     this.state = {
@@ -185,32 +216,3 @@ const _styles = StyleSheet.create({
 });
 
 module.exports = Tooltip;
-
-/**
- * Shows the tooltip overlaying a certain position, with the text provided.
- *
- * @param {string} text         text to display in tooltip
- * @param {Alignment} alignment 'left' to set the left of the tooltip to x, 'right' to set the right to x
- * @param {number} x            horizontal position of the tooltip
- * @param {number} y            vertical position of the tooltip
- * @param {?function} callback   callback function for when tooltip is dismissed
- */
-module.exports.showTooltip = (text: string, alignment: Alignment, x: number, y: number, callback: ?() => any) => {
-  if (globalTooltip != null) {
-    globalTooltip.setState({
-      active: true,
-      alignment: alignment,
-      callback: callback,
-      text: text,
-      x: x,
-      y: y,
-    });
-  }
-};
-
-/**
- * Returns true if and only if a tooltip is currently shown.
- *
- * @returns {boolean} false if the tooltip is null or not active, true otherwise.
- */
-module.exports.isTooltipActive = () => globalTooltip != null && globalTooltip.state.active;

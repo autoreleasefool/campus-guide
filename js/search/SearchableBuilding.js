@@ -48,7 +48,7 @@ module.exports = {
    */
   getResults(searchTerms: ?string): Object {
     if (searchTerms == null || searchTerms.length === 0) {
-      return [];
+      return {};
     }
 
     // Cache the language

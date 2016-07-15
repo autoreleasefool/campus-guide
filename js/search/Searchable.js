@@ -47,7 +47,7 @@ module.exports = {
    */
   getResults(searchTerms: ?string): Object {
     if (searchTerms == null || searchTerms.length === 0) {
-      return [];
+      return {};
     }
 
     const sources: Array< Object > = this._getSources();
