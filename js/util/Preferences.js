@@ -97,7 +97,7 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<v
         : (value === 'true');
 
     // If the user has seen the search all info
-    value = await AsyncStorage.getItem(ALWAYS_SEARCH_ALL);
+    value = await AsyncStorage.getItem(SEEN_SEARCH_ALL);
     seenSearchAll = (value === null)
         ? false
         : (value === 'true');
