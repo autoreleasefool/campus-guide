@@ -218,7 +218,7 @@ class LinkCategory extends React.Component {
       listOfLinks = (
         <View style={_styles.linksContainer}>
           {links.map((link, index) => {
-            let translatedLink: string = LanguageUtils.getTranslatedLink(language, link)
+            let translatedLink: string = LanguageUtils.getTranslatedVariant(language, 'link', link)
                 || Configuration.getDefaultLink();
             let translatedName: string = LanguageUtils.getTranslatedName(language, link)
                 || translatedLink;
@@ -283,7 +283,7 @@ class LinkCategory extends React.Component {
     return (
       <View style={_styles.socialMediaContainer}>
         {socialMediaLinks.map(socialLink => {
-          const translatedLink: string = LanguageUtils.getTranslatedLink(language, socialLink)
+          const translatedLink: string = LanguageUtils.getTranslatedVariant(language, 'link', socialLink)
               || Configuration.getDefaultLink();
           const translatedLinkName: ?string = LanguageUtils.getTranslatedName(language, socialLink);
 

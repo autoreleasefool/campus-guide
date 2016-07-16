@@ -211,7 +211,7 @@ class ShuttleCampusList extends React.Component {
                 onPress={() => this.props.showDetails(
                   LanguageUtils.getTranslatedName(language, detail),
                   detail.image,
-                  LanguageUtils.getTranslatedDetails(language, detail),
+                  LanguageUtils.getTranslatedVariant(language, 'details', detail),
                   Constants.Colors.darkGrey
                 )}>
               <SectionHeader

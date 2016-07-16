@@ -111,7 +111,7 @@ class BusCampusList extends React.Component {
    */
   _goToBusWebsite(Translations: Object): void {
     ExternalUtils.openLink(
-        LanguageUtils.getTranslatedLink(Preferences.getSelectedLanguage(), Configuration.getCityBusyInfo()),
+        LanguageUtils.getTranslatedVariant(Preferences.getSelectedLanguage(), 'link', Configuration.getCityBusyInfo()),
         Translations,
         Linking,
         Alert,
