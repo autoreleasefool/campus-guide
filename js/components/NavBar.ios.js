@@ -28,7 +28,6 @@
 // React imports
 import React from 'react';
 import {
-  AsyncStorage,
   LayoutAnimation,
   Platform,
   StyleSheet,
