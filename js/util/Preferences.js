@@ -47,8 +47,6 @@ const CURRENT_SEMESTER: string = 'app_current_semester';
 const PREFER_WHEELCHAIR: string = 'app_pref_wheel';
 // Represents if the user wants the app to always search all, without being prompted
 const ALWAYS_SEARCH_ALL: string = 'app_search_all_always';
-// Represents if the user has seen the prompt indicating how to search all
-const SEEN_SEARCH_ALL: string = 'app_seen_search_all';
 
 // Cached values of preferences
 let timesAppOpened: number = 0;
@@ -56,7 +54,6 @@ let selectedLanguage: ?Language = null;
 let currentSemester: number = 0;
 let preferWheelchair: boolean = false;
 let alwaysSearchAll: boolean = false;
-let seenSearchAll: boolean = false;
 
 /**
  * Method which should be invoked each time the app is opened, to keep a running track of how many times the app has
@@ -95,12 +92,6 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<v
     alwaysSearchAll = (value === null)
         ? false
         : (value === 'true');
-
-    // If the user has seen the search all info
-    value = await AsyncStorage.getItem(SEEN_SEARCH_ALL);
-    seenSearchAll = (value === null)
-        ? false
-        : (value === 'true');
   } catch (e) {
     console.error('Caught error loading preferences.', e);
 
@@ -110,7 +101,6 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<v
     currentSemester = 0;
     preferWheelchair = false;
     alwaysSearchAll = false;
-    seenSearchAll = false;
   }
 
   timesAppOpened += 1;
@@ -262,30 +252,6 @@ module.exports = {
    */
   getCurrentSemesterInfo(): Semester {
     return Configuration.getSemester(currentSemester);
-  },
-
-  /**
-   * Indicates if the user has already seen the search all info tooltip.
-   *
-   * @returns {boolean} true if the user has dismissed the tooltip before, false otherwise.
-   */
-  hasSeenSearchAll(): boolean {
-    return seenSearchAll;
-  },
-
-  /**
-   * Updates whether the user has dismissed the search all info tooltip.
-   *
-   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
-   * @param {boolean} seen                 true when the user dismisses the tooltip.
-   */
-  setHasSeenSearchAll(AsyncStorage: ReactClass< any >, seen: boolean): void {
-    if (seen !== true && seen !== false) {
-      return;
-    }
-
-    seenSearchAll = seen;
-    AsyncStorage.setItem(SEEN_SEARCH_ALL, seen.toString());
   },
 
   /**

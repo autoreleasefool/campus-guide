@@ -32,9 +32,12 @@ import {
   Image,
   LayoutAnimation,
   ListView,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 
@@ -69,17 +72,22 @@ const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('Preferences');
 const SearchManager = require('SearchManager');
 const SectionHeader = require('SectionHeader');
+const StatusBarUtils = require('StatusBarUtils');
+const Tooltip = require('Tooltip');
 
 const {width} = Dimensions.get('window');
 
+// Percentage of banner that banner will take
+const BANNER_TEXT_WIDTH_PCT: number = 0.75;
+// Number of milliseconds before the banner swaps
+const BANNER_SWAP_TIME: number = 2000;
+// Y position of the banner tooltip
+const IMAGE_TOOLTIP_TOP: number = 65;
+
 // Size of room buttons
 const ROOM_WIDTH: number = Math.floor(width / 2);
+// Maximum number of rooms in a row
 const ROOM_COLUMNS: number = 2;
-
-// Number of milliseconds before the banner swaps
-const BANNER_SWAP_TIME: number = 4000;
-// Number of views in the banner
-const TOTAL_BANNER_POSITIONS: number = 2;
 
 class BuildingDetails extends React.Component {
 
@@ -132,6 +140,19 @@ class BuildingDetails extends React.Component {
     this._swapBannerTimer = setTimeout(() => {
       this._swapBanner();
     }, BANNER_SWAP_TIME);
+
+    Tooltip.hasSeenTooltip(Tooltip.SHOW_BUILDING_IMAGE, seen => {
+      if (!seen) {
+        Tooltip.showTooltip({
+          backgroundColor: Constants.Colors.darkGrey,
+          callback: () => Tooltip.setHasSeenTooltip(Tooltip.SHOW_BUILDING_IMAGE),
+          hAlign: 'center',
+          text: 'Tap the picture to see or hide it.',
+          vAlign: 'top',
+          y: IMAGE_TOOLTIP_TOP + StatusBarUtils.getStatusBarPadding(Platform),
+        });
+      }
+    });
 
     if (!this.state.loaded) {
       this._filterRooms(null);
@@ -198,14 +219,13 @@ class BuildingDetails extends React.Component {
    * Moves to the next view in the banner.
    */
   _swapBanner(): void {
+    // Clear the swap banner timer, if the user manually swipes the banner
+    clearTimeout(this._swapBannerTimer);
+
     LayoutAnimation.easeInEaseOut();
     this.setState({
-      bannerPosition: (this.state.bannerPosition + 1) % TOTAL_BANNER_POSITIONS,
+      bannerPosition: (this.state.bannerPosition === 0) ? 1 : 0,
     });
-
-    this._swapBannerTimer = setTimeout(() => {
-      this._swapBanner();
-    }, BANNER_SWAP_TIME);
   }
 
   /**
@@ -224,16 +244,29 @@ class BuildingDetails extends React.Component {
    */
   _renderBanner(): ReactElement< any > {
     // TODO: replace second image with text description of building
+    const bannerImageStyle = (this.state.bannerPosition === 0)
+        ? {right: 0}
+        : {right: width * BANNER_TEXT_WIDTH_PCT};
+    const bannerTextStyle = (this.state.bannerPosition === 1)
+        ? {left: width * (1 - BANNER_TEXT_WIDTH_PCT)}
+        : {left: width};
+
     return (
       <View style={_styles.banner}>
-        <Image
-            resizeMode={'cover'}
-            source={this.props.buildingDetails.image}
-            style={[_styles.bannerImage, {right: (this.state.bannerPosition === 0) ? 0 : width}]} />
-        <Image
-            resizeMode={'cover'}
-            source={require('../../../assets/images/buildings/outer_placeholder_2.jpg')}
-            style={[_styles.bannerText, {left: (this.state.bannerPosition === 1) ? 0 : width}]} />
+        <TouchableWithoutFeedback onPress={this._swapBanner}>
+          <Image
+              resizeMode={'cover'}
+              source={this.props.buildingDetails.image}
+              style={[_styles.bannerImage, bannerImageStyle]} />
+        </TouchableWithoutFeedback>
+        <View style={[_styles.bannerText, bannerTextStyle]}>
+          <ScrollView>
+            <Text style={{fontSize: Constants.Text.Large, fontWeight: 'bold', color: 'white'}}>{'Name'}</Text>
+            <Text style={{fontSize: Constants.Text.Medium, color: 'white'}}>{this.props.buildingDetails.name}</Text>
+            <Text style={{fontSize: Constants.Text.Large, fontWeight: 'bold', color: 'white'}}>{'Address'}</Text>
+            <Text style={{fontSize: Constants.Text.Medium, color: 'white'}}>{this.props.buildingDetails.lat}</Text>
+          </ScrollView>
+        </View>
         <SectionHeader
             sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)}
             style={_styles.header}
@@ -325,8 +358,10 @@ class BuildingDetails extends React.Component {
     return (
       <View style={_styles.container}>
         {this._renderBanner()}
-        {this._renderFacilityIcons()}
-        {this._renderRoomList()}
+        <View style={{backgroundColor: Constants.Colors.garnet, flex: 1}}>
+          {this._renderFacilityIcons()}
+          {this._renderRoomList()}
+        </View>
       </View>
     );
   }
@@ -339,6 +374,7 @@ const _styles = StyleSheet.create({
   },
   banner: {
     height: 175,
+    backgroundColor: Constants.Colors.charcoalGrey,
   },
   bannerImage: {
     position: 'absolute',
@@ -349,12 +385,14 @@ const _styles = StyleSheet.create({
     height: null,
   },
   bannerText: {
+    marginTop: 60,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
     position: 'absolute',
     top: 0,
     bottom: 0,
     right: 0,
-    width: null,
-    height: null,
   },
   facilitiesContainer: {
     alignItems: 'flex-start',

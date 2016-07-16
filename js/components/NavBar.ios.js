@@ -159,18 +159,20 @@ class NavBar extends React.Component {
    * message before.
    */
   _showSearchAllTooltip(): void {
-    if (!Preferences.hasSeenSearchAll()
-        && !Tooltip.isTooltipActive()
-        && SearchManager.numberOfSearchListeners() > 0
-        && !Preferences.getAlwaysSearchAll()) {
-      Tooltip.showTooltip(
-        'Click the button above to search the entire app instead',
-        'right',
-        0,
-        NAVBAR_HEIGHT + StatusBarUtils.getStatusBarPadding(Platform),
-        () => Preferences.setHasSeenSearchAll(AsyncStorage, true),
-      );
-    }
+    Tooltip.hasSeenTooltip(Tooltip.HOW_TO_SEARCH_ALL, seen => {
+      if (!seen && !Tooltip.isTooltipActive()
+          && SearchManager.numberOfSearchListeners() > 0
+          && !Preferences.getAlwaysSearchAll()) {
+        Tooltip.showTooltip({
+          callback: () => Tooltip.setHasSeenTooltip(Tooltip.HOW_TO_SEARCH_ALL),
+          hAlign: 'right',
+          text: 'Click the button above to search the entire app instead',
+          vAlign: 'top',
+          x: 0,
+          y: NAVBAR_HEIGHT + StatusBarUtils.getStatusBarPadding(Platform),
+        });
+      }
+    });
   }
 
   /**

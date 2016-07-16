@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  AsyncStorage,
   Dimensions,
   Platform,
   StyleSheet,
@@ -35,26 +36,38 @@ import {
   View,
 } from 'react-native';
 
-// Type definition for component alignment.
-type Alignment = 'left' | 'right';
-
 // Type definition for component state.
 type State = {
   active: boolean,
-  alignment: Alignment,
+  backgroundColor: string,
   callback: ?() => any,
+  hAlign: 'left' | 'right',
   text: ?string,
+  textColor: string,
+  vAlign: 'top' | 'bottom',
   x: number,
   y: number,
+};
+
+// Parameters that creating a tooltip accepts
+type TooltipOptions = {
+  backgroundColor?: string,
+  callback?: () => any,
+  hAlign: 'left' | 'right' | 'center',
+  text: string,
+  textColor?: string,
+  vAlign: 'top' | 'bottom' | 'center',
+  x?: number,
+  y?: number,
 };
 
 // Imports
 const Constants = require('Constants');
 const Ionicon = require('react-native-vector-icons/Ionicons');
 
-// For defining width of the tooltip
-const {width} = Dimensions.get('window');
-const TOOLTIP_WIDTH: number = 0.75;
+// For defining width, position of the tooltip
+const {width, height} = Dimensions.get('window');
+const TOOLTIP_WIDTH_PCT: number = 0.75;
 
 // Size of the dismiss icon
 const DISMISS_ICON_SIZE: number = 24;
@@ -72,6 +85,47 @@ let globalTooltip: any;
 
 class Tooltip extends React.Component {
 
+  /** Represents if the user has seen the tooltip indicating how to search all. */
+  static HOW_TO_SEARCH_ALL: string = 'tooltip_search_all';
+
+  /** Represents if the user has seen the tooltip to show building image. */
+  static SHOW_BUILDING_IMAGE: string = 'tooltip_show_building_image';
+
+  /**
+   * Checks if a certain tooltip has already been acknowledged by a user.
+   *
+   * @param {string} id     tooltip id to check
+   * @param {function} done callback to return result
+   */
+  static hasSeenTooltip(id: string, done: () => any): void {
+    if (id == null || id.length === 0) {
+      // If id is invalid, return false
+      done(false);
+      return;
+    }
+
+    AsyncStorage.getItem(id, (err, result) => {
+      if (err) {
+        // Output any errors, return false
+        console.error('Error retrieving tooltip info: ' + id + '. ' + err);
+        done(false);
+        return;
+      }
+
+      // Only return true if the value is exactly equal to true
+      done(result === 'true');
+    });
+  }
+
+  /**
+   * Tooltip has been acknowledged by a user.
+   *
+   * @param {string} id tooltip to acknowledge
+   */
+  static setHasSeenTooltip(id: string) {
+    AsyncStorage.setItem(id, 'true');
+  }
+
   /**
    * Returns true if and only if a tooltip is currently shown.
    *
@@ -84,19 +138,34 @@ class Tooltip extends React.Component {
   /**
    * Shows the tooltip overlaying a certain position, with the text provided.
    *
-   * @param {string} text         text to display in tooltip
-   * @param {Alignment} alignment 'left' to set the left of the tooltip to x, 'right' to set the right to x
-   * @param {number} x            horizontal position of the tooltip
-   * @param {number} y            vertical position of the tooltip
-   * @param {?function} callback   callback function for when tooltip is dismissed
+   * @param {TooltipOptions} options configuration of tooltip
    */
-  static showTooltip(text: string, alignment: Alignment, x: number, y: number, callback: ?() => any): void {
+  static showTooltip(options: TooltipOptions) {
     if (globalTooltip != null) {
+      // Either center horizontally, or set to provided x value
+      let x = 0;
+      if (options.hAlign === 'center') {
+        x = width / 2 - (width * TOOLTIP_WIDTH_PCT) / 2;
+      } else {
+        x = options.x ? options.x : 0;
+      }
+
+      // Either center vertically, or set to provided y value
+      let y = 0;
+      if (options.vAlign === 'center') {
+        y = height / 2;
+      } else {
+        y = options.y ? options.y : 0;
+      }
+
       globalTooltip.setState({
         active: true,
-        alignment: alignment,
-        callback: callback,
-        text: text,
+        backgroundColor: options.backgroundColor ? options.backgroundColor : Constants.Colors.charcoalGrey,
+        callback: options.callback,
+        hAlign: options.hAlign,
+        text: options.text,
+        textColor: options.textColor ? options.textColor : Constants.Colors.primaryWhiteText,
+        vAlign: options.vAlign,
         x: x,
         y: y,
       });
@@ -116,9 +185,12 @@ class Tooltip extends React.Component {
 
     this.state = {
       active: false,
-      alignment: 'left',
+      backgroundColor: Constants.Colors.charcoalGrey,
       callback: null,
+      hAlign: 'left',
       text: null,
+      textColor: Constants.Colors.primaryWhiteText,
+      vAlign: 'top',
       x: 0,
       y: 0,
     };
@@ -167,23 +239,34 @@ class Tooltip extends React.Component {
       return null;
     }
 
-    let alignment: Object = {};
-    if (this.state.alignment === 'right') {
-      alignment = {
+    let hAlign: Object = {};
+    if (this.state.hAlign === 'right') {
+      hAlign = {
         right: this.state.x,
       };
     } else {
-      alignment = {
+      hAlign = {
         left: this.state.x,
+      };
+    }
+
+    let vAlign: Object = {};
+    if (this.state.vAlign === 'bottom') {
+      vAlign = {
+        bottom: this.state.y,
+      };
+    } else {
+      vAlign = {
+        top: this.state.y,
       };
     }
 
     return (
       <TouchableOpacity
-          style={[{position: 'absolute', top: this.state.y}, alignment]}
+          style={[{position: 'absolute'}, hAlign, vAlign]}
           onPress={this._dismiss.bind(this)}>
-        <View style={_styles.tooltip}>
-          <Text style={_styles.tooltipText}>{this.state.text}</Text>
+        <View style={[_styles.tooltip, {backgroundColor: this.state.backgroundColor}]}>
+          <Text style={[_styles.tooltipText, {color: this.state.textColor}]}>{this.state.text}</Text>
           <Ionicon
               color={Constants.Colors.secondaryWhiteText}
               name={dismissIcon}
@@ -198,8 +281,7 @@ class Tooltip extends React.Component {
 // Private styles for the component
 const _styles = StyleSheet.create({
   tooltip: {
-    width: width * TOOLTIP_WIDTH,
-    backgroundColor: Constants.Colors.charcoalGrey,
+    width: width * TOOLTIP_WIDTH_PCT,
     borderRadius: 5,
     flexDirection: 'row',
     alignItems: 'center',
@@ -207,7 +289,6 @@ const _styles = StyleSheet.create({
   tooltipText: {
     flex: 1,
     margin: 10,
-    color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
   },
   tooltipIcon: {
