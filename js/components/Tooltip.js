@@ -29,6 +29,7 @@ import React from 'react';
 import {
   AsyncStorage,
   Dimensions,
+  LayoutAnimation,
   Platform,
   StyleSheet,
   Text,
@@ -158,6 +159,7 @@ class Tooltip extends React.Component {
         y = options.y ? options.y : 0;
       }
 
+      LayoutAnimation.easeInEaseOut();
       globalTooltip.setState({
         active: true,
         backgroundColor: options.backgroundColor ? options.backgroundColor : Constants.Colors.charcoalGrey,
@@ -224,6 +226,7 @@ class Tooltip extends React.Component {
       this.state.callback();
     }
 
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       active: false,
     });
