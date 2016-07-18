@@ -83,6 +83,8 @@ const BANNER_TEXT_WIDTH_PCT: number = 0.75;
 const BANNER_SWAP_TIME: number = 2000;
 // Y position of the banner tooltip
 const IMAGE_TOOLTIP_TOP: number = 65;
+// Amount of whitespace between items in the building details banner
+const BANNER_TEXT_SEPARATOR: number = 5;
 
 // Size of room buttons
 const ROOM_WIDTH: number = Math.floor(width / 2);
@@ -243,13 +245,22 @@ class BuildingDetails extends React.Component {
    * @returns {ReactElement<any>} a banner describing the building
    */
   _renderBanner(): ReactElement< any > {
-    // TODO: replace second image with text description of building
+    // Get current language for translations
+    let Translations = null;
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../assets/js/Translations.fr.js');
+    } else {
+      Translations = require('../../../assets/js/Translations.en.js');
+    }
+
     const bannerImageStyle = (this.state.bannerPosition === 0)
         ? {right: 0}
         : {right: width * BANNER_TEXT_WIDTH_PCT};
     const bannerTextStyle = (this.state.bannerPosition === 1)
         ? {left: width * (1 - BANNER_TEXT_WIDTH_PCT)}
         : {left: width};
+    const buildingAddress: ?string
+        = LanguageUtils.getTranslatedVariant(Preferences.getSelectedLanguage(), 'address', this.props.buildingDetails);
 
     return (
       <View style={_styles.banner}>
@@ -261,10 +272,11 @@ class BuildingDetails extends React.Component {
         </TouchableWithoutFeedback>
         <View style={[_styles.bannerText, bannerTextStyle]}>
           <ScrollView>
-            <Text style={{fontSize: Constants.Text.Large, fontWeight: 'bold', color: 'white'}}>{'Name'}</Text>
-            <Text style={{fontSize: Constants.Text.Medium, color: 'white'}}>{this.props.buildingDetails.name}</Text>
-            <Text style={{fontSize: Constants.Text.Large, fontWeight: 'bold', color: 'white'}}>{'Address'}</Text>
-            <Text style={{fontSize: Constants.Text.Medium, color: 'white'}}>{this.props.buildingDetails.lat}</Text>
+            {this._renderFacilityIcons()}
+            <Text style={_styles.detailTitle}>{Translations.name}</Text>
+            <Text style={_styles.detailBody}>{this.props.buildingDetails.name}</Text>
+            <Text style={_styles.detailTitle}>{Translations.address}</Text>
+            <Text style={_styles.detailBody}>{(buildingAddress == null) ? 'N/A' : buildingAddress}</Text>
           </ScrollView>
         </View>
         <SectionHeader
@@ -295,12 +307,12 @@ class BuildingDetails extends React.Component {
           return (
             <TouchableOpacity
                 key={facility}
-                style={_styles.facilitiesIcon}
                 onPress={() => this._openFacilityDescription(facility, Translations)}>
               <MaterialIcons
                   color={'white'}
                   name={DisplayUtils.getFacilityIconName(facility, Translations)}
-                  size={24} />
+                  size={24}
+                  style={_styles.facilitiesIcon} />
             </TouchableOpacity>
           );
         })}
@@ -319,6 +331,7 @@ class BuildingDetails extends React.Component {
           contentContainerStyle={_styles.listView}
           dataSource={this.state.buildingRooms}
           enableEmptySections={true}
+          initialListSize={20}
           pageSize={ROOM_COLUMNS}
           renderRow={this._renderRow.bind(this)} />
     );
@@ -329,18 +342,18 @@ class BuildingDetails extends React.Component {
    *
    * @param {BuildingRoom} room a room to display in this row.
    * @param {string} sectionId  index of the section the room is in.
-   * @param {number} rowIndex   index of the row the room is in.
+   * @param {number} index      index of the row the room is in.
    * @returns {ReactElement<any>} a view describing a set of room.
    */
-  _renderRow(room: BuildingRoom, sectionId: string, rowIndex: number): ReactElement<any> {
-    const darkenEvenElements = (Math.floor(rowIndex / (ROOM_COLUMNS * 2)) % ROOM_COLUMNS === 0);
-    const rowColor: string = ((darkenEvenElements && rowIndex % 2 === 0) || (!darkenEvenElements && rowIndex % 2 === 1))
-              ? Constants.Colors.defaultComponentBackgroundColor
-              : Constants.Colors.garnet;
+  _renderRow(room: BuildingRoom, sectionId: string, index: number): ReactElement<any> {
+    const darkenEven = (Math.floor(index / ROOM_COLUMNS) % ROOM_COLUMNS === 0);
+    const color: string = ((darkenEven && index % ROOM_COLUMNS === 0) || (!darkenEven && index % ROOM_COLUMNS === 1))
+        ? Constants.Colors.defaultComponentBackgroundColor
+        : Constants.Colors.garnet;
 
     return (
       <TouchableOpacity>
-        <View style={{width: ROOM_WIDTH, backgroundColor: rowColor}}>
+        <View style={{width: ROOM_WIDTH, backgroundColor: color}}>
           <Text style={_styles.room}>
             {room.name}
           </Text>
@@ -358,10 +371,7 @@ class BuildingDetails extends React.Component {
     return (
       <View style={_styles.container}>
         {this._renderBanner()}
-        <View style={{backgroundColor: Constants.Colors.garnet, flex: 1}}>
-          {this._renderFacilityIcons()}
-          {this._renderRoomList()}
-        </View>
+        {this._renderRoomList()}
       </View>
     );
   }
@@ -385,25 +395,35 @@ const _styles = StyleSheet.create({
     height: null,
   },
   bannerText: {
-    marginTop: 60,
-    marginLeft: 10,
-    marginRight: 10,
-    marginBottom: 10,
+    marginTop: 50,
     position: 'absolute',
     top: 0,
     bottom: 0,
     right: 0,
   },
+  detailTitle: {
+    fontSize: Constants.Text.Large,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: BANNER_TEXT_SEPARATOR,
+    marginLeft: BANNER_TEXT_SEPARATOR,
+    marginRight: BANNER_TEXT_SEPARATOR,
+  },
+  detailBody: {
+    fontSize: Constants.Text.Medium,
+    color: 'white',
+    marginBottom: BANNER_TEXT_SEPARATOR,
+    marginLeft: BANNER_TEXT_SEPARATOR,
+    marginRight: BANNER_TEXT_SEPARATOR,
+  },
   facilitiesContainer: {
     alignItems: 'flex-start',
-    backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    width: width,
   },
   facilitiesIcon: {
-    margin: 10,
+    margin: BANNER_TEXT_SEPARATOR * 2,
   },
   header: {
     position: 'absolute',
@@ -415,6 +435,9 @@ const _styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    width: width,
+    flex: 1,
+    // backgroundColor: Constants.Colors.garnet,
   },
   room: {
     margin: 15,
