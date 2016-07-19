@@ -437,7 +437,7 @@ const _styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
   },
   facilitiesIcon: {
     margin: BANNER_TEXT_SEPARATOR * 2,
@@ -453,8 +453,6 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: width,
-    flex: 1,
-    // backgroundColor: Constants.Colors.garnet,
   },
   room: {
     margin: 15,
