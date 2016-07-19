@@ -33,7 +33,6 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  UIManager,
   View,
 } from 'react-native';
 
@@ -44,7 +43,7 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  navigator: ReactClass<any>,
+  navigator: ReactClass< any >,
 };
 
 // Type definition for component state.
@@ -95,10 +94,6 @@ class SplashScreen extends React.Component {
    */
   componentDidMount(): void {
     const self: SplashScreen = this;
-
-    if (Platform.OS === 'android') {
-      UIManager.setLayoutAnimationEnabledExperimental(true);
-    }
 
     StatusBarUtils.setLightStatusBarIOS(Platform, StatusBar, true);
     Configuration.loadConfiguration()

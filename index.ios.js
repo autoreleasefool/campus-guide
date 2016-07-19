@@ -29,6 +29,6 @@ import {
 } from 'react-native';
 
 // Imports
-const CampusGuide = require('./js/Root');
+const setup = require('./js/setup');
 
-AppRegistry.registerComponent('CampusGuide', () => CampusGuide);
+AppRegistry.registerComponent('CampusGuide', setup);
