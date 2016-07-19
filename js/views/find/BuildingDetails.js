@@ -242,17 +242,10 @@ class BuildingDetails extends React.Component {
   /**
    * Returns an image and text description of the building.
    *
+   * @param {Object} Translations translations in the current language of certain text.
    * @returns {ReactElement<any>} a banner describing the building
    */
-  _renderBanner(): ReactElement< any > {
-    // Get current language for translations
-    let Translations = null;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
-
+  _renderBanner(Translations: Object): ReactElement< any > {
     const bannerImageStyle = (this.state.bannerPosition === 0)
         ? {right: 0}
         : {right: width * BANNER_TEXT_WIDTH_PCT};
@@ -272,7 +265,7 @@ class BuildingDetails extends React.Component {
         </TouchableWithoutFeedback>
         <View style={[_styles.bannerText, bannerTextStyle]}>
           <ScrollView>
-            {this._renderFacilityIcons()}
+            {this._renderFacilityIcons(Translations)}
             <Text style={_styles.detailTitle}>{Translations.name}</Text>
             <Text style={_styles.detailBody}>{this.props.buildingDetails.name}</Text>
             <Text style={_styles.detailTitle}>{Translations.address}</Text>
@@ -288,19 +281,34 @@ class BuildingDetails extends React.Component {
   }
 
   /**
+   * Returns a view which allows the user to navigate to the building depicted.
+   *
+   * @param {Object} Translations translations in the current language of certain text.
+   * @returns {ReactElement<any>} a touchable view
+   */
+  _renderBuildingDirections(Translations: Object): ReactElement< any > {
+    const navigateTo: string = Translations.navigate_to.format(
+        LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails));
+
+    return (
+      <TouchableOpacity>
+        <SectionHeader
+            backgroundOverride={Constants.Colors.polarGrey}
+            sectionIcon={Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate'}
+            sectionIconClass={'ionicon'}
+            sectionName={navigateTo}
+            useBlackText={true} />
+      </TouchableOpacity>
+    );
+  }
+
+  /**
    * Returns a list of touchable views which describe facilities in the building.
    *
+   * @param {Object} Translations translations in the current language of certain text.
    * @returns {ReactElement<any>} an icon representing each of the facilities in this building
    */
-  _renderFacilityIcons(): ReactElement< any > {
-    // Get current language for translations
-    let Translations: Object = {};
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
-
+  _renderFacilityIcons(Translations: Object): ReactElement< any > {
     return (
       <View style={_styles.facilitiesContainer}>
         {this.props.buildingDetails.facilities.map(facility => {
@@ -368,9 +376,18 @@ class BuildingDetails extends React.Component {
    * @returns {ReactElement<any>} a view describing a building.
    */
   render(): ReactElement< any > {
+    // Get current language for translations
+    let Translations: Object = {};
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../../assets/js/Translations.fr.js');
+    } else {
+      Translations = require('../../../assets/js/Translations.en.js');
+    }
+
     return (
       <View style={_styles.container}>
-        {this._renderBanner()}
+        {this._renderBanner(Translations)}
+        {this._renderBuildingDirections(Translations)}
         {this._renderRoomList()}
       </View>
     );
