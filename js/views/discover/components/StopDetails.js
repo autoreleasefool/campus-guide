@@ -52,8 +52,8 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  dataSourceStops: ReactClass<any>,
-  dataSourceTimes: ReactClass<any>,
+  dataSourceStops: ListView.DataSource,
+  dataSourceTimes: ListView.DataSource,
   loaded: boolean,
   primaryTextColor: string,
   secondaryTextColor: string,
@@ -65,7 +65,7 @@ type StopInfo = {
   name: string,
   lat: number,
   long: number,
-  routes: Array<number>,
+  routes: Array< number >,
   key: number,
 };
 
