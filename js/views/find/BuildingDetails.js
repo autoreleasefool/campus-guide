@@ -45,6 +45,7 @@ import {
 import type {
   Building,
   BuildingRoom,
+  DefaultIcon,
   Facility,
 } from 'types';
 
@@ -64,9 +65,16 @@ type State = {
   loaded: boolean,
 };
 
+type FilteredRoom = {
+  name: string,
+  type: ?string,
+  icon: ?DefaultIcon,
+};
+
 // Imports
 const Constants = require('Constants');
 const DisplayUtils = require('DisplayUtils');
+const Ionicon = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('Preferences');
@@ -156,6 +164,8 @@ class BuildingDetails extends React.Component {
       }
     });
 
+    this._roomTypes = require('../../../assets/json/room_types.json').Types;
+
     if (!this.state.loaded) {
       this._filterRooms(null);
     }
@@ -174,6 +184,9 @@ class BuildingDetails extends React.Component {
 
   /** Listener for search input. */
   _roomSearchListener: SearchListener;
+
+  /** List of room types and details about them. */
+  _roomTypes: Object;
 
   /**
    * Displays a pop-up to the user, describing what a certain facility icon means.
@@ -201,12 +214,29 @@ class BuildingDetails extends React.Component {
     const rooms: Array<BuildingRoom> = this.props.buildingDetails.rooms;
 
     // Create array for sets of rooms
-    const filteredRooms: Array<BuildingRoom> = [];
+    const filteredRooms: Array<FilteredRoom> = [];
+
+    // Cache list of room types that match the search terms
+    const matchingRoomTypes = [];
+    for (let i = 0; i < this._roomTypes.length; i++) {
+      const roomTypeName = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this._roomTypes[i]);
+      if (adjustedSearchTerms != null && roomTypeName != null
+          && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+        matchingRoomTypes.push(i);
+      }
+    }
 
     for (let i = 0; i < rooms.length; i++) {
+      const roomName: string = rooms[i].name.toUpperCase();
+
       // If the search terms are empty, or the room contains the terms, add it to the list
-      if (adjustedSearchTerms == null || rooms[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        filteredRooms.push(rooms[i]);
+      if (adjustedSearchTerms == null || roomName.indexOf(adjustedSearchTerms) >= 0
+          || matchingRoomTypes.indexOf(rooms[i].type) >= 0) {
+        filteredRooms.push({
+          name: roomName,
+          type: LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this._roomTypes[rooms[i].type]),
+          icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[rooms[i].type]),
+        });
       }
     }
 
@@ -348,23 +378,42 @@ class BuildingDetails extends React.Component {
   /**
    * Renders an item describing a single room in the building.
    *
-   * @param {BuildingRoom} room a room to display in this row.
+   * @param {FilteredRoom} room a room to display in this row.
    * @param {string} sectionId  index of the section the room is in.
    * @param {number} index      index of the row the room is in.
    * @returns {ReactElement<any>} a view describing a set of room.
    */
-  _renderRow(room: BuildingRoom, sectionId: string, index: number): ReactElement<any> {
+  _renderRow(room: FilteredRoom, sectionId: string, index: number): ReactElement<any> {
     const darkenEven = (Math.floor(index / ROOM_COLUMNS) % ROOM_COLUMNS === 0);
     const color: string = ((darkenEven && index % ROOM_COLUMNS === 0) || (!darkenEven && index % ROOM_COLUMNS === 1))
         ? Constants.Colors.defaultComponentBackgroundColor
         : Constants.Colors.garnet;
 
+    let icon: ?ReactElement< any > = null;
+    if (room.icon != null) {
+      icon = room.icon.class === 'ionicon'
+          ? <Ionicon
+              color={Constants.Colors.primaryWhiteText}
+              name={room.icon.name}
+              size={20}
+              style={_styles.roomIcon} />
+          : <MaterialIcons
+              color={Constants.Colors.primaryWhiteText}
+              name={room.icon.name}
+              size={20}
+              style={_styles.roomIcon} />;
+    }
+
     return (
       <TouchableOpacity>
         <View style={{width: ROOM_WIDTH, backgroundColor: color}}>
-          <Text style={_styles.room}>
-            {room.name}
-          </Text>
+          <View style={_styles.room}>
+            {icon}
+            <View style={_styles.roomText}>
+              <Text style={_styles.roomName}>{room.name}</Text>
+              <Text style={_styles.roomType}>{room.type}</Text>
+            </View>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -456,9 +505,19 @@ const _styles = StyleSheet.create({
   },
   room: {
     margin: 15,
-    alignSelf: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  roomIcon: {
+    marginRight: 15,
+  },
+  roomName: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
+  },
+  roomType: {
+    color: Constants.Colors.secondaryWhiteText,
+    fontSize: Constants.Text.Small,
   },
 });
 
