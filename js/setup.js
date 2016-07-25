@@ -39,6 +39,7 @@ import type {
 
 // Imports
 const Constants = require('Constants');
+const Database = require('Database');
 const MainScreen = require('MainScreen');
 const Orientation = require('react-native-orientation');
 const SplashScreen = require('SplashScreen');
@@ -51,6 +52,10 @@ const Tooltip = require('Tooltip');
  */
 function setup(): ReactClass<{}> {
 
+  // Create the database
+  Database.init();
+
+  // Enable animations on Android
   if (Platform.OS === 'android') {
     UIManager.setLayoutAnimationEnabledExperimental(true);
   }
@@ -74,6 +79,13 @@ function setup(): ReactClass<{}> {
      */
     componentDidMount(): void {
       Orientation.lockToPortrait();
+    }
+
+    /**
+     * Clean up the connection to the database
+     */
+    componentWillUnmount(): void {
+      Database.deinit();
     }
 
     /**
