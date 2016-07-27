@@ -18,16 +18,11 @@
  * @author Joseph Roque
  * @file Database.js
  * @providesModule Database
- * @description Base component for the application.
+ * @description Provides interations with the application database.
  *
  * @flow
  */
 'use strict';
-
-// React imports
-import {
-  AsyncStorage,
-} from 'react-native';
 
 // Imports
 const SQLite = require('react-native-sqlite-storage');
@@ -58,22 +53,35 @@ let dbCurrentVersion: number = 0;
 SQLite.DEBUG(true); // TODO: disable for release?
 SQLite.enablePromise(false);
 
+/**
+ * Initialize and update the database.
+ *
+ * @param {Object} DB the Database module
+ * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
+ */
+async function _init(DB: Object, AsyncStorage: ReactClass< any >): Promise<void> {
+  dbCurrentVersion = 0;
+  try {
+    const value = await AsyncStorage.getItem(DB_VERSION_KEY);
+    dbCurrentVersion = (value === null) ? 0 : parseInt(value);
+  } catch (e) {
+    console.error('Error getting database version.', e);
+  }
+
+  db = SQLite.openDatabase(DB_NAME, DB_VERSION, DB_DISPLAY_NAME, DB_SIZE, DB._databaseSuccess, DB._databaseError);
+  DB._upgradeDatabase(db, DB_VERSION);
+}
+
 module.exports = {
 
   /**
    * Initialize the database. Create tables if necessary, and update the version.
+   *
+   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
+   * @returns {Promise<void>} the Promise from the async function {_init}.
    */
-  init() {
-    dbCurrentVersion = 0;
-    try {
-      let value = await AsyncStorage.getItem(DB_VERSION_KEY);
-      dbCurrentVersion = (value === null) ? 0 : parseInt(value);
-    } catch (e) {
-      console.error('Error getting database version.', e);
-    }
-
-    db = SQLite.openDatabase(DB_NAME, DB_VERSION, DB_DISPLAY_NAME, DB_SIZE, this._databaseSuccess, this._databaseError);
-    this._upgradeDatabase(db, DB_VERSION);
+  init(AsyncStorage: ReactClass< any >): Promise< void > {
+    return _init(this, AsyncStorage);
   },
 
   /**
@@ -89,9 +97,11 @@ module.exports = {
 
   /**
    * Upgrades the database based on the current version and the new version
+   *
+   * @param {number} newVersion version of the database to update to
    */
-  _upgradeDatabase(db: SQLite, newVersion: number) {
-    if (dbCurrentVersion < newVersion) {
+  _upgradeDatabase(newVersion: number) {
+    if (db && dbCurrentVersion < newVersion) {
 
       /** Ignore numbers used for database versioning */
       /* eslint-disable no-magic-numbers */
@@ -114,8 +124,10 @@ module.exports = {
 
   /**
    * Creates the database.
+   *
+   * @param {any} tx database transaction
    */
-  _createDatabase(tx) {
+  _createDatabase(tx: any) {
     // Clear the existing database
     tx.executeSql('DROP TABLE IF EXISTS Semesters;');
     tx.executeSql('DROP TABLE IF EXISTS Courses;');
@@ -160,8 +172,10 @@ module.exports = {
 
   /**
    * Report a failed database operation.
+   *
+   * @param {any} err database error
    */
-  _databaseError(err) {
+  _databaseError(err: any) {
     console.error('Database operation failed.', err);
   },
 
@@ -174,8 +188,10 @@ module.exports = {
 
   /**
    * Report an error while upgrading the database.
+   *
+   * @param {any} err database error
    */
-  _databaseUpgradeError(err) {
+  _databaseUpgradeError(err: any) {
     console.error('Error upgrading database from {1} to {2}.'.format(dbCurrentVersion, dbCurrentVersion + 1), err);
   },
 
@@ -183,9 +199,7 @@ module.exports = {
    * Increment current database version and upgrade incrementally.
    */
   _databaseUpgradeSuccess() {
-    if (dbCurrentVersion === 0) {
-
-    } else {
+    if (dbCurrentVersion !== 0) {
       console.log('Successfully upgraded database from {1} to {2}.'.format(dbCurrentVersion, dbCurrentVersion + 1));
 
       dbCurrentVersion++;
