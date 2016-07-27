@@ -53,3 +53,6 @@ ios/main.jsbundle
 
 # Keystores
 */keystores/*
+
+# Environment
+js/env.js
