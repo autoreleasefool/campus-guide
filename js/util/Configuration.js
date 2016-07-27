@@ -67,7 +67,7 @@ module.exports = {
    *
    * @returns {Promise<void>} the Promise from the async function {_requestConfig}.
    */
-  loadConfiguration(): Promise<void> {
+  loadConfiguration(): Promise< void > {
     return _requestConfig();
   },
 
@@ -76,7 +76,7 @@ module.exports = {
    *
    * @returns {Array<Semester>} the list of objects containing semester information.
    */
-  getAvailableSemesters(): Array<Semester> {
+  getAvailableSemesters(): Array< Semester > {
     return availableSemesters;
   },
 
