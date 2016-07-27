@@ -24,30 +24,36 @@
  */
 'use strict';
 
+// React Imports
+import {
+  AsyncStorage,
+} from 'react-native';
+
 // Imports
+const Promise = require('promise');
 const SQLite = require('react-native-sqlite-storage');
 
-/** Name of the database */
+// Name of the database
 const DB_NAME: string = 'CampusGuideData';
-
-/** Current version of the database. Update when changes are made. */
+// Current version of the database. Update when changes are made
 const DB_VERSION: number = 1;
-
-/** Identifies the database version, stored in the local storage. */
+// Identifies the database version, stored in the local storage
 const DB_VERSION_KEY: string = "db_version";
-
-/** Display name of the database. */
+// Display name of the database
 const DB_DISPLAY_NAME: string = 'Campus Guide Database';
-
 // TODO: determine sufficient database size
-/** Size of the database. */
+// Size of the database
 const DB_SIZE: number = 200000;
 
-/** Instance of the database */
+// Instance of the database
 let db: ?SQLite = null;
-
-/** Current version of the database. */
+// Current version of the database
 let dbCurrentVersion: number = 0;
+// Indicates if the database is currently being initialized
+let dbInitializing: boolean = false;
+
+// List of promises that should resolve or reject when the database opens or fails, respectively
+const initPromises: Array < { resolve: () => any, reject: () => any } > = [];
 
 // Set mode for SQLite
 SQLite.DEBUG(true); // TODO: disable for release?
@@ -57,9 +63,8 @@ SQLite.enablePromise(false);
  * Initialize and update the database.
  *
  * @param {Object} DB the Database module
- * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
  */
-async function _init(DB: Object, AsyncStorage: ReactClass< any >): Promise<void> {
+async function _init(DB: Object): Promise < void > {
   dbCurrentVersion = 0;
   try {
     const value = await AsyncStorage.getItem(DB_VERSION_KEY);
@@ -68,26 +73,45 @@ async function _init(DB: Object, AsyncStorage: ReactClass< any >): Promise<void>
     console.error('Error getting database version.', e);
   }
 
-  db = SQLite.openDatabase(DB_NAME, DB_VERSION, DB_DISPLAY_NAME, DB_SIZE, DB._databaseSuccess, DB._databaseError);
+  db = SQLite.openDatabase(DB_NAME, DB_VERSION, DB_DISPLAY_NAME, DB_SIZE, DB._openSuccess, DB._openError);
   DB._upgradeDatabase(db, DB_VERSION);
 }
 
 module.exports = {
 
   /**
-   * Initialize the database. Create tables if necessary, and update the version.
+   * Initialize the database. Resolves when the database is ready to use. All database operations
+   * should be invoked in the resolution of this function.
    *
-   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
-   * @returns {Promise<void>} the Promise from the async function {_init}.
+   * @returns {Promise<void>} promise that resolves or rejects when the database opens or fails to, respectively
    */
-  init(AsyncStorage: ReactClass< any >): Promise< void > {
-    return _init(this, AsyncStorage);
+  init(): Promise < void > {
+    const self = this;
+    return new Promise((resolve, reject) => {
+      if (db == null) {
+        if (dbInitializing) {
+          initPromises.push({
+            resolve: resolve,
+            reject: reject,
+          });
+        } else {
+          dbInitializing = true;
+          _init(self).then(function resolved() {
+            resolve(db);
+          }, function rejected() {
+            reject();
+          });
+        }
+      } else {
+        resolve(db);
+      }
+    });
   },
 
   /**
    * Closes the open database.
    */
-  deinit() {
+  deinit(): void {
     if (db) {
       db.close(this._databaseCloseSuccess, this._databaseError);
     } else {
@@ -100,10 +124,10 @@ module.exports = {
    *
    * @param {number} newVersion version of the database to update to
    */
-  _upgradeDatabase(newVersion: number) {
+  _upgradeDatabase(newVersion: number): void {
     if (db && dbCurrentVersion < newVersion) {
 
-      /** Ignore numbers used for database versioning */
+      /* Ignore numbers used for database versioning */
       /* eslint-disable no-magic-numbers */
 
       switch (dbCurrentVersion) {
@@ -127,7 +151,7 @@ module.exports = {
    *
    * @param {any} tx database transaction
    */
-  _createDatabase(tx: any) {
+  _createDatabase(tx: any): void {
     // Clear the existing database
     tx.executeSql('DROP TABLE IF EXISTS Semesters;');
     tx.executeSql('DROP TABLE IF EXISTS Courses;');
@@ -166,7 +190,7 @@ module.exports = {
   /**
    * Report a successful database operation.
    */
-  _databaseSuccess() {
+  _databaseSuccess(): void {
     console.log('Database operation successful.');
   },
 
@@ -175,14 +199,38 @@ module.exports = {
    *
    * @param {any} err database error
    */
-  _databaseError(err: any) {
+  _databaseError(err: any): void {
     console.error('Database operation failed.', err);
+  },
+
+  /**
+   * Resolves promises waiting for the database to be initialized.
+   */
+  _openSuccess(): void {
+    console.log('Database successfully opened.');
+    dbInitializing = false;
+    for (let i = 0; i < initPromises.length; i++) {
+      initPromises[i].resolve(db);
+    }
+  },
+
+  /**
+   * Rejects promises waiting for the database to be initialized.
+   *
+   * @param {any} err database error
+   */
+  _openError(err: any): void {
+    console.error('Database could not be opened.', err);
+    dbInitializing = false;
+    for (let i = 0; i < initPromises.length; i++) {
+      initPromises[i].reject();
+    }
   },
 
   /**
    * Reports a successfully closed database
    */
-  _databaseCloseSuccess() {
+  _databaseCloseSuccess():void {
     console.log('Database has been successfully closed.');
   },
 
@@ -191,14 +239,14 @@ module.exports = {
    *
    * @param {any} err database error
    */
-  _databaseUpgradeError(err: any) {
+  _databaseUpgradeError(err: any): void {
     console.error('Error upgrading database from {1} to {2}.'.format(dbCurrentVersion, dbCurrentVersion + 1), err);
   },
 
   /**
    * Increment current database version and upgrade incrementally.
    */
-  _databaseUpgradeSuccess() {
+  _databaseUpgradeSuccess(): void {
     if (dbCurrentVersion !== 0) {
       console.log('Successfully upgraded database from {1} to {2}.'.format(dbCurrentVersion, dbCurrentVersion + 1));
 
