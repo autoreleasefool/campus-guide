@@ -73,7 +73,8 @@ module.exports = {
     DefaultTab: 100,
     Splash: 1,
     Main: 2,
-    Search: 3,
+    Update: 3,
+    Search: 4,
     Find: {
       Home: 100,
       Building: 101,
