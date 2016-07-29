@@ -38,7 +38,7 @@ const DB_NAME: string = 'CampusGuideData';
 // Current version of the database. Update when changes are made
 const DB_VERSION: number = 1;
 // Identifies the database version, stored in the local storage
-const DB_VERSION_KEY: string = "db_version";
+const DB_VERSION_KEY: string = 'db_version';
 // Display name of the database
 const DB_DISPLAY_NAME: string = 'Campus Guide Database';
 // TODO: determine sufficient database size
@@ -83,9 +83,9 @@ module.exports = {
    * Initialize the database. Resolves when the database is ready to use. All database operations
    * should be invoked in the resolution of this function.
    *
-   * @returns {Promise<void>} promise that resolves or rejects when the database opens or fails to, respectively
+   * @returns {Promise<SQLite>} promise that resolves or rejects when the database opens or fails to, respectively
    */
-  init(): Promise < void > {
+  init(): Promise < SQLite > {
     const self = this;
     return new Promise((resolve, reject) => {
       if (db == null) {
@@ -153,37 +153,52 @@ module.exports = {
    */
   _createDatabase(tx: any): void {
     // Clear the existing database
+    tx.executeSql('PRAGMA foreign_keys = ON;');
     tx.executeSql('DROP TABLE IF EXISTS Semesters;');
     tx.executeSql('DROP TABLE IF EXISTS Courses;');
     tx.executeSql('DROP TABLE IF EXISTS Sessions;');
+    tx.executeSql('DROP TABLE IF EXISTS Config;');
 
     // Create the Semesters table
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS Semesters ('
-      + '_id INTEGER PRIMARY KEY NOT NULL,'
-      + 'name_fr STRING NOT NULL COLLATE NOCASE,'
-      + 'name_en STRING NOT NULL COLLATE NOCASE'
-      + ')'
+      + '_id INTEGER PRIMARY KEY NOT NULL, '
+      + 'name_fr TEXT NOT NULL COLLATE NOCASE, '
+      + 'name_en TEXT NOT NULL COLLATE NOCASE'
+      + ');'
     );
 
     // Create the Courses table
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS Courses ('
-      + '_id INTEGER PRIMARY KEY NOT NULL,'
-      + 'semester_id ,'
-      + 'name STRING NOT NULL COLLATE NOCASE'
-      + ')'
+      + '_id INTEGER PRIMARY KEY NOT NULL, '
+      + 'semester_id INTEGER NOT NULL, '
+      + 'name TEXT NOT NULL COLLATE NOCASE, '
+      + 'FOREIGN KEY (semester_id) REFERENCES Semesters(_id) '
+      + 'ON UPDATE CASCADE ON DELETE CASCADE'
+      + ');'
     );
 
     // Create the Sessions table
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS Sessions ('
-      + '_id INTEGER PRIMARY KEY NOT NULL,'
-      + 'course_id ,'
-      + 'start_time TIME,'
-      + 'duration INTEGER NOT NULL DEFAULT 90,'
-      + 'type INTEGER NOT NULL DEFAULT 0'
-      + ')'
+      + '_id INTEGER PRIMARY KEY NOT NULL, '
+      + 'course_id INTEGER NOT NULL, '
+      + 'start_time TIME, '
+      + 'duration INTEGER NOT NULL DEFAULT 90, '
+      + 'type INTEGER NOT NULL DEFAULT 0, '
+      + 'FOREIGN KEY (course_id) REFERENCES Courses(_id) '
+      + 'ON UPDATE CASCADE ON DELETE CASCADE'
+      + ');'
+    );
+
+    // Create the config files table
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS Config ('
+      + '_id INTEGER PRIMARY KEY NOT NULL, '
+      + 'name TEXT NOT NULL COLLATE NOCASE, '
+      + 'version INTEGER NOT NULL DEFAULT 1'
+      + ');'
     );
   },
 
