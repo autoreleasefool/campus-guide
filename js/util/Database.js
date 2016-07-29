@@ -113,7 +113,7 @@ module.exports = {
    */
   deinit(): void {
     if (db) {
-      db.close(this._databaseCloseSuccess, this._databaseError);
+      db.close(this._closeSuccess, this._error);
     } else {
       console.log('Database is not open.');
     }
@@ -134,8 +134,8 @@ module.exports = {
         case 0:
           db.transaction(
             this._createDatabase,
-            this._databaseUpgradeError,
-            this._databaseUpgradeSuccess,
+            this._upgradeError,
+            this._upgradeSuccess,
           );
           break;
         default:
@@ -205,7 +205,7 @@ module.exports = {
   /**
    * Report a successful database operation.
    */
-  _databaseSuccess(): void {
+  _success(): void {
     console.log('Database operation successful.');
   },
 
@@ -214,7 +214,7 @@ module.exports = {
    *
    * @param {any} err database error
    */
-  _databaseError(err: any): void {
+  _error(err: any): void {
     console.error('Database operation failed.', err);
   },
 
@@ -245,7 +245,7 @@ module.exports = {
   /**
    * Reports a successfully closed database
    */
-  _databaseCloseSuccess():void {
+  _closeSuccess():void {
     console.log('Database has been successfully closed.');
   },
 
@@ -254,14 +254,14 @@ module.exports = {
    *
    * @param {any} err database error
    */
-  _databaseUpgradeError(err: any): void {
+  _upgradeError(err: any): void {
     console.error('Error upgrading database from {1} to {2}.'.format(dbCurrentVersion, dbCurrentVersion + 1), err);
   },
 
   /**
    * Increment current database version and upgrade incrementally.
    */
-  _databaseUpgradeSuccess(): void {
+  _upgradeSuccess(): void {
     if (dbCurrentVersion !== 0) {
       console.log('Successfully upgraded database from {1} to {2}.'.format(dbCurrentVersion, dbCurrentVersion + 1));
 
