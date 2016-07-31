@@ -22,14 +22,14 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.1.0",
-    "babel-jest": "^13.0.0",
+    "babel-jest": "^14.0.2",
     "babel-polyfill": "^6.9.1",
     "empty": "^0.10.1",
     "eslint": "^3.2.0",
     "eslint-plugin-react": "^5.2.2",
     "eslint-plugin-react-native": "^1.1.0",
     "flow-bin": "^0.27.0",
-    "jest-cli": "^13.0.0",
+    "jest-cli": "^14.0.1",
     "rnpm-plugin-upgrade": "^0.26.0"
   },
   "jest": {
