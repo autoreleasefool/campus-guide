@@ -33,6 +33,7 @@ import {
 } from 'react-native';
 
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const Preferences = require('Preferences');
 const TabsView = require('Tabs');
@@ -57,6 +58,22 @@ class MainScreen extends React.Component {
         Translations.only_once_message,
       );
     }
+
+    const self: MainScreen = this;
+    Configuration.isConfigUpdateAvailable()
+        .then(available => {
+          if (available) {
+            Alert.alert(
+              Translations.update_available_title,
+              Translations.update_available_msg,
+              [
+                {text: Translations.cancel, style: 'cancel'},
+                {text: Translations.update, onPress: () => self.props.navigator.push({id: Constants.Views.Update})},
+              ]
+            );
+          }
+        })
+        .catch(err => console.error('Error checking for configuration.', err));
   }
 
   /**

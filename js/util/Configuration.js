@@ -33,6 +33,7 @@ import type {
 
 // Imports
 const Database = require('Database');
+const DeviceInfo = require('react-native-device-info');
 const Promise = require('promise');
 const RNFS = require('react-native-fs');
 
@@ -54,6 +55,9 @@ let cityBuses: ?BusInfo = null;
 let configInitializing: boolean = false;
 // List of promises that should resolve or reject if the configuration is available or not
 const availablePromises: Array < { resolve: () => any, reject: () => any } > = [];
+
+// List of configuration files which have updates available
+const configurationUpdates: Array < { name: string, url: string, oldVersion: number, newVersion: number } > = [];
 
 /**
  * Asynchronously gets the configuration for the application and loads the various config values into their
@@ -134,6 +138,60 @@ function _initError(): void {
   }
 }
 
+/**
+ * Checks if there is a configuration available to download. Returns true or false in a promise.
+ *
+ * @returns {Promise<boolean>} promise which resolves to true or false depending on if a config update is available
+ */
+async function _refreshConfigVersions(): Promise < boolean > {
+
+  // Load environment variables
+  const env = require('env');
+
+  try {
+    // Get current config versions
+    const db = await Database.init();
+    const configVersions = await Database.getConfigVersions(db);
+
+    // Fetch most recent config versions from server
+    const configUpdateURL: string = env.configUpdatesServerUrl + '/config/' + DeviceInfo.getBuildVersion();
+    console.log('Retrieving config: ' + configUpdateURL);
+    const response = await fetch(configUpdateURL);
+    const appConfig: Object = await response.json();
+
+    // Will indicate if any updates are available
+    let updateAvailable: boolean = false;
+
+    for (const config in appConfig) {
+      if (appConfig.hasOwnProperty(config)) {
+        let found: boolean = false;
+        for (let i = 0; i < configVersions.length; i++) {
+          if (configVersions[i].name === config) {
+            found = true;
+            if (configVersions[i].version < appConfig[config].version) {
+              updateAvailable = true;
+              configurationUpdates.push({
+                name: config,
+                url: appConfig[config].location.url,
+                oldVersion: configVersions[i].version,
+                newVersion: appConfig[config].version,
+              });
+            }
+          }
+        }
+
+        if (!found) {
+          return true;
+        }
+      }
+    }
+
+    return updateAvailable;
+  } catch (e) {
+    throw e;
+  }
+}
+
 module.exports = {
 
   /**
@@ -161,6 +219,15 @@ module.exports = {
         resolve(true);
       }
     });
+  },
+
+  /**
+   * Checks if there is a configuration available to download. Returns true or false in a promise.
+   *
+   * @returns {Promise<boolean>} promise which resolves to true or false depending on if a config update is available
+   */
+  isConfigUpdateAvailable(): Promise < boolean > {
+    return _refreshConfigVersions();
   },
 
   /**
