@@ -11,6 +11,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.github.yamill.orientation.OrientationPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 
 import java.util.Arrays;
@@ -31,7 +32,8 @@ public class MainApplication extends Application implements ReactApplication {
           new OrientationPackage(this),
           new MapsPackage(),
           new VectorIconsPackage(),
-          new AirPackage()
+          new AirPackage(),
+          new RNDeviceInfo()
       );
     }
   };
