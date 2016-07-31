@@ -62,8 +62,8 @@ function setup(): ReactClass<{}> {
   }
 
   // Add the format function to string
-  if (!String.format) {
-    String.format = function format(str: string) {
+  if (!(String:any).format) {
+    (String:any).format = function format(str: string) {
       const args = Array.prototype.slice.call(arguments, 1);
       return str.replace(/{(\d+)}/g, (match, number) => {
         return typeof args[number] == 'undefined'

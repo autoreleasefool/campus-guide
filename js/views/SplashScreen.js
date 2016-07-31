@@ -120,7 +120,7 @@ class SplashScreen extends React.Component {
    */
   _checkConfiguration(): void {
     const self: SplashScreen = this;
-    Configuration.isAvailable()
+    Configuration.init()
         .then(available => {
           if (available) {
             self.props.navigator.replace({id: Constants.Views.Main});
@@ -130,7 +130,7 @@ class SplashScreen extends React.Component {
         })
         .catch(error => {
           console.error('Unable to determine if configuration is available. Assuming it is not.', error);
-          self.props.navigator.replace({id: Constants.Views.Updaate});
+          self.props.navigator.replace({id: Constants.Views.Update});
         });
   }
 
