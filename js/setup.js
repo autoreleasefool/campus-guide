@@ -39,11 +39,12 @@ import type {
 
 // Imports
 const Constants = require('Constants');
-// const Database = require('Database');
+const Database = require('Database');
 const MainScreen = require('MainScreen');
 const Orientation = require('react-native-orientation');
 const SplashScreen = require('SplashScreen');
 const Tooltip = require('Tooltip');
+const UpdateScreen = require('UpdateScreen');
 
 /**
  * Applies global settings to the app and returns the root view.
@@ -53,7 +54,7 @@ const Tooltip = require('Tooltip');
 function setup(): ReactClass<{}> {
 
   // Create the database
-  // Database.init();
+  Database.init();
 
   // Enable animations on Android
   if (Platform.OS === 'android') {
@@ -61,11 +62,11 @@ function setup(): ReactClass<{}> {
   }
 
   // Add the format function to string
-  if (!String.prototype.format) {
-    (String:any).prototype.format = function format() {
-      const args = arguments;
-      return this.replace(/{(\d+)}/g, (match, number) => {
-        return typeof (args[number]) == 'undefined'
+  if (!String.format) {
+    String.format = function format(str: string) {
+      const args = Array.prototype.slice.call(arguments, 1);
+      return str.replace(/{(\d+)}/g, (match, number) => {
+        return typeof args[number] == 'undefined'
           ? match
           : args[number];
       });
@@ -85,7 +86,7 @@ function setup(): ReactClass<{}> {
      * Clean up the connection to the database
      */
     componentWillUnmount(): void {
-      // Database.deinit();
+      Database.deinit();
     }
 
     /**
@@ -111,6 +112,10 @@ function setup(): ReactClass<{}> {
       if (route.id === Constants.Views.Splash) {
         return (
           <SplashScreen navigator={navigator} />
+        );
+      } else if (route.id === Constants.Views.Update) {
+        return (
+          <UpdateScreen navigator={navigator} />
         );
       } else if (route.id === Constants.Views.Main) {
         return (

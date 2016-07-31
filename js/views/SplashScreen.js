@@ -96,38 +96,52 @@ class SplashScreen extends React.Component {
     const self: SplashScreen = this;
 
     StatusBarUtils.setLightStatusBarIOS(Platform, StatusBar, true);
-    Configuration.loadConfiguration()
-        .then(function onConfigLoaded() {
-          Preferences.loadInitialPreferences(AsyncStorage)
-              .then(function onPreferencesLoaded() {
-                if (Preferences.isLanguageSelected()) {
-                  // If a lanuage has been selected, remove this language select
-                  // screen, open the main screen
-                  self.props.navigator.replace({id: 2});
-                  // TODO: comment above and uncomment below to always show splash
-                  // screen
-                  // this.setState({
-                  //   isLoading: false
-                  // });
-                } else {
-                  self.setState({
-                    isLoading: false,
-                  });
-                }
-              })
-              .catch(err => console.error('Unable to load initial preferences in Splash', err));
+    Preferences.loadInitialPreferences(AsyncStorage)
+        .then(function onPreferencesLoaded() {
+          if (Preferences.isLanguageSelected()) {
+            self._checkConfiguration();
+            // TODO: comment above and uncomment below to always show splash
+            // screen
+            // this.setState({
+            //   isLoading: false
+            // });
+          } else {
+            self.setState({
+              isLoading: false,
+            });
+          }
         })
-        .catch(err => console.error('Unable to load app configuration in Splash', err));
+        .catch(err => console.error('Unable to load initial preferences in Splash', err));
   }
 
   /**
-   * Sets the language of the app and opens the main screen.
+   * Checks to make sure a configuration is available and opens the next screen.
+   * If no configuration is available, opens the Update screen. Otherwise, opens the Main screen.
+   */
+  _checkConfiguration(): void {
+    const self: SplashScreen = this;
+    Configuration.isAvailable()
+        .then(available => {
+          if (available) {
+            self.props.navigator.replace({id: Constants.Views.Main});
+          } else {
+            self.props.navigator.replace({id: Constants.Views.Update});
+          }
+        })
+        .catch(error => {
+          console.error('Unable to determine if configuration is available. Assuming it is not.', error);
+          self.props.navigator.replace({id: Constants.Views.Updaate});
+        });
+  }
+
+  /**
+   * Sets the language of the app and opens the next screen.
    *
    * @param {Language} language  one of 'en' or 'fr', to specify the language chosen by the user.
    */
   _selectLanguage(language: Language): void {
     Preferences.setSelectedLanguage(AsyncStorage, language);
-    this.props.navigator.push({id: Constants.Views.Main});
+    this._checkConfiguration();
   }
 
   /**

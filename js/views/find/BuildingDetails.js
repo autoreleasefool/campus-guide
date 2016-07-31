@@ -317,8 +317,10 @@ class BuildingDetails extends React.Component {
    * @returns {ReactElement<any>} a touchable view
    */
   _renderBuildingDirections(Translations: Object): ReactElement< any > {
-    const navigateTo: string = Translations.navigate_to.format(
-        LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails));
+    const navigateTo: string = (String:any).format(
+      Translations.navigate_to,
+      LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)
+    );
 
     return (
       <TouchableOpacity>

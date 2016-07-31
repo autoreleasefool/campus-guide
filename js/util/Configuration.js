@@ -31,23 +31,72 @@ import type {
   BusInfo,
 } from 'types';
 
+// Imports
+const Database = require('Database');
+const Promise = require('promise');
+const RNFS = require('react-native-fs');
+
+// Directory for config files
+const CONFIG_DIRECTORY = RNFS.DocumentDirectoryPath + '/config';
+// Expected filename for app_config
+const APP_CONFIG: string = '/app_config.json';
+
 // Default link to return
 const DEFAULT_LINK: string = 'http://www.uottawa.ca/';
 // List of semesters available in the app
-const availableSemesters: Array<Semester> = [];
+const availableSemesters: Array < Semester > = [];
 
 // Information about the university
 let university: ?University = null;
 // Information about the buses in the city
 let cityBuses: ?BusInfo = null;
+// Indicates if the configuration is initializing
+let configInitializing: boolean = false;
+// List of promises that should resolve or reject if the configuration is available or not
+const availablePromises: Array < { resolve: () => any, reject: () => any } > = [];
 
 /**
  * Asynchronously gets the configuration for the application and loads the various config values into their
  * respective variables.
+ *
+ * @returns {Promise<boolean>} returns a promise which resolves with true if the configuration is available,
+ *                             false otherwise
  */
-async function _requestConfig(): Promise<void> {
-  // Get the configuration file
-  const configuration: Object = require('../../assets/json/config.json');
+async function _requestConfig(): Promise < boolean > {
+
+  let db = null;
+  try {
+    db = await Database.init();
+  } catch (e) {
+    throw e;
+  }
+
+  let configVersions = null;
+  try {
+    configVersions = await Database.getConfigVersions(db);
+  } catch (e) {
+    throw e;
+  }
+
+  if (configVersions.length == 0) {
+    return false;
+  }
+
+  // Ensure all config files exist
+  let configAvailable: boolean = true;
+  for (let i = 0; i < configVersions.length; i++) {
+    const stats = await RNFS.stats(CONFIG_DIRECTORY + configVersions[i].name);
+    configAvailable = configAvailable && stats.isFile();
+  }
+
+  // If any config files do not exist, return false for no available configuration
+  if (!configAvailable) {
+    return false;
+  }
+
+  // Load the application configuration
+  const appConfig: string = await RNFS.readFile(CONFIG_DIRECTORY + APP_CONFIG, 'utf8');
+  const configuration = JSON.parse(appConfig);
 
   // Get the current semesters available in the app
   if (configuration.AvailableSemesters) {
@@ -58,17 +107,60 @@ async function _requestConfig(): Promise<void> {
 
   university = configuration.University;
   cityBuses = configuration.Bus;
+  return true;
+}
+
+/**
+ * Resolves promises waiting for Configuration initiation with the result.
+ *
+ * @param {boolean} result true if the configuration is available, false otherwise
+ */
+function _initSuccess(result: boolean): void {
+  console.log('Configuration successfully loaded.');
+  configInitializing = false;
+  for (let i = 0; i < availablePromises.length; i++) {
+    availablePromises[i].resolve(result);
+  }
+}
+
+/**
+ * Resolves promises waiting for Configuration initiation with false (no configuration available).
+ */
+function _initError(): void {
+  console.log('Configuration could not be found.');
+  configInitializing = false;
+  for (let i = 0; i < availablePromises.length; i++) {
+    availablePromises[i].resolve(false);
+  }
 }
 
 module.exports = {
 
   /**
-   * Retrieves the app's configuration data and returns it in a promise.
+   * Returns a promise that resolves with a boolean indicating if a version of the configuration is available, and
+   * false if not, or rejects if the configuration cannot be found.
    *
-   * @returns {Promise<void>} the Promise from the async function {_requestConfig}.
+   * @returns {Promise<boolean>} promise that will resolve/reject when configuration is found or not
    */
-  loadConfiguration(): Promise< void > {
-    return _requestConfig();
+  init(): Promise < boolean > {
+    return new Promise((resolve, reject) => {
+      if (university == null) {
+        availablePromises.push({
+          resolve: resolve,
+          reject: reject,
+        });
+
+        if (!configInitializing) {
+          configInitializing = true;
+          _requestConfig()
+              .then(_initSuccess)
+              .catch(_initError);
+        }
+      } else {
+        // Configuration has been loaded and parsed, so resolve to true
+        resolve(true);
+      }
+    });
   },
 
   /**
