@@ -32,3 +32,6 @@ rm -r ./android/app/src/main/java/com/
 rnpm link react-native-vector-icons
 rnpm link react-native-maps
 rnpm link react-native-orientation
+rnpm link react-native-device-info
+rnpm link react-native-fs
+rnpm link react-native-sqlite-storage
