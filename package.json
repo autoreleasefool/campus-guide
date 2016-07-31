@@ -12,7 +12,7 @@
     "after-upgrade": "./after-upgrade.sh"
   },
   "dependencies": {
-    "react": "^15.1.0",
+    "react": "^15.2.1",
     "react-native": "^0.30.0",
     "react-native-fs": "^1.5.1",
     "react-native-maps": "^0.7.1",
