@@ -206,7 +206,8 @@
     "id-length": "off",
     "id-match": "off",
     "indent": ["error", 2, {
-      "SwitchCase": 1
+      "SwitchCase": 1,
+      "MemberExpression": 2
     }],
     "jsx-quotes": ["error", "prefer-single"],
     "key-spacing": "error",
