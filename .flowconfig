@@ -17,8 +17,7 @@ node_modules/react-native/flow
 flow/
 
 [options]
-module.name_mapper='/Tabs' -> '/Tabs.ios'
-module.name_mapper='/NavBar' -> '/NavBar.ios'
+module.name_mapper='env' -> 'empty/object'
 module.name_mapper='.*/assets/csv/.*' -> 'empty/object'
 module.name_mapper='.*/assets/js/.*' -> 'empty/object'
 module.name_mapper='.*/assets/json/.*' -> 'empty/object'
