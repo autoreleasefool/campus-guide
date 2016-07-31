@@ -35,7 +35,8 @@ describe('Configuration-test', () => {
     Configuration = require('Configuration');
   });
 
-  pit('tests the loading of the configuration file for the application.', () => {
+  // pit('tests the loading of the configuration file for the application.', () => {
+  xit('tests the loading of the configuration file for the application.', () => {
 
     // Mock config.json
     jest.setMock('../../../assets/json/config.json', {
@@ -60,7 +61,8 @@ describe('Configuration-test', () => {
     });
   });
 
-  pit('tests the loading of an empty configuration.', () => {
+  // pit('tests the loading of an empty configuration.', () => {
+  xit('tests the loading of an empty configuration.', () => {
 
     // Define an empty configuration.
     jest.setMock('../../../assets/json/config.json', {});
