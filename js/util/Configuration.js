@@ -209,7 +209,7 @@ async function _refreshConfigVersions(): Promise < boolean > {
 /**
  * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
  *
- * @param {function} onStart callback function invoked with total size of update in bytes
+ * @param {function} onStart    callback function invoked with total size of update in bytes
  * @param {function} onProgress callback function invoked with byte of update downloaded so far and total expected bytes
  */
 async function _updateConfig(onStart: () => any, onProgress: () => any): Promise < void > {
@@ -299,10 +299,12 @@ module.exports = {
   /**
    * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
    *
-   * @param {function} onProgress callback function to update progress
+   * @param {function} onStart    callback function invoked with total size of update in bytes
+   * @param {function} onProgress callback function invoked with byte of update downloaded so far and total
+   *                              expected bytes
    * @returns {Promise<void>} a promise which resolves when the update is complete
    */
-  updateConfig(onProgress: () => any): Promise < void > {
+  updateConfig(onStart: () => any, onProgress: () => any): Promise < void > {
     return _updateConfig(onProgress);
   },
 
