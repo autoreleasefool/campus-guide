@@ -48,6 +48,8 @@ const RNFS = require('react-native-fs');
 
 // Directory for config files
 const CONFIG_DIRECTORY = RNFS.DocumentDirectoryPath + '/config';
+// Directory for downloaded config files
+const TEMP_CONFIG_DIRECTORY = RNFS.DocumentDirectoryPath + '/temp/config';
 // Expected filename for app_config
 const APP_CONFIG: string = '/app_config.json';
 
@@ -219,6 +221,7 @@ async function _updateConfig(onStart: () => any, onProgress: () => any): Promise
   }
 
   await RNFS.mkdir(CONFIG_DIRECTORY);
+  await RNFS.mkdir(TEMP_CONFIG_DIRECTORY);
 
   // Get total size of update
   let totalSize: number = 0;
@@ -235,16 +238,10 @@ async function _updateConfig(onStart: () => any, onProgress: () => any): Promise
 
   try {
     for (let i = 0; i < configurationUpdates.length; i++) {
-      // Delete the file if it exists
-      const exists = await RNFS.exists(CONFIG_DIRECTORY + configurationUpdates[i].name);
-      if (exists) {
-        await RNFS.unlink(CONFIG_DIRECTORY + configurationUpdates[i].name);
-      }
-
       // Download the file
       const downloadResult = await RNFS.downloadFile({
         fromUrl: configurationUpdates[i].url,
-        toFile: CONFIG_DIRECTORY + configurationUpdates[i].name,
+        toFile: TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name,
         progress: updateProgress,
       });
 
@@ -253,6 +250,22 @@ async function _updateConfig(onStart: () => any, onProgress: () => any): Promise
             + 'Status code: ' + downloadResult.statusCode);
       }
     }
+
+    // Delete the old configuration files, move the new ones
+    for (let i = 0; i < configurationUpdates.length; i++) {
+      // Delete the file if it exists
+      const exists = await RNFS.exists(CONFIG_DIRECTORY + configurationUpdates[i].name);
+      if (exists) {
+        await RNFS.unlink(CONFIG_DIRECTORY + configurationUpdates[i].name);
+      }
+
+      await RNFS.moveFile(
+        TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name,
+        CONFIG_DIRECTORY + configurationUpdates[i].name
+      );
+    }
+
+    await RNFS.unlink(TEMP_CONFIG_DIRECTORY);
   } catch (e) {
     throw e;
   }
