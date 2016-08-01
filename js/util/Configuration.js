@@ -31,9 +31,18 @@ import type {
   BusInfo,
 } from 'types';
 
+type ConfigUpdate = {
+  name: string,
+  url: string,
+  size: number,
+  oldVersion: number,
+  newVersion: number
+}
+
 // Imports
 const Database = require('Database');
 const DeviceInfo = require('react-native-device-info');
+const HttpStatus = require('http-status-codes');
 const Promise = require('promise');
 const RNFS = require('react-native-fs');
 
@@ -57,7 +66,7 @@ let configInitializing: boolean = false;
 const availablePromises: Array < { resolve: () => any, reject: () => any } > = [];
 
 // List of configuration files which have updates available
-const configurationUpdates: Array < { name: string, url: string, oldVersion: number, newVersion: number } > = [];
+const configurationUpdates: Array < ConfigUpdate > = [];
 
 /**
  * Asynchronously gets the configuration for the application and loads the various config values into their
@@ -89,8 +98,12 @@ async function _requestConfig(): Promise < boolean > {
   // Ensure all config files exist
   let configAvailable: boolean = true;
   for (let i = 0; i < configVersions.length; i++) {
-    const stats = await RNFS.stats(CONFIG_DIRECTORY + configVersions[i].name);
-    configAvailable = configAvailable && stats.isFile();
+    try {
+      const exists = await RNFS.exists(CONFIG_DIRECTORY + configVersions[i].name);
+      configAvailable = configAvailable && exists;
+    } catch (e) {
+      throw e;
+    }
   }
 
   // If any config files do not exist, return false for no available configuration
@@ -154,7 +167,7 @@ async function _refreshConfigVersions(): Promise < boolean > {
     const configVersions = await Database.getConfigVersions(db);
 
     // Fetch most recent config versions from server
-    const configUpdateURL: string = env.configUpdatesServerUrl + '/config/' + DeviceInfo.getBuildVersion();
+    const configUpdateURL: string = env.configUpdatesServerUrl + '/config/' + DeviceInfo.getVersion();
     console.log('Retrieving config: ' + configUpdateURL);
     const response = await fetch(configUpdateURL);
     const appConfig: Object = await response.json();
@@ -173,6 +186,7 @@ async function _refreshConfigVersions(): Promise < boolean > {
               configurationUpdates.push({
                 name: config,
                 url: appConfig[config].location.url,
+                size: appConfig[config].size,
                 oldVersion: configVersions[i].version,
                 newVersion: appConfig[config].version,
               });
@@ -187,6 +201,58 @@ async function _refreshConfigVersions(): Promise < boolean > {
     }
 
     return updateAvailable;
+  } catch (e) {
+    throw e;
+  }
+}
+
+/**
+ * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
+ *
+ * @param {function} onStart callback function invoked with total size of update in bytes
+ * @param {function} onProgress callback function invoked with byte of update downloaded so far and total expected bytes
+ */
+async function _updateConfig(onStart: () => any, onProgress: () => any): Promise < void > {
+  if (configurationUpdates.length === 0) {
+    // If there are no updates, exit
+    return;
+  }
+
+  await RNFS.mkdir(CONFIG_DIRECTORY);
+
+  // Get total size of update
+  let totalSize: number = 0;
+  let bytesWritten: number = 0;
+  for (let i = 0; i < configurationUpdates.length; i++) {
+    totalSize += configurationUpdates[i].size;
+  }
+  onStart(totalSize);
+
+  const updateProgress = progress => {
+    bytesWritten += progress;
+    onProgress(bytesWritten, totalSize);
+  };
+
+  try {
+    for (let i = 0; i < configurationUpdates.length; i++) {
+      // Delete the file if it exists
+      const exists = await RNFS.exists(CONFIG_DIRECTORY + configurationUpdates[i].name);
+      if (exists) {
+        await RNFS.unlink(CONFIG_DIRECTORY + configurationUpdates[i].name);
+      }
+
+      // Download the file
+      const downloadResult = await RNFS.downloadFile({
+        fromUrl: configurationUpdates[i].url,
+        toFile: CONFIG_DIRECTORY + configurationUpdates[i].name,
+        progress: updateProgress,
+      });
+
+      if (downloadResult.statusCode != HttpStatus.OK) {
+        throw new Error('Download of file ' + configurationUpdates[i].name + ' failed.'
+            + 'Status code: ' + downloadResult.statusCode);
+      }
+    }
   } catch (e) {
     throw e;
   }
@@ -228,6 +294,16 @@ module.exports = {
    */
   isConfigUpdateAvailable(): Promise < boolean > {
     return _refreshConfigVersions();
+  },
+
+  /**
+   * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
+   *
+   * @param {function} onProgress callback function to update progress
+   * @returns {Promise<void>} a promise which resolves when the update is complete
+   */
+  updateConfig(onProgress: () => any): Promise < void > {
+    return _updateConfig(onProgress);
   },
 
   /**
