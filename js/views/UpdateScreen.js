@@ -31,17 +31,78 @@ import {
   View,
 } from 'react-native';
 
+// Type definition for component props.
+type Props = {
+  navigator: ReactElement < any >,
+};
+
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const Preferences = require('Preferences');
 
 class UpdateScreen extends React.Component {
 
   /**
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
+    navigator: React.PropTypes.any.isRequired,
+  };
+
+  /**
+   * Pass props and declares initial state.
+   *
+   * @param {Props} props properties passed from container to this component.
+   */
+  constructor(props: Props) {
+    super(props);
+
+    // Explicitly binding 'this' to all methods that need it
+    (this:any)._returnToMain = this._returnToMain.bind(this);
+    (this:any)._onUpdateBegin = this._onUpdateBegin.bind(this);
+    (this:any)._onUpdateProgress = this._onUpdateProgress.bind(this);
+  }
+
+  /**
    * Displays a pop up when the application opens for the first time after the user selects their preferred language.
    */
   componentDidMount(): void {
-    // TODO: wait for configuration
+    const self: UpdateScreen = this;
+    Configuration._updateConfig(this._onUpdateBegin, this._onUpdateProgress)
+        .then(this._returnToMain)
+        .catch(err => {
+          console.error('Failed to update configuration.', err);
+          self._returnToMain();
+        });
+  }
+
+  totalSize: number;
+
+  /**
+   * Return to the main screen.
+   */
+  _returnToMain(): void {
+    this.props.navigator.push({id: Constants.Views.Main});
+  }
+
+  /**
+   * Handles event for when update begins.
+   *
+   * @param {number} totalSize total size of the update to download
+   */
+  _onUpdateBegin(totalSize: number): void {
+    this.totalSize = totalSize;
+  }
+
+  /**
+   * Handles event for when progress update is received.
+   *
+   * @param {number} bytesWritten number of bytes downloaded so far
+   * @param {number} totalSize total size of the update to download
+   */
+  _onUpdateProgress(bytesWritten: number, totalSize: number): void {
+    console.log('Progress: ' + (bytesWritten / totalSize) + ' (' + bytesWritten + '/' + totalSize + ')');
   }
 
   /**
@@ -55,7 +116,9 @@ class UpdateScreen extends React.Component {
         : Constants.Colors.charcoalGrey;
 
     return (
-      <View style={[_styles.container, {backgroundColor: backgroundColor}]} />
+      <View style={[_styles.container, {backgroundColor: backgroundColor}]}>
+        <Text>{'Downloading'}</Text>
+      </View>
     );
   }
 }
