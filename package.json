@@ -12,6 +12,7 @@
     "after-upgrade": "./after-upgrade.sh"
   },
   "dependencies": {
+    "http-status-codes": "^1.0.6",
     "react": "^15.2.1",
     "react-native": "^0.30.0",
     "react-native-device-info": "^0.9.3",
