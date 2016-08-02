@@ -14,7 +14,10 @@ coverage/
 ios/main.jsbundle
 
 # Keystores
-*/keystores/*" >> .gitignore
+*/keystores/*
+
+# Environment
+js/env.js" >> .gitignore
 
 # Update the package name of the app
 sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/build.gradle
