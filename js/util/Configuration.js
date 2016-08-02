@@ -214,7 +214,9 @@ async function _refreshConfigVersions(): Promise < boolean > {
  * @param {function} onStart    callback function invoked with total size of update in bytes
  * @param {function} onProgress callback function invoked with byte of update downloaded so far and total expected bytes
  */
-async function _updateConfig(onStart: () => any, onProgress: () => any): Promise < void > {
+async function _updateConfig(
+    onStart: (ts: number) => any,
+    onProgress: (bw: number, ts: number) => any): Promise < void > {
   if (configurationUpdates.length === 0) {
     // If there are no updates, exit
     return;
@@ -317,8 +319,8 @@ module.exports = {
    *                              expected bytes
    * @returns {Promise<void>} a promise which resolves when the update is complete
    */
-  updateConfig(onStart: () => any, onProgress: () => any): Promise < void > {
-    return _updateConfig(onProgress);
+  updateConfig(onStart: (ts: number) => any, onProgress: (bw: number, ts: number) => any): Promise < void > {
+    return _updateConfig(onStart, onProgress);
   },
 
   /**
