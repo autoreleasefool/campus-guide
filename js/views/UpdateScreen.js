@@ -28,6 +28,7 @@
 import React from 'react';
 import {
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 
@@ -69,7 +70,7 @@ class UpdateScreen extends React.Component {
    */
   componentDidMount(): void {
     const self: UpdateScreen = this;
-    Configuration._updateConfig(this._onUpdateBegin, this._onUpdateProgress)
+    Configuration.updateConfig(this._onUpdateBegin, this._onUpdateProgress)
         .then(this._returnToMain)
         .catch(err => {
           console.error('Failed to update configuration.', err);

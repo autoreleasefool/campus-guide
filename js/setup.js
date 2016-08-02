@@ -53,6 +53,9 @@ const UpdateScreen = require('UpdateScreen');
  */
 function setup(): ReactClass<{}> {
 
+  if (typeof process === 'undefined') process = {};
+  process.nextTick = setImmediate;
+
   // Create the database
   Database.init();
 
