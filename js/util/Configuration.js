@@ -69,6 +69,8 @@ const availablePromises: Array < { resolve: () => any, reject: () => any } > = [
 
 // List of configuration files which have updates available
 const configurationUpdates: Array < ConfigUpdate > = [];
+// Indicates if the app has checked for a configuration update yet
+let checkedForUpdate: boolean = false;
 
 /**
  * Asynchronously gets the configuration for the application and loads the various config values into their
@@ -119,13 +121,13 @@ async function _requestConfig(): Promise < boolean > {
 
   // Get the current semesters available in the app
   if (configuration.AvailableSemesters) {
-    for (let i = 0; i < configuration.AvailableSemesters.length; i++) {
+    for (let i = 0; i < configuration.semesters.length; i++) {
       availableSemesters.push(configuration.AvailableSemesters[i]);
     }
   }
 
-  university = configuration.University;
-  cityBuses = configuration.Bus;
+  university = configuration.university;
+  cityBuses = configuration.bus;
   return true;
 }
 
@@ -135,7 +137,12 @@ async function _requestConfig(): Promise < boolean > {
  * @param {boolean} result true if the configuration is available, false otherwise
  */
 function _initSuccess(result: boolean): void {
-  console.log('Configuration successfully loaded.');
+  if (result) {
+    console.log('Configuration successfully loaded.');
+  } else {
+    console.log('Configuration could not be found.');
+  }
+
   configInitializing = false;
   for (let i = 0; i < availablePromises.length; i++) {
     availablePromises[i].resolve(result);
@@ -197,7 +204,14 @@ async function _refreshConfigVersions(): Promise < boolean > {
         }
 
         if (!found) {
-          return true;
+          updateAvailable = true;
+          configurationUpdates.push({
+            name: config,
+            url: appConfig[config].location.url,
+            size: appConfig[config].size,
+            oldVersion: 0,
+            newVersion: appConfig[config].version,
+          });
         }
       }
     }
@@ -234,7 +248,7 @@ async function _updateConfig(
   onStart(totalSize);
 
   const updateProgress = progress => {
-    bytesWritten += progress;
+    bytesWritten += parseInt(progress);
     onProgress(bytesWritten, totalSize);
   };
 
@@ -253,8 +267,11 @@ async function _updateConfig(
       }
     }
 
+    const configRowUpdates: Array < {name: string, version: number} > = [];
+
     // Delete the old configuration files, move the new ones
     for (let i = 0; i < configurationUpdates.length; i++) {
+
       // Delete the file if it exists
       const exists = await RNFS.exists(CONFIG_DIRECTORY + configurationUpdates[i].name);
       if (exists) {
@@ -265,9 +282,25 @@ async function _updateConfig(
         TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name,
         CONFIG_DIRECTORY + configurationUpdates[i].name
       );
+
+      configRowUpdates.push({
+        name: configurationUpdates[i].name,
+        version: configurationUpdates[i].newVersion,
+      });
     }
 
+    // Update config versions in database
+    let db = null;
+    try {
+      db = await Database.init();
+    } catch (e) {
+      throw e;
+    }
+
+    await Database.updateConfigVersions(db, configRowUpdates);
+
     await RNFS.unlink(TEMP_CONFIG_DIRECTORY);
+    await module.exports.init();
   } catch (e) {
     throw e;
   }
@@ -308,6 +341,7 @@ module.exports = {
    * @returns {Promise<boolean>} promise which resolves to true or false depending on if a config update is available
    */
   isConfigUpdateAvailable(): Promise < boolean > {
+    checkedForUpdate = true;
     return _refreshConfigVersions();
   },
 
@@ -321,6 +355,15 @@ module.exports = {
    */
   updateConfig(onStart: (ts: number) => any, onProgress: (bw: number, ts: number) => any): Promise < void > {
     return _updateConfig(onStart, onProgress);
+  },
+
+  /**
+   * Returns true if the app has already performed a check for a configuration update.
+   *
+   * @returns {boolean} true if the app checked for a configuration update, false otherwise
+   */
+  didCheckForUpdate(): boolean {
+    return checkedForUpdate;
   },
 
   /**

@@ -284,3 +284,50 @@ export function getConfigVersions(DB: SQLite): Promise < Array < Object > > {
         });
   });
 }
+
+/**
+ * Update versions in the database for config files provided.
+ *
+ * @param {SQLite} DB                                      instance of database, from init()
+ * @param {{name: string, version: number}} configVersions set of config files and versions
+ * @returns {Promise<void>} promise which resolves when all updates have finished
+ */
+export function updateConfigVersions(
+    DB: SQLite,
+    configVersions: Array < {name: string, version: number} >): Promise < void > {
+  return new Promise((resolve, reject) => {
+
+    DB.executeSql('SELECT * FROM Config;')
+        .then(_parseRows)
+        .then(rows => {
+          const updatePromises: Array < Promise > = [];
+          for (let i = 0; i < configVersions.length; i++) {
+            let promise: ?Promise;
+            for (let j = 0; j < rows.length; j++) {
+              if (configVersions[i].name == rows[j].name) {
+                promise = DB.executeSql('UPDATE Config SET version = ' + configVersions[i].version
+                    + ' WHERE name = \'' + configVersions[i].name + '\';');
+              }
+            }
+
+            if (promise == null) {
+              promise = DB.executeSql('INSERT INTO Config (name, version) VALUES (?, ?);',
+                  [configVersions[i].name, configVersions[i].version]);
+            }
+
+            updatePromises.push(promise);
+          }
+
+          Promise.all(updatePromises)
+              .then(() => {
+                resolve();
+              })
+              .catch(err => {
+                reject(err);
+              });
+        })
+        .catch(err => {
+          reject(err);
+        });
+  });
+}
