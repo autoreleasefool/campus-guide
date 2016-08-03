@@ -32,13 +32,31 @@ import {
   View,
 } from 'react-native';
 
+// Type definition for component props.
+type Props = {
+  navigator: ReactClass< any >,
+};
+
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
 const Preferences = require('Preferences');
 const TabsView = require('Tabs');
 
+// Indicates if the message for language selection has been shown
+let languageSelectionMessageShown: boolean = false;
+
 class MainScreen extends React.Component {
+
+  /**
+   * Pass props and declares initial state.
+   *
+   * @param {Props} props properties passed from container to this component.
+   */
+  constructor(props: Props) {
+    super(props);
+    (this:any)._updateConfiguration = this._updateConfiguration.bind(this);
+  }
 
   /**
    * Displays a pop up when the application opens for the first time after the user selects their preferred language.
@@ -52,11 +70,35 @@ class MainScreen extends React.Component {
       Translations = require('../../assets/js/Translations.en.js');
     }
 
-    if (Preferences.isFirstTimeOpened()) {
+    if (Preferences.isFirstTimeOpened() && !languageSelectionMessageShown) {
+      languageSelectionMessageShown = true;
       Alert.alert(
         Translations.only_once_title,
         Translations.only_once_message,
+        [
+          {text: Translations.ok, onPress: this._updateConfiguration},
+        ],
       );
+    } else {
+      this._updateConfiguration();
+    }
+  }
+
+  /**
+   * Invokes Configuration.isConfigUpdateAvailable and prompts the user to update their app.
+   */
+  _updateConfiguration(): void {
+    if (Configuration.didCheckForUpdate()) {
+      // Do not check for configuration update more than once
+      return;
+    }
+
+    // Get current language for translations
+    let Translations: Object;
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../assets/js/Translations.fr.js');
+    } else {
+      Translations = require('../../assets/js/Translations.en.js');
     }
 
     const self: MainScreen = this;
