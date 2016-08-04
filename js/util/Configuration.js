@@ -120,9 +120,9 @@ async function _requestConfig(): Promise < boolean > {
   const configuration = JSON.parse(appConfig);
 
   // Get the current semesters available in the app
-  if (configuration.AvailableSemesters) {
+  if (configuration.semesters) {
     for (let i = 0; i < configuration.semesters.length; i++) {
-      availableSemesters.push(configuration.AvailableSemesters[i]);
+      availableSemesters.push(configuration.semesters[i]);
     }
   }
 
@@ -151,9 +151,11 @@ function _initSuccess(result: boolean): void {
 
 /**
  * Resolves promises waiting for Configuration initiation with false (no configuration available).
+ *
+ * @param {any} err error encountered while getting configuration
  */
-function _initError(): void {
-  console.log('Configuration could not be found.');
+function _initError(err: any): void {
+  console.log('Error while getting configuration', err);
   configInitializing = false;
   for (let i = 0; i < availablePromises.length; i++) {
     availablePromises[i].resolve(false);
