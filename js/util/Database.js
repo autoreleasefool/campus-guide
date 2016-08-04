@@ -118,6 +118,9 @@ async function _upgradeDatabase(newVersion: number): Promise < void > {
 
     /* eslint-enable no-magic-numbers */
 
+    // Update database version
+    await AsyncStorage.setItem(DB_VERSION_KEY, dbCurrentVersion + 1);
+
     if (dbCurrentVersion !== 0) {
       const upgrade: string = (String:any).format(
         'Successfully upgraded database from {1} to {2}.',
