@@ -70,11 +70,21 @@ class UpdateScreen extends React.Component {
    */
   componentDidMount(): void {
     const self: UpdateScreen = this;
-    Configuration.updateConfig(this._onUpdateBegin, this._onUpdateProgress)
-        .then(this._returnToMain)
+    Configuration.isConfigUpdateAvailable()
+        .then(available => {
+          if (available) {
+            Configuration.updateConfig(this._onUpdateBegin, this._onUpdateProgress)
+                .then(this._returnToMain)
+                .catch(err => {
+                  console.error('Failed to update configuration.', err);
+                  self._returnToMain();
+                });
+          } else {
+            self._returnToMain();
+          }
+        })
         .catch(err => {
-          console.error('Failed to update configuration.', err);
-          self._returnToMain();
+          console.log('Failed configuration update check.', err);
         });
   }
 
