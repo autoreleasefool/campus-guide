@@ -72,6 +72,9 @@ const configurationUpdates: Array < ConfigUpdate > = [];
 // Indicates if the app has checked for a configuration update yet
 let checkedForUpdate: boolean = false;
 
+// Set to true to delete configuration when app opens. Only possible while debugging.
+let clearConfigOnStart: boolean = true;
+
 /**
  * Asynchronously gets the configuration for the application and loads the various config values into their
  * respective variables.
@@ -80,6 +83,11 @@ let checkedForUpdate: boolean = false;
  *                             false otherwise
  */
 async function _requestConfig(): Promise < boolean > {
+
+  if (__DEV__ && clearConfigOnStart) {
+    clearConfigOnStart = false;
+    await _deleteConfiguration();
+  }
 
   let db = null;
   try {
@@ -305,6 +313,37 @@ async function _updateConfig(
     await module.exports.init();
   } catch (e) {
     throw e;
+  }
+}
+
+/**
+ * Deletes the configuration on the disk and clears versions in the database. Used for debugging.
+ * TODO: remove this method in release.
+ */
+async function _deleteConfiguration(): Promise < void > {
+  // Update config versions in database
+  let db = null;
+  try {
+    db = await Database.init();
+  } catch (e) {
+    throw e;
+  }
+
+  try {
+    const configVersions : Array < Object > = await Database.getConfigVersions(db);
+    const clearVersions: Array < Object > = [];
+
+    for (let i = 0; i < configVersions.length; i++) {
+      await RNFS.unlink(CONFIG_DIRECTORY + configVersions[i].name);
+      clearVersions.push({
+        name: configVersions[i].name,
+        version: 0,
+      });
+    }
+
+    await Database.updateConfigVersions(db, clearVersions);
+  } catch (err) {
+    console.error('Error accessing database while clearing versions.', err);
   }
 }
 
