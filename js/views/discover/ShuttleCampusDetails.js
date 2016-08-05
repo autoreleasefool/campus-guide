@@ -94,7 +94,9 @@ class ShuttleCampusDetails extends React.Component {
    */
   componentDidMount(): void {
     if (this.state.campus == null) {
-      this._loadCampusInfo();
+      Configuration.init()
+          .then(this._loadCampusInfo())
+          .catch(err => console.error('Configuration could not be initialized for shuttle campus details.', err));
     }
   }
 
@@ -149,12 +151,15 @@ class ShuttleCampusDetails extends React.Component {
    * Retrieves data about the campus provided as this.props.campusName.
    */
   _loadCampusInfo(): void {
-    const campuses: Array<ShuttleCampus> = require('../../../assets/json/shuttle.json');
-    if (this.props.campusName in campuses) {
-      this.setState({
-        campus: campuses[this.props.campusName],
-      });
-    }
+    Configuration.getConfig('/shuttle.json')
+        .then(campuses => {
+          if (this.props.campusName in campuses) {
+            this.setState({
+              campus: campuses[this.props.campusName],
+            });
+          }
+        })
+        .catch(err => console.error('Could not get /shuttle.json.', err));
   }
 
   /**
