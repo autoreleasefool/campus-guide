@@ -108,7 +108,9 @@ class BusCampusDetails extends React.Component {
    */
   componentDidMount(): void {
     if (this.state.campus == null) {
-      this._loadCampusInfo();
+      Configuration.init()
+          .then(this._loadCampusInfo())
+          .catch(err => console.error('Configuration could not be initialized for bus campus details.', err));
     }
   }
 
@@ -228,14 +230,17 @@ class BusCampusDetails extends React.Component {
    * Retrieves data about the campus provided as {this.props.campusName}.
    */
   _loadCampusInfo(): void {
-    const campuses: Array<TransitCampus> = require('../../../assets/json/transit_stops.json');
-    for (let i = 0; i < campuses.length; i++) {
-      if (campuses[i].id === this.props.campusName) {
-        this.setState({
-          campus: campuses[i],
-        });
-      }
-    }
+    Configuration.getConfig('/transit_stops.json')
+        .then(campuses => {
+          for (let i = 0; i < campuses.length; i++) {
+            if (campuses[i].id === this.props.campusName) {
+              this.setState({
+                campus: campuses[i],
+              });
+            }
+          }
+        })
+        .catch(err => console.error('Could not get /transit_stop.json.', err));
   }
 
   /**

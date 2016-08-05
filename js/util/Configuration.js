@@ -317,6 +317,25 @@ async function _updateConfig(
 }
 
 /**
+ * Returns a promise that resolves when the config file can be found, or rejects.
+ *
+ * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
+ * @returns {Promise<?Object>} promise that resolves when the configuration is loaded
+ */
+async function _getConfigFile(configFile: string): Promise < ?Object > {
+  // First, make sure the file exists
+  const exists = await RNFS.exists(CONFIG_DIRECTORY + configFile);
+
+  if (!exists) {
+    throw new Error('Configuration file \'' + configFile + '\' does not exist.');
+  }
+
+  // Load and parse the configuration file
+  const raw: string = await RNFS.readFile(CONFIG_DIRECTORY + configFile, 'utf8');
+  return JSON.parse(raw);
+}
+
+/**
  * Deletes the configuration on the disk and clears versions in the database. Used for debugging.
  * TODO: remove this method in release.
  */
@@ -405,6 +424,16 @@ module.exports = {
    */
   didCheckForUpdate(): boolean {
     return checkedForUpdate;
+  },
+
+  /**
+   * Returns a promise that resolves when the config file can be found, or rejects.
+   *
+   * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
+   * @returns {Promise<?Object>} promise that resolves when the configuration is loaded
+   */
+  getConfig(configFile: string): Promise < ?Object > {
+    return _getConfigFile(configFile);
   },
 
   /**
