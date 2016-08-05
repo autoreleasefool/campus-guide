@@ -72,12 +72,14 @@ type FilteredRoom = {
 };
 
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const DisplayUtils = require('DisplayUtils');
 const Ionicon = require('react-native-vector-icons/Ionicons');
 const LanguageUtils = require('LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('Preferences');
+const Promise = require('promise');
 const SearchManager = require('SearchManager');
 const SectionHeader = require('SectionHeader');
 const StatusBarUtils = require('StatusBarUtils');
@@ -164,10 +166,8 @@ class BuildingDetails extends React.Component {
       }
     });
 
-    this._roomTypes = require('../../../assets/json/room_types.json').Types;
-
     if (!this.state.loaded) {
-      this._filterRooms(null);
+      this._onRoomSearch(null);
     }
   }
 
@@ -184,6 +184,9 @@ class BuildingDetails extends React.Component {
 
   /** Listener for search input. */
   _roomSearchListener: SearchListener;
+
+  /** Promise which resolves when the room types have been loaded. */
+  _roomTypesPromise: ?Promise < Object > = null;
 
   /** List of room types and details about them. */
   _roomTypes: Object;
@@ -248,6 +251,23 @@ class BuildingDetails extends React.Component {
   }
 
   /**
+   * Returns a promise which resolves when the room types have been loaded
+   *
+   * @returns {Promise<Object>} promise which resolves with room types
+   */
+  _getRoomTypes(): Promise < Object > {
+    if (this.roomTypesPromise == null) {
+      this.roomTypesPromise = new Promise(resolve => {
+        Configuration.getConfig('/room_types.json')
+            .then(roomTypes => resolve(roomTypes))
+            .catch(err => console.error('Could not get /room_types.json.', err));
+      });
+    }
+
+    return this.roomTypesPromise;
+  }
+
+  /**
    * Moves to the next view in the banner.
    */
   _swapBanner(): void {
@@ -266,7 +286,15 @@ class BuildingDetails extends React.Component {
    * @param {string} searchTerms user input filter terms.
    */
   _onRoomSearch(searchTerms: ?string): void {
-    this._filterRooms(searchTerms);
+    if (this.roomTypes == null) {
+      this._getRoomTypes()
+          .then(roomTypes => {
+            this._roomTypes = roomTypes;
+            this._filterRooms(searchTerms);
+          });
+    } else {
+      this._filterRooms(searchTerms);
+    }
   }
 
   /**
