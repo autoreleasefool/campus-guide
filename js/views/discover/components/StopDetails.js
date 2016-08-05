@@ -76,6 +76,7 @@ type NavigatorRoute = {
 };
 
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const LanguageUtils = require('LanguageUtils');
 const Preferences = require('Preferences');
@@ -134,6 +135,7 @@ class Stops extends React.Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
+    (this:any)._displayStopDetails = this._displayStopDetails.bind(this);
     (this:any)._loadStops = this._loadStops.bind(this);
     (this:any)._pressRow = this._pressRow.bind(this);
   }
@@ -143,9 +145,21 @@ class Stops extends React.Component {
    */
   componentDidMount(): void {
     if (!this.state.loaded) {
-      this._loadStops();
+      Configuration.init()
+          .then(this._loadStops())
+          .catch(err => console.error('Configuration could not be initialized for stop details.', err));
     }
   }
+
+  /**
+   * Clears the cached stops.
+   */
+  componentWillUnmount(): void {
+    this.cachedCampusStops = null;
+  }
+
+  // Contents of /transit_times.json, cached when first loaded
+  cachedCampusStops: ?Object = null;
 
   /**
    * Informs parent that no stop is selected.
@@ -164,6 +178,42 @@ class Stops extends React.Component {
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
+  }
+
+  /**
+   * Displays details about a single stop.
+   *
+   * @param {campuses} campuses data for all stops
+   * @param {StopInfo} stop details about the stop to display.
+   */
+  _displayStopDetails(campuses: Object, stop: StopInfo): void {
+    if (this.cachedCampusStops == null) {
+      this.cachedCampusStops = campuses;
+    }
+
+    let routeInfo: ?Array<DetailedRouteInfo> = null;
+    for (let i = 0; i < campuses.length; i++) {
+      if (campuses[i].id === this.props.campusName) {
+        routeInfo = campuses[i].stops[stop.key].routes;
+        break;
+      }
+    }
+
+    const routesAndTimes: Array<DetailedRouteInfo> = [];
+    if (routeInfo != null) {
+      for (let i = 0; i < routeInfo.length; i++) {
+        routesAndTimes.push({
+          number: routeInfo[i].number,
+          sign: routeInfo[i].sign,
+          days: routeInfo[i].days,
+        });
+      }
+    }
+
+    this.refs.Navigator.push({id: DETAILS, stop: stop});
+    this.setState({
+      dataSourceTimes: this.state.dataSourceTimes.cloneWithRows(routesAndTimes),
+    });
   }
 
   /**
@@ -200,30 +250,13 @@ class Stops extends React.Component {
       this.props.onStopSelected(stop);
     }
 
-    const campuses: Array<TransitCampus> = require('../../../../assets/json/transit_times.json');
-    let routeInfo: ?Array<DetailedRouteInfo> = null;
-    for (let i = 0; i < campuses.length; i++) {
-      if (campuses[i].id === this.props.campusName) {
-        routeInfo = campuses[i].stops[stop.key].routes;
-        break;
-      }
+    if (this.cachedCampusStops == null) {
+      Configuration.getConfig('/transit_times.json')
+          .then(campuses => this._displayStopDetails(campuses, stop))
+          .catch(err => console.error('Could not get /transit_times.json.', err));
+    } else {
+      this._displayStopDetails(this.cachedCampusStops, stop);
     }
-
-    const routesAndTimes: Array<DetailedRouteInfo> = [];
-    if (routeInfo != null) {
-      for (let i = 0; i < routeInfo.length; i++) {
-        routesAndTimes.push({
-          number: routeInfo[i].number,
-          sign: routeInfo[i].sign,
-          days: routeInfo[i].days,
-        });
-      }
-    }
-
-    this.refs.Navigator.push({id: DETAILS, stop: stop});
-    this.setState({
-      dataSourceTimes: this.state.dataSourceTimes.cloneWithRows(routesAndTimes),
-    });
   }
 
   /**
