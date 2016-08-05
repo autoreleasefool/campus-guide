@@ -167,7 +167,9 @@ class BuildingDetails extends React.Component {
     });
 
     if (!this.state.loaded) {
-      this._onRoomSearch(null);
+      Configuration.init()
+          .then(this._onRoomSearch())
+          .catch(err => console.error('Configuration could not be initialized for shuttle campus details.', err));
     }
   }
 
