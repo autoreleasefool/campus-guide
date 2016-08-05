@@ -83,7 +83,7 @@ const TranslationsEn: Object = require('../../../assets/js/Translations.en.js');
 const TranslationsFr: Object = require('../../../assets/js/Translations.fr.js');
 
 // Create a cache of settings values to retrieve and update them quickly
-const settings: Object = require('../../../assets/json/settings.json');
+let settings: Object;
 const settingsCache: Object = {};
 let keyOfLastSettingChanged: ?string = null;
 
@@ -151,23 +151,28 @@ class SettingsHome extends React.Component {
    * Loads the current settings to setup the views and cache the settings to determine when a setting changes.
    */
   _loadSettings(): void {
-    for (const section in settings) {
-      if (settings.hasOwnProperty(section)) {
-        for (const row in settings[section]) {
-          if (settings[section].hasOwnProperty(row)) {
-            settingsCache[settings[section][row].key] =
-                Preferences.getSetting(Preferences.getSetting(settings[section][row].key));
+    Configuration.getConfig('/settings.json')
+        .then(configSettings => {
+          settings = configSettings;
+          for (const section in settings) {
+            if (settings.hasOwnProperty(section)) {
+              for (const row in settings[section]) {
+                if (settings[section].hasOwnProperty(row)) {
+                  settingsCache[settings[section][row].key] =
+                      Preferences.getSetting(Preferences.getSetting(settings[section][row].key));
+                }
+              }
+            }
           }
-        }
-      }
-    }
 
-    if (!this.state.loaded) {
-      this.setState({
-        dataSource: this.state.dataSource.cloneWithRowsAndSections(settings),
-        loaded: true,
-      });
-    }
+          if (!this.state.loaded) {
+            this.setState({
+              dataSource: this.state.dataSource.cloneWithRowsAndSections(settings),
+              loaded: true,
+            });
+          }
+        })
+        .catch(err => console.error('Could not get /settings.json.', err));
   }
 
   /**
