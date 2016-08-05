@@ -55,6 +55,7 @@ type State = {
 };
 
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const LanguageUtils = require('LanguageUtils');
 const Preferences = require('Preferences');
@@ -125,7 +126,9 @@ class SettingsHome extends React.Component {
    * Loads the settings once the view has been mounted.
    */
   componentDidMount(): void {
-    this._loadSettings();
+    Configuration.init()
+        .then(this._loadSettings())
+        .catch(err => console.error('Configuration could not be initialized for settings.', err));
   }
 
   /**
