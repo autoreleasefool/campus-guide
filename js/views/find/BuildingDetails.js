@@ -258,15 +258,15 @@ class BuildingDetails extends React.Component {
    * @returns {Promise<Object>} promise which resolves with room types
    */
   _getRoomTypes(): Promise < Object > {
-    if (this.roomTypesPromise == null) {
-      this.roomTypesPromise = new Promise(resolve => {
+    if (this._roomTypesPromise == null) {
+      this._roomTypesPromise = new Promise(resolve => {
         Configuration.getConfig('/room_types.json')
             .then(roomTypes => resolve(roomTypes))
             .catch(err => console.error('Could not get /room_types.json.', err));
       });
     }
 
-    return this.roomTypesPromise;
+    return this._roomTypesPromise;
   }
 
   /**

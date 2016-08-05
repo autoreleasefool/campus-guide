@@ -31,12 +31,25 @@ import type {
   BusInfo,
 } from 'types';
 
-type ConfigUpdate = {
+import type {
+  DownloadBeginCallbackResult,
+  DownloadProgressCallbackResult,
+  DownloadResult,
+} from 'react-native-fs';
+
+type FileUpdate = {
   name: string,
   url: string,
   size: number,
   oldVersion: number,
   newVersion: number
+}
+
+export type ConfigurationUpdateCallbacks = {
+  onUpdateStart?: (totalSize: number, totalFiles: number) => any,
+  onDownloadStart?: (download: DownloadBeginCallbackResult) => any,
+  onDownloadProgress?: (progress: DownloadProgressCallbackResult) => any,
+  onDownloadComplete?: (download: DownloadResult) => any,
 }
 
 // Imports
@@ -68,7 +81,7 @@ let configInitializing: boolean = false;
 const availablePromises: Array < { resolve: () => any, reject: () => any } > = [];
 
 // List of configuration files which have updates available
-const configurationUpdates: Array < ConfigUpdate > = [];
+const configurationUpdates: Array < FileUpdate > = [];
 // Indicates if the app has checked for a configuration update yet
 let checkedForUpdate: boolean = false;
 
@@ -235,12 +248,9 @@ async function _refreshConfigVersions(): Promise < boolean > {
 /**
  * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
  *
- * @param {function} onStart    callback function invoked with total size of update in bytes
- * @param {function} onProgress callback function invoked with byte of update downloaded so far and total expected bytes
+ * @param {ConfigurationUpdateCallbacks} callbacks functions to invoke as update progresses
  */
-async function _updateConfig(
-    onStart: (ts: number) => any,
-    onProgress: (bw: number, ts: number) => any): Promise < void > {
+async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise < void > {
   if (configurationUpdates.length === 0) {
     // If there are no updates, exit
     return;
@@ -251,30 +261,34 @@ async function _updateConfig(
 
   // Get total size of update
   let totalSize: number = 0;
-  let bytesWritten: number = 0;
   for (let i = 0; i < configurationUpdates.length; i++) {
     totalSize += configurationUpdates[i].size;
+    console.log(String.format('1ConfigUpdate name: {0} size: {1}', configurationUpdates[i].name, configurationUpdates[i].size));
   }
-  onStart(totalSize);
-
-  const updateProgress = progress => {
-    bytesWritten += parseInt(progress);
-    onProgress(bytesWritten, totalSize);
-  };
+  if (callbacks.onUpdateStart) {
+    callbacks.onUpdateStart(totalSize, configurationUpdates.length);
+  }
 
   try {
     for (let i = 0; i < configurationUpdates.length; i++) {
       // Download the file
-      const downloadResult = await RNFS.downloadFile({
+      const downloadResult: DownloadResult = await RNFS.downloadFile({
         fromUrl: configurationUpdates[i].url,
         toFile: TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name,
-        progress: updateProgress,
+        progress: callbacks.onDownloadProgress,
+        begin: callbacks.onDownloadStart,
       });
 
       if (downloadResult.statusCode != HttpStatus.OK) {
         throw new Error('Download of file ' + configurationUpdates[i].name + ' failed.'
-            + 'Status code: ' + downloadResult.statusCode);
+            + ' Status code: ' + downloadResult.statusCode);
       }
+
+      // Get file stats
+      const fileStats = await RNFS.stat(TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name);
+      downloadResult.bytesWritten = fileStats.size;
+      downloadResult.filename = configurationUpdates[i].name;
+      callbacks.onDownloadComplete(downloadResult);
     }
 
     const configRowUpdates: Array < {name: string, version: number} > = [];
@@ -353,7 +367,12 @@ async function _deleteConfiguration(): Promise < void > {
     const clearVersions: Array < Object > = [];
 
     for (let i = 0; i < configVersions.length; i++) {
-      await RNFS.unlink(CONFIG_DIRECTORY + configVersions[i].name);
+      try {
+        await RNFS.unlink(CONFIG_DIRECTORY + configVersions[i].name);
+      } catch (e) {
+        // do nothing - file doesn't exist
+      }
+
       clearVersions.push({
         name: configVersions[i].name,
         version: 0,
@@ -408,13 +427,11 @@ module.exports = {
   /**
    * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
    *
-   * @param {function} onStart    callback function invoked with total size of update in bytes
-   * @param {function} onProgress callback function invoked with byte of update downloaded so far and total
-   *                              expected bytes
+   * @param {ConfigurationUpdateCallbacks} callbacks functions to invoke as update progresses
    * @returns {Promise<void>} a promise which resolves when the update is complete
    */
-  updateConfig(onStart: (ts: number) => any, onProgress: (bw: number, ts: number) => any): Promise < void > {
-    return _updateConfig(onStart, onProgress);
+  updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise < void > {
+    return _updateConfig(callbacks);
   },
 
   /**

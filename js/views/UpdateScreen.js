@@ -32,6 +32,13 @@ import {
   View,
 } from 'react-native';
 
+// Type imports
+import type {
+  DownloadResult,
+  DownloadBeginCallbackResult,
+  DownloadProgressCallbackResult,
+} from 'react-native-fs';
+
 // Type definition for component props.
 type Props = {
   navigator: ReactElement < any >,
@@ -61,8 +68,6 @@ class UpdateScreen extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any)._returnToMain = this._returnToMain.bind(this);
-    (this:any)._onUpdateBegin = this._onUpdateBegin.bind(this);
-    (this:any)._onUpdateProgress = this._onUpdateProgress.bind(this);
   }
 
   /**
@@ -70,10 +75,17 @@ class UpdateScreen extends React.Component {
    */
   componentDidMount(): void {
     const self: UpdateScreen = this;
+    const callbacks = {
+      onUpdateStart: this._onUpdateStart.bind(this),
+      onDownloadStart: this._onDowloadStart.bind(this),
+      onDownloadProgress: this._onDownloadProgress.bind(this),
+      onDownloadComplete: this._onDownloadComplete.bind(this),
+    };
+
     Configuration.isConfigUpdateAvailable()
         .then(available => {
           if (available) {
-            Configuration.updateConfig(this._onUpdateBegin, this._onUpdateProgress)
+            Configuration.updateConfig(callbacks)
                 .then(this._returnToMain)
                 .catch(err => {
                   console.error('Failed to update configuration.', err);
@@ -88,7 +100,14 @@ class UpdateScreen extends React.Component {
         });
   }
 
+  /** Size of the update, in bytes. */
   totalSize: number;
+
+  /** Number of files in the update. */
+  totalFiles: number;
+
+  /** Total bytes written so far. */
+  totalProgress: number;
 
   /**
    * Return to the main screen.
@@ -98,22 +117,47 @@ class UpdateScreen extends React.Component {
   }
 
   /**
-   * Handles event for when update begins.
+   * Handles event for when update starts.
    *
-   * @param {number} totalSize total size of the update to download
+   * @param {number} totalSize  size of the update, in bytes
+   * @param {number} totalFiles number of files to be updated
    */
-  _onUpdateBegin(totalSize: number): void {
+  _onUpdateStart(totalSize: number, totalFiles: number): void {
     this.totalSize = totalSize;
+    this.totalFiles = totalFiles;
+    this.totalProgress = 0;
+    console.log('ConfigUpdate: ---------------------');
+    console.log(String.format('ConfigUpdate: Total size: {0} Total files: {1}', totalSize, totalFiles));
+  }
+
+  /**
+   * Handles the results of a successful download.
+   *
+   * @param {DownloadResult} download results of the download
+   */
+  _onDownloadComplete(download: DownloadResult): void {
+    this.totalProgress += download.bytesWritten;
+    console.log('ConfigUpdate: File complete: ' + download.filename);
+    console.log(String.format('ConfigUpdate: Progress: {0} ({1}/{2})', this.totalProgress / this.totalSize, this.totalProgress, this.totalSize));
+  }
+
+  /**
+   * Provides details about each file being downloaded.
+   *
+   * @param {DownloadBeginCallbackResult} download details about the download
+   */
+  _onDowloadStart(download: DownloadBeginCallbackResult): void {
+
   }
 
   /**
    * Handles event for when progress update is received.
    *
-   * @param {number} bytesWritten number of bytes downloaded so far
-   * @param {number} totalSize total size of the update to download
+   * @param {DownloadProgressCallbackResult} progress details about the progress of the download currently taking
+   *                                                  place
    */
-  _onUpdateProgress(bytesWritten: number, totalSize: number): void {
-    console.log('Progress: ' + (bytesWritten / totalSize) + ' (' + bytesWritten + '/' + totalSize + ')');
+  _onDownloadProgress(progress: DownloadProgressCallbackResult): void {
+    // console.log(String.format('ConfigUpdate: Progress: {0} ({1}/{2})', (this.totalProgress + progress.bytesWritten) / this.totalSize, (this.totalProgress + progress.bytesWritten), this.totalSize));
   }
 
   /**
