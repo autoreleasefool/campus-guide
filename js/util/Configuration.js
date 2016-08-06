@@ -263,7 +263,6 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
   let totalSize: number = 0;
   for (let i = 0; i < configurationUpdates.length; i++) {
     totalSize += configurationUpdates[i].size;
-    console.log(String.format('1ConfigUpdate name: {0} size: {1}', configurationUpdates[i].name, configurationUpdates[i].size));
   }
   if (callbacks.onUpdateStart) {
     callbacks.onUpdateStart(totalSize, configurationUpdates.length);

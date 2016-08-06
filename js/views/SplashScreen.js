@@ -129,7 +129,7 @@ class SplashScreen extends React.Component {
           }
         })
         .catch(error => {
-          console.error('Unable to determine if configuration is available. Assuming it is not.', error);
+          console.log('Unable to determine if configuration is available. Assuming it is not.', error);
           self.props.navigator.replace({id: Constants.Views.Update});
         });
   }
