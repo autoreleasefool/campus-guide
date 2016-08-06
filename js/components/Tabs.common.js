@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file CommonTabs.js
- * @providesModule CommonTabs
+ * @file Tabs.common.js
+ * @providesModule TabsCommon
  * @description Provides tab functionality common to both Android and iOS.
  *
  * @flow
@@ -53,7 +53,7 @@ const TabRouter = require('TabRouter');
 // Lists the views currently on the stack in the Navigator.
 let screenStack: Array<number | string> = [Constants.Views.Default];
 
-class CommonTabs extends React.Component {
+class TabsCommon extends React.Component {
 
   /**
    * Define type for the component state.
@@ -280,4 +280,4 @@ class CommonTabs extends React.Component {
   }
 }
 
-module.exports = CommonTabs;
+module.exports = TabsCommon;

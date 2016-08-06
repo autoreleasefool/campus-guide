@@ -40,7 +40,7 @@ import type {
 } from '../types';
 
 // Imports
-const CommonTabs = require('CommonTabs');
+const TabsCommon = require('TabsCommon');
 const Constants = require('Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const NavBar = require('NavBar');
@@ -60,7 +60,7 @@ const indicatorWidth: number = Math.ceil(width / Constants.Tabs.length);
 // Size of the icons within the tabs
 const tabIconSize: number = 30;
 
-class TabsView extends CommonTabs {
+class TabsView extends TabsCommon {
 
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.

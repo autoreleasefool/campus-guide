@@ -42,7 +42,7 @@ import type {
 } from 'types';
 
 // Imports
-const CommonTabs = require('CommonTabs');
+const TabsCommon = require('TabsCommon');
 const Constants = require('Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const NavBar = require('NavBar');
@@ -65,7 +65,7 @@ const DRAWER_OPEN: number = 1;
 // Indicates the current state of the navigation drawer: 0 is closed, 1 is open.
 let drawerState: number = DRAWER_CLOSED;
 
-class TabsView extends CommonTabs {
+class TabsView extends TabsCommon {
 
   /**
    * Attaches a listener to the Android back button.
