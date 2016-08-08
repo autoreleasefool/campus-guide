@@ -50,6 +50,7 @@ type State = {
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
+const emptyFunction = require('empty/function');
 const Preferences = require('Preferences');
 
 // Amount of time to wait before checking for connection, to ensure connection event listener is registered
@@ -98,8 +99,15 @@ class UpdateScreenCommon extends React.Component {
   componentDidMount(): void {
     // Must set event listener for NetInfo.isConnected.fetch to work
     // https://github.com/facebook/react-native/issues/8469
-    NetInfo.isConnected.addEventListener('change', Function.prototype);
+    NetInfo.isConnected.addEventListener('change', emptyFunction);
     this._checkConnection();
+  }
+
+  /**
+   * Removes the connection listener for NetInfo.
+   */
+  componentWillUnmount(): void {
+    NetInfo.isConnected.removeEventListener('change', emptyFunction);
   }
 
   /**
