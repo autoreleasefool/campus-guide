@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file UpdateScreen.js
- * @providesModule UpdateScreen
+ * @file UpdateScreen.common.js
+ * @providesModule UpdateScreenCommon
  * @description Provides progress for app updates
  *
  * @flow
@@ -27,29 +27,29 @@
 // React imports
 import React from 'react';
 import {
-  StyleSheet,
-  Text,
   View,
 } from 'react-native';
-
-// Type imports
-import type {
-  DownloadResult,
-  DownloadBeginCallbackResult,
-  DownloadProgressCallbackResult,
-} from 'react-native-fs';
 
 // Type definition for component props.
 type Props = {
   navigator: ReactElement < any >,
 };
 
+// Type definition for component state.
+type State = {
+  currentDownload: ?String,
+  filesDownloaded: Array < String >,
+  intermediateProgress: number,
+  totalFiles: number,
+  totalProgress: number,
+  totalSize: number,
+};
+
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
-const Preferences = require('Preferences');
 
-class UpdateScreen extends React.Component {
+class UpdateScreenCommon extends React.Component {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -59,12 +59,25 @@ class UpdateScreen extends React.Component {
   };
 
   /**
+   * Define type for the component state.
+   */
+  state: State;
+
+  /**
    * Pass props and declares initial state.
    *
    * @param {Props} props properties passed from container to this component.
    */
   constructor(props: Props) {
     super(props);
+    this.state = {
+      currentDownload: null,
+      filesDownloaded: [],
+      intermediateProgress: 0,
+      totalFiles: 0,
+      totalProgress: 0,
+      totalSize: 0,
+    };
 
     // Explicitly binding 'this' to all methods that need it
     (this:any)._returnToMain = this._returnToMain.bind(this);
@@ -74,7 +87,7 @@ class UpdateScreen extends React.Component {
    * Displays a pop up when the application opens for the first time after the user selects their preferred language.
    */
   componentDidMount(): void {
-    const self: UpdateScreen = this;
+    const self: UpdateScreenCommon = this;
     const callbacks = {
       onUpdateStart: this._onUpdateStart.bind(this),
       onDownloadStart: this._onDowloadStart.bind(this),
@@ -100,14 +113,14 @@ class UpdateScreen extends React.Component {
         });
   }
 
-  /** Size of the update, in bytes. */
-  totalSize: number;
-
-  /** Number of files in the update. */
-  totalFiles: number;
-
-  /** Total bytes written so far. */
-  totalProgress: number;
+  /**
+   * Returns the total percent of the progress completed.
+   *
+   * @returns {number} a value from 0 to 1
+   */
+  _getProgress(): number {
+    return (this.state.totalProgress + this.state.intermediateProgress) / this.state.totalSize;
+  }
 
   /**
    * Return to the main screen.
@@ -123,41 +136,51 @@ class UpdateScreen extends React.Component {
    * @param {number} totalFiles number of files to be updated
    */
   _onUpdateStart(totalSize: number, totalFiles: number): void {
-    this.totalSize = totalSize;
-    this.totalFiles = totalFiles;
-    this.totalProgress = 0;
-    console.log('ConfigUpdate: ---------------------');
-    console.log(String.format('ConfigUpdate: Total size: {0} Total files: {1}', totalSize, totalFiles));
+    this.setState({
+      totalFiles: totalFiles,
+      totalProgress: 0,
+      totalSize: totalSize,
+    });
   }
 
   /**
    * Handles the results of a successful download.
    *
-   * @param {DownloadResult} download results of the download
+   * @param {Object} download results of the download
    */
-  _onDownloadComplete(download: DownloadResult): void {
-    this.totalProgress += download.bytesWritten;
-    console.log('ConfigUpdate: File complete: ' + download.filename);
-    console.log(String.format('ConfigUpdate: Progress: {0} ({1}/{2})', this.totalProgress / this.totalSize, this.totalProgress, this.totalSize));
+  _onDownloadComplete(download: Object): void {
+    const filesDownloaded: Array < String > = this.state.filesDownloaded.slice(0);
+    filesDownloaded.push(download.filename);
+
+    this.setState({
+      currentDownload: null,
+      filesDownloaded: filesDownloaded,
+      intermediateProgress: 0,
+      totalProgress: this.state.totalProgress + download.bytesWritten,
+    });
   }
 
   /**
    * Provides details about each file being downloaded.
    *
-   * @param {DownloadBeginCallbackResult} download details about the download
+   * @param {Object} download details about the download
    */
-  _onDowloadStart(download: DownloadBeginCallbackResult): void {
-
+  _onDowloadStart(download: Object): void {
+    this.setState({
+      currentDownload: download.filename,
+    });
   }
 
   /**
    * Handles event for when progress update is received.
    *
-   * @param {DownloadProgressCallbackResult} progress details about the progress of the download currently taking
+   * @param {Object} progress details about the progress of the download currently taking
    *                                                  place
    */
-  _onDownloadProgress(progress: DownloadProgressCallbackResult): void {
-    // console.log(String.format('ConfigUpdate: Progress: {0} ({1}/{2})', (this.totalProgress + progress.bytesWritten) / this.totalSize, (this.totalProgress + progress.bytesWritten), this.totalSize));
+  _onDownloadProgress(progress: Object): void {
+    this.setState({
+      intermediateProgress: progress.bytesWritten,
+    });
   }
 
   /**
@@ -166,23 +189,8 @@ class UpdateScreen extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement< any > {
-    const backgroundColor = Preferences.getSelectedLanguage() === 'en'
-        ? Constants.Colors.garnet
-        : Constants.Colors.charcoalGrey;
-
-    return (
-      <View style={[_styles.container, {backgroundColor: backgroundColor}]}>
-        <Text>{'Downloading'}</Text>
-      </View>
-    );
+    return <View />;
   }
 }
 
-// Private styles for component
-const _styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-module.exports = UpdateScreen;
+module.exports = UpdateScreenCommon;

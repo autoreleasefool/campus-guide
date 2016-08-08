@@ -31,12 +31,6 @@ import type {
   BusInfo,
 } from 'types';
 
-import type {
-  DownloadBeginCallbackResult,
-  DownloadProgressCallbackResult,
-  DownloadResult,
-} from 'react-native-fs';
-
 type FileUpdate = {
   name: string,
   url: string,
@@ -47,9 +41,9 @@ type FileUpdate = {
 
 export type ConfigurationUpdateCallbacks = {
   onUpdateStart?: (totalSize: number, totalFiles: number) => any,
-  onDownloadStart?: (download: DownloadBeginCallbackResult) => any,
-  onDownloadProgress?: (progress: DownloadProgressCallbackResult) => any,
-  onDownloadComplete?: (download: DownloadResult) => any,
+  onDownloadStart?: (download: Object) => any,
+  onDownloadProgress?: (progress: Object) => any,
+  onDownloadComplete?: (download: Object) => any,
 }
 
 // Imports
@@ -268,14 +262,20 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
     callbacks.onUpdateStart(totalSize, configurationUpdates.length);
   }
 
+  // Add filename to download info and invoke start callback
+  const onStart = (filename: string, download: Object) => {
+    download.filename = filename;
+    callbacks.onDownloadStart(download);
+  };
+
   try {
     for (let i = 0; i < configurationUpdates.length; i++) {
       // Download the file
-      const downloadResult: DownloadResult = await RNFS.downloadFile({
+      const downloadResult: Object = await RNFS.downloadFile({
         fromUrl: configurationUpdates[i].url,
         toFile: TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name,
         progress: callbacks.onDownloadProgress,
-        begin: callbacks.onDownloadStart,
+        begin: download => onStart(configurationUpdates[i].name, download),
       });
 
       if (downloadResult.statusCode != HttpStatus.OK) {
