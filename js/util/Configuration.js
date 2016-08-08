@@ -62,20 +62,21 @@ const APP_CONFIG: string = '/app_config.json';
 
 // Default link to return
 const DEFAULT_LINK: string = 'http://www.uottawa.ca/';
-// List of semesters available in the app
-const availableSemesters: Array < Semester > = [];
 
 // Information about the university
 let university: ?University = null;
 // Information about the buses in the city
 let cityBuses: ?BusInfo = null;
+// List of semesters available in the app
+let availableSemesters: Array < Semester > = [];
+
 // Indicates if the configuration is initializing
 let configInitializing: boolean = false;
 // List of promises that should resolve or reject if the configuration is available or not
 const availablePromises: Array < { resolve: () => any, reject: () => any } > = [];
 
 // List of configuration files which have updates available
-const configurationUpdates: Array < FileUpdate > = [];
+let configurationUpdates: Array < FileUpdate > = [];
 // Indicates if the app has checked for a configuration update yet
 let checkedForUpdate: boolean = false;
 
@@ -134,6 +135,14 @@ async function _requestConfig(): Promise < boolean > {
   const appConfig: string = await RNFS.readFile(CONFIG_DIRECTORY + APP_CONFIG, 'utf8');
   const configuration = JSON.parse(appConfig);
 
+  // Reset the configuration
+  university = null;
+  cityBuses = null;
+  availableSemesters = [];
+
+  university = configuration.university;
+  cityBuses = configuration.bus;
+
   // Get the current semesters available in the app
   if (configuration.semesters) {
     for (let i = 0; i < configuration.semesters.length; i++) {
@@ -141,8 +150,6 @@ async function _requestConfig(): Promise < boolean > {
     }
   }
 
-  university = configuration.university;
-  cityBuses = configuration.bus;
   return true;
 }
 
@@ -201,6 +208,7 @@ async function _refreshConfigVersions(): Promise < boolean > {
     // Will indicate if any updates are available
     let updateAvailable: boolean = false;
 
+    configurationUpdates = [];
     for (const config in appConfig) {
       if (appConfig.hasOwnProperty(config)) {
         let found: boolean = false;
@@ -272,6 +280,14 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
 
   try {
     for (let i = 0; i < configurationUpdates.length; i++) {
+
+      /* eslint-disable no-loop-func */
+
+      /*
+       * The parameter from the function and the name of the file must be passed,
+       * so creating a function each loop is beneficial here.
+       */
+
       // Download the file
       const downloadResult: Object = await RNFS.downloadFile({
         fromUrl: configurationUpdates[i].url,
@@ -279,6 +295,8 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
         progress: callbacks.onDownloadProgress,
         begin: download => onStart(configurationUpdates[i].name, download),
       });
+
+      /* eslint-enable no-loop-func */
 
       if (downloadResult.statusCode != HttpStatus.OK) {
         throw new Error('Download of file ' + configurationUpdates[i].name + ' failed.'
@@ -327,6 +345,8 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
     await Database.updateConfigVersions(db, configRowUpdates);
 
     await RNFS.unlink(TEMP_CONFIG_DIRECTORY);
+
+    university = null;
     await module.exports.init();
   } catch (e) {
     throw e;

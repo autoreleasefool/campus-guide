@@ -148,7 +148,6 @@ class UpdateScreenCommon extends React.Component {
     setTimeout(() => {
       NetInfo.isConnected.fetch()
           .then(isConnected => {
-            console.log('here: ' + isConnected);
             if (isConnected) {
               self._beginUpdate();
             } else {
@@ -169,7 +168,6 @@ class UpdateScreenCommon extends React.Component {
   }
 
   _notifyConnectionFailed(): void {
-    console.log('failed');
     // Get current language for translations
     let Translations: Object;
     if (Preferences.getSelectedLanguage() === 'fr') {
