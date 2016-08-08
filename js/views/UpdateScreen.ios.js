@@ -112,7 +112,7 @@ class UpdateScreen extends UpdateScreenCommon {
         <View style={_styles.container}>
           <View style={_styles.container} />
           <ProgressViewIOS
-              progress={this._getProgress()}
+              progress={super._getProgress()}
               progressTintColor={foregroundColor}
               style={_styles.progress} />
           <Text style={_styles.downloading}>{Translations.downloading}</Text>

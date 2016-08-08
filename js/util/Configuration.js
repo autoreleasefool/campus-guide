@@ -264,8 +264,10 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
 
   // Add filename to download info and invoke start callback
   const onStart = (filename: string, download: Object) => {
-    download.filename = filename;
-    callbacks.onDownloadStart(download);
+    if (callbacks.onDownloadStart) {
+      download.filename = filename;
+      callbacks.onDownloadStart(download);
+    }
   };
 
   try {
@@ -287,7 +289,9 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
       const fileStats = await RNFS.stat(TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name);
       downloadResult.bytesWritten = fileStats.size;
       downloadResult.filename = configurationUpdates[i].name;
-      callbacks.onDownloadComplete(downloadResult);
+      if (callbacks.onDownloadComplete) {
+        callbacks.onDownloadComplete(downloadResult);
+      }
     }
 
     const configRowUpdates: Array < {name: string, version: number} > = [];

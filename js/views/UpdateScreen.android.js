@@ -113,10 +113,10 @@ class UpdateScreen extends UpdateScreenCommon {
           <View style={_styles.container} />
           <ProgressBar
               indeterminate={false}
-              progress={this._getProgress()}
+              progress={super._getProgress()}
               progressTintColor={foregroundColor}
               style={_styles.progress}
-              styleAttr="Horizontal" />
+              styleAttr='Horizontal' />
           <Text style={_styles.downloading}>{Translations.downloading}</Text>
         </View>
         {this._renderStatusMessages()}
