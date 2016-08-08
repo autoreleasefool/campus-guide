@@ -27,6 +27,8 @@
 // React imports
 import React from 'react';
 import {
+  Alert,
+  NetInfo,
   View,
 } from 'react-native';
 
@@ -48,6 +50,10 @@ type State = {
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
+const Preferences = require('Preferences');
+
+// Amount of time to wait before checking for connection, to ensure connection event listener is registered
+const CONNECTION_CHECK_TIMEOUT = 250;
 
 class UpdateScreenCommon extends React.Component {
 
@@ -80,6 +86,9 @@ class UpdateScreenCommon extends React.Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
+    (this:any)._beginUpdate = this._beginUpdate.bind(this);
+    (this:any)._checkConnection = this._checkConnection.bind(this);
+    (this:any)._notifyConnectionFailed = this._notifyConnectionFailed.bind(this);
     (this:any)._returnToMain = this._returnToMain.bind(this);
   }
 
@@ -87,6 +96,16 @@ class UpdateScreenCommon extends React.Component {
    * Displays a pop up when the application opens for the first time after the user selects their preferred language.
    */
   componentDidMount(): void {
+    // Must set event listener for NetInfo.isConnected.fetch to work
+    // https://github.com/facebook/react-native/issues/8469
+    NetInfo.isConnected.addEventListener('change', Function.prototype);
+    this._checkConnection();
+  }
+
+  /**
+   * Checks to see if a new configuration update is available and, if so, begins downloading.
+   */
+  _beginUpdate(): void {
     const self: UpdateScreenCommon = this;
     const callbacks = {
       onUpdateStart: this._onUpdateStart.bind(this),
@@ -114,12 +133,72 @@ class UpdateScreenCommon extends React.Component {
   }
 
   /**
+   * Checks for an Internet connection and, if one is available, starts the update.
+   */
+  _checkConnection(): void {
+    const self: UpdateScreenCommon = this;
+    setTimeout(() => {
+      NetInfo.isConnected.fetch()
+          .then(isConnected => {
+            console.log('here: ' + isConnected);
+            if (isConnected) {
+              self._beginUpdate();
+            } else {
+              self._notifyConnectionFailed();
+            }
+          })
+          .catch(self._notifyConnectionFailed);
+    }, CONNECTION_CHECK_TIMEOUT);
+  }
+
+  /**
    * Returns the total percent of the progress completed.
    *
    * @returns {number} a value from 0 to 1
    */
   _getProgress(): number {
     return (this.state.totalProgress + this.state.intermediateProgress) / this.state.totalSize;
+  }
+
+  _notifyConnectionFailed(): void {
+    console.log('failed');
+    // Get current language for translations
+    let Translations: Object;
+    if (Preferences.getSelectedLanguage() === 'fr') {
+      Translations = require('../../assets/js/Translations.fr.js');
+    } else {
+      Translations = require('../../assets/js/Translations.en.js');
+    }
+
+    Configuration.init()
+        .then(available => {
+          if (available) {
+            Alert.alert(
+              Translations.no_internet,
+              Translations.no_internet_config_available,
+              [
+                {text: Translations.ok, onPress: () => this.props.navigator.resetTo({id: Constants.Views.Main})},
+              ],
+            );
+          } else {
+            Alert.alert(
+              Translations.no_internet,
+              Translations.no_internet_config_unavailable,
+              [
+                {text: Translations.retry, onPress: this._checkConnection},
+              ],
+            );
+          }
+        })
+        .catch(() => {
+          Alert.alert(
+            Translations.no_internet,
+            Translations.no_internet_config_unavailable,
+            [
+              {text: Translations.retry, onPress: this._checkConnection},
+            ],
+          );
+        });
   }
 
   /**
