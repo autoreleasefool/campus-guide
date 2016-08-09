@@ -55,7 +55,6 @@ export type ConfigurationUpdateCallbacks = {
 const Database = require('Database');
 const DeviceInfo = require('react-native-device-info');
 const HttpStatus = require('http-status-codes');
-const Preferences = require('Preferences');
 const Promise = require('promise');
 const RNFS = require('react-native-fs');
 
@@ -319,7 +318,7 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
 
       // If APP_CONFIG is updated, reset the current semester
       if (configurationUpdates[i].name === APP_CONFIG) {
-        Preferences.setCurrentSemester(AsyncStorage, 0);
+        await AsyncStorage.setItem('app_current_semester', '0');
       }
     }
 
