@@ -24,6 +24,11 @@
  */
 'use strict';
 
+// React imports
+import {
+  AsyncStorage,
+} from 'react-native';
+
 // Import types
 import type {
   Semester,
@@ -50,6 +55,7 @@ export type ConfigurationUpdateCallbacks = {
 const Database = require('Database');
 const DeviceInfo = require('react-native-device-info');
 const HttpStatus = require('http-status-codes');
+const Preferences = require('Preferences');
 const Promise = require('promise');
 const RNFS = require('react-native-fs');
 
@@ -310,6 +316,11 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
       if (callbacks.onDownloadComplete) {
         callbacks.onDownloadComplete(downloadResult);
       }
+
+      // If APP_CONFIG is updated, reset the current semester
+      if (configurationUpdates[i].name === APP_CONFIG) {
+        Preferences.setCurrentSemester(AsyncStorage, 0);
+      }
     }
 
     const configRowUpdates: Array < {name: string, version: number} > = [];
@@ -334,6 +345,9 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
       });
     }
 
+    // Delete temporary downloads
+    await RNFS.unlink(TEMP_CONFIG_DIRECTORY);
+
     // Update config versions in database
     let db = null;
     try {
@@ -341,10 +355,7 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
     } catch (e) {
       throw e;
     }
-
     await Database.updateConfigVersions(db, configRowUpdates);
-
-    await RNFS.unlink(TEMP_CONFIG_DIRECTORY);
 
     university = null;
     await module.exports.init();
