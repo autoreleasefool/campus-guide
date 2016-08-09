@@ -50,7 +50,7 @@ import type {
 // Type definition for component props.
 type Props = {
   category: LinkCategoryType,
-  categoryImage: ReactClass<any>,
+  categoryImage: ReactClass < any >,
   showLinkCategory: DefaultFunction;
 };
 
@@ -433,7 +433,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   socialMediaIcon: {
-    margin: 20,
+    margin: 10,
   },
   scrollview: {
     flex: 1,
