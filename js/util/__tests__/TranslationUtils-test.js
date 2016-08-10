@@ -22,8 +22,36 @@
  */
 'use strict';
 
+/* async seems to cause an issue with this rule. */
+/* eslint-disable arrow-parens */
+
 // Unmock modules so the real module is used.
 jest.unmock('TranslationUtils');
+
+jest.setMock('Configuration', {
+  init: async function init() {
+    if (initShouldThrowError) {
+      throw new Error(initErrorMessage);
+    }
+  },
+  getConfig: async function getConfig(config) {
+    if (getConfigShouldThrowError) {
+      throw new Error(getConfigErrorMessage);
+    }
+
+    if (config.indexOf('.en') >= 0) {
+      return {
+        language: 'English',
+      };
+    } else if (config.indexOf('.fr') >= 0) {
+      return {
+        language: 'French',
+      };
+    } else {
+      return {};
+    }
+  },
+});
 
 // An object with non-translated properties.
 const objectWithDefaultProperties = {
@@ -48,7 +76,145 @@ const invalidObject = {
 // Require modules for testing
 const TranslationUtils = require('TranslationUtils');
 
+// Error message for when Configuration.init fails
+const initErrorMessage = 'Init error. This error is being thrown for testing purposes.';
+// Error message for when Configuration.getConfig fails
+const getConfigErrorMessage = 'getConfig error. This error is being thrown for testing purposes.';
+
+// Indicates if Configuration.init should throw an error
+let initShouldThrowError: boolean = false;
+// Indicates if Configuration.getConfig should throw an error
+let getConfigShouldThrowError: boolean = false;
+
 describe('TranslationUtils-test', () => {
+
+  beforeEach(() => {
+    initShouldThrowError = false;
+    getConfigShouldThrowError = false;
+  });
+
+  it('tests invalid configuration while loading translations', async () => {
+    initShouldThrowError = true;
+    let errorMessage = null;
+
+    // Load the English translation
+    try {
+      await TranslationUtils.loadTranslations('en');
+    } catch (e) {
+      errorMessage = e.message;
+    }
+
+    // Check the error message
+    expect(errorMessage).toBe(initErrorMessage);
+  });
+
+  it('tests invalid configuration retrieval while loading translations', async () => {
+    getConfigShouldThrowError = true;
+    let errorMessage = null;
+
+    // Load the English translation
+    try {
+      await TranslationUtils.loadTranslations('en');
+    } catch (e) {
+      errorMessage = e.message;
+    }
+
+    // Check the error message
+    expect(errorMessage).toBe(getConfigErrorMessage);
+  });
+
+  it('tests loading and unloading English translations', async () => {
+    // Get unloaded English translation
+    let en = TranslationUtils.getTranslations('en');
+    expect(en).toEqual({});
+
+    // Load the English translation
+    en = await TranslationUtils.loadTranslations('en');
+    expect(en.language).toBe('English');
+    en = TranslationUtils.getTranslations('en');
+    expect(en.language).toBe('English');
+
+    // Load the already loaded English translation
+    en = await TranslationUtils.loadTranslations('en');
+    expect(en.language).toBe('English');
+
+    // Unload the translation, check again
+    TranslationUtils.unloadTranslations('en');
+    en = TranslationUtils.getTranslations('en');
+    expect(en).toEqual({});
+  });
+
+  it('tests loading and unloading French translations', async () => {
+    // Get unloaded French translation
+    let fr = TranslationUtils.getTranslations('fr');
+    expect(fr).toEqual({});
+
+    // Load the French translation
+    fr = await TranslationUtils.loadTranslations('fr');
+    expect(fr.language).toBe('French');
+    fr = TranslationUtils.getTranslations('fr');
+    expect(fr.language).toBe('French');
+
+    // Load the already loaded French translation
+    fr = await TranslationUtils.loadTranslations('fr');
+    expect(fr.language).toBe('French');
+
+    // Unload the translation, check again
+    TranslationUtils.unloadTranslations('fr');
+    fr = TranslationUtils.getTranslations('fr');
+    expect(fr).toEqual({});
+  });
+
+  it('tests loading and unloading invalid translations', async () => {
+    // Get unloaded invalid translation
+    let invalid = TranslationUtils.getTranslations('invalid');
+    expect(invalid).toEqual({});
+
+    // Load the invalid translation
+    invalid = await TranslationUtils.loadTranslations('invalid');
+    expect(invalid).toEqual({});
+    invalid = TranslationUtils.getTranslations('invalid');
+    expect(invalid).toEqual({});
+
+    // Unload the translation, check again
+    TranslationUtils.unloadTranslations('invalid');
+    invalid = TranslationUtils.getTranslations('invalid');
+    expect(invalid).toEqual({});
+  });
+
+  it('tests loading English translations does not affect French translations', async () => {
+    // Get unloaded French translation
+    let fr = TranslationUtils.getTranslations('fr');
+    expect(fr).toEqual({});
+
+    // Get unloaded English translation
+    let en = TranslationUtils.getTranslations('en');
+    expect(en).toEqual({});
+
+    // Load the English translation
+    en = await TranslationUtils.loadTranslations('en');
+    expect(en.language).toBe('English');
+    en = TranslationUtils.getTranslations('en');
+    expect(en.language).toBe('English');
+
+    // Get unloaded French translation
+    fr = TranslationUtils.getTranslations('fr');
+    expect(fr).toEqual({});
+
+    // Load the French translation
+    fr = await TranslationUtils.loadTranslations('fr');
+    expect(fr.language).toBe('French');
+    fr = TranslationUtils.getTranslations('fr');
+    expect(fr.language).toBe('French');
+
+    // Unload the English translation, check both
+    TranslationUtils.unloadTranslations('en');
+    en = TranslationUtils.getTranslations('en');
+    expect(en).toEqual({});
+
+    fr = TranslationUtils.getTranslations('fr');
+    expect(fr.language).toBe('French');
+  });
 
   it('tests retrieving French and English names.', () => {
     expect(TranslationUtils.getEnglishName(objectWithDefaultProperties))
