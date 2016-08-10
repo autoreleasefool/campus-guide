@@ -408,6 +408,7 @@ class BuildingDetails extends React.Component {
           enableEmptySections={true}
           initialListSize={20}
           pageSize={ROOM_COLUMNS}
+          removeClippedSubviews={false}
           renderRow={this._renderRow.bind(this)} />
     );
   }
