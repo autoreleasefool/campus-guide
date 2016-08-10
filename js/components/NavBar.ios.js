@@ -62,6 +62,7 @@ const Preferences = require('Preferences');
 const SearchManager = require('SearchManager');
 const StatusBarUtils = require('StatusBarUtils');
 const Tooltip = require('Tooltip');
+const TranslationUtils = require('TranslationUtils');
 
 // Size of icons in the navbar
 const NAVBAR_ICON_SIZE: number = 24;
@@ -216,12 +217,7 @@ class NavBar extends React.Component {
    */
   render(): ReactElement<any> {
     // Get current language for translations
-    let Translations = null;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     const searchMargin = 10;
     let searchLeftMargin: number = searchMargin;

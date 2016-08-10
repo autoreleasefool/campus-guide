@@ -57,7 +57,7 @@ type State = {
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
-const LanguageUtils = require('LanguageUtils');
+const TranslationUtils = require('TranslationUtils');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
 
@@ -77,10 +77,6 @@ if (Platform.OS === 'ios') {
     checkDisabled: 'check-box',
   };
 }
-
-// Require both language translations to switch between them easily
-const TranslationsEn: Object = require('../../../assets/js/Translations.en.js');
-const TranslationsFr: Object = require('../../../assets/js/Translations.fr.js');
 
 // Create a cache of settings values to retrieve and update them quickly
 let settings: Object;
@@ -118,6 +114,7 @@ class SettingsHome extends React.Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
+    (this:any)._loadLanguages = this._loadLanguages.bind(this);
     (this:any)._loadSettings = this._loadSettings.bind(this);
     (this:any)._pressRow = this._pressRow.bind(this);
   }
@@ -127,8 +124,15 @@ class SettingsHome extends React.Component {
    */
   componentDidMount(): void {
     Configuration.init()
-        .then(this._loadSettings())
+        .then(this._loadLanguages)
         .catch(err => console.error('Configuration could not be initialized for settings.', err));
+  }
+
+  /**
+   * Unloads the unused language.
+   */
+  componentWillUnmount(): void {
+    TranslationUtils.unloadTranslations(Preferences.getSelectedLanguage() === 'en' ? 'fr' : 'en');
   }
 
   /**
@@ -145,6 +149,15 @@ class SettingsHome extends React.Component {
     }
 
     return changed;
+  }
+
+  /**
+   * Ensure both language translations are loaded so they are fast to switch between.
+   */
+  _loadLanguages(): void {
+    TranslationUtils.loadTranslations('en')
+        .then(() => TranslationUtils.loadTranslations('fr'))
+        .then(this._loadSettings);
   }
 
   /**
@@ -245,7 +258,7 @@ class SettingsHome extends React.Component {
         <TouchableOpacity onPress={() => this._pressRow(setting.key)}>
           <View style={_styles.setting}>
             <Text style={[_styles.settingText, {color: 'black', fontSize: Constants.Text.Medium}]}>
-              {LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), setting)}
+              {TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), setting)}
             </Text>
             {content}
           </View>
@@ -285,9 +298,7 @@ class SettingsHome extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement<any> {
-    const Translations: Object = (Preferences.getSelectedLanguage() === 'en')
-        ? TranslationsEn
-        : TranslationsFr;
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     if (this.state.loaded) {
       return (

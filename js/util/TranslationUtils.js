@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file LanguageUtils.js
- * @providesModule LanguageUtils
+ * @file TranslationUtils.js
+ * @providesModule TranslationUtils
  * @description Defines a set of methods to easily get translations from objects.
  *
  * @flow
@@ -28,6 +28,40 @@
 import type {
   Language,
 } from 'types';
+
+// Cache of the translations
+const translations: Object = {
+  en: null,
+  fr: null,
+};
+
+/**
+ * Loads and parses a set of translations from the downloaded configuration.
+ *
+ * @param {Language} language the set of translations to load
+ * @returns {Promise<Object>} a promise that resolves with the translations when they have been loaded.
+ */
+async function _loadTranslations(language: Language): Promise < Object > {
+  // If the language is already loaded,
+  if (translations[language] != null) {
+    return translations[language];
+  }
+
+  // Check for the configuration
+  const Configuration = require('Configuration');
+  const available = await Configuration.init();
+  if (!available) {
+    throw new Error('Configuration is not available to retrieve translations.');
+  }
+
+  // Get the current translations
+  try {
+    translations[language] = await Configuration.getConfig('/translations.' + language + '.json');
+    return translations[language];
+  } catch (e) {
+    throw e;
+  }
+}
 
 module.exports = {
 
@@ -129,6 +163,39 @@ module.exports = {
       return this.getFrenchName(obj);
     } else {
       return null;
+    }
+  },
+
+  /**
+   * Loads and parses a set of translations from the downloaded configuration.
+   *
+   * @param {Language} language the set of translations to load
+   * @returns {Promise<Object>} a promise that resolves with the translations when they have been loaded.
+   */
+  loadTranslations(language: Language): Promise < Object > {
+    return _loadTranslations(language);
+  },
+
+  /**
+   * Removes a loaded set of translations.
+   *
+   * @param {Language} language the set of translations to unload
+   */
+  unloadTranslations(language: Language): void {
+    translations[language] = null;
+  },
+
+  /**
+   * Retrieves a set of translations, or an empty object if the set was not loaded.
+   *
+   * @param {Language} language the set of translations to retrieve
+   * @returns {Object} a set of translations, or an empty object
+   */
+  getTranslations(language: Language): Object {
+    if (translations[language] == null) {
+      return {};
+    } else {
+      return translations[language];
     }
   },
 };

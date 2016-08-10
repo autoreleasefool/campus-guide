@@ -78,10 +78,10 @@ type NavigatorRoute = {
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
-const LanguageUtils = require('LanguageUtils');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
 const TextUtils = require('TextUtils');
+const TranslationUtils = require('TranslationUtils');
 
 // Identifier for the navigator, indicating the list of stops is being shown.
 const LIST: number = 0;
@@ -267,12 +267,7 @@ class Stops extends React.Component {
    */
   _retrieveUpcomingTimes(days: Object): string {
     // Get current language for translations
-    let Translations: Object = {};
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     const upcomingTimes = [];
     const now = new Date();
@@ -396,7 +391,7 @@ class Stops extends React.Component {
           <SectionHeader
               sectionIcon={'directions-bus'}
               sectionIconClass={'material'}
-              sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.campus)} />
+              sectionName={TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.campus)} />
           <ListView
               dataSource={this.state.dataSourceStops}
               renderRow={this._renderStopRow.bind(this)} />

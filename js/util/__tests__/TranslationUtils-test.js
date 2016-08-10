@@ -16,14 +16,14 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file LanguageUtils-test.js
+ * @file TranslationUtils-test.js
  * @description Tests retrieving translations from objects.
  *
  */
 'use strict';
 
 // Unmock modules so the real module is used.
-jest.unmock('LanguageUtils');
+jest.unmock('TranslationUtils');
 
 // An object with non-translated properties.
 const objectWithDefaultProperties = {
@@ -46,62 +46,62 @@ const invalidObject = {
 };
 
 // Require modules for testing
-const LanguageUtils = require('LanguageUtils');
+const TranslationUtils = require('TranslationUtils');
 
-describe('LanguageUtils-test', () => {
+describe('TranslationUtils-test', () => {
 
   it('tests retrieving French and English names.', () => {
-    expect(LanguageUtils.getEnglishName(objectWithDefaultProperties))
+    expect(TranslationUtils.getEnglishName(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
-    expect(LanguageUtils.getEnglishName(objectWithTranslatedProperties))
+    expect(TranslationUtils.getEnglishName(objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_en);
-    expect(LanguageUtils.getTranslatedName('en', objectWithDefaultProperties))
+    expect(TranslationUtils.getTranslatedName('en', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
-    expect(LanguageUtils.getTranslatedName('en', objectWithTranslatedProperties))
+    expect(TranslationUtils.getTranslatedName('en', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_en);
-    expect(LanguageUtils.getTranslatedName('en', invalidObject))
+    expect(TranslationUtils.getTranslatedName('en', invalidObject))
         .toBeNull();
 
-    expect(LanguageUtils.getFrenchName(objectWithDefaultProperties))
+    expect(TranslationUtils.getFrenchName(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
-    expect(LanguageUtils.getFrenchName(objectWithTranslatedProperties))
+    expect(TranslationUtils.getFrenchName(objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_fr);
-    expect(LanguageUtils.getTranslatedName('fr', objectWithDefaultProperties))
+    expect(TranslationUtils.getTranslatedName('fr', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
-    expect(LanguageUtils.getTranslatedName('fr', objectWithTranslatedProperties))
+    expect(TranslationUtils.getTranslatedName('fr', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_fr);
-    expect(LanguageUtils.getTranslatedName('fr', invalidObject))
+    expect(TranslationUtils.getTranslatedName('fr', invalidObject))
         .toBeNull();
 
-    expect(LanguageUtils.getTranslatedName('invalid_language', objectWithDefaultProperties))
+    expect(TranslationUtils.getTranslatedName('invalid_language', objectWithDefaultProperties))
         .toBeNull();
   });
 
   it('tests retrieving French and English variants of different properties.', () => {
-    expect(LanguageUtils.getEnglishVariant('details', objectWithDefaultProperties))
+    expect(TranslationUtils.getEnglishVariant('details', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.details);
-    expect(LanguageUtils.getEnglishVariant('details', objectWithTranslatedProperties))
+    expect(TranslationUtils.getEnglishVariant('details', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.details_en);
-    expect(LanguageUtils.getFrenchVariant('details', invalidObject))
+    expect(TranslationUtils.getFrenchVariant('details', invalidObject))
         .toBeNull();
 
-    expect(LanguageUtils.getFrenchVariant('details', objectWithDefaultProperties))
+    expect(TranslationUtils.getFrenchVariant('details', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.details);
-    expect(LanguageUtils.getFrenchVariant('details', objectWithTranslatedProperties))
+    expect(TranslationUtils.getFrenchVariant('details', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.details_fr);
-    expect(LanguageUtils.getFrenchVariant('details', invalidObject))
+    expect(TranslationUtils.getFrenchVariant('details', invalidObject))
         .toBeNull();
 
-    expect(LanguageUtils.getTranslatedVariant('en', 'details', objectWithTranslatedProperties))
+    expect(TranslationUtils.getTranslatedVariant('en', 'details', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.details_en);
-    expect(LanguageUtils.getTranslatedVariant('fr', 'details', objectWithTranslatedProperties))
+    expect(TranslationUtils.getTranslatedVariant('fr', 'details', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.details_fr);
-    expect(LanguageUtils.getTranslatedVariant('invalid_language', 'details', objectWithTranslatedProperties))
+    expect(TranslationUtils.getTranslatedVariant('invalid_language', 'details', objectWithTranslatedProperties))
         .toBeNull();
 
-    expect(LanguageUtils.getEnglishVariant('details', null))
+    expect(TranslationUtils.getEnglishVariant('details', null))
         .toBeNull();
-    expect(LanguageUtils.getFrenchVariant('details', null))
+    expect(TranslationUtils.getFrenchVariant('details', null))
         .toBeNull();
   });
 });

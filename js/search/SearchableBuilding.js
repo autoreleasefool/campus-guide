@@ -30,7 +30,7 @@ import type {
 } from 'types';
 
 // Imports
-const LanguageUtils = require('LanguageUtils');
+const TranslationUtils = require('TranslationUtils');
 const Preferences = require('Preferences');
 
 // Section name for buildings
@@ -61,7 +61,7 @@ module.exports = {
 
     for (let i = 0; i < buildings.length; i++) {
       const translated: boolean = !('name' in buildings[i]);
-      const name: string = LanguageUtils.getTranslatedName(language, buildings[i]) || '';
+      const name: string = TranslationUtils.getTranslatedName(language, buildings[i]) || '';
 
       // Compare building properties to search terms to add to results
       if ((!translated && buildings[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)

@@ -40,6 +40,7 @@ type Props = {
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
+const TranslationUtils = require('TranslationUtils');
 const Preferences = require('Preferences');
 const TabsView = require('Tabs');
 
@@ -63,12 +64,7 @@ class MainScreen extends React.Component {
    */
   componentDidMount(): void {
     // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     if (Preferences.isFirstTimeOpened() && !languageSelectionMessageShown) {
       languageSelectionMessageShown = true;
@@ -94,12 +90,7 @@ class MainScreen extends React.Component {
     }
 
     // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     const self: MainScreen = this;
     Configuration.isConfigUpdateAvailable()

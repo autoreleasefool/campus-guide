@@ -46,7 +46,7 @@ import type {
 type DiscoverSectionWithDefaultName = {
   icon: IconObject,
   id: string,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
   name: string,
 };
 
@@ -54,7 +54,7 @@ type DiscoverSectionWithDefaultName = {
 type DiscoverSectionWithTranslatedName = {
   icon: IconObject,
   id: string,
-  image: ReactClass<any>,
+  image: ReactClass< any >,
   name_en: string,
   name_fr: string,
 };
@@ -71,14 +71,14 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  sections: ?Array<DiscoverSection>,
+  sections: ?Array< DiscoverSection >,
   currentSection: string,
 };
 
 // Imports
 const Constants = require('Constants');
 const DisplayUtils = require('DisplayUtils');
-const LanguageUtils = require('LanguageUtils');
+const TranslationUtils = require('TranslationUtils');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
 
@@ -208,7 +208,7 @@ class DiscoverHome extends React.Component {
             ref={'Header-' + section.id}
             sectionIcon={iconName}
             sectionIconClass={iconClass}
-            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), section)}
+            sectionName={TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), section)}
             subtitleIcon={subtitleIcon}
             subtitleIconClass={'material'} />
       </TouchableOpacity>

@@ -42,11 +42,12 @@ import type {
 } from 'types';
 
 // Imports
-const TabsCommon = require('TabsCommon');
 const Constants = require('Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const NavBar = require('NavBar');
 const Preferences = require('Preferences');
+const TabsCommon = require('TabsCommon');
+const TranslationUtils = require('TranslationUtils');
 
 // Icons for items in navigation drawer
 const drawerIcons: TabItems = {
@@ -112,12 +113,7 @@ class TabsView extends TabsCommon {
    */
   _renderNavigationView(): ReactElement<any> {
     // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     const tabs: Array<ReactElement<any>> = [];
     for (let i = 0; i < Constants.Tabs.length; i++) {

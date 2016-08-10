@@ -52,7 +52,7 @@ type State = {
 
 // Imports
 const Configuration = require('Configuration');
-const LanguageUtils = require('LanguageUtils');
+const TranslationUtils = require('TranslationUtils');
 const MapView = require('react-native-maps');
 const Preferences = require('Preferences');
 
@@ -133,7 +133,7 @@ class ShuttleCampusDetails extends React.Component {
       marker = (
         <MapView.Marker
             coordinate={initialRegion}
-            description={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campus)}
+            description={TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.state.campus)}
             title={Translations.shuttle_stop} />
       );
     }
@@ -169,12 +169,7 @@ class ShuttleCampusDetails extends React.Component {
    */
   render(): ReactElement<any> {
     // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     return (
       <View style={[_styles.container, {backgroundColor: this.props.campuscolor}]}>

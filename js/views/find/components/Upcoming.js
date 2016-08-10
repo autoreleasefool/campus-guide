@@ -50,6 +50,7 @@ type State = {
 // Imports
 const Constants = require('Constants');
 const Preferences = require('Preferences');
+const TranslationUtils = require('TranslationUtils');
 
 class Upcoming extends React.Component {
 
@@ -85,12 +86,7 @@ class Upcoming extends React.Component {
    */
   render(): ReactElement<any> {
     // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     if (this.state.loaded) {
       return (

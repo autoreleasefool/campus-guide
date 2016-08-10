@@ -50,8 +50,10 @@ type State = {
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
+const CoreTranslations: Object = require('../../assets/json/CoreTranslations.json');
 const emptyFunction = require('empty/function');
 const Preferences = require('Preferences');
+const TranslationUtils = require('TranslationUtils');
 
 // Amount of time to wait before checking for connection, to ensure connection event listener is registered
 const CONNECTION_CHECK_TIMEOUT = 250;
@@ -168,40 +170,43 @@ class UpdateScreenCommon extends React.Component {
   }
 
   _notifyConnectionFailed(): void {
-    // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../assets/js/Translations.en.js');
-    }
+    const language = Preferences.getSelectedLanguage();
 
     Configuration.init()
         .then(available => {
           if (available) {
             Alert.alert(
-              Translations.no_internet,
-              Translations.no_internet_config_available,
+              CoreTranslations[language].no_internet,
+              CoreTranslations[language].no_internet_config_available,
               [
-                {text: Translations.ok, onPress: () => this.props.navigator.resetTo({id: Constants.Views.Main})},
+                {
+                  text: CoreTranslations[language].ok,
+                  onPress: () => this.props.navigator.resetTo({id: Constants.Views.Main}),
+                },
               ],
             );
           } else {
             Alert.alert(
-              Translations.no_internet,
-              Translations.no_internet_config_unavailable,
+              CoreTranslations[language].no_internet,
+              CoreTranslations[language].no_internet_config_unavailable,
               [
-                {text: Translations.retry, onPress: this._checkConnection},
+                {
+                  text: CoreTranslations[language].retry,
+                  onPress: this._checkConnection,
+                },
               ],
             );
           }
         })
         .catch(() => {
           Alert.alert(
-            Translations.no_internet,
-            Translations.no_internet_config_unavailable,
+            CoreTranslations[language].no_internet,
+            CoreTranslations[language].no_internet_config_unavailable,
             [
-              {text: Translations.retry, onPress: this._checkConnection},
+              {
+                text: CoreTranslations[language].retry,
+                onPress: this._checkConnection,
+              },
             ],
           );
         });
@@ -211,7 +216,9 @@ class UpdateScreenCommon extends React.Component {
    * Return to the main screen.
    */
   _returnToMain(): void {
-    this.props.navigator.push({id: Constants.Views.Main});
+    const self: UpdateScreenCommon = this;
+    TranslationUtils.loadTranslations(Preferences.getSelectedLanguage())
+        .then(() => self.props.navigator.replace({id: Constants.Views.Main}));
   }
 
   /**

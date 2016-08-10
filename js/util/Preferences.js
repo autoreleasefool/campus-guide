@@ -35,7 +35,7 @@ import type {
 
 // Imports
 const Configuration = require('Configuration');
-const LanguageUtils = require('LanguageUtils');
+const TranslationUtils = require('TranslationUtils');
 
 // Represents the number of times the app has been opened
 const TIMES_APP_OPENED: string = 'app_times_opened';
@@ -269,7 +269,7 @@ module.exports = {
     } else if (key === 'pref_wheel') {
       return this.isWheelchairRoutePreferred();
     } else if (key === 'pref_semester') {
-      return LanguageUtils.getTranslatedName(this.getSelectedLanguage(), this.getCurrentSemesterInfo());
+      return TranslationUtils.getTranslatedName(this.getSelectedLanguage(), this.getCurrentSemesterInfo());
     } else if (key === 'pref_search_all_always') {
       return this.getAlwaysSearchAll();
     }

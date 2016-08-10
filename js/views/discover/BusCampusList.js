@@ -49,16 +49,16 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  campuses: ?Array<BusCampus>,
+  campuses: ?Array< BusCampus >,
 };
 
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
 const ExternalUtils = require('ExternalUtils');
-const LanguageUtils = require('LanguageUtils');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
+const TranslationUtils = require('TranslationUtils');
 
 // Background colors for each campus
 const campuscolors: Array<string> = [
@@ -111,7 +111,11 @@ class BusCampusList extends React.Component {
    */
   _goToBusWebsite(Translations: Object): void {
     ExternalUtils.openLink(
-        LanguageUtils.getTranslatedVariant(Preferences.getSelectedLanguage(), 'link', Configuration.getCityBusyInfo()),
+        TranslationUtils.getTranslatedVariant(
+          Preferences.getSelectedLanguage(),
+          'link',
+          Configuration.getCityBusyInfo()
+        ),
         Translations,
         Linking,
         Alert,
@@ -135,12 +139,7 @@ class BusCampusList extends React.Component {
    */
   render(): ReactElement<any> {
     // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     const campusDisplayNames: Array<string> = [];
     const campusStopNames: Array<string> = [];
@@ -154,8 +153,8 @@ class BusCampusList extends React.Component {
     } else {
       for (let i: number = 0; i < this.state.campuses.length; i++) {
         const campus: BusCampus = this.state.campuses[i];
-        const displayName: string = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), campus) || '';
-        const stopName: string = LanguageUtils.getEnglishName(campus) || '';
+        const displayName: string = TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), campus) || '';
+        const stopName: string = TranslationUtils.getEnglishName(campus) || '';
 
         campusDisplayNames.push(displayName);
         campusStopNames.push(stopName);

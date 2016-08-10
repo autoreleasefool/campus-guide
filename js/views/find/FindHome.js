@@ -42,6 +42,7 @@ const BuildingGrid = require('BuildingGrid');
 const Constants = require('Constants');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
+const TranslationUtils = require('TranslationUtils');
 const Upcoming = null; // require('Upcoming');
 
 class FindHome extends React.Component {
@@ -77,12 +78,7 @@ class FindHome extends React.Component {
    */
   render(): ReactElement<any> {
     // Get current language for translations
-    let Translations = null;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     // Use a different icon for the calendar depending on the platform
     let calendarIcon = null;

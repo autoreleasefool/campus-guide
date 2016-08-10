@@ -76,7 +76,6 @@ const Configuration = require('Configuration');
 const Constants = require('Constants');
 const DisplayUtils = require('DisplayUtils');
 const Ionicon = require('react-native-vector-icons/Ionicons');
-const LanguageUtils = require('LanguageUtils');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('Preferences');
 const Promise = require('promise');
@@ -84,6 +83,7 @@ const SearchManager = require('SearchManager');
 const SectionHeader = require('SectionHeader');
 const StatusBarUtils = require('StatusBarUtils');
 const Tooltip = require('Tooltip');
+const TranslationUtils = require('TranslationUtils');
 
 const {width} = Dimensions.get('window');
 
@@ -224,7 +224,7 @@ class BuildingDetails extends React.Component {
     // Cache list of room types that match the search terms
     const matchingRoomTypes = [];
     for (let i = 0; i < this._roomTypes.length; i++) {
-      const roomTypeName = LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this._roomTypes[i]);
+      const roomTypeName = TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this._roomTypes[i]);
       if (adjustedSearchTerms != null && roomTypeName != null
           && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
         matchingRoomTypes.push(i);
@@ -239,7 +239,7 @@ class BuildingDetails extends React.Component {
           || matchingRoomTypes.indexOf(rooms[i].type) >= 0) {
         filteredRooms.push({
           name: roomName,
-          type: LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this._roomTypes[rooms[i].type]),
+          type: TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this._roomTypes[rooms[i].type]),
           icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[rooms[i].type]),
         });
       }
@@ -312,8 +312,11 @@ class BuildingDetails extends React.Component {
     const bannerTextStyle = (this.state.bannerPosition === 1)
         ? {left: width * (1 - BANNER_TEXT_WIDTH_PCT)}
         : {left: width};
-    const buildingAddress: ?string
-        = LanguageUtils.getTranslatedVariant(Preferences.getSelectedLanguage(), 'address', this.props.buildingDetails);
+    const buildingAddress: ?string = TranslationUtils.getTranslatedVariant(
+      Preferences.getSelectedLanguage(),
+      'address',
+      this.props.buildingDetails
+    );
 
     return (
       <View style={_styles.banner}>
@@ -333,7 +336,9 @@ class BuildingDetails extends React.Component {
           </ScrollView>
         </View>
         <SectionHeader
-            sectionName={LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)}
+            sectionName={
+              TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)
+            }
             style={_styles.header}
             subtitleName={this.props.buildingDetails.code} />
       </View>
@@ -349,7 +354,7 @@ class BuildingDetails extends React.Component {
   _renderBuildingDirections(Translations: Object): ReactElement< any > {
     const navigateTo: string = (String:any).format(
       Translations.navigate_to,
-      LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)
+      TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)
     );
 
     return (
@@ -458,12 +463,7 @@ class BuildingDetails extends React.Component {
    */
   render(): ReactElement< any > {
     // Get current language for translations
-    let Translations: Object = {};
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     return (
       <View style={_styles.container}>

@@ -57,9 +57,9 @@ type State = {
 // Imports
 const Constants = require('Constants');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const LanguageUtils = require('LanguageUtils');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
+const TranslationUtils = require('TranslationUtils');
 
 // Get dimensions of the device
 const {width} = Dimensions.get('window');
@@ -99,7 +99,7 @@ class ScheduleHome extends React.Component {
     Preferences.setToNextSemester(AsyncStorage);
     const header: SectionHeader = this.refs.ScheduleHeader;
     header.updateSubtitle(
-        LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo()),
+        TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo()),
         header.getSubtitleIcon(),
         header.getSubtitleIconClass());
   }
@@ -137,12 +137,7 @@ class ScheduleHome extends React.Component {
    */
   render(): ReactElement<any> {
     // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     // Use a different icon for the calendar depending on the platform
     let calendarIcon: Array<string>;
@@ -203,7 +198,7 @@ class ScheduleHome extends React.Component {
             sectionName={Translations.schedule}
             subtitleIcon={'ios-swap'}
             subtitleIconClass={'ionicon'}
-            subtitleName={LanguageUtils.getTranslatedName(
+            subtitleName={TranslationUtils.getTranslatedName(
               Preferences.getSelectedLanguage(),
               Preferences.getCurrentSemesterInfo())}
             subtitleOnClick={this._changeSemester.bind(this)} />

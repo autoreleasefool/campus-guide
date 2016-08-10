@@ -54,12 +54,10 @@ type State = {
 // Imports
 const Configuration = require('Configuration');
 const Constants = require('Constants');
+const CoreTranslations: Object = require('../../assets/json/CoreTranslations.json');
 const Preferences = require('Preferences');
 const StatusBarUtils = require('StatusBarUtils');
-
-// Require both language translations to display items in both languages
-const TranslationsEn: Object = require('../../assets/js/Translations.en.js');
-const TranslationsFr: Object = require('../../assets/js/Translations.fr.js');
+const TranslationUtils = require('TranslationUtils');
 
 class SplashScreen extends React.Component {
 
@@ -123,7 +121,9 @@ class SplashScreen extends React.Component {
     Configuration.init()
         .then(available => {
           if (available) {
-            self.props.navigator.replace({id: Constants.Views.Main});
+            TranslationUtils.loadTranslations(Preferences.getSelectedLanguage())
+                .then(() => self.props.navigator.replace({id: Constants.Views.Main}))
+                .catch(() => self.props.navigator.replace({id: Constants.Views.Update}));
           } else {
             self.props.navigator.replace({id: Constants.Views.Update});
           }
@@ -166,11 +166,11 @@ class SplashScreen extends React.Component {
           <View style={{flex: 1, backgroundColor: Constants.Colors.garnet}}>
             <View style={_styles.languageContainer}>
               <Text style={_styles.languageSubtitle}>
-                {TranslationsEn.continue_in}
+                {CoreTranslations.en.continue_in}
               </Text>
               <View style={{padding: 5}}>
                 <Text style={{color: 'white', fontSize: Constants.Text.Title}}>
-                  {TranslationsEn.language}
+                  {CoreTranslations.en.language}
                 </Text>
               </View>
             </View>
@@ -183,11 +183,11 @@ class SplashScreen extends React.Component {
           <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}}>
             <View style={_styles.languageContainer}>
               <Text style={_styles.languageSubtitle}>
-                {TranslationsFr.continue_in}
+                {CoreTranslations.fr.continue_in}
               </Text>
               <View style={{padding: 5}}>
                 <Text style={_styles.languageTitle}>
-                  {TranslationsFr.language}
+                  {CoreTranslations.fr.language}
                 </Text>
               </View>
             </View>

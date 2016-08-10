@@ -52,19 +52,19 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  campuses: ?Array<BusCampus>,
-  details: ?Array<ShuttleDetails>,
+  campuses: ?Array< BusCampus >,
+  details: ?Array< ShuttleDetails >,
 };
 
 // Imports
 const Constants = require('Constants');
 const DisplayUtils = require('DisplayUtils');
-const LanguageUtils = require('LanguageUtils');
+const TranslationUtils = require('TranslationUtils');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
 
 // Background colors for each campus
-const campusColors: Array<string> = [
+const campusColors: Array< string > = [
   Constants.Colors.garnet,
   Constants.Colors.charcoalGrey,
   Constants.Colors.lightGrey,
@@ -142,8 +142,8 @@ class ShuttleCampusList extends React.Component {
     if (this.state.campuses != null && this.state.details != null) {
       for (let i = 0; i < this.state.campuses.length; i++) {
         const campus = this.state.campuses[i];
-        const displayName: string = LanguageUtils.getTranslatedName(language, campus) || '';
-        const stopName = LanguageUtils.getEnglishName(campus) || '';
+        const displayName: string = TranslationUtils.getTranslatedName(language, campus) || '';
+        const stopName = TranslationUtils.getEnglishName(campus) || '';
 
         campusDisplayNames.push(displayName);
         campusStopNames.push(stopName);
@@ -209,15 +209,15 @@ class ShuttleCampusList extends React.Component {
             <TouchableOpacity
                 key={index}
                 onPress={() => this.props.showDetails(
-                  LanguageUtils.getTranslatedName(language, detail),
+                  TranslationUtils.getTranslatedName(language, detail),
                   detail.image,
-                  LanguageUtils.getTranslatedVariant(language, 'details', detail),
+                  TranslationUtils.getTranslatedVariant(language, 'details', detail),
                   Constants.Colors.darkGrey
                 )}>
               <SectionHeader
                   sectionIcon={icon.name}
                   sectionIconClass={icon.class}
-                  sectionName={LanguageUtils.getTranslatedName(language, detail)}
+                  sectionName={TranslationUtils.getTranslatedName(language, detail)}
                   subtitleIcon={'chevron-right'}
                   subtitleIconClass={'material'} />
             </TouchableOpacity>

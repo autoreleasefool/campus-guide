@@ -36,6 +36,7 @@ import {
 
 // Imports
 const Constants = require('Constants');
+const CoreTranslations: Object = require('../../assets/json/CoreTranslations.json');
 const Preferences = require('Preferences');
 const UpdateScreenCommon = require('UpdateScreenCommon');
 
@@ -54,19 +55,12 @@ class UpdateScreen extends UpdateScreenCommon {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   _renderStatusMessages(): ReactElement < any > {
-    // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../assets/js/Translations.en.js');
-    }
-
+    const language = Preferences.getSelectedLanguage();
     const currentDownload: ?ReactElement<any> = (this.state.currentDownload == null)
         ? null
         :
       <Text style={_styles.progressText}>
-        {(String:any).format(Translations.file_is_updating, this.state.currentDownload)}
+        {(String:any).format(CoreTranslations[language].file_is_updating, this.state.currentDownload)}
       </Text>;
 
     return (
@@ -76,7 +70,7 @@ class UpdateScreen extends UpdateScreenCommon {
             <Text
                 key={index}
                 style={_styles.progressText}>
-              {(String:any).format(Translations.file_has_been_updated, filename)}
+              {(String:any).format(CoreTranslations[language].file_has_been_updated, filename)}
             </Text>
           ))}
           {currentDownload}
@@ -91,13 +85,7 @@ class UpdateScreen extends UpdateScreenCommon {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement< any > {
-    // Get current language for translations
-    let Translations: Object;
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../assets/js/Translations.en.js');
-    }
+    const language = Preferences.getSelectedLanguage();
 
     // Get background color for screen, and color for progress bar
     let backgroundColor = Constants.Colors.garnet;
@@ -115,7 +103,7 @@ class UpdateScreen extends UpdateScreenCommon {
               progress={super._getProgress()}
               progressTintColor={foregroundColor}
               style={_styles.progress} />
-          <Text style={_styles.downloading}>{Translations.downloading}</Text>
+          <Text style={_styles.downloading}>{CoreTranslations[language].downloading}</Text>
         </View>
         {this._renderStatusMessages()}
       </View>

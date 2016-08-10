@@ -65,10 +65,10 @@ const Constants = require('Constants');
 const DisplayUtils = require('DisplayUtils');
 const ExternalUtils = require('ExternalUtils');
 const Ionicons = require('react-native-vector-icons/Ionicons');
-const LanguageUtils = require('LanguageUtils');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
 const TextUtils = require('TextUtils');
+const TranslationUtils = require('TranslationUtils');
 
 class LinkCategory extends React.Component {
 
@@ -122,10 +122,10 @@ class LinkCategory extends React.Component {
       <View>
         {categories.map((category: LinkCategoryType, index: number) => (
           <TouchableOpacity
-              key={LanguageUtils.getEnglishName(category)}
+              key={TranslationUtils.getEnglishName(category)}
               onPress={() => this.props.showLinkCategory(category)}>
             <SectionHeader
-                sectionName={LanguageUtils.getTranslatedName(language, category)}
+                sectionName={TranslationUtils.getTranslatedName(language, category)}
                 subtitleIcon={'chevron-right'}
                 subtitleIconClass={'material'} />
             {(index < categories.length - 1) ?
@@ -218,9 +218,9 @@ class LinkCategory extends React.Component {
       listOfLinks = (
         <View style={_styles.linksContainer}>
           {links.map((link, index) => {
-            let translatedLink: string = LanguageUtils.getTranslatedVariant(language, 'link', link)
+            let translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
                 || Configuration.getDefaultLink();
-            let translatedName: string = LanguageUtils.getTranslatedName(language, link)
+            let translatedName: string = TranslationUtils.getTranslatedName(language, link)
                 || translatedLink;
 
             return (
@@ -283,9 +283,9 @@ class LinkCategory extends React.Component {
     return (
       <View style={_styles.socialMediaContainer}>
         {socialMediaLinks.map(socialLink => {
-          const translatedLink: string = LanguageUtils.getTranslatedVariant(language, 'link', socialLink)
+          const translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', socialLink)
               || Configuration.getDefaultLink();
-          const translatedLinkName: ?string = LanguageUtils.getTranslatedName(language, socialLink);
+          const translatedLinkName: ?string = TranslationUtils.getTranslatedName(language, socialLink);
 
           if (translatedLinkName == null) {
             return null;
@@ -346,12 +346,7 @@ class LinkCategory extends React.Component {
    */
   render(): ReactElement<any> {
     // Get current language for translations
-    let Translations: Object = {};
-    if (Preferences.getSelectedLanguage() === 'fr') {
-      Translations = require('../../../assets/js/Translations.fr.js');
-    } else {
-      Translations = require('../../../assets/js/Translations.en.js');
-    }
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
     let categoryBackgroundColor: string = Constants.Colors.darkGrey;
     if (Constants.Colors[this.props.category.id] != null) {
@@ -383,7 +378,7 @@ class LinkCategory extends React.Component {
               style={_styles.bannerImage} />
           <View style={_styles.bannerTextContainer}>
             <Text style={_styles.bannerText}>
-              {LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.category)}
+              {TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.category)}
             </Text>
           </View>
         </View>

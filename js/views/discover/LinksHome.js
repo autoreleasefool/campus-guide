@@ -54,7 +54,7 @@ type State = {
 
 // Imports
 const Constants = require('Constants');
-const LanguageUtils = require('LanguageUtils');
+const TranslationUtils = require('TranslationUtils');
 const Preferences = require('Preferences');
 
 class LinksHome extends React.Component {
@@ -127,7 +127,7 @@ class LinksHome extends React.Component {
             style={_styles.categoryImage} />
         <View style={_styles.categoryTextContainer}>
           <Text style={_styles.categoryText}>
-            {LanguageUtils.getTranslatedName(Preferences.getSelectedLanguage(), category)}
+            {TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), category)}
           </Text>
         </View>
       </TouchableOpacity>

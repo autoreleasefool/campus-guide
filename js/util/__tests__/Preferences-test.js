@@ -67,7 +67,7 @@ jest.setMock('../Configuration', {
   }),
 });
 
-jest.setMock('../LanguageUtils', {
+jest.setMock('../TranslationUtils', {
   getTranslatedName: jest.fn(language => {
     return (language === 'en')
         ? NAME_ENGLISH
