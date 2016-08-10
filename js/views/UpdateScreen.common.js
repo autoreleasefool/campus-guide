@@ -173,30 +173,17 @@ class UpdateScreenCommon extends React.Component {
     const language = Preferences.getSelectedLanguage();
 
     Configuration.init()
-        .then(available => {
-          if (available) {
-            Alert.alert(
-              CoreTranslations[language].no_internet,
-              CoreTranslations[language].no_internet_config_available,
-              [
-                {
-                  text: CoreTranslations[language].ok,
-                  onPress: () => this.props.navigator.resetTo({id: Constants.Views.Main}),
-                },
-              ],
-            );
-          } else {
-            Alert.alert(
-              CoreTranslations[language].no_internet,
-              CoreTranslations[language].no_internet_config_unavailable,
-              [
-                {
-                  text: CoreTranslations[language].retry,
-                  onPress: this._checkConnection,
-                },
-              ],
-            );
-          }
+        .then(() => {
+          Alert.alert(
+            CoreTranslations[language].no_internet,
+            CoreTranslations[language].no_internet_config_available,
+            [
+              {
+                text: CoreTranslations[language].ok,
+                onPress: () => this.props.navigator.resetTo({id: Constants.Views.Main}),
+              },
+            ],
+          );
         })
         .catch(() => {
           Alert.alert(

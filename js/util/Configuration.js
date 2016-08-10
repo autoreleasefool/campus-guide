@@ -91,11 +91,8 @@ let clearConfigOnStart: boolean = true;
 /**
  * Asynchronously gets the configuration for the application and loads the various config values into their
  * respective variables.
- *
- * @returns {Promise<boolean>} returns a promise which resolves with true if the configuration is available,
- *                             false otherwise
  */
-async function _requestConfig(): Promise < boolean > {
+async function _requestConfig(): Promise < void > {
 
   if (__DEV__ && clearConfigOnStart) {
     clearConfigOnStart = false;
@@ -117,7 +114,7 @@ async function _requestConfig(): Promise < boolean > {
   }
 
   if (configVersions.length == 0) {
-    return false;
+    throw new Error('Configuration versions were not found in database.');
   }
 
   // Ensure all config files exist
@@ -126,14 +123,17 @@ async function _requestConfig(): Promise < boolean > {
     try {
       const exists = await RNFS.exists(CONFIG_DIRECTORY + configVersions[i].name);
       configAvailable = configAvailable && exists;
+      if (!exists) {
+        console.log('Could not find configuration file: ' + configVersions[i].name);
+      }
     } catch (e) {
       throw e;
     }
   }
 
-  // If any config files do not exist, return false for no available configuration
+  // If any config files do not exist, throw error for no available configuration
   if (!configAvailable) {
-    return false;
+    throw new Error('Some expected configuration file does not exist.');
   }
 
   // Load the application configuration
@@ -154,30 +154,21 @@ async function _requestConfig(): Promise < boolean > {
       availableSemesters.push(configuration.semesters[i]);
     }
   }
-
-  return true;
 }
 
 /**
- * Resolves promises waiting for Configuration initiation with the result.
- *
- * @param {boolean} result true if the configuration is available, false otherwise
+ * Resolves promises waiting for Configuration initiation.
  */
-function _initSuccess(result: boolean): void {
-  if (result) {
-    console.log('Configuration successfully loaded.');
-  } else {
-    console.log('Configuration could not be found.');
-  }
-
+function _initSuccess(): void {
+  console.log('Configuration successfully loaded.');
   configInitializing = false;
   for (let i = 0; i < availablePromises.length; i++) {
-    availablePromises[i].resolve(result);
+    availablePromises[i].resolve();
   }
 }
 
 /**
- * Resolves promises waiting for Configuration initiation with false (no configuration available).
+ * Rejects  promises waiting for Configuration initiation (no configuration available).
  *
  * @param {any} err error encountered while getting configuration
  */
@@ -185,7 +176,7 @@ function _initError(err: any): void {
   console.log('Error while getting configuration', err);
   configInitializing = false;
   for (let i = 0; i < availablePromises.length; i++) {
-    availablePromises[i].resolve(false);
+    availablePromises[i].reject();
   }
 }
 
@@ -421,12 +412,12 @@ async function _deleteConfiguration(): Promise < void > {
 module.exports = {
 
   /**
-   * Returns a promise that resolves with a boolean indicating if a version of the configuration is available, and
-   * false if not, or rejects if the configuration cannot be found.
+   * Returns a promise that resolves if a version of the configuration is available, or rejects if the configuration
+   * cannot be found.
    *
-   * @returns {Promise<boolean>} promise that will resolve/reject when configuration is found or not
+   * @returns {Promise<void>} promise that will resolve/reject when configuration is found or not
    */
-  init(): Promise < boolean > {
+  init(): Promise < void > {
     return new Promise((resolve, reject) => {
       if (university == null) {
         availablePromises.push({
@@ -442,7 +433,7 @@ module.exports = {
         }
       } else {
         // Configuration has been loaded and parsed, so resolve to true
-        resolve(true);
+        resolve();
       }
     });
   },

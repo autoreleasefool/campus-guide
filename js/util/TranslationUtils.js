@@ -49,9 +49,10 @@ async function _loadTranslations(language: Language): Promise < Object > {
 
   // Check for the configuration
   const Configuration = require('Configuration');
-  const available = await Configuration.init();
-  if (!available) {
-    throw new Error('Configuration is not available to retrieve translations.');
+  try {
+    await Configuration.init();
+  } catch (e) {
+    throw e;
   }
 
   // Get the current translations

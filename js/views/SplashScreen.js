@@ -119,17 +119,13 @@ class SplashScreen extends React.Component {
   _checkConfiguration(): void {
     const self: SplashScreen = this;
     Configuration.init()
-        .then(available => {
-          if (available) {
-            TranslationUtils.loadTranslations(Preferences.getSelectedLanguage())
-                .then(() => self.props.navigator.replace({id: Constants.Views.Main}))
-                .catch(() => self.props.navigator.replace({id: Constants.Views.Update}));
-          } else {
-            self.props.navigator.replace({id: Constants.Views.Update});
-          }
+        .then(() => {
+          TranslationUtils.loadTranslations(Preferences.getSelectedLanguage())
+              .then(() => self.props.navigator.replace({id: Constants.Views.Main}))
+              .catch(() => self.props.navigator.replace({id: Constants.Views.Update}));
         })
         .catch(error => {
-          console.log('Unable to determine if configuration is available. Assuming it is not.', error);
+          console.log('Assuming Configuration is not available.', error);
           self.props.navigator.replace({id: Constants.Views.Update});
         });
   }
