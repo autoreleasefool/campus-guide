@@ -50,7 +50,7 @@ import type {
 // Type definition for component props.
 type Props = {
   category: LinkCategoryType,
-  categoryImage: ReactClass < any >,
+  categoryImage: string,
   showLinkCategory: DefaultFunction;
 };
 
@@ -77,7 +77,7 @@ class LinkCategory extends React.Component {
    */
   static propTypes = {
     category: React.PropTypes.object.isRequired,
-    categoryImage: React.PropTypes.any.isRequired,
+    categoryImage: React.PropTypes.string.isRequired,
     showLinkCategory: React.PropTypes.func.isRequired,
   };
 
@@ -374,7 +374,7 @@ class LinkCategory extends React.Component {
         <View style={_styles.banner}>
           <Image
               resizeMode={'cover'}
-              source={this.props.categoryImage}
+              source={{uri: Configuration.getImagePath(this.props.categoryImage)}}
               style={_styles.bannerImage} />
           <View style={_styles.bannerTextContainer}>
             <Text style={_styles.bannerText}>

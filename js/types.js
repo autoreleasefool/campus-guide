@@ -357,7 +357,7 @@ export type Link =
 type LinkCategoryWithDefaultName = {
   id: string,
   name: string,
-  image?: ReactClass< any >,
+  image?: string,
   links?: Array< Link >,
   social?: Array< Link >,
   categories?: Array< LinkCategoryType >,
@@ -367,7 +367,7 @@ type LinkCategoryWithTranslatedName = {
   id: string,
   name_en: string,
   name_fr: string,
-  image?: ReactClass< any >,
+  image?: string,
   links?: Array< Link >,
   social?: Array< Link >,
   categories?: Array< LinkCategoryType >,

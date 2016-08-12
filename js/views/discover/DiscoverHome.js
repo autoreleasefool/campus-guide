@@ -228,7 +228,6 @@ class DiscoverHome extends React.Component {
     const self: DiscoverHome = this;
     Configuration.getConfig('/discover.json')
         .then(discover => {
-          console.log('Discover: ' + JSON.stringify(discover));
           const discoverSections: Array<DiscoverSection> = require('../../../assets/json/Discover');
           self.setState({
             display: discover,

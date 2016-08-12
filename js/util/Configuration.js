@@ -503,11 +503,15 @@ module.exports = {
   /**
    * Returns the path to the image.
    *
-   * @param {string} configImage name of the image to retrieve.
-   * @returns {string} absolute path to the image
+   * @param {?string} configImage name of the image to retrieve.
+   * @returns {string} absolute path to the image or the empty string if configImage was null
    */
-  getImagePath(configImage: string): string {
-    return 'file://' + CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES.image + configImage;
+  getImagePath(configImage: ?string): string {
+    if (configImage == null) {
+      return '';
+    } else {
+      return 'file://' + CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES.image + configImage;
+    }
   },
 
   /**

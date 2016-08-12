@@ -53,6 +53,7 @@ type State = {
 };
 
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const TranslationUtils = require('TranslationUtils');
 const Preferences = require('Preferences');
@@ -94,6 +95,9 @@ class LinksHome extends React.Component {
    */
   componentDidMount(): void {
     if (!this.state.loaded) {
+      Configuration.init()
+          .then(this._loadLinkCategories())
+          .catch(err => console.error('Configuration could not be initialized for link categories.', err));
       this._loadLinkCategories();
     }
   }
@@ -102,12 +106,15 @@ class LinksHome extends React.Component {
    * Retrieves the set of categories that the various useful links in the app belong to.
    */
   _loadLinkCategories(): void {
-    const linkCategories: Array<LinkCategoryType> = require('../../../assets/js/UsefulLinks');
-
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(linkCategories),
-      loaded: true,
-    });
+    const self: LinksHome = this;
+    Configuration.getConfig('/useful_links.json')
+        .then(linkCategories => {
+          self.setState({
+            dataSource: self.state.dataSource.cloneWithRows(linkCategories),
+            loaded: true,
+          });
+        })
+        .catch(err => console.error('Could not get /useful_links.json.', err));
   }
 
   /**
@@ -123,7 +130,7 @@ class LinksHome extends React.Component {
           onPress={() => this.props.showLinkCategory(category)}>
         <Image
             resizeMode={'cover'}
-            source={category.image}
+            source={{uri: Configuration.getImagePath(category.image)}}
             style={_styles.categoryImage} />
         <View style={_styles.categoryTextContainer}>
           <Text style={_styles.categoryText}>
