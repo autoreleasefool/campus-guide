@@ -108,6 +108,7 @@ class DiscoverHome extends React.Component {
     this.state = {
       sections: null,
       currentSection: 'none',
+      display: {},
     };
 
     // Explicitly binding 'this' to all methods that need it

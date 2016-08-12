@@ -331,7 +331,7 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
       }
     }
 
-    const configRowUpdates: Array < {name: string, version: number} > = [];
+    const configRowUpdates: Array < {name: string, type: string, version: number} > = [];
 
     // Delete the old configuration files, move the new ones
     for (let i = 0; i < configurationUpdates.length; i++) {
