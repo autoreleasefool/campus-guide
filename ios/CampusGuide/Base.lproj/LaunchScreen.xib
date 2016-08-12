@@ -12,7 +12,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Launch" translatesAutoresizingMaskIntoConstraints="NO" id="anS-j2-xHJ">
-                    <rect key="frame" x="100" y="257" width="175" height="153"/>
+                    <rect key="frame" x="62" y="224" width="250" height="219"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="0.5607843137254902" green="0.0" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
@@ -22,6 +22,6 @@
         </view>
     </objects>
     <resources>
-        <image name="Launch" width="833" height="793"/>
+        <image name="Launch" width="200" height="192"/>
     </resources>
 </document>
