@@ -176,12 +176,18 @@ class UpdateScreenCommon extends React.Component {
     return (this.state.totalProgress + this.state.intermediateProgress) / this.state.totalSize;
   }
 
+  /**
+   * Hides all progress updates from the screen and shows a "retry" button
+   */
   _hideProgressBar(): void {
     this.setState({
       showUpdateProgress: false,
     });
   }
 
+  /**
+   * Displays a prompt to user indicating the server could not be reached and their options.
+   */
   _notifyServerFailed(): void {
     const language = Preferences.getSelectedLanguage();
 
@@ -221,6 +227,9 @@ class UpdateScreenCommon extends React.Component {
         });
   }
 
+  /**
+   * Displays a prompt to user indicating an internet connection could not be reached and their options.
+   */
   _notifyConnectionFailed(): void {
     const language = Preferences.getSelectedLanguage();
 
