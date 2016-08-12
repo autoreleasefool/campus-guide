@@ -38,6 +38,7 @@ import type {
 
 type FileUpdate = {
   name: string,
+  type: string,
   url: string,
   size: number,
   oldVersion: number,
@@ -58,12 +59,20 @@ const HttpStatus = require('http-status-codes');
 const Promise = require('promise');
 const RNFS = require('react-native-fs');
 
+// Subdirectories which files of certain types should be placed/found in
+const CONFIG_SUBDIRECTORIES = {
+  image: '/images',
+  json: '/json',
+};
+
 // Directory for config files
 const CONFIG_DIRECTORY = RNFS.DocumentDirectoryPath + '/config';
 // Directory for downloaded config files
 const TEMP_CONFIG_DIRECTORY = RNFS.DocumentDirectoryPath + '/temp/config';
 // Expected filename for app_config
-const APP_CONFIG: string = '/app_config.json';
+const APP_CONFIG_NAME: string = '/app_config.json';
+// Expected directory for app_config
+const APP_CONFIG_DIR: string = CONFIG_SUBDIRECTORIES.json;
 
 // Default link to return
 const DEFAULT_LINK: string = 'http://www.uottawa.ca/';
@@ -121,7 +130,8 @@ async function _requestConfig(): Promise < void > {
   let configAvailable: boolean = true;
   for (let i = 0; i < configVersions.length; i++) {
     try {
-      const exists = await RNFS.exists(CONFIG_DIRECTORY + configVersions[i].name);
+      const dir = CONFIG_SUBDIRECTORIES[configVersions[i].type];
+      const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + configVersions[i].name);
       configAvailable = configAvailable && exists;
       if (!exists) {
         console.log('Could not find configuration file: ' + configVersions[i].name);
@@ -137,7 +147,7 @@ async function _requestConfig(): Promise < void > {
   }
 
   // Load the application configuration
-  const appConfig: string = await RNFS.readFile(CONFIG_DIRECTORY + APP_CONFIG, 'utf8');
+  const appConfig: string = await RNFS.readFile(CONFIG_DIRECTORY + APP_CONFIG_DIR + APP_CONFIG_NAME, 'utf8');
   const configuration = JSON.parse(appConfig);
 
   // Reset the configuration
@@ -215,6 +225,7 @@ async function _refreshConfigVersions(): Promise < boolean > {
               updateAvailable = true;
               configurationUpdates.push({
                 name: config,
+                type: appConfig[config].type,
                 url: appConfig[config].location.url,
                 size: appConfig[config].size,
                 oldVersion: configVersions[i].version,
@@ -228,6 +239,7 @@ async function _refreshConfigVersions(): Promise < boolean > {
           updateAvailable = true;
           configurationUpdates.push({
             name: config,
+            type: appConfig[config].type,
             url: appConfig[config].location.url,
             size: appConfig[config].size,
             oldVersion: 0,
@@ -254,8 +266,14 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
     return;
   }
 
+  // Generate directories
   await RNFS.mkdir(CONFIG_DIRECTORY);
   await RNFS.mkdir(TEMP_CONFIG_DIRECTORY);
+  for (const type in CONFIG_SUBDIRECTORIES) {
+    if (CONFIG_SUBDIRECTORIES.hasOwnProperty(type)) {
+      await RNFS.mkdir(CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES[type]);
+    }
+  }
 
   // Get total size of update
   let totalSize: number = 0;
@@ -308,7 +326,7 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
       }
 
       // If APP_CONFIG is updated, reset the current semester
-      if (configurationUpdates[i].name === APP_CONFIG) {
+      if (configurationUpdates[i].name === APP_CONFIG_NAME) {
         await AsyncStorage.setItem('app_current_semester', '0');
       }
     }
@@ -326,11 +344,12 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
 
       await RNFS.moveFile(
         TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name,
-        CONFIG_DIRECTORY + configurationUpdates[i].name
+        CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES[configurationUpdates[i].type] + configurationUpdates[i].name
       );
 
       configRowUpdates.push({
         name: configurationUpdates[i].name,
+        type: configurationUpdates[i].type,
         version: configurationUpdates[i].newVersion,
       });
     }
@@ -362,14 +381,15 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
  */
 async function _getConfigFile(configFile: string): Promise < ?Object > {
   // First, make sure the file exists
-  const exists = await RNFS.exists(CONFIG_DIRECTORY + configFile);
+  const dir = CONFIG_SUBDIRECTORIES.json;
+  const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + configFile);
 
   if (!exists) {
-    throw new Error('Configuration file \'' + configFile + '\' does not exist.');
+    throw new Error('Configuration file \'' + dir + configFile + '\' does not exist.');
   }
 
   // Load and parse the configuration file
-  const raw: string = await RNFS.readFile(CONFIG_DIRECTORY + configFile, 'utf8');
+  const raw: string = await RNFS.readFile(CONFIG_DIRECTORY + dir + configFile, 'utf8');
   return JSON.parse(raw);
 }
 
@@ -392,18 +412,21 @@ async function _deleteConfiguration(): Promise < void > {
 
     for (let i = 0; i < configVersions.length; i++) {
       try {
-        await RNFS.unlink(CONFIG_DIRECTORY + configVersions[i].name);
+        const dir = CONFIG_SUBDIRECTORIES[configVersions[i].type];
+        await RNFS.unlink(CONFIG_DIRECTORY + dir + configVersions[i].name);
       } catch (e) {
         // do nothing - file doesn't exist
       }
 
       clearVersions.push({
         name: configVersions[i].name,
+        type: configVersions[i].type,
         version: 0,
       });
     }
 
     await Database.updateConfigVersions(db, clearVersions);
+    await RNFS.unlink(CONFIG_DIRECTORY);
   } catch (err) {
     console.error('Error accessing database while clearing versions.', err);
   }
@@ -475,6 +498,16 @@ module.exports = {
    */
   getConfig(configFile: string): Promise < ?Object > {
     return _getConfigFile(configFile);
+  },
+
+  /**
+   * Returns the path to the image.
+   *
+   * @param {string} configImage name of the image to retrieve.
+   * @returns {string} absolute path to the image
+   */
+  getImagePath(configImage: string): string {
+    return 'file://' + CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES.image + configImage;
   },
 
   /**
