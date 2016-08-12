@@ -124,7 +124,7 @@ async function _upgradeDatabase(newVersion: number): Promise < void > {
 
     if (dbCurrentVersion !== 0) {
       const upgrade: string = (String:any).format(
-        'Successfully upgraded database from {1} to {2}.',
+        'Successfully upgraded database from {0} to {1}.',
         dbCurrentVersion - 1,
         dbCurrentVersion
       );
@@ -186,6 +186,7 @@ function _createDatabase(tx: any): void {
     'CREATE TABLE IF NOT EXISTS Config ('
     + '_id INTEGER PRIMARY KEY NOT NULL, '
     + 'name TEXT NOT NULL COLLATE NOCASE, '
+    + 'type TEXT NOT NULL COLLATE NOCASE, '
     + 'version INTEGER NOT NULL DEFAULT 1'
     + ');'
   );
@@ -297,7 +298,7 @@ export function getConfigVersions(DB: SQLite): Promise < Array < Object > > {
  */
 export function updateConfigVersions(
     DB: SQLite,
-    configVersions: Array < {name: string, version: number} >): Promise < void > {
+    configVersions: Array < {name: string, type: string, version: number} >): Promise < void > {
   return new Promise((resolve, reject) => {
 
     DB.executeSql('SELECT * FROM Config;')
@@ -314,8 +315,8 @@ export function updateConfigVersions(
             }
 
             if (promise == null) {
-              promise = DB.executeSql('INSERT INTO Config (name, version) VALUES (?, ?);',
-                  [configVersions[i].name, configVersions[i].version]);
+              promise = DB.executeSql('INSERT INTO Config (name, type, version) VALUES (?, ?, ?);',
+                  [configVersions[i].name, configVersions[i].type, configVersions[i].version]);
             }
 
             updatePromises.push(promise);
