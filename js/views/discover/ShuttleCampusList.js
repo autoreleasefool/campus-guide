@@ -42,7 +42,7 @@ import type {
   Language,
   PlatformString,
   ShuttleDetails,
-} from '../../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {

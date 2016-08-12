@@ -37,7 +37,7 @@ import {
 // Type imports
 import type {
   TabItems,
-} from '../types';
+} from 'types';
 
 // Imports
 const TabsCommon = require('TabsCommon');

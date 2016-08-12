@@ -35,7 +35,7 @@ import {
 // Type imports
 import type {
   Building,
-} from '../../types';
+} from 'types';
 
 // Imports
 const BuildingGrid = require('BuildingGrid');

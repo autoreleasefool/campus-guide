@@ -40,7 +40,7 @@ import {
 import type {
   BusCampus,
   DefaultFunction,
-} from '../../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {

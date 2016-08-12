@@ -31,7 +31,7 @@
 import type {
   Language,
   Semester,
-} from '../types';
+} from 'types';
 
 // Imports
 const Configuration = require('Configuration');

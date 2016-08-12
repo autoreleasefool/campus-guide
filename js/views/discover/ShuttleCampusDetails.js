@@ -36,7 +36,7 @@ import type {
   LatLong,
   ShuttleCampus,
   University,
-} from '../../types';
+} from 'types';
 
 // Type definition for component props.
 type Props = {
