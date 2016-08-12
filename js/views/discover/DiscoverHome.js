@@ -73,9 +73,11 @@ type Props = {
 type State = {
   sections: ?Array< DiscoverSection >,
   currentSection: string,
+  display: Object,
 };
 
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const DisplayUtils = require('DisplayUtils');
 const TranslationUtils = require('TranslationUtils');
@@ -119,7 +121,9 @@ class DiscoverHome extends React.Component {
    */
   componentDidMount(): void {
     if (this.state.sections == null) {
-      this._loadDiscoverSections();
+      Configuration.init()
+          .then(this._loadDiscoverSections())
+          .catch(err => console.error('Configuration could not be initialized for discovery.', err));
     }
   }
 
@@ -180,17 +184,18 @@ class DiscoverHome extends React.Component {
     let touchableStyle: Object = {};
     let subtitleIcon: string = 'expand-more';
     if (section.id === this.state.currentSection) {
+      console.log('URI: ' + Configuration.getImagePath(this.state.display[section.id].image));
       sectionImage = (
         <Image
             resizeMode={'cover'}
-            source={section.image}
+            source={{uri: Configuration.getImagePath(this.state.display[section.id].image)}}
             style={_styles.sectionImage} />
       );
       touchableStyle = {flex: 1, overflow: 'hidden'};
       subtitleIcon = 'chevron-right';
     }
 
-    const sectionIcon: ?DefaultIcon = DisplayUtils.getPlatformIcon(Platform.OS, section);
+    const sectionIcon: ?DefaultIcon = DisplayUtils.getPlatformIcon(Platform.OS, this.state.display[section.id]);
     const iconName: ?string = sectionIcon == null
         ? null
         : sectionIcon.name;
@@ -219,11 +224,18 @@ class DiscoverHome extends React.Component {
    * Retrieves information about the sections in the discover tab and refreshes the view.
    */
   _loadDiscoverSections(): void {
-    const discoverSections: Array<DiscoverSection> = require('../../../assets/js/DiscoverSections');
-    this.setState({
-      sections: discoverSections,
-      currentSection: discoverSections[0].id,
-    });
+    const self: DiscoverHome = this;
+    Configuration.getConfig('/discover.json')
+        .then(discover => {
+          console.log('Discover: ' + JSON.stringify(discover));
+          const discoverSections: Array<DiscoverSection> = require('../../../assets/json/Discover');
+          self.setState({
+            display: discover,
+            sections: discoverSections,
+            currentSection: discoverSections[0].id,
+          });
+        })
+        .catch(err => console.error('Could not get /discover.json.', err));
   }
 
   /**
