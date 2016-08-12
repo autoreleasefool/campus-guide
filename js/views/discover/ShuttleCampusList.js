@@ -208,7 +208,7 @@ class ShuttleCampusList extends React.Component {
             </View>
           </TouchableOpacity>
         </View>
-        {this.state.details.map((detail, index) => {
+        {this.state.details.map((detail: ShuttleDetails, index: number) => {
           const icon: DefaultIcon = DisplayUtils.getPlatformIcon(platform, detail)
               || {name: 'help-outline', class: 'material'};
 

@@ -286,7 +286,7 @@ type ShuttleDetailsWithDefaultNameDefaultDetails = {
   details: Array< string >,
   name: string,
   icon: IconObject,
-  image: ReactClass< any >,
+  image: string,
 };
 
 type ShuttleDetailsWithTranslatedNameDefaultDetails = {
@@ -294,7 +294,7 @@ type ShuttleDetailsWithTranslatedNameDefaultDetails = {
   name_en: string,
   name_fr: string,
   icon: IconObject,
-  image: ReactClass< any >,
+  image: string,
 };
 
 type ShuttleDetailsWithDefaultNameTranslatedDetails = {
@@ -302,7 +302,7 @@ type ShuttleDetailsWithDefaultNameTranslatedDetails = {
   details_fr: Array< string >,
   name: string,
   icon: IconObject,
-  image: ReactClass< any >,
+  image: string,
 };
 
 type ShuttleDetailsWithTranslatedNameTranslatedDetails = {
@@ -311,7 +311,7 @@ type ShuttleDetailsWithTranslatedNameTranslatedDetails = {
   name_en: string,
   name_fr: string,
   icon: IconObject,
-  image: ReactClass< any >,
+  image: string,
 };
 
 export type ShuttleDetails =
