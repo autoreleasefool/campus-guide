@@ -215,6 +215,7 @@ class UpdateScreenCommon extends React.Component {
    * @param {number} totalFiles number of files to be updated
    */
   _onUpdateStart(totalSize: number, totalFiles: number): void {
+    console.log('Update total size: ' + totalSize + ', total files: ' + totalFiles);
     this.setState({
       totalFiles: totalFiles,
       totalProgress: 0,
