@@ -57,6 +57,7 @@ type State = {
 };
 
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const DisplayUtils = require('DisplayUtils');
 const TranslationUtils = require('TranslationUtils');
@@ -107,7 +108,9 @@ class ShuttleCampusList extends React.Component {
    */
   componentDidMount(): void {
     if (this.state.campuses == null) {
-      this._loadCampusesAndDetails();
+      Configuration.init()
+          .then(this._loadCampusesAndDetails())
+          .catch(err => console.error('Configuration could not be initialized for shuttle campuses.', err));
     }
   }
 
@@ -115,12 +118,16 @@ class ShuttleCampusList extends React.Component {
    * Loads a list of campus names and images representing them, as well as details the user can view.
    */
   _loadCampusesAndDetails(): void {
-    const shuttleCampuses: Array<BusCampus> = require('../../../assets/js/ShuttleCampuses');
-    const shuttleDetails: Array<ShuttleDetails> = require('../../../assets/js/ShuttleDetails');
-    this.setState({
-      campuses: shuttleCampuses,
-      details: shuttleDetails,
-    });
+    const self: ShuttleCampusList = this;
+    Configuration.getConfig('/shuttle_details.json')
+        .then(shuttleDetails => {
+          const shuttleCampuses: Array<BusCampus> = require('../../../assets/js/ShuttleCampuses');
+          self.setState({
+            campuses: shuttleCampuses,
+            details: shuttleDetails,
+          });
+        })
+        .catch(err => console.error('Could not get /shuttle_details.json.', err));
   }
 
   /**
@@ -210,7 +217,7 @@ class ShuttleCampusList extends React.Component {
                 key={index}
                 onPress={() => this.props.showDetails(
                   TranslationUtils.getTranslatedName(language, detail),
-                  detail.image,
+                  {uri: Configuration.getImagePath(detail.image)},
                   TranslationUtils.getTranslatedVariant(language, 'details', detail),
                   Constants.Colors.darkGrey
                 )}>

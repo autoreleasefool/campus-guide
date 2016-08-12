@@ -98,7 +98,6 @@ class LinksHome extends React.Component {
       Configuration.init()
           .then(this._loadLinkCategories())
           .catch(err => console.error('Configuration could not be initialized for link categories.', err));
-      this._loadLinkCategories();
     }
   }
 

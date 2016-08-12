@@ -38,8 +38,8 @@ import {
 // Type definition for component props.
 type Props = {
   backgroundColor: string,
-  image: ReactElement<any>,
-  text: Array<string>,
+  image: ReactElement< any >,
+  text: Array< string >,
   title: string,
 };
 
