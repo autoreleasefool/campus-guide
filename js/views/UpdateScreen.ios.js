@@ -85,12 +85,16 @@ class UpdateScreen extends UpdateScreenCommon {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement< any > {
+    if (!this.state.showUpdateProgress) {
+      return super.render();
+    }
+
     const language = Preferences.getSelectedLanguage();
 
     // Get background color for screen, and color for progress bar
     let backgroundColor = Constants.Colors.garnet;
     let foregroundColor = Constants.Colors.charcoalGrey;
-    if (Preferences.getSelectedLanguage() === 'fr') {
+    if (language === 'fr') {
       backgroundColor = Constants.Colors.charcoalGrey;
       foregroundColor = Constants.Colors.garnet;
     }

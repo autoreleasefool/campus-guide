@@ -29,6 +29,9 @@ import React from 'react';
 import {
   Alert,
   NetInfo,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -42,6 +45,7 @@ type State = {
   currentDownload: ?String,
   filesDownloaded: Array < String >,
   intermediateProgress: number,
+  showUpdateProgress: boolean,
   totalFiles: number,
   totalProgress: number,
   totalSize: number,
@@ -83,6 +87,7 @@ class UpdateScreenCommon extends React.Component {
       currentDownload: null,
       filesDownloaded: [],
       intermediateProgress: 0,
+      showUpdateProgress: true,
       totalFiles: 0,
       totalProgress: 0,
       totalSize: 0,
@@ -91,6 +96,7 @@ class UpdateScreenCommon extends React.Component {
     // Explicitly binding 'this' to all methods that need it
     (this:any)._beginUpdate = this._beginUpdate.bind(this);
     (this:any)._checkConnection = this._checkConnection.bind(this);
+    (this:any)._hideProgressBar = this._hideProgressBar.bind(this);
     (this:any)._notifyConnectionFailed = this._notifyConnectionFailed.bind(this);
     (this:any)._returnToMain = this._returnToMain.bind(this);
   }
@@ -139,6 +145,7 @@ class UpdateScreenCommon extends React.Component {
         })
         .catch(err => {
           console.log('Failed configuration update check.', err);
+          self._notifyServerFailed();
         });
   }
 
@@ -169,6 +176,51 @@ class UpdateScreenCommon extends React.Component {
     return (this.state.totalProgress + this.state.intermediateProgress) / this.state.totalSize;
   }
 
+  _hideProgressBar(): void {
+    this.setState({
+      showUpdateProgress: false,
+    });
+  }
+
+  _notifyServerFailed(): void {
+    const language = Preferences.getSelectedLanguage();
+
+    Configuration.init()
+        .then(() => {
+          Alert.alert(
+            CoreTranslations[language].server_unavailable,
+            CoreTranslations[language].server_unavailable_config_available,
+            [
+              {
+                text: CoreTranslations[language].retry,
+                onPress: this._checkConnection,
+              },
+              {
+                text: CoreTranslations[language].later,
+                onPress: () => this.props.navigator.resetTo({id: Constants.Views.Main}),
+              },
+            ],
+          );
+        })
+        .catch(() => {
+          Alert.alert(
+            CoreTranslations[language].server_unavailable,
+            CoreTranslations[language].server_unavailable_config_unavailable,
+            [
+              {
+                text: CoreTranslations[language].retry,
+                onPress: this._checkConnection,
+              },
+              {
+                text: CoreTranslations[language].cancel,
+                onPress: this._hideProgressBar,
+                style: 'cancel',
+              },
+            ],
+          );
+        });
+  }
+
   _notifyConnectionFailed(): void {
     const language = Preferences.getSelectedLanguage();
 
@@ -179,7 +231,11 @@ class UpdateScreenCommon extends React.Component {
             CoreTranslations[language].no_internet_config_available,
             [
               {
-                text: CoreTranslations[language].ok,
+                text: CoreTranslations[language].retry,
+                onPress: this._checkConnection,
+              },
+              {
+                text: CoreTranslations[language].later,
                 onPress: () => this.props.navigator.resetTo({id: Constants.Views.Main}),
               },
             ],
@@ -193,6 +249,11 @@ class UpdateScreenCommon extends React.Component {
               {
                 text: CoreTranslations[language].retry,
                 onPress: this._checkConnection,
+              },
+              {
+                text: CoreTranslations[language].cancel,
+                onPress: this._hideProgressBar,
+                style: 'cancel',
               },
             ],
           );
@@ -217,6 +278,7 @@ class UpdateScreenCommon extends React.Component {
   _onUpdateStart(totalSize: number, totalFiles: number): void {
     console.log('Update total size: ' + totalSize + ', total files: ' + totalFiles);
     this.setState({
+      showUpdateProgress: true,
       totalFiles: totalFiles,
       totalProgress: 0,
       totalSize: totalSize,
@@ -269,8 +331,40 @@ class UpdateScreenCommon extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement< any > {
-    return <View />;
+    const language = Preferences.getSelectedLanguage();
+
+    // Get background color for screen
+    let backgroundColor = Constants.Colors.garnet;
+    if (language === 'fr') {
+      backgroundColor = Constants.Colors.charcoalGrey;
+    }
+
+    return (
+      <View style={{flex: 1, backgroundColor: backgroundColor, justifyContent: 'center'}}>
+        <TouchableOpacity onPress={this._checkConnection}>
+          <View style={_styles.textContainer}>
+            <Text style={_styles.text}>{CoreTranslations[language].retry_update}</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
   }
 }
+
+// Private styles for component
+const _styles = StyleSheet.create({
+  text: {
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    fontSize: Constants.Text.Medium,
+    color: Constants.Colors.primaryWhiteText,
+  },
+  textContainer: {
+    alignSelf: 'center',
+    backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
+  },
+});
 
 module.exports = UpdateScreenCommon;

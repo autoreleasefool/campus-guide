@@ -428,7 +428,7 @@ async function _deleteConfiguration(): Promise < void > {
     await Database.updateConfigVersions(db, clearVersions);
     await RNFS.unlink(CONFIG_DIRECTORY);
   } catch (err) {
-    console.error('Error accessing database while clearing versions.', err);
+    console.log('Error accessing database while clearing versions.', err);
   }
 }
 
