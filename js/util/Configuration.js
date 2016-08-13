@@ -170,7 +170,6 @@ async function _requestConfig(): Promise < void > {
  * Resolves promises waiting for Configuration initiation.
  */
 function _initSuccess(): void {
-  console.log('Configuration successfully loaded.');
   configInitializing = false;
   for (let i = 0; i < availablePromises.length; i++) {
     availablePromises[i].resolve();
@@ -207,7 +206,6 @@ async function _refreshConfigVersions(): Promise < boolean > {
 
     // Fetch most recent config versions from server
     const configUpdateURL: string = env.configUpdatesServerUrl + '/config/' + DeviceInfo.getVersion();
-    console.log('Retrieving config: ' + configUpdateURL);
     const response = await fetch(configUpdateURL);
     const appConfig: Object = await response.json();
 

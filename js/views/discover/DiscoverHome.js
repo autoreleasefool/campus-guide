@@ -185,7 +185,6 @@ class DiscoverHome extends React.Component {
     let touchableStyle: Object = {};
     let subtitleIcon: string = 'expand-more';
     if (section.id === this.state.currentSection) {
-      console.log('URI: ' + Configuration.getImagePath(this.state.display[section.id].image));
       sectionImage = (
         <Image
             resizeMode={'cover'}

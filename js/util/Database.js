@@ -56,7 +56,6 @@ let dbInitializing: boolean = false;
 const initPromises: Array < { resolve: () => any, reject: () => any } > = [];
 
 // Set mode for SQLite
-SQLite.DEBUG(true); // TODO: disable for release?
 SQLite.enablePromise(true);
 
 /**

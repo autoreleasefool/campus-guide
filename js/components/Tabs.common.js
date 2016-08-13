@@ -219,8 +219,6 @@ class TabsCommon extends React.Component {
    * @param {?string} searchTerms string of terms to search for.
    */
   _searchAll(searchTerms: ?string): void {
-    // TODO: search...
-    console.log('TODO: search...');
     if (this._getCurrentScreen() !== Constants.Views.Search) {
       this._navigateForward(Constants.Views.Search, searchTerms);
     }
