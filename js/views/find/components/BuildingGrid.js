@@ -48,7 +48,7 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  showBuilding: DefaultFunction,
+  selectBuilding: DefaultFunction,
 };
 
 // Type definition for component state.
@@ -75,7 +75,7 @@ class BuildingGrid extends React.Component {
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
-    showBuilding: React.PropTypes.func.isRequired,
+    selectBuilding: React.PropTypes.func.isRequired,
   };
 
   /**
@@ -186,7 +186,7 @@ class BuildingGrid extends React.Component {
   _renderRow(building: Building): ReactElement<any> {
     return (
       <TouchableOpacity
-          onPress={() => this.props.showBuilding(building)}>
+          onPress={() => this.props.selectBuilding(building)}>
         <View style={_styles.building}>
           <Image
               source={building.image}

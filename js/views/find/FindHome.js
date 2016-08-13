@@ -113,7 +113,7 @@ class FindHome extends React.Component {
             sectionIconClass={'material'}
             sectionName={Translations.building_directory} />
         <View style={[_styles.content, {flex: 2}]}>
-          <BuildingGrid showBuilding={this._showBuilding.bind(this)} />
+          <BuildingGrid selectBuilding={this._showBuilding.bind(this)} />
         </View>
       </View>
     );
