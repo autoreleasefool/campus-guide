@@ -124,7 +124,7 @@ class RoomList extends React.Component {
   componentDidMount(): void {
     // Register search listener if the app should not search all by default
     if (!Preferences.getAlwaysSearchAll()) {
-      SearchManager.addSearchListener(this._roomSearchListener);
+      SearchManager.addSearchListener(this._roomSearchListener, true);
     }
 
     if (!this.state.loaded) {
