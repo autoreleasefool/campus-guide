@@ -46,6 +46,7 @@ const DiscoverHome = require('DiscoverHome');
 const FindHome = require('FindHome');
 const LinkCategory = require('LinkCategory');
 const LinksHome = require('LinksHome');
+const NavigationHome = require('NavigationHome');
 const ScheduleHome = require('ScheduleHome');
 const SearchResults = require('SearchResults');
 const SettingsHome = require('SettingsHome');
@@ -76,7 +77,13 @@ module.exports = {
       );
     } else if (route.id === Constants.Views.Find.Building) {
       scene = (
-        <BuildingDetails buildingDetails={route.data} />
+        <BuildingDetails
+            buildingDetails={route.data}
+            onRoomSelected={roomName => navigateForward(Constants.Views.Find.Navigation, roomName)} />
+      );
+    } else if (route.id === Constants.Views.Find.Navigation) {
+      scene = (
+        <NavigationHome destination={route.data} />
       );
     } else if (route.id === Constants.Views.Schedule.Home) {
       scene = (

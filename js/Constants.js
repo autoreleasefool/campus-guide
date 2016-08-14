@@ -78,6 +78,7 @@ module.exports = {
     Find: {
       Home: 100,
       Building: 101,
+      Navigation: 102,
     },
     Schedule: {
       Home: 200,

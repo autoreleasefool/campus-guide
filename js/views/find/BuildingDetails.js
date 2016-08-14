@@ -44,12 +44,14 @@ import {
 // Type imports
 import type {
   Building,
+  DefaultFunction,
   Facility,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
   buildingDetails: Building,
+  onRoomSelected: DefaultFunction,
 };
 
 // Type definition for component state.
@@ -88,6 +90,7 @@ class BuildingDetails extends React.Component {
    */
   static propTypes = {
     buildingDetails: React.PropTypes.any.isRequired,
+    onRoomSelected: React.PropTypes.func.isRequired,
   };
 
   /**
@@ -157,15 +160,6 @@ class BuildingDetails extends React.Component {
       Translations.whats_this_icon,
       Translations[facility],
     );
-  }
-
-  /**
-   * Invoked when the user selects a room from the list.
-   *
-   * @param {string} roomName name of the room
-   */
-  _roomSelected(roomName: string): void {
-    console.log('room selected: ' + roomName);
   }
 
   /**
@@ -240,7 +234,7 @@ class BuildingDetails extends React.Component {
     );
 
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => this.props.onRoomSelected(this.props.buildingDetails.code)}>
         <SectionHeader
             backgroundOverride={Constants.Colors.polarGrey}
             sectionIcon={Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate'}
@@ -291,7 +285,7 @@ class BuildingDetails extends React.Component {
         {this._renderBanner(Translations)}
         {this._renderBuildingDirections(Translations)}
         <RoomList
-            roomSelected={this._roomSelected.bind(this)}
+            roomSelected={this.props.onRoomSelected}
             rooms={this.props.buildingDetails.rooms} />
       </View>
     );
