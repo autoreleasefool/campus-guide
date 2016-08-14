@@ -248,11 +248,13 @@ class TabsCommon extends React.Component {
 
     const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
     if (numberOfSearchListeners > 0 && !Preferences.getAlwaysSearchAll()) {
+      // Get only the search listeners with the highest priority
+      const searchListeners = SearchManager.getHighestPrioritySearchListeners();
+
       // Iterate over each search listener and pass the search terms to each one
-      for (let i = 0; i < numberOfSearchListeners; i++) {
-        const searchListener = SearchManager.getSearchListener(i);
-        if (searchListener != null) {
-          searchListener.onSearch(searchTerms);
+      for (let i = 0; i < searchListeners.length; i++) {
+        if (searchListeners[i] != null) {
+          searchListeners[i].onSearch(searchTerms);
         }
       }
     } else if (SearchManager.getDefaultSearchListener() != null) {

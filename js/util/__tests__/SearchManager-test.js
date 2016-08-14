@@ -67,6 +67,85 @@ describe('SearchManager-test', () => {
     }
   });
 
+  it('tests adding search listeners with varying priorities', () => {
+    // Add search listeners with varying priotities
+    SearchManager.addSearchListener(searchListeners[0]);
+    SearchManager.addSearchListener(searchListeners[1], true);
+    SearchManager.addSearchListener(searchListeners[2]);
+
+    const highestPriorityListeners = SearchManager.getHighestPrioritySearchListeners();
+    // Iterate over the listeners and call onSearch
+    for (let i = 0; i < highestPriorityListeners.length; i++) {
+      highestPriorityListeners[i].onSearch(DEFAULT_SEARCH_TEXT);
+    }
+
+    // Iterate over the listeners and make sure onSearch was successfully invoked for each
+    expect(searchListeners[0].onSearch).not.toBeCalled();
+    expect(searchListeners[1].onSearch).toBeCalledWith(DEFAULT_SEARCH_TEXT);
+    expect(searchListeners[2].onSearch).toBeCalledWith(DEFAULT_SEARCH_TEXT);
+  });
+
+  it('tests removing higher priority search listeners.', () => {
+    // Add search listeners with varying priotities
+    SearchManager.addSearchListener(searchListeners[0]);
+    SearchManager.addSearchListener(searchListeners[1], true);
+    SearchManager.addSearchListener(searchListeners[2]);
+
+    // Remove 1 of the 2 higher priority listeners
+    SearchManager.removeSearchListener(searchListeners[2]);
+
+    let highestPriorityListeners = SearchManager.getHighestPrioritySearchListeners();
+    // Iterate over the listeners and call onSearch
+    for (let i = 0; i < highestPriorityListeners.length; i++) {
+      highestPriorityListeners[i].onSearch(DEFAULT_SEARCH_TEXT);
+    }
+
+    // Iterate over the listeners and make sure onSearch was successfully invoked for each
+    expect(searchListeners[0].onSearch).not.toBeCalled();
+    expect(searchListeners[1].onSearch).toBeCalledWith(DEFAULT_SEARCH_TEXT);
+    expect(searchListeners[2].onSearch).not.toBeCalled();
+
+    // Clear mock calls
+    for (let i = 0; i < searchListeners.length; i++) {
+      searchListeners[i].onSearch.mockClear();
+    }
+
+    // Remove the other high priority listener
+    SearchManager.removeSearchListener(searchListeners[1]);
+
+    highestPriorityListeners = SearchManager.getHighestPrioritySearchListeners();
+    // Iterate over the listeners and call onSearch
+    for (let i = 0; i < highestPriorityListeners.length; i++) {
+      highestPriorityListeners[i].onSearch(DEFAULT_SEARCH_TEXT);
+    }
+
+    // Iterate over the listeners and make sure onSearch was successfully invoked for each
+    expect(searchListeners[0].onSearch).toBeCalledWith(DEFAULT_SEARCH_TEXT);
+    expect(searchListeners[1].onSearch).not.toBeCalled();
+    expect(searchListeners[2].onSearch).not.toBeCalled();
+  });
+
+  it('tests removing lower priority search listeners', () => {
+    // Add search listeners with varying priotities
+    SearchManager.addSearchListener(searchListeners[0]);
+    SearchManager.addSearchListener(searchListeners[1], true);
+    SearchManager.addSearchListener(searchListeners[2]);
+
+    // Remove the lower priority listener
+    SearchManager.removeSearchListener(searchListeners[0]);
+
+    const highestPriorityListeners = SearchManager.getHighestPrioritySearchListeners();
+    // Iterate over the listeners and call onSearch
+    for (let i = 0; i < highestPriorityListeners.length; i++) {
+      highestPriorityListeners[i].onSearch(DEFAULT_SEARCH_TEXT);
+    }
+
+    // Iterate over the listeners and make sure onSearch was successfully invoked for each
+    expect(searchListeners[0].onSearch).not.toBeCalled();
+    expect(searchListeners[1].onSearch).toBeCalledWith(DEFAULT_SEARCH_TEXT);
+    expect(searchListeners[2].onSearch).toBeCalledWith(DEFAULT_SEARCH_TEXT);
+  });
+
   it('tests the setting and retrieval of a default search listener.', () => {
     // Make sure there isn't already a search listener
     expect(SearchManager.getDefaultSearchListener()).toBeNull();

@@ -29,13 +29,20 @@ export type SearchListener = {
   onSearch: (text: ?string) => void,
 };
 
+// Associate each SearchListener with a priority level.
+type PrioriziedListener = {
+  listener: SearchListener,
+  priority: number,
+}
+
 // List of current search listeners. Components can register a listener with addSearchListener.
-let searchListeners: Array<SearchListener> = [];
+let searchListeners: Array<PrioriziedListener> = [];
 // The default SearchListener, when no others are available.
 let defaultSearchListener: ?SearchListener = null;
 // Indicates if all searchListeners except defaultSearchListener should be ignored.
 let searchListenersPaused: boolean = false;
-
+// Current priority level for SearchListeners.
+let currentPriority = 0;
 
 module.exports = {
 
@@ -43,15 +50,31 @@ module.exports = {
    * Adds a listener to user input from the search bar.
    *
    * @param {SearchListener} listener instance of SearchListener.
+   * @param {?boolean} higherPriority if true, the priority level is incremented before adding a SearchListener.
+   *                                  By incrementing the priority level, it is ensured that the new SearchListener
+   *                                  will be invoked and any SearchListeners of lower priority will be ignored, until
+   *                                  all SearchListeners of higher priority level are removed.
    * @returns {boolean} true if the listener was added, false otherwise.
    */
-  addSearchListener(listener: SearchListener): boolean {
-    if (searchListeners.indexOf(listener) < 0) {
-      searchListeners.push(listener);
-      return true;
+  addSearchListener(listener: SearchListener, higherPriority: ?boolean): boolean {
+    for (let i = 0; i < searchListeners.length; i++) {
+      if (searchListeners[i].listener == listener) {
+        return false;
+      }
     }
 
-    return false;
+    // Increase priority if this listener should be higher priority
+    if (higherPriority) {
+      currentPriority++;
+    }
+
+    // Wrap the listener with its priority
+    searchListeners.push({
+      listener: listener,
+      priority: currentPriority,
+    });
+
+    return true;
   },
 
   /**
@@ -61,6 +84,22 @@ module.exports = {
    */
   getDefaultSearchListener(): ?SearchListener {
     return defaultSearchListener;
+  },
+
+  /**
+   * Gets the search listeners which are of the highest priority.
+   *
+   * @returns {Array<SearchListener>} list of SearchListeners.
+   */
+  getHighestPrioritySearchListeners(): Array < SearchListener > {
+    const priorityListeners: Array < SearchListener > = [];
+    for (let i = 0; i < searchListeners.length; i++) {
+      if (searchListeners[i].priority === currentPriority) {
+        priorityListeners.push(searchListeners[i].listener);
+      }
+    }
+
+    return priorityListeners;
   },
 
   /**
@@ -75,7 +114,7 @@ module.exports = {
       return null;
     }
 
-    return searchListeners[index];
+    return searchListeners[index].listener;
   },
 
   /**
@@ -107,6 +146,7 @@ module.exports = {
    */
   removeAllSearchListeners(): void {
     searchListeners = [];
+    currentPriority = 0;
   },
 
   /**
@@ -116,9 +156,35 @@ module.exports = {
    * @returns {boolean} true if the listener was removed, false otherwise.
    */
   removeSearchListener(listener: SearchListener): boolean {
-    const listenerIndex = searchListeners.indexOf(listener);
+    let listenerIndex = -1;
+    let priority = -1;
+    for (let i = 0; i < searchListeners.length; i++) {
+      if (searchListeners[i].listener == listener) {
+        listenerIndex = i;
+        priority = searchListeners[i].priority;
+      }
+    }
+
     if (listenerIndex >= 0) {
-      delete searchListeners[listenerIndex];
+      searchListeners.splice(listenerIndex, 1);
+
+      // Check if any other listeners of the same priority exist
+      let shouldDecreasePriority: boolean = true;
+      if (priority === currentPriority) {
+        for (let i = 0; i < searchListeners.length && shouldDecreasePriority; i++) {
+          if (searchListeners[i].priority === priority) {
+            shouldDecreasePriority = false;
+          }
+        }
+      } else {
+        shouldDecreasePriority = false;
+      }
+
+      // If not, lower the priority
+      if (shouldDecreasePriority) {
+        currentPriority--;
+      }
+
       return true;
     }
 
