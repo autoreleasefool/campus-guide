@@ -22,6 +22,9 @@
  */
 'use strict';
 
+/* eslint-disable no-magic-numbers */
+/* Not concerned about magic numbers here because their intent is obvious. */
+
 // Unmock modules so the real module is used.
 jest.unmock('SearchManager');
 
@@ -65,6 +68,31 @@ describe('SearchManager-test', () => {
     for (let i = 0; i < searchListeners.length; i++) {
       searchListeners[i].onSearch.mockClear();
     }
+  });
+
+  it('tests the number of search listeners is accurate', () => {
+    // Add the first search listener a couple times, make sure count is accurate
+    expect(SearchManager.numberOfSearchListeners()).toBe(0);
+    SearchManager.addSearchListener(searchListeners[0]);
+    expect(SearchManager.numberOfSearchListeners()).toBe(1);
+    SearchManager.addSearchListener(searchListeners[0]);
+    expect(SearchManager.numberOfSearchListeners()).toBe(1);
+
+    // Add another search listener with same priority, check count again
+    SearchManager.addSearchListener(searchListeners[1]);
+    expect(SearchManager.numberOfSearchListeners()).toBe(2);
+
+    // Add higher priority listener, check count again
+    SearchManager.addSearchListener(searchListeners[2], true);
+    expect(SearchManager.numberOfSearchListeners()).toBe(3);
+
+    // Remove a listener, check count
+    SearchManager.removeSearchListener(searchListeners[0]);
+    expect(SearchManager.numberOfSearchListeners()).toBe(2);
+
+    // Remove all the listeners, check count
+    SearchManager.removeAllSearchListeners();
+    expect(SearchManager.numberOfSearchListeners()).toBe(0);
   });
 
   it('tests adding search listeners with varying priorities', () => {
