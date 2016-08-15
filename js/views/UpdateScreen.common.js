@@ -157,7 +157,7 @@ class UpdateScreenCommon extends React.Component {
     setTimeout(() => {
       NetInfo.isConnected.fetch()
           .then(isConnected => {
-            if (isConnected) {
+            if (isConnected || __DEV__) {
               self._beginUpdate();
             } else {
               self._notifyConnectionFailed();
