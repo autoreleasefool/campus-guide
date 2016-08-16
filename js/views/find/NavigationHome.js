@@ -32,6 +32,16 @@ import {
   View,
 } from 'react-native';
 
+// Type imports
+import type {
+  CampusDestination,
+} from 'types';
+
+// Type definition for component props.
+type Props = {
+  destination: CampusDestination,
+}
+
 class NavigationHome extends React.Component {
 
   /**
@@ -40,6 +50,22 @@ class NavigationHome extends React.Component {
   static propTypes = {
     destination: React.PropTypes.object.isRequired,
   };
+
+  constructor(props: Props) {
+    super(props);
+
+    // Explicitly bind 'this' to methods that require it
+    (this:any)._isDestinationBuilding = this._isDestinationBuilding.bind(this);
+  }
+
+  /**
+   * Returns true if the destination for navigation is a building, false if it is a room.
+   *
+   * @returns {boolean} true if this.props.destination.roomName is null or undefined, false otherwise
+   */
+  _isDestinationBuilding(): boolean {
+    return this.props.destination.roomName != null;
+  }
 
   /**
    * Renders the user's upcoming classes for the day and a list of buildings on campus.

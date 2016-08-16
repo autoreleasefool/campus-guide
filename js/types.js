@@ -381,6 +381,11 @@ export type LinkCategoryType =
 //  Buildings
 //-----------------------------------------------------------------------------
 
+export type CampusDestination = {
+  buildingCode: string,
+  roomName: ?string,
+};
+
 export type Facility =
     | 'atm'
     | 'food'
