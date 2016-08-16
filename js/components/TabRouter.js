@@ -79,7 +79,8 @@ module.exports = {
       scene = (
         <BuildingDetails
             buildingDetails={route.data}
-            onRoomSelected={roomName => navigateForward(Constants.Views.Find.Navigation, roomName)} />
+            onDestinationSelected={(buildingCode, roomName) => navigateForward(Constants.Views.Find.Navigation,
+                {buildingCode: buildingCode, roomName: roomName})} />
       );
     } else if (route.id === Constants.Views.Find.Navigation) {
       scene = (

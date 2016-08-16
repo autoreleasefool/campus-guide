@@ -55,6 +55,7 @@ type FilteredRoom = {
 
 // Type definition for component props.
 type Props = {
+  buildingCode: string,
   roomSelected: DefaultFunction,
   rooms: Array < BuildingRoom >,
 };
@@ -89,6 +90,7 @@ class RoomList extends React.Component {
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
+    buildingCode: React.PropTypes.string.isRequired,
     roomSelected: React.PropTypes.func.isRequired,
     rooms: React.PropTypes.any.isRequired,
   };
@@ -260,7 +262,7 @@ class RoomList extends React.Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => this.props.roomSelected(room.name)}>
+      <TouchableOpacity onPress={() => this.props.roomSelected(this.props.buildingCode, room.name)}>
         <View style={{width: ROOM_WIDTH, backgroundColor: color}}>
           <View style={_styles.room}>
             {icon}

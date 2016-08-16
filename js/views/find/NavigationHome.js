@@ -38,7 +38,7 @@ class NavigationHome extends React.Component {
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
-    destination: React.PropTypes.string.isRequired,
+    destination: React.PropTypes.object.isRequired,
   };
 
   /**
@@ -49,7 +49,8 @@ class NavigationHome extends React.Component {
   render(): ReactElement<any> {
     return (
       <View style={_styles.container}>
-        <Text>{this.props.destination}</Text>
+        <Text>{this.props.destination.buildingCode}</Text>
+        <Text>{this.props.destination.roomName}</Text>
       </View>
     );
   }

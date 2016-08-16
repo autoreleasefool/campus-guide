@@ -51,7 +51,7 @@ import type {
 // Type definition for component props.
 type Props = {
   buildingDetails: Building,
-  onRoomSelected: DefaultFunction,
+  onDestinationSelected: DefaultFunction,
 };
 
 // Type definition for component state.
@@ -90,7 +90,7 @@ class BuildingDetails extends React.Component {
    */
   static propTypes = {
     buildingDetails: React.PropTypes.any.isRequired,
-    onRoomSelected: React.PropTypes.func.isRequired,
+    onDestinationSelected: React.PropTypes.func.isRequired,
   };
 
   /**
@@ -114,6 +114,7 @@ class BuildingDetails extends React.Component {
     };
 
     // Explicitly bind 'this' to methods that require it
+    (this:any)._onDestinationSelected = this._onDestinationSelected.bind(this);
     (this:any)._swapBanner = this._swapBanner.bind(this);
   }
 
@@ -176,6 +177,16 @@ class BuildingDetails extends React.Component {
   }
 
   /**
+   * Informs parent that the user has selected a destination.
+   *
+   * @param {string} buildingCode code of the building that has been selected
+   * @param {?string} roomName    name of the room selected, or null if a building was selected
+   */
+  _onDestinationSelected(buildingCode: string, roomName: ?string): void {
+    this.props.onDestinationSelected(buildingCode, roomName);
+  }
+
+  /**
    * Returns an image and text description of the building.
    *
    * @param {Object} Translations translations in the current language of certain text.
@@ -234,7 +245,7 @@ class BuildingDetails extends React.Component {
     );
 
     return (
-      <TouchableOpacity onPress={() => this.props.onRoomSelected(this.props.buildingDetails.code)}>
+      <TouchableOpacity onPress={() => this._onDestinationSelected(this.props.buildingDetails.code)}>
         <SectionHeader
             backgroundOverride={Constants.Colors.polarGrey}
             sectionIcon={Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate'}
@@ -285,7 +296,8 @@ class BuildingDetails extends React.Component {
         {this._renderBanner(Translations)}
         {this._renderBuildingDirections(Translations)}
         <RoomList
-            roomSelected={this.props.onRoomSelected}
+            buildingCode={this.props.buildingDetails.code}
+            roomSelected={this._onDestinationSelected}
             rooms={this.props.buildingDetails.rooms} />
       </View>
     );
