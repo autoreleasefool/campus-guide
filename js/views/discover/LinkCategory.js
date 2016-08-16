@@ -43,8 +43,8 @@ import {
 import type {
   DefaultFunction,
   Language,
-  Link,
   LinkCategoryType,
+  NamedLink,
 } from 'types';
 
 // Type definition for component props.
@@ -199,12 +199,12 @@ class LinkCategory extends React.Component {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param {Array<Link>} links        list of links in the current category.
+   * @param {Array<NamedLink>} links        list of links in the current category.
    * @param {Object} Translations      translations in the current language of certain text.
    * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
    * @returns {ReactElement<any>} for each index in {links}, a {TouchableOpacity} with the name of the link.
    */
-  _getLinks(links: Array<Link>, Translations: Object, isBackgroundDark: boolean): ReactElement<any> {
+  _getLinks(links: Array<NamedLink>, Translations: Object, isBackgroundDark: boolean): ReactElement<any> {
     const language: Language = Preferences.getSelectedLanguage();
     const textColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
@@ -272,12 +272,12 @@ class LinkCategory extends React.Component {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param {Array<Link>} socialMediaLinks list of links to social media sites in the current category.
+   * @param {Array<NamedLink>} socialMediaLinks list of links to social media sites in the current category.
    * @param {Object} Translations          translations in the current language of certain text.
    * @returns {ReactElement<any>} for each index in {socialMediaLinks}, a {TouchableOpacity} with an icon representing
    *                              the social media site.
    */
-  _getSocialMediaLinks(socialMediaLinks: Array<Link>, Translations: Object): ReactElement<any> {
+  _getSocialMediaLinks(socialMediaLinks: Array<NamedLink>, Translations: Object): ReactElement<any> {
     const language: Language = Preferences.getSelectedLanguage();
 
     return (

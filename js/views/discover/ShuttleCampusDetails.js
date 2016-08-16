@@ -34,6 +34,7 @@ import {
 // Type imports
 import type {
   LatLong,
+  LatLongDelta,
   ShuttleCampus,
   University,
 } from 'types';
@@ -47,7 +48,7 @@ type Props = {
 // Type definition for component state.
 type State = {
   campus: ?ShuttleCampus,
-  region: ?LatLong,
+  region: ?(LatLong & LatLongDelta),
 };
 
 // Imports
@@ -107,7 +108,7 @@ class ShuttleCampusDetails extends React.Component {
    * @returns {ReactElement<any>} a map view with a marker
    */
   _getCampusMap(Translations: Object): ReactElement<any> {
-    let initialRegion: LatLong;
+    let initialRegion: LatLong & LatLongDelta;
     let marker: ?ReactElement<any>;
 
     if (this.state.campus == null) {

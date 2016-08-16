@@ -28,22 +28,47 @@
 //  General
 //-----------------------------------------------------------------------------
 
+/**
+ * A function which takes any params and returns any value. Used as a placeholder function when
+ * a more explicit definition is unnecessary or unavailable.
+ */
 export type DefaultFunction = () => any;
+
+/** A name, valid in English or French. */
+export type DefaultName = {name: string};
+
+/** A name, translated for English and French. */
+export type TranslatedName = {name_en: string, name_fr: string};
+
+/** A link, valid in English or French. */
+export type DefaultLink = {link: string};
+
+/** A link, translated for English and French. */
+export type TranslatedLink = {link_en: string, link_fr: string};
+
+/** A set of details, valid in English or French. */
+export type DefaultDetails = {details: Array < string >};
+
+/** A set of details, translated for English and French. */
+export type TranslatedDetails = {details_en: Array < string >, details_fr: Array < string >};
 
 //-----------------------------------------------------------------------------
 //  Icons
 //-----------------------------------------------------------------------------
 
+/** A cross-platform icon object. */
 export type DefaultIcon = {
   name: string,
   class: string,
 };
 
+/** An icon object with separate icon definitions for Android and iOS. */
 export type PlatformIcon = {
   ios: DefaultIcon,
   android: DefaultIcon,
 };
 
+/** Type for when either a cross-platform, or platform-specific icon is expected. */
 export type IconObject =
     | DefaultIcon
     | PlatformIcon;
@@ -52,6 +77,7 @@ export type IconObject =
 //  Platforms
 //-----------------------------------------------------------------------------
 
+/** Platform types. Android or iOS. */
 export type PlatformString =
     | 'ios'
     | 'android';
@@ -60,6 +86,7 @@ export type PlatformString =
 //  Languages
 //-----------------------------------------------------------------------------
 
+/** Shorthand for languages available in the application. English or French. */
 export type Language =
     | 'en'
     | 'fr';
@@ -68,17 +95,23 @@ export type Language =
 //  Location
 //-----------------------------------------------------------------------------
 
+/** Latitude and longitude of a location. */
 export type LatLong = {
  latitude: number,
  longitude: number,
+};
+
+/** Difference in latitude and longitude on a map. */
+export type LatLongDelta = {
  latitudeDelta: number,
  longitudeDelta: number,
-};
+}
 
 //-----------------------------------------------------------------------------
 //  Tabs
 //-----------------------------------------------------------------------------
 
+/** Describes the tabs available in the app. */
 export type TabItems = {
   find: any,
   schedule: any,
@@ -86,6 +119,7 @@ export type TabItems = {
   settings: any,
 };
 
+/** A view ID and data to pass to that view. */
 export type Route = {
   id: number | string,
   data: any,
@@ -95,85 +129,42 @@ export type Route = {
 //  Semesters
 //-----------------------------------------------------------------------------
 
-type SemesterWithDefaultName = {
+/** A semester at the school, with its name, identifier, and other info. */
+export type Semester = {
   code: string,
-  current: boolean,
-  name: string,
-};
-
-type SemesterWithTranslatedName = {
-  code: string,
-  current: boolean,
-  name_en: string,
-  name_fr: string,
-};
-
-export type Semester =
-    | SemesterWithDefaultName
-    | SemesterWithTranslatedName;
+  current?: boolean,
+} & (DefaultName | TranslatedName);
 
 //-----------------------------------------------------------------------------
 //  University
 //-----------------------------------------------------------------------------
 
-type UniversityWithDefaultName = {
+/** Describes the university's name and location. */
+export type University = {
   lat: number,
   long: number,
-  name: string,
-};
-
-type UniversityWithTranslatedNames = {
-  lat: number,
-  long: number,
-  name_en: string,
-  name_fr: string,
-};
-
-export type University =
-    | UniversityWithDefaultName
-    | UniversityWithTranslatedNames;
+} & (DefaultName | TranslatedName);
 
 //-----------------------------------------------------------------------------
 //  Buses
 //-----------------------------------------------------------------------------
 
-type BusInfoWithDefault = {
-  name: string,
-  link: string,
-};
+/** Bus company name and link to their website */
+export type BusInfo = (DefaultName | TranslatedName) & (DefaultLink | TranslatedLink);
 
-type BusInfoWithTranslated = {
-  name_en: string,
-  name_fr: string,
-  link_en: string,
-  link_fr: string,
-};
+/** Collection of bus stops near a University campus. */
+export type BusCampus = {
+  image: ReactClass < any >,
+} & (DefaultName | TranslatedName);
 
-export type BusInfo =
-    | BusInfoWithDefault
-    | BusInfoWithTranslated;
-
-type BusCampusWithDefaultName = {
-  name: string,
-  image: ReactClass< any >,
-};
-
-type BusCampusWithTranslatedName = {
-  name_en: string,
-  name_fr: string,
-  image: ReactClass< any >,
-};
-
-export type BusCampus =
-    | BusCampusWithDefaultName
-    | BusCampusWithTranslatedName;
-
+/** Information about a bus transit route. */
 export type DetailedRouteInfo = {
   number: number,
   sign: string,
   days: Object,
 };
 
+/** Information about a bus transit stop. */
 export type TransitStop = {
   code: string,
   id: string,
@@ -183,209 +174,80 @@ export type TransitStop = {
   routes: Array<number | DetailedRouteInfo>,
 };
 
-type TransitCampusWithDefaultName = {
+/** Information about a bus transit campus. */
+export type TransitCampus = {
   id: string,
   lat: number,
   long: number,
-  name: string,
-  stops: Array< TransitStop >,
-};
-
-type TransitCampusWithTranslatedName = {
-  id: string,
-  lat: number,
-  long: number,
-  name_en: string,
-  name_fr: string,
-  stops: Array< TransitStop >,
-};
-
-export type TransitCampus =
-    | TransitCampusWithDefaultName
-    | TransitCampusWithTranslatedName;
+  stops: Array < TransitStop >,
+} & (DefaultName | TranslatedName);
 
 //-----------------------------------------------------------------------------
 //  Shuttle
 //-----------------------------------------------------------------------------
 
+/** A direction, valid in English/French. */
+type DefaultDirection = {direction: string}
+
+/** A direction, with separate translations for English and French. */
+type TranslatedDirection = {direction_en: string, direction_fr: string};
+
+/** Days that a shuttle schedule will run on, and the times it runs on those days. */
 export type ScheduleTimes = {
   days: string,
-  times: Array< string >,
+  times: Array < string >,
 };
 
-type ShuttleScheduleWithDefaultNameDefaultDirection = {
-  name: string,
-  direction: string,
+/** A schedule for the shuttle, including times, start date, end date, and days which the schedule does not apply. */
+export type ShuttleSchedule = {
   start_date: string,
   end_date: string,
-  excluded_dates: Array< string >,
-  times: Array< ScheduleTimes >,
-};
+  excluded_dates: Array < string >,
+  times: Array < ScheduleTimes >,
+} & (DefaultName | TranslatedName) & (DefaultDirection | TranslatedDirection);
 
-type ShuttleScheduleWithTranslatedNameDefaultDirection = {
-  name_en: string,
-  name_fr: string,
-  direction: string,
-  start_date: string,
-  end_date: string,
-  excluded_dates: Array< string >,
-  times: Array< ScheduleTimes >,
-};
-
-type ShuttleScheduleWithDefaultNameTranslatedDirection = {
-  name: string,
-  direction_en: string,
-  direction_fr: string,
-  start_date: string,
-  end_date: string,
-  excluded_dates: Array< string >,
-  times: Array< ScheduleTimes >,
-};
-
-type ShuttleScheduleWithTranslatedNameTranslatedDirection = {
-  name_en: string,
-  name_fr: string,
-  direction_en: string,
-  direction_fr: string,
-  start_date: string,
-  end_date: string,
-  excluded_dates: Array< string >,
-  times: Array< ScheduleTimes >,
-};
-
-export type ShuttleSchedule =
-    | ShuttleScheduleWithDefaultNameDefaultDirection
-    | ShuttleScheduleWithDefaultNameTranslatedDirection
-    | ShuttleScheduleWithTranslatedNameDefaultDirection
-    | ShuttleScheduleWithTranslatedNameTranslatedDirection;
-
-type ShuttleCampusWithDefaultName = {
+/** A shuttle stop on a campus. */
+export type ShuttleCampus = {
   accurate: boolean,
   id: string,
-  name: string,
   lat: number,
   long: number,
-  schedules: Array< ShuttleSchedule >,
-};
+  schedules: Array < ShuttleSchedule >,
+} & (DefaultName | TranslatedName);
 
-type ShuttleCampusWithTranslatedName = {
-  accurate: boolean,
-  id: string,
-  name_en: string,
-  name_fr: string,
-  lat: number,
-  long: number,
-  schedules: Array< ShuttleSchedule >,
-};
-
-export type ShuttleCampus =
-    | ShuttleCampusWithDefaultName
-    | ShuttleCampusWithTranslatedName;
-
-type ShuttleDetailsWithDefaultNameDefaultDetails = {
-  details: Array< string >,
-  name: string,
+/** A set of details about the shuttle system. */
+export type ShuttleDetails = {
   icon: IconObject,
   image: string,
-};
-
-type ShuttleDetailsWithTranslatedNameDefaultDetails = {
-  details: Array< string >,
-  name_en: string,
-  name_fr: string,
-  icon: IconObject,
-  image: string,
-};
-
-type ShuttleDetailsWithDefaultNameTranslatedDetails = {
-  details_en: Array< string >,
-  details_fr: Array< string >,
-  name: string,
-  icon: IconObject,
-  image: string,
-};
-
-type ShuttleDetailsWithTranslatedNameTranslatedDetails = {
-  details_en: Array< string >,
-  details_fr: Array< string >,
-  name_en: string,
-  name_fr: string,
-  icon: IconObject,
-  image: string,
-};
-
-export type ShuttleDetails =
-    | ShuttleDetailsWithDefaultNameDefaultDetails
-    | ShuttleDetailsWithTranslatedNameDefaultDetails
-    | ShuttleDetailsWithDefaultNameTranslatedDetails
-    | ShuttleDetailsWithTranslatedNameTranslatedDetails;
+} & (DefaultName | TranslatedName) & (DefaultDetails | TranslatedDetails);
 
 //-----------------------------------------------------------------------------
 //  Links
 //-----------------------------------------------------------------------------
 
-type LinkWithDefaultNameDefaultLink = {
-  name: string,
-  link: string,
-};
+/** A URL and a name to display it with. */
+export type NamedLink = (DefaultName | TranslatedName) & (DefaultLink | TranslatedLink);
 
-type LinkWithDefaultNameTranslatedLink = {
-  name: string,
-  link_en: string,
-  link_fr: string,
-};
-
-type LinkWithTranslatedNameDefaultLink = {
-  link: string,
-  name_en: string,
-  name_fr: string,
-};
-
-type LinkWithTranslatedNameTranslatedLink = {
-  link_en: string,
-  link_fr: string,
-  name_en: string,
-  name_fr: string,
-};
-
-export type Link =
-    | LinkWithDefaultNameDefaultLink
-    | LinkWithDefaultNameTranslatedLink
-    | LinkWithTranslatedNameDefaultLink
-    | LinkWithTranslatedNameTranslatedLink;
-
-type LinkCategoryWithDefaultName = {
+/** A set of links belonging to a common category, with a name and image, and possibly subcategories. */
+export type LinkCategoryType = {
   id: string,
-  name: string,
   image?: string,
-  links?: Array< Link >,
-  social?: Array< Link >,
-  categories?: Array< LinkCategoryType >,
-};
-
-type LinkCategoryWithTranslatedName = {
-  id: string,
-  name_en: string,
-  name_fr: string,
-  image?: string,
-  links?: Array< Link >,
-  social?: Array< Link >,
-  categories?: Array< LinkCategoryType >,
-};
-
-export type LinkCategoryType =
-    | LinkCategoryWithDefaultName
-    | LinkCategoryWithTranslatedName;
+  links?: Array < NamedLink >,
+  social?: Array < NamedLink >,
+  categories?: Array < LinkCategoryType >,
+} & (DefaultName | TranslatedName);
 
 //-----------------------------------------------------------------------------
 //  Buildings
 //-----------------------------------------------------------------------------
 
+/** A destination for navigation on campus. */
 export type CampusDestination = {
   buildingCode: string,
   roomName: ?string,
 };
 
+/** Types of facilities that a certain building on campus may offer. */
 export type Facility =
     | 'atm'
     | 'food'
@@ -401,32 +263,18 @@ export type Facility =
     | 'gym'
     | 'pool';
 
+/** A room on campus, with a name and the facilities it offers represented by an ID. */
 export type BuildingRoom = {
   name: string,
   type: number,
 };
 
-type BuildingWithDefaultName = {
+/** A building on campus, with details describing it, its location, and its rooms. */
+export type Building = {
   code: string,
-  name: string,
+  facilities: Array< Facility >,
   image: ReactClass< any >,
   lat: number,
   long: number,
-  facilities: Array< Facility >,
   rooms: Array< BuildingRoom >,
-};
-
-type BuildingWithTranslatedName = {
-  code: string,
-  name_en: string,
-  name_fr: string,
-  image: ReactClass< any >,
-  lat: number,
-  long: number,
-  facilities: Array< Facility >,
-  rooms: Array< BuildingRoom >,
-};
-
-export type Building =
-    | BuildingWithDefaultName
-    | BuildingWithTranslatedName;
+} & (DefaultName | TranslatedName);

@@ -35,6 +35,7 @@ import {
 // Type imports
 import type {
   LatLong,
+  LatLongDelta,
   TransitCampus,
   TransitStop,
   University,
@@ -49,7 +50,7 @@ type Props = {
 // Type definition for component state.
 type State = {
   campus: ?TransitCampus,
-  region: ?LatLong,
+  region: ?(LatLong & LatLongDelta),
 };
 
 // Type definition for markers to be placed on the map.
@@ -145,7 +146,7 @@ class BusCampusDetails extends React.Component {
     const markers: Array<MapMarker> = [];
     let lat: number = 0;
     let long: number = 0;
-    let initialRegion: LatLong;
+    let initialRegion: LatLong & LatLongDelta;
 
     if (this.state.campus == null) {
       const university: ?University = Configuration.getUniversity();
