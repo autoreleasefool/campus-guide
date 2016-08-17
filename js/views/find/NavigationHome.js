@@ -27,20 +27,49 @@
 // React imports
 import React from 'react';
 import {
+  Dimensions,
+  LayoutAnimation,
+  Navigator,
+  Platform,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
 // Type imports
 import type {
+  Building,
   CampusDestination,
+  Route,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
   destination: CampusDestination,
 }
+
+// Type definition for component state.
+type State = {
+  findLocationOnMap: boolean,
+  startingPoint: {buildingCode: string, roomName: string},
+}
+
+// Imports
+const BuildingGrid = require('BuildingGrid');
+const Constants = require('Constants');
+const Preferences = require('Preferences');
+const RoomList = require('RoomList');
+const SectionHeader = require('SectionHeader');
+const TranslationUtils = require('TranslationUtils');
+
+const {width} = Dimensions.get('window');
+
+/** Represents the route to select a building. */
+const BUILDING_SELECT = 0;
+
+/** Represents the route to select a room in a building. */
+const ROOM_SELECT = 1;
 
 class NavigationHome extends React.Component {
 
@@ -51,20 +80,220 @@ class NavigationHome extends React.Component {
     destination: React.PropTypes.object.isRequired,
   };
 
+  state: State;
+
+  /**
+   * Pass props and declares initial state.
+   *
+   * @param {Props} props properties passed from container to this component.
+   */
   constructor(props: Props) {
     super(props);
+    this.state = {
+      findLocationOnMap: false,
+      startingPoint: {},
+    };
 
     // Explicitly bind 'this' to methods that require it
-    (this:any)._isDestinationBuilding = this._isDestinationBuilding.bind(this);
+    (this:any)._setFindLocationOnmap = this._setFindLocationOnmap.bind(this);
   }
 
   /**
-   * Returns true if the destination for navigation is a building, false if it is a room.
+   * Sets the transition between two views in the navigator.
    *
-   * @returns {boolean} true if this.props.destination.roomName is null or undefined, false otherwise
+   * @returns {Object} a configuration for the transition between scenes.
    */
-  _isDestinationBuilding(): boolean {
-    return this.props.destination.roomName != null;
+  _configureScene(): Object {
+    return Navigator.SceneConfigs.PushFromRight;
+  }
+
+  /**
+   * Switches between views to find the user's location with the GPS or by selecting a building.
+   *
+   * @param {boolean} findLocationOnMap true to use GPS, false to use building
+   */
+  _setFindLocationOnmap(findLocationOnMap: boolean): void {
+    LayoutAnimation.easeInEaseOut();
+    this.setState({
+      findLocationOnMap: findLocationOnMap,
+    });
+  }
+
+  /**
+   * Sets the selected building.
+   *
+   * @param {Building} building details of the selected building
+   */
+  _onBuildingSelected(building: Building): void {
+    this.setState({
+      startingPoint: {buildingCode: building.code},
+    });
+    this.refs.Navigator.push({id: ROOM_SELECT, data: {building: building}});
+  }
+
+  /**
+   * Sets the selected room.
+   *
+   * @param {string} buildingCode unique building code.
+   * @param {string} roomName     name of the room within the building.
+   */
+  _onRoomSelected(buildingCode: string, roomName: string): void {
+    this.setState({
+      startingPoint: {buildingCode: buildingCode, roomName: roomName},
+    });
+  }
+
+  /**
+   * Depending on the route id provided, displays either a BuildingGrid or a RoomList.
+   *
+   * @param {Route} route id to determine view and data to pass to the view.
+   * @returns {ReactElement<any>} views to render
+   */
+  _renderBuildingOrRoom(route: Route): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
+
+    if (route.id === BUILDING_SELECT) {
+      return (
+        <View style={_styles.container}>
+          <SectionHeader
+              sectionIcon={'store'}
+              sectionIconClass={'material'}
+              sectionName={Translations.building_directory} />
+          <View style={_styles.separator} />
+          <BuildingGrid selectBuilding={this._onBuildingSelected.bind(this)} />
+        </View>
+      );
+    } else if (route.id === ROOM_SELECT) {
+      // Get icon for back button
+      let backIconName: string;
+      let backIconClass: string;
+      if (Platform.OS === 'ios') {
+        backIconName = 'ios-arrow-back';
+        backIconClass = 'ionicon';
+      } else {
+        backIconName = 'arrow-back';
+        backIconClass = 'material';
+      }
+
+      return (
+        <View style={_styles.container}>
+          <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
+            <SectionHeader
+                sectionIcon={backIconName}
+                sectionIconClass={backIconClass}
+                sectionName={Translations.return_to_buildings} />
+          </TouchableOpacity>
+          <View style={_styles.separator} />
+          <RoomList
+              buildingCode={route.data.building.code}
+              roomSelected={this._onRoomSelected.bind(this)}
+              rooms={route.data.building.rooms} />
+        </View>
+      );
+    } else {
+      throw new Error('Invalid route. Can only select room and building. Route is ' + route.id);
+    }
+  }
+
+  /**
+   * Displays views to describe the user's selected starting location, and their destination.
+   *
+   * @returns {ReactElement<any>} a set of views and icons.
+   */
+  _renderDestination(): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
+
+    let startingPoint: string;
+    if (this.state.startingPoint.buildingCode) {
+      if (this.state.startingPoint.roomName) {
+        startingPoint = (String:any).format(
+          Translations.x_greater_than_y,
+          this.state.startingPoint.buildingCode,
+          this.state.startingPoint.roomName
+        );
+      } else {
+        startingPoint = (String:any).format(
+          Translations.x_greater_than_y,
+          this.state.startingPoint.buildingCode,
+          Translations.lobby
+        );
+      }
+    } else {
+      startingPoint = Translations.choose_starting_point;
+    }
+
+    let destination: string;
+    if (this.props.destination.roomName) {
+      destination = (String:any).format(
+        Translations.x_greater_than_y,
+        this.props.destination.buildingCode,
+        this.props.destination.roomName
+      );
+    } else {
+      destination = (String:any).format(
+        Translations.x_greater_than_y,
+        this.props.destination.buildingCode,
+        Translations.lobby
+      );
+    }
+
+    return (
+      <View>
+        <SectionHeader
+            backgroundOverride={Constants.Colors.garnet}
+            sectionIcon={'near-me'}
+            sectionIconClass={'material'}
+            sectionName={startingPoint} />
+        <SectionHeader
+            sectionIcon={'place'}
+            sectionIconClass={'material'}
+            sectionName={destination} />
+        <Text style={_styles.instruction}>{Translations.select_building_or_locate}</Text>
+        <View style={_styles.separator} />
+      </View>
+    );
+  }
+
+  /**
+   * Renders a set of views so the user can select their starting location.
+   *
+   * @returns {ReactElement<any>} either a navigator for narrowing user location with building/rooms, or a map.
+   */
+  _renderStartingLocation(): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
+
+    if (this.state.findLocationOnMap) {
+      return (
+        <TouchableOpacity onPress={() => this._setFindLocationOnmap(!this.state.findLocationOnMap)}>
+          <SectionHeader
+              backgroundOverride={Constants.Colors.garnet}
+              sectionIcon={'store'}
+              sectionIconClass={'material'}
+              sectionName={Translations.pick_location} />
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <View style={_styles.container}>
+          <Navigator
+              configureScene={this._configureScene}
+              initialRoute={{id: BUILDING_SELECT}}
+              ref='Navigator'
+              renderScene={this._renderBuildingOrRoom.bind(this)}
+              style={_styles.container} />
+          <TouchableOpacity onPress={() => this._setFindLocationOnmap(!this.state.findLocationOnMap)}>
+            <SectionHeader
+                backgroundOverride={Constants.Colors.garnet}
+                sectionIcon={'map'}
+                sectionIconClass={'material'}
+                sectionName={Translations.locate_me} />
+          </TouchableOpacity>
+        </View>
+      );
+    }
   }
 
   /**
@@ -75,8 +304,8 @@ class NavigationHome extends React.Component {
   render(): ReactElement<any> {
     return (
       <View style={_styles.container}>
-        <Text>{this.props.destination.buildingCode}</Text>
-        <Text>{this.props.destination.roomName}</Text>
+        {this._renderDestination()}
+        {this._renderStartingLocation()}
       </View>
     );
   }
@@ -85,7 +314,19 @@ class NavigationHome extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
+    backgroundColor: Constants.Colors.garnet,
     flex: 1,
+  },
+  instruction: {
+    color: Constants.Colors.primaryWhiteText,
+    textAlign: 'center',
+    fontSize: Constants.Text.Large,
+    margin: 10,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    width: width,
+    backgroundColor: 'white',
   },
 });
 
