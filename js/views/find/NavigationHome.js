@@ -52,7 +52,7 @@ type Props = {
 // Type definition for component state.
 type State = {
   findLocationOnMap: boolean,
-  startingPoint: {buildingCode: string, roomName: string},
+  startingPoint: {buildingCode?: string, roomName?: string},
 }
 
 // Imports
