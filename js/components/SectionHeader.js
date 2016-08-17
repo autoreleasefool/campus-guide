@@ -66,14 +66,11 @@ type State = {
 const Constants = require('Constants');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const TextUtils = require('TextUtils');
 
 // Represents a value in the subtitle which should not be used.
 const NULL_SUBTITLE_VALUE: string = 'value_null';
 // List of icon families that the subtitle icon can belong to.
 const VALID_ICON_CLASSES: Array<?string> = ['material', 'ionicon'];
-// Maximum number of characters in the section name.
-const MAX_NAME_LENGTH: number = 21;
 // Size of the section icon
 const SECTION_ICON_SIZE: number = 24;
 // Size of the subtitle icon
@@ -348,8 +345,11 @@ class SectionHeader extends React.Component {
     return (
       <View style={[_styles.header, {backgroundColor: headerBackground}]}>
         {this._renderIcon.call(this)}
-        <Text style={{color: this.state.textAndIconColor, marginLeft: 20, fontSize: Constants.Text.Large}}>
-          {TextUtils.getTextWithEllipses(this.props.sectionName, MAX_NAME_LENGTH)}
+        <Text
+            ellipsizeMode={'tail'}
+            numberOfLines={1}
+            style={{color: this.state.textAndIconColor, marginLeft: 20, fontSize: Constants.Text.Large}}>
+          {this.props.sectionName}
         </Text>
         {this._renderSubtitleWithIcon.call(this)}
       </View>
