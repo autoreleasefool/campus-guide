@@ -96,7 +96,9 @@ const DETAILS: number = 1;
 // Maximum number of upcoming bus arrival times to show.
 const MAX_UPCOMING_TIMES: number = 4;
 // Number of days in a week
-const DAYS_IN_WEEK = 7;
+const DAYS_IN_WEEK: number = 7;
+// Time that bus schedules roll over
+const BUS_SCHEDULE_ROLLOVER: number = 4;
 
 class Stops extends React.Component {
 
@@ -189,10 +191,10 @@ class Stops extends React.Component {
   _cachedCampusStops: ?Object = null;
 
   /** Listener for search input, when viewing stops. */
-  _stopSearchListener: SearchListener = null;
+  _stopSearchListener: SearchListener;
 
   /** Listener for search input, when viewing times. */
-  _timeSearchListener: SearchListener = null;
+  _timeSearchListener: SearchListener;
 
   /** Current scene on display in the navigator. */
   _currentScene: number = 0;
@@ -266,10 +268,16 @@ class Stops extends React.Component {
 
     const upcomingTimes = [];
     const now = new Date();
-    const currentDay = ((now.getDay() - 1) % DAYS_IN_WEEK).toString();
     const currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0')
         + ':'
         + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
+
+    let currentDay = ((now.getDay() - 1) % DAYS_IN_WEEK);
+    if (now.getHours() < BUS_SCHEDULE_ROLLOVER) {
+      currentDay = (currentDay - 1) % DAYS_IN_WEEK;
+    }
+    currentDay = currentDay.toString();
+
     for (const day in days) {
       if (days.hasOwnProperty(day)) {
         if (day.indexOf(currentDay) > -1) {
@@ -379,10 +387,11 @@ class Stops extends React.Component {
             || routeInfo[i].sign.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
 
         for (const day in routeInfo[i].days) {
-          if (!matches && routeInfo[i].days.hasOwnProperty(day)) {
+          if (!matches && adjustedSearchTerms != null && routeInfo[i].days.hasOwnProperty(day)) {
             for (let j = 0; j < day.length; j++) {
-              if (TranslationUtils.numberToDay(language, parseInt(day.charAt(j))).toUpperCase()
-                  .indexOf(adjustedSearchTerms) >= 0) {
+              const weekday = TranslationUtils.numberToDay(language, parseInt(day.charAt(j)));
+
+              if (weekday != null && weekday.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
                 matches = true;
               }
             }
