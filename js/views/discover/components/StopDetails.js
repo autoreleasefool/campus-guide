@@ -39,8 +39,13 @@ import {
 // Type imports
 import type {
   DetailedRouteInfo,
+  Language,
   TransitCampus,
 } from 'types';
+
+import type {
+  SearchListener,
+} from 'SearchManager';
 
 // Type definition for component props.
 type Props = {
@@ -79,6 +84,7 @@ type NavigatorRoute = {
 const Configuration = require('Configuration');
 const Constants = require('Constants');
 const Preferences = require('Preferences');
+const SearchManager = require('SearchManager');
 const SectionHeader = require('SectionHeader');
 const TextUtils = require('TextUtils');
 const TranslationUtils = require('TranslationUtils');
@@ -89,6 +95,8 @@ const LIST: number = 0;
 const DETAILS: number = 1;
 // Maximum number of upcoming bus arrival times to show.
 const MAX_UPCOMING_TIMES: number = 4;
+// Number of days in a week
+const DAYS_IN_WEEK = 7;
 
 class Stops extends React.Component {
 
@@ -136,17 +144,34 @@ class Stops extends React.Component {
 
     // Explicitly binding 'this' to all methods that need it
     (this:any)._displayStopDetails = this._displayStopDetails.bind(this);
-    (this:any)._loadStops = this._loadStops.bind(this);
+    (this:any)._onStopSearch = this._onStopSearch.bind(this);
+    (this:any)._onTimeSearch = this._onTimeSearch.bind(this);
     (this:any)._pressRow = this._pressRow.bind(this);
+
+    // Create the room search listener
+    this._stopSearchListener = {
+      onSearch: this._onStopSearch,
+    };
+
+    // Create the room search listener
+    this._timeSearchListener = {
+      onSearch: this._onTimeSearch,
+    };
   }
 
   /**
    * If the stops have not beed loaded, then loads them.
    */
   componentDidMount(): void {
+    // Register search listener if the app should not search all by default
+    if (!Preferences.getAlwaysSearchAll()) {
+      SearchManager.addSearchListener(this._stopSearchListener);
+      SearchManager.addSearchListener(this._timeSearchListener);
+    }
+
     if (!this.state.loaded) {
       Configuration.init()
-          .then(this._loadStops())
+          .then(this._onStopSearch)
           .catch(err => console.error('Configuration could not be initialized for stop details.', err));
     }
   }
@@ -155,11 +180,25 @@ class Stops extends React.Component {
    * Clears the cached stops.
    */
   componentWillUnmount(): void {
-    this.cachedCampusStops = null;
+    SearchManager.removeSearchListener(this._stopSearchListener);
+    SearchManager.removeSearchListener(this._timeSearchListener);
+    this._cachedCampusStops = null;
   }
 
   // Contents of /transit_times.json, cached when first loaded
-  cachedCampusStops: ?Object = null;
+  _cachedCampusStops: ?Object = null;
+
+  /** Listener for search input, when viewing stops. */
+  _stopSearchListener: SearchListener = null;
+
+  /** Listener for search input, when viewing times. */
+  _timeSearchListener: SearchListener = null;
+
+  /** Current scene on display in the navigator. */
+  _currentScene: number = 0;
+
+  /** The stop selected by the user. */
+  _selectedStop: ?StopInfo = null;
 
   /**
    * Informs parent that no stop is selected.
@@ -187,57 +226,13 @@ class Stops extends React.Component {
    * @param {StopInfo} stop details about the stop to display.
    */
   _displayStopDetails(campuses: Object, stop: StopInfo): void {
-    if (this.cachedCampusStops == null) {
-      this.cachedCampusStops = campuses;
-    }
-
-    let routeInfo: ?Array<DetailedRouteInfo> = null;
-    for (let i = 0; i < campuses.length; i++) {
-      if (campuses[i].id === this.props.campusName) {
-        routeInfo = campuses[i].stops[stop.key].routes;
-        break;
-      }
-    }
-
-    const routesAndTimes: Array<DetailedRouteInfo> = [];
-    if (routeInfo != null) {
-      for (let i = 0; i < routeInfo.length; i++) {
-        routesAndTimes.push({
-          number: routeInfo[i].number,
-          sign: routeInfo[i].sign,
-          days: routeInfo[i].days,
-        });
-      }
+    if (this._cachedCampusStops == null) {
+      this._cachedCampusStops = campuses;
     }
 
     this.refs.Navigator.push({id: DETAILS, stop: stop});
-    this.setState({
-      dataSourceTimes: this.state.dataSourceTimes.cloneWithRows(routesAndTimes),
-    });
-  }
-
-  /**
-   * Loads information about each of the stops on the campus into a list to display.
-   */
-  _loadStops(): void {
-    const stops: Array<StopInfo> = [];
-    for (let i = 0; i < this.props.campus.stops.length; i++) {
-      const stopInfo: StopInfo = {
-        code: this.props.campus.stops[i].code,
-        name: this.props.campus.stops[i].name,
-        lat: this.props.campus.stops[i].lat,
-        long: this.props.campus.stops[i].long,
-        routes: this.props.campus.stops[i].routes,
-        key: i,
-      };
-
-      stops.push(stopInfo);
-    }
-
-    this.setState({
-      dataSourceStops: this.state.dataSourceStops.cloneWithRows(stops),
-      loaded: true,
-    });
+    this._selectedStop = stop;
+    this._onTimeSearch(null);
   }
 
   /**
@@ -250,12 +245,12 @@ class Stops extends React.Component {
       this.props.onStopSelected(stop);
     }
 
-    if (this.cachedCampusStops == null) {
+    if (this._cachedCampusStops == null) {
       Configuration.getConfig('/transit_times.json')
           .then(campuses => this._displayStopDetails(campuses, stop))
           .catch(err => console.error('Could not get /transit_times.json.', err));
     } else {
-      this._displayStopDetails(this.cachedCampusStops, stop);
+      this._displayStopDetails(this._cachedCampusStops, stop);
     }
   }
 
@@ -271,7 +266,7 @@ class Stops extends React.Component {
 
     const upcomingTimes = [];
     const now = new Date();
-    const currentDay = now.getDay().toString();
+    const currentDay = ((now.getDay() - 1) % DAYS_IN_WEEK).toString();
     const currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0')
         + ':'
         + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
@@ -299,6 +294,114 @@ class Stops extends React.Component {
     } else {
       return Translations.no_upcoming_buses;
     }
+  }
+
+  /**
+   * Filters the stops for which routes are displayed, based on the provided search terms.
+   *
+   * @param {?string} searchTerms a string of search terms, or null for an empty search (all results should return)
+   */
+  _onStopSearch(searchTerms: ?string) {
+    if (this._currentScene !== LIST) {
+      return;
+    }
+
+    // Ignore the case of the search terms
+    const adjustedSearchTerms: ?string = (searchTerms == null || searchTerms.length === 0)
+        ? null
+        : searchTerms.toUpperCase();
+
+    const stops: Array<StopInfo> = [];
+    for (let i = 0; i < this.props.campus.stops.length; i++) {
+      const stop = this.props.campus.stops[i];
+      let matches: boolean = false;
+
+      // Compare stop details to the search terms
+      matches = adjustedSearchTerms == null
+          || stop.code.toString().indexOf(adjustedSearchTerms) >= 0
+          || stop.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
+
+      // Compare each route number to the search terms until one matches
+      for (let j = 0; j < stop.routes.length && !matches; j++) {
+        if (stop.routes[j].toString().indexOf(adjustedSearchTerms) >= 0) {
+          matches = true;
+        }
+      }
+
+      if (matches) {
+        stops.push({
+          code: stop.code,
+          name: stop.name,
+          lat: stop.lat,
+          long: stop.long,
+          routes: stop.routes,
+          key: i,
+        });
+      }
+    }
+
+    this.setState({
+      dataSourceStops: this.state.dataSourceStops.cloneWithRows(stops),
+      loaded: true,
+    });
+  }
+
+  /**
+   * Filters the routes for which times are displayed, based on the provided search terms.
+   *
+   * @param {?string} searchTerms a string of search terms, or null for an empty search (all results should return)
+   */
+  _onTimeSearch(searchTerms: ?string) {
+    if (this._currentScene !== DETAILS || this._cachedCampusStops == null || this._selectedStop == null) {
+      return;
+    }
+
+    // Ignore the case of the search terms
+    const adjustedSearchTerms: ?string = (searchTerms == null || searchTerms.length === 0)
+        ? null
+        : searchTerms.toUpperCase();
+
+    let routeInfo: ?Array<DetailedRouteInfo> = null;
+    for (let i = 0; i < this._cachedCampusStops.length; i++) {
+      if (this._cachedCampusStops[i].id === this.props.campusName) {
+        routeInfo = this._cachedCampusStops[i].stops[this._selectedStop.key].routes;
+        break;
+      }
+    }
+
+    const language: Language = Preferences.getSelectedLanguage();
+    const routesAndTimes: Array<DetailedRouteInfo> = [];
+    if (routeInfo != null) {
+      for (let i = 0; i < routeInfo.length; i++) {
+        let matches: boolean = false;
+        matches = adjustedSearchTerms == null
+            || routeInfo[i].number.toString().indexOf(adjustedSearchTerms) >= 0
+            || routeInfo[i].sign.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
+
+        for (const day in routeInfo[i].days) {
+          if (!matches && routeInfo[i].days.hasOwnProperty(day)) {
+            for (let j = 0; j < day.length; j++) {
+              if (TranslationUtils.numberToDay(language, parseInt(day.charAt(j))).toUpperCase()
+                  .indexOf(adjustedSearchTerms) >= 0) {
+                matches = true;
+              }
+            }
+          }
+        }
+
+        if (matches) {
+          routesAndTimes.push({
+            number: routeInfo[i].number,
+            sign: routeInfo[i].sign,
+            days: routeInfo[i].days,
+          });
+        }
+      }
+    }
+
+    this.setState({
+      dataSourceTimes: this.state.dataSourceTimes.cloneWithRows(routesAndTimes),
+    });
   }
 
   /**
@@ -369,6 +472,8 @@ class Stops extends React.Component {
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
   _renderScene(route: NavigatorRoute): ReactElement<any> {
+    this._currentScene = route.id;
+
     if (route.id === DETAILS && route.stop != null) {
       const routeStop = route.stop;
 
@@ -382,6 +487,7 @@ class Stops extends React.Component {
               subtitleName={routeStop.code} />
           <ListView
               dataSource={this.state.dataSourceTimes}
+              enableEmptySections={true}
               renderRow={this._renderTimeRow.bind(this)} />
         </View>
       );
@@ -394,6 +500,7 @@ class Stops extends React.Component {
               sectionName={TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.campus)} />
           <ListView
               dataSource={this.state.dataSourceStops}
+              enableEmptySections={true}
               renderRow={this._renderStopRow.bind(this)} />
         </View>
       );
@@ -422,6 +529,7 @@ class Stops extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Constants.Colors.garnet,
   },
   header: {
     flexDirection: 'row',

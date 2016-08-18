@@ -199,4 +199,31 @@ module.exports = {
       return translations[language];
     }
   },
+
+  /**
+   * Gets the string representation of a day's numerical value, in the language requested.
+   *
+   * @param {Language} language either 'fr' or 'en' for the language needed
+   * @param {number} val        numerical representation of day, 0 - 6, where 0 is Monday, 6 is Sunday.
+   * @returns {?string} the string representation of the day, or null if val is invalid
+   */
+  numberToDay(language: Language, val: number): ?string {
+    const CoreTranslations: Object = require('../../assets/json/CoreTranslations.json');
+
+    /* eslint-disable no-magic-numbers */
+    /* Documentation states 0 = Monday, 6 = Sunday */
+
+    switch (val) {
+      case 0: return CoreTranslations[language].monday;
+      case 1: return CoreTranslations[language].tuesday;
+      case 2: return CoreTranslations[language].wednesday;
+      case 3: return CoreTranslations[language].thursday;
+      case 4: return CoreTranslations[language].friday;
+      case 5: return CoreTranslations[language].saturday;
+      case 6: return CoreTranslations[language].sunday;
+      default: return null;
+    }
+
+    /* eslint-enable no-magic-numbers */
+  },
 };
