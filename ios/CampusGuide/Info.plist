@@ -37,7 +37,7 @@
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string/>
+    <string>Your location is required to find the closest available starting point for navigation.</string>
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSExceptionDomains</key>

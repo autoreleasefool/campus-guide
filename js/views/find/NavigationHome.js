@@ -41,6 +41,8 @@ import {
 import type {
   Building,
   CampusDestination,
+  LatLong,
+  LatLongDelta,
   Route,
 } from 'types';
 
@@ -52,12 +54,16 @@ type Props = {
 // Type definition for component state.
 type State = {
   findLocationOnMap: boolean,
+  loaded: boolean,
+  region: LatLong & LatLongDelta,
   startingPoint: {buildingCode?: string, roomName?: string},
 }
 
 // Imports
 const BuildingGrid = require('BuildingGrid');
+const Configuration = require('Configuration');
 const Constants = require('Constants');
+const MapView = require('react-native-maps');
 const Preferences = require('Preferences');
 const RoomList = require('RoomList');
 const SectionHeader = require('SectionHeader');
@@ -98,6 +104,14 @@ class NavigationHome extends React.Component {
     (this:any)._setFindLocationOnmap = this._setFindLocationOnmap.bind(this);
   }
 
+  componentDidMount(): void {
+    if (!this.state.loaded) {
+      Configuration.init()
+          .then(this._prepareInitialRegion.bind(this))
+          .catch(err => console.log('Could not initialize configuration for navigation.', err));
+    }
+  }
+
   /**
    * Sets the transition between two views in the navigator.
    *
@@ -105,6 +119,34 @@ class NavigationHome extends React.Component {
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
+  }
+
+  /**
+   * Gets the location of the University as a default starting location for the map.
+   */
+  _prepareInitialRegion(): void {
+    const university = Configuration.getUniversity();
+    if (university == null) {
+      this.setState({
+        region: {
+          latitude: 45.4222,
+          longitude: -75.6824,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        },
+        loaded: true,
+      });
+    } else {
+      this.setState({
+        region: {
+          latitude: university.lat,
+          longitude: university.long,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        },
+        loaded: true,
+      });
+    }
   }
 
   /**
@@ -140,6 +182,12 @@ class NavigationHome extends React.Component {
   _onRoomSelected(buildingCode: string, roomName: string): void {
     this.setState({
       startingPoint: {buildingCode: buildingCode, roomName: roomName},
+    });
+  }
+
+  _onRegionChange(region: LatLong & LatLongDelta): void {
+    this.setState({
+      region: region,
     });
   }
 
@@ -267,13 +315,20 @@ class NavigationHome extends React.Component {
 
     if (this.state.findLocationOnMap) {
       return (
-        <TouchableOpacity onPress={() => this._setFindLocationOnmap(!this.state.findLocationOnMap)}>
-          <SectionHeader
-              backgroundOverride={Constants.Colors.garnet}
-              sectionIcon={'store'}
-              sectionIconClass={'material'}
-              sectionName={Translations.pick_location} />
-        </TouchableOpacity>
+        <View style={_styles.container}>
+          <MapView
+              region={this.state.region}
+              showUserLocation={true}
+              style={_styles.map}
+              onRegionChange={this._onRegionChange.bind(this)} />
+          <TouchableOpacity onPress={() => this._setFindLocationOnmap(!this.state.findLocationOnMap)}>
+            <SectionHeader
+                backgroundOverride={Constants.Colors.garnet}
+                sectionIcon={'store'}
+                sectionIconClass={'material'}
+                sectionName={Translations.pick_location} />
+          </TouchableOpacity>
+        </View>
       );
     } else {
       return (
@@ -302,6 +357,10 @@ class NavigationHome extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement<any> {
+    if (!this.state.loaded) {
+      return <View style={_styles.container} />;
+    }
+
     return (
       <View style={_styles.container}>
         {this._renderDestination()}
@@ -322,6 +381,9 @@ const _styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: Constants.Text.Large,
     margin: 10,
+  },
+  map: {
+    flex: 1,
   },
   separator: {
     height: StyleSheet.hairlineWidth,
