@@ -55,7 +55,7 @@ type Props = {
 type State = {
   findLocationOnMap: boolean,
   loaded: boolean,
-  region: LatLong & LatLongDelta,
+  region: ?(LatLong & LatLongDelta),
   startingPoint: {buildingCode?: string, roomName?: string},
 }
 
@@ -64,6 +64,7 @@ const BuildingGrid = require('BuildingGrid');
 const Configuration = require('Configuration');
 const Constants = require('Constants');
 const MapView = require('react-native-maps');
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('Preferences');
 const RoomList = require('RoomList');
 const SectionHeader = require('SectionHeader');
@@ -97,6 +98,8 @@ class NavigationHome extends React.Component {
     super(props);
     this.state = {
       findLocationOnMap: false,
+      loaded: false,
+      region: null,
       startingPoint: {},
     };
 
@@ -289,15 +292,26 @@ class NavigationHome extends React.Component {
 
     return (
       <View>
-        <SectionHeader
-            backgroundOverride={Constants.Colors.garnet}
-            sectionIcon={'near-me'}
-            sectionIconClass={'material'}
-            sectionName={startingPoint} />
-        <SectionHeader
-            sectionIcon={'place'}
-            sectionIconClass={'material'}
-            sectionName={destination} />
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'column', flex: 1}}>
+            <SectionHeader
+                backgroundOverride={Constants.Colors.garnet}
+                sectionIcon={'near-me'}
+                sectionIconClass={'material'}
+                sectionName={startingPoint} />
+            <SectionHeader
+                sectionIcon={'place'}
+                sectionIconClass={'material'}
+                sectionName={destination} />
+          </View>
+          <TouchableOpacity style={_styles.directionsIconContainer}>
+            <MaterialIcons
+                color={'white'}
+                name={'directions'}
+                size={30}
+                style={_styles.directionsIcon} />
+          </TouchableOpacity>
+        </View>
         <Text style={_styles.instruction}>{Translations.select_building_or_locate}</Text>
         <View style={_styles.separator} />
       </View>
@@ -375,6 +389,15 @@ const _styles = StyleSheet.create({
   container: {
     backgroundColor: Constants.Colors.garnet,
     flex: 1,
+  },
+  directionsIcon: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  directionsIconContainer: {
+    alignSelf: 'center',
   },
   instruction: {
     color: Constants.Colors.primaryWhiteText,
