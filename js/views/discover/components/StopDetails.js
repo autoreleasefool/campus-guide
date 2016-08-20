@@ -41,6 +41,7 @@ import type {
   DetailedRouteInfo,
   Language,
   TransitCampus,
+  TransitStop,
 } from 'types';
 
 import type {
@@ -64,20 +65,10 @@ type State = {
   secondaryTextColor: string,
 };
 
-// Type definition for information about transit stops.
-type StopInfo = {
-  code: string,
-  name: string,
-  lat: number,
-  long: number,
-  routes: Array< number >,
-  key: number,
-};
-
 // Type definition for navigator routes.
 type NavigatorRoute = {
   id: number,
-  stop: ?StopInfo,
+  stop: ?TransitStop,
 };
 
 // Imports
@@ -200,7 +191,7 @@ class Stops extends React.Component {
   _currentScene: number = 0;
 
   /** The stop selected by the user. */
-  _selectedStop: ?StopInfo = null;
+  _selectedStop: ?TransitStop = null;
 
   /**
    * Informs parent that no stop is selected.
@@ -225,9 +216,9 @@ class Stops extends React.Component {
    * Displays details about a single stop.
    *
    * @param {campuses} campuses data for all stops
-   * @param {StopInfo} stop details about the stop to display.
+   * @param {TransitStop} stop details about the stop to display.
    */
-  _displayStopDetails(campuses: Object, stop: StopInfo): void {
+  _displayStopDetails(campuses: Object, stop: TransitStop): void {
     if (this._cachedCampusStops == null) {
       this._cachedCampusStops = campuses;
     }
@@ -240,9 +231,9 @@ class Stops extends React.Component {
   /**
    * Displays details about a single stop.
    *
-   * @param {StopInfo} stop details about the stop to display.
+   * @param {TransitStop} stop details about the stop to display.
    */
-  _pressRow(stop: StopInfo): void {
+  _pressRow(stop: TransitStop): void {
     if (this.props.onStopSelected) {
       this.props.onStopSelected(stop);
     }
@@ -319,7 +310,7 @@ class Stops extends React.Component {
         ? null
         : searchTerms.toUpperCase();
 
-    const stops: Array<StopInfo> = [];
+    const stops: Array<TransitStop> = [];
     for (let i = 0; i < this.props.campus.stops.length; i++) {
       const stop = this.props.campus.stops[i];
       let matches: boolean = false;
@@ -340,10 +331,11 @@ class Stops extends React.Component {
         stops.push({
           code: stop.code,
           name: stop.name,
+          id: stop.id,
+          key: i,
           lat: stop.lat,
           long: stop.long,
           routes: stop.routes,
-          key: i,
         });
       }
     }
@@ -371,7 +363,7 @@ class Stops extends React.Component {
 
     let routeInfo: ?Array<DetailedRouteInfo> = null;
     for (let i = 0; i < this._cachedCampusStops.length; i++) {
-      if (this._cachedCampusStops[i].id === this.props.campusName) {
+      if (this._cachedCampusStops[i].id === this.props.campusName && this._selectedStop.key != null) {
         routeInfo = this._cachedCampusStops[i].stops[this._selectedStop.key].routes;
         break;
       }
@@ -416,13 +408,13 @@ class Stops extends React.Component {
   /**
    * Shows partial details about a stop.
    *
-   * @param {StopInfo} stop       details about the stop to display.
+   * @param {TransitStop} stop       details about the stop to display.
    * @param {string} sectionIndex index of the section the stop is in.
    * @param {number} rowIndex     index of the row the stop is in.
    * @returns {ReactElement<any>} the name of the stop, its unique code, and the list of routes
    *         that serve the stop.
    */
-  _renderStopRow(stop: StopInfo, sectionIndex: string, rowIndex: number): ReactElement<any> {
+  _renderStopRow(stop: TransitStop, sectionIndex: string, rowIndex: number): ReactElement<any> {
     return (
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>

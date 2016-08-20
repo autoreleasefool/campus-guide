@@ -116,12 +116,16 @@ class BusCampusDetails extends React.Component {
         region: null,
       });
     } else {
+      // Show stop name and code
+      this.refs[this._getMarkerReference(stop)].showCallout();
+
+      // Center on the stop
       this.setState({
         region: {
           latitude: stop.lat,
           longitude: stop.long,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
         },
       });
     }
@@ -182,6 +186,7 @@ class BusCampusDetails extends React.Component {
               coordinate={{latitude: stop.lat, longitude: stop.long}}
               description={stop.code}
               key={stop.id}
+              ref={this._getMarkerReference(stop)}
               title={stop.name}
               onCalloutPress={() => this._busStopSelected(stop)} />
         ))}
@@ -209,6 +214,16 @@ class BusCampusDetails extends React.Component {
             onStopSelected={this._busStopSelected} />
       );
     }
+  }
+
+  /**
+   * Gets a string which can be used to identify a marker on the map for a particular stop.
+   *
+   * @param {TransitStop} stop bus stop to get marker reference name
+   * @returns {string} marker reference name
+   */
+  _getMarkerReference(stop: TransitStop): string {
+    return (String:any).format('Marker{0}', stop.id);
   }
 
   /**

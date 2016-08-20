@@ -168,6 +168,7 @@ export type DetailedRouteInfo = {
 export type TransitStop = {
   code: string,
   id: string,
+  key?: number,
   lat: number,
   long: number,
   name: string,
