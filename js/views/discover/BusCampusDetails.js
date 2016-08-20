@@ -53,17 +53,6 @@ type State = {
   region: ?(LatLong & LatLongDelta),
 };
 
-// Type definition for markers to be placed on the map.
-type MapMarker = {
-  title: string,
-  desc: string,
-  id: string,
-  latlng: {
-    latitude: number,
-    longitude: number,
-  },
-};
-
 // Imports
 const Configuration = require('Configuration');
 const DisplayUtils = require('DisplayUtils');
@@ -99,6 +88,7 @@ class BusCampusDetails extends React.Component {
     };
 
     // Explicitly binding 'this' to all methods that need it
+    (this:any)._busStopSelected = this._busStopSelected.bind(this);
     (this:any)._getCampusMap = this._getCampusMap.bind(this);
     (this:any)._getCampusStops = this._getCampusStops.bind(this);
     (this:any)._loadCampusInfo = this._loadCampusInfo.bind(this);
@@ -143,7 +133,7 @@ class BusCampusDetails extends React.Component {
    * @returns {ReactElement<any>} a {MapView} with a list of markers placed at the stops on the campus.
    */
   _getCampusMap(): ReactElement<any> {
-    const markers: Array<MapMarker> = [];
+    let markers: Array<TransitStop> = [];
     let lat: number = 0;
     let long: number = 0;
     let initialRegion: LatLong & LatLongDelta;
@@ -177,29 +167,23 @@ class BusCampusDetails extends React.Component {
         longitudeDelta: 0.01,
       };
 
-      for (let i = 0; i < this.state.campus.stops.length; i++) {
-        markers.push({
-          title: this.state.campus.stops[i].name,
-          desc: this.state.campus.stops[i].code,
-          id: this.state.campus.stops[i].id,
-          latlng: {
-            latitude: this.state.campus.stops[i].lat,
-            longitude: this.state.campus.stops[i].long,
-          },
-        });
-      }
+      markers = this.state.campus.stops;
     }
+
+    // TODO: onCalloutPress (below) does not currently work for iOS
+    // Follow progress at https://github.com/lelandrichardson/react-native-maps/issues/286
 
     return (
       <MapView
           region={this.state.region || initialRegion}
           style={_styles.map}>
-        {markers.map(marker => (
+        {markers.map(stop => (
           <MapView.Marker
-              coordinate={marker.latlng}
-              description={marker.desc}
-              key={marker.id}
-              title={marker.title} />
+              coordinate={{latitude: stop.lat, longitude: stop.long}}
+              description={stop.code}
+              key={stop.id}
+              title={stop.name}
+              onCalloutPress={() => this._busStopSelected(stop)} />
         ))}
       </MapView>
     );
@@ -222,7 +206,7 @@ class BusCampusDetails extends React.Component {
             backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}
             campus={this.state.campus}
             campusName={this.props.campusName}
-            onStopSelected={this._busStopSelected.bind(this)} />
+            onStopSelected={this._busStopSelected} />
       );
     }
   }
