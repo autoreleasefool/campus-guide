@@ -230,7 +230,7 @@ class BusCampusDetails extends React.Component {
    * Retrieves data about the campus provided as {this.props.campusName}.
    */
   _loadCampusInfo(): void {
-    Configuration.getConfig('/transit_stops.json')
+    Configuration.getConfig('/transit_times.json')
         .then(campuses => {
           for (let i = 0; i < campuses.length; i++) {
             if (campuses[i].id === this.props.campusName) {
@@ -240,7 +240,7 @@ class BusCampusDetails extends React.Component {
             }
           }
         })
-        .catch(err => console.error('Could not get /transit_stop.json.', err));
+        .catch(err => console.error('Could not get /transit_times.json.', err));
   }
 
   /**

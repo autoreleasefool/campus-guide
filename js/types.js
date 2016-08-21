@@ -172,7 +172,8 @@ export type TransitStop = {
   lat: number,
   long: number,
   name: string,
-  routes: Array<number | DetailedRouteInfo>,
+  routes: Array<DetailedRouteInfo>,
+  sorted?: boolean,
 };
 
 /** Information about a bus transit campus. */

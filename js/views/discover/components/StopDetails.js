@@ -25,6 +25,9 @@
  */
 'use strict';
 
+// Declaration for global method
+declare function requestAnimationFrame(fn: () => any): void;
+
 // React imports
 import React from 'react';
 import {
@@ -63,12 +66,7 @@ type State = {
   loaded: boolean,
   primaryTextColor: string,
   secondaryTextColor: string,
-};
-
-// Type definition for navigator routes.
-type NavigatorRoute = {
-  id: number,
-  stop: ?TransitStop,
+  selectedStop: ?TransitStop,
 };
 
 // Imports
@@ -133,6 +131,7 @@ class Stops extends React.Component {
       loaded: false,
       primaryTextColor: primaryTextColor,
       secondaryTextColor: secondaryTextColor,
+      selectedStop: null,
     };
 
     // Explicitly binding 'this' to all methods that need it
@@ -170,6 +169,16 @@ class Stops extends React.Component {
   }
 
   /**
+   * Refreshes stop times if a new stop is being displayed.
+   */
+  componentDidUpdate(): void {
+    if (this._resetTimes) {
+      this._resetTimes = false;
+      requestAnimationFrame(() => this._onTimeSearch(null));
+    }
+  }
+
+  /**
    * Clears the cached stops.
    */
   componentWillUnmount(): void {
@@ -190,8 +199,8 @@ class Stops extends React.Component {
   /** Current scene on display in the navigator. */
   _currentScene: number = 0;
 
-  /** The stop selected by the user. */
-  _selectedStop: ?TransitStop = null;
+  /** Indicates the time filter should be reset for the current stop being displayed. */
+  _resetTimes: boolean = false;
 
   /**
    * Informs parent that no stop is selected.
@@ -223,9 +232,11 @@ class Stops extends React.Component {
       this._cachedCampusStops = campuses;
     }
 
-    this.refs.Navigator.push({id: DETAILS, stop: stop});
-    this._selectedStop = stop;
-    this._onTimeSearch(null);
+    this._resetTimes = true;
+    this.setState({
+      selectedStop: stop,
+    });
+    this.refs.Navigator.push({id: DETAILS});
   }
 
   /**
@@ -296,6 +307,19 @@ class Stops extends React.Component {
   }
 
   /**
+   * Sorts the routes by their number, from lowest to highest.
+   *
+   * @param {Array<{number: number}>} routes list of routes to sort
+   * @returns {Array<{number: number}>} the modified, sorted list
+   */
+  _sortByRouteNumber(routes: Array < { number: number } & Object >): Array < { number: number } & Object > {
+    routes.sort((a, b) => {
+      return a.number - b.number;
+    });
+    return routes;
+  }
+
+  /**
    * Filters the stops for which routes are displayed, based on the provided search terms.
    *
    * @param {?string} searchTerms a string of search terms, or null for an empty search (all results should return)
@@ -315,6 +339,12 @@ class Stops extends React.Component {
       const stop = this.props.campus.stops[i];
       let matches: boolean = false;
 
+      // Sort the list of routes, if they haven't been sorted yet
+      if (!stop.sorted) {
+        this._sortByRouteNumber(stop.routes);
+        stop.sorted = true;
+      }
+
       // Compare stop details to the search terms
       matches = adjustedSearchTerms == null
           || stop.code.toString().indexOf(adjustedSearchTerms) >= 0
@@ -322,21 +352,15 @@ class Stops extends React.Component {
 
       // Compare each route number to the search terms until one matches
       for (let j = 0; j < stop.routes.length && !matches; j++) {
-        if (stop.routes[j].toString().indexOf(adjustedSearchTerms) >= 0) {
+        if (stop.routes[j].number.toString().indexOf(adjustedSearchTerms) >= 0
+            || stop.routes[j].sign.indexOf(adjustedSearchTerms) >= 0) {
           matches = true;
         }
       }
 
       if (matches) {
-        stops.push({
-          code: stop.code,
-          name: stop.name,
-          id: stop.id,
-          key: i,
-          lat: stop.lat,
-          long: stop.long,
-          routes: stop.routes,
-        });
+        stop.key = stops.length;
+        stops.push(stop);
       }
     }
 
@@ -352,7 +376,7 @@ class Stops extends React.Component {
    * @param {?string} searchTerms a string of search terms, or null for an empty search (all results should return)
    */
   _onTimeSearch(searchTerms: ?string) {
-    if (this._currentScene !== DETAILS || this._cachedCampusStops == null || this._selectedStop == null) {
+    if (this._currentScene !== DETAILS || this._cachedCampusStops == null || this.state.selectedStop == null) {
       return;
     }
 
@@ -363,8 +387,8 @@ class Stops extends React.Component {
 
     let routeInfo: ?Array<DetailedRouteInfo> = null;
     for (let i = 0; i < this._cachedCampusStops.length; i++) {
-      if (this._cachedCampusStops[i].id === this.props.campusName && this._selectedStop.key != null) {
-        routeInfo = this._cachedCampusStops[i].stops[this._selectedStop.key].routes;
+      if (this._cachedCampusStops[i].id === this.props.campusName && this.state.selectedStop.key != null) {
+        routeInfo = this._cachedCampusStops[i].stops[this.state.selectedStop.key].routes;
         break;
       }
     }
@@ -400,6 +424,7 @@ class Stops extends React.Component {
       }
     }
 
+    this._sortByRouteNumber(routesAndTimes);
     this.setState({
       dataSourceTimes: this.state.dataSourceTimes.cloneWithRows(routesAndTimes),
     });
@@ -415,6 +440,18 @@ class Stops extends React.Component {
    *         that serve the stop.
    */
   _renderStopRow(stop: TransitStop, sectionIndex: string, rowIndex: number): ReactElement<any> {
+    const routes = (
+      <View>
+        {stop.routes.map(route => (
+          <Text
+              key={route.number}
+              style={[_styles.stopRoutes, {color: this.state.primaryTextColor}]}>
+            {(String:any).format('{0} - {1}', route.number, route.sign)}
+          </Text>
+        ))}
+      </View>
+    );
+
     return (
       <View>
         <TouchableOpacity onPress={() => this._pressRow(stop)}>
@@ -426,9 +463,7 @@ class Stops extends React.Component {
               {stop.code}
             </Text>
           </View>
-          <Text style={[_styles.stopRoutes, {color: this.state.primaryTextColor}]}>
-            {stop.routes.join(', ')}
-          </Text>
+          {routes}
         </TouchableOpacity>
         {(rowIndex < this.state.dataSourceStops.getRowCount() - 1)
             ? <View style={_styles.divider} />
@@ -469,23 +504,21 @@ class Stops extends React.Component {
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {NavigatorRoute} route object with properties to identify the route to display.
+   * @param {{id: number}} route object with properties to identify the route to display.
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
-  _renderScene(route: NavigatorRoute): ReactElement<any> {
+  _renderScene(route: {id: number}): ReactElement<any> {
     this._currentScene = route.id;
 
-    if (route.id === DETAILS && route.stop != null) {
-      const routeStop = route.stop;
-
+    if (route.id === DETAILS) {
       return (
         <View style={_styles.container}>
           <SectionHeader
               sectionIcon={'ios-arrow-back'}
               sectionIconClass={'ionicon'}
               sectionIconOnClick={this._clearStop.bind(this)}
-              sectionName={routeStop.name}
-              subtitleName={routeStop.code} />
+              sectionName={this.state.selectedStop.name}
+              subtitleName={this.state.selectedStop.code} />
           <ListView
               dataSource={this.state.dataSourceTimes}
               enableEmptySections={true}
@@ -547,10 +580,10 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Text.Small,
   },
   stopRoutes: {
-    marginLeft: 10,
+    marginLeft: 40,
     marginRight: 10,
     marginBottom: 10,
-    fontSize: Constants.Text.Medium,
+    fontSize: Constants.Text.Small,
   },
   stopTimes: {
     marginLeft: 10,
