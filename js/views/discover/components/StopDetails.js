@@ -511,14 +511,21 @@ class Stops extends React.Component {
     this._currentScene = route.id;
 
     if (route.id === DETAILS) {
+      let stopName: string = '';
+      let stopCode: string = '';
+      if (this.state.selectedStop != null) {
+        stopName = this.state.selectedStop.name;
+        stopCode = this.state.selectedStop.code;
+      }
+
       return (
         <View style={_styles.container}>
           <SectionHeader
               sectionIcon={'ios-arrow-back'}
               sectionIconClass={'ionicon'}
               sectionIconOnClick={this._clearStop.bind(this)}
-              sectionName={this.state.selectedStop.name}
-              subtitleName={this.state.selectedStop.code} />
+              sectionName={stopName}
+              subtitleName={stopCode} />
           <ListView
               dataSource={this.state.dataSourceTimes}
               enableEmptySections={true}
