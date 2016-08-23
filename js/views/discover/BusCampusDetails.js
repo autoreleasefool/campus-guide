@@ -50,6 +50,7 @@ type Props = {
 // Type definition for component state.
 type State = {
   campus: ?TransitCampus,
+  initialRegion: LatLong & LatLongDelta,
   region: ?(LatLong & LatLongDelta),
 };
 
@@ -84,6 +85,12 @@ class BusCampusDetails extends React.Component {
 
     this.state = {
       campus: null,
+      initialRegion: {
+        latitude: 45.4222,
+        longitude: -75.6824,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      },
       region: null,
     };
 
@@ -138,39 +145,8 @@ class BusCampusDetails extends React.Component {
    */
   _getCampusMap(): ReactElement<any> {
     let markers: Array<TransitStop> = [];
-    let lat: number = 0;
-    let long: number = 0;
-    let initialRegion: LatLong & LatLongDelta;
 
-    if (this.state.campus == null) {
-      const university: ?University = Configuration.getUniversity();
-      if (university == null) {
-        initialRegion = {
-          latitude: 45.4222,
-          longitude: -75.6824,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        };
-      } else {
-        lat = university.lat;
-        long = university.long;
-        initialRegion = {
-          latitude: lat,
-          longitude: long,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        };
-      }
-    } else {
-      lat = this.state.campus.lat;
-      long = this.state.campus.long;
-      initialRegion = {
-        latitude: lat,
-        longitude: long,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      };
-
+    if (this.state.campus != null) {
       markers = this.state.campus.stops;
     }
 
@@ -179,7 +155,7 @@ class BusCampusDetails extends React.Component {
 
     return (
       <MapView
-          region={this.state.region || initialRegion}
+          region={this.state.region || this.state.initialRegion}
           style={_styles.map}>
         {markers.map(stop => (
           <MapView.Marker
@@ -236,6 +212,12 @@ class BusCampusDetails extends React.Component {
             if (campuses[i].id === this.props.campusName) {
               this.setState({
                 campus: campuses[i],
+                initialRegion: {
+                  latitude: campuses[i].lat,
+                  longitude: campuses[i].long,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                },
               });
             }
           }
