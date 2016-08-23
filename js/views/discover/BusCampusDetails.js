@@ -38,7 +38,6 @@ import type {
   LatLongDelta,
   TransitCampus,
   TransitStop,
-  University,
 } from 'types';
 
 // Type definition for component props.
