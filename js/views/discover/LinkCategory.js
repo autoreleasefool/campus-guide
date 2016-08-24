@@ -29,6 +29,7 @@ import React from 'react';
 import {
   Alert,
   Clipboard,
+  Dimensions,
   Image,
   LayoutAnimation,
   Linking,
@@ -69,6 +70,10 @@ const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
 const TextUtils = require('TextUtils');
 const TranslationUtils = require('TranslationUtils');
+
+// Used to determine maximum length of link titles
+const TEXT_PADDING = 100;
+const {width} = Dimensions.get('window');
 
 class LinkCategory extends React.Component {
 
@@ -150,31 +155,22 @@ class LinkCategory extends React.Component {
       return null;
     }
 
+    let iconName: string;
     if (link.indexOf('tel:') === 0) {
-      return (
-        <Ionicons
-            color={iconColor}
-            name={'md-call'}
-            size={24}
-            style={_styles.linkIcon} />
-      );
+      iconName = 'md-call';
     } else if (link.indexOf('mailto:') === 0) {
-      return (
-        <Ionicons
-            color={iconColor}
-            name={'md-mail'}
-            size={24}
-            style={_styles.linkIcon} />
-      );
+      iconName = 'md-mail';
     } else {
-      return (
-        <Ionicons
-            color={iconColor}
-            name={'md-open'}
-            size={24}
-            style={_styles.linkIcon} />
-      );
+      iconName = 'md-open';
     }
+
+    return (
+      <Ionicons
+          color={iconColor}
+          name={iconName}
+          size={24}
+          style={_styles.linkIcon} />
+    );
   }
 
   /**
@@ -435,7 +431,8 @@ const _styles = StyleSheet.create({
   },
   link: {
     margin: 10,
-    fontSize: Constants.Text.Large,
+    fontSize: Constants.Text.Medium,
+    width: width - TEXT_PADDING,
   },
   linkSubtitle: {
     marginLeft: 10,
@@ -446,8 +443,8 @@ const _styles = StyleSheet.create({
   linkIcon: {
     marginLeft: 20,
     marginRight: 10,
-    marginTop: 15,
-    marginBottom: 15,
+    marginTop: 10,
+    marginBottom: 10,
   },
   divider: {
     flex: 1,
