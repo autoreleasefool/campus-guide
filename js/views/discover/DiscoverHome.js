@@ -166,10 +166,8 @@ class DiscoverHome extends React.Component {
   _getSectionView(section: DiscoverSection): ReactElement<any> {
     let onPress: DefaultFunction;
     if (section.id === this.state.currentSection) {
-      if (section.id === 'pop') {
-        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.HotSpots);
-      } else if (section.id === 'stu') {
-        onPress = () => this.props.onScreenSelected(0);
+      if (section.id === 'stu') {
+        onPress = () => this.props.onScreenSelected(Constants.Views.Discover.StudySpots);
       } else if (section.id === 'use') {
         onPress = () => this.props.onScreenSelected(Constants.Views.Discover.LinksHome);
       } else if (section.id === 'bus') {
@@ -185,6 +183,7 @@ class DiscoverHome extends React.Component {
     let touchableStyle: Object = {};
     let subtitleIcon: string = 'expand-more';
     if (section.id === this.state.currentSection) {
+      console.log('id: ' + section.id);
       sectionImage = (
         <Image
             resizeMode={'cover'}
