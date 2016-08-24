@@ -62,7 +62,6 @@ module.exports = {
 
   /**
    * Identifiers for the views throughout the application.
-   * NOTE: When adding a new view here, make sure you also update js/util/ScreenUtils.js
    */
   Views: {
 
