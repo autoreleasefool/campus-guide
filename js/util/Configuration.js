@@ -129,15 +129,17 @@ async function _requestConfig(): Promise < void > {
   // Ensure all config files exist
   let configAvailable: boolean = true;
   for (let i = 0; i < configVersions.length; i++) {
-    try {
-      const dir = CONFIG_SUBDIRECTORIES[configVersions[i].type];
-      const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + configVersions[i].name);
-      configAvailable = configAvailable && exists;
-      if (!exists) {
-        console.log('Could not find configuration file: ' + configVersions[i].name);
+    if (configVersions[i].version > 0) {
+      try {
+        const dir = CONFIG_SUBDIRECTORIES[configVersions[i].type];
+        const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + configVersions[i].name);
+        configAvailable = configAvailable && exists;
+        if (!exists) {
+          console.log('Could not find configuration file: ' + configVersions[i].name);
+        }
+      } catch (e) {
+        throw e;
       }
-    } catch (e) {
-      throw e;
     }
   }
 
