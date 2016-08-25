@@ -38,3 +38,4 @@ rnpm link react-native-orientation
 rnpm link react-native-device-info
 rnpm link react-native-fs
 rnpm link react-native-sqlite-storage
+rnpm link react-native-admob
