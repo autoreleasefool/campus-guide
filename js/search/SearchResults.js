@@ -34,6 +34,11 @@ import {
   View,
 } from 'react-native';
 
+// Admob imports
+import {
+  AdMobBanner,
+} from 'react-native-admob';
+
 // Type imports
 import type {
   DefaultIcon,
@@ -129,6 +134,20 @@ class SearchResults extends React.Component {
   _searchResults: Object;
 
   /**
+   * Outputs an error when one occurs while loading an ad.
+   *
+   * @param {any} err the error that occurred
+   */
+  _adError(err: any) {
+    console.log('Error occurred while loading ad:');
+    if (typeof (err) === 'object') {
+      console.log(JSON.stringify(err));
+    } else {
+      console.log(err);
+    }
+  }
+
+  /**
    * Updates the results displayed of the search through the entire app.
    *
    * @param {?string} searchTerms user search query
@@ -208,17 +227,29 @@ class SearchResults extends React.Component {
    * @returns {ReactElement<any>} a list of results
    */
   render(): ReactElement< any > {
+    const env = require('env');
+
     return (
-      <ListView
-          dataSource={this.state.searchResults}
-          enableEmptySections={true}
-          renderRow={this._renderResult}
-          renderSectionHeader={this._renderSource} />
+      <View style={_styles.container}>
+        <ListView
+            dataSource={this.state.searchResults}
+            enableEmptySections={true}
+            renderRow={this._renderResult}
+            renderSectionHeader={this._renderSource} />
+        <AdMobBanner
+            adUnitID={env.admob_unit_ids.search}
+            bannerSize='smartBannerPortrait'
+            didFailToReceiveAdWithError={this._adError.bind(this)}
+            testDeviceID='EMULATOR' />
+      </View>
     );
   }
 }
 
 const _styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   result: {
     alignItems: 'center',
     flexDirection: 'row',
