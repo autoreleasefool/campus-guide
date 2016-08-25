@@ -250,10 +250,11 @@ class LinkCategory extends React.Component {
                 || Configuration.getDefaultLink();
             let translatedName: string = TranslationUtils.getTranslatedName(language, link)
                 || translatedLink;
+            const searchTerms: ?string = this.state.searchTerms;
 
             // Compare name to search terms and do not render if they don't match
-            if (this.state.searchTerms != null) {
-              if (translatedName.toUpperCase().indexOf(this.state.searchTerms) < 0) {
+            if (searchTerms != null) {
+              if (translatedName.toUpperCase().indexOf(searchTerms) < 0) {
                 return null;
               }
             }
