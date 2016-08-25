@@ -126,6 +126,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-admob')
     compile project(':react-native-sqlite-storage')
     compile project(':react-native-fs')
     compile project(':react-native-device-info')
