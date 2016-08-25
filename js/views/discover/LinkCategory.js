@@ -48,6 +48,10 @@ import type {
   NamedLink,
 } from 'types';
 
+import type {
+  SearchListener,
+} from 'SearchManager';
+
 // Type definition for component props.
 type Props = {
   category: LinkCategoryType,
@@ -57,6 +61,7 @@ type Props = {
 
 // Type definition for component state.
 type State = {
+  searchTerms: ?string,
   showLinks: boolean,
 };
 
@@ -67,6 +72,7 @@ const DisplayUtils = require('DisplayUtils');
 const ExternalUtils = require('ExternalUtils');
 const Ionicons = require('react-native-vector-icons/Ionicons');
 const Preferences = require('Preferences');
+const SearchManager = require('SearchManager');
 const SectionHeader = require('SectionHeader');
 const TextUtils = require('TextUtils');
 const TranslationUtils = require('TranslationUtils');
@@ -101,7 +107,13 @@ class LinkCategory extends React.Component {
 
     const shouldShowLinks: boolean = this.props.category.categories == null;
     this.state = {
+      searchTerms: null,
       showLinks: shouldShowLinks,
+    };
+
+    // Create the room search listener
+    this._linkSearchListener = {
+      onSearch: this._onLinkSearch.bind(this),
     };
 
     // Explicitly bind 'this' to those methods that require it.
@@ -109,6 +121,26 @@ class LinkCategory extends React.Component {
     (this:any)._getLinks = this._getLinks.bind(this);
     (this:any)._getSocialMediaLinks = this._getSocialMediaLinks.bind(this);
   }
+
+  /**
+   * Registers a search listener.
+   */
+  componentWillMount(): void {
+    // Register search listener if the app should not search all by default
+    if (!Preferences.getAlwaysSearchAll()) {
+      SearchManager.addSearchListener(this._linkSearchListener, true);
+    }
+  }
+
+  /**
+   * Removes the search listener.
+   */
+  componentWillUnmount(): void {
+    SearchManager.removeSearchListener(this._linkSearchListener);
+  }
+
+  /* Listener for search input. */
+  _linkSearchListener: SearchListener;
 
   /**
    * Returns a list of touchable views which lead to new pages of categories of links.
@@ -218,6 +250,13 @@ class LinkCategory extends React.Component {
                 || Configuration.getDefaultLink();
             let translatedName: string = TranslationUtils.getTranslatedName(language, link)
                 || translatedLink;
+
+            // Compare name to search terms and do not render if they don't match
+            if (this.state.searchTerms != null) {
+              if (translatedName.toUpperCase().indexOf(this.state.searchTerms) < 0) {
+                return null;
+              }
+            }
 
             return (
               <View key={translatedLink}>
@@ -332,6 +371,21 @@ class LinkCategory extends React.Component {
     LayoutAnimation.easeInEaseOut();
     this.setState({
       showLinks: !this.state.showLinks,
+    });
+  }
+
+  /**
+   * Updates state searchTerms with the terms passed.
+   *
+   * @param {?string} searchTerms search terms to filter with
+   */
+  _onLinkSearch(searchTerms: ?string): void {
+    const adjustedSearchTerms: ?string = (searchTerms == null)
+        ? null
+        : searchTerms.toUpperCase();
+
+    this.setState({
+      searchTerms: adjustedSearchTerms,
     });
   }
 
