@@ -32,10 +32,10 @@ sed -i '' 's/suppress_type=[$]FixMe/suppress_type=$FixMe\'$'\n''\'$'\n''suppress
 rm -r ./android/app/src/main/java/com/
 
 # Link react-native dependencies
-rnpm link react-native-vector-icons
-rnpm link react-native-maps
-rnpm link react-native-orientation
-rnpm link react-native-device-info
-rnpm link react-native-fs
-rnpm link react-native-sqlite-storage
-rnpm link react-native-admob
+react-native link react-native-vector-icons
+react-native link react-native-maps
+react-native link react-native-orientation
+react-native link react-native-device-info
+react-native link react-native-fs
+react-native link react-native-sqlite-storage
+react-native link react-native-admob
