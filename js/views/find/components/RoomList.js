@@ -266,7 +266,7 @@ class RoomList extends React.Component {
         <View style={{width: ROOM_WIDTH, backgroundColor: color}}>
           <View style={_styles.room}>
             {icon}
-            <View style={_styles.roomText}>
+            <View>
               <Text style={_styles.roomName}>{room.name}</Text>
               <Text style={_styles.roomType}>{room.type}</Text>
             </View>

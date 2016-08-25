@@ -244,7 +244,7 @@ class LinkCategory extends React.Component {
     let listOfLinks: ?ReactElement<any> = null;
     if (this.state.showLinks) {
       listOfLinks = (
-        <View style={_styles.linksContainer}>
+        <View>
           {links.map((link, index) => {
             let translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
                 || Configuration.getDefaultLink();
