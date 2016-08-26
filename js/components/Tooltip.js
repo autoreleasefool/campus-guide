@@ -206,6 +206,7 @@ class Tooltip extends React.Component {
       backgroundColor: Constants.Colors.charcoalGrey,
       callback: null,
       hAlign: 'left',
+      id: null,
       text: null,
       textColor: Constants.Colors.primaryWhiteText,
       vAlign: 'top',
