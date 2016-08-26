@@ -110,6 +110,9 @@ class SearchResults extends React.Component {
    * Replaces the default SearchListener.
    */
   componentDidMount(): void {
+    const Tooltip = require('Tooltip');
+    Tooltip.dismiss();
+
     this._oldDefaultSearchListener = SearchManager.getDefaultSearchListener();
     SearchManager.setDefaultSearchListener({
       onSearch: this._updateSearch,
