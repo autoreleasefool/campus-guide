@@ -132,6 +132,7 @@ class BuildingDetails extends React.Component {
           backgroundColor: Constants.Colors.darkGrey,
           callback: () => Tooltip.setHasSeenTooltip(Tooltip.SHOW_BUILDING_IMAGE),
           hAlign: 'center',
+          id: Tooltip.SHOW_BUILDING_IMAGE,
           text: 'Tap the picture to see or hide it.',
           vAlign: 'top',
           y: IMAGE_TOOLTIP_TOP + StatusBarUtils.getStatusBarPadding(Platform),
@@ -145,6 +146,7 @@ class BuildingDetails extends React.Component {
    */
   componentWillUnmount(): void {
     clearTimeout(this._swapBannerTimer);
+    Tooltip.dismiss(Tooltip.SHOW_BUILDING_IMAGE);
   }
 
   /** Timer which swaps the banner after a set amount of time. */
