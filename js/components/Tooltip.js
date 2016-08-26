@@ -43,6 +43,7 @@ type State = {
   backgroundColor: string,
   callback: ?() => any,
   hAlign: 'left' | 'right',
+  id: ?string,
   text: ?string,
   textColor: string,
   vAlign: 'top' | 'bottom',
@@ -55,6 +56,7 @@ type TooltipOptions = {
   backgroundColor?: string,
   callback?: () => any,
   hAlign: 'left' | 'right' | 'center',
+  id?: string,
   text: string,
   textColor?: string,
   vAlign: 'top' | 'bottom' | 'center',
@@ -91,6 +93,19 @@ class Tooltip extends React.Component {
 
   /** Represents if the user has seen the tooltip to show building image. */
   static SHOW_BUILDING_IMAGE: string = 'tooltip_show_building_image';
+
+  /**
+   * Hides the current Tooltip if its id matches the one provided.
+   *
+   * @param {string} id id of the Tooltip to hide
+   */
+  static dismiss(id?: string) {
+    if (globalTooltip != null) {
+      if (id == null || globalTooltip.state.id === id) {
+        globalTooltip._dismiss();
+      }
+    }
+  }
 
   /**
    * Checks if a certain tooltip has already been acknowledged by a user.
@@ -165,6 +180,7 @@ class Tooltip extends React.Component {
         backgroundColor: options.backgroundColor ? options.backgroundColor : Constants.Colors.charcoalGrey,
         callback: options.callback,
         hAlign: options.hAlign,
+        id: options.id,
         text: options.text,
         textColor: options.textColor ? options.textColor : Constants.Colors.primaryWhiteText,
         vAlign: options.vAlign,
@@ -222,6 +238,10 @@ class Tooltip extends React.Component {
    * Hides the tooltip when clicked.
    */
   _dismiss(): void {
+    if (!this.state.active) {
+      return;
+    }
+
     if (this.state.callback) {
       this.state.callback();
     }
