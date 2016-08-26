@@ -193,6 +193,8 @@ class BuildingDetails extends React.Component {
    * @returns {ReactElement<any>} a banner describing the building
    */
   _renderBanner(Translations: Object): ReactElement< any > {
+    const buildingName = TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(),
+        this.props.buildingDetails);
     const bannerImageStyle = (this.state.bannerPosition === 0)
         ? {right: 0}
         : {right: width * BANNER_TEXT_WIDTH_PCT};
@@ -217,7 +219,7 @@ class BuildingDetails extends React.Component {
           <ScrollView>
             {this._renderFacilityIcons(Translations)}
             <Text style={_styles.detailTitle}>{Translations.name}</Text>
-            <Text style={_styles.detailBody}>{this.props.buildingDetails.name}</Text>
+            <Text style={_styles.detailBody}>{buildingName}</Text>
             <Text style={_styles.detailTitle}>{Translations.address}</Text>
             <Text style={_styles.detailBody}>{(buildingAddress == null) ? 'N/A' : buildingAddress}</Text>
           </ScrollView>
