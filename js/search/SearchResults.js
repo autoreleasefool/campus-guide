@@ -236,13 +236,27 @@ class SearchResults extends React.Component {
   render(): ReactElement< any > {
     const env = require('env');
 
-    return (
-      <View style={_styles.container}>
+    let results = null;
+    if (this.state.searchTerms == null) {
+      results = (
+        <View style={_styles.container}>
+          <Text>{'No search results'}</Text>
+        </View>
+      );
+    } else {
+      results = (
         <ListView
+            contentContainerStyle={_styles.container}
             dataSource={this.state.searchResults}
             enableEmptySections={true}
             renderRow={this._renderResult}
             renderSectionHeader={this._renderSource} />
+      );
+    }
+
+    return (
+      <View style={_styles.container}>
+        {results}
         <AdMobBanner
             adUnitID={env.admob_unit_ids.search}
             bannerSize='smartBannerPortrait'
