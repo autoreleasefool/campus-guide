@@ -218,7 +218,11 @@ class SearchResults extends React.Component {
    * @returns {ReactElement<any>} a {SectionHeader} with the name of the source.
    */
   _renderSource(sectionData: Object, sectionName: string): ReactElement< any > {
-    return (<SectionHeader sectionName={sectionName} />);
+    return (
+      <View style={{backgroundColor: Constants.Colors.garnet}}>
+        <SectionHeader sectionName={sectionName} />
+      </View>
+    );
   }
 
   /**
