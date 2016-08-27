@@ -301,10 +301,10 @@ class SectionHeader extends React.Component {
    *
    * @returns {?ReactElement<any>} a view with the subtitle name and icon, or null if neither exists.
    */
-  _renderSubtitleWithIcon(): ?ReactElement<any> {
-    let iconAndSubtitle: ?ReactElement<any> = null;
-    let subtitleName: ?ReactElement<any> = this._renderSubtitleName.call(this);
-    let subtitleIcon: ?ReactElement<any> = this._renderSubtitleIcon.call(this);
+  _renderSubtitleWithIcon(): ?ReactElement < any > {
+    let iconAndSubtitle: ?ReactElement < any > = null;
+    const subtitleName: ?ReactElement < any > = this._renderSubtitleName.call(this);
+    const subtitleIcon: ?ReactElement < any > = this._renderSubtitleIcon.call(this);
 
     // If the SectionHeader has a subtitle name or icon, then create this element
     if (subtitleName !== null || subtitleIcon !== null) {

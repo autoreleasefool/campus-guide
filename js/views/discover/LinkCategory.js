@@ -246,9 +246,9 @@ class LinkCategory extends React.Component {
       listOfLinks = (
         <View>
           {links.map((link, index) => {
-            let translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
+            const translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
                 || Configuration.getDefaultLink();
-            let translatedName: string = TranslationUtils.getTranslatedName(language, link)
+            const translatedName: string = TranslationUtils.getTranslatedName(language, link)
                 || translatedLink;
             const searchTerms: ?string = this.state.searchTerms;
 

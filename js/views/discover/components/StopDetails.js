@@ -25,9 +25,6 @@
  */
 'use strict';
 
-// Declaration for global method
-declare function requestAnimationFrame(fn: () => any): void;
-
 // React imports
 import React from 'react';
 import {
