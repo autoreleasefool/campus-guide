@@ -39,7 +39,6 @@ import type {
 
 // Imports
 const Constants = require('Constants');
-const Database = require('Database');
 const MainScreen = require('MainScreen');
 const Orientation = require('react-native-orientation');
 const SplashScreen = require('SplashScreen');
@@ -56,9 +55,6 @@ function setup(): ReactClass<{}> {
   // Fix function not found error
   // http://stackoverflow.com/a/35305611/4896787
   (process:any).nextTick = setImmediate;
-
-  // Create the database
-  Database.init();
 
   // Enable animations on Android
   if (Platform.OS === 'android') {
@@ -84,13 +80,6 @@ function setup(): ReactClass<{}> {
      */
     componentDidMount(): void {
       Orientation.lockToPortrait();
-    }
-
-    /**
-     * Clean up the connection to the database
-     */
-    componentWillUnmount(): void {
-      Database.deinit();
     }
 
     /**

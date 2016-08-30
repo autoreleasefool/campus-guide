@@ -53,6 +53,17 @@ export type DefaultDetails = {details: Array < string >};
 export type TranslatedDetails = {details_en: Array < string >, details_fr: Array < string >};
 
 //-----------------------------------------------------------------------------
+//  Configuration
+//-----------------------------------------------------------------------------
+
+/** Describes a configuration file. */
+export type ConfigFile = {
+  name: string,
+  type: string,
+  version: number,
+};
+
+//-----------------------------------------------------------------------------
 //  Icons
 //-----------------------------------------------------------------------------
 
@@ -172,7 +183,7 @@ export type TransitStop = {
   lat: number,
   long: number,
   name: string,
-  routes: Array<DetailedRouteInfo>,
+  routes: Array< DetailedRouteInfo >,
   sorted?: boolean,
 };
 
@@ -274,9 +285,9 @@ export type BuildingRoom = {
 /** A building on campus, with details describing it, its location, and its rooms. */
 export type Building = {
   code: string,
-  facilities: Array< Facility >,
-  image: ReactClass< any >,
+  facilities: Array < Facility >,
+  image: ReactClass < any >,
   lat: number,
   long: number,
-  rooms: Array< BuildingRoom >,
+  rooms: Array < BuildingRoom >,
 } & (DefaultName | TranslatedName);

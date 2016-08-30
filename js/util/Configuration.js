@@ -31,9 +31,10 @@ import {
 
 // Import types
 import type {
+  BusInfo,
+  ConfigFile,
   Semester,
   University,
-  BusInfo,
 } from 'types';
 
 type FileUpdate = {
@@ -108,21 +109,14 @@ async function _requestConfig(): Promise < void > {
     await _deleteConfiguration();
   }
 
-  let db = null;
-  try {
-    db = await Database.init();
-  } catch (e) {
-    throw e;
-  }
-
   let configVersions = null;
   try {
-    configVersions = await Database.getConfigVersions(db);
+    configVersions = await Database.getConfigVersions();
   } catch (e) {
     throw e;
   }
 
-  if (configVersions.length == 0) {
+  if (configVersions == null || configVersions.length == 0) {
     throw new Error('Configuration versions were not found in database.');
   }
 
@@ -203,8 +197,7 @@ async function _refreshConfigVersions(): Promise < boolean > {
 
   try {
     // Get current config versions
-    const db = await Database.init();
-    const configVersions = await Database.getConfigVersions(db);
+    const configVersions = await Database.getConfigVersions();
 
     // Fetch most recent config versions from server
     const configUpdateURL: string = env.configUpdatesServerUrl + '/config/' + DeviceInfo.getVersion();
@@ -218,19 +211,21 @@ async function _refreshConfigVersions(): Promise < boolean > {
     for (const config in appConfig) {
       if (appConfig.hasOwnProperty(config)) {
         let found: boolean = false;
-        for (let i = 0; i < configVersions.length; i++) {
-          if (configVersions[i].name === config) {
-            found = true;
-            if (configVersions[i].version < appConfig[config].version) {
-              updateAvailable = true;
-              configurationUpdates.push({
-                name: config,
-                type: appConfig[config].type,
-                url: appConfig[config].location.url,
-                size: appConfig[config].size,
-                oldVersion: configVersions[i].version,
-                newVersion: appConfig[config].version,
-              });
+        if (configVersions != null) {
+          for (let i = 0; i < configVersions.length; i++) {
+            if (configVersions[i].name === config) {
+              found = true;
+              if (configVersions[i].version < appConfig[config].version) {
+                updateAvailable = true;
+                configurationUpdates.push({
+                  name: config,
+                  type: appConfig[config].type,
+                  url: appConfig[config].location.url,
+                  size: appConfig[config].size,
+                  oldVersion: configVersions[i].version,
+                  newVersion: appConfig[config].version,
+                });
+              }
             }
           }
         }
@@ -331,7 +326,7 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
       }
     }
 
-    const configRowUpdates: Array < {name: string, type: string, version: number} > = [];
+    const configRowUpdates: Array < ConfigFile > = [];
 
     // Delete the old configuration files, move the new ones
     for (let i = 0; i < configurationUpdates.length; i++) {
@@ -358,13 +353,7 @@ async function _updateConfig(callbacks: ConfigurationUpdateCallbacks): Promise <
     await RNFS.unlink(TEMP_CONFIG_DIRECTORY);
 
     // Update config versions in database
-    let db = null;
-    try {
-      db = await Database.init();
-    } catch (e) {
-      throw e;
-    }
-    await Database.updateConfigVersions(db, configRowUpdates);
+    await Database.updateConfigVersions(configRowUpdates);
 
     university = null;
     await module.exports.init();
@@ -398,17 +387,13 @@ async function _getConfigFile(configFile: string): Promise < ?Object > {
  * TODO: remove this method in release.
  */
 async function _deleteConfiguration(): Promise < void > {
-  // Update config versions in database
-  let db = null;
   try {
-    db = await Database.init();
-  } catch (e) {
-    throw e;
-  }
-
-  try {
-    const configVersions : Array < Object > = await Database.getConfigVersions(db);
+    const configVersions : Array < Object > = await Database.getConfigVersions();
     const clearVersions: Array < Object > = [];
+
+    if (configVersions == null) {
+      return;
+    }
 
     for (let i = 0; i < configVersions.length; i++) {
       try {
@@ -425,7 +410,7 @@ async function _deleteConfiguration(): Promise < void > {
       });
     }
 
-    await Database.updateConfigVersions(db, clearVersions);
+    await Database.updateConfigVersions(clearVersions);
     await RNFS.unlink(CONFIG_DIRECTORY);
   } catch (err) {
     console.log('Error accessing database while clearing versions.', err);
