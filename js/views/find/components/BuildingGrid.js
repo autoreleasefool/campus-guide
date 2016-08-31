@@ -49,6 +49,7 @@ import type {
 // Type definition for component props.
 type Props = {
   selectBuilding: DefaultFunction,
+  disableBuildingImages?: boolean,
 };
 
 // Type definition for component state.
@@ -75,6 +76,7 @@ class BuildingGrid extends React.Component {
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
+    disableBuildingImages: React.PropTypes.bool,
     selectBuilding: React.PropTypes.func.isRequired,
   };
 
@@ -184,13 +186,19 @@ class BuildingGrid extends React.Component {
    * @returns {ReactElement<any>} an image and name for the building.
    */
   _renderRow(building: Building): ReactElement<any> {
+    const buildingStyle = (this.props.disableBuildingImages)
+        ? {margin: 1, width: BUILDING_IMAGE_SIZE - 2}
+        : {height: BUILDING_IMAGE_SIZE};
+
     return (
       <TouchableOpacity
           onPress={() => this.props.selectBuilding(building)}>
-        <View style={_styles.building}>
-          <Image
-              source={building.image}
-              style={_styles.buildingIcon} />
+        <View style={[_styles.building, buildingStyle]}>
+          {this.props.disableBuildingImages
+            ? null
+            : <Image
+                source={building.image}
+                style={_styles.buildingIcon} />}
           <Text style={_styles.buildingCode}>{building.code}</Text>
         </View>
       </TouchableOpacity>
@@ -227,7 +235,6 @@ const _styles = StyleSheet.create({
   building: {
     justifyContent: 'flex-end',
     width: BUILDING_IMAGE_SIZE,
-    height: BUILDING_IMAGE_SIZE,
   },
   buildingIcon: {
     position: 'absolute',
