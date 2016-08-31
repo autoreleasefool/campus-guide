@@ -233,7 +233,7 @@ module.exports = {
    * Updates the user's preferred time format.
    *
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
-   * @param {boolean} always               either '24' for 24 hour time, or '12' for 12 hour time
+   * @param {boolean} format               either '24' for 24 hour time, or '12' for 12 hour time
    */
   setPreferredTimeFormat(AsyncStorage: ReactClass < any >, format: string): void {
     if (format !== '24' && format !== '12') {
