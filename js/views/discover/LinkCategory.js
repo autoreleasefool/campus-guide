@@ -286,6 +286,8 @@ class LinkCategory extends React.Component {
     let linksIcon: ?string = 'expand-more';
     if (this.props.category.categories == null) {
       linksIcon = null;
+    } else if (this.state.showLinks) {
+      linksIcon = 'expand-less';
     }
 
     return (
@@ -360,14 +362,6 @@ class LinkCategory extends React.Component {
     if (this.props.category.categories == null) {
       return;
     }
-
-    const linksHeader: SectionHeader = this.refs.UsefulLinks;
-    let linksIcon: string = 'expand-less';
-    if (this.state.showLinks) {
-      linksIcon = 'expand-more';
-    }
-
-    linksHeader.updateSubtitle(linksHeader.getSubtitleName(), linksIcon, linksHeader.getSubtitleIconClass());
 
     LayoutAnimation.easeInEaseOut();
     this.setState({

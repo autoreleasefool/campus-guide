@@ -138,18 +138,6 @@ class DiscoverHome extends React.Component {
       return;
     }
 
-    const currentSectionHeader: SectionHeader = this.refs['Header-' + this.state.currentSection];
-    currentSectionHeader.updateSubtitle(
-        currentSectionHeader.getSubtitleName(),
-        'expand-more',
-        currentSectionHeader.getSubtitleIconClass());
-
-    const newSectionHeader: SectionHeader = this.refs['Header-' + sectionId];
-    newSectionHeader.updateSubtitle(
-        newSectionHeader.getSubtitleName(),
-        'chevron-right',
-        newSectionHeader.getSubtitleIconClass());
-
     LayoutAnimation.easeInEaseOut();
     this.setState({
       currentSection: sectionId,

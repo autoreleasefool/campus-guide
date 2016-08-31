@@ -124,85 +124,39 @@ class SectionHeader extends React.Component {
       subtitleIconClass: subIconClass,
       textAndIconColor: textAndIconColor,
     };
-
-    // Explicitly binding 'this' to all methods that need it
-    (this:any).getSubtitleName = this.getSubtitleName.bind(this);
-    (this:any).getSubtitleIcon = this.getSubtitleIcon.bind(this);
-    (this:any).getSubtitleIconClass = this.getSubtitleIconClass.bind(this);
-    (this:any).updateSubtitle = this.updateSubtitle.bind(this);
   }
 
   /**
-   * Gets the subtitle of the header.
+   * Update state depending on new props
    *
-   * @returns {?string} the subtitle name from the state.
+   * @param {Props} nextProps the new props being passed
    */
-  getSubtitleName(): ?string {
-    return this.state.subtitleName;
-  }
+  componentWillReceiveProps(nextProps: Object): void {
+    if (nextProps.sectionIcon !== this.props.sectionIcon
+        || nextProps.sectionIconClass !== this.props.sectionIconClass
+        || nextProps.subtitleName !== this.props.subtitleName
+        || nextProps.subtitleIcon !== this.props.subtitleIcon
+        || nextProps.subtitleIconClass !== this.props.subtitleIconClass
+        || nextProps.useBlackText !== this.props.useBlackText) {
+      const sectIcon = nextProps.sectionIcon || this.props.sectionIcon;
+      const sectIconClass = nextProps.sectionIconClass || this.props.sectionIconClass;
+      const subName = nextProps.subtitleName || this.props.subtitleName;
+      const subIcon = nextProps.subtitleIcon || this.props.subtitleIcon;
+      const subIconClass = nextProps.subtitleIconClass || this.props.subtitleIconClass;
+      const textAndIconColor =
+          (nextProps.useBlackText || (nextProps.useBlackText == null && this.props.useBlackText))
+          ? Constants.Colors.primaryBlackText
+          : Constants.Colors.primaryWhiteText;
 
-  /**
-   * Gets the name of the icon on the subtitle.
-   *
-   * @returns {?string} the subtitle icon name from the state.
-   */
-  getSubtitleIcon(): ?string {
-    return this.state.subtitleIcon;
-  }
-
-  /**
-   * Gets the string representation of the icon class.
-   *
-   * @returns {?string} the subtitle icon class from the state.
-   */
-  getSubtitleIconClass(): ?string {
-    return this.state.subtitleIconClass;
-  }
-
-  /**
-   * Returns a value which can be used in updateSubtitle(name, icon, iconClass) to remove a subtitle value.
-   *
-   * @returns {string} {NULL_SUBTITLE_VALUE}.
-   */
-  getEmptySubtitleValue(): string {
-    return NULL_SUBTITLE_VALUE;
-  }
-
-  /**
-   * Update properties of the subtitle in the header.
-   *
-   * @param {string} name      new name for the subtitle.
-   * @param {string} icon      new icon name for the subtitle.
-   * @param {string} iconClass new icon class name for the subtitle.
-   */
-  updateSubtitle(name: ?string, icon: ?string, iconClass: ?string): void {
-    let updatedName: ?string = name;
-    let updatedIcon: ?string = icon;
-    let updatedIconClass: ?string = iconClass;
-
-    if (VALID_ICON_CLASSES.indexOf(iconClass) < 0) {
-      updatedIcon = updatedIconClass = NULL_SUBTITLE_VALUE;
+      this.state = {
+        sectionIcon: sectIcon,
+        sectionIconClass: sectIconClass,
+        subtitleName: subName,
+        subtitleIcon: subIcon,
+        subtitleIconClass: subIconClass,
+        textAndIconColor: textAndIconColor,
+      };
     }
-
-    // Set the subtitle params to {NULL_SUBTITLE_VALUE} if they are invalid.
-    if (updatedName == null) {
-      updatedName = NULL_SUBTITLE_VALUE;
-    }
-
-    if (updatedIcon == null) {
-      updatedIcon = NULL_SUBTITLE_VALUE;
-    }
-
-    if (updatedIconClass == null) {
-      updatedIconClass = NULL_SUBTITLE_VALUE;
-    }
-
-    // Update the state with the parameters
-    this.setState({
-      subtitleName: updatedName,
-      subtitleIcon: updatedIcon,
-      subtitleIconClass: updatedIconClass,
-    });
   }
 
   /**
