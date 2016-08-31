@@ -211,6 +211,8 @@ class SettingsHome extends React.Component {
       Preferences.setToNextSemester(AsyncStorage);
     } else if (key === 'pref_search_all_always') {
       Preferences.setAlwaysSearchAll(AsyncStorage, !Preferences.getAlwaysSearchAll());
+    } else if (key === 'pref_time_format') {
+      Preferences.setPreferredTimeFormat(AsyncStorage, Preferences.getPreferredTimeFormat() === '24' ? '12' : '24');
     }
 
     keyOfLastSettingChanged = key;

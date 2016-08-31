@@ -47,6 +47,8 @@ const CURRENT_SEMESTER: string = 'app_current_semester';
 const PREFER_WHEELCHAIR: string = 'app_pref_wheel';
 // Represents if the user wants the app to always search all, without being prompted
 const ALWAYS_SEARCH_ALL: string = 'app_search_all_always';
+// Represents the user's preferred time format, 12 or 24 hour
+const PREFERRED_TIME_FORMAT: string = 'app_time_format';
 
 // Cached values of preferences
 let timesAppOpened: number = 0;
@@ -54,6 +56,7 @@ let selectedLanguage: ?Language = null;
 let currentSemester: number = 0;
 let preferWheelchair: boolean = false;
 let alwaysSearchAll: boolean = false;
+let preferredTimeFormat: string = '24';
 
 /**
  * Method which should be invoked each time the app is opened, to keep a running track of how many times the app has
@@ -92,6 +95,11 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<v
     alwaysSearchAll = (value === null)
         ? false
         : (value === 'true');
+
+    value = await AsyncStorage.getItem(PREFERRED_TIME_FORMAT);
+    preferredTimeFormat = (value === null)
+        ? '24'
+        : value;
   } catch (e) {
     console.error('Caught error loading preferences.', e);
 
@@ -101,6 +109,7 @@ async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<v
     currentSemester = 0;
     preferWheelchair = false;
     alwaysSearchAll = false;
+    preferredTimeFormat = '24';
   }
 
   timesAppOpened += 1;
@@ -212,6 +221,30 @@ module.exports = {
   },
 
   /**
+   * Gets the user's preferred time format.
+   *
+   * @returns {string} '24' for 24 hour time format, 12 for 12 hour
+   */
+  getPreferredTimeFormat(): string {
+    return preferredTimeFormat;
+  },
+
+  /**
+   * Updates the user's preferred time format.
+   *
+   * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
+   * @param {boolean} always               either '24' for 24 hour time, or '12' for 12 hour time
+   */
+  setPreferredTimeFormat(AsyncStorage: ReactClass < any >, format: string): void {
+    if (format !== '24' && format !== '12') {
+      return;
+    }
+
+    preferredTimeFormat = format;
+    AsyncStorage.setItem(PREFERRED_TIME_FORMAT, format);
+  },
+
+  /**
    * Sets the current semester. If the provided value is not a valid index, the current semester is set to 0.
    *
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
@@ -272,6 +305,8 @@ module.exports = {
       return TranslationUtils.getTranslatedName(this.getSelectedLanguage(), this.getCurrentSemesterInfo());
     } else if (key === 'pref_search_all_always') {
       return this.getAlwaysSearchAll();
+    } else if (key === 'pref_time_format') {
+      return this.getPreferredTimeFormat() + 'H';
     }
 
     return null;

@@ -103,6 +103,7 @@ function expectDefaultPreferences(Preferences: Object) {
   expect(Preferences.getAlwaysSearchAll()).toBeFalsy();
   expect(Preferences.getCurrentSemester()).toBe(0);
   expect(Preferences.getCurrentSemesterInfo()).toBeDefined();
+  expect(Preferences.getPreferredTimeFormat()).toBe('24');
 }
 
 describe('Preferences-test', () => {
@@ -143,6 +144,11 @@ describe('Preferences-test', () => {
       Preferences.setSelectedLanguage(AsyncStorage, 'fr');
       expect(Preferences.getSetting('pref_semester')).toBeDefined();
 
+      Preferences.setPreferredTimeFormat(AsyncStorage, '24');
+      expect(Preferences.getSetting('pref_time_format')).toBe('24H');
+      Preferences.setPreferredTimeFormat(AsyncStorage, '12');
+      expect(Preferences.getSetting('pref_time_format')).toBe('12H');
+
       expect(Preferences.getSetting('invalid_setting')).toBeNull();
     });
   });
@@ -155,6 +161,7 @@ describe('Preferences-test', () => {
       app_current_semester: '0',
       app_pref_wheel: 'true',
       app_search_all_always: 'true',
+      app_time_format: '12',
     };
 
     return Preferences.loadInitialPreferences(AsyncStorage).then(() => {
@@ -162,6 +169,7 @@ describe('Preferences-test', () => {
       expect(Preferences.getSetting('pref_wheel')).toBeTruthy();
       expect(Preferences.getSetting('pref_search_all_always')).toBeTruthy();
       expect(Preferences.getSetting('pref_semester')).toBeDefined();
+      expect(Preferences.getSetting('pref_time_format')).toBe('12H');
       expect(Preferences.isFirstTimeOpened()).toBeFalsy();
     });
   });
@@ -191,6 +199,18 @@ describe('Preferences-test', () => {
       expect(Preferences.getAlwaysSearchAll()).toBeTruthy();
       Preferences.setAlwaysSearchAll(AsyncStorage, 'invalid_boolean');
       expect(Preferences.getAlwaysSearchAll()).toBeTruthy();
+
+      /* eslint-disable no-magic-numbers */
+      /* Testing setting the time with a number rather than a string */
+
+      Preferences.setPreferredTimeFormat(AsyncStorage, '12');
+      expect(Preferences.getPreferredTimeFormat()).toBe('12');
+      Preferences.setPreferredTimeFormat(AsyncStorage, '24');
+      expect(Preferences.getPreferredTimeFormat()).toBe('24');
+      Preferences.setPreferredTimeFormat(AsyncStorage, 12);
+      expect(Preferences.getPreferredTimeFormat()).toBe('24');
+
+      /* eslint-enable no-magic-numbers */
 
       Preferences.setCurrentSemester(AsyncStorage, 0);
       expect(Preferences.getCurrentSemester()).toBe(0);
