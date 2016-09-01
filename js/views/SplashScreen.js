@@ -43,7 +43,7 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  navigator: ReactClass< any >,
+  navigator: ReactClass < any >,
 };
 
 // Type definition for component state.
@@ -145,7 +145,7 @@ class SplashScreen extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     if (this.state.isLoading) {
       // While checking to see if a language has been selected, display an empty view
       return (

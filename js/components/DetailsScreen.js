@@ -88,8 +88,8 @@ class DetailsScreen extends React.Component {
    *
    * @returns {?ReactElement<any>} a banner for the view
    */
-  _renderBanner(): ?ReactElement<any> {
-    let banner: ?ReactElement<any> = null;
+  _renderBanner(): ?ReactElement < any > {
+    let banner: ?ReactElement < any > = null;
 
     if (this.props.image) {
       if (this.props.title) {
@@ -133,8 +133,8 @@ class DetailsScreen extends React.Component {
    *
    * @returns {?ReactElement<any>} details for the view
    */
-  _renderDetails(): ?ReactElement<any> {
-    let details: ?ReactElement<any> = null;
+  _renderDetails(): ?ReactElement < any > {
+    let details: ?ReactElement < any > = null;
 
     // Only create a details view if there is any text defined.
     if (this.props.text) {
@@ -164,7 +164,7 @@ class DetailsScreen extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     return (
       <View style={{flex: 1, backgroundColor: this.state.backgroundColor}}>
         {this._renderBanner.call(this)}

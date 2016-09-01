@@ -393,7 +393,7 @@ class ScheduleHome extends React.Component {
    *
    * @return {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     const language: Language = Preferences.getSelectedLanguage();
 
     // Get current language for translations
@@ -404,7 +404,7 @@ class ScheduleHome extends React.Component {
         language, Preferences.getCurrentSemesterInfo());
 
     // Use a different icon for the calendar depending on the platform
-    let calendarIcon: Array<string>;
+    let calendarIcon: Array < string >;
     if (Platform.OS === 'ios') {
       calendarIcon = ['ionicon', 'ios-calendar-outline'];
     } else {

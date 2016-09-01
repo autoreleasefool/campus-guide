@@ -43,7 +43,7 @@ module.exports = {
            Translations: Object,
            Linking: Object,
            Alert: Object,
-           Clipboard: Object): Promise<void> {
+           Clipboard: Object): Promise < void > {
     const formattedUrl = TextUtils.formatLink(url);
 
     return Linking.canOpenURL(url)

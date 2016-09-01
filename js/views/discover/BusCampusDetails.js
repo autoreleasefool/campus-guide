@@ -142,8 +142,8 @@ class BusCampusDetails extends React.Component {
    *
    * @returns {ReactElement<any>} a {MapView} with a list of markers placed at the stops on the campus.
    */
-  _getCampusMap(): ReactElement<any> {
-    let markers: Array<TransitStop> = [];
+  _getCampusMap(): ReactElement < any > {
+    let markers: Array < TransitStop > = [];
 
     if (this.state.campus != null) {
       markers = this.state.campus.stops;
@@ -175,7 +175,7 @@ class BusCampusDetails extends React.Component {
    *
    * @returns {ReactElement<any>} a {Stops} view with details about the various stops on the campus, or an empty view
    */
-  _getCampusStops(): ReactElement<any> {
+  _getCampusStops(): ReactElement < any > {
     if (this.state.campus == null) {
       return (
         <View style={_styles.container} />
@@ -229,7 +229,7 @@ class BusCampusDetails extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     return (
       <View style={[_styles.container, {backgroundColor: this.props.campusColor}]}>
         <View style={_styles.mapContainer}>

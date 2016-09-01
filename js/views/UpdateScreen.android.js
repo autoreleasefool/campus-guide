@@ -57,7 +57,7 @@ class UpdateScreen extends UpdateScreenCommon {
   _renderStatusMessages(): ReactElement < any > {
     const language = Preferences.getSelectedLanguage();
 
-    const currentDownload: ?ReactElement<any> = (this.state.currentDownload == null)
+    const currentDownload: ?ReactElement < any > = (this.state.currentDownload == null)
         ? null
         :
       <Text style={_styles.progressText}>
@@ -85,7 +85,7 @@ class UpdateScreen extends UpdateScreenCommon {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
-  render(): ReactElement< any > {
+  render(): ReactElement < any > {
     if (!this.state.showUpdateProgress) {
       return super.render();
     }

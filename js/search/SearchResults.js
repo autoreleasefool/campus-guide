@@ -178,10 +178,10 @@ class SearchResults extends React.Component {
    * @param {SearchResult} result the result and its source to render
    * @returns {?ReactElement<any>} a view describing the result, or null
    */
-  _renderResult(result: SearchResult): ?ReactElement< any > {
+  _renderResult(result: SearchResult): ?ReactElement < any > {
     // Construct the icon view for the result
     const iconObject: ?DefaultIcon = DisplayUtils.getPlatformIcon(Platform.OS, result);
-    let iconView: ?ReactElement<any> = null;
+    let iconView: ?ReactElement < any > = null;
     if (iconObject != null) {
       if (iconObject.class === 'material') {
         iconView = (
@@ -220,7 +220,7 @@ class SearchResults extends React.Component {
    * @param {string} sectionName name of the source.
    * @returns {ReactElement<any>} a {SectionHeader} with the name of the source.
    */
-  _renderSource(sectionData: Object, sectionName: string): ReactElement< any > {
+  _renderSource(sectionData: Object, sectionName: string): ReactElement < any > {
     return (
       <View style={{backgroundColor: Constants.Colors.garnet}}>
         <SectionHeader sectionName={sectionName} />
@@ -233,7 +233,7 @@ class SearchResults extends React.Component {
    *
    * @returns {ReactElement<any>} a list of results
    */
-  render(): ReactElement< any > {
+  render(): ReactElement < any > {
     const env = require('env');
 
     let results = null;

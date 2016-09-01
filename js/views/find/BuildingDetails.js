@@ -194,7 +194,7 @@ class BuildingDetails extends React.Component {
    * @param {Object} Translations translations in the current language of certain text.
    * @returns {ReactElement<any>} a banner describing the building
    */
-  _renderBanner(Translations: Object): ReactElement< any > {
+  _renderBanner(Translations: Object): ReactElement < any > {
     const buildingName = TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(),
         this.props.buildingDetails);
     const bannerImageStyle = (this.state.bannerPosition === 0)
@@ -242,7 +242,7 @@ class BuildingDetails extends React.Component {
    * @param {Object} Translations translations in the current language of certain text.
    * @returns {ReactElement<any>} a touchable view
    */
-  _renderBuildingDirections(Translations: Object): ReactElement< any > {
+  _renderBuildingDirections(Translations: Object): ReactElement < any > {
     const navigateTo: string = (String:any).format(
       Translations.navigate_to,
       TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.buildingDetails)
@@ -266,7 +266,7 @@ class BuildingDetails extends React.Component {
    * @param {Object} Translations translations in the current language of certain text.
    * @returns {ReactElement<any>} an icon representing each of the facilities in this building
    */
-  _renderFacilityIcons(Translations: Object): ReactElement< any > {
+  _renderFacilityIcons(Translations: Object): ReactElement < any > {
     return (
       <View style={_styles.facilitiesContainer}>
         {this.props.buildingDetails.facilities.map(facility => {
@@ -291,7 +291,7 @@ class BuildingDetails extends React.Component {
    *
    * @returns {ReactElement<any>} a view describing a building.
    */
-  render(): ReactElement< any > {
+  render(): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 

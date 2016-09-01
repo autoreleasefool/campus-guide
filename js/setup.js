@@ -50,7 +50,7 @@ const UpdateScreen = require('UpdateScreen');
  *
  * @returns {ReactClass<{}>} Returns the root component for the app
  */
-function setup(): ReactClass<{}> {
+function setup(): ReactClass < {} > {
 
   // Fix function not found error
   // http://stackoverflow.com/a/35305611/4896787
@@ -101,7 +101,7 @@ function setup(): ReactClass<{}> {
      * @param {ReactClass<any>} navigator navigator object to pass to children.
      * @returns {ReactElement<any>} the view to render, based on {route}.
      */
-    _renderScene(route: Route, navigator: ReactClass<any>): ReactElement<any> {
+    _renderScene(route: Route, navigator: ReactClass < any >): ReactElement < any > {
       if (route.id === Constants.Views.Splash) {
         return (
           <SplashScreen navigator={navigator} />
@@ -126,7 +126,7 @@ function setup(): ReactClass<{}> {
      *
      * @returns {ReactElement<any>} the hierarchy of views to render.
      */
-    render(): ReactElement<any> {
+    render(): ReactElement < any > {
       return (
         <View style={{flex: 1}}>
           <Navigator

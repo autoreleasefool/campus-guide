@@ -50,7 +50,7 @@ module.exports = {
    * @param {ReactClass<any>} StatusBar an instance of the React Native StatusBar class.
    * @param {boolean} light true or false to set the color of the status bar.
    */
-  setLightStatusBarIOS(Platform: {OS: string}, StatusBar: ReactClass<any>, light: boolean): void {
+  setLightStatusBarIOS(Platform: {OS: string}, StatusBar: ReactClass < any >, light: boolean): void {
     if (Platform.OS === 'ios') {
       if (light) {
         StatusBar.setBarStyle('light-content');

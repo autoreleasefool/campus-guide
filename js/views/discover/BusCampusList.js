@@ -49,7 +49,7 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  campuses: ?Array< BusCampus >,
+  campuses: ?Array < BusCampus >,
 };
 
 // Imports
@@ -61,7 +61,7 @@ const SectionHeader = require('SectionHeader');
 const TranslationUtils = require('TranslationUtils');
 
 // Background colors for each campus
-const campuscolors: Array<string> = [
+const campuscolors: Array < string > = [
   Constants.Colors.garnet,
   Constants.Colors.charcoalGrey,
   Constants.Colors.lightGrey,
@@ -126,7 +126,7 @@ class BusCampusList extends React.Component {
    * Loads a list of campus names and images representing them.
    */
   _loadCampuses(): void {
-    const campuses: Array<BusCampus> = require('../../../assets/js/BusCampuses');
+    const campuses: Array < BusCampus > = require('../../../assets/js/BusCampuses');
     this.setState({
       campuses: campuses,
     });
@@ -137,13 +137,13 @@ class BusCampusList extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
-    const campusDisplayNames: Array<string> = [];
-    const campusStopNames: Array<string> = [];
-    const campusImages: Array<ReactElement<any>> = [];
+    const campusDisplayNames: Array < string > = [];
+    const campusStopNames: Array < string > = [];
+    const campusImages: Array < ReactElement < any > > = [];
 
     // If the campuses have been loaded, parse the data
     if (this.state.campuses == null) {

@@ -210,7 +210,7 @@ export type TransitStop = {
   lat: number,
   long: number,
   name: string,
-  routes: Array< DetailedRouteInfo >,
+  routes: Array < DetailedRouteInfo >,
   sorted?: boolean,
 };
 

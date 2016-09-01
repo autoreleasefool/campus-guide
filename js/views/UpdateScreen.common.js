@@ -339,7 +339,7 @@ class UpdateScreenCommon extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement< any > {
+  render(): ReactElement < any > {
     const language = Preferences.getSelectedLanguage();
 
     // Get background color for screen

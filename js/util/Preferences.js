@@ -64,7 +64,7 @@ let preferredTimeFormat: string = '24';
  *
  * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
  */
-async function _loadInitialPreferences(AsyncStorage: ReactClass<any>): Promise<void> {
+async function _loadInitialPreferences(AsyncStorage: ReactClass < any >): Promise < void > {
   // If any errors occur, just use the default values of the preferences
   try {
     // Number of times the app has been used. Either null or integer greater than or equal to 0
@@ -124,7 +124,7 @@ module.exports = {
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @returns {Promise<void>} the Promise from the async function {_loadInitialPreferences}.
    */
-  loadInitialPreferences(AsyncStorage: ReactClass< any >): Promise< void > {
+  loadInitialPreferences(AsyncStorage: ReactClass < any >): Promise < void > {
     return _loadInitialPreferences(AsyncStorage);
   },
 
@@ -163,7 +163,7 @@ module.exports = {
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @param {Language} language            the new language, either 'en' or 'fr'.
    */
-  setSelectedLanguage(AsyncStorage: ReactClass< any >, language: Language): void {
+  setSelectedLanguage(AsyncStorage: ReactClass < any >, language: Language): void {
     if (language !== 'en' && language !== 'fr') {
       return;
     }
@@ -187,7 +187,7 @@ module.exports = {
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @param {boolean} preferred            the new preference for wheelchair accessible routes.
    */
-  setWheelchairRoutePreferred(AsyncStorage: ReactClass< any >, preferred: boolean): void {
+  setWheelchairRoutePreferred(AsyncStorage: ReactClass < any >, preferred: boolean): void {
     if (preferred !== true && preferred !== false) {
       return;
     }
@@ -202,7 +202,7 @@ module.exports = {
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @param {boolean} always               the new preference for always searching the entire app.
    */
-  setAlwaysSearchAll(AsyncStorage: ReactClass< any >, always: boolean): void {
+  setAlwaysSearchAll(AsyncStorage: ReactClass < any >, always: boolean): void {
     if (always !== true && always !== false) {
       return;
     }
@@ -250,7 +250,7 @@ module.exports = {
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    * @param {number} semester              the new current semester.
    */
-  setCurrentSemester(AsyncStorage: ReactClass< any >, semester: number): void {
+  setCurrentSemester(AsyncStorage: ReactClass < any >, semester: number): void {
     if (semester >= Configuration.getAvailableSemesters().length || semester < 0) {
       currentSemester = 0;
     } else {
@@ -265,7 +265,7 @@ module.exports = {
    *
    * @param {ReactClass<any>} AsyncStorage instance of asynchronous storage class.
    */
-  setToNextSemester(AsyncStorage: ReactClass< any >): void {
+  setToNextSemester(AsyncStorage: ReactClass < any >): void {
     this.setCurrentSemester(AsyncStorage, currentSemester + 1);
   },
 

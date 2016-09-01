@@ -67,7 +67,7 @@ module.exports = {
   renderScene(route: Route,
       changeTabs: (tabId: number) => any,
       navigateForward: (screenId: number | string, data: any) => any,
-      refreshNavbar: DefaultFunction): ReactElement<any> {
+      refreshNavbar: DefaultFunction): ReactElement < any > {
     let scene = null;
     if (route.id === Constants.Views.Find.Home) {
       scene = (

@@ -56,7 +56,7 @@ module.exports = {
 
     // Ignore the case of the search terms
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
-    const buildings: Array<Object> = require('../../assets/js/Buildings');
+    const buildings: Array < Object > = require('../../assets/js/Buildings');
     const results: Object = {};
 
     for (let i = 0; i < buildings.length; i++) {

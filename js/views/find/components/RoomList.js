@@ -162,10 +162,10 @@ class RoomList extends React.Component {
     const adjustedSearchTerms: ?string = (searchTerms == null) ? null : searchTerms.toUpperCase();
 
     // Get the list of rooms in the building
-    const rooms: Array<BuildingRoom> = this.props.rooms;
+    const rooms: Array < BuildingRoom > = this.props.rooms;
 
     // Create array for sets of rooms
-    const filteredRooms: Array<FilteredRoom> = [];
+    const filteredRooms: Array < FilteredRoom > = [];
 
     // Cache list of room types that match the search terms
     const matchingRoomTypes = [];
@@ -240,13 +240,13 @@ class RoomList extends React.Component {
    * @param {number} index      index of the row the room is in.
    * @returns {ReactElement<any>} a view describing a set of room.
    */
-  _renderRow(room: FilteredRoom, sectionId: string, index: number): ReactElement<any> {
+  _renderRow(room: FilteredRoom, sectionId: string, index: number): ReactElement < any > {
     const darkenEven = (Math.floor(index / ROOM_COLUMNS) % ROOM_COLUMNS === 0);
     const color: string = ((darkenEven && index % ROOM_COLUMNS === 0) || (!darkenEven && index % ROOM_COLUMNS === 1))
         ? Constants.Colors.defaultComponentBackgroundColor
         : Constants.Colors.garnet;
 
-    let icon: ?ReactElement< any > = null;
+    let icon: ?ReactElement < any > = null;
     if (room.icon != null) {
       icon = room.icon.class === 'ionicon'
           ? <Ionicon

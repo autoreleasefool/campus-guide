@@ -34,7 +34,7 @@ import {
 
 // Type definition for component props.
 type Props = {
-  navigator: ReactClass< any >,
+  navigator: ReactClass < any >,
 };
 
 // Imports
@@ -114,7 +114,7 @@ class MainScreen extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
         <TabsView />

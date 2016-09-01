@@ -52,8 +52,8 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  campuses: ?Array< BusCampus >,
-  details: ?Array< ShuttleDetails >,
+  campuses: ?Array < BusCampus >,
+  details: ?Array < ShuttleDetails >,
 };
 
 // Imports
@@ -65,7 +65,7 @@ const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
 
 // Background colors for each campus
-const campusColors: Array< string > = [
+const campusColors: Array < string > = [
   Constants.Colors.garnet,
   Constants.Colors.charcoalGrey,
   Constants.Colors.lightGrey,
@@ -121,7 +121,7 @@ class ShuttleCampusList extends React.Component {
     const self: ShuttleCampusList = this;
     Configuration.getConfig('/shuttle_details.json')
         .then(shuttleDetails => {
-          const shuttleCampuses: Array<BusCampus> = require('../../../assets/js/ShuttleCampuses');
+          const shuttleCampuses: Array < BusCampus > = require('../../../assets/js/ShuttleCampuses');
           self.setState({
             campuses: shuttleCampuses,
             details: shuttleDetails,
@@ -136,14 +136,14 @@ class ShuttleCampusList extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     // Get current language
     const language: Language = Preferences.getSelectedLanguage();
     const platform: PlatformString = Platform.OS;
 
-    const campusDisplayNames: Array<string> = [];
-    const campusStopNames: Array<string> = [];
-    const campusImages: Array<ReactElement<any>> = [];
+    const campusDisplayNames: Array < string > = [];
+    const campusStopNames: Array < string > = [];
+    const campusImages: Array < ReactElement < any > > = [];
 
     // If the campuses have been loaded, parse the data
     if (this.state.campuses != null && this.state.details != null) {

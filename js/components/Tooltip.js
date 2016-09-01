@@ -258,7 +258,7 @@ class Tooltip extends React.Component {
    *
    * @returns {?ReactElement<any>} the tooltip, if this.state.active is true, null otherwise.
    */
-  render(): ?ReactElement< any > {
+  render(): ?ReactElement < any > {
     if (!this.state.active) {
       return null;
     }

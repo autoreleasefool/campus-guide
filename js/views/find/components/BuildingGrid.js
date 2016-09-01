@@ -152,7 +152,7 @@ class BuildingGrid extends React.Component {
         : searchTerms.toUpperCase();
 
     // Create array for buildings
-    const filteredBuildings: Array<Building> = [];
+    const filteredBuildings: Array < Building > = [];
 
     for (let i = 0; i < this._buildingsList.length; i++) {
 
@@ -185,7 +185,7 @@ class BuildingGrid extends React.Component {
    * @param {Building} building information about the building to display.
    * @returns {ReactElement<any>} an image and name for the building.
    */
-  _renderRow(building: Building): ReactElement<any> {
+  _renderRow(building: Building): ReactElement < any > {
     const buildingStyle = (this.props.disableBuildingImages)
         ? {margin: 1, width: BUILDING_IMAGE_SIZE - 2}
         : {height: BUILDING_IMAGE_SIZE};
@@ -211,7 +211,7 @@ class BuildingGrid extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     if (!this.state.loaded) {
       // Return an empty view until the data has been loaded
       return (

@@ -331,7 +331,7 @@ class Stops extends React.Component {
         ? null
         : searchTerms.toUpperCase();
 
-    const stops: Array<TransitStop> = [];
+    const stops: Array < TransitStop > = [];
     for (let i = 0; i < this.props.campus.stops.length; i++) {
       const stop = this.props.campus.stops[i];
       let matches: boolean = false;
@@ -382,7 +382,7 @@ class Stops extends React.Component {
         ? null
         : searchTerms.toUpperCase();
 
-    let routeInfo: ?Array<DetailedRouteInfo> = null;
+    let routeInfo: ?Array < DetailedRouteInfo > = null;
     for (let i = 0; i < this._cachedCampusStops.length; i++) {
       if (this._cachedCampusStops[i].id === this.props.campusName && this.state.selectedStop.key != null) {
         routeInfo = this._cachedCampusStops[i].stops[this.state.selectedStop.key].routes;
@@ -391,7 +391,7 @@ class Stops extends React.Component {
     }
 
     const language: Language = Preferences.getSelectedLanguage();
-    const routesAndTimes: Array<DetailedRouteInfo> = [];
+    const routesAndTimes: Array < DetailedRouteInfo > = [];
     if (routeInfo != null) {
       for (let i = 0; i < routeInfo.length; i++) {
         let matches: boolean = false;
@@ -436,7 +436,7 @@ class Stops extends React.Component {
    * @returns {ReactElement<any>} the name of the stop, its unique code, and the list of routes
    *         that serve the stop.
    */
-  _renderStopRow(stop: TransitStop, sectionIndex: string, rowIndex: number): ReactElement<any> {
+  _renderStopRow(stop: TransitStop, sectionIndex: string, rowIndex: number): ReactElement < any > {
     const routes = (
       <View>
         {stop.routes.map(route => (
@@ -477,7 +477,7 @@ class Stops extends React.Component {
    * @param {number} rowIndex         index of the row the route is in.
    * @returns {ReactElement<any>} the headline and number of the route, and the upcoming times.
    */
-  _renderTimeRow(route: DetailedRouteInfo, sectionIndex: string, rowIndex: number): ReactElement<any> {
+  _renderTimeRow(route: DetailedRouteInfo, sectionIndex: string, rowIndex: number): ReactElement < any > {
     return (
       <View>
         <View style={_styles.header}>
@@ -504,7 +504,7 @@ class Stops extends React.Component {
    * @param {{id: number}} route object with properties to identify the route to display.
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
-  _renderScene(route: {id: number}): ReactElement<any> {
+  _renderScene(route: {id: number}): ReactElement < any > {
     this._currentScene = route.id;
 
     if (route.id === DETAILS) {
@@ -550,7 +550,7 @@ class Stops extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
         <Navigator

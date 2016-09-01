@@ -67,10 +67,10 @@ class TabsView extends TabsCommon {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     let indicatorLeft: number = 0;
 
-    const tabs: Array<ReactElement<any>> = [];
+    const tabs: Array < ReactElement < any > > = [];
     for (let i = 0; i < Constants.Tabs.length; i++) {
       let tabColor: string = Constants.Colors.charcoalGrey;
       if (this.state.currentTab === this.tabScreens[Constants.Tabs[i]]) {

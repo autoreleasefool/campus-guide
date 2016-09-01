@@ -111,11 +111,11 @@ class TabsView extends TabsCommon {
    *
    * @returns {ReactElement<any>} a list of navigation items for the drawer.
    */
-  _renderNavigationView(): ReactElement<any> {
+  _renderNavigationView(): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
-    const tabs: Array<ReactElement<any>> = [];
+    const tabs: Array < ReactElement < any > > = [];
     for (let i = 0; i < Constants.Tabs.length; i++) {
       let tabColor: string = Constants.Colors.charcoalGrey;
       if (this.state.currentTab === this.tabScreens[Constants.Tabs[i]]) {
@@ -150,7 +150,7 @@ class TabsView extends TabsCommon {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     return (
       <DrawerLayoutAndroid
           drawerPosition={DrawerLayoutAndroid.positions.Left}

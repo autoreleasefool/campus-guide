@@ -76,7 +76,7 @@ class FindHome extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
@@ -88,7 +88,7 @@ class FindHome extends React.Component {
       calendarIcon = ['material', 'event'];
     }
 
-    let upcomingClasses: ?ReactElement<any> = null;
+    let upcomingClasses: ?ReactElement < any > = null;
     if (Constants.Tabs.indexOf('schedule') >= 0 && Upcoming != null) {
       upcomingClasses = (
         <View>

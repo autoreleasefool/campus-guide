@@ -164,8 +164,8 @@ class SectionHeader extends React.Component {
    *
    * @returns {?ReactElement<any>} a view with the SectionHeader's icon, or null
    */
-  _renderIcon(): ?ReactElement<any> {
-    let icon: ?ReactElement<any> = null;
+  _renderIcon(): ?ReactElement < any > {
+    let icon: ?ReactElement < any > = null;
 
     if (this.state.sectionIcon !== NULL_SUBTITLE_VALUE && this.state.sectionIconClass !== NULL_SUBTITLE_VALUE) {
       if (this.state.sectionIconClass === 'material') {
@@ -204,8 +204,8 @@ class SectionHeader extends React.Component {
    *
    * @returns {?ReactElement<any>} a view with the SectionHeader's subtitle icon, or null
    */
-  _renderSubtitleIcon(): ?ReactElement<any> {
-    let subtitleIcon: ?ReactElement<any> = null;
+  _renderSubtitleIcon(): ?ReactElement < any > {
+    let subtitleIcon: ?ReactElement < any > = null;
 
     if (this.state.subtitleIcon && this.state.subtitleIcon !== NULL_SUBTITLE_VALUE
         && this.state.subtitleIconClass && this.state.subtitleIconClass !== NULL_SUBTITLE_VALUE) {
@@ -236,8 +236,8 @@ class SectionHeader extends React.Component {
    *
    * @returns {?ReactElement<any>} a text view with the SectionHeader's subtitle name, or null
    */
-  _renderSubtitleName(): ?ReactElement<any> {
-    let subtitleName: ?ReactElement<any> = null;
+  _renderSubtitleName(): ?ReactElement < any > {
+    let subtitleName: ?ReactElement < any > = null;
 
     if (this.state.subtitleName && this.state.subtitleName !== NULL_SUBTITLE_VALUE) {
       subtitleName = (
@@ -292,7 +292,7 @@ class SectionHeader extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     // Set the background color of the header to a default value if not provided
     const headerBackground = this.props.backgroundOverride || Constants.Colors.defaultComponentBackgroundColor;
 

@@ -39,7 +39,7 @@ const defaultSearchListener: SearchListener = {
 };
 
 // List of alternative search listeners.
-const searchListeners: Array<SearchListener> = [
+const searchListeners: Array < SearchListener > = [
   {
     onSearch: jest.fn(),
   },

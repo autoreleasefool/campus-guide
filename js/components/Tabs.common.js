@@ -51,7 +51,7 @@ const SearchManager = require('SearchManager');
 const TabRouter = require('TabRouter');
 
 // Lists the views currently on the stack in the Navigator.
-let screenStack: Array<number | string> = [Constants.Views.Default];
+let screenStack: Array < number | string > = [Constants.Views.Default];
 
 class TabsCommon extends React.Component {
 
@@ -273,7 +273,7 @@ class TabsCommon extends React.Component {
    * @param {Route} route object with properties to identify the route to display.
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
-  _renderScene(route: Route): ReactElement<any> {
+  _renderScene(route: Route): ReactElement < any > {
     return TabRouter.renderScene(route,
         this._changeTabs.bind(this),
         this._navigateForward,

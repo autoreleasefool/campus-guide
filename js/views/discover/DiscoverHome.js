@@ -46,7 +46,7 @@ import type {
 type DiscoverSectionWithDefaultName = {
   icon: IconObject,
   id: string,
-  image: ReactClass< any >,
+  image: ReactClass < any >,
   name: string,
 };
 
@@ -54,7 +54,7 @@ type DiscoverSectionWithDefaultName = {
 type DiscoverSectionWithTranslatedName = {
   icon: IconObject,
   id: string,
-  image: ReactClass< any >,
+  image: ReactClass < any >,
   name_en: string,
   name_fr: string,
 };
@@ -71,7 +71,7 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  sections: ?Array< DiscoverSection >,
+  sections: ?Array < DiscoverSection >,
   currentSection: string,
   display: Object,
 };
@@ -151,7 +151,7 @@ class DiscoverHome extends React.Component {
    * @param {DiscoverSection} section section to render.
    * @returns {ReactElement<any>} a view with an image and title which is clickable by the user.
    */
-  _getSectionView(section: DiscoverSection): ReactElement<any> {
+  _getSectionView(section: DiscoverSection): ReactElement < any > {
     let onPress: DefaultFunction;
     if (section.id === this.state.currentSection) {
       if (section.id === 'stu') {
@@ -167,7 +167,7 @@ class DiscoverHome extends React.Component {
       onPress = () => this._focusSection(section.id);
     }
 
-    let sectionImage: ?ReactElement<any> = null;
+    let sectionImage: ?ReactElement < any > = null;
     let touchableStyle: Object = {};
     let subtitleIcon: string = 'expand-more';
     if (section.id === this.state.currentSection) {
@@ -213,7 +213,7 @@ class DiscoverHome extends React.Component {
     const self: DiscoverHome = this;
     Configuration.getConfig('/discover.json')
         .then(discover => {
-          const discoverSections: Array<DiscoverSection> = require('../../../assets/json/Discover');
+          const discoverSections: Array < DiscoverSection > = require('../../../assets/json/Discover');
           self.setState({
             display: discover,
             sections: discoverSections,
@@ -228,7 +228,7 @@ class DiscoverHome extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     if (this.state.sections == null) {
       return (
         <View style={_styles.container} />

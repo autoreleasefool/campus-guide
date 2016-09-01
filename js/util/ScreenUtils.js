@@ -28,7 +28,7 @@
 const Constants = require('Constants');
 
 // Screens which can be reached from the tab bar
-const HOME_SCREENS: Array<number | string> = [
+const HOME_SCREENS: Array < number | string > = [
   Constants.Views.Find.Home,
   Constants.Views.Schedule.Home,
   Constants.Views.Discover.Home,

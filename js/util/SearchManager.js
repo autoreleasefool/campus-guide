@@ -36,7 +36,7 @@ type PrioriziedListener = {
 }
 
 // List of current search listeners. Components can register a listener with addSearchListener.
-let searchListeners: Array<PrioriziedListener> = [];
+let searchListeners: Array < PrioriziedListener > = [];
 // The default SearchListener, when no others are available.
 let defaultSearchListener: ?SearchListener = null;
 // Indicates if all searchListeners except defaultSearchListener should be ignored.

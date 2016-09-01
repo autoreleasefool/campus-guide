@@ -504,7 +504,7 @@ module.exports = {
    *
    * @returns {Array<Semester>} the list of objects containing semester information.
    */
-  getAvailableSemesters(): Array< Semester > {
+  getAvailableSemesters(): Array < Semester > {
     return availableSemesters;
   },
 

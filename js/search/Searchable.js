@@ -50,7 +50,7 @@ module.exports = {
       return {};
     }
 
-    const sources: Array< Object > = this._getSources();
+    const sources: Array < Object > = this._getSources();
     const results: Object = {};
 
     for (let i = 0; i < sources.length; i++) {
@@ -110,8 +110,8 @@ module.exports = {
    *
    * @returns {Array<Object>} list of search result sources
    */
-  _getSources(): Array< Object > {
-    const sources: Array< Object > = [];
+  _getSources(): Array < Object > {
+    const sources: Array < Object > = [];
 
     sources.push(require('SearchableBuilding'));
 

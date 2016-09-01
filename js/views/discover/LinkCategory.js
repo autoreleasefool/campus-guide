@@ -149,7 +149,7 @@ class LinkCategory extends React.Component {
    * @param {boolean} isBackgroundDark           indicates if the background color of the category is dark.
    * @returns {ReactElement<any>} for each index in {categories}, a {TouchableOpacity} with the name of the category.
    */
-  _getCategories(categories: Array<LinkCategoryType>, isBackgroundDark: boolean): ReactElement<any> {
+  _getCategories(categories: Array < LinkCategoryType >, isBackgroundDark: boolean): ReactElement < any > {
     const language: Language = Preferences.getSelectedLanguage();
     const dividerColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
@@ -182,7 +182,7 @@ class LinkCategory extends React.Component {
    * @param {string} iconColor color for the icon.
    * @returns {?ReactElement<any>} an icon for the link.
    */
-  _getLinkIcon(link: ?string, iconColor: string): ?ReactElement<any> {
+  _getLinkIcon(link: ?string, iconColor: string): ?ReactElement < any > {
     if (link == null) {
       return null;
     }
@@ -212,7 +212,7 @@ class LinkCategory extends React.Component {
    * @param {string} textColor color of the text to display link in.
    * @returns {?ReactElement<any>} a formatted link in a text view.
    */
-  _getFormattedLink(link: string, textColor: string): ?ReactElement<any> {
+  _getFormattedLink(link: string, textColor: string): ?ReactElement < any > {
     if (link.indexOf('http') === 0) {
       return null;
     } else {
@@ -232,7 +232,7 @@ class LinkCategory extends React.Component {
    * @param {boolean} isBackgroundDark indicates if the background color of the category is dark.
    * @returns {ReactElement<any>} for each index in {links}, a {TouchableOpacity} with the name of the link.
    */
-  _getLinks(links: Array<NamedLink>, Translations: Object, isBackgroundDark: boolean): ReactElement<any> {
+  _getLinks(links: Array < NamedLink >, Translations: Object, isBackgroundDark: boolean): ReactElement < any > {
     const language: Language = Preferences.getSelectedLanguage();
     const textColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
@@ -241,7 +241,7 @@ class LinkCategory extends React.Component {
         ? Constants.Colors.secondaryWhiteText
         : Constants.Colors.secondaryBlackText;
 
-    let listOfLinks: ?ReactElement<any> = null;
+    let listOfLinks: ?ReactElement < any > = null;
     if (this.state.showLinks) {
       listOfLinks = (
         <View>
@@ -315,7 +315,7 @@ class LinkCategory extends React.Component {
    * @returns {ReactElement<any>} for each index in {socialMediaLinks}, a {TouchableOpacity} with an icon representing
    *                              the social media site.
    */
-  _getSocialMediaLinks(socialMediaLinks: Array<NamedLink>, Translations: Object): ReactElement<any> {
+  _getSocialMediaLinks(socialMediaLinks: Array < NamedLink >, Translations: Object): ReactElement < any > {
     const language: Language = Preferences.getSelectedLanguage();
 
     return (
@@ -389,7 +389,7 @@ class LinkCategory extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
@@ -399,17 +399,17 @@ class LinkCategory extends React.Component {
     }
     const isBackgroundDark: boolean = DisplayUtils.isColorDark(categoryBackgroundColor);
 
-    let social: ?ReactElement<any> = null;
+    let social: ?ReactElement < any > = null;
     if (this.props.category.social) {
       social = this._getSocialMediaLinks(this.props.category.social, Translations);
     }
 
-    let usefulLinks: ?ReactElement<any> = null;
+    let usefulLinks: ?ReactElement < any > = null;
     if (this.props.category.links) {
       usefulLinks = this._getLinks(this.props.category.links, Translations, isBackgroundDark);
     }
 
-    let categories: ?ReactElement<any> = null;
+    let categories: ?ReactElement < any > = null;
     if (this.props.category.categories) {
       categories = this._getCategories(this.props.category.categories, isBackgroundDark);
     }

@@ -370,7 +370,7 @@ class NavigationHome extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     if (!this.state.loaded) {
       return <View style={_styles.container} />;
     }

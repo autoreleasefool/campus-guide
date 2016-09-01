@@ -107,9 +107,9 @@ class ShuttleCampusDetails extends React.Component {
    * @param {Object} Translations translations in the current language of certain text.
    * @returns {ReactElement<any>} a map view with a marker
    */
-  _getCampusMap(Translations: Object): ReactElement<any> {
+  _getCampusMap(Translations: Object): ReactElement < any > {
     let initialRegion: LatLong & LatLongDelta;
-    let marker: ?ReactElement<any>;
+    let marker: ?ReactElement < any >;
 
     if (this.state.campus == null) {
       const university: ?University = Configuration.getUniversity();
@@ -168,7 +168,7 @@ class ShuttleCampusDetails extends React.Component {
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
-  render(): ReactElement<any> {
+  render(): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
