@@ -27,6 +27,7 @@
 // Type imports
 import type {
   ConfigFile,
+  Course,
 } from 'types';
 
 const store = require('react-native-simple-store');
@@ -37,6 +38,9 @@ const Promise = require('promise');
 
 /** Identifier for storing Configuration file versions.  */
 const STORE_CONFIG_VERSIONS = 'configFiles';
+
+/** Identifier for storing semester courses, by their code. */
+const STORE_SEMESTER = 'semester{0}';
 
 /**
  * Gets a list of config files and their versions from the database.
@@ -77,5 +81,76 @@ export function updateConfigVersions(updatedConfigFiles: Array < ConfigFile >): 
 
         // Save the updated config files
         return store.save(STORE_CONFIG_VERSIONS, updated);
+      });
+}
+
+/**
+ * Get a list of courses belonging to a certain semester, and the lectures for those courses.
+ *
+ * @param {string} semesterCode code which identifies semester to retrieve courses for
+ * @returns {Promise<void>} promise which resolves when courses and their lectures have been retrieved
+ */
+export function getCoursesForSemester(semesterCode: string): Promise < Array < Course > > {
+  const semesterKey: string = (String:any).format(STORE_SEMESTER, semesterCode);
+  return store.get(semesterKey);
+}
+
+/**
+ * Stores a new course in the database, under the semester specified.
+ *
+ * @param {string} semesterCode code which identifies semester to save course under
+ * @param {Course} course       course name and its lectures to save
+ * @returns {Promise<void>} promise which resolves when courses and their lectures have been saved
+ */
+export function addCourse(semesterCode: string, course: Course): Promise < void > {
+  const semesterKey: string = (String:any).format(STORE_SEMESTER, semesterCode);
+  return store.get(semesterKey)
+      .then(courses => {
+        courses.push(course);
+        return store.save(semesterKey, courses);
+      });
+}
+
+/**
+ * Updates a course in the database. The course is NOT added if it is not already present in the database.
+ *
+ * @param {string} semesterCode code which identifies semester to save course under
+ * @param {Course} course       course name and its lectures to update
+ * @returns {Promise<void>} promise which resolves when courses and their lectures have been saved
+ */
+export function replaceCourse(semesterCode: string, course: Course): Promise < void > {
+  const semesterKey: string = (String:any).format(STORE_SEMESTER, semesterCode);
+  return store.get(semesterKey)
+      .then(courses => {
+        for (let i = 0; i < courses.length; i++) {
+          if (courses[i].name === course.name) {
+            courses[i].lectures = course.lectures;
+            break;
+          }
+        }
+
+        return store.save(semesterKey, courses);
+      });
+}
+
+/**
+ * Removes a course in the database from the semester it is saved under.
+ *
+ * @param {string} semesterCode code which identifies semester course is saved under
+ * @param {Course} course       course name and its lectures to delete
+ * @returns {Promise<void>} promise which resolves when courses and their lectures have been deleted
+ */
+export function deleteCourse(semesterCode: string, course: Course): Promise < void > {
+  const semesterKey: string = (String:any).format(STORE_SEMESTER, semesterCode);
+  return store.get(semesterKey)
+      .then(courses => {
+        for (let i = 0; i < courses.length; i++) {
+          if (courses[i].name === course.name) {
+            courses.splice(i, 1);
+            break;
+          }
+        }
+
+        return store.save(semesterKey, courses);
       });
 }

@@ -147,6 +147,33 @@ export type Semester = {
 } & (DefaultName | TranslatedName);
 
 //-----------------------------------------------------------------------------
+//  Courses
+//-----------------------------------------------------------------------------
+
+/** A set of lectures. */
+export type Course = {
+  name: string,
+  lectures: Array < Lecture >,
+};
+
+/** A single lecture of a course. */
+export type Lecture = {
+  dayOfTheWeek: number,
+  duration: number,
+  formatCode: string,
+  location?: {
+    buildingCode: string,
+    room: string,
+  },
+  startingTime: string,
+};
+
+/** The format of a single lecture in a course. */
+export type LectureFormat = {
+  code: string,
+} & (DefaultName | TranslatedName);
+
+//-----------------------------------------------------------------------------
 //  University
 //-----------------------------------------------------------------------------
 

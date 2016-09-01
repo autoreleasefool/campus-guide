@@ -30,17 +30,23 @@ import React from 'react';
 import {
   AsyncStorage,
   Dimensions,
-  Platform,
   LayoutAnimation,
+  Modal,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 
 // Type imports
 import type {
+  Course,
   DefaultFunction,
+  Language,
+  LectureFormat,
 } from 'types';
 
 // Type definition for component props.
@@ -51,14 +57,22 @@ type Props = {
 
 // Type definition for component state.
 type State = {
+  addClassModalVisible: boolean,
+  currentSemester: number,
+  newCourse: ?Course,
   showEditButtons: boolean,
+  removeClassModalVisible: boolean,
 };
 
 // Imports
+const ArrayUtils = require('ArrayUtils');
+const Configuration = require('Configuration');
 const Constants = require('Constants');
+const Database = require('Database');
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
+const StatusBarUtils = require('StatusBarUtils');
 const TranslationUtils = require('TranslationUtils');
 
 // Get dimensions of the device
@@ -88,8 +102,45 @@ class ScheduleHome extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
+      addClassModalVisible: false,
+      currentSemester: Preferences.getCurrentSemester(),
+      newCourse: null,
       showEditButtons: false,
+      removeClassModalVisible: false,
     };
+
+    // Bind 'this' to methods that require it
+    (this:any)._renderModifyScheduleButtons = this._renderModifyScheduleButtons.bind(this);
+  }
+
+  /** List of courses the user has added. */
+  _courses: Array < Course > = [];
+
+  /** List of available lecture formats for course sections. */
+  _lectureFormats: ?Array < LectureFormat > = null;
+
+  _addLectureToCourse(): void {
+    const course: Course = {
+      name: this.refs.CourseName.value,
+      lectures: this.state.newCourse == null ? [] : this.state.newCourse.lectures,
+    };
+
+    course.lectures.push({
+      dayOfTheWeek: 0,
+      duration: 1.5,
+      formatCode: this.refs.LectureFormat.value,
+      startingTime: this.refs.LectureStart.value,
+    });
+
+    // Clear the input fields
+    this.refs.LectureDay.clear();
+    this.refs.LectureStart.clear();
+    this.refs.LectureEnd.clear();
+    this.refs.LectureFormat.clear();
+
+    this.setState({
+      newCourse: course,
+    });
   }
 
   /**
@@ -97,11 +148,19 @@ class ScheduleHome extends React.Component {
    */
   _changeSemester(): void {
     Preferences.setToNextSemester(AsyncStorage);
-    const header: SectionHeader = this.refs.ScheduleHeader;
-    header.updateSubtitle(
-        TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), Preferences.getCurrentSemesterInfo()),
-        header.getSubtitleIcon(),
-        header.getSubtitleIconClass());
+    this.setState({
+      currentSemester: Preferences.getCurrentSemester(),
+    });
+  }
+
+  /**
+   * Returns a promise which resolves with a list of lecture formats if they are found in the configuration.
+   *
+   * @returns {Promise<Array<LectureFormat>>} a promise which resolves with the lecture formats, or rejects if
+   *                                          they cannot be loaded
+   */
+  _loadLectureFormats(): void {
+    return Configuration.getConfig('/lecture_formats.json');
   }
 
   /**
@@ -115,43 +174,58 @@ class ScheduleHome extends React.Component {
   }
 
   /**
-   * Opens a prompt for a user to add a new course.
-   */
-  _addCourse(): void {
-    // TODO: add a new course
-    console.log('TODO: Add a new course');
-  }
-
-  /**
-   * Opens a prompt for a user to remove a course.
-   */
-  _removeCourse(): void {
-    // TODO: remove an old course
-    console.log('TODO: remove an old course');
-  }
-
-  /**
-   * Renders the root Schedule view.
+   * Opens or closes a prompt for a user to add a new course.
    *
-   * @return {ReactElement<any>} the hierarchy of views to render.
+   * @param {boolean} visible if true, a modal animates to be true, false to hide
    */
-  render(): ReactElement<any> {
+  _setAddCourseVisible(visible: boolean): void {
+    const self: ScheduleHome = this;
+    if (this._lectureFormats == null) {
+      Configuration.init()
+          .then(this._loadLectureFormats)
+          .then(lectureFormats => {
+            this._lectureFormats = ArrayUtils.sortObjectArrayByKeyValues(lectureFormats, 'code');
+            return Database.getCoursesForSemester(Preferences.getCurrentSemesterInfo().code);
+          })
+          .then(courses => {
+            self._courses = courses;
+            self.setState({
+              addClassModalVisible: visible,
+            });
+          })
+          .catch(err => console.error('Configuration could not be initialized for schedule.', err));
+    } else {
+      this.setState({
+        addClassModalVisible: visible,
+      });
+    }
+  }
+
+  /**
+   * Opens or closes a prompt for a user to remove a course.
+   *
+   * @param {boolean} visible if true, a modal animates to be true, false to hide
+   */
+  _setRemoveCourseVisible(visible: boolean): void {
+    this.setState({
+      removeClassModalVisible: visible,
+    });
+  }
+
+  /**
+   * Renders a set of buttons to either switch between modes to modify courses, or to add/remove courses
+   * from the user's schedule
+   *
+   * @returns {ReactElement<any>} a hierarchy of views to render
+   */
+  _renderModifyScheduleButtons(): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
-    // Use a different icon for the calendar depending on the platform
-    let calendarIcon: Array<string>;
-    if (Platform.OS === 'ios') {
-      calendarIcon = ['ionicon', 'ios-calendar-outline'];
-    } else {
-      calendarIcon = ['material', 'event'];
-    }
-
-    let buttons: ?ReactElement<any> = null;
     if (this.state.showEditButtons) {
-      buttons = (
+      return (
         <View style={_styles.editButtonContainer}>
-          <TouchableOpacity onPress={this._addCourse.bind(this)}>
+          <TouchableOpacity onPress={this._setAddCourseVisible.bind(this, true)}>
             <View style={[_styles.editButton, {margin: 10}]}>
               <MaterialIcons
                   color={'white'}
@@ -159,7 +233,7 @@ class ScheduleHome extends React.Component {
                   size={24} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this._removeCourse.bind(this)}>
+          <TouchableOpacity onPress={this._setRemoveCourseVisible.bind(this, true)}>
             <View style={[_styles.editButton, {marginTop: 10, marginBottom: 10}]}>
               <MaterialIcons
                   color={'white'}
@@ -178,7 +252,7 @@ class ScheduleHome extends React.Component {
         </View>
       );
     } else {
-      buttons = (
+      return (
         <TouchableOpacity onPress={this._toggleEditScheduleButtons.bind(this)}>
           <View style={_styles.editScheduleButton}>
             <Text style={{color: 'white', fontSize: Constants.Text.Medium}}>
@@ -188,9 +262,174 @@ class ScheduleHome extends React.Component {
         </TouchableOpacity>
       );
     }
+  }
+
+  /**
+   * Returns a view used as a modal to allow the user to add courses to their schedule.
+   *
+   * @returns {ReactElement<any>} a hierarchy of views to render
+   */
+  _renderAddClassModal(): ReactElement < any > {
+    const language: Language = Preferences.getSelectedLanguage();
+    const formats: ?Array < LectureFormat > = this._lectureFormats;
+    const newCourse: ?Course = this.state.newCourse;
+
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(language);
+
+    let lecturesAdded: ?ReactElement < any > = null;
+    if (newCourse != null && formats != null) {
+      lecturesAdded = (
+        <View>
+          {newCourse.lectures.map(lecture => {
+            const lectureIndex = ArrayUtils.searchObjectArrayByKeyValue(
+              formats, 'code', lecture.formatCode);
+            const lectureFormat = TranslationUtils.getTranslatedName(language, formats[lectureIndex]);
+            const day = TranslationUtils.numberToDay(language, lecture.dayOfTheWeek);
+
+            return (
+              <View key={newCourse.name + '|' + lecture.startingTime}>
+                <Text>{lectureFormat}</Text>
+                <Text>{day}</Text>
+              </View>
+            );
+          })}
+        </View>
+      );
+    }
 
     return (
       <View style={_styles.container}>
+        <ScrollView style={_styles.modalContainer}>
+
+          <Text style={_styles.addClassLabel}>{Translations.class_name}</Text>
+          <View style={_styles.addClassInputContainer}>
+            <TextInput
+                ref='CourseName'
+                placeholder={'PSY 1101'}
+                placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                style={_styles.addClassInput} />
+          </View>
+
+          <View style={_styles.modalSeparator} />
+
+          <Text style={_styles.addClassLabel}>{Translations.day}</Text>
+          <View style={_styles.addClassInputContainer}>
+            <TextInput
+                ref='LectureDay'
+                placeholder={'Monday'}
+                placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                style={_styles.addClassInput} />
+          </View>
+          <Text style={_styles.addClassLabel}>{Translations.starting_time}</Text>
+          <View style={_styles.addClassInputContainer}>
+            <TextInput
+                ref='LectureStart'
+                placeholder={'16:00'}
+                placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                style={_styles.addClassInput} />
+          </View>
+          <Text style={_styles.addClassLabel}>{Translations.ending_time}</Text>
+          <View style={_styles.addClassInputContainer}>
+            <TextInput
+                ref='LectureEnd'
+                placeholder={'17:30'}
+                placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                style={_styles.addClassInput} />
+          </View>
+          <Text style={_styles.addClassLabel}>{Translations.format}</Text>
+          <View style={_styles.addClassInputContainer}>
+            <TextInput
+                ref='LectureFormat'
+                placeholder={'LEC'}
+                placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                style={_styles.addClassInput} />
+          </View>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <TouchableOpacity
+                style={[_styles.addClassButtonContainer, _styles.addLectureButton]}
+                onPress={this._addLectureToCourse.bind(this)}>
+              <Text style={_styles.addClassButton}>{Translations.add_lecture}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={_styles.modalSeparator} />
+
+          {lecturesAdded}
+
+          <View style={_styles.modalSeparator} />
+
+          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <TouchableOpacity style={_styles.addClassButtonContainer}>
+              <Text style={_styles.addClassButton}>{Translations.save_course}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={_styles.addClassButtonContainer}
+                onPress={this._setAddCourseVisible.bind(this, false)}>
+              <Text style={_styles.addClassButton}>{Translations.cancel}</Text>
+            </TouchableOpacity>
+          </View>
+
+        </ScrollView>
+      </View>
+    );
+  }
+
+  /**
+   * Returns a view used as a modal to allow the user to remove courses from their schedule.
+   *
+   * @returns {ReactElement<any>} a hierarchy of views to render
+   */
+  _renderRemoveClassModal(): ReactElement < any > {
+    return (
+      <View style={_styles.container}>
+        <Text>{'Remove course'}</Text>
+      </View>
+    );
+  }
+
+  /**
+   * Renders the root Schedule view.
+   *
+   * @return {ReactElement<any>} the hierarchy of views to render.
+   */
+  render(): ReactElement<any> {
+    const language: Language = Preferences.getSelectedLanguage();
+
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(language);
+
+    // Get name of the semester in the preferred language
+    const currentSemesterName = TranslationUtils.getTranslatedName(
+        language, Preferences.getCurrentSemesterInfo());
+
+    // Use a different icon for the calendar depending on the platform
+    let calendarIcon: Array<string>;
+    if (Platform.OS === 'ios') {
+      calendarIcon = ['ionicon', 'ios-calendar-outline'];
+    } else {
+      calendarIcon = ['material', 'event'];
+    }
+
+    return (
+      <View style={_styles.container}>
+
+        <Modal
+            animationType={'slide'}
+            transparent={false}
+            visible={this.state.addClassModalVisible}
+            onRequestClose={() => this._setAddCourseVisible(false)}>
+          {this._renderAddClassModal()}
+        </Modal>
+
+        <Modal
+            animationType={'slide'}
+            transparent={false}
+            visible={this.state.removeClassModalVisible}
+            onRequestClose={() => this._setRemoveCourseVisible(false)}>
+          {this._renderRemoveClassModal()}
+        </Modal>
+
         <SectionHeader
             ref='ScheduleHeader'
             sectionIcon={calendarIcon[1]}
@@ -198,13 +437,11 @@ class ScheduleHome extends React.Component {
             sectionName={Translations.schedule}
             subtitleIcon={'ios-swap'}
             subtitleIconClass={'ionicon'}
-            subtitleName={TranslationUtils.getTranslatedName(
-              Preferences.getSelectedLanguage(),
-              Preferences.getCurrentSemesterInfo())}
+            subtitleName={currentSemesterName}
             subtitleOnClick={this._changeSemester.bind(this)} />
         {/** TODO: replace with scroll view for schedule */}
         <View style={{flex: 1}} />
-        {buttons}
+        {this._renderModifyScheduleButtons()}
       </View>
     );
   }
@@ -212,6 +449,33 @@ class ScheduleHome extends React.Component {
 
 // Private styles for component
 const _styles = StyleSheet.create({
+  addClassButton: {
+    margin: 10,
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Text.Medium,
+  },
+  addClassButtonContainer: {
+  },
+  addClassInput: {
+    marginLeft: 20,
+    marginRight: 20,
+    fontSize: Constants.Text.Medium,
+    color: Constants.Colors.primaryWhiteText,
+    height: 40,
+  },
+  addClassInputContainer: {
+    backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
+  },
+  addClassLabel: {
+    margin: 10,
+    marginLeft: 20,
+    fontSize: Constants.Text.Medium,
+    color: Constants.Colors.primaryWhiteText,
+  },
+  addLectureButton: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.charcoalGrey,
@@ -236,6 +500,18 @@ const _styles = StyleSheet.create({
     width: 50,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  modalContainer: {
+    marginTop: StatusBarUtils.getStatusBarPadding(Platform),
+  },
+  modalSeparator: {
+    marginLeft: 40,
+    marginRight: 40,
+    marginTop: 20,
+    marginBottom: 20,
+    width: width - 80,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'white',
   },
 });
 
