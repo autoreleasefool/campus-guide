@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -11,17 +12,29 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Launch" translatesAutoresizingMaskIntoConstraints="NO" id="anS-j2-xHJ">
+                <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WDW-y3-90O">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="317"/>
+                    <color key="backgroundColor" red="0.1764705882352941" green="0.1764705882352941" blue="0.17254901960784313" alpha="1" colorSpace="calibratedRGB"/>
+                </view>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Launch" translatesAutoresizingMaskIntoConstraints="NO" id="O9N-ug-fw7">
                     <rect key="frame" x="62" y="224" width="250" height="219"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="0.5607843137254902" green="0.0" blue="0.10196078431372549" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="WDW-y3-90O" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="centerY" id="4Mx-3M-VtS"/>
+                <constraint firstItem="O9N-ug-fw7" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="DXL-06-UBk"/>
+                <constraint firstItem="WDW-y3-90O" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailing" id="K8c-rY-CMG"/>
+                <constraint firstItem="O9N-ug-fw7" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="SpV-Yi-iAT"/>
+                <constraint firstItem="WDW-y3-90O" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="ume-N8-rgy"/>
+                <constraint firstItem="WDW-y3-90O" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="yIH-is-iVH"/>
+            </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
             <point key="canvasLocation" x="547.5" y="454.5"/>
         </view>
     </objects>
     <resources>
-        <image name="Launch" width="250" height="238"/>
+        <image name="Launch" width="200" height="200"/>
     </resources>
 </document>
