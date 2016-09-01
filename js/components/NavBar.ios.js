@@ -43,16 +43,15 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  onBack: ?DefaultFunction,
-  onDrawerToggle: ?DefaultFunction,
-  onSearch: (text: ?string) => any,
+  onBack: ?DefaultFunction,         // Invoked when the user presses the back button
+  onSearch: (text: ?string) => any, // Invoked when the user performs a search
 };
 
 // Type definition for component state.
 type State = {
-  refresh?: boolean,
-  showBackButton?: boolean,
-  searching?: boolean,
+  refresh?: boolean,        // Toggle to force a render
+  showBackButton?: boolean, // True to show the back button, false to hide
+  searching?: boolean,      // True if the user has recently performed a search, false otherwise
 };
 
 // Imports
@@ -80,7 +79,6 @@ class NavBar extends React.Component {
    */
   static propTypes = {
     onBack: React.PropTypes.func,
-    onDrawerToggle: React.PropTypes.func,
     onSearch: React.PropTypes.func.isRequired,
   };
 

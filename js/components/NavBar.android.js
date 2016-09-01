@@ -42,15 +42,15 @@ import {
 
 // Type definition for component props.
 type Props = {
-  onBack: ?DefaultFunction,
-  onDrawerToggle: ?DefaultFunction,
-  onSearch: (text: ?string) => any,
+  onBack: ?DefaultFunction,         // Invoked when the user presses the back button
+  onDrawerToggle: ?DefaultFunction, // Invoked when the user opens/closes the drawer
+  onSearch: (text: ?string) => any, // Invoked when the user performs a search
 };
 
 // Type definition for component state.
 type State = {
-  refresh?: boolean,
-  searching?: boolean,
+  refresh?: boolean,    // Toggle to force a render
+  searching?: boolean,  // True if the user has recently performed a search, false otherwise
 };
 
 // Imports

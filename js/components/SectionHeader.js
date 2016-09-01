@@ -40,26 +40,26 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  backgroundOverride: ?string,
-  sectionIcon: ?string,
-  sectionIconClass: ?string,
-  sectionIconOnClick: ?DefaultFunction,
-  sectionName: string,
-  subtitleIcon: ?string,
-  subtitleIconClass: ?string,
-  subtitleName: ?string,
-  subtitleOnClick: ?DefaultFunction,
-  useBlackText: ?boolean,
+  backgroundOverride: ?string,          // Forced background color for the view
+  sectionIcon: ?string,                 // Large icon for the section header
+  sectionIconClass: ?string,            // Class of the icon (ionicon / material)
+  sectionIconOnClick: ?DefaultFunction, // Callback for when the icon is pressed
+  sectionName: string,                  // Title for the section
+  subtitleIcon: ?string,                // Small icon for the subtitle
+  subtitleIconClass: ?string,           // Class of the icon (ionicon / material)
+  subtitleName: ?string,                // Text for the subtitle
+  subtitleOnClick: ?DefaultFunction,    // Callback for when the subtitle is pressed
+  useBlackText: ?boolean,               // True to use black text, false to use white
 };
 
 // Type definition for component state.
 type State = {
-  sectionIcon: string,
-  sectionIconClass: string,
-  subtitleIcon: string,
-  subtitleIconClass: string,
-  subtitleName: string,
-  textAndIconColor: string,
+  sectionIcon: string,        // The current icon for the section header
+  sectionIconClass: string,   // The current class of the icon
+  subtitleIcon: string,       // The current subtitle icon
+  subtitleIconClass: string,  // The current class of the icon
+  subtitleName: string,       // The current text for the subtitle
+  textAndIconColor: string,   // The color for the text and icons
 };
 
 // Imports

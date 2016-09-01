@@ -187,7 +187,7 @@ class TabsCommon extends React.Component {
    * Opens a screen, unless the screen is already showing. Passes data to the new screen.
    *
    * @param {number | string} screenId id of the screen to display
-   * @param {Object} data     optional parameters to pass to the renderScene method.
+   * @param {Object}          data     optional parameters to pass to the renderScene method.
    */
   _navigateForward(screenId: number | string, data: any): void {
     if (this._getCurrentScreen() === screenId) {

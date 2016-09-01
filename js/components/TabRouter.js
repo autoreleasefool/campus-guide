@@ -58,7 +58,7 @@ module.exports = {
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {Route} route                     object with properties to identify the route to display.
+   * @param {Route}           route           object with properties to identify the route to display.
    * @param {DefaultFunction} changeTabs      function to change tabs in the tab manager.
    * @param {DefaultFunction} navigateForward function to navigate to a new screen in the tab manager.
    * @param {DefaultFunction} refreshNavbar   function to update the NavBar.

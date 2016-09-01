@@ -39,16 +39,16 @@ import {
 
 // Type definition for component state.
 type State = {
-  active: boolean,
-  backgroundColor: string,
-  callback: ?() => any,
-  hAlign: 'left' | 'right',
-  id: ?string,
-  text: ?string,
-  textColor: string,
-  vAlign: 'top' | 'bottom',
-  x: number,
-  y: number,
+  active: boolean,                     // True to indicate a tooltip is currently active, false otherwise
+  backgroundColor: string,             // Background color of the tooltip
+  callback: ?() => any,                // Callback to invoke when the tooltip is dismissed
+  hAlign: 'left' | 'right' | 'center', // Horizontal alignment of the tooltip
+  id: ?string,                         // Identifier for the current tooltip being shown
+  text: ?string,                       // Text for the tooltip
+  textColor: string,                   // Text color of the tooltip
+  vAlign: 'top' | 'bottom' | 'center', // Vertical alignment of the tooltip
+  x: number,                           // X location of the tooltip, in regards to its horizontal alignment
+  y: number,                           // Y location of the tooltip, in regards to its vertical alignment
 };
 
 // Parameters that creating a tooltip accepts
@@ -110,7 +110,7 @@ class Tooltip extends React.Component {
   /**
    * Checks if a certain tooltip has already been acknowledged by a user.
    *
-   * @param {string} id     tooltip id to check
+   * @param {string}   id   tooltip id to check
    * @param {function} done callback to return result
    */
   static hasSeenTooltip(id: string, done: () => any): void {

@@ -37,15 +37,15 @@ import {
 
 // Type definition for component props.
 type Props = {
-  backgroundColor: string,
-  image: ReactElement< any >,
-  text: Array< string >,
-  title: string,
+  backgroundColor: string,      // Background color of the details screen
+  image: ReactElement < any >,  // Header image representing the details
+  text: Array < string >,       // Array of strings (paragraphs) to present
+  title: string,                // Title of the details
 };
 
 // Type definition for component state.
 type State = {
-  backgroundColor: string,
+  backgroundColor: string,  // Current background color of the screen
 };
 
 // Imports
