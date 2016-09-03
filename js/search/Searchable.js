@@ -74,7 +74,7 @@ export function getResults(searchTerms: ?string): Promise < Object > {
 
     Promise.all(sourcePromises)
         .then(sourceResults => {
-          const results: Array < SearchResult > = {};
+          const results: Object = {};
           for (let i = 0; i < sourceResults.length; i++) {
             for (const source in sourceResults[i]) {
               if (!(source in results)) {

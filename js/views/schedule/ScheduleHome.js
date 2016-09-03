@@ -79,6 +79,9 @@ const TranslationUtils = require('TranslationUtils');
 const {width} = Dimensions.get('window');
 const screenWidth: number = width;
 
+// Padding around separators
+const SEPARATOR_PADDING: number = 40;
+
 class ScheduleHome extends React.Component {
 
   /**
@@ -305,9 +308,9 @@ class ScheduleHome extends React.Component {
           <Text style={_styles.addClassLabel}>{Translations.class_name}</Text>
           <View style={_styles.addClassInputContainer}>
             <TextInput
-                ref='CourseName'
                 placeholder={'PSY 1101'}
                 placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                ref='CourseName'
                 style={_styles.addClassInput} />
           </View>
 
@@ -316,33 +319,33 @@ class ScheduleHome extends React.Component {
           <Text style={_styles.addClassLabel}>{Translations.day}</Text>
           <View style={_styles.addClassInputContainer}>
             <TextInput
-                ref='LectureDay'
                 placeholder={'Monday'}
                 placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                ref='LectureDay'
                 style={_styles.addClassInput} />
           </View>
           <Text style={_styles.addClassLabel}>{Translations.starting_time}</Text>
           <View style={_styles.addClassInputContainer}>
             <TextInput
-                ref='LectureStart'
                 placeholder={'16:00'}
                 placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                ref='LectureStart'
                 style={_styles.addClassInput} />
           </View>
           <Text style={_styles.addClassLabel}>{Translations.ending_time}</Text>
           <View style={_styles.addClassInputContainer}>
             <TextInput
-                ref='LectureEnd'
                 placeholder={'17:30'}
                 placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                ref='LectureEnd'
                 style={_styles.addClassInput} />
           </View>
           <Text style={_styles.addClassLabel}>{Translations.format}</Text>
           <View style={_styles.addClassInputContainer}>
             <TextInput
-                ref='LectureFormat'
                 placeholder={'LEC'}
                 placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                ref='LectureFormat'
                 style={_styles.addClassInput} />
           </View>
           <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
@@ -505,11 +508,11 @@ const _styles = StyleSheet.create({
     marginTop: StatusBarUtils.getStatusBarPadding(Platform),
   },
   modalSeparator: {
-    marginLeft: 40,
-    marginRight: 40,
+    marginLeft: SEPARATOR_PADDING,
+    marginRight: SEPARATOR_PADDING,
     marginTop: 20,
     marginBottom: 20,
-    width: width - 80,
+    width: width - SEPARATOR_PADDING * 2,
     height: StyleSheet.hairlineWidth,
     backgroundColor: 'white',
   },

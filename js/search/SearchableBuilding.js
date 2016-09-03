@@ -53,7 +53,10 @@ const Promise = require('promise');
  * @param {Array<Building>} buildings   list of buildings
  * @returns {Promise<Object>} promise which resolves with the results of the search, containing buildings
  */
-function _getBuildingResults(searchTerms: string, buildings: Array < Building >): Promise < Array < SearchResult > > {
+function _getBuildingResults(searchTerms: string, buildings: Array < any >): Promise < Array < SearchResult > > {
+
+  /* TODO: replace buildings: Array < any > with buildings: Array < Building > */
+
   return new Promise(resolve => {
     const language: Language = Preferences.getSelectedLanguage();
     const results: Array < SearchResult > = [];
@@ -112,11 +115,15 @@ function _getRoomResults(searchTerms: string, buildings: Array < Building >): Pr
             for (let j = 0; j < buildings[i].rooms.length; j++) {
               const room = buildings[i].rooms[j];
               if (room.name.toUpperCase().indexOf(searchTerms) >= 0) {
+                const description = TranslationUtils.getTranslatedName(language, roomTypes[room.type]) || '';
+                const title = TranslationUtils.getTranslatedName(language, buildings[i]) || '';
+                const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomTypes[room.type]);
+
                 results.push({
-                  description: TranslationUtils.getTranslatedName(language, roomTypes[room.type]),
-                  icon: DisplayUtils.getPlatformIcon(Platform.OS, roomTypes[room.type]),
+                  description: description,
+                  icon: icon || {name: 'search', class: 'material'},
                   matchedTerms: [room.name.toUpperCase()],
-                  title: TranslationUtils.getTranslatedName(language, buildings[i]) + ' > ' + room.name,
+                  title: title + ' > ' + room.name,
                 });
               }
             }
@@ -137,7 +144,7 @@ function _getRoomResults(searchTerms: string, buildings: Array < Building >): Pr
 export function getResults(searchTerms: ?string): Promise < Object > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      resolve({});
+      return resolve({});
     }
 
     // Ignore the case of the search terms
