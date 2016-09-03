@@ -161,15 +161,23 @@ class SearchResults extends React.Component {
         && searchTerms != null && searchTerms.length > 0
         && searchTerms.indexOf(this.state.searchTerms) >= 0) {
       this._searchResults = Searchable.narrowResults(searchTerms, this._searchResults);
+      this.setState({
+        loaded: true,
+        searchResults: this.state.searchResults.cloneWithRowsAndSections(this._searchResults),
+        searchTerms: searchTerms,
+      });
     } else {
-      this._searchResults = Searchable.getResults(searchTerms);
+      Searchable.getResults(searchTerms)
+          .then(results => {
+            this._searchResults = results;
+            this.setState({
+              loaded: true,
+              searchResults: this.state.searchResults.cloneWithRowsAndSections(this._searchResults),
+              searchTerms: searchTerms,
+            });
+          })
+          .catch(err => console.log('Could not get search results.', err));
     }
-
-    this.setState({
-      loaded: true,
-      searchResults: this.state.searchResults.cloneWithRowsAndSections(this._searchResults),
-      searchTerms: searchTerms,
-    });
   }
 
   /**
@@ -246,7 +254,6 @@ class SearchResults extends React.Component {
     } else {
       results = (
         <ListView
-            contentContainerStyle={_styles.container}
             dataSource={this.state.searchResults}
             enableEmptySections={true}
             renderRow={this._renderResult}

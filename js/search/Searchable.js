@@ -37,84 +37,92 @@ export type SearchResult = {
   title: string,
 };
 
-module.exports = {
+const Promise = require('promise');
 
-  /**
-   * Gets the results of a search by querying all search result sources.
-   *
-   * @param {?string} searchTerms the search terms for the query.
-   * @returns {Object} the results of the search, with each result naming its source.
-   */
-  getResults(searchTerms: ?string): Object {
+/**
+ * Gets the list of sources which specify what the app will search and how they will be searched.
+ *
+ * @returns {Array<Object>} list of search result sources
+ */
+function _getSources(): Array < Object > {
+  const sources: Array < Object > = [];
+
+  sources.push(require('SearchableBuilding'));
+
+  return sources;
+}
+
+/**
+ * Gets the results of a search by querying all search result sources.
+ *
+ * @param {?string} searchTerms the search terms for the query.
+ * @returns {Promise<Object>} a promise which resolves with the results of the search,
+ *                            with each result naming its source.
+ */
+export function getResults(searchTerms: ?string): Promise < Object > {
+  return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      return {};
+      resolve({});
     }
 
-    const sources: Array < Object > = this._getSources();
-    const results: Object = {};
+    const sources: Array < Object > = _getSources();
+    const sourcePromises: Array < Promise > = [];
 
     for (let i = 0; i < sources.length; i++) {
-      const sourceResults: Object = sources[i].getResults(searchTerms);
-      for (const source in sourceResults) {
-        if (sourceResults.hasOwnProperty(source)) {
-          if (!(source in results)) {
-            results[source] = [];
-          }
-
-          results[source] = results[source].concat(sourceResults[source]);
-        }
-      }
+      sourcePromises.push(sources[i].getResults(searchTerms));
     }
 
-    return results;
-  },
-
-  /**
-   * Takes a set of results and narrows them based on new search terms.
-   *
-   * @param {?string} searchTerms    the search terms for the query.
-   * @param {Object} existingResults results to narrow.
-   * @returns {Object} the narrowed results
-   */
-  narrowResults(searchTerms: ?string, existingResults: Object): Object {
-    if (existingResults == null || searchTerms == null || searchTerms.length === 0) {
-      return {};
-    }
-
-    // Get case-insensitive results
-    const adjustedSearchTerms: string = searchTerms.toUpperCase();
-    const narrowedResults: Object = {};
-
-    for (const source in existingResults) {
-      if (existingResults.hasOwnProperty(source)) {
-        for (let i = 0; i < existingResults[source].length; i++) {
-          const totalTerms = existingResults[source][i].matchedTerms.length;
-          for (let j = 0; j < totalTerms; j++) {
-            if (existingResults[source][i].matchedTerms[j].indexOf(adjustedSearchTerms) >= 0) {
-              if (!(source in narrowedResults)) {
-                narrowedResults[source] = [];
+    Promise.all(sourcePromises)
+        .then(sourceResults => {
+          const results: Array < SearchResult > = {};
+          for (let i = 0; i < sourceResults.length; i++) {
+            for (const source in sourceResults[i]) {
+              if (!(source in results)) {
+                results[source] = [];
               }
 
-              narrowedResults[source].push(existingResults[source][i]);
+              results[source] = results[source].concat(sourceResults[i][source]);
             }
+          }
+
+          resolve(results);
+        })
+        .catch(err => reject(err));
+  });
+}
+
+/**
+ * Takes a set of results and narrows them based on new search terms.
+ *
+ * @param {?string} searchTerms    the search terms for the query.
+ * @param {Object} existingResults results to narrow.
+ * @returns {Object} the narrowed results
+ */
+export function narrowResults(searchTerms: ?string, existingResults: Object): Object {
+  if (existingResults == null || searchTerms == null || searchTerms.length === 0) {
+    return {};
+  }
+
+  // Get case-insensitive results
+  const adjustedSearchTerms: string = searchTerms.toUpperCase();
+  const narrowedResults: Object = {};
+
+  for (const source in existingResults) {
+    if (existingResults.hasOwnProperty(source)) {
+      for (let i = 0; i < existingResults[source].length; i++) {
+        const totalTerms = existingResults[source][i].matchedTerms.length;
+        for (let j = 0; j < totalTerms; j++) {
+          if (existingResults[source][i].matchedTerms[j].indexOf(adjustedSearchTerms) >= 0) {
+            if (!(source in narrowedResults)) {
+              narrowedResults[source] = [];
+            }
+
+            narrowedResults[source].push(existingResults[source][i]);
           }
         }
       }
     }
+  }
 
-    return narrowedResults;
-  },
-
-  /**
-   * Gets the list of sources which specify what the app will search and how they will be searched.
-   *
-   * @returns {Array<Object>} list of search result sources
-   */
-  _getSources(): Array < Object > {
-    const sources: Array < Object > = [];
-
-    sources.push(require('SearchableBuilding'));
-
-    return sources;
-  },
-};
+  return narrowedResults;
+}

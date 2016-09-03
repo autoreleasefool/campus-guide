@@ -24,55 +24,50 @@
  */
 'use strict';
 
+// React imports
+import {
+  Platform,
+} from 'react-native';
+
 // Type imports
 import type {
+  Building,
   Language,
 } from 'types';
 
+import type {
+  SearchResult,
+} from 'Searchable';
+
 // Imports
-const TranslationUtils = require('TranslationUtils');
+const Configuration = require('Configuration');
+const DisplayUtils = require('DisplayUtils');
 const Preferences = require('Preferences');
+const TranslationUtils = require('TranslationUtils');
+const Promise = require('promise');
 
-// Section name for buildings
-const BUILDINGS_SECTION: string = 'Buildings';
-// Section name for rooms
-const ROOMS_SECTION: string = 'Rooms';
-
-module.exports = {
-
-  /**
-   * Returns a list of buildings which match the search terms.
-   *
-   * @param {?string} searchTerms the search terms for the query.
-   * @returns {Object} the results of the search, containing buildings and rooms
-   */
-  getResults(searchTerms: ?string): Object {
-    if (searchTerms == null || searchTerms.length === 0) {
-      return {};
-    }
-
-    // Cache the language
+/**
+ * Returns a promise containing a list of buildings which match the search terms.
+ *
+ * @param {string}          searchTerms the search terms for the query.
+ * @param {Array<Building>} buildings   list of buildings
+ * @returns {Promise<Object>} promise which resolves with the results of the search, containing buildings
+ */
+function _getBuildingResults(searchTerms: string, buildings: Array < Building >): Promise < Array < SearchResult > > {
+  return new Promise(resolve => {
     const language: Language = Preferences.getSelectedLanguage();
-
-    // Ignore the case of the search terms
-    const adjustedSearchTerms: string = searchTerms.toUpperCase();
-    const buildings: Array < Object > = require('../../assets/js/Buildings');
-    const results: Object = {};
+    const results: Array < SearchResult > = [];
 
     for (let i = 0; i < buildings.length; i++) {
       const translated: boolean = !('name' in buildings[i]);
       const name: string = TranslationUtils.getTranslatedName(language, buildings[i]) || '';
 
       // Compare building properties to search terms to add to results
-      if ((!translated && buildings[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (translated && (buildings[i].name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
-          || buildings[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
-          || buildings[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        if (!(BUILDINGS_SECTION in results)) {
-          results[BUILDINGS_SECTION] = [];
-        }
-
-        results[BUILDINGS_SECTION].push({
+      if ((!translated && buildings[i].name.toUpperCase().indexOf(searchTerms) >= 0)
+          || (translated && (buildings[i].name_en.toUpperCase().indexOf(searchTerms) >= 0
+          || buildings[i].name_fr.toUpperCase().indexOf(searchTerms) >= 0))
+          || buildings[i].code.toUpperCase().indexOf(searchTerms) >= 0) {
+        results.push({
           description: name,
           icon: {
             name: 'store',
@@ -91,28 +86,74 @@ module.exports = {
           title: buildings[i].code,
         });
       }
-
-      // Search the rooms in the building and add them to results as well
-      for (let j = 0; j < buildings[i].rooms.length; j++) {
-        const room = buildings[i].rooms[j];
-        if (room.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-          if (!(ROOMS_SECTION in results)) {
-            results[ROOMS_SECTION] = [];
-          }
-
-          results[ROOMS_SECTION].push({
-            description: name, // TODO: change depending on room type
-            icon: {
-              name: 'local-library', // TODO: change depending on room type
-              class: 'material',
-            },
-            matchedTerms: [room.name.toUpperCase()],
-            title: room.name,
-          });
-        }
-      }
     }
 
-    return results;
-  },
-};
+    resolve(results);
+  });
+}
+
+/**
+ * Returns a promise containing a list of rooms which match the search terms.
+ *
+ * @param {string}          searchTerms the search terms for the query.
+ * @param {Array<Building>} buildings   list of buildings
+ * @returns {Promise<Object>} promise which resolves with the results of the search, containing rooms
+ */
+function _getRoomResults(searchTerms: string, buildings: Array < Building >): Promise < Array < SearchResult > > {
+  return new Promise((resolve, reject) => {
+    Configuration.init()
+        .then(() => Configuration.getConfig('/room_types.json'))
+        .then(roomTypes => {
+          const language: Language = Preferences.getSelectedLanguage();
+          const results: Array < SearchResult > = [];
+
+          for (let i = 0; i < buildings.length; i++) {
+            // Search the rooms in the building and add them to results
+            for (let j = 0; j < buildings[i].rooms.length; j++) {
+              const room = buildings[i].rooms[j];
+              if (room.name.toUpperCase().indexOf(searchTerms) >= 0) {
+                results.push({
+                  description: TranslationUtils.getTranslatedName(language, roomTypes[room.type]),
+                  icon: DisplayUtils.getPlatformIcon(Platform.OS, roomTypes[room.type]),
+                  matchedTerms: [room.name.toUpperCase()],
+                  title: TranslationUtils.getTranslatedName(language, buildings[i]) + ' > ' + room.name,
+                });
+              }
+            }
+          }
+
+          resolve(results);
+        })
+        .catch(err => reject(err));
+  });
+}
+
+/**
+ * Returns a promise containing a list of buildings and rooms which match the search terms.
+ *
+ * @param {?string} searchTerms the search terms for the query.
+ * @returns {Promise<Object>} promise which resolves with the results of the search, containing buildings and rooms
+ */
+export function getResults(searchTerms: ?string): Promise < Object > {
+  return new Promise((resolve, reject) => {
+    if (searchTerms == null || searchTerms.length === 0) {
+      resolve({});
+    }
+
+    // Ignore the case of the search terms
+    const adjustedSearchTerms: string = searchTerms.toUpperCase();
+    const buildings: Array < Building > = require('../../assets/js/Buildings');
+
+    return Promise.all([
+      _getBuildingResults(adjustedSearchTerms, buildings),
+      _getRoomResults(adjustedSearchTerms, buildings),
+    ])
+        .then(results => {
+          resolve({
+            'Buildings': results[0],
+            'Rooms': results[1],
+          });
+        })
+        .catch(err => reject(err));
+  });
+}
