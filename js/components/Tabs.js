@@ -16,8 +16,8 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file Tabs.common.js
- * @providesModule TabsCommon
+ * @file Tabs.js
+ * @providesModule Tabs
  * @description Provides tab functionality common to both Android and iOS.
  *
  * @flow
@@ -27,8 +27,14 @@
 // React imports
 import React from 'react';
 import {
+  BackAndroid,
+  Dimensions,
   LayoutAnimation,
   Navigator,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 // Type imports
@@ -45,6 +51,8 @@ type State = {
 // Imports
 const Constants = require('Constants');
 const dismissKeyboard = require('dismissKeyboard');
+const Ionicons = require('react-native-vector-icons/Ionicons');
+const NavBar = require('NavBar');
 const Preferences = require('Preferences');
 const ScreenUtils = require('ScreenUtils');
 const SearchManager = require('SearchManager');
@@ -52,6 +60,31 @@ const TabRouter = require('TabRouter');
 
 // Lists the views currently on the stack in the Navigator.
 let screenStack: Array < number | string > = [Constants.Views.Default];
+
+// Determining the size of the current tab indicator based on the screen size
+const {width} = Dimensions.get('window');
+// Width of indicator which indicates current tab
+const indicatorWidth: number = Math.ceil(width / Constants.Tabs.length);
+// Size of the icons within the tabs
+const tabIconSize: number = 30;
+
+// Icons for tab items
+let tabIcons: TabItems;
+if (Platform.OS === 'android') {
+  tabIcons = {
+    find: 'directions',
+    schedule: 'event',
+    discover: 'near-me',
+    settings: 'settings',
+  };
+} else {
+  tabIcons = {
+    find: 'ios-navigate',
+    schedule: 'ios-calendar-outline',
+    discover: 'ios-compass',
+    settings: 'ios-settings',
+  };
+}
 
 class TabsCommon extends React.Component {
 
@@ -78,19 +111,27 @@ class TabsCommon extends React.Component {
   }
 
   /**
-   * Registers a default search listener.
+   * Registers a default search listener, attaches a listener to the Android back button.
    */
   componentDidMount(): void {
     SearchManager.setDefaultSearchListener({
       onSearch: this._searchAll,
     });
+
+    if (Platform.OS === 'android') {
+      BackAndroid.addEventListener('hardwareBackPress', this._navigateBack.bind(this));
+    }
   }
 
   /**
-   * Removes the default search listener.
+   * Removes the default search listener, removes the listener from the Android back button.
    */
   componentWillUnmount(): void {
     SearchManager.setDefaultSearchListener(null);
+
+    if (Platform.OS === 'android') {
+      BackAndroid.removeEventListener('hardwareBackPress', this._navigateBack.bind(this));
+    }
   }
 
   /** Screen which a tab should open. Made as a member variable so subclasses can see it. */
@@ -279,6 +320,88 @@ class TabsCommon extends React.Component {
         this._navigateForward,
         this._refreshNavbar.bind(this));
   }
+
+  /**
+   * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render.
+   */
+  render(): ReactElement < any > {
+    let indicatorLeft: number = 0;
+
+    const tabs: Array < ReactElement < any > > = [];
+    for (let i = 0; i < Constants.Tabs.length; i++) {
+      let tabColor: string = Constants.Colors.charcoalGrey;
+      if (this.state.currentTab === this.tabScreens[Constants.Tabs[i]]) {
+        tabColor = Constants.Colors.garnet;
+        indicatorLeft = indicatorWidth * i;
+      }
+
+      tabs.push(
+        <TouchableOpacity
+            key={Constants.Tabs[i]}
+            style={_styles.tab}
+            onPress={this._changeTabs.bind(this, this.tabScreens[Constants.Tabs[i]])}>
+          <Ionicons
+              color={tabColor}
+              name={tabIcons[Constants.Tabs[i]]}
+              size={tabIconSize} />
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <View style={_styles.container}>
+        <NavBar
+            ref='NavBar'
+            onBack={this._navigateBack.bind(this)}
+            onSearch={this._onSearch.bind(this)} />
+        <View
+            style={_styles.container}
+            onMoveShouldSetResponder={this._dismissKeyboard.bind(this)}
+            onStartShouldSetResponder={this._dismissKeyboard.bind(this)}>
+          <Navigator
+              configureScene={this._configureScene}
+              initialRoute={{id: Constants.Views.Default}}
+              ref='Navigator'
+              renderScene={this._renderScene.bind(this)}
+              style={_styles.container} />
+          <View style={_styles.tabContainer}>
+            {tabs.map(tab => (
+              tab
+            ))}
+            <View style={[_styles.indicator, {left: indicatorLeft}]} />
+          </View>
+        </View>
+      </View>
+    );
+  }
 }
+
+// Private styles for component
+const _styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  tabContainer: {
+    height: 60,
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: Constants.Colors.rootElementBorder,
+    backgroundColor: Constants.Colors.polarGrey,
+  },
+  tab: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  indicator: {
+    position: 'absolute',
+    bottom: 0,
+    width: indicatorWidth,
+    height: 5,
+    backgroundColor: Constants.Colors.garnet,
+  },
+});
 
 module.exports = TabsCommon;
