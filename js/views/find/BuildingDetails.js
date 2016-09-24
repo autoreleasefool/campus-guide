@@ -301,6 +301,7 @@ class BuildingDetails extends React.Component {
         {this._renderBuildingDirections(Translations)}
         <RoomList
             buildingCode={this.props.buildingDetails.code}
+            defaultRoomType={this.props.buildingDetails.default_room_type}
             roomSelected={this._onDestinationSelected}
             rooms={this.props.buildingDetails.rooms} />
       </View>

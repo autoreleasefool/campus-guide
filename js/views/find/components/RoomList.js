@@ -91,6 +91,7 @@ class RoomList extends React.Component {
    */
   static propTypes = {
     buildingCode: React.PropTypes.string.isRequired,
+    defaultRoomType: React.PropTypes.number,
     roomSelected: React.PropTypes.func.isRequired,
     rooms: React.PropTypes.any.isRequired,
   };
@@ -167,10 +168,13 @@ class RoomList extends React.Component {
     // Create array for sets of rooms
     const filteredRooms: Array < FilteredRoom > = [];
 
+    // Cache preferred language
+    const language = Preferences.getSelectedLanguage();
+
     // Cache list of room types that match the search terms
     const matchingRoomTypes = [];
     for (let i = 0; i < this._roomTypes.length; i++) {
-      const roomTypeName = TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this._roomTypes[i]);
+      const roomTypeName = TranslationUtils.getTranslatedName(language, this._roomTypes[i]);
       if (adjustedSearchTerms != null && roomTypeName != null
           && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
         matchingRoomTypes.push(i);
@@ -178,14 +182,22 @@ class RoomList extends React.Component {
     }
 
     for (let i = 0; i < rooms.length; i++) {
-      const roomName: string = rooms[i].name.toUpperCase();
+      const roomName: string = String.format('{0} {1}', this.props.buildingCode, rooms[i].name.toUpperCase());
+      let roomAltName: string = TranslationUtils.getTranslatedVariant(language, 'alt_name', rooms[i]);
+
+      if (!rooms[i].type) {
+        rooms[i].type = this.props.defaultRoomType;
+      }
 
       // If the search terms are empty, or the room contains the terms, add it to the list
-      if (adjustedSearchTerms == null || roomName.indexOf(adjustedSearchTerms) >= 0
-          || matchingRoomTypes.indexOf(rooms[i].type) >= 0) {
+      if (adjustedSearchTerms == null
+          || roomName.indexOf(adjustedSearchTerms) >= 0
+          || matchingRoomTypes.indexOf(rooms[i].type) >= 0
+          || (roomAltName != null && roomAltName.indexOf(adjustedSearchTerms) >= 0)) {
         filteredRooms.push({
+          altName: roomAltName,
           name: roomName,
-          type: TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this._roomTypes[rooms[i].type]),
+          type: TranslationUtils.getTranslatedName(language, this._roomTypes[rooms[i].type]),
           icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[rooms[i].type]),
         });
       }
@@ -267,6 +279,7 @@ class RoomList extends React.Component {
           <View style={_styles.room}>
             {icon}
             <View>
+              {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
               <Text style={_styles.roomName}>{room.name}</Text>
               <Text style={_styles.roomType}>{room.type}</Text>
             </View>
@@ -320,8 +333,10 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Text.Medium,
   },
   roomType: {
+    maxWidth: ROOM_WIDTH - 30,
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Text.Small,
+    flexWrap: 'wrap',
   },
 });
 
