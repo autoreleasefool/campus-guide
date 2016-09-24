@@ -17,7 +17,7 @@
     "react": "^15.3.1",
     "react-native": "^0.34.0",
     "react-native-admob": "^1.1.5",
-    "react-native-device-info": "^0.9.4",
+    "react-native-device-info": "^0.9.5",
     "react-native-fs": "^1.5.1",
     "react-native-maps": "^0.8.2",
     "react-native-orientation": "^1.17.0",
