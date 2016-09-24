@@ -27,7 +27,7 @@ jest.unmock('Preferences');
 
 // Mock various modules required in testing.
 jest.setMock('AsyncStorage', {
-  getItem: jest.fn(async (item) => {
+  getItem: jest.fn(async item => {
     if (shouldThrowError) {
       throw new Error('This error is being thrown for testing purposes.');
     }

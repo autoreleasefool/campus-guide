@@ -182,8 +182,8 @@ class RoomList extends React.Component {
     }
 
     for (let i = 0; i < rooms.length; i++) {
-      const roomName: string = String.format('{0} {1}', this.props.buildingCode, rooms[i].name.toUpperCase());
-      let roomAltName: string = TranslationUtils.getTranslatedVariant(language, 'alt_name', rooms[i]);
+      const roomName: string = (String:any).format('{0} {1}', this.props.buildingCode, rooms[i].name.toUpperCase());
+      const roomAltName: ?string = TranslationUtils.getTranslatedVariant(language, 'alt_name', rooms[i]);
 
       if (!rooms[i].type) {
         rooms[i].type = this.props.defaultRoomType;
@@ -333,10 +333,8 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Text.Medium,
   },
   roomType: {
-    maxWidth: ROOM_WIDTH - 30,
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Text.Small,
-    flexWrap: 'wrap',
   },
 });
 
