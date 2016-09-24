@@ -16,6 +16,7 @@
     "babel-jest": "^15.0.0",
     "eslint": "^3.6.0",
     "eslint-plugin-react": "^6.3.0",
+    "flow-bin": "^0.32.0",
     "http-status-codes": "^1.0.6",
     "jest-cli": "^15.1.1",
     "react": "^15.3.2",
