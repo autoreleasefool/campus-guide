@@ -28,7 +28,6 @@
 import type {
   DefaultIcon,
   Facility,
-  IconObject,
   PlatformString,
 } from 'types';
 
@@ -43,10 +42,10 @@ module.exports = {
    */
   getAndroidIcon(obj: Object): ?DefaultIcon {
     if ('icon' in obj) {
-      const icon: IconObject = obj.icon;
-      if (icon.android != null) {
+      const icon = obj.icon;
+      if (('android' in icon) && ('name' in icon.android) && ('class' in icon.android)) {
         return {name: icon.android.name, class: icon.android.class};
-      } else if (icon.name != null && icon.class != null) {
+      } else if (('name' in icon) && ('class' in icon)) {
         return {name: icon.name, class: icon.class};
       }
     }
@@ -131,10 +130,10 @@ module.exports = {
    */
   getIOSIcon(obj: Object): ?DefaultIcon {
     if ('icon' in obj) {
-      const icon: IconObject = obj.icon;
-      if (icon.ios != null) {
+      const icon = obj.icon;
+      if (('ios' in icon) && ('name' in icon.ios) && ('class' in icon.ios)) {
         return {name: icon.ios.name, class: icon.ios.class};
-      } else if (icon.name != null && icon.class != null) {
+      } else if (('name' in icon) && ('class' in icon)) {
         return {name: icon.name, class: icon.class};
       }
     }
