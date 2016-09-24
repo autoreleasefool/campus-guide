@@ -13,7 +13,9 @@
     "test": "jest --coverage"
   },
   "dependencies": {
+    "babel-jest": "^15.0.0",
     "http-status-codes": "^1.0.6",
+    "jest-cli": "^15.1.1",
     "react": "^15.3.2",
     "react-native": "^0.34.0",
     "react-native-admob": "^1.1.5",
