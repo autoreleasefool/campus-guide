@@ -43,7 +43,6 @@ const Constants = require('Constants');
 const Preferences = require('Preferences');
 const SectionHeader = require('SectionHeader');
 const TranslationUtils = require('TranslationUtils');
-const Upcoming = null; // require('Upcoming');
 
 class FindHome extends React.Component {
 
@@ -51,16 +50,8 @@ class FindHome extends React.Component {
    * Properties which the parent component should make available to this component.
    */
   static propTypes = {
-    onEditSchedule: React.PropTypes.func.isRequired,
     onShowBuilding: React.PropTypes.func.isRequired,
   };
-
-  /**
-   * Opens the app scheduling screen so the user can update their schedule.
-   */
-  _editSchedule(): void {
-    this.props.onEditSchedule();
-  }
 
   /**
    * Loads a view to display details about a building.
@@ -80,34 +71,8 @@ class FindHome extends React.Component {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
-    // Use a different icon for the calendar depending on the platform
-    let calendarIcon = null;
-    if (Platform.OS === 'ios') {
-      calendarIcon = ['ionicon', 'ios-calendar-outline'];
-    } else {
-      calendarIcon = ['material', 'event'];
-    }
-
-    let upcomingClasses: ?ReactElement < any > = null;
-    if (Constants.Tabs.indexOf('schedule') >= 0 && Upcoming != null) {
-      upcomingClasses = (
-        <View>
-          <SectionHeader
-              sectionIcon={calendarIcon[1]}
-              sectionIconClass={calendarIcon[0]}
-              sectionName={Translations.upcoming_classes}
-              subtitleName={Translations.edit}
-              subtitleOnClick={this._editSchedule.bind(this)} />
-          <View style={[_styles.content, {flex: 1}]}>
-            <Upcoming onEdit={this._editSchedule.bind(this)} />
-          </View>
-        </View>
-      );
-    }
-
     return (
       <View style={_styles.container}>
-        {upcomingClasses}
         <SectionHeader
             sectionIcon={'store'}
             sectionIconClass={'material'}

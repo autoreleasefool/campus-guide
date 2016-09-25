@@ -45,7 +45,6 @@ type SettingIcons = {
 // Type definition for component props.
 type Props = {
   refreshParent: () => any,
-  requestTabChange: () => any,
 };
 
 // Type definition for component state.
@@ -90,7 +89,6 @@ class SettingsHome extends React.Component {
    */
   static propTypes = {
     refreshParent: React.PropTypes.func,
-    requestTabChange: React.PropTypes.func.isRequired,
   };
 
   /**

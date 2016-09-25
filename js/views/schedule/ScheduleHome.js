@@ -44,16 +44,9 @@ import {
 // Type imports
 import type {
   Course,
-  DefaultFunction,
   Language,
   LectureFormat,
 } from 'types';
-
-// Type definition for component props.
-type Props = {
-  editSchedule: DefaultFunction,
-  requestTabChange: DefaultFunction,
-};
 
 // Type definition for component state.
 type State = {
@@ -85,14 +78,6 @@ const SEPARATOR_PADDING: number = 40;
 class ScheduleHome extends React.Component {
 
   /**
-   * Properties which the parent component should make available to this component.
-   */
-  static propTypes = {
-    editSchedule: React.PropTypes.func.isRequired,
-    requestTabChange: React.PropTypes.func.isRequired,
-  };
-
-  /**
    * Define type for the component state.
    */
   state: State;
@@ -100,9 +85,9 @@ class ScheduleHome extends React.Component {
   /**
    * Pass props and declares initial state.
    *
-   * @param {Props} props properties passed from container to this component.
+   * @param {{}} props properties passed from container to this component.
    */
-  constructor(props: Props) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       addClassModalVisible: false,
