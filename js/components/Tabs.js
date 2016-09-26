@@ -133,7 +133,8 @@ class TabsCommon extends React.Component {
    * Handle a request for back navigation.
    */
   _navigateBack(): void {
-    const showBack = this._tabs[this.state.currentTab].navigateBack && this._tabs[this.state.currentTab].navigateBack();
+    const tab = this._tabs[this.state.currentTab];
+    const showBack = tab.navigateBack && (tab:any).navigateBack();
     this._showBackButton(showBack === true);
   }
 
@@ -183,7 +184,7 @@ class TabsCommon extends React.Component {
    */
   _onChangeTab(tab: {i: number, ref: ReactElement < any >}): void {
     // Setup back navigation in the new tab
-    this._showBackButton(this._tabs[tab.i].showBackButton ? this._tabs[tab.i].showBackButton() : false);
+    this._showBackButton(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
 
     // Clear the search bar
     this._ignoreNextSearch = true;
