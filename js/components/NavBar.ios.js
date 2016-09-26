@@ -67,8 +67,6 @@ const TranslationUtils = require('TranslationUtils');
 const NAVBAR_ICON_SIZE: number = 24;
 // Size of large icons in the navbar
 const NAVBAR_LARGE_ICON: number = 30;
-// Number of milliseconds to offset animation by.
-const ANIMATION_OFFSET: number = 50;
 // Height of the navbar
 const NAVBAR_HEIGHT: number = 60;
 
@@ -113,10 +111,10 @@ class NavBar extends React.Component {
     if (state.showBackButton == null && state.searching == null) {
       super.setState(state);
     } else {
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         LayoutAnimation.easeInEaseOut();
         super.setState(state);
-      }, ANIMATION_OFFSET);
+      });
     }
   }
 

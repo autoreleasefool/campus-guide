@@ -39,7 +39,7 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  onChangeScene: (screensOnStack: number) => void,
+  onChangeScene: (showBackButton: boolean) => void,
 };
 
 // Imports
@@ -68,6 +68,14 @@ class ScheduleNavigator extends React.Component {
     (this:any)._nextScreen = this._nextScreen.bind(this);
     (this:any).navigateBack = this.navigateBack.bind(this);
     (this:any).showBackButton = this.showBackButton.bind(this);
+    (this:any)._handleNavigationEvent = this._handleNavigationEvent.bind(this);
+  }
+
+  /**
+   * Adds a listener for navigation events.
+   */
+  componentDidMount(): void {
+    this.refs.Navigator.navigationContext.addListener('willfocus', this._handleNavigationEvent);
   }
 
   /**
@@ -101,13 +109,21 @@ class ScheduleNavigator extends React.Component {
   }
 
   /**
+   * Handles navigation events.
+   *
+   * @param {any} event the event taking place
+   */
+  _handleNavigationEvent(event: any): void {
+    this.props.onChangeScene(event.data.route.id !== Constants.Views.Schedule.Home);
+  }
+
+  /**
    * Navigate forward to the next screen.
    *
    * @param {number} id   route id
    * @param {Object} data data to render the route with
    */
   _nextScreen(id: number, data: Object): void {
-    this.props.onChangeScene(this.refs.Navigator.getCurrentRoutes().length);
     this.refs.Navigator.push({
       id: id,
       data: data,

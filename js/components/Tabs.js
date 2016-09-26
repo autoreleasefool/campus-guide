@@ -233,10 +233,10 @@ class TabsCommon extends React.Component {
   /**
    * Handles navigation within a nested Navigator.
    *
-   * @param {number} screensOnStack the number of screens on the stack in the nested Navigator.
+   * @param {boolean} showBackButton true to show the back button, false otherwise
    */
-  _onSubnavigation(screensOnStack: number): void {
-    this._showBackButton(screensOnStack > 0);
+  _onSubnavigation(showBackButton: boolean): void {
+    this._showBackButton(showBackButton);
   }
 
   /**
