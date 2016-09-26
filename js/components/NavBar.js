@@ -231,6 +231,11 @@ class NavBar extends React.Component {
       searchRightMargin = 0;
     }
 
+    const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
+    const backArrowName: string = platformModifier + '-arrow-back';
+    const searchName: string = platformModifier + '-search';
+    const closeName: string = platformModifier + '-close';
+
     return (
       <View style={_styles.container}>
         <TouchableOpacity
@@ -238,14 +243,14 @@ class NavBar extends React.Component {
             onPress={this._onBack.bind(this)}>
           <Ionicons
               color={'white'}
-              name={'ios-arrow-back'}
+              name={backArrowName}
               size={NAVBAR_ICON_SIZE}
               style={_styles.navBarIcon} />
         </TouchableOpacity>
         <View style={[_styles.searchContainer, {marginLeft: searchLeftMargin, marginRight: searchRightMargin}]}>
           <Ionicons
               color={'white'}
-              name={'ios-search'}
+              name={searchName}
               size={NAVBAR_ICON_SIZE}
               style={_styles.searchIcon}
               onPress={() => this.refs.SearchInput.focus()} />
@@ -259,7 +264,7 @@ class NavBar extends React.Component {
           {(this.state.searching)
               ? <Ionicons
                   color={'white'}
-                  name={'ios-close'}
+                  name={closeName}
                   size={NAVBAR_LARGE_ICON}
                   style={_styles.clearIcon}
                   onPress={this.clearSearch.bind(this)} /> : null}
