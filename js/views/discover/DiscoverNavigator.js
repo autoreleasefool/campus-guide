@@ -37,6 +37,11 @@ import type {
   Route,
 } from 'types';
 
+// Type definition for component props.
+type Props = {
+  onChangeScene: (screensOnStack: number) => void,
+};
+
 // Imports
 const Constants = require('Constants');
 
@@ -52,10 +57,45 @@ const ShuttleCampusDetails = require('ShuttleCampusDetails');
 
 class DiscoverNavigator extends React.Component {
 
-  constructor(props: {}) {
+  /**
+   * Properties which the parent component should make available to this component.
+   */
+  static propTypes = {
+    onChangeScene: React.PropTypes.func.isRequired,
+  };
+
+  /**
+   * Pass props and declares initial state.
+   *
+   * @param {Props} props properties passed from container to this component.
+   */
+  constructor(props: Props) {
     super(props);
 
     (this:any)._nextScreen = this._nextScreen.bind(this);
+    (this:any).navigateBack = this.navigateBack.bind(this);
+    (this:any).showBackButton = this.showBackButton.bind(this);
+  }
+
+  /**
+   * Pop the navigator.
+   *
+   * @returns {boolean} true if there are still more routes to pop, false otherwise.
+   */
+  navigateBack(): boolean {
+    const moreRoutes = this.refs.Navigator.getCurrentRoutes().length - 1 > 1;
+
+    this.refs.Navigator.pop();
+    return moreRoutes;
+  }
+
+  /**
+   * Indicates if the app should show a back button.
+   *
+   * @returns {boolean} true to indicate a back button should be shown, false otherwise
+   */
+  showBackButton(): boolean {
+    return this.refs.Navigator.getCurrentRoutes().length > 1;
   }
 
   /**
@@ -67,7 +107,14 @@ class DiscoverNavigator extends React.Component {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
+  /**
+   * Navigate forward to the next screen.
+   *
+   * @param {number} id   route id
+   * @param {Object} data data to render the route with
+   */
   _nextScreen(id: number | string, data: Object): void {
+    this.props.onChangeScene(this.refs.Navigator.getCurrentRoutes().length);
     this.refs.Navigator.push({
       id: id,
       data: data,

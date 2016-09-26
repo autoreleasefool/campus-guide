@@ -28,63 +28,31 @@
 import React from 'react';
 import {
   BackAndroid,
-  Dimensions,
-  LayoutAnimation,
   Navigator,
   Platform,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
-// Type imports
-import type {
-  Route,
-  TabItems,
-} from 'types';
-
 // Type definition for component state.
 type State = {
-  currentTab: number,
-};
+  currentTab: number;
+}
 
 // Imports
 const Constants = require('Constants');
 const dismissKeyboard = require('dismissKeyboard');
-const Ionicons = require('react-native-vector-icons/Ionicons');
 const NavBar = require('NavBar');
 const Preferences = require('Preferences');
-const ScreenUtils = require('ScreenUtils');
+const ScrollableTabView = require('react-native-scrollable-tab-view');
 const SearchManager = require('SearchManager');
-const TabRouter = require('TabRouter');
+const TabBar = require('TabBar');
 
-// Lists the views currently on the stack in the Navigator.
-let screenStack: Array < number | string > = [Constants.Views.Default];
-
-// Determining the size of the current tab indicator based on the screen size
-const {width} = Dimensions.get('window');
-// Width of indicator which indicates current tab
-const indicatorWidth: number = Math.ceil(width / Constants.Tabs.length);
-// Size of the icons within the tabs
-const tabIconSize: number = 30;
-
-// Icons for tab items
-let tabIcons: TabItems;
-if (Platform.OS === 'android') {
-  tabIcons = {
-    find: 'directions',
-    schedule: 'event',
-    discover: 'near-me',
-    settings: 'settings',
-  };
-} else {
-  tabIcons = {
-    find: 'ios-navigate',
-    schedule: 'ios-calendar-outline',
-    discover: 'ios-compass',
-    settings: 'ios-settings',
-  };
-}
+// Screen imports
+const Discover = require('Discover');
+const Find = require('Find');
+const Schedule = require('Schedule');
+const SettingsHome = require('SettingsHome');
 
 class TabsCommon extends React.Component {
 
@@ -101,12 +69,14 @@ class TabsCommon extends React.Component {
   constructor(props: {}) {
     super(props);
     this.state = {
-      currentTab: Constants.Views.DefaultTab,
+      currentTab: 0,
     };
 
     // Explicitly binding 'this' to all methods that need it
-    (this:any).getCurrentTab = this.getCurrentTab.bind(this);
-    (this:any)._navigateForward = this._navigateForward.bind(this);
+    (this:any)._dismissKeyboard = this._dismissKeyboard.bind(this);
+    (this:any)._getCurrentTab = this._getCurrentTab.bind(this);
+    (this:any)._navigateBack = this._navigateBack.bind(this);
+    (this:any)._onSubnavigation = this._onSubnavigation.bind(this);
     (this:any)._searchAll = this._searchAll.bind(this);
   }
 
@@ -119,7 +89,7 @@ class TabsCommon extends React.Component {
     });
 
     if (Platform.OS === 'android') {
-      BackAndroid.addEventListener('hardwareBackPress', this._navigateBack.bind(this));
+      BackAndroid.addEventListener('hardwareBackPress', this._navigateBack);
     }
   }
 
@@ -130,38 +100,15 @@ class TabsCommon extends React.Component {
     SearchManager.setDefaultSearchListener(null);
 
     if (Platform.OS === 'android') {
-      BackAndroid.removeEventListener('hardwareBackPress', this._navigateBack.bind(this));
+      BackAndroid.removeEventListener('hardwareBackPress', this._navigateBack);
     }
   }
 
-  /** Screen which a tab should open. Made as a member variable so subclasses can see it. */
-  tabScreens: TabItems = {
-    find: Constants.Views.Find.Home,
-    schedule: Constants.Views.Schedule.Home,
-    discover: Constants.Views.Discover.Home,
-    settings: Constants.Views.Settings.Home,
-  };
+  /** Tabs in the app. */
+  _tabs: Array < ReactElement < any > > = [];
 
   /** When set to true, the next call to _onSearch will be ignored. */
   _ignoreNextSearch: boolean;
-
-  /**
-   * Switch to the selected tab, as determined by tabId.
-   *
-   * @param {number} tab the tab to switch to.
-   */
-  _changeTabs(tab: number): void {
-    SearchManager.resumeAllSearchListeners();
-    this._ignoreNextSearch = true;
-    this._showBackButton(false);
-    this.refs.NavBar.clearSearch();
-    this.refs.Navigator.resetTo({id: tab});
-    LayoutAnimation.easeInEaseOut();
-    this.setState({
-      currentTab: tab,
-    });
-    screenStack = [tab];
-  }
 
   /**
    * Sets the transition between two views in the navigator.
@@ -183,16 +130,11 @@ class TabsCommon extends React.Component {
   }
 
   /**
-   * Returns the current screen being displayed, or 0 if there isn't one.
-   *
-   * @returns {number | string} the screen at the top of {screenStack}, or 0.
+   * Handle a request for back navigation.
    */
-  _getCurrentScreen(): number | string {
-    if (screenStack !== null && screenStack.length > 0) {
-      return screenStack[screenStack.length - 1];
-    } else {
-      return 0;
-    }
+  _navigateBack(): void {
+    const showBack = this._tabs[this.state.currentTab].navigateBack && this._tabs[this.state.currentTab].navigateBack();
+    this._showBackButton(showBack === true);
   }
 
   /**
@@ -200,51 +142,8 @@ class TabsCommon extends React.Component {
    *
    * @returns {number} the current tab in the state.
    */
-  getCurrentTab(): number {
+  _getCurrentTab(): number {
     return this.state.currentTab;
-  }
-
-  /**
-   * Returns to the previous page.
-   *
-   * @returns {boolean} true if the app navigated backwards.
-   */
-  _navigateBack(): boolean {
-    if (!ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-      this.refs.Navigator.pop();
-      screenStack.pop();
-
-      if (ScreenUtils.isRootScreen(screenStack[screenStack.length - 1])) {
-        this._showBackButton(false);
-      }
-
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * Opens a screen, unless the screen is already showing. Passes data to the new screen.
-   *
-   * @param {number | string} screenId id of the screen to display
-   * @param {Object}          data     optional parameters to pass to the renderScene method.
-   */
-  _navigateForward(screenId: number | string, data: any): void {
-    if (this._getCurrentScreen() === screenId) {
-      // Don't push the screen if it's already showing.
-      // TODO: change the search terms if screenId === Constants.Views.Find.Search
-      return;
-    }
-
-    // Show a back button to return to the previous screen, if the screen
-    // is not a home screen
-    if (ScreenUtils.isRootScreen(this._getCurrentScreen())) {
-      this._showBackButton(true);
-    }
-
-    this.refs.Navigator.push({id: screenId, data: data});
-    screenStack.push(screenId);
   }
 
   /**
@@ -260,9 +159,9 @@ class TabsCommon extends React.Component {
    * @param {?string} searchTerms string of terms to search for.
    */
   _searchAll(searchTerms: ?string): void {
-    if (this._getCurrentScreen() !== Constants.Views.Search
+    if (this._getCurrentTab() !== Constants.Views.Search
         && searchTerms != null && searchTerms.length > 0) {
-      this._navigateForward(Constants.Views.Search, searchTerms);
+      this.refs.Navigator.push({id: Constants.Views.Search, data: searchTerms});
     }
   }
 
@@ -274,6 +173,28 @@ class TabsCommon extends React.Component {
   _showBackButton(show: boolean): void {
     this.refs.NavBar.setState({
       showBackButton: show,
+    });
+  }
+
+  /**
+   * Handle a tab change.
+   *
+   * @param {Tab} tab details about the new tab
+   */
+  _onChangeTab(tab: {i: number, ref: ReactElement < any >}): void {
+    // Setup back navigation in the new tab
+    this._showBackButton(this._tabs[tab.i].showBackButton ? this._tabs[tab.i].showBackButton() : false);
+
+    // Clear the search bar
+    this._ignoreNextSearch = true;
+    this.refs.NavBar.clearSearch();
+
+    // Enable search listeners
+    SearchManager.resumeAllSearchListeners();
+
+    // Update the current tab
+    this.setState({
+      currentTab: tab.i,
     });
   }
 
@@ -309,16 +230,12 @@ class TabsCommon extends React.Component {
   }
 
   /**
-   * Renders a view according to the current route of the navigator.
+   * Handles navigation within a nested Navigator.
    *
-   * @param {Route} route object with properties to identify the route to display.
-   * @returns {ReactElement<any>} the view to render, based on {route}.
+   * @param {number} screensOnStack the number of screens on the stack in the nested Navigator.
    */
-  _renderScene(route: Route): ReactElement < any > {
-    return TabRouter.renderScene(route,
-        this._changeTabs.bind(this),
-        this._navigateForward,
-        this._refreshNavbar.bind(this));
+  _onSubnavigation(screensOnStack: number): void {
+    this._showBackButton(screensOnStack > 0);
   }
 
   /**
@@ -327,54 +244,50 @@ class TabsCommon extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    let indicatorLeft: number = 0;
 
-    const tabs: Array < ReactElement < any > > = [];
-    for (let i = 0; i < Constants.Tabs.length; i++) {
-      let tabColor: string = Constants.Colors.charcoalGrey;
-      if (this.state.currentTab === this.tabScreens[Constants.Tabs[i]]) {
-        tabColor = Constants.Colors.garnet;
-        indicatorLeft = indicatorWidth * i;
-      }
-
-      tabs.push(
-        <TouchableOpacity
-            key={Constants.Tabs[i]}
-            style={_styles.tab}
-            onPress={this._changeTabs.bind(this, this.tabScreens[Constants.Tabs[i]])}>
-          <Ionicons
-              color={tabColor}
-              name={tabIcons[Constants.Tabs[i]]}
-              size={tabIconSize} />
-        </TouchableOpacity>
-      );
-    }
+    /* eslint-disable no-magic-numbers */
+    /* Hardcoded tab numbers */
 
     return (
       <View style={_styles.container}>
         <NavBar
             ref='NavBar'
-            onBack={this._navigateBack.bind(this)}
+            onBack={this._navigateBack}
             onSearch={this._onSearch.bind(this)} />
         <View
             style={_styles.container}
-            onMoveShouldSetResponder={this._dismissKeyboard.bind(this)}
-            onStartShouldSetResponder={this._dismissKeyboard.bind(this)}>
-          <Navigator
-              configureScene={this._configureScene}
-              initialRoute={{id: Constants.Views.Default}}
-              ref='Navigator'
-              renderScene={this._renderScene.bind(this)}
-              style={_styles.container} />
-          <View style={_styles.tabContainer}>
-            {tabs.map(tab => (
-              tab
-            ))}
-            <View style={[_styles.indicator, {left: indicatorLeft}]} />
-          </View>
+            onMoveShouldSetResponder={this._dismissKeyboard}
+            onStartShouldSetResponder={this._dismissKeyboard}>
+          <ScrollableTabView
+              locked={true}
+              renderTabBar={() => <TabBar />}
+              scrollWithoutAnimation={true}
+              tabBarPosition='bottom'
+              onChangeTab={this._onChangeTab.bind(this)}>
+            <Find
+                ref={ref => (this._tabs[0] = ref)}
+                tabLabel='Find'
+                onChangeScene={this._onSubnavigation} />
+            <Schedule
+                ref={ref => (this._tabs[1] = ref)}
+                tabLabel='Schedule'
+                onChangeScene={this._onSubnavigation} />
+            <Discover
+                ref={ref => (this._tabs[2] = ref)}
+                tabLabel='Discover'
+                onChangeScene={this._onSubnavigation} />
+            <SettingsHome
+                ref={ref => (this._tabs[3] = ref)}
+                refreshParent={this._refreshNavbar.bind(this)}
+                tabLabel='Settings'
+                onChangeScene={this._onSubnavigation} />
+          </ScrollableTabView>
         </View>
       </View>
     );
+
+    /* eslint-enable no-magic-numbers */
+
   }
 }
 
@@ -382,25 +295,6 @@ class TabsCommon extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  tabContainer: {
-    height: 60,
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: Constants.Colors.rootElementBorder,
-    backgroundColor: Constants.Colors.polarGrey,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  indicator: {
-    position: 'absolute',
-    bottom: 0,
-    width: indicatorWidth,
-    height: 5,
-    backgroundColor: Constants.Colors.garnet,
   },
 });
 
