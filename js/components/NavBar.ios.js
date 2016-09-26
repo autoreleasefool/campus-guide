@@ -294,7 +294,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    margin: 10,
+    margin: 8,
   },
   searchIcon: {
     marginLeft: 10,

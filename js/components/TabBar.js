@@ -100,7 +100,7 @@ class TabBar extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   tabContainer: {
-    height: 60,
+    height: 45,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: Constants.Colors.rootElementBorder,
