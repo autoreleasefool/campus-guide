@@ -47,7 +47,9 @@ import type {
   SearchListener,
 } from 'SearchManager';
 
+// Type definition for room search results
 type FilteredRoom = {
+  altName?: string,
   name: string,
   type: ?string,
   icon: ?DefaultIcon,
@@ -76,13 +78,6 @@ const Preferences = require('Preferences');
 const Promise = require('promise');
 const SearchManager = require('SearchManager');
 const TranslationUtils = require('TranslationUtils');
-
-const {width} = Dimensions.get('window');
-
-// Size of room buttons
-const ROOM_WIDTH: number = Math.floor(width / 2);
-// Maximum number of rooms in a row
-const ROOM_COLUMNS: number = 2;
 
 class RoomList extends React.Component {
 
@@ -175,7 +170,8 @@ class RoomList extends React.Component {
     const matchingRoomTypes = [];
     for (let i = 0; i < this._roomTypes.length; i++) {
       const roomTypeName = TranslationUtils.getTranslatedName(language, this._roomTypes[i]);
-      if (adjustedSearchTerms != null && roomTypeName != null
+      if (adjustedSearchTerms != null
+          && roomTypeName != null
           && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
         matchingRoomTypes.push(i);
       }
@@ -253,10 +249,9 @@ class RoomList extends React.Component {
    * @returns {ReactElement<any>} a view describing a set of room.
    */
   _renderRow(room: FilteredRoom, sectionId: string, index: number): ReactElement < any > {
-    const darkenEven = (Math.floor(index / ROOM_COLUMNS) % ROOM_COLUMNS === 0);
-    const color: string = ((darkenEven && index % ROOM_COLUMNS === 0) || (!darkenEven && index % ROOM_COLUMNS === 1))
-        ? Constants.Colors.defaultComponentBackgroundColor
-        : Constants.Colors.garnet;
+    const color: string = (index % 2 === 0)
+        ? Constants.Colors.garnet
+        : Constants.Colors.defaultComponentBackgroundColor;
 
     let icon: ?ReactElement < any > = null;
     if (room.icon != null) {
@@ -275,10 +270,10 @@ class RoomList extends React.Component {
 
     return (
       <TouchableOpacity onPress={() => this.props.roomSelected(this.props.buildingCode, room.name)}>
-        <View style={{width: ROOM_WIDTH, backgroundColor: color}}>
+        <View style={{backgroundColor: color}}>
           <View style={_styles.room}>
             {icon}
-            <View>
+            <View style={_styles.roomDescription}>
               {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
               <Text style={_styles.roomName}>{room.name}</Text>
               <Text style={_styles.roomType}>{room.type}</Text>
@@ -304,9 +299,7 @@ class RoomList extends React.Component {
           contentContainerStyle={_styles.roomList}
           dataSource={this.state.rooms}
           enableEmptySections={true}
-          initialListSize={20}
-          pageSize={ROOM_COLUMNS}
-          removeClippedSubviews={false}
+          initialListSize={10}
           renderRow={this._renderRow.bind(this)} />
     );
   }
@@ -315,22 +308,23 @@ class RoomList extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   room: {
-    margin: 15,
+    flex: 1,
+    margin: Constants.Margin.Expanded,
     alignItems: 'center',
     flexDirection: 'row',
   },
   roomIcon: {
-    marginRight: 15,
+    marginRight: Constants.Margin.Expanded,
   },
-  roomList: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: width,
+  roomDescription: {
+    marginRight: Constants.Margin.Regular,
+    flex: 1,
   },
   roomName: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
+    marginTop: Constants.Margin.Minimal,
+    marginBottom: Constants.Margin.Minimal,
   },
   roomType: {
     color: Constants.Colors.secondaryWhiteText,
