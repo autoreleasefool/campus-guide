@@ -200,7 +200,7 @@ class LinkCategory extends React.Component {
       <Ionicons
           color={iconColor}
           name={iconName}
-          size={Constants.Icon.Medium}
+          size={Constants.Icons.Medium}
           style={_styles.linkIcon} />
     );
   }
@@ -335,7 +335,7 @@ class LinkCategory extends React.Component {
                 <Ionicons
                     color={DisplayUtils.getSocialMediaIconColor(translatedLinkName)}
                     name={DisplayUtils.getSocialMediaIconName(translatedLinkName)}
-                    size={Constants.Icon.Large}
+                    size={Constants.Icons.Large}
                     style={_styles.socialMediaIcon} />
               </TouchableOpacity>
             );
@@ -460,10 +460,10 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
   },
   bannerText: {
-    marginTop: Constants.Margin.Regular,
-    marginBottom: Constants.Margin.Regular,
-    marginLeft: Constants.Margin.Expanded,
-    marginRight: Constants.Margin.Expanded,
+    marginTop: Constants.Margins.Regular,
+    marginBottom: Constants.Margins.Regular,
+    marginLeft: Constants.Margins.Expanded,
+    marginRight: Constants.Margins.Expanded,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Title,
   },
@@ -473,25 +473,25 @@ const _styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   socialMediaIcon: {
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
   },
   scrollview: {
     flex: 1,
   },
   link: {
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
     fontSize: Constants.Text.Medium,
     width: width - TEXT_PADDING,
   },
   linkSubtitle: {
-    marginLeft: Constants.Margin.Regular,
-    marginRight: Constants.Margin.Regular,
-    marginBottom: Constants.Margin.Regular,
+    marginLeft: Constants.Margins.Regular,
+    marginRight: Constants.Margins.Regular,
+    marginBottom: Constants.Margins.Regular,
     fontSize: Constants.Text.Small,
   },
   linkIcon: {
-    margin: Constants.Margin.Regular,
-    marginLeft: Constants.Margin.Expanded,
+    margin: Constants.Margins.Regular,
+    marginLeft: Constants.Margins.Expanded,
   },
   divider: {
     flex: 1,

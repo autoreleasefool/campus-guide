@@ -194,10 +194,10 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
   },
   bannerText: {
-    marginTop: Constants.Margin.Regular,
-    marginBottom: Constants.Margin.Regular,
-    marginLeft: Constants.Margin.Expanded,
-    marginRight: Constants.Margin.Expanded,
+    marginTop: Constants.Margins.Regular,
+    marginBottom: Constants.Margins.Regular,
+    marginLeft: Constants.Margins.Expanded,
+    marginRight: Constants.Margins.Expanded,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Title,
   },
@@ -205,7 +205,7 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   text: {
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
     fontSize: Constants.Text.Medium,
   },
 });

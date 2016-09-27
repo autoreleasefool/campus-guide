@@ -211,7 +211,7 @@ class NavBar extends React.Component {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
-    const searchMargin = Constants.Margin.Regular;
+    const searchMargin = Constants.Margins.Regular;
     let searchLeftMargin: number = searchMargin;
     let searchRightMargin: number = searchMargin;
     let backIconStyle: Object = {width: 0};
@@ -240,14 +240,14 @@ class NavBar extends React.Component {
           <Ionicons
               color={'white'}
               name={backArrowName}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.navBarIcon} />
         </TouchableOpacity>
         <View style={[_styles.searchContainer, {marginLeft: searchLeftMargin, marginRight: searchRightMargin}]}>
           <Ionicons
               color={'white'}
               name={searchName}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.searchIcon}
               onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
@@ -261,7 +261,7 @@ class NavBar extends React.Component {
               ? <Ionicons
                   color={'white'}
                   name={closeName}
-                  size={Constants.Icon.Large}
+                  size={Constants.Icons.Large}
                   style={_styles.clearIcon}
                   onPress={this.clearSearch.bind(this)} /> : null}
         </View>
@@ -271,7 +271,7 @@ class NavBar extends React.Component {
           <Ionicons
               color={'white'}
               name={'md-globe'}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.navBarIcon} />
         </TouchableOpacity>
       </View>
@@ -291,13 +291,13 @@ const _styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
-    borderRadius: Constants.Margin.Regular,
+    borderRadius: Constants.Margins.Regular,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
   },
   searchIcon: {
-    marginLeft: Constants.Margin.Regular,
-    marginRight: Constants.Margin.Regular,
+    marginLeft: Constants.Margins.Regular,
+    marginRight: Constants.Margins.Regular,
   },
   clearIcon: {
     width: 30,
@@ -308,7 +308,7 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.polarGrey,
   },
   navBarIcon: {
-    marginTop: Constants.Margin.Regular,
+    marginTop: Constants.Margins.Regular,
   },
   iconWrapper: {
     height: 40,

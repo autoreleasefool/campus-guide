@@ -243,11 +243,11 @@ class SettingsHome extends React.Component {
                 ? <Icon
                     color={Constants.Colors.charcoalGrey}
                     name={settingIcons.checkEnabled}
-                    size={Constants.Icon.Medium} />
+                    size={Constants.Icons.Medium} />
                 : <Icon
                     color={Constants.Colors.charcoalGrey}
                     name={settingIcons.checkDisabled}
-                    size={Constants.Icon.Medium} />
+                    size={Constants.Icons.Medium} />
           }
         </View>
       );
@@ -329,8 +329,8 @@ const _styles = StyleSheet.create({
   },
   title: {
     height: 30,
-    marginTop: Constants.Margin.Regular,
-    marginBottom: Constants.Margin.Minimal,
+    marginTop: Constants.Margins.Regular,
+    marginBottom: Constants.Margins.Minimum,
     textAlign: 'center',
     fontSize: Constants.Text.Title,
     color: Constants.Colors.primaryBlackText,
@@ -350,7 +350,7 @@ const _styles = StyleSheet.create({
     top: 15,
   },
   settingText: {
-    marginLeft: Constants.Margin.Expanded,
+    marginLeft: Constants.Margins.Expanded,
   },
 });
 

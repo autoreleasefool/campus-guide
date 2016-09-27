@@ -308,7 +308,7 @@ class NavigationHome extends React.Component {
             <MaterialIcons
                 color={'white'}
                 name={'directions'}
-                size={Constants.Icon.Large}
+                size={Constants.Icons.Large}
                 style={_styles.directionsIcon} />
           </TouchableOpacity>
         </View>
@@ -391,10 +391,10 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   directionsIcon: {
-    marginLeft: Constants.Margin.Regular,
-    marginRight: Constants.Margin.Regular,
-    marginTop: Constants.Margin.Expanded,
-    marginBottom: Constants.Margin.Expanded,
+    marginLeft: Constants.Margins.Regular,
+    marginRight: Constants.Margins.Regular,
+    marginTop: Constants.Margins.Expanded,
+    marginBottom: Constants.Margins.Expanded,
   },
   directionsIconContainer: {
     alignSelf: 'center',
@@ -403,7 +403,7 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryWhiteText,
     textAlign: 'center',
     fontSize: Constants.Text.Large,
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
   },
   map: {
     flex: 1,

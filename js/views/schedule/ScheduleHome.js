@@ -218,7 +218,7 @@ class ScheduleHome extends React.Component {
               <MaterialIcons
                   color={'white'}
                   name={'add'}
-                  size={Constants.Icon.Medium} />
+                  size={Constants.Icons.Medium} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._setRemoveCourseVisible.bind(this, true)}>
@@ -226,7 +226,7 @@ class ScheduleHome extends React.Component {
               <MaterialIcons
                   color={'white'}
                   name={'remove'}
-                  size={Constants.Icon.Medium} />
+                  size={Constants.Icons.Medium} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._toggleEditScheduleButtons.bind(this)}>
@@ -234,7 +234,7 @@ class ScheduleHome extends React.Component {
               <MaterialIcons
                   color={'white'}
                   name={'close'}
-                  size={Constants.Icon.Medium} />
+                  size={Constants.Icons.Medium} />
             </View>
           </TouchableOpacity>
         </View>
@@ -438,15 +438,15 @@ class ScheduleHome extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   addClassButton: {
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
   },
   addClassButtonContainer: {
   },
   addClassInput: {
-    marginLeft: Constants.Margin.Expanded,
-    marginRight: Constants.Margin.Expanded,
+    marginLeft: Constants.Margins.Expanded,
+    marginRight: Constants.Margins.Expanded,
     fontSize: Constants.Text.Medium,
     color: Constants.Colors.primaryWhiteText,
     height: 40,
@@ -455,14 +455,14 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.defaultComponentBackgroundColor,
   },
   addClassLabel: {
-    margin: Constants.Margin.Regular,
-    marginLeft: Constants.Margin.Expanded,
+    margin: Constants.Margins.Regular,
+    marginLeft: Constants.Margins.Expanded,
     fontSize: Constants.Text.Medium,
     color: Constants.Colors.primaryWhiteText,
   },
   addLectureButton: {
-    marginTop: Constants.Margin.Regular,
-    marginBottom: Constants.Margin.Regular,
+    marginTop: Constants.Margins.Regular,
+    marginBottom: Constants.Margins.Regular,
   },
   container: {
     flex: 1,
@@ -471,7 +471,7 @@ const _styles = StyleSheet.create({
   editScheduleButton: {
     backgroundColor: Constants.Colors.garnet,
     height: 50,
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -486,7 +486,7 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.garnet,
     height: 50,
     width: 50,
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -496,8 +496,8 @@ const _styles = StyleSheet.create({
   modalSeparator: {
     marginLeft: SEPARATOR_PADDING,
     marginRight: SEPARATOR_PADDING,
-    marginTop: Constants.Margin.Expanded,
-    marginBottom: Constants.Margin.Expanded,
+    marginTop: Constants.Margins.Expanded,
+    marginBottom: Constants.Margins.Expanded,
     width: width - SEPARATOR_PADDING * 2,
     height: StyleSheet.hairlineWidth,
     backgroundColor: 'white',

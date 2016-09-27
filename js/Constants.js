@@ -112,7 +112,7 @@ module.exports = {
   /**
    * Common icon sizes to use throughout the application.
    */
-  Icon: {
+  Icons: {
     Small: 18,
     Medium: 24,
     Large: 30,
@@ -121,7 +121,7 @@ module.exports = {
   /**
    * Common margin sizes to use throughout the application.
    */
-  Margin: {
+  Margins: {
     Minimum: 4,
     Regular: 8,
     Expanded: 16,

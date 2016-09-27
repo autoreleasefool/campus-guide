@@ -572,7 +572,7 @@ const _styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
   },
   headerTitle: {
     flex: 1,
@@ -584,23 +584,23 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Text.Small,
   },
   stopRoutes: {
-    marginLeft: Constants.Margin.Expanded * 2,
-    marginRight: Constants.Margin.Regular,
-    marginBottom: Constants.Margin.Regular,
+    marginLeft: Constants.Margins.Expanded * 2,
+    marginRight: Constants.Margins.Regular,
+    marginBottom: Constants.Margins.Regular,
     fontSize: Constants.Text.Small,
   },
   stopTimes: {
-    marginLeft: Constants.Margin.Regular,
-    marginRight: Constants.Margin.Regular,
-    marginBottom: Constants.Margin.Regular,
+    marginLeft: Constants.Margins.Regular,
+    marginRight: Constants.Margins.Regular,
+    marginBottom: Constants.Margins.Regular,
     fontStyle: 'italic',
     fontSize: Constants.Text.Medium,
   },
   divider: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    marginLeft: Constants.Margin.Regular,
-    marginRight: Constants.Margin.Regular,
+    marginLeft: Constants.Margins.Regular,
+    marginRight: Constants.Margins.Regular,
     backgroundColor: Constants.Colors.secondaryWhiteText,
   },
 });

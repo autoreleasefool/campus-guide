@@ -169,7 +169,7 @@ class SectionHeader extends React.Component {
           <MaterialIcons
               color={this.state.textAndIconColor}
               name={this.state.sectionIcon}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.sectionIcon} />
         );
       } else {
@@ -177,7 +177,7 @@ class SectionHeader extends React.Component {
           <Ionicons
               color={this.state.textAndIconColor}
               name={this.state.sectionIcon}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.sectionIcon} />
         );
       }
@@ -210,7 +210,7 @@ class SectionHeader extends React.Component {
           <MaterialIcons
               color={this.state.textAndIconColor}
               name={this.state.subtitleIcon}
-              size={Constants.Icon.Small}
+              size={Constants.Icons.Small}
               style={_styles.subtitleIcon} />
         );
       } else {
@@ -218,7 +218,7 @@ class SectionHeader extends React.Component {
           <Ionicons
               color={this.state.textAndIconColor}
               name={this.state.subtitleIcon}
-              size={Constants.Icon.Small}
+              size={Constants.Icons.Small}
               style={_styles.subtitleIcon} />
         );
       }
@@ -315,12 +315,12 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
   sectionIcon: {
-    marginLeft: Constants.Margin.Expanded,
-    marginTop: Constants.Margin.Regular,
-    marginBottom: Constants.Margin.Regular,
+    marginLeft: Constants.Margins.Expanded,
+    marginTop: Constants.Margins.Regular,
+    marginBottom: Constants.Margins.Regular,
   },
   sectionName: {
-    marginLeft: Constants.Margin.Expanded,
+    marginLeft: Constants.Margins.Expanded,
     fontSize: Constants.Text.Large,
   },
   iconAndSubtitle: {
@@ -330,13 +330,13 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
   subtitleName: {
-    margin: Constants.Margin.Expanded,
+    margin: Constants.Margins.Expanded,
     fontSize: Constants.Text.Small,
   },
   subtitleIcon: {
-    marginTop: Constants.Margin.Expanded,
-    marginBottom: Constants.Margin.Expanded,
-    marginRight: Constants.Margin.Expanded,
+    marginTop: Constants.Margins.Expanded,
+    marginBottom: Constants.Margins.Expanded,
+    marginRight: Constants.Margins.Expanded,
   },
 });
 

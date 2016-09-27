@@ -123,19 +123,19 @@ const _styles = StyleSheet.create({
   downloading: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
-    marginTop: Constants.Margin.Expanded,
-    marginBottom: Constants.Margin.Expanded,
+    marginTop: Constants.Margins.Expanded,
+    marginBottom: Constants.Margins.Expanded,
     alignSelf: 'center',
   },
   progress: {
-    marginLeft: Constants.Margin.Expanded,
-    marginRight: Constants.Margin.Expanded,
+    marginLeft: Constants.Margins.Expanded,
+    marginRight: Constants.Margins.Expanded,
   },
   progressDetails: {
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Text.Small,
     alignSelf: 'center',
-    marginBottom: Constants.Margin.Expanded,
+    marginBottom: Constants.Margins.Expanded,
   },
   progressText: {
     color: Constants.Colors.secondaryWhiteText,

@@ -193,7 +193,7 @@ class SearchResults extends React.Component {
           <MaterialIcons
               color={Constants.Colors.primaryWhiteText}
               name={iconObject.name}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.icon} />
         );
       } else {
@@ -201,7 +201,7 @@ class SearchResults extends React.Component {
           <Ionicons
               color={Constants.Colors.primaryWhiteText}
               name={iconObject.name}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.icon} />
         );
       }
@@ -278,8 +278,8 @@ const _styles = StyleSheet.create({
   result: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: Constants.Margin.Regular,
-    marginTop: Constants.Margin.Regular,
+    marginBottom: Constants.Margins.Regular,
+    marginTop: Constants.Margins.Regular,
   },
   text: {
     flexDirection: 'column',
@@ -293,7 +293,7 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Text.Medium,
   },
   icon: {
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
   },
 });
 

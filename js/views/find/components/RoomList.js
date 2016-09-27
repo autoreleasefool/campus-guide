@@ -27,7 +27,6 @@
 // React imports
 import React from 'react';
 import {
-  Dimensions,
   ListView,
   Platform,
   StyleSheet,
@@ -49,7 +48,7 @@ import type {
 
 // Type definition for room search results
 type FilteredRoom = {
-  altName?: string,
+  altName?: ?string,
   name: string,
   type: ?string,
   icon: ?DefaultIcon,
@@ -259,12 +258,12 @@ class RoomList extends React.Component {
           ? <Ionicon
               color={Constants.Colors.primaryWhiteText}
               name={room.icon.name}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.roomIcon} />
           : <MaterialIcons
               color={Constants.Colors.primaryWhiteText}
               name={room.icon.name}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.roomIcon} />;
     }
 
@@ -296,11 +295,11 @@ class RoomList extends React.Component {
 
     return (
       <ListView
-          contentContainerStyle={_styles.roomList}
           dataSource={this.state.rooms}
           enableEmptySections={true}
           initialListSize={10}
-          renderRow={this._renderRow.bind(this)} />
+          renderRow={this._renderRow.bind(this)}
+          style={{backgroundColor: Constants.Colors.garnet}} />
     );
   }
 }
@@ -309,22 +308,22 @@ class RoomList extends React.Component {
 const _styles = StyleSheet.create({
   room: {
     flex: 1,
-    margin: Constants.Margin.Expanded,
+    margin: Constants.Margins.Expanded,
     alignItems: 'center',
     flexDirection: 'row',
   },
   roomIcon: {
-    marginRight: Constants.Margin.Expanded,
+    marginRight: Constants.Margins.Expanded,
   },
   roomDescription: {
-    marginRight: Constants.Margin.Regular,
+    marginRight: Constants.Margins.Regular,
     flex: 1,
   },
   roomName: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
-    marginTop: Constants.Margin.Minimal,
-    marginBottom: Constants.Margin.Minimal,
+    marginTop: Constants.Margins.Minimum,
+    marginBottom: Constants.Margins.Minimum,
   },
   roomType: {
     color: Constants.Colors.secondaryWhiteText,

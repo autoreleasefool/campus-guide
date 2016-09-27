@@ -291,7 +291,7 @@ class Tooltip extends React.Component {
           <Ionicon
               color={Constants.Colors.secondaryWhiteText}
               name={dismissIcon}
-              size={Constants.Icon.Medium}
+              size={Constants.Icons.Medium}
               style={_styles.tooltipIcon} />
         </View>
       </TouchableOpacity>
@@ -309,11 +309,11 @@ const _styles = StyleSheet.create({
   },
   tooltipText: {
     flex: 1,
-    margin: Constants.Margin.Regular,
+    margin: Constants.Margins.Regular,
     fontSize: Constants.Text.Medium,
   },
   tooltipIcon: {
-    marginRight: Constants.Margin.Regular,
+    marginRight: Constants.Margins.Regular,
   },
 });
 

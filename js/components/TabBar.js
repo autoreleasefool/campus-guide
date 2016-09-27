@@ -85,7 +85,7 @@ class TabBar extends React.Component {
             <Ionicons
                 color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
                 name={tabIcons[Constants.Tabs[i]]}
-                size={Constants.Icon.Large} />
+                size={Constants.Icons.Large} />
           </TouchableOpacity>
         ))}
       </View>
