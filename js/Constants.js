@@ -119,6 +119,15 @@ module.exports = {
   },
 
   /**
+   * Common margin sizes to use throughout the application.
+   */
+  Margin: {
+    Minimum: 4,
+    Regular: 8,
+    Expanded: 16,
+  },
+
+  /**
    * Defines the order of tabs in the app.
    * Tabs added here should also be accounted for in Types.TabItems, Tabs.ios.js, and Tabs.android.js
    */

@@ -211,7 +211,7 @@ class NavBar extends React.Component {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
-    const searchMargin = 10;
+    const searchMargin = Constants.Margin.Regular;
     let searchLeftMargin: number = searchMargin;
     let searchRightMargin: number = searchMargin;
     let backIconStyle: Object = {width: 0};
@@ -291,13 +291,13 @@ const _styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
-    borderRadius: 10,
+    borderRadius: Constants.Margin.Regular,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    margin: 8,
+    margin: Constants.Margin.Regular,
   },
   searchIcon: {
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: Constants.Margin.Regular,
+    marginRight: Constants.Margin.Regular,
   },
   clearIcon: {
     width: 30,
@@ -308,7 +308,7 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.polarGrey,
   },
   navBarIcon: {
-    marginTop: 8,
+    marginTop: Constants.Margin.Regular,
   },
   iconWrapper: {
     height: 40,

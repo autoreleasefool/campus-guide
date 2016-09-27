@@ -278,8 +278,8 @@ const _styles = StyleSheet.create({
   result: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: 10,
-    marginTop: 10,
+    marginBottom: Constants.Margin.Regular,
+    marginTop: Constants.Margin.Regular,
   },
   text: {
     flexDirection: 'column',
@@ -293,7 +293,7 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Text.Medium,
   },
   icon: {
-    margin: 10,
+    margin: Constants.Margin.Regular,
   },
 });
 

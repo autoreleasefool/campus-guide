@@ -363,10 +363,10 @@ class UpdateScreenCommon extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   text: {
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 10,
-    marginBottom: 10,
+    marginLeft: Constants.Margin.Expanded,
+    marginRight: Constants.Margin.Expanded,
+    marginTop: Constants.Margin.Regular,
+    marginBottom: Constants.Margin.Regular,
     fontSize: Constants.Text.Medium,
     color: Constants.Colors.primaryWhiteText,
   },

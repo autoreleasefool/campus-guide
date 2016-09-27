@@ -309,11 +309,11 @@ const _styles = StyleSheet.create({
   },
   tooltipText: {
     flex: 1,
-    margin: 10,
+    margin: Constants.Margin.Regular,
     fontSize: Constants.Text.Medium,
   },
   tooltipIcon: {
-    marginRight: 10,
+    marginRight: Constants.Margin.Regular,
   },
 });
 

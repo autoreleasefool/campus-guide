@@ -391,10 +391,10 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   directionsIcon: {
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 20,
-    marginBottom: 20,
+    marginLeft: Constants.Margin.Regular,
+    marginRight: Constants.Margin.Regular,
+    marginTop: Constants.Margin.Expanded,
+    marginBottom: Constants.Margin.Expanded,
   },
   directionsIconContainer: {
     alignSelf: 'center',
@@ -403,7 +403,7 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryWhiteText,
     textAlign: 'center',
     fontSize: Constants.Text.Large,
-    margin: 10,
+    margin: Constants.Margin.Regular,
   },
   map: {
     flex: 1,

@@ -298,7 +298,7 @@ class SectionHeader extends React.Component {
         <Text
             ellipsizeMode={'tail'}
             numberOfLines={1}
-            style={{color: this.state.textAndIconColor, marginLeft: 20, fontSize: Constants.Text.Large}}>
+            style={[_styles.sectionName, {color: this.state.textAndIconColor}]}>
           {this.props.sectionName}
         </Text>
         {this._renderSubtitleWithIcon.call(this)}
@@ -315,9 +315,13 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
   sectionIcon: {
-    marginLeft: 20,
-    marginTop: 12,
-    marginBottom: 10,
+    marginLeft: Constants.Margin.Expanded,
+    marginTop: Constants.Margin.Regular,
+    marginBottom: Constants.Margin.Regular,
+  },
+  sectionName: {
+    marginLeft: Constants.Margin.Expanded,
+    fontSize: Constants.Text.Large,
   },
   iconAndSubtitle: {
     position: 'absolute',
@@ -326,16 +330,13 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
   subtitleName: {
-    marginTop: 17,
-    marginRight: 20,
-    marginBottom: 16,
-    marginLeft: 20,
+    margin: Constants.Margin.Expanded,
     fontSize: Constants.Text.Small,
   },
   subtitleIcon: {
-    marginTop: 15,
-    marginBottom: 15,
-    marginRight: 20,
+    marginTop: Constants.Margin.Expanded,
+    marginBottom: Constants.Margin.Expanded,
+    marginRight: Constants.Margin.Expanded,
   },
 });
 

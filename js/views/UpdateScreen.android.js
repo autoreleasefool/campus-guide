@@ -126,19 +126,19 @@ const _styles = StyleSheet.create({
   downloading: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Text.Medium,
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: Constants.Margin.Expanded,
+    marginBottom: Constants.Margin.Expanded,
     alignSelf: 'center',
   },
   progress: {
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: Constants.Margin.Expanded,
+    marginRight: Constants.Margin.Expanded,
   },
   progressDetails: {
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Text.Small,
     alignSelf: 'center',
-    marginBottom: 20,
+    marginBottom: Constants.Margin.Expanded,
   },
   progressText: {
     color: Constants.Colors.secondaryWhiteText,

@@ -329,8 +329,8 @@ const _styles = StyleSheet.create({
   },
   title: {
     height: 30,
-    marginTop: 10,
-    marginBottom: 5,
+    marginTop: Constants.Margin.Regular,
+    marginBottom: Constants.Margin.Minimal,
     textAlign: 'center',
     fontSize: Constants.Text.Title,
     color: Constants.Colors.primaryBlackText,
@@ -350,7 +350,7 @@ const _styles = StyleSheet.create({
     top: 15,
   },
   settingText: {
-    marginLeft: 20,
+    marginLeft: Constants.Margin.Expanded,
   },
 });
 
