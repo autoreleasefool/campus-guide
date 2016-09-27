@@ -71,10 +71,6 @@ const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
 const NULL_SUBTITLE_VALUE: string = 'value_null';
 // List of icon families that the subtitle icon can belong to.
 const VALID_ICON_CLASSES: Array<?string> = ['material', 'ionicon'];
-// Size of the section icon
-const SECTION_ICON_SIZE: number = 24;
-// Size of the subtitle icon
-const SUBTITLE_ICON_SIZE: number = 18;
 
 class SectionHeader extends React.Component {
 
@@ -173,7 +169,7 @@ class SectionHeader extends React.Component {
           <MaterialIcons
               color={this.state.textAndIconColor}
               name={this.state.sectionIcon}
-              size={SECTION_ICON_SIZE}
+              size={Constants.Icon.Medium}
               style={_styles.sectionIcon} />
         );
       } else {
@@ -181,7 +177,7 @@ class SectionHeader extends React.Component {
           <Ionicons
               color={this.state.textAndIconColor}
               name={this.state.sectionIcon}
-              size={SECTION_ICON_SIZE}
+              size={Constants.Icon.Medium}
               style={_styles.sectionIcon} />
         );
       }
@@ -214,7 +210,7 @@ class SectionHeader extends React.Component {
           <MaterialIcons
               color={this.state.textAndIconColor}
               name={this.state.subtitleIcon}
-              size={SUBTITLE_ICON_SIZE}
+              size={Constants.Icon.Small}
               style={_styles.subtitleIcon} />
         );
       } else {
@@ -222,7 +218,7 @@ class SectionHeader extends React.Component {
           <Ionicons
               color={this.state.textAndIconColor}
               name={this.state.subtitleIcon}
-              size={SUBTITLE_ICON_SIZE}
+              size={Constants.Icon.Small}
               style={_styles.subtitleIcon} />
         );
       }

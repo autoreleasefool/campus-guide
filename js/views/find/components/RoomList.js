@@ -264,12 +264,12 @@ class RoomList extends React.Component {
           ? <Ionicon
               color={Constants.Colors.primaryWhiteText}
               name={room.icon.name}
-              size={20}
+              size={Constants.Icon.Medium}
               style={_styles.roomIcon} />
           : <MaterialIcons
               color={Constants.Colors.primaryWhiteText}
               name={room.icon.name}
-              size={20}
+              size={Constants.Icon.Medium}
               style={_styles.roomIcon} />;
     }
 

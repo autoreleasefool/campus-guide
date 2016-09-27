@@ -218,7 +218,7 @@ class ScheduleHome extends React.Component {
               <MaterialIcons
                   color={'white'}
                   name={'add'}
-                  size={24} />
+                  size={Constants.Icon.Medium} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._setRemoveCourseVisible.bind(this, true)}>
@@ -226,7 +226,7 @@ class ScheduleHome extends React.Component {
               <MaterialIcons
                   color={'white'}
                   name={'remove'}
-                  size={24} />
+                  size={Constants.Icon.Medium} />
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._toggleEditScheduleButtons.bind(this)}>
@@ -234,7 +234,7 @@ class ScheduleHome extends React.Component {
               <MaterialIcons
                   color={'white'}
                   name={'close'}
-                  size={24} />
+                  size={Constants.Icon.Medium} />
             </View>
           </TouchableOpacity>
         </View>

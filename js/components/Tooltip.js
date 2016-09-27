@@ -72,9 +72,6 @@ const Ionicon = require('react-native-vector-icons/Ionicons');
 const {width, height} = Dimensions.get('window');
 const TOOLTIP_WIDTH_PCT: number = 0.75;
 
-// Size of the dismiss icon
-const DISMISS_ICON_SIZE: number = 24;
-
 // Name of the close icon to display
 let dismissIcon: string;
 if (Platform.OS === 'ios') {
@@ -294,7 +291,7 @@ class Tooltip extends React.Component {
           <Ionicon
               color={Constants.Colors.secondaryWhiteText}
               name={dismissIcon}
-              size={DISMISS_ICON_SIZE}
+              size={Constants.Icon.Medium}
               style={_styles.tooltipIcon} />
         </View>
       </TouchableOpacity>

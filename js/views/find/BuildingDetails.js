@@ -277,7 +277,7 @@ class BuildingDetails extends React.Component {
               <MaterialIcons
                   color={'white'}
                   name={DisplayUtils.getFacilityIconName(facility, Translations)}
-                  size={24}
+                  size={Constants.Icon.Medium}
                   style={_styles.facilitiesIcon} />
             </TouchableOpacity>
           );

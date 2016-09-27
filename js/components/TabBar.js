@@ -62,9 +62,6 @@ if (Platform.OS === 'android') {
   };
 }
 
-// Size of the icons within the tabs
-const tabIconSize: number = 30;
-
 class TabBar extends React.Component {
 
   /**
@@ -88,7 +85,7 @@ class TabBar extends React.Component {
             <Ionicons
                 color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
                 name={tabIcons[Constants.Tabs[i]]}
-                size={tabIconSize} />
+                size={Constants.Icon.Large} />
           </TouchableOpacity>
         ))}
       </View>

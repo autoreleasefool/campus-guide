@@ -110,6 +110,15 @@ module.exports = {
   },
 
   /**
+   * Common icon sizes to use throughout the application.
+   */
+  Icon: {
+    Small: 18,
+    Medium: 24,
+    Large: 30,
+  },
+
+  /**
    * Defines the order of tabs in the app.
    * Tabs added here should also be accounted for in Types.TabItems, Tabs.ios.js, and Tabs.android.js
    */

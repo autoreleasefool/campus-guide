@@ -200,7 +200,7 @@ class LinkCategory extends React.Component {
       <Ionicons
           color={iconColor}
           name={iconName}
-          size={24}
+          size={Constants.Icon.Medium}
           style={_styles.linkIcon} />
     );
   }
@@ -335,7 +335,7 @@ class LinkCategory extends React.Component {
                 <Ionicons
                     color={DisplayUtils.getSocialMediaIconColor(translatedLinkName)}
                     name={DisplayUtils.getSocialMediaIconName(translatedLinkName)}
-                    size={30}
+                    size={Constants.Icon.Large}
                     style={_styles.socialMediaIcon} />
               </TouchableOpacity>
             );

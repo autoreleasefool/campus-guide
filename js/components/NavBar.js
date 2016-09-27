@@ -63,10 +63,6 @@ const StatusBarUtils = require('StatusBarUtils');
 const Tooltip = require('Tooltip');
 const TranslationUtils = require('TranslationUtils');
 
-// Size of icons in the navbar
-const NAVBAR_ICON_SIZE: number = 24;
-// Size of large icons in the navbar
-const NAVBAR_LARGE_ICON: number = 30;
 // Height of the navbar
 const NAVBAR_HEIGHT: number = 60;
 
@@ -244,14 +240,14 @@ class NavBar extends React.Component {
           <Ionicons
               color={'white'}
               name={backArrowName}
-              size={NAVBAR_ICON_SIZE}
+              size={Constants.Icon.Medium}
               style={_styles.navBarIcon} />
         </TouchableOpacity>
         <View style={[_styles.searchContainer, {marginLeft: searchLeftMargin, marginRight: searchRightMargin}]}>
           <Ionicons
               color={'white'}
               name={searchName}
-              size={NAVBAR_ICON_SIZE}
+              size={Constants.Icon.Medium}
               style={_styles.searchIcon}
               onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
@@ -265,7 +261,7 @@ class NavBar extends React.Component {
               ? <Ionicons
                   color={'white'}
                   name={closeName}
-                  size={NAVBAR_LARGE_ICON}
+                  size={Constants.Icon.Large}
                   style={_styles.clearIcon}
                   onPress={this.clearSearch.bind(this)} /> : null}
         </View>
@@ -275,7 +271,7 @@ class NavBar extends React.Component {
           <Ionicons
               color={'white'}
               name={'md-globe'}
-              size={NAVBAR_ICON_SIZE}
+              size={Constants.Icon.Medium}
               style={_styles.navBarIcon} />
         </TouchableOpacity>
       </View>

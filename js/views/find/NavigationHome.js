@@ -308,7 +308,7 @@ class NavigationHome extends React.Component {
             <MaterialIcons
                 color={'white'}
                 name={'directions'}
-                size={30}
+                size={Constants.Icon.Large}
                 style={_styles.directionsIcon} />
           </TouchableOpacity>
         </View>

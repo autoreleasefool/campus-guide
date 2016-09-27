@@ -243,11 +243,11 @@ class SettingsHome extends React.Component {
                 ? <Icon
                     color={Constants.Colors.charcoalGrey}
                     name={settingIcons.checkEnabled}
-                    size={20} />
+                    size={Constants.Icon.Medium} />
                 : <Icon
                     color={Constants.Colors.charcoalGrey}
                     name={settingIcons.checkDisabled}
-                    size={20} />
+                    size={Constants.Icon.Medium} />
           }
         </View>
       );

@@ -73,9 +73,6 @@ const Searchable = require('Searchable');
 const SearchManager = require('SearchManager');
 const SectionHeader = require('SectionHeader');
 
-// Size of the icon representing a result's source
-const RESULT_ICON_SIZE: number = 24;
-
 class SearchResults extends React.Component {
 
   /** Properties which the parent component should make available to this component. */
@@ -196,7 +193,7 @@ class SearchResults extends React.Component {
           <MaterialIcons
               color={Constants.Colors.primaryWhiteText}
               name={iconObject.name}
-              size={RESULT_ICON_SIZE}
+              size={Constants.Icon.Medium}
               style={_styles.icon} />
         );
       } else {
@@ -204,7 +201,7 @@ class SearchResults extends React.Component {
           <Ionicons
               color={Constants.Colors.primaryWhiteText}
               name={iconObject.name}
-              size={RESULT_ICON_SIZE}
+              size={Constants.Icon.Medium}
               style={_styles.icon} />
         );
       }
