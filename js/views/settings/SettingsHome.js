@@ -303,9 +303,12 @@ class SettingsHome extends React.Component {
     if (this.state.loaded) {
       return (
         <View style={_styles.container}>
-          <Text style={_styles.title}>
-            {Translations.settings}
-          </Text>
+          <View style={_styles.headerContainer}>
+            <SectionHeader
+                sectionIcon={Platform.OS === 'ios' ? 'ios-settings' : 'settings'}
+                sectionIconClass={'ionicon'}
+                sectionName={Translations.settings} />
+          </View>
           <ListView
               dataSource={this.state.dataSource}
               renderRow={this._renderRow.bind(this)}
@@ -327,13 +330,8 @@ const _styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.Colors.polarGrey,
   },
-  title: {
-    height: 30,
-    marginTop: Constants.Margins.Regular,
-    marginBottom: Constants.Margins.Minimum,
-    textAlign: 'center',
-    fontSize: Constants.Text.Title,
-    color: Constants.Colors.primaryBlackText,
+  headerContainer: {
+    backgroundColor: Constants.Colors.garnet,
   },
   settingContainer: {
     backgroundColor: Constants.Colors.charcoalGrey,
