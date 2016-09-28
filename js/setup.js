@@ -76,13 +76,6 @@ function setup(): ReactClass < {} > {
   class CampusGuide extends React.Component {
 
     /**
-     * Locks the application to portrait orientation.
-     */
-    componentDidMount(): void {
-      Orientation.lockToPortrait();
-    }
-
-    /**
      * Defines the transition between views.
      *
      * @returns {Object} a configuration for scene transitions in the navigator.
