@@ -286,22 +286,30 @@ class BuildingDetails extends React.Component {
     );
   }
 
+  _renderHeader(): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
+
+    return (
+      <View>
+        {this._renderBanner(Translations)}
+        {this._renderBuildingDirections(Translations)}
+      </View>
+    );
+  }
+
   /**
    * Renders a view containing an image of the building, it's name, and a list of its rooms and facilities.
    *
    * @returns {ReactElement<any>} a view describing a building.
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
-
     return (
       <View style={_styles.container}>
-        {this._renderBanner(Translations)}
-        {this._renderBuildingDirections(Translations)}
         <RoomList
             buildingCode={this.props.buildingDetails.code}
             defaultRoomType={this.props.buildingDetails.default_room_type}
+            renderHeader={this._renderHeader.bind(this)}
             roomSelected={this._onDestinationSelected}
             rooms={this.props.buildingDetails.rooms} />
       </View>

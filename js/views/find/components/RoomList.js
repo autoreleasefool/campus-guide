@@ -57,6 +57,8 @@ type FilteredRoom = {
 // Type definition for component props.
 type Props = {
   buildingCode: string,
+  defaultRoomType: string,
+  renderHeader: ?() => ReactElement < any >,
   roomSelected: DefaultFunction,
   rooms: Array < BuildingRoom >,
 };
@@ -86,6 +88,7 @@ class RoomList extends React.Component {
   static propTypes = {
     buildingCode: React.PropTypes.string.isRequired,
     defaultRoomType: React.PropTypes.number,
+    renderHeader: React.PropTypes.func,
     roomSelected: React.PropTypes.func.isRequired,
     rooms: React.PropTypes.any.isRequired,
   };
@@ -240,6 +243,15 @@ class RoomList extends React.Component {
   }
 
   /**
+   * Renders a header for the list of rooms.
+   *
+   * @returns {ReactElement<any>} the header, if this.props.header is provided
+   */
+  _renderHeader(): ReactElement < any > {
+    return this.props.renderHeader == null ? null : this.props.renderHeader();
+  }
+
+  /**
    * Renders an item describing a single room in the building.
    *
    * @param {FilteredRoom} room a room to display in this row.
@@ -298,6 +310,7 @@ class RoomList extends React.Component {
           dataSource={this.state.rooms}
           enableEmptySections={true}
           initialListSize={10}
+          renderHeader={this._renderHeader.bind(this)}
           renderRow={this._renderRow.bind(this)}
           style={{backgroundColor: Constants.Colors.garnet}} />
     );
