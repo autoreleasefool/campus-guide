@@ -52,6 +52,7 @@ type State = {
   refresh?: boolean,        // Toggle to force a render
   showBackButton?: boolean, // True to show the back button, false to hide
   searching?: boolean,      // True if the user has recently performed a search, false otherwise
+  searchPlaceholder?: ?string,
 };
 
 // Imports
@@ -92,6 +93,7 @@ class NavBar extends React.Component {
       refresh: false,
       showBackButton: false,
       searching: false,
+      searchPlaceholder: null,
     };
 
     // Explicitly binding 'this' to certain methods
@@ -211,6 +213,13 @@ class NavBar extends React.Component {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
+    // If there is a placeholder to display, show it. Otherwise, use default
+    const searchPlaceholder = this.state.searchPlaceholder == null || Preferences.getAlwaysSearchAll()
+        ? Translations.search_placeholder
+        : this.state.searchPlaceholder;
+
+    console.log(searchPlaceholder);
+
     const searchMargin = Constants.Margins.Regular;
     let searchLeftMargin: number = searchMargin;
     let searchRightMargin: number = searchMargin;
@@ -252,7 +261,7 @@ class NavBar extends React.Component {
               onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
               autoCorrect={false}
-              placeholder={Translations.search_placeholder}
+              placeholder={searchPlaceholder}
               placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
               style={_styles.searchText}

@@ -245,9 +245,9 @@ class RoomList extends React.Component {
   /**
    * Renders a header for the list of rooms.
    *
-   * @returns {ReactElement<any>} the header, if this.props.header is provided
+   * @returns {?ReactElement<any>} the header, if this.props.header is provided
    */
-  _renderHeader(): ReactElement < any > {
+  _renderHeader(): ?ReactElement < any > {
     return this.props.renderHeader == null ? null : this.props.renderHeader();
   }
 

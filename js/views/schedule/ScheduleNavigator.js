@@ -27,7 +27,6 @@
 // React imports
 import React from 'react';
 import {
-  Navigator,
   StyleSheet,
   View,
 } from 'react-native';
@@ -43,12 +42,13 @@ type Props = {
 };
 
 // Imports
+const BaseNavigator = require('BaseNavigator');
 const Constants = require('Constants');
 
 // Screen imports
 const ScheduleHome = require('ScheduleHome');
 
-class ScheduleNavigator extends React.Component {
+class ScheduleNavigator extends BaseNavigator {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -63,49 +63,19 @@ class ScheduleNavigator extends React.Component {
    * @param {Props} props properties passed from container to this component.
    */
   constructor(props: Props) {
-    super(props);
+    super(props, Constants.Views.Schedule.Home);
 
-    (this:any)._nextScreen = this._nextScreen.bind(this);
-    (this:any).navigateBack = this.navigateBack.bind(this);
-    (this:any).showBackButton = this.showBackButton.bind(this);
+    (this:any).getSearchPlaceholder = this.getSearchPlaceholder.bind(this);
     (this:any)._handleNavigationEvent = this._handleNavigationEvent.bind(this);
   }
 
   /**
-   * Adds a listener for navigation events.
-   */
-  componentDidMount(): void {
-    this.refs.Navigator.navigationContext.addListener('willfocus', this._handleNavigationEvent);
-  }
-
-  /**
-   * Pop the navigator.
+   * Returns placeholder text that should be used for the search bar.
    *
-   * @returns {boolean} true if there are still more routes to pop, false otherwise.
+   * @returns {?string} the text to use as a placeholder, or null to use the default
    */
-  navigateBack(): boolean {
-    const moreRoutes = this.refs.Navigator.getCurrentRoutes().length - 1 > 1;
-
-    this.refs.Navigator.pop();
-    return moreRoutes;
-  }
-
-  /**
-   * Indicates if the app should show a back button.
-   *
-   * @returns {boolean} true to indicate a back button should be shown, false otherwise
-   */
-  showBackButton(): boolean {
-    return this.refs.Navigator.getCurrentRoutes().length > 1;
-  }
-
-  /**
-   * Sets the transition between two views in the navigator.
-   *
-   * @returns {Object} a configuration for the transition between scenes.
-   */
-  _configureScene(): Object {
-    return Navigator.SceneConfigs.PushFromRight;
+  getSearchPlaceholder(): ?string {
+    return null;
   }
 
   /**
@@ -114,20 +84,7 @@ class ScheduleNavigator extends React.Component {
    * @param {any} event the event taking place
    */
   _handleNavigationEvent(event: any): void {
-    this.props.onChangeScene(event.data.route.id !== Constants.Views.Schedule.Home);
-  }
-
-  /**
-   * Navigate forward to the next screen.
-   *
-   * @param {number} id   route id
-   * @param {Object} data data to render the route with
-   */
-  _nextScreen(id: number, data: Object): void {
-    this.refs.Navigator.push({
-      id: id,
-      data: data,
-    });
+    this.props.onChangeScene(event.data.route.id !== Constants.Views.Schedule.Home, this.getSearchPlaceholder());
   }
 
   /**
@@ -145,22 +102,6 @@ class ScheduleNavigator extends React.Component {
       default:
         return (<View style={_styles.container} />);
     }
-  }
-
-  /**
-   * Returns a navigator for subnavigation between class finding components.
-   *
-   * @returns {ReactElement<any>} the hierarchy of views to render
-   */
-  render(): ReactElement < any > {
-    return (
-      <Navigator
-          configureScene={this._configureScene}
-          initialRoute={{id: Constants.Views.Schedule.Home}}
-          ref='Navigator'
-          renderScene={this._renderScene.bind(this)}
-          style={_styles.container} />
-    );
   }
 }
 

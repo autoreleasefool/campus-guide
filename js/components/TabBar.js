@@ -51,6 +51,7 @@ if (Platform.OS === 'android') {
     find: 'directions',
     schedule: 'event',
     discover: 'near-me',
+    search: 'md-search',
     settings: 'settings',
   };
 } else {
@@ -58,8 +59,8 @@ if (Platform.OS === 'android') {
     find: 'ios-navigate',
     schedule: 'ios-calendar-outline',
     discover: 'ios-compass',
-    settings: 'ios-settings',
     search: 'ios-search',
+    settings: 'ios-settings',
   };
 }
 
@@ -78,12 +79,6 @@ class TabBar extends React.Component {
     return (
       <View style={_styles.tabContainer}>
         {this.props.tabs.map((tab, i) => {
-
-          // Don't render the search tab
-          // if (i >= Object.keys(tabIcons).length) {
-          //   return null;
-          // }
-
           return (
             <TouchableOpacity
                 activeOpacity={1}

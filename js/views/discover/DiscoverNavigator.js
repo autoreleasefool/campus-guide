@@ -27,7 +27,6 @@
 // React imports
 import React from 'react';
 import {
-  Navigator,
   StyleSheet,
   View,
 } from 'react-native';
@@ -43,7 +42,10 @@ type Props = {
 };
 
 // Imports
+const BaseNavigator = require('BaseNavigator');
 const Constants = require('Constants');
+const Preferences = require('Preferences');
+const TranslationUtils = require('TranslationUtils');
 
 // Screen imports
 const BusCampusDetails = require('BusCampusDetails');
@@ -55,7 +57,7 @@ const LinksHome = require('LinksHome');
 const ShuttleCampusList = require('ShuttleCampusList');
 const ShuttleCampusDetails = require('ShuttleCampusDetails');
 
-class DiscoverNavigator extends React.Component {
+class DiscoverNavigator extends BaseNavigator {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -70,49 +72,22 @@ class DiscoverNavigator extends React.Component {
    * @param {Props} props properties passed from container to this component.
    */
   constructor(props: Props) {
-    super(props);
+    super(props, Constants.Views.Discover.Home);
 
-    (this:any)._nextScreen = this._nextScreen.bind(this);
-    (this:any).navigateBack = this.navigateBack.bind(this);
-    (this:any).showBackButton = this.showBackButton.bind(this);
+    (this:any).getSearchPlaceholder = this.getSearchPlaceholder.bind(this);
     (this:any)._handleNavigationEvent = this._handleNavigationEvent.bind(this);
   }
 
-  /**
-   * Adds a listener for navigation events.
-   */
-  componentDidMount(): void {
-    this.refs.Navigator.navigationContext.addListener('willfocus', this._handleNavigationEvent);
-  }
+  /** Placeholder text for the search box. */
+  _searchPlaceholder: ?string = null;
 
   /**
-   * Pop the navigator.
+   * Returns placeholder text that should be used for the search bar.
    *
-   * @returns {boolean} true if there are still more routes to pop, false otherwise.
+   * @returns {?string} the text to use as a placeholder, or null to use the default
    */
-  navigateBack(): boolean {
-    const moreRoutes = this.refs.Navigator.getCurrentRoutes().length - 1 > 1;
-
-    this.refs.Navigator.pop();
-    return moreRoutes;
-  }
-
-  /**
-   * Indicates if the app should show a back button.
-   *
-   * @returns {boolean} true to indicate a back button should be shown, false otherwise
-   */
-  showBackButton(): boolean {
-    return this.refs.Navigator.getCurrentRoutes().length > 1;
-  }
-
-  /**
-   * Sets the transition between two views in the navigator.
-   *
-   * @returns {Object} a configuration for the transition between scenes.
-   */
-  _configureScene(): Object {
-    return Navigator.SceneConfigs.PushFromRight;
+  getSearchPlaceholder(): ?string {
+    return this._searchPlaceholder;
   }
 
   /**
@@ -121,20 +96,19 @@ class DiscoverNavigator extends React.Component {
    * @param {any} event the event taking place
    */
   _handleNavigationEvent(event: any): void {
-    this.props.onChangeScene(event.data.route.id !== Constants.Views.Find.Home);
-  }
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
+    const routeId = event.data.route.id;
 
-  /**
-   * Navigate forward to the next screen.
-   *
-   * @param {number} id   route id
-   * @param {Object} data data to render the route with
-   */
-  _nextScreen(id: number | string, data: Object): void {
-    this.refs.Navigator.push({
-      id: id,
-      data: data,
-    });
+    if (routeId === Constants.Views.Discover.BusCampusList || routeId === Constants.Views.Discover.BusCampusDetails) {
+      this._searchPlaceholder = Translations.search_placeholder_buses;
+    } else if (typeof routeId === 'string' && routeId.indexOf(Constants.Views.Discover.LinkCategory + '-') === 0) {
+      this._searchPlaceholder = Translations.search_placeholder_links;
+    } else {
+      this._searchPlaceholder = null;
+    }
+
+    this.props.onChangeScene(event.data.route.id !== Constants.Views.Discover.Home, this.getSearchPlaceholder());
   }
 
   /**
@@ -147,13 +121,13 @@ class DiscoverNavigator extends React.Component {
     switch (route.id) {
       case Constants.Views.Discover.Home:
         return (
-          <DiscoverHome onScreenSelected={this._nextScreen} />
+          <DiscoverHome onScreenSelected={super._nextScreen} />
         );
       case Constants.Views.Discover.BusCampusList:
         return (
           <BusCampusList
               showCampus={(name, color) =>
-                  this._nextScreen(Constants.Views.Discover.BusCampusDetails, {name: name, color: color})} />
+                  super._nextScreen(Constants.Views.Discover.BusCampusDetails, {name: name, color: color})} />
         );
       case Constants.Views.Discover.BusCampusDetails:
         return (
@@ -164,17 +138,17 @@ class DiscoverNavigator extends React.Component {
       case Constants.Views.Discover.LinksHome:
         return (
           <LinksHome
-              showLinkCategory={category => this._nextScreen(Constants.Views.Discover.LinkCategory + '-0',
+              showLinkCategory={category => super._nextScreen(Constants.Views.Discover.LinkCategory + '-0',
                       {category: category, categoryImage: category.image, index: 0})} />
         );
       case Constants.Views.Discover.ShuttleCampusList:
         return (
           <ShuttleCampusList
               showCampus={(campusName, campusColor) =>
-                  this._nextScreen(Constants.Views.Discover.ShuttleCampusDetails,
+                  super._nextScreen(Constants.Views.Discover.ShuttleCampusDetails,
                       {name: campusName, color: campusColor})}
               showDetails={(title, image, text, backgroundColor) =>
-                  this._nextScreen(Constants.Views.Discover.ShuttleInfo,
+                  super._nextScreen(Constants.Views.Discover.ShuttleInfo,
                       {title: title, image: image, text: text, backgroundColor: backgroundColor})} />
         );
       case Constants.Views.Discover.ShuttleCampusDetails:
@@ -198,7 +172,7 @@ class DiscoverNavigator extends React.Component {
                 category={route.data.category}
                 categoryImage={route.data.categoryImage}
                 showLinkCategory={category =>
-                    this._nextScreen(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1),
+                    super._nextScreen(Constants.Views.Discover.LinkCategory + '-' + (route.data.index + 1),
                         {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
           );
         }
@@ -206,22 +180,6 @@ class DiscoverNavigator extends React.Component {
 
         return (<View style={_styles.container} />);
     }
-  }
-
-  /**
-   * Returns a navigator for subnavigation between class finding components.
-   *
-   * @returns {ReactElement<any>} the hierarchy of views to render
-   */
-  render(): ReactElement < any > {
-    return (
-      <Navigator
-          configureScene={this._configureScene}
-          initialRoute={{id: Constants.Views.Discover.Home}}
-          ref='Navigator'
-          renderScene={this._renderScene.bind(this)}
-          style={_styles.container} />
-    );
   }
 }
 

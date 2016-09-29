@@ -27,7 +27,6 @@
 // React imports
 import React from 'react';
 import {
-  Navigator,
   StyleSheet,
   View,
 } from 'react-native';
@@ -39,18 +38,21 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  onChangeScene: (showBackButton: boolean) => void,
+  onChangeScene: (showBackButton: boolean, placeholder: ?string) => void,
 };
 
 // Imports
+const BaseNavigator = require('BaseNavigator');
 const Constants = require('Constants');
+const Preferences = require('Preferences');
+const TranslationUtils = require('TranslationUtils');
 
 // Screen imports
 const BuildingDetails = require('BuildingDetails');
 const FindHome = require('FindHome');
 const NavigationHome = require('NavigationHome');
 
-class FindNavigator extends React.Component {
+class FindNavigator extends BaseNavigator {
 
   /**
    * Properties which the parent component should make available to this component.
@@ -65,49 +67,22 @@ class FindNavigator extends React.Component {
    * @param {Props} props properties passed from container to this component.
    */
   constructor(props: Props) {
-    super(props);
+    super(props, Constants.Views.Find.Home);
 
-    (this:any)._nextScreen = this._nextScreen.bind(this);
-    (this:any).navigateBack = this.navigateBack.bind(this);
-    (this:any).showBackButton = this.showBackButton.bind(this);
+    (this:any).getSearchPlaceholder = this.getSearchPlaceholder.bind(this);
     (this:any)._handleNavigationEvent = this._handleNavigationEvent.bind(this);
   }
 
-  /**
-   * Adds a listener for navigation events.
-   */
-  componentDidMount(): void {
-    this.refs.Navigator.navigationContext.addListener('willfocus', this._handleNavigationEvent);
-  }
+  /** Placeholder text for the search box. */
+  _searchPlaceholder: ?string = null;
 
   /**
-   * Pop the navigator.
+   * Returns placeholder text that should be used for the search bar.
    *
-   * @returns {boolean} true if there are still more routes to pop, false otherwise.
+   * @returns {?string} the text to use as a placeholder, or null to use the default
    */
-  navigateBack(): boolean {
-    const moreRoutes = this.refs.Navigator.getCurrentRoutes().length - 1 > 1;
-
-    this.refs.Navigator.pop();
-    return moreRoutes;
-  }
-
-  /**
-   * Indicates if the app should show a back button.
-   *
-   * @returns {boolean} true to indicate a back button should be shown, false otherwise
-   */
-  showBackButton(): boolean {
-    return this.refs.Navigator.getCurrentRoutes().length > 1;
-  }
-
-  /**
-   * Sets the transition between two views in the navigator.
-   *
-   * @returns {Object} a configuration for the transition between scenes.
-   */
-  _configureScene(): Object {
-    return Navigator.SceneConfigs.PushFromRight;
+  getSearchPlaceholder(): ?string {
+    return this._searchPlaceholder;
   }
 
   /**
@@ -116,20 +91,24 @@ class FindNavigator extends React.Component {
    * @param {any} event the event taking place
    */
   _handleNavigationEvent(event: any): void {
-    this.props.onChangeScene(event.data.route.id !== Constants.Views.Find.Home);
-  }
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
-  /**
-   * Navigate forward to the next screen.
-   *
-   * @param {number} id   route id
-   * @param {Object} data data to render the route with
-   */
-  _nextScreen(id: number, data: Object): void {
-    this.refs.Navigator.push({
-      id: id,
-      data: data,
-    });
+    switch (event.data.route.id) {
+      case Constants.Views.Find.Home:
+        this._searchPlaceholder = Translations.search_placeholder_buildings;
+        break;
+      case Constants.Views.Find.Building:
+        this._searchPlaceholder = Translations.search_placeholder_rooms;
+        break;
+      case Constants.Views.Find.Navigation:
+        this._searchPlaceholder = Translations.search_placeholder_buildings_rooms;
+        break;
+      default:
+        this._searchPlaceholder = null;
+    }
+
+    this.props.onChangeScene(event.data.route.id !== Constants.Views.Find.Home, this.getSearchPlaceholder());
   }
 
   /**
@@ -142,13 +121,13 @@ class FindNavigator extends React.Component {
     switch (route.id) {
       case Constants.Views.Find.Home:
         return (
-          <FindHome onShowBuilding={buildingCode => this._nextScreen(Constants.Views.Find.Building, buildingCode)} />
+          <FindHome onShowBuilding={buildingCode => super._nextScreen(Constants.Views.Find.Building, buildingCode)} />
         );
       case Constants.Views.Find.Building:
         return (
           <BuildingDetails
               buildingDetails={route.data}
-              onDestinationSelected={(buildingCode, roomName) => this._nextScreen(Constants.Views.Find.Navigation,
+              onDestinationSelected={(buildingCode, roomName) => super._nextScreen(Constants.Views.Find.Navigation,
                   {buildingCode: buildingCode, roomName: roomName})} />
         );
       case Constants.Views.Find.Navigation:
@@ -160,22 +139,6 @@ class FindNavigator extends React.Component {
           <View style={_styles.container} />
         );
     }
-  }
-
-  /**
-   * Returns a navigator for subnavigation between class finding components.
-   *
-   * @returns {ReactElement<any>} the hierarchy of views to render
-   */
-  render(): ReactElement < any > {
-    return (
-      <Navigator
-          configureScene={this._configureScene}
-          initialRoute={{id: Constants.Views.Find.Home}}
-          ref='Navigator'
-          renderScene={this._renderScene.bind(this)}
-          style={_styles.container} />
-    );
   }
 }
 

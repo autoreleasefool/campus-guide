@@ -184,6 +184,17 @@ class TabsCommon extends React.Component {
   }
 
   /**
+   * Updates the search placeholder in the nav bar.
+   *
+   * @param {?string} placeholder the string to show in the placeholder. Null to use the default placeholder.
+   */
+  _updateSearchPlaceholder(placeholder: ?string): void {
+    this.refs.NavBar.setState({
+      searchPlaceholder: placeholder,
+    });
+  }
+
+  /**
    * Handle a tab change.
    *
    * @param {Tab} tab details about the new tab
@@ -195,6 +206,12 @@ class TabsCommon extends React.Component {
     } else {
       this._previousTab = -1;
       this._showBackButton(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
+      console.log(this._tabs[tab.i].getSearchPlaceholder
+          ? (this._tabs[tab.i]:any).getSearchPlaceholder()
+          : null);
+      this._updateSearchPlaceholder(this._tabs[tab.i].getSearchPlaceholder
+          ? (this._tabs[tab.i]:any).getSearchPlaceholder()
+          : null);
     }
 
     // Clear the search bar
@@ -245,9 +262,11 @@ class TabsCommon extends React.Component {
    * Handles navigation within a nested Navigator.
    *
    * @param {boolean} showBackButton true to show the back button, false otherwise
+   * @param {?string} placeholder    placeholder string for search bar, or null to use default
    */
-  _onSubnavigation(showBackButton: boolean): void {
+  _onSubnavigation(showBackButton: boolean, placeholder: ?string): void {
     this._showBackButton(showBackButton);
+    this._updateSearchPlaceholder(placeholder);
   }
 
   /**
