@@ -26,7 +26,7 @@
     "react-native-vector-icons": "^2.1.0"
   },
   "devDependencies": {
-    "babel-eslint": "^6.1.0",
+    "babel-eslint": "^7.0.0",
     "babel-jest": "^15.0.0",
     "babel-polyfill": "^6.9.1",
     "empty": "^0.10.1",
