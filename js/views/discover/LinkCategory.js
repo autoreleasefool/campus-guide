@@ -416,18 +416,18 @@ class LinkCategory extends React.Component {
 
     return (
       <View style={[_styles.container, {backgroundColor: categoryBackgroundColor}]}>
-        <View style={_styles.banner}>
-          <Image
-              resizeMode={'cover'}
-              source={{uri: Configuration.getImagePath(this.props.categoryImage)}}
-              style={_styles.bannerImage} />
-          <View style={_styles.bannerTextContainer}>
-            <Text style={_styles.bannerText}>
-              {TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.category)}
-            </Text>
-          </View>
-        </View>
         <ScrollView style={_styles.scrollview}>
+          <View style={_styles.banner}>
+            <Image
+                resizeMode={'cover'}
+                source={{uri: Configuration.getImagePath(this.props.categoryImage)}}
+                style={_styles.bannerImage} />
+            <View style={_styles.bannerTextContainer}>
+              <Text style={_styles.bannerText}>
+                {TranslationUtils.getTranslatedName(Preferences.getSelectedLanguage(), this.props.category)}
+              </Text>
+            </View>
+          </View>
           {social}
           {usefulLinks}
           {categories}
