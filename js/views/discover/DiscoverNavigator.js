@@ -121,7 +121,7 @@ class DiscoverNavigator extends BaseNavigator {
     switch (route.id) {
       case Constants.Views.Discover.Home:
         return (
-          <DiscoverHome onScreenSelected={super._nextScreen} />
+          <DiscoverHome onScreenSelected={(id, data) => super._nextScreen(id, data)} />
         );
       case Constants.Views.Discover.BusCampusList:
         return (
@@ -176,7 +176,6 @@ class DiscoverNavigator extends BaseNavigator {
                         {category: category, categoryImage: route.data.categoryImage, index: route.data.index + 1})} />
           );
         }
-
 
         return (<View style={_styles.container} />);
     }
