@@ -40,7 +40,6 @@ import type {
 // Imports
 const Constants = require('Constants');
 const MainScreen = require('MainScreen');
-const Orientation = require('react-native-orientation');
 const SplashScreen = require('SplashScreen');
 const Tooltip = require('Tooltip');
 const UpdateScreen = require('UpdateScreen');
@@ -124,7 +123,7 @@ function setup(): ReactClass < {} > {
         <View style={{flex: 1}}>
           <Navigator
               configureScene={this._configureScene}
-              initialRoute={{id: 1}}
+              initialRoute={{id: Constants.Views.Splash}}
               renderScene={this._renderScene} />
           <Tooltip />
         </View>

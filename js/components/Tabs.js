@@ -28,7 +28,6 @@
 import React from 'react';
 import {
   BackAndroid,
-  Navigator,
   Platform,
   StyleSheet,
   View,
@@ -52,7 +51,11 @@ const TabBar = require('TabBar');
 const Discover = require('Discover');
 const Find = require('Find');
 const Schedule = require('Schedule');
+const SearchResults = require('SearchResults');
 const SettingsHome = require('SettingsHome');
+
+// Tab for searching the app
+const TAB_SEARCH = Constants.Tabs.indexOf('search');
 
 class TabsCommon extends React.Component {
 
@@ -108,16 +111,10 @@ class TabsCommon extends React.Component {
   _tabs: Array < ReactElement < any > > = [];
 
   /** When set to true, the next call to _onSearch will be ignored. */
-  _ignoreNextSearch: boolean;
+  _ignoreNextSearch: boolean = false;
 
-  /**
-   * Sets the transition between two views in the navigator.
-   *
-   * @returns {Object} a configuration for the transition between scenes.
-   */
-  _configureScene(): Object {
-    return Navigator.SceneConfigs.PushFromRight;
-  }
+  /** Track the index of the tab visited before the search tab was opened. */
+  _previousTab: number = -1;
 
   /**
    * Dismisses the keyboard.
@@ -133,6 +130,14 @@ class TabsCommon extends React.Component {
    * Handle a request for back navigation.
    */
   _navigateBack(): void {
+    if (this.state.currentTab === TAB_SEARCH) {
+      if (this._previousTab === TAB_SEARCH) {
+        return;
+      } else {
+        this.refs.TabView.goToPage(this._previousTab);
+      }
+    }
+
     const tab = this._tabs[this.state.currentTab];
     const showBack = tab.navigateBack && (tab:any).navigateBack();
     this._showBackButton(showBack === true);
@@ -162,7 +167,8 @@ class TabsCommon extends React.Component {
   _searchAll(searchTerms: ?string): void {
     if (this._getCurrentTab() !== Constants.Views.Search
         && searchTerms != null && searchTerms.length > 0) {
-      this.refs.Navigator.push({id: Constants.Views.Search, data: searchTerms});
+      this._previousTab = this.refs.TabView.state.currentPage;
+      this.refs.TabView.goToPage(TAB_SEARCH);
     }
   }
 
@@ -184,7 +190,12 @@ class TabsCommon extends React.Component {
    */
   _onChangeTab(tab: {i: number, ref: ReactElement < any >}): void {
     // Setup back navigation in the new tab
-    this._showBackButton(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
+    if (this._previousTab !== -1 && tab.i === TAB_SEARCH) {
+      this._showBackButton(true);
+    } else {
+      this._previousTab = -1;
+      this._showBackButton(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
+    }
 
     // Clear the search bar
     this._ignoreNextSearch = true;
@@ -261,6 +272,7 @@ class TabsCommon extends React.Component {
             onStartShouldSetResponder={this._dismissKeyboard}>
           <ScrollableTabView
               locked={true}
+              ref='TabView'
               renderTabBar={() => <TabBar />}
               scrollWithoutAnimation={true}
               tabBarPosition='bottom'
@@ -277,8 +289,12 @@ class TabsCommon extends React.Component {
                 ref={ref => (this._tabs[2] = ref)}
                 tabLabel='Discover'
                 onChangeScene={this._onSubnavigation} />
-            <SettingsHome
+            <SearchResults
+                initialSearch=''
                 ref={ref => (this._tabs[3] = ref)}
+                tabLabel='Search' />
+            <SettingsHome
+                ref={ref => (this._tabs[4] = ref)}
                 refreshParent={this._refreshNavbar.bind(this)}
                 tabLabel='Settings'
                 onChangeScene={this._onSubnavigation} />

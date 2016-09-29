@@ -59,6 +59,7 @@ if (Platform.OS === 'android') {
     schedule: 'ios-calendar-outline',
     discover: 'ios-compass',
     settings: 'ios-settings',
+    search: 'ios-search',
   };
 }
 
@@ -76,18 +77,26 @@ class TabBar extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.tabContainer}>
-        {this.props.tabs.map((tab, i) => (
-          <TouchableOpacity
-              activeOpacity={1}
-              key={Constants.Tabs[i]}
-              style={_styles.tab}
-              onPress={() => this.props.goToPage(i)}>
-            <Ionicons
-                color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
-                name={tabIcons[Constants.Tabs[i]]}
-                size={Constants.Icons.Large} />
-          </TouchableOpacity>
-        ))}
+        {this.props.tabs.map((tab, i) => {
+
+          // Don't render the search tab
+          // if (i >= Object.keys(tabIcons).length) {
+          //   return null;
+          // }
+
+          return (
+            <TouchableOpacity
+                activeOpacity={1}
+                key={Constants.Tabs[i]}
+                style={_styles.tab}
+                onPress={() => this.props.goToPage(i)}>
+              <Ionicons
+                  color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
+                  name={tabIcons[Constants.Tabs[i]]}
+                  size={Constants.Icons.Large} />
+            </TouchableOpacity>
+          );
+        })}
       </View>
     );
   }

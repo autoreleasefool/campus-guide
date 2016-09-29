@@ -127,6 +127,7 @@ export type TabItems = {
   find: any,
   schedule: any,
   discover: any,
+  search: any,
   settings: any,
 };
 
