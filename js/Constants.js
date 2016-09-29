@@ -34,6 +34,7 @@ module.exports = {
     darkGrey: '#80746C',
     polarGrey: '#F2F2F2',
     lightGrey: '#ACA39A',
+    almostWhite: 'rgb(240,240,240)',
     charcoalGrey: '#2D2D2C',
     transparent: 'rgba(0, 0, 0, 0)',
     rootElementBorder: 'rgba(0, 0, 0, 0.25)',
@@ -133,8 +134,9 @@ module.exports = {
    */
   Tabs: [
     'find',
-    // 'schedule',
+    'schedule',
     'discover',
+    'search',
     'settings',
   ],
 
