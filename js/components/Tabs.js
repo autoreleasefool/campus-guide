@@ -206,9 +206,6 @@ class TabsCommon extends React.Component {
     } else {
       this._previousTab = -1;
       this._showBackButton(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
-      console.log(this._tabs[tab.i].getSearchPlaceholder
-          ? (this._tabs[tab.i]:any).getSearchPlaceholder()
-          : null);
       this._updateSearchPlaceholder(this._tabs[tab.i].getSearchPlaceholder
           ? (this._tabs[tab.i]:any).getSearchPlaceholder()
           : null);
