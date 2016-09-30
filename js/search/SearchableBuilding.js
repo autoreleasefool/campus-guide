@@ -64,28 +64,30 @@ function _getBuildingResults(searchTerms: string, buildings: Array < any >): Pro
     for (let i = 0; i < buildings.length; i++) {
       const translated: boolean = !('name' in buildings[i]);
       const name: string = TranslationUtils.getTranslatedName(language, buildings[i]) || '';
+      const matchedTerms: Array < string > = [];
 
       // Compare building properties to search terms to add to results
-      if ((!translated && buildings[i].name.toUpperCase().indexOf(searchTerms) >= 0)
-          || (translated && (buildings[i].name_en.toUpperCase().indexOf(searchTerms) >= 0
-          || buildings[i].name_fr.toUpperCase().indexOf(searchTerms) >= 0))
-          || buildings[i].code.toUpperCase().indexOf(searchTerms) >= 0) {
+      if (!translated && buildings[i].name.toUpperCase().indexOf(searchTerms) >= 0) {
+        matchedTerms.push(buildings[i].name.toUpperCase());
+      } else if (translated &&
+          (buildings[i].name_en.toUpperCase().indexOf(searchTerms) >= 0
+          || buildings[i].name_fr.toUpperCase().indexOf(searchTerms) >= 0)) {
+        matchedTerms.push(buildings[i].name_fr.toUpperCase());
+        matchedTerms.push(buildings[i].name_en.toUpperCase());
+      }
+
+      if (buildings[i].code.toUpperCase().indexOf(searchTerms) >= 0) {
+        matchedTerms.push(buildings[i].code.toUpperCase());
+      }
+
+      if (matchedTerms.length > 0) {
         results.push({
           description: name,
           icon: {
             name: 'store',
             class: 'material',
           },
-          matchedTerms: (translated)
-              ? [
-                buildings[i].code.toUpperCase(),
-                buildings[i].name_fr.toUpperCase(),
-                buildings[i].name_en.toUpperCase(),
-              ]
-              : [
-                buildings[i].code.toUpperCase(),
-                buildings[i].name.toUpperCase(),
-              ],
+          matchedTerms: matchedTerms,
           title: buildings[i].code,
         });
       }
