@@ -153,15 +153,19 @@ export function getResults(searchTerms: ?string): Promise < Object > {
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
     const buildings: Array < Building > = require('../../assets/js/Buildings');
 
-    return Promise.all([
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
+
+    Promise.all([
       _getBuildingResults(adjustedSearchTerms, buildings),
       _getRoomResults(adjustedSearchTerms, buildings),
     ])
         .then(results => {
-          resolve({
-            'Buildings': results[0],
-            'Rooms': results[1],
-          });
+          const sections = {};
+          sections[Translations.buildings] = results[0];
+          sections[Translations.rooms] = results[1];
+
+          resolve(sections);
         })
         .catch(err => reject(err));
   });
