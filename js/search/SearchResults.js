@@ -59,6 +59,7 @@ type Props = {
 
 // Type definition for component state.
 type State = {
+  anyResults: boolean,
   loaded: boolean,
   searchResults: ListView.DataSource,
   searchTerms: ?string,
@@ -91,6 +92,7 @@ class SearchResults extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
+      anyResults: false,
       loaded: false,
       searchResults: new ListView.DataSource({
         // TODO: Replace r1 !== r2 with r1.title !== r2.title?
@@ -159,6 +161,7 @@ class SearchResults extends React.Component {
         && searchTerms.indexOf(this.state.searchTerms) >= 0) {
       this._searchResults = Searchable.narrowResults(searchTerms, this._searchResults);
       this.setState({
+        anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
         loaded: true,
         searchResults: this.state.searchResults.cloneWithRowsAndSections(this._searchResults),
         searchTerms: searchTerms,
@@ -168,6 +171,7 @@ class SearchResults extends React.Component {
           .then(results => {
             this._searchResults = results;
             this.setState({
+              anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
               loaded: true,
               searchResults: this.state.searchResults.cloneWithRowsAndSections(this._searchResults),
               searchTerms: searchTerms,
@@ -242,7 +246,7 @@ class SearchResults extends React.Component {
     const env = require('env');
 
     let results = null;
-    if (this.state.searchTerms == null) {
+    if (this.state.searchTerms == null || !this.state.anyResults) {
       results = (
         <View style={_styles.container}>
           <Text>{'No search results'}</Text>

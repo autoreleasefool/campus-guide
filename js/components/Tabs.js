@@ -165,7 +165,7 @@ class TabsCommon extends React.Component {
    * @param {?string} searchTerms string of terms to search for.
    */
   _searchAll(searchTerms: ?string): void {
-    if (this._getCurrentTab() !== Constants.Views.Search
+    if (this._getCurrentTab() !== Constants.Tabs.search
         && searchTerms != null && searchTerms.length > 0) {
       this._previousTab = this.refs.TabView.state.currentPage;
       this.refs.TabView.goToPage(TAB_SEARCH);
@@ -200,6 +200,9 @@ class TabsCommon extends React.Component {
    * @param {Tab} tab details about the new tab
    */
   _onChangeTab(tab: {i: number, ref: ReactElement < any >}): void {
+    // Ignore the next search
+    this._ignoreNextSearch = true;
+
     // Setup back navigation in the new tab
     if (this._previousTab !== -1 && tab.i === TAB_SEARCH) {
       this._showBackButton(true);
@@ -211,6 +214,14 @@ class TabsCommon extends React.Component {
       this._updateSearchPlaceholder(this._tabs[tab.i].getSearchPlaceholder
           ? (this._tabs[tab.i]:any).getSearchPlaceholder()
           : null);
+
+      // Clear the search bar
+      this.refs.NavBar.clearSearch();
+
+      // Set the default search listener to be this class
+      SearchManager.setDefaultSearchListener({
+        onSearch: this._searchAll,
+      });
     }
 
     // Update active search listeners
@@ -218,10 +229,6 @@ class TabsCommon extends React.Component {
     const nextTabSearchTag = Constants.Tabs[tab.i];
     SearchManager.pauseSearchListeners(currentTabSearchTag);
     SearchManager.resumeSearchListeners(nextTabSearchTag);
-
-    // Clear the search bar
-    this._ignoreNextSearch = true;
-    this.refs.NavBar.clearSearch();
 
     // Enable search listeners
     SearchManager.resumeAllSearchListeners();
