@@ -205,11 +205,19 @@ class TabsCommon extends React.Component {
       this._showBackButton(true);
     } else {
       this._previousTab = -1;
+      // console.log(this._tabs[tab.i].showBackButton);
+      // console.log(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
       this._showBackButton(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
       this._updateSearchPlaceholder(this._tabs[tab.i].getSearchPlaceholder
           ? (this._tabs[tab.i]:any).getSearchPlaceholder()
           : null);
     }
+
+    // Update active search listeners
+    const currentTabSearchTag = Constants.Tabs[this.state.currentTab];
+    const nextTabSearchTag = Constants.Tabs[tab.i];
+    SearchManager.pauseSearchListeners(currentTabSearchTag);
+    SearchManager.resumeSearchListeners(nextTabSearchTag);
 
     // Clear the search bar
     this._ignoreNextSearch = true;
@@ -235,16 +243,13 @@ class TabsCommon extends React.Component {
       return;
     }
 
-    const numberOfSearchListeners = SearchManager.numberOfSearchListeners();
+    const searchTag = Constants.Tabs[this.state.currentTab];
+    const numberOfSearchListeners = SearchManager.numberOfSearchListeners(searchTag);
     if (numberOfSearchListeners > 0 && !Preferences.getAlwaysSearchAll()) {
       // Get only the search listeners with the highest priority
-      const searchListeners = SearchManager.getHighestPrioritySearchListeners();
-
-      // Iterate over each search listener and pass the search terms to each one
-      for (let i = 0; i < searchListeners.length; i++) {
-        if (searchListeners[i] != null) {
-          searchListeners[i].onSearch(searchTerms);
-        }
+      const searchListener = SearchManager.getHighestPrioritySearchListener(searchTag);
+      if (searchListener != null) {
+        searchListener.onSearch(searchTerms);
       }
     } else if (SearchManager.getDefaultSearchListener() != null) {
       // If there are no search listeners except for a default one, then send terms to the default

@@ -94,7 +94,18 @@ class FindNavigator extends BaseNavigator {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(Preferences.getSelectedLanguage());
 
-    switch (event.data.route.id) {
+    this._updateSearchPlaceholder(event.data.route.id, Translations);
+    this.props.onChangeScene(event.data.route.id !== Constants.Views.Find.Home, this.getSearchPlaceholder());
+  }
+
+  /**
+   * Updates the expected search placeholder text.
+   *
+   * @param {number|string} id    new route identifier
+   * @param {Object} Translations translations in the current language of certain text.
+   */
+  _updateSearchPlaceholder(id: number | string, Translations: Object): void {
+    switch (id) {
       case Constants.Views.Find.Home:
         this._searchPlaceholder = Translations.search_placeholder_buildings;
         break;
@@ -107,8 +118,6 @@ class FindNavigator extends BaseNavigator {
       default:
         this._searchPlaceholder = null;
     }
-
-    this.props.onChangeScene(event.data.route.id !== Constants.Views.Find.Home, this.getSearchPlaceholder());
   }
 
   /**

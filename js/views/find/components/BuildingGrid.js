@@ -114,7 +114,7 @@ class BuildingGrid extends React.Component {
   componentDidMount(): void {
     // Register search listener if the app should not search all by default
     if (!Preferences.getAlwaysSearchAll()) {
-      SearchManager.addSearchListener(this._buildingSearchListener);
+      SearchManager.addSearchListener('find', this._buildingSearchListener);
     }
 
     if (!this.state.loaded) {
@@ -126,7 +126,7 @@ class BuildingGrid extends React.Component {
    * Removes the search listener.
    */
   componentWillUnmount(): void {
-    SearchManager.removeSearchListener(this._buildingSearchListener);
+    SearchManager.removeSearchListener('find', this._buildingSearchListener);
   }
 
   /* Listener for search input. */

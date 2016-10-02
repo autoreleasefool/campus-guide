@@ -154,8 +154,7 @@ class Stops extends React.Component {
   componentDidMount(): void {
     // Register search listener if the app should not search all by default
     if (!Preferences.getAlwaysSearchAll()) {
-      SearchManager.addSearchListener(this._stopSearchListener);
-      SearchManager.addSearchListener(this._timeSearchListener);
+      SearchManager.addSearchListener('find', this._stopSearchListener);
     }
 
     if (!this.state.loaded) {
@@ -179,8 +178,8 @@ class Stops extends React.Component {
    * Clears the cached stops.
    */
   componentWillUnmount(): void {
-    SearchManager.removeSearchListener(this._stopSearchListener);
-    SearchManager.removeSearchListener(this._timeSearchListener);
+    SearchManager.removeSearchListener('find', this._stopSearchListener);
+    SearchManager.removeSearchListener('find', this._timeSearchListener);
     this._cachedCampusStops = null;
   }
 
@@ -203,6 +202,7 @@ class Stops extends React.Component {
    * Informs parent that no stop is selected.
    */
   _clearStop(): void {
+    SearchManager.removeSearchListener('find', this._timeSearchListener);
     this.refs.Navigator.pop();
     if (this.props.onStopSelected) {
       this.props.onStopSelected(null);
@@ -227,6 +227,10 @@ class Stops extends React.Component {
   _displayStopDetails(campuses: Object, stop: TransitStop): void {
     if (this._cachedCampusStops == null) {
       this._cachedCampusStops = campuses;
+    }
+
+    if (!Preferences.getAlwaysSearchAll()) {
+      SearchManager.addSearchListener('find', this._timeSearchListener);
     }
 
     this._resetTimes = true;

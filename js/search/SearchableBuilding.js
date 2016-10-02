@@ -146,7 +146,8 @@ function _getRoomResults(searchTerms: string, buildings: Array < Building >): Pr
 export function getResults(searchTerms: ?string): Promise < Object > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      return resolve({});
+      resolve({});
+      return;
     }
 
     // Ignore the case of the search terms

@@ -85,9 +85,6 @@ let globalTooltip: any;
 
 class Tooltip extends React.Component {
 
-  /** Represents if the user has seen the tooltip indicating how to search all. */
-  static HOW_TO_SEARCH_ALL: string = 'tooltip_search_all';
-
   /** Represents if the user has seen the tooltip to show building image. */
   static SHOW_BUILDING_IMAGE: string = 'tooltip_show_building_image';
 

@@ -128,7 +128,7 @@ class LinkCategory extends React.Component {
   componentWillMount(): void {
     // Register search listener if the app should not search all by default
     if (!Preferences.getAlwaysSearchAll()) {
-      SearchManager.addSearchListener(this._linkSearchListener, true);
+      SearchManager.addSearchListener('discover', this._linkSearchListener);
     }
   }
 
@@ -136,7 +136,7 @@ class LinkCategory extends React.Component {
    * Removes the search listener.
    */
   componentWillUnmount(): void {
-    SearchManager.removeSearchListener(this._linkSearchListener);
+    SearchManager.removeSearchListener('discover', this._linkSearchListener);
   }
 
   /* Listener for search input. */

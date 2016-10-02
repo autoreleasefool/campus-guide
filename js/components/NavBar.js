@@ -61,7 +61,6 @@ const Ionicons = require('react-native-vector-icons/Ionicons');
 const Preferences = require('Preferences');
 const SearchManager = require('SearchManager');
 const StatusBarUtils = require('StatusBarUtils');
-const Tooltip = require('Tooltip');
 const TranslationUtils = require('TranslationUtils');
 
 // Height of the navbar
@@ -149,31 +148,9 @@ class NavBar extends React.Component {
   }
 
   /**
-   * Displays a tooltip that informs user of the purpose of the search all button, if they have not been shown the
-   * message before.
-   */
-  _showSearchAllTooltip(): void {
-    Tooltip.hasSeenTooltip(Tooltip.HOW_TO_SEARCH_ALL, seen => {
-      if (!seen && !Tooltip.isTooltipActive()
-          && SearchManager.numberOfSearchListeners() > 0
-          && !Preferences.getAlwaysSearchAll()) {
-        Tooltip.showTooltip({
-          callback: () => Tooltip.setHasSeenTooltip(Tooltip.HOW_TO_SEARCH_ALL),
-          hAlign: 'right',
-          text: 'Click the button above to search the entire app instead',
-          vAlign: 'top',
-          x: 0,
-          y: NAVBAR_HEIGHT + StatusBarUtils.getStatusBarPadding(Platform),
-        });
-      }
-    });
-  }
-
-  /**
    * Clears the search field and requests a back navigation.
    */
   _onBack(): void {
-    SearchManager.resumeAllSearchListeners();
     this.clearSearch();
     if (this.props.onBack) {
       this.props.onBack();
@@ -189,7 +166,6 @@ class NavBar extends React.Component {
     this._searchText = text;
     this.props.onSearch(text);
     if (text != null && text.length > 0) {
-      this._showSearchAllTooltip();
       if (!this.state.searching) {
         LayoutAnimation.easeInEaseOut();
         this.setState({
@@ -218,8 +194,6 @@ class NavBar extends React.Component {
         ? Translations.search_placeholder
         : this.state.searchPlaceholder;
 
-    console.log(searchPlaceholder);
-
     const searchMargin = Constants.Margins.Regular;
     let searchLeftMargin: number = searchMargin;
     let searchRightMargin: number = searchMargin;
@@ -231,7 +205,7 @@ class NavBar extends React.Component {
       searchLeftMargin = 0;
     }
 
-    if (this.state.searching && SearchManager.numberOfSearchListeners() > 0 && !Preferences.getAlwaysSearchAll()) {
+    if (this.state.searching && SearchManager.totalNumberOfSearchListeners() > 0 && !Preferences.getAlwaysSearchAll()) {
       searchAllIconStyle = {width: 50};
       searchRightMargin = 0;
     }
