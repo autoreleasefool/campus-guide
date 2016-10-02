@@ -122,6 +122,7 @@ export function narrowResults(searchTerms: ?string, existingResults: Object): Ob
             }
 
             narrowedResults[source].push(existingResults[source][i]);
+            break;
           }
         }
       }
