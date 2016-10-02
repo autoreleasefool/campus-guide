@@ -208,8 +208,6 @@ class TabsCommon extends React.Component {
       this._showBackButton(true);
     } else {
       this._previousTab = -1;
-      // console.log(this._tabs[tab.i].showBackButton);
-      // console.log(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
       this._showBackButton(this._tabs[tab.i].showBackButton ? (this._tabs[tab.i]:any).showBackButton() : false);
       this._updateSearchPlaceholder(this._tabs[tab.i].getSearchPlaceholder
           ? (this._tabs[tab.i]:any).getSearchPlaceholder()
@@ -217,7 +215,9 @@ class TabsCommon extends React.Component {
 
       // Clear the search bar
       this.refs.NavBar.clearSearch();
+    }
 
+    if (tab.i !== TAB_SEARCH) {
       // Set the default search listener to be this class
       SearchManager.setDefaultSearchListener({
         onSearch: this._searchAll,
