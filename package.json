@@ -15,7 +15,7 @@
   "dependencies": {
     "http-status-codes": "^1.0.6",
     "react": "^15.3.2",
-    "react-native": "^0.34.0",
+    "react-native": "^0.34.1",
     "react-native-admob": "^1.1.5",
     "react-native-device-info": "^0.9.5",
     "react-native-fs": "^1.5.1",
@@ -29,14 +29,14 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.0.0",
-    "babel-jest": "^15.0.0",
-    "babel-polyfill": "^6.9.1",
+    "babel-jest": "^16.0.0",
+    "babel-polyfill": "^6.16.0",
     "empty": "^0.10.1",
-    "eslint": "^3.6.1",
+    "eslint": "^3.7.1",
     "eslint-plugin-react": "^6.3.0",
     "eslint-plugin-react-native": "^2.0.0",
     "flow-bin": "^0.32.0",
-    "jest-cli": "^15.1.1"
+    "jest-cli": "^16.0.1"
   },
   "jest": {
     "coverageThreshold": {
