@@ -41,7 +41,6 @@ import type {
 const Constants = require('Constants');
 const MainScreen = require('MainScreen');
 const SplashScreen = require('SplashScreen');
-const Tooltip = require('Tooltip');
 const UpdateScreen = require('UpdateScreen');
 
 /**
@@ -125,7 +124,6 @@ function setup(): ReactClass < {} > {
               configureScene={this._configureScene}
               initialRoute={{id: Constants.Views.Splash}}
               renderScene={this._renderScene} />
-          <Tooltip />
         </View>
       );
     }
