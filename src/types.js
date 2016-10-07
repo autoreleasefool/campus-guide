@@ -16,19 +16,20 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file index.ios.js
- * @description Initial entry point for the iOS app.
- * @flow
+ * @created 2016-10-05.
+ * @file types.js
+ * @providesModule types
+ * @description Type definitions for use throughout the application
  *
+ * @flow
  */
 'use strict';
 
-// React imports
-import {
-  AppRegistry,
-} from 'react-native';
+/** A function with no parameters and no return type. */
+export type VoidFunction = () => void;
 
-// Imports
-const setup = require('./src/setup');
-
-AppRegistry.registerComponent('CampusGuide', setup);
+/** A navigator route. */
+export type Route = {
+  id: number | string, // Unique ID for the route
+  data: any,           // Any data to pass along to be used to render the view.
+};

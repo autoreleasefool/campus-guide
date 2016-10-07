@@ -16,19 +16,13 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file index.ios.js
- * @description Initial entry point for the iOS app.
- * @flow
+ * @created 2016-10-07.
+ * @file types.js
+ * @providesModule actionTypes
+ * @description Type definitions for actions, to use throughout the application
  *
+ * @flow
  */
 'use strict';
 
-// React imports
-import {
-  AppRegistry,
-} from 'react-native';
-
-// Imports
-const setup = require('./src/setup');
-
-AppRegistry.registerComponent('CampusGuide', setup);
+export type Action = { type: 'SEARCH_ALL', searchTerms: ?string };

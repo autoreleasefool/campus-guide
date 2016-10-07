@@ -16,19 +16,18 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file index.ios.js
- * @description Initial entry point for the iOS app.
- * @flow
+ * @created 2016-10-07.
+ * @file index.js
+ * @description Collects available reducers
  *
+ * @flow
  */
 'use strict';
 
-// React imports
-import {
-  AppRegistry,
-} from 'react-native';
+const {
+  combineReducers,
+} = require('redux');
 
-// Imports
-const setup = require('./src/setup');
-
-AppRegistry.registerComponent('CampusGuide', setup);
+module.exports = combineReducers({
+  search: require('./search'),
+});

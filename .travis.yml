@@ -4,13 +4,9 @@ node_js:
   - "6"
 
 script:
-  # Ignoring the following commands since they fail without resources
-  # Resources are being kept private until the release
-  # npm run build:ios
-  # npm run build:android
   - npm run lint
   - npm run flow
-  - npm run test
+  # - npm run test
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

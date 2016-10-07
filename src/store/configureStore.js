@@ -16,19 +16,37 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file index.ios.js
- * @description Initial entry point for the iOS app.
- * @flow
+ * @created 2016-10-05.
+ * @file configureStore.js
+ * @description Create the Redux store
  *
+ * @flow
  */
 'use strict';
 
-// React imports
+// Redux imports
 import {
-  AppRegistry,
-} from 'react-native';
+  createStore,
+} from 'redux';
+
+// Type imports
+import type {
+  VoidFunction,
+} from 'types';
 
 // Imports
-const setup = require('./src/setup');
+import reducers from '../reducers';
 
-AppRegistry.registerComponent('CampusGuide', setup);
+/**
+ * Creates a redux store from the reducers and returns it.
+ *
+ * @param {?VoidFunction} onComplete called when the store has been created.
+ * @returns {any} redux store
+ */
+function configureStore(onComplete: ?VoidFunction): any {
+  const store = createStore(reducers);
+  onComplete && onComplete();
+  return store;
+}
+
+module.exports = configureStore;

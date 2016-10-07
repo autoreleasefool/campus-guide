@@ -24,6 +24,9 @@
  */
 'use strict';
 
+/* eslint-disable react/prefer-stateless-function */
+/* Future-proofing the root setup component. */
+
 // React
 import React from 'react';
 
@@ -43,9 +46,9 @@ const CampusGuideApp = require('CampusGuideApp');
 /**
  * Applies global settings to the app and returns the root view.
  *
- * @returns {ReactClass<any>} Returns the root component for the app
+ * @returns {ReactElement<any>} Returns the root component for the app
  */
-function setup(): ReactClass < any > {
+function setup(): ReactElement < any > {
 
   // Fix function not found error
   // http://stackoverflow.com/a/35305611/4896787
@@ -68,28 +71,13 @@ function setup(): ReactClass < any > {
     };
   }
 
+  // Create the redux store
+  const store = configureStore();
+
   class Root extends React.Component {
-
-    state: {
-      isLoading: boolean;
-      store: any;
-    };
-
-    constructor() {
-      super();
-      this.state = {
-        isLoading: true,
-        store: configureStore(() => this.setState({isLoading: false})),
-      };
-    }
-
     render() {
-      if (this.state.isLoading) {
-        return null;
-      }
-
       return (
-        <Provider store={this.state.store}>
+        <Provider store={store}>
           <CampusGuideApp />
         </Provider>
       );

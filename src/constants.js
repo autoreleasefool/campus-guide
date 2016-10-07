@@ -16,19 +16,29 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file index.ios.js
- * @description Initial entry point for the iOS app.
- * @flow
+ * @created 2016-10-07.
+ * @file constants.js
+ * @providesModule Constants
+ * @description Constant values for the application
  *
+ * @flow
  */
 'use strict';
 
-// React imports
-import {
-  AppRegistry,
-} from 'react-native';
+module.exports = {
 
-// Imports
-const setup = require('./src/setup');
+  /**
+   * Basic color definitions for components.
+   */
+  Colors: {
+    primaryBackground: '#8F001A',
+  },
 
-AppRegistry.registerComponent('CampusGuide', setup);
+  /**
+   * Identifiers for the views throughout the application.
+   */
+  Views: {
+    Main: 1,
+  },
+
+};

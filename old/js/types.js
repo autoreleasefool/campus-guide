@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file types.js
- * @providesModule types
  * @description Variable type definitions for use throughout the app.
  *
  * @flow

@@ -29,6 +29,6 @@ import {
 } from 'react-native';
 
 // Imports
-const setup = require('./js/setup');
+const setup = require('./src/setup');
 
 AppRegistry.registerComponent('CampusGuide', setup);
