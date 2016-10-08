@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-07.
+ * @created 2016-10-07
  * @file types.js
  * @providesModule actionTypes
  * @description Type definitions for actions, to use throughout the application

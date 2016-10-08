@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-05.
+ * @created 2016-10-05
  * @file types.js
  * @providesModule types
  * @description Type definitions for use throughout the application

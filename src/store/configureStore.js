@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-05.
+ * @created 2016-10-05
  * @file configureStore.js
  * @description Create the Redux store
  *

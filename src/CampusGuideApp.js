@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-03.
+ * @created 2016-10-03
  * @file CampusGuideApp.js
  * @providesModule CampusGuideApp
  * @description Base component for the application.

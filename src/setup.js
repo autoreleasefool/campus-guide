@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-03.
+ * @created 2016-10-03
  * @file setup.js
  * @description Setup environment for the application.
  *
