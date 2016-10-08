@@ -24,10 +24,12 @@
  */
 'use strict';
 
-const {
-  combineReducers,
-} = require('redux');
+// Redux imports
+const {combineReducers} = require('redux');
 
+// Combine and export reducers
 module.exports = combineReducers({
+  config: require('./config'),
+  // navigation: require('./navigation'),
   search: require('./search'),
 });

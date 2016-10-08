@@ -16,37 +16,35 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-05
- * @file configureStore.js
- * @description Create the Redux store
+ * @created 2016-10-08
+ * @file MainScreen.js
+ * @description Container for the main application.
  *
  * @flow
  */
 'use strict';
 
-// Redux imports
+// React imports
+import React from 'react';
 import {
-  createStore,
-} from 'redux';
-
-// Types
-import type {
-  VoidFunction,
-} from 'types';
+  View,
+} from 'react-native';
 
 // Imports
-import reducers from '../reducers';
+const Constants = require('Constants');
 
-/**
- * Creates a redux store from the reducers and returns it.
- *
- * @param {?VoidFunction} onComplete called when the store has been created.
- * @returns {any} redux store
- */
-function configureStore(onComplete: ?VoidFunction): any {
-  const store = createStore(reducers);
-  onComplete && onComplete();
-  return store;
+class MainScreen extends React.Component {
+
+  /**
+   * Renders the main view of the application.
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render.
+   */
+  render(): ReactElement < any > {
+    return (
+      <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}} />
+    );
+  }
 }
 
-module.exports = configureStore;
+module.exports = MainScreen;

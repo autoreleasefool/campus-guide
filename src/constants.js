@@ -25,20 +25,36 @@
  */
 'use strict';
 
+const colors = {
+  garnet: '#8F001A',
+  darkGrey: '#80746C',
+  polarGrey: '#F2F2F2',
+  lightGrey: '#ACA39A',
+  charcoalGrey: '#2D2D2C',
+};
+
+const textSizes = {
+  Caption: 12,
+  Body: 14,
+  Subtitle: 16,
+  Title: 20,
+};
+
 module.exports = {
 
   /**
    * Basic color definitions for components.
    */
   Colors: {
-    primaryBackground: '#8F001A',
+    ...colors,                        // Import basic color definitions
+    primaryBackground: colors.garnet, // Primary background color for the application
   },
 
   /**
-   * Identifiers for the views throughout the application.
+   * Common element sizes to use throughout the application.
    */
-  Views: {
-    Main: 1,
+  Sizes: {
+    Text: textSizes,
   },
 
 };

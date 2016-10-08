@@ -16,37 +16,21 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-05
- * @file configureStore.js
- * @description Create the Redux store
+ * @created 2016-10-08
+ * @file index.js
+ * @providesModule actions
+ * @description Combines all actions
  *
  * @flow
  */
 'use strict';
 
-// Redux imports
-import {
-  createStore,
-} from 'redux';
-
-// Types
-import type {
-  VoidFunction,
-} from 'types';
-
 // Imports
-import reducers from '../reducers';
+const configActions = require('./config');
+// const navigationActions = require('./navigation');
 
-/**
- * Creates a redux store from the reducers and returns it.
- *
- * @param {?VoidFunction} onComplete called when the store has been created.
- * @returns {any} redux store
- */
-function configureStore(onComplete: ?VoidFunction): any {
-  const store = createStore(reducers);
-  onComplete && onComplete();
-  return store;
-}
-
-module.exports = configureStore;
+// Combine and export actions
+module.exports = {
+  ...configActions,
+  // ...navigationActions,
+};

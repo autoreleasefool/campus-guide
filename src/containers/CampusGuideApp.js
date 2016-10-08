@@ -32,13 +32,21 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
+// Types
 import type {
-  Route,
+  WelcomeTab,
 } from 'types';
+
+// Route to describe which view the Navigator should display.
+type AppRoute = {
+  id: WelcomeTab,  // The expected tab
+};
 
 // Imports
 const Constants = require('Constants');
+const Main = require('./MainScreen');
+const Splash = require('./welcome/SplashScreen');
+const Update = require('./welcome/UpdateScreen');
 
 class CampusGuideApp extends React.Component {
 
@@ -48,24 +56,36 @@ class CampusGuideApp extends React.Component {
    * @returns {Object} a configuration for scene transitions in the navigator.
    */
   _configureScene(): Object {
-    return ({
-      ...Navigator.SceneConfigs.HorizontalSwipeJump,
+    return {
+      ...Navigator.SceneConfigs.PushFromRight,
       gestures: false,
-    });
+    };
   }
 
   /**
    * Renders a different view based on the current navigator route.
    *
-   * @param {Route} route               object with properties to identify the route to display
+   * @param {AppRoute}        route     object with properties to identify the route to display
    * @param {ReactClass<any>} navigator navigator object to pass to children
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
-  _renderScene(route: Route, navigator: ReactElement < any >): ReactElement < any > {
+  _renderScene(route: AppRoute, navigator: ReactClass < any >): ReactElement < any > {
     switch (route.id) {
+      case 'splash':
+        return (
+          <Splash navigator={navigator} />
+        );
+      case 'main':
+        return (
+          <Main navigator={navigator} />
+        );
+      case 'update':
+        return (
+          <Update navigator={navigator} />
+        );
       default:
         return (
-          <View navigator={navigator} />
+          <View />
         );
     }
   }
@@ -79,7 +99,7 @@ class CampusGuideApp extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: Constants.Views.Main}}
+          initialRoute={{id: 'splash'}}
           renderScene={this._renderScene}
           style={{flex: 1, backgroundColor: Constants.Colors.primaryBackground}} />
     );

@@ -28,8 +28,58 @@
 /** A function with no parameters and no return type. */
 export type VoidFunction = () => void;
 
+//-----------------------------------------------------------------------------
+//  Languages
+//-----------------------------------------------------------------------------
+
+/** Shorthand for languages available in the application. English or French. */
+export type Language =
+    'en'
+  | 'fr'
+  ;
+
+//-----------------------------------------------------------------------------
+//  Actions
+//-----------------------------------------------------------------------------
+
+/** Available actions for modifying the application state. */
+export type Action =
+    { type: 'SEARCH_ALL', searchTerms: ?string }
+  | { type: 'SWITCH_TAB', tab: Tab; }
+  | { type: 'CHANGE_LANGUAGE', language: Language }
+  ;
+
+//-----------------------------------------------------------------------------
+//  Tabs
+//-----------------------------------------------------------------------------
+
+/** Describes the tabs available in the app's initial state. */
+export type WelcomeTab =
+    'splash'
+  | 'update'
+  | 'main'
+  ;
+
+/** Describes the tabs available in the app. */
+export type Tab =
+    'find'
+  | 'schedule'
+  | 'discover'
+  | 'search'
+  | 'settings'
+  ;
+
+/** Indicates how an object describing tabs must be defined. */
+export type TabItems = {
+  find: any,
+  schedule: any,
+  discover: any,
+  search: any,
+  settings: any,
+};
+
 /** A navigator route. */
 export type Route = {
   id: number | string, // Unique ID for the route
-  data: any,           // Any data to pass along to be used to render the view.
+  data: any,           // Any data to pass along to be used to render the view
 };

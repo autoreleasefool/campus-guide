@@ -270,7 +270,7 @@
     "wrap-regex": "off",
 
     "arrow-body-style": "off",
-    "arrow-parens": ["error", "as-needed"],
+    "arrow-parens": "error",
     "arrow-spacing": "error",
     "constructor-super": "error",
     "generator-star-spacing": "off",
@@ -327,6 +327,7 @@
       ],
       "groups": {
         "lifecycle": [
+          "props",
           "state",
           "propTypes",
           "contextTypes",

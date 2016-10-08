@@ -27,28 +27,26 @@
 /* eslint-disable react/prefer-stateless-function */
 /* Future-proofing the root setup component. */
 
-// React
+// React imports
 import React from 'react';
-
-// React Native
 import {
   Platform,
   UIManager,
 } from 'react-native';
 
-// Redux
-const {Provider} = require('react-redux');
+// Redux imports
+import {Provider} from 'react-redux';
 const configureStore = require('./store/configureStore');
 
-// Components
+// Imports
 const CampusGuideApp = require('CampusGuideApp');
 
 /**
  * Applies global settings to the app and returns the root view.
  *
- * @returns {ReactElement<any>} Returns the root component for the app
+ * @returns {ReactClass<any>} Returns the root component for the app
  */
-function setup(): ReactElement < any > {
+function setup(): ReactClass < any > {
 
   // Fix function not found error
   // http://stackoverflow.com/a/35305611/4896787

@@ -16,9 +16,9 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-07
- * @file search.js
- * @description Reducers for search actions
+ * @created 2016-10-08
+ * @file config.js
+ * @description Reducers for config actions
  *
  * @flow
  */
@@ -27,34 +27,36 @@
 // Types
 import type {
   Action,
+  Language,
 } from 'types';
 
-// Describes a search.
-export type Search = {
-  searchTerms: ?string, // Search terms to filter results by
+// Describes the configuration state.
+type Configuration = {
+  language: ?Language, // Current language, selected by the user
 };
 
-// Initial search state.
-const initialState: Search = {
-  searchTerms: null,
+// Initial navigation state.
+const initialState: Configuration = {
+  language: null,
 };
 
 /**
- * When provided with a search action, parses the search terms and returns an updated state.
+ * When provided with a configuration action, parses the parameters and returns an updated state.
  *
- * @param {Search} state  the current state
- * @param {Action} action the action being taken
- * @returns {Search} an updated state based on the previous state and the action taken.
+ * @param {Configuration} state   the current state
+ * @param {Action}        action  the action being taken
+ * @returns {Configuration} an updated state based on the previous state and the action taken.
  */
-function search(state: Search = initialState, action: Action): Search {
+function config(state: Configuration = initialState, action: Action): Configuration {
   switch (action.type) {
-    case 'SEARCH_ALL':
+    case 'CHANGE_LANGUAGE':
       return {
-        searchTerms: action.searchTerms,
+        ...state,
+        language: action.language,
       };
     default:
       return state;
   }
 }
 
-module.exports = search;
+module.exports = config;

@@ -16,13 +16,23 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-07
- * @file types.js
- * @providesModule actionTypes
- * @description Type definitions for actions, to use throughout the application
+ * @created 2016-10-08
+ * @file config.js
+ * @description Provides configuration actions.
  *
  * @flow
  */
 'use strict';
 
-export type Action = { type: 'SEARCH_ALL', searchTerms: ?string };
+// Types
+import type {
+  Action,
+  Language,
+} from 'types';
+
+module.exports = {
+  changeLanguage: (language: Language): Action => ({
+    type: 'CHANGE_LANGUAGE',
+    language,
+  }),
+};
