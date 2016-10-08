@@ -16,17 +16,30 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file global.js
- * @description Declares functions and libraries used throughout the application for flow.
+ * @created 2016-10-08
+ * @file config-test.js
+ * @description Tests config actions
  *
+ * @flow
  */
+'use strict';
 
-/* eslint-disable */
+// Types
+import type {
+  Language,
+} from 'types';
 
-// React Native globals
-declare function requestAnimationFrame(fn: () => any): void;
+// Imports
+import * as actions from '../config';
 
-// Jest globals
-declare function describe(str: string, fn: () => any): void;
-declare function expect(obj: any): any;
-declare function it(str: string, fn: () => any): void;
+describe('config actions', () => {
+  it('should create an action to change the language', () => {
+    const language: Language = 'en';
+    const expectedAction = {
+      type: 'CHANGE_LANGUAGE',
+      language,
+    };
+
+    expect(actions.changeLanguage(language)).toEqual(expectedAction);
+  });
+});

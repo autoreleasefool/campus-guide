@@ -49,11 +49,13 @@ const initialState: Configuration = {
  */
 function config(state: Configuration = initialState, action: Action): Configuration {
   switch (action.type) {
-    case 'CHANGE_LANGUAGE':
+    case 'CHANGE_LANGUAGE': {
+      const language = (action.language === 'fr' || action.language === 'en') ? action.language : null;
       return {
         ...state,
-        language: action.language,
+        language: language,
       };
+    }
     default:
       return state;
   }

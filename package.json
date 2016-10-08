@@ -62,6 +62,10 @@
     },
     "moduleNameMapper": {
       "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
-    }
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/old/"
+    ]
   }
 }
