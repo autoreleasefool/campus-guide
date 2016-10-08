@@ -52,6 +52,10 @@ function search(state: Search = initialState, action: Action): Search {
       return {
         searchTerms: action.searchTerms,
       };
+    case 'CLEAR_SEARCH':
+      return {
+        searchTerms: null,
+      };
     default:
       return state;
   }

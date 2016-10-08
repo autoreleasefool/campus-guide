@@ -45,6 +45,7 @@ export type Language =
 /** Available actions for modifying the application state. */
 export type Action =
     { type: 'SEARCH_ALL', searchTerms: ?string }
+    { type: 'CLEAR_SEARCH' }
   | { type: 'SWITCH_TAB', tab: Tab; }
   | { type: 'CHANGE_LANGUAGE', language: Language }
   ;
