@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file Configuration.js
- * @providesModule Configuration
  * @description Manages the configuration of the application.
  *
  * @flow

@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file BusCampusList.js
- * @providesModule BusCampusList
  * @description Displays the list of campuses with bus stop information.
  *
  * @flow

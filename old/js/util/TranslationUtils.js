@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file TranslationUtils.js
- * @providesModule TranslationUtils
  * @description Defines a set of methods to easily get translations from objects.
  *
  * @flow

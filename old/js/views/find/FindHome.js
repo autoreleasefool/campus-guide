@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file FindHome.js
- * @providesModule FindHome
  * @description View for the root navigation for finding a room on campus.
  *
  * @flow

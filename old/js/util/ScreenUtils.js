@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file ScreenUtils.js
- * @providesModule ScreenUtils
  * @description Utility methods for interacting with the screens.
  *
  * @flow

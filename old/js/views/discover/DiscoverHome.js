@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file DiscoverHome.js
- * @providesModule DiscoverHome
  * @description Root view for links which help users become acquainted with the school.
  *
  * @flow

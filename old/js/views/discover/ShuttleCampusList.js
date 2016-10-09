@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file ShuttleCampusList.js
- * @providesModule ShuttleCampusList
  * @description Displays info about shuttles provided by the university across the various campuses.
  *
  * @flow

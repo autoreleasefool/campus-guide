@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file SectionHeader.js
- * @providesModule SectionHeader
  * @description Predefined style for section separating headers in the app.
  *
  * @flow

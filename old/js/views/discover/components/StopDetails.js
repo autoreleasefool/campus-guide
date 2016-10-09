@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file StopDetails.js
- * @providesModule StopDetails
  * @description Displays details about the stops provided. Navigates between a list of stops and their individual
  *              details.
  *

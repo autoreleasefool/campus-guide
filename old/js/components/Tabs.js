@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file Tabs.js
- * @providesModule Tabs
  * @description Provides tab functionality common to both Android and iOS.
  *
  * @flow

@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file FindNavigator.js
- * @providesModule Find
  * @description Navigator for managing views for finding rooms on campus.
  *
  * @flow

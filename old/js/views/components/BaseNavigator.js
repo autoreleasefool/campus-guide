@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file BaseNavigator.js
- * @providesModule BaseNavigator
  * @description Navigator for managing views in a tab.
  *
  * @flow

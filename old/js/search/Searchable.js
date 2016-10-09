@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file Searchable.js
- * @providesModule Searchable
  * @description Exports the various sources the app should search and present results for.
  *
  * @flow

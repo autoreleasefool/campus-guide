@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file ExternalUtils.js
- * @providesModule ExternalUtils
  * @description Defines a set of methods for interacting with elements outside of the application.
  *
  * @flow

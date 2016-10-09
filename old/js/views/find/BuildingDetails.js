@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file BuildingDetails.js
- * @providesModule BuildingDetails
  * @description Provides details on a single building on campus.
  *
  * @flow

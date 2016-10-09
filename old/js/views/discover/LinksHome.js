@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file LinksHome.js
- * @providesModule LinksHome
  * @description Presents a list of defined, useful links for the user regarding the university.
  *
  * @flow

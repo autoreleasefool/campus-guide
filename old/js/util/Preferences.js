@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file Preferences.js
- * @providesModule Preferences
  * @description Manages the application preferences. Loads the preferences upon opening
  *              the application then caches their values so they don't need to be
  *              reloaded later. When preferences are updated, the cache is updated and

@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file UpdateScreen.ios.js
- * @providesModule UpdateScreen
  * @description Provides progress for app updates, on iOS devices.
  *
  * @flow

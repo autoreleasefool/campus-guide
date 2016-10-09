@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file BuildingGrid.js
- * @providesModule BuildingGrid
  * @description Displays the list of buildings in a grid, with the building's name and an image.
  *
  * @flow

@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file Tooltip.js
- * @providesModule Tooltip
  * @description Displays a text overlay on the screen at a specified position, to be dismissed by the user
  *
  * @flow

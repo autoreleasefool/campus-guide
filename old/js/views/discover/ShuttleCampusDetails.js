@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file ShuttleCampusDetails.js
- * @providesModule ShuttleCampusDetails
  * @description Displays details about the departure times of the shuttle from a single campus.
  *
  * @flow

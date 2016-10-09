@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file NavigationHome.js
- * @providesModule NavigationHome
  * @description Allows the user to confirm their starting and ending location for navigation.
  *
  * @flow

@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file TabBar.js
- * @providesModule TabBar
  * @description Renders the tab bar.
  *
  * @flow

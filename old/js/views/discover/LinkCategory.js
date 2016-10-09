@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file LinkCategory.js
- * @providesModule LinkCategory
  * @description Displays the links and subcategories belonging to a category of useful links.
  *
  * @flow

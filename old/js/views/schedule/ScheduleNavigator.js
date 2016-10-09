@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file ScheduleNavigator.js
- * @providesModule Schedule
  * @description Navigator for managing views for viewing and updating a schedule
  *
  * @flow

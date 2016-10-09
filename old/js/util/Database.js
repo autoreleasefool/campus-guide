@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file Database.js
- * @providesModule Database
  * @description Provides interations with the application database.
  *
  * @flow

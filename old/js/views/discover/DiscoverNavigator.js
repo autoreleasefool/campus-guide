@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file DiscoverNavigator.js
- * @providesModule Discover
  * @description Navigator for managing views for learning more about the campus.
  *
  * @flow

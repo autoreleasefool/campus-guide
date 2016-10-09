@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file SplashScreen.js
- * @providesModule SplashScreen
  * @description Initial entry view for the application. Allows the user to select their preferred language on first run.
  *
  * @flow

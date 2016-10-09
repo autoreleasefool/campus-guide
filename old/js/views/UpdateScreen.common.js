@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file UpdateScreen.common.js
- * @providesModule UpdateScreenCommon
  * @description Provides progress for app updates
  *
  * @flow

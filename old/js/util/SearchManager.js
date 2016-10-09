@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file SearchManager.js
- * @providesModule SearchManager
  * @description Provides methods for interacting with the NavBar search input from throughout the app.
  *
  * @flow

@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file SearchableBuilding.js
- * @providesModule SearchableBuilding
  * @description Describes how the buildings in the app should be searched.
  *
  * @flow

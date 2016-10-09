@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file ScheduleHome.js
- * @providesModule ScheduleHome
  * @description View for enabling the user to create a schedule of their classes and see the schedule in an organized
  *              manner.
  *

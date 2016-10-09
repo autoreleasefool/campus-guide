@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file SettingsHome.js
- * @providesModule SettingsHome
  * @description View to allow the user to see and update their settings and preferences.
  *
  * @flow

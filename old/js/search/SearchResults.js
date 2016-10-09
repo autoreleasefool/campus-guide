@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file SearchResults.js
- * @providesModule SearchResults
  * @description Exports the various sources the app should search and present results for.
  *
  * @flow

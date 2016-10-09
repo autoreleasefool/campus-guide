@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file ArrayUtils.js
- * @providesModule ArrayUtils
  * @description Defines a set of methods to manipulate arrays.
  *
  * @flow

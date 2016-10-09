@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file BusCampusDetails.js
- * @providesModule BusCampusDetails
  * @description Displays a campus' location on a map, relative to a user's location, as well as a list of the stops
  *              near the campus.
  *

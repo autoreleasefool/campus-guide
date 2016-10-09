@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file NavBar.js
- * @providesModule NavBar
  * @description Navigation and search bar for the top of the app, to allow the user to
  *              search from anywhere.
  *

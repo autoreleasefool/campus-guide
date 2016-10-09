@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file StatusBarUtils.js
- * @providesModule StatusBarUtils
  * @description Offers utilities for adjusting the status bar.
  *
  * @flow

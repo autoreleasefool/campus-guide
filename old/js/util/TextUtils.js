@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file TextUtils.js
- * @providesModule TextUtils
  * @description Defines a set of methods to manipulate strings.
  *
  * @flow

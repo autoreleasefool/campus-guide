@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file Upcoming.js
- * @providesModule Upcoming
  * @description View to display the user's upcoming classes and events for the day.
  *
  * @flow

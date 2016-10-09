@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file MainScreen.js
- * @providesModule MainScreen
  * @description Main navigational point of the application.
  *
  * @flow

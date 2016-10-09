@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file DisplayUtils.js
- * @providesModule DisplayUtils
  * @description Defines a set of methods to manipulate the display and related values.
  *
  * @flow

@@ -17,7 +17,6 @@
  *
  * @author Joseph Roque
  * @file RoomList.js
- * @providesModule RoomList
  * @description Displays the list of rooms in a certain building.
  *
  * @flow
