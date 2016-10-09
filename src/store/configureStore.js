@@ -25,9 +25,12 @@
 'use strict';
 
 // Redux imports
+import thunk from 'redux-thunk';
 import {
+  applyMiddleware,
   createStore,
 } from 'redux';
+
 
 // Types
 import type {
@@ -44,7 +47,7 @@ import reducers from '../reducers';
  * @returns {any} redux store
  */
 function configureStore(onComplete: ?VoidFunction): any {
-  const store = createStore(reducers);
+  const store = createStore(reducers, applyMiddleware(thunk));
   onComplete && onComplete();
   return store;
 }
