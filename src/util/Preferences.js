@@ -79,7 +79,7 @@ export async function getSelectedLanguage(AsyncStorage: any): Promise < ?Languag
  * @param {any}      AsyncStorage instance of the React Native AsyncStorage
  * @param {Language} language     either 'fr' or 'en'
  */
-export function setSelectedLanguage(AsyncStorage: any, language: Language): void {
+export function setSelectedLanguage(AsyncStorage: any, language: any): void {
   if (language === 'en' || language === 'fr') {
     AsyncStorage.setItem(SELECTED_LANGUAGE, language);
   }
@@ -105,7 +105,7 @@ export async function getCurrentSemester(AsyncStorage: any): Promise < number > 
  * @param {any}    AsyncStorage instance of the React Native AsyncStorage
  * @param {number} semester     the new semester
  */
-export function setCurrentSemester(AsyncStorage: any, semester: number): void {
+export function setCurrentSemester(AsyncStorage: any, semester: any): void {
   if (typeof (semester) === 'number' && semester >= 0) {
     AsyncStorage.setItem(CURRENT_SEMESTER, semester.toString());
   }
@@ -130,7 +130,7 @@ export async function getPrefersWheelchair(AsyncStorage: any): Promise < boolean
  * @param {any}     AsyncStorage instance of the React Native AsyncStorage
  * @param {boolean} prefer       true to prefer wheelchair routes, false for any routes
  */
-export function setPrefersWheelchair(AsyncStorage: any, prefer: boolean): void {
+export function setPrefersWheelchair(AsyncStorage: any, prefer: any): void {
   if (prefer === true || prefer === false) {
     AsyncStorage.setItem(PREFER_WHEELCHAIR, prefer.toString());
   }
@@ -155,7 +155,7 @@ export async function getAlwaysSearchAll(AsyncStorage: any): Promise < boolean >
  * @param {any}     AsyncStorage instance of the React Native AsyncStorage
  * @param {boolean} always       true to always search entire app, false to search components
  */
-export function setAlwaysSearchAll(AsyncStorage: any, always: boolean): void {
+export function setAlwaysSearchAll(AsyncStorage: any, always: any): void {
   if (always === true || always === false) {
     AsyncStorage.setItem(ALWAYS_SEARCH_ALL, always.toString());
   }
@@ -180,7 +180,7 @@ export async function getPreferredTimeFormat(AsyncStorage: any): Promise < strin
  * @param {any}    AsyncStorage instance of the React Native AsyncStorage
  * @param {string} format       12h or 24h time
  */
-export function setPreferredTimeFormat(AsyncStorage: any, format: string): void {
+export function setPreferredTimeFormat(AsyncStorage: any, format: any): void {
   if (format === '12h' || format === '24h') {
     AsyncStorage.setItem(PREFERRED_TIME_FORMAT, format);
   }

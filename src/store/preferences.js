@@ -29,10 +29,15 @@ import {
   AsyncStorage,
 } from 'react-native';
 
+// Types
+import type {
+  Action,
+} from 'types';
+
 // Imports
 const Preferences = require('Preferences');
 
-export const preferenceCache = () => (next) => (action) => {
+export const preferenceCache = () => (next: any) => (action: Action) => {
   // Cache configuration updates
   if (action.type === 'UPDATE_CONFIGURATION') {
     for (const option in action.options) {
