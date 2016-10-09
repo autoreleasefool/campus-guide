@@ -39,7 +39,6 @@ const initialState: ConfigurationOptions = {
   preferredTimeFormat: '12h',
   prefersWheelchair: false,
   semesters: [],
-  timesAppOpened: 0,
 };
 
 /**

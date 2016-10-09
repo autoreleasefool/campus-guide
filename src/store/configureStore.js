@@ -38,6 +38,7 @@ import type {
 } from 'types';
 
 // Imports
+import {preferenceCache} from './preferences';
 import reducers from '../reducers';
 
 // TODO: add middleware to save preferences
@@ -49,7 +50,7 @@ import reducers from '../reducers';
  * @returns {any} redux store
  */
 function configureStore(onComplete: ?VoidFunction): any {
-  const store = createStore(reducers, applyMiddleware(thunk));
+  const store = createStore(reducers, applyMiddleware(thunk, preferenceCache));
   onComplete && onComplete();
   return store;
 }

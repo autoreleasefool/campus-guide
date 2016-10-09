@@ -30,8 +30,6 @@ import type {
   Language,
 } from 'types';
 
-// Represents the number of times the app has been opened
-const TIMES_APP_OPENED: string = 'app_times_opened';
 // Represents the language selected by the user to use the app in
 const SELECTED_LANGUAGE: string = 'app_selected_language';
 // Represents the current study semester selected by the user
@@ -52,26 +50,13 @@ const PREFERRED_TIME_FORMAT: string = 'app_time_format';
  */
 async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise < any > {
   try {
-    const value = await AsyncStorage.getItem(TIMES_APP_OPENED);
+    const value = await AsyncStorage.getItem(key);
     return value;
   } catch (e) {
     console.error('Caught error retrieving pref from async: ' + key, e);
   }
 
   return null;
-}
-
-/**
- * Gets the number of times the app was opened.
- *
- * @param {any} AsyncStorage instance of the React Native AsyncStorage
- * @returns {number} the number of times, or 0 if none
- */
-export async function getTimesAppOpened(AsyncStorage: any): Promise < number > {
-  const value = await retrieveFromAsyncStorage(AsyncStorage, TIMES_APP_OPENED);
-  return (typeof (value) === 'number')
-      ? value
-      : 0;
 }
 
 /**
@@ -82,10 +67,24 @@ export async function getTimesAppOpened(AsyncStorage: any): Promise < number > {
  */
 export async function getSelectedLanguage(AsyncStorage: any): Promise < ?Language > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, SELECTED_LANGUAGE);
-  return (typeof (value) === 'string')
-      ? value
-      : null;
+  console.log('Selected language: ' + value);
+  return (value === null)
+      ? null
+      : value;
 }
+
+/**
+ * Updates the user's selected language.
+ *
+ * @param {any}      AsyncStorage instance of the React Native AsyncStorage
+ * @param {Language} language     either 'fr' or 'en'
+ */
+export function setSelectedLanguage(AsyncStorage: any, language: Language): void {
+  if (language === 'en' || language === 'fr') {
+    AsyncStorage.setItem(SELECTED_LANGUAGE, language);
+  }
+}
+
 
 /**
  * Gets the user's current selected semester.
@@ -95,9 +94,21 @@ export async function getSelectedLanguage(AsyncStorage: any): Promise < ?Languag
  */
 export async function getCurrentSemester(AsyncStorage: any): Promise < number > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, CURRENT_SEMESTER);
-  return (typeof (value) === 'number')
-      ? value
-      : 0;
+  return (value === null)
+      ? 0
+      : parseInt(value);
+}
+
+/**
+ * Updates the user's selected semester.
+ *
+ * @param {any}    AsyncStorage instance of the React Native AsyncStorage
+ * @param {number} semester     the new semester
+ */
+export function setCurrentSemester(AsyncStorage: any, semester: number): void {
+  if (typeof (semester) === 'number' && semester >= 0) {
+    AsyncStorage.setItem(CURRENT_SEMESTER, semester.toString());
+  }
 }
 
 /**
@@ -108,9 +119,21 @@ export async function getCurrentSemester(AsyncStorage: any): Promise < number > 
  */
 export async function getPrefersWheelchair(AsyncStorage: any): Promise < boolean > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, PREFER_WHEELCHAIR);
-  return (typeof (value) === 'boolean')
-      ? value
-      : false;
+  return (value === null)
+      ? false
+      : (value === 'true');
+}
+
+/**
+ * Updates the user's preference for wheelchair routes.
+ *
+ * @param {any}     AsyncStorage instance of the React Native AsyncStorage
+ * @param {boolean} prefer       true to prefer wheelchair routes, false for any routes
+ */
+export function setPrefersWheelchair(AsyncStorage: any, prefer: boolean): void {
+  if (prefer === true || prefer === false) {
+    AsyncStorage.setItem(PREFER_WHEELCHAIR, prefer.toString());
+  }
 }
 
 /**
@@ -121,9 +144,21 @@ export async function getPrefersWheelchair(AsyncStorage: any): Promise < boolean
  */
 export async function getAlwaysSearchAll(AsyncStorage: any): Promise < boolean > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, ALWAYS_SEARCH_ALL);
-  return (typeof (value) === 'boolean')
-      ? value
-      : true;
+  return (value === null)
+      ? false
+      : (value === 'true');
+}
+
+/**
+ * Updates the user's preference for always searching the entire app.
+ *
+ * @param {any}     AsyncStorage instance of the React Native AsyncStorage
+ * @param {boolean} always       true to always search entire app, false to search components
+ */
+export function setAlwaysSearchAll(AsyncStorage: any, always: boolean): void {
+  if (always === true || always === false) {
+    AsyncStorage.setItem(ALWAYS_SEARCH_ALL, always.toString());
+  }
 }
 
 /**
@@ -134,7 +169,19 @@ export async function getAlwaysSearchAll(AsyncStorage: any): Promise < boolean >
  */
 export async function getPreferredTimeFormat(AsyncStorage: any): Promise < string > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, PREFERRED_TIME_FORMAT);
-  return (typeof (value) === 'string')
-      ? value
-      : '12h';
+  return (value === null)
+      ? '12h'
+      : value;
+}
+
+/**
+ * Updates the user's preference for time formatting.
+ *
+ * @param {any}    AsyncStorage instance of the React Native AsyncStorage
+ * @param {string} format       12h or 24h time
+ */
+export function setPreferredTimeFormat(AsyncStorage: any, format: string): void {
+  if (format === '12h' || format === '24h') {
+    AsyncStorage.setItem(PREFERRED_TIME_FORMAT, format);
+  }
 }

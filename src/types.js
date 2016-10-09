@@ -118,7 +118,6 @@ export type ConfigurationOptions = {
   preferredTimeFormat?: string,    // Either 12 or 24h time
   prefersWheelchair?: boolean,     // Only provide wheelchair accessible routes
   semesters?: Array < Semester >,  // List of semesters currently available
-  timesAppOpened?: number,         // Number of times the user has opened the app
 };
 
 /** Describes a configuration file. */

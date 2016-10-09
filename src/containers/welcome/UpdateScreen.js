@@ -42,7 +42,7 @@ class UpdateScreen extends React.Component {
    */
   render(): ReactElement < any > {
     return (
-      <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}} />
+      <View style={{flex: 1, backgroundColor: Constants.Colors.lightGrey}} />
     );
   }
 }

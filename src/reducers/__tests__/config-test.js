@@ -35,7 +35,6 @@ const initialState = {
   preferredTimeFormat: '12h',
   prefersWheelchair: false,
   semesters: [],
-  timesAppOpened: 0,
 };
 
 // Test configuration update
@@ -53,7 +52,6 @@ const updatedState = {
   preferredTimeFormat: '12h',
   prefersWheelchair: false,
   semesters: [],
-  timesAppOpened: 0,
 };
 
 describe('config reducer', () => {

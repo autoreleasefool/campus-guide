@@ -109,7 +109,6 @@ class SplashScreen extends React.Component {
    */
   _loadPreferences(): void {
     Promise.all([
-      Preferences.getTimesAppOpened(AsyncStorage),
       Preferences.getSelectedLanguage(AsyncStorage),
       Preferences.getCurrentSemester(AsyncStorage),
       Preferences.getPrefersWheelchair(AsyncStorage),
@@ -118,7 +117,15 @@ class SplashScreen extends React.Component {
     ])
         .then((results: Array < any >) => {
           this.props.updatePreferences(results);
-          this._checkConfiguration();
+          if (results[0] == null) {
+            // Language has not been selected
+            this.setState({
+              loading: false,
+            });
+          } else {
+            // Language is selected, check configuration
+            this._checkConfiguration();
+          }
         })
         .catch((err: any) => console.error('Unable to load initial preferences', err));
   }
@@ -130,7 +137,7 @@ class SplashScreen extends React.Component {
    */
   _onLanguageSelect(language: Language): void {
     this.props.onLanguageSelect(language);
-    this.props.navigator.push({id: 'main'});
+    this._checkConfiguration();
   }
 
   /**
@@ -236,12 +243,11 @@ const actions = (dispatch) => {
       /* Order of these preferences determined by loadPreferences() order */
 
       dispatch(updateConfiguration({
-        timesAppOpened: preferences[0],
-        language: preferences[1],
-        currentSemester: preferences[2],
-        prefersWheelchair: preferences[3],
-        alwaysSearchAll: preferences[4],
-        preferredTimeFormat: preferences[5],
+        language: preferences[0],
+        currentSemester: preferences[1],
+        prefersWheelchair: preferences[2],
+        alwaysSearchAll: preferences[3],
+        preferredTimeFormat: preferences[4],
       }));
 
       /* eslint-enable no-magic-numbers */
