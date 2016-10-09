@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  AsyncStorage,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -35,7 +36,7 @@ import {
 
 // Redux imports
 import {connect} from 'react-redux';
-import {changeLanguage} from 'actions';
+import {updateConfiguration} from 'actions';
 
 // Types
 import type {
@@ -43,8 +44,11 @@ import type {
 } from 'types';
 
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
 const CoreTranslations: Object = require('../../../assets/json/CoreTranslations.json');
+const Preferences = require('Preferences');
+const Promise = require('promise');
 
 class SplashScreen extends React.Component {
 
@@ -52,8 +56,10 @@ class SplashScreen extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
-    onLanguageSelect: (language: Language) => void,
-    navigator: ReactClass < any >,  // Parent navigator
+    navigator: ReactClass < any >,                            // Parent navigator
+    onLanguageSelect: (language: Language) => void,           // Changes the user's selected language
+    updateConfiguration: (university: Object) => void,        // Updates the app configuration
+    updatePreferences: (preferences: Array < any >) => void,  // Updates the user's preferences
   };
 
   /**
@@ -71,7 +77,7 @@ class SplashScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false, // TODO: switch to true once actually loading something
+      loading: true,
     };
   }
 
@@ -79,9 +85,42 @@ class SplashScreen extends React.Component {
    * Checks if a language has been selected, and moves to the next screen if so.
    */
   componentDidMount(): void {
-    if (this.props.language != null) {
-      this.props.navigator.push({id: 'main'});
-    }
+    this._loadPreferences();
+  }
+
+  /**
+   * Loads the downloaded base configuration and updates the redux store.
+   */
+  _checkConfiguration(): void {
+    Configuration.init()
+        .then(() => Configuration.getConfig('/university.json'))
+        .then((university: Object) => {
+          this.props.updateConfiguration(university);
+          this.props.navigator.push({id: 'main'});
+        })
+        .catch((err: any) => {
+          console.log('Assuming configuration is not available.', err);
+          this.props.navigator.push({id: 'update'});
+        });
+  }
+
+  /**
+   * Loads the user's saved preferences and updates the redux store.
+   */
+  _loadPreferences(): void {
+    Promise.all([
+      Preferences.getTimesAppOpened(AsyncStorage),
+      Preferences.getSelectedLanguage(AsyncStorage),
+      Preferences.getCurrentSemester(AsyncStorage),
+      Preferences.getPrefersWheelchair(AsyncStorage),
+      Preferences.getAlwaysSearchAll(AsyncStorage),
+      Preferences.getPreferredTimeFormat(AsyncStorage),
+    ])
+        .then((results: Array < any >) => {
+          this.props.updatePreferences(results);
+          this._checkConfiguration();
+        })
+        .catch((err: any) => console.error('Unable to load initial preferences', err));
   }
 
   /**
@@ -189,7 +228,24 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    onLanguageSelect: (language: Language) => dispatch(changeLanguage(language)),
+    onLanguageSelect: (language: Language) => dispatch(updateConfiguration({language, firstTime: true})),
+    updateConfiguration: (university: Object) => dispatch(updateConfiguration({semesters: university.semesters})),
+    updatePreferences: (preferences: Array < any >) => {
+
+      /* eslint-disable no-magic-numbers */
+      /* Order of these preferences determined by loadPreferences() order */
+
+      dispatch(updateConfiguration({
+        timesAppOpened: preferences[0],
+        language: preferences[1],
+        currentSemester: preferences[2],
+        prefersWheelchair: preferences[3],
+        alwaysSearchAll: preferences[4],
+        preferredTimeFormat: preferences[5],
+      }));
+
+      /* eslint-enable no-magic-numbers */
+    },
   };
 };
 

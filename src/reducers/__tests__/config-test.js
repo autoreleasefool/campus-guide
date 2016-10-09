@@ -20,7 +20,6 @@
  * @file config-test.js
  * @description Tests config reducers
  *
- * @flow
  */
 'use strict';
 
@@ -29,22 +28,32 @@ import reducer from '../config';
 
 // Expected initial state
 const initialState = {
+  alwaysSearchAll: false,
+  currentSemester: 0,
+  firstTime: false,
   language: null,
+  preferredTimeFormat: '12h',
+  prefersWheelchair: false,
+  semesters: [],
+  timesAppOpened: 0,
 };
 
-// Expected state when language changed to anything other than french or english
-const nullConfig = {
-  language: null,
-};
-
-// Expected state with english language change
-const englishConfig = {
+// Test configuration update
+const configurationUpdate = {
+  alwaysSearchAll: true,
   language: 'en',
 };
 
-// Expected state with french language change
-const frenchConfig = {
-  language: 'fr',
+// Expected state when configuration updated
+const updatedState = {
+  alwaysSearchAll: true,
+  currentSemester: 0,
+  firstTime: false,
+  language: 'en',
+  preferredTimeFormat: '12h',
+  prefersWheelchair: false,
+  semesters: [],
+  timesAppOpened: 0,
 };
 
 describe('config reducer', () => {
@@ -55,42 +64,12 @@ describe('config reducer', () => {
   it ('should update the state', () => {
     expect(
       reducer(
-        undefined,
+        initialState,
         {
-          type: 'CHANGE_LANGUAGE',
-          language: 'en',
+          type: 'UPDATE_CONFIGURATION',
+          options: configurationUpdate,
         }
       )
-    ).toEqual(englishConfig);
-
-    expect(
-      reducer(
-        englishConfig,
-        {
-          type: 'CHANGE_LANGUAGE',
-          language: 'fr',
-        }
-      )
-    ).toEqual(frenchConfig);
-
-    expect(
-      reducer(
-        englishConfig,
-        {
-          type: 'CHANGE_LANGUAGE',
-          language: 'jp',
-        }
-      )
-    ).toEqual(nullConfig);
-
-    expect(
-      reducer(
-        englishConfig,
-        {
-          type: 'CHANGE_LANGUAGE',
-          language: null,
-        }
-      )
-    ).toEqual(nullConfig);
+    ).toEqual(updatedState);
   });
 });

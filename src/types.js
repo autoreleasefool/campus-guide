@@ -25,8 +25,30 @@
  */
 'use strict';
 
+//-----------------------------------------------------------------------------
+//  General
+//-----------------------------------------------------------------------------
+
 /** A function with no parameters and no return type. */
 export type VoidFunction = () => void;
+
+/** A name, valid in English or French. */
+export type DefaultName = {name: string};
+
+/** A name, translated for English and French. */
+export type TranslatedName = {name_en: string, name_fr: string};
+
+/** A link, valid in English or French. */
+export type DefaultLink = {link: string};
+
+/** A link, translated for English and French. */
+export type TranslatedLink = {link_en: string, link_fr: string};
+
+/** A set of details, valid in English or French. */
+export type DefaultDetails = {details: Array < string >};
+
+/** A set of details, translated for English and French. */
+export type TranslatedDetails = {details_en: Array < string >, details_fr: Array < string >};
 
 //-----------------------------------------------------------------------------
 //  Languages
@@ -39,16 +61,14 @@ export type Language =
   ;
 
 //-----------------------------------------------------------------------------
-//  Actions
+//  Semesters
 //-----------------------------------------------------------------------------
 
-/** Available actions for modifying the application state. */
-export type Action =
-    { type: 'SEARCH_ALL', searchTerms: ?string }
-    { type: 'CLEAR_SEARCH' }
-  | { type: 'SWITCH_TAB', tab: Tab; }
-  | { type: 'CHANGE_LANGUAGE', language: Language }
-  ;
+/** A semester at the school, with its name, identifier, and other info. */
+export type Semester = {
+  code: string,
+  current?: boolean,
+} & (DefaultName | TranslatedName);
 
 //-----------------------------------------------------------------------------
 //  Tabs
@@ -84,3 +104,39 @@ export type Route = {
   id: number | string, // Unique ID for the route
   data: any,           // Any data to pass along to be used to render the view
 };
+
+//-----------------------------------------------------------------------------
+//  Configuration
+//-----------------------------------------------------------------------------
+
+/** Describes configuration state. */
+export type ConfigurationOptions = {
+  alwaysSearchAll?: boolean,       // Always search the entire app, never within a view
+  currentSemester?: number,        // Current semester for editing, selected by the user
+  firstTime?: boolean,             // Indicates if it's the user's first time in the app
+  language?: ?Language,            // User's preferred language
+  preferredTimeFormat?: string,    // Either 12 or 24h time
+  prefersWheelchair?: boolean,     // Only provide wheelchair accessible routes
+  semesters?: Array < Semester >,  // List of semesters currently available
+  timesAppOpened?: number,         // Number of times the user has opened the app
+};
+
+/** Describes a configuration file. */
+export type ConfigFile = {
+  name: string,     // Name of the file
+  type: string,     // Type of file: image, json, csv, etc.
+  version: number,  // Version number
+};
+
+//-----------------------------------------------------------------------------
+//  Actions
+//-----------------------------------------------------------------------------
+
+/** Available actions for modifying the application state. */
+export type Action =
+    { type: 'SEARCH_ALL', searchTerms: ?string }
+  | { type: 'CLEAR_SEARCH' }
+  | { type: 'SWITCH_TAB', tab: Tab; }
+  | { type: 'CHANGE_LANGUAGE', language: Language }
+  | { type: 'UPDATE_CONFIGURATION', options: ConfigurationOptions }
+  ;

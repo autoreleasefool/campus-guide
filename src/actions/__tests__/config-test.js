@@ -20,7 +20,6 @@
  * @file config-test.js
  * @description Tests config actions
  *
- * @flow
  */
 'use strict';
 
@@ -33,13 +32,15 @@ import type {
 import * as actions from '../config';
 
 describe('config actions', () => {
-  it('should create an action to change the language', () => {
+  it('should create an action to update the configuration', () => {
     const language: Language = 'en';
     const expectedAction = {
-      type: 'CHANGE_LANGUAGE',
-      language,
+      type: 'UPDATE_CONFIGURATION',
+      options: {
+        language,
+      },
     };
 
-    expect(actions.changeLanguage(language)).toEqual(expectedAction);
+    expect(actions.updateConfiguration({language: language})).toEqual(expectedAction);
   });
 });

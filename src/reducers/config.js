@@ -27,35 +27,32 @@
 // Types
 import type {
   Action,
-  Language,
+  ConfigurationOptions,
 } from 'types';
 
-// Describes the configuration state.
-type Configuration = {
-  language: ?Language, // Current language, selected by the user
-};
-
 // Initial navigation state.
-const initialState: Configuration = {
+const initialState: ConfigurationOptions = {
+  alwaysSearchAll: false,
+  currentSemester: 0,
+  firstTime: false,
   language: null,
+  preferredTimeFormat: '12h',
+  prefersWheelchair: false,
+  semesters: [],
+  timesAppOpened: 0,
 };
 
 /**
  * When provided with a configuration action, parses the parameters and returns an updated state.
  *
- * @param {Configuration} state   the current state
- * @param {Action}        action  the action being taken
- * @returns {Configuration} an updated state based on the previous state and the action taken.
+ * @param {ConfigurationOptions} state   the current state
+ * @param {Action}               action  the action being taken
+ * @returns {ConfigurationOptions} an updated state based on the previous state and the action taken.
  */
-function config(state: Configuration = initialState, action: Action): Configuration {
+function config(state: ConfigurationOptions = initialState, action: Action): ConfigurationOptions {
   switch (action.type) {
-    case 'CHANGE_LANGUAGE': {
-      const language = (action.language === 'fr' || action.language === 'en') ? action.language : null;
-      return {
-        ...state,
-        language: language,
-      };
-    }
+    case 'UPDATE_CONFIGURATION':
+      return Object.assign({}, state, action.options);
     default:
       return state;
   }

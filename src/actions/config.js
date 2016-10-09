@@ -27,12 +27,12 @@
 // Types
 import type {
   Action,
-  Language,
+  ConfigurationOptions,
 } from 'types';
 
 module.exports = {
-  changeLanguage: (language: Language): Action => ({
-    type: 'CHANGE_LANGUAGE',
-    language,
+  updateConfiguration: (options: ConfigurationOptions): Action => ({
+    type: 'UPDATE_CONFIGURATION',
+    options,
   }),
 };

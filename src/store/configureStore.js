@@ -40,6 +40,8 @@ import type {
 // Imports
 import reducers from '../reducers';
 
+// TODO: add middleware to save preferences
+
 /**
  * Creates a redux store from the reducers and returns it.
  *

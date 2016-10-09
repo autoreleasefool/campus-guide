@@ -20,7 +20,6 @@
  * @file search-test.js
  * @description Tests search reducers
  *
- * @flow
  */
 'use strict';
 
