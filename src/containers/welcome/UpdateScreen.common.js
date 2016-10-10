@@ -1,0 +1,378 @@
+/**
+ *
+ * @license
+ * Copyright (C) 2016 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Joseph Roque
+ * @created 2016-10-09
+ * @file UpdateScreen.common.js
+ * @description Provides progress for app updates
+ *
+ * @flow
+ */
+'use strict';
+
+// React imports
+import React from 'react';
+import {
+  Alert,
+  NetInfo,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+// Redux imports
+import {connect} from 'react-redux';
+
+// Types
+import type {
+  Language,
+} from 'types';
+
+// Imports
+const Configuration = require('Configuration');
+const Constants = require('Constants');
+const CoreTranslations: Object = require('../../../assets/json/CoreTranslations.json');
+const emptyFunction = require('empty/function');
+const TranslationUtils = require('TranslationUtils');
+
+// Amount of time to wait before checking for connection, to ensure connection event listener is registered
+const CONNECTION_CHECK_TIMEOUT = 250;
+
+class UpdateScreenCommon extends React.Component {
+
+  /**
+   * Properties this component expects to be provided by its parent.
+   */
+  props: {
+    language: Language,             // The current language, selected by the user
+    navigator: ReactClass < any >,  // Parent navigator
+  };
+
+  /**
+   * Current state of the component.
+   */
+  state: {
+    currentDownload: ?string,           // Name of file being downloaded
+    filesDownloaded: Array < string >,  // Array of filenames downloaded
+    intermediateProgress: number,       // Updated progress of current download
+    showUpdateProgress: boolean,        // True to show progress bar, false to hide
+    totalFiles: number,                 // Total number of files to download
+    totalProgress: number,              // Total bytes downloaded
+    totalSize: number,                  // Total number of bytes across all files
+  };
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentDownload: null,
+      filesDownloaded: [],
+      intermediateProgress: 0,
+      showUpdateProgress: true,
+      totalFiles: 0,
+      totalProgress: 0,
+      totalSize: 0,
+    };
+  }
+
+  /**
+   * Registers a listener for network connectivity.
+   */
+  componentDidMount(): void {
+    // Must set event listener for NetInfo.isConnected.fetch to work
+    // https://github.com/facebook/react-native/issues/8469
+    NetInfo.isConnected.addEventListener('change', emptyFunction);
+    this._checkConnection();
+  }
+
+  /**
+   * Removes the connection listener for NetInfo.
+   */
+  componentWillUnmount(): void {
+    NetInfo.isConnected.removeEventListener('change', emptyFunction);
+  }
+
+  /**
+   * Checks to see if a new configuration update is available and, if so, begins downloading.
+   */
+  _beginUpdate(): void {
+    const self: UpdateScreenCommon = this;
+    const callbacks = {
+      onUpdateStart: this._onUpdateStart.bind(this),
+      onDownloadStart: this._onDowloadStart.bind(this),
+      onDownloadProgress: this._onDownloadProgress.bind(this),
+      onDownloadComplete: this._onDownloadComplete.bind(this),
+    };
+
+    Configuration.isConfigUpdateAvailable()
+        .then((available: boolean) => {
+          if (available) {
+            Configuration.updateConfig(callbacks)
+                .then(this._returnToMain)
+                .catch((err: any) => {
+                  console.error('Failed to update configuration.', err);
+                  self._returnToMain();
+                });
+          } else {
+            self._returnToMain();
+          }
+        })
+        .catch((err: any) => {
+          console.log('Failed configuration update check.', err);
+          self._notifyServerFailed();
+        });
+  }
+
+  /**
+   * Checks for an Internet connection and, if one is available, starts the update.
+   */
+  _checkConnection(): void {
+    const self: UpdateScreenCommon = this;
+    setTimeout(() => {
+      NetInfo.isConnected.fetch()
+          .then((isConnected: boolean) => {
+            if (isConnected || __DEV__) {
+              self._beginUpdate();
+            } else {
+              self._notifyConnectionFailed();
+            }
+          })
+          .catch(self._notifyConnectionFailed);
+    }, CONNECTION_CHECK_TIMEOUT);
+  }
+
+  /**
+   * Returns the total percent of the progress completed.
+   *
+   * @returns {number} a value from 0 to 1
+   */
+  _getProgress(): number {
+    return (this.state.totalProgress + this.state.intermediateProgress) / this.state.totalSize;
+  }
+
+  /**
+   * Hides all progress updates from the screen and shows a "retry" button
+   */
+  _hideProgressBar(): void {
+    this.setState({
+      showUpdateProgress: false,
+    });
+  }
+
+  /**
+   * Displays a prompt to user indicating the server could not be reached and their options.
+   */
+  _notifyServerFailed(): void {
+    const language = this.props.language;
+
+    Configuration.init()
+        .then(() => {
+          Alert.alert(
+            CoreTranslations[language].server_unavailable,
+            CoreTranslations[language].server_unavailable_config_available,
+            [
+              {
+                text: CoreTranslations[language].retry,
+                onPress: this._checkConnection,
+              },
+              {
+                text: CoreTranslations[language].later,
+                onPress: () => this.props.navigator.push({id: 'main'}),
+              },
+            ],
+          );
+        })
+        .catch(() => {
+          Alert.alert(
+            CoreTranslations[language].server_unavailable,
+            CoreTranslations[language].server_unavailable_config_unavailable,
+            [
+              {
+                text: CoreTranslations[language].retry,
+                onPress: this._checkConnection,
+              },
+              {
+                text: CoreTranslations[language].cancel,
+                onPress: this._hideProgressBar,
+                style: 'cancel',
+              },
+            ],
+          );
+        });
+  }
+
+  /**
+   * Displays a prompt to user indicating an internet connection could not be reached and their options.
+   */
+  _notifyConnectionFailed(): void {
+    const language = this.props.language;
+
+    Configuration.init()
+        .then(() => {
+          Alert.alert(
+            CoreTranslations[language].no_internet,
+            CoreTranslations[language].no_internet_config_available,
+            [
+              {
+                text: CoreTranslations[language].retry,
+                onPress: this._checkConnection,
+              },
+              {
+                text: CoreTranslations[language].later,
+                onPress: () => this.props.navigator.push({id: 'main'}),
+              },
+            ],
+          );
+        })
+        .catch(() => {
+          Alert.alert(
+            CoreTranslations[language].no_internet,
+            CoreTranslations[language].no_internet_config_unavailable,
+            [
+              {
+                text: CoreTranslations[language].retry,
+                onPress: this._checkConnection,
+              },
+              {
+                text: CoreTranslations[language].cancel,
+                onPress: this._hideProgressBar,
+                style: 'cancel',
+              },
+            ],
+          );
+        });
+  }
+
+  /**
+   * Return to the main screen.
+   */
+  _returnToMain(): void {
+    TranslationUtils.loadTranslations(this.props.language)
+        .then(() => this.props.navigator.push({id: 'main'}));
+  }
+
+  /**
+   * Handles event for when update starts.
+   *
+   * @param {number} totalSize  size of the update, in bytes
+   * @param {number} totalFiles number of files to be updated
+   */
+  _onUpdateStart(totalSize: number, totalFiles: number): void {
+    console.log('Update total size: ' + totalSize + ', total files: ' + totalFiles);
+    this.setState({
+      showUpdateProgress: true,
+      totalFiles: totalFiles,
+      totalProgress: 0,
+      totalSize: totalSize,
+    });
+  }
+
+  /**
+   * Handles the results of a successful download.
+   *
+   * @param {Object} download results of the download
+   */
+  _onDownloadComplete(download: Object): void {
+    const filesDownloaded: Array < string > = this.state.filesDownloaded.slice(0);
+    filesDownloaded.push(download.filename);
+
+    this.setState({
+      currentDownload: null,
+      filesDownloaded: filesDownloaded,
+      intermediateProgress: 0,
+      totalProgress: this.state.totalProgress + download.bytesWritten,
+    });
+  }
+
+  /**
+   * Provides details about each file being downloaded.
+   *
+   * @param {Object} download details about the download
+   */
+  _onDowloadStart(download: Object): void {
+    this.setState({
+      currentDownload: download.filename,
+    });
+  }
+
+  /**
+   * Handles event for when progress update is received.
+   *
+   * @param {Object} progress details about the progress of the download currently taking
+   *                                                  place
+   */
+  _onDownloadProgress(progress: Object): void {
+    this.setState({
+      intermediateProgress: progress.bytesWritten,
+    });
+  }
+
+  /**
+   * Renders a progress bar to indicate app updating
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render.
+   */
+  render(): ReactElement < any > {
+    const language = this.props.language;
+
+    // Get background color for screen
+    let backgroundColor = Constants.Colors.garnet;
+    if (language === 'fr') {
+      backgroundColor = Constants.Colors.charcoalGrey;
+    }
+
+    return (
+      <View style={{flex: 1, backgroundColor: backgroundColor, justifyContent: 'center'}}>
+        <TouchableOpacity onPress={this._checkConnection}>
+          <View style={_styles.textContainer}>
+            <Text style={_styles.text}>{CoreTranslations[language].retry_update}</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+// Private styles for component
+const _styles = StyleSheet.create({
+  text: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Regular,
+    marginBottom: Constants.Sizes.Margins.Regular,
+    fontSize: Constants.Sizes.Text.Body,
+    color: Constants.Colors.primaryWhiteText,
+  },
+  textContainer: {
+    alignSelf: 'center',
+    backgroundColor: Constants.Colors.darkTransparentBackground,
+  },
+});
+
+// Map state to props
+const select = (store) => {
+  return {
+    language: store.config.language,
+  };
+};
+
+module.exports = connect(select)(UpdateScreenCommon);

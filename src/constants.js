@@ -25,6 +25,9 @@
  */
 'use strict';
 
+/**
+ * Theme colors.
+ */
 const colors = {
   garnet: '#8F001A',
   darkGrey: '#80746C',
@@ -33,11 +36,23 @@ const colors = {
   charcoalGrey: '#2D2D2C',
 };
 
+/**
+ * Base text sizes.
+ */
 const textSizes = {
   Caption: 12,
   Body: 14,
   Subtitle: 16,
   Title: 20,
+};
+
+/**
+ * Base margin sizes.
+ */
+const marginSizes = {
+  Regular: 8,
+  Condensed: 4,
+  Expanded: 16,
 };
 
 module.exports = {
@@ -46,8 +61,14 @@ module.exports = {
    * Basic color definitions for components.
    */
   Colors: {
-    ...colors,                        // Import basic color definitions
-    primaryBackground: colors.garnet, // Primary background color for the application
+    ...colors,                                            // Import basic color definitions
+    primaryBackground: colors.garnet,                     // Primary background color for the application
+    primaryWhiteText: 'white',                            // Primary color when white text is needed
+    secondaryWhiteText: 'rgba(255, 255, 255, 0.7)',       // Secondary color when white text is needed
+    primaryBlackText: 'black',                            // Primary color when black text is needed
+    secondaryBlackText: 'rgba(0, 0, 0, 0.7)',             // Secondary color when black text is needed
+    darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
+    lightTransparentBackground: 'rgba(255,255,255,0.8)',  // Light transparent background color for components
   },
 
   /**
@@ -55,6 +76,7 @@ module.exports = {
    */
   Sizes: {
     Text: textSizes,
+    Margins: marginSizes,
   },
 
 };
