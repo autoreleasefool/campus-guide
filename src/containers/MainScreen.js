@@ -27,13 +27,89 @@
 // React imports
 import React from 'react';
 import {
+  Alert,
   View,
 } from 'react-native';
 
+// Redux imports
+import {connect} from 'react-redux';
+import {updateConfiguration} from 'actions';
+
+// Types
+import type {
+  Language,
+} from 'types';
+
 // Imports
+const Configuration = require('Configuration');
 const Constants = require('Constants');
+const TranslationUtils = require('TranslationUtils');
 
 class MainScreen extends React.Component {
+
+  /**
+   * Properties this component expects to be provided by its parent.
+   */
+  props: {
+    language: Language,                 // The current language, selected by the user
+    navigator: ReactClass < any >,      // Parent navigator
+    shouldShowLanguageMessage: boolean, // True to show message reminding user they can switch languages
+  };
+
+  /**
+   * Displays a pop up when the application opens for the first time.
+   */
+  componentDidMount(): void {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+
+    if (this.props.shouldShowLanguageMessage) {
+      Alert.alert(
+        Translations.only_once_title,
+        Translations.only_once_message,
+        [
+          {text: Translations.ok, onPress: this._checkConfiguration.bind(this)},
+        ]
+      );
+    } else {
+      this._checkConfiguration();
+    }
+  }
+
+  /**
+   * Checks if a configuration update is available and prompts the user to update.
+   */
+  _checkConfiguration(): void {
+    if (Configuration.didCheckForUpdate()) {
+      // Do not check for configuration updates more than once
+      return;
+    }
+
+    Configuration.isConfigUpdateAvailable()
+        .then((available: boolean) => {
+          // Get current language for translations
+          const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+
+          if (available) {
+            Alert.alert(
+              Translations.update_available_title,
+              Translations.update_available_msg,
+              [
+                {text: Translations.cancel, style: 'cancel'},
+                {text: Translations.update, onPress: this._updateConfiguration.bind(this)},
+              ]
+            );
+          }
+        })
+        .catch((err: any) => console.error('Error checking for configuration.', err));
+  }
+
+  /**
+   * Opens the update screen to update the configuration.
+   */
+  _updateConfiguration(): void {
+    this.props.navigator.push({id: 'update'});
+  }
 
   /**
    * Renders the main view of the application.
@@ -47,4 +123,19 @@ class MainScreen extends React.Component {
   }
 }
 
-module.exports = MainScreen;
+// Map state to props
+const select = (store) => {
+  return {
+    language: store.config.language,
+    shouldShowLanguageMessage: store.config.firstTime,
+  };
+};
+
+// Map dispatch to props
+const actions = (dispatch) => {
+  return {
+    acknowledgedLanguageMessage: () => dispatch(updateConfiguration({firstTime: false})),
+  };
+};
+
+module.exports = connect(select, actions)(MainScreen);
