@@ -65,7 +65,7 @@ class CampusGuideApp extends React.Component {
   /**
    * Renders a different view based on the current navigator route.
    *
-   * @param {AppRoute}        route     object with properties to identify the route to display
+   * @param {AppRoute}        route     object with properties to identify the route being displayed
    * @param {ReactClass<any>} navigator navigator object to pass to children
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */

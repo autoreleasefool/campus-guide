@@ -40,6 +40,10 @@ module.name_mapper='.*/assets/csv/.*' -> 'empty/object'
 module.name_mapper='.*/assets/js/.*' -> 'empty/object'
 module.name_mapper='.*/assets/json/.*' -> 'empty/object'
 
+module.file_ext=.ios.js
+module.file_ext=.android.js
+module.file_ext=.js
+
 module.system=haste
 
 esproposal.class_static_fields=enable

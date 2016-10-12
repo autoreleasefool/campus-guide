@@ -127,6 +127,17 @@ export type ConfigFile = {
   version: number,  // Version number
 };
 
+export type Update = {
+  currentDownload?: ?string,           // Name of file being downloaded
+  filesDownloaded?: Array < string >,  // Array of filenames downloaded
+  intermediateProgress?: number,       // Updated progress of current download
+  showRetry?: boolean,                 // True to show retry button, false to hide
+  showUpdateProgress?: boolean,        // True to show progress bar, false to hide
+  totalFiles?: number,                 // Total number of files to download
+  totalProgress?: number,              // Total bytes downloaded
+  totalSize?: number,                  // Total number of bytes across all files
+}
+
 //-----------------------------------------------------------------------------
 //  Actions
 //-----------------------------------------------------------------------------
@@ -138,4 +149,5 @@ export type Action =
   | { type: 'SWITCH_TAB', tab: Tab; }
   | { type: 'CHANGE_LANGUAGE', language: Language }
   | { type: 'UPDATE_CONFIGURATION', options: ConfigurationOptions }
+  | { type: 'UPDATE_PROGRESS', update: Update }
   ;

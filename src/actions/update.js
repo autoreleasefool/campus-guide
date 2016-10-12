@@ -16,21 +16,23 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-07
- * @file index.js
- * @description Collects available reducers
+ * @created 2016-10-10
+ * @file update.js
+ * @description Provides update actions.
  *
  * @flow
  */
 'use strict';
 
-// Redux imports
-const {combineReducers} = require('redux');
+// Types
+import type {
+  Action,
+  Update,
+} from 'types';
 
-// Combine and export reducers
-module.exports = combineReducers({
-  config: require('./config'),
-  // navigation: require('./navigation'),
-  search: require('./search'),
-  update: require('./update'),
-});
+module.exports = {
+  updateProgress: (update: Update): Action => ({
+    type: 'UPDATE_PROGRESS',
+    update,
+  }),
+};

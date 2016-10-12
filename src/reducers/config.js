@@ -30,7 +30,7 @@ import type {
   ConfigurationOptions,
 } from 'types';
 
-// Initial navigation state.
+// Initial update state.
 const initialState: ConfigurationOptions = {
   alwaysSearchAll: false,
   currentSemester: 0,

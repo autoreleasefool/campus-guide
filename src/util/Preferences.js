@@ -67,7 +67,6 @@ async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise
  */
 export async function getSelectedLanguage(AsyncStorage: any): Promise < ?Language > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, SELECTED_LANGUAGE);
-  console.log('Selected language: ' + value);
   return (value === null)
       ? null
       : value;

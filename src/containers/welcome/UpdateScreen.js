@@ -29,6 +29,8 @@ import React from 'react';
 import {
   Alert,
   NetInfo,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -37,10 +39,12 @@ import {
 
 // Redux imports
 import {connect} from 'react-redux';
+import {updateProgress} from 'actions';
 
 // Types
 import type {
   Language,
+  Update,
 } from 'types';
 
 // Imports
@@ -53,27 +57,27 @@ const TranslationUtils = require('TranslationUtils');
 // Amount of time to wait before checking for connection, to ensure connection event listener is registered
 const CONNECTION_CHECK_TIMEOUT = 250;
 
+const ProgressBar = (Platform.OS === 'android')
+    ? require('ProgressBarAndroid')
+    : require('ProgressViewIOS');
+
 class UpdateScreenCommon extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
    */
-  props: {
+  props: Update & {
+    updateFailed: () => void,    // Hides the progress bar to show a retry button
     language: Language,             // The current language, selected by the user
     navigator: ReactClass < any >,  // Parent navigator
-  };
-
-  /**
-   * Current state of the component.
-   */
-  state: {
-    currentDownload: ?string,           // Name of file being downloaded
-    filesDownloaded: Array < string >,  // Array of filenames downloaded
-    intermediateProgress: number,       // Updated progress of current download
-    showUpdateProgress: boolean,        // True to show progress bar, false to hide
-    totalFiles: number,                 // Total number of files to download
-    totalProgress: number,              // Total bytes downloaded
-    totalSize: number,                  // Total number of bytes across all files
+    onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => void,
+                                    // Updates state when a download is finished
+    onDownloadProgress: (bytesWritten: number) => void,
+                                    // Updates state when a download reports intermediate progress
+    onDownloadStart: (fileName: string) => void,
+                                    // Updates state when a download begins
+    onUpdateStart: (totalFiles: number, totalSize: number) => void,
+                                    // Updates state when the app update begins
   };
 
   /**
@@ -83,15 +87,12 @@ class UpdateScreenCommon extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {
-      currentDownload: null,
-      filesDownloaded: [],
-      intermediateProgress: 0,
-      showUpdateProgress: true,
-      totalFiles: 0,
-      totalProgress: 0,
-      totalSize: 0,
-    };
+
+    // Explicitly binding 'this' to all methods that need it
+    (this:any)._beginUpdate = this._beginUpdate.bind(this);
+    (this:any)._checkConnection = this._checkConnection.bind(this);
+    (this:any)._notifyConnectionFailed = this._notifyConnectionFailed.bind(this);
+    (this:any)._returnToMain = this._returnToMain.bind(this);
   }
 
   /**
@@ -127,7 +128,7 @@ class UpdateScreenCommon extends React.Component {
         .then((available: boolean) => {
           if (available) {
             Configuration.updateConfig(callbacks)
-                .then(this._returnToMain)
+                .then(self._returnToMain)
                 .catch((err: any) => {
                   console.error('Failed to update configuration.', err);
                   self._returnToMain();
@@ -166,16 +167,11 @@ class UpdateScreenCommon extends React.Component {
    * @returns {number} a value from 0 to 1
    */
   _getProgress(): number {
-    return (this.state.totalProgress + this.state.intermediateProgress) / this.state.totalSize;
-  }
+    if (this.props.totalSize != null && this.props.totalSize > 0) {
+      return (this.props.totalProgress + this.props.intermediateProgress) / this.props.totalSize;
+    }
 
-  /**
-   * Hides all progress updates from the screen and shows a "retry" button
-   */
-  _hideProgressBar(): void {
-    this.setState({
-      showUpdateProgress: false,
-    });
+    return 0;
   }
 
   /**
@@ -212,7 +208,7 @@ class UpdateScreenCommon extends React.Component {
               },
               {
                 text: CoreTranslations[language].cancel,
-                onPress: this._hideProgressBar,
+                onPress: this.props.updateFailed,
                 style: 'cancel',
               },
             ],
@@ -254,7 +250,7 @@ class UpdateScreenCommon extends React.Component {
               },
               {
                 text: CoreTranslations[language].cancel,
-                onPress: this._hideProgressBar,
+                onPress: this.props.updateFailed,
                 style: 'cancel',
               },
             ],
@@ -266,24 +262,9 @@ class UpdateScreenCommon extends React.Component {
    * Return to the main screen.
    */
   _returnToMain(): void {
+    const self: UpdateScreenCommon = this;
     TranslationUtils.loadTranslations(this.props.language)
-        .then(() => this.props.navigator.push({id: 'main'}));
-  }
-
-  /**
-   * Handles event for when update starts.
-   *
-   * @param {number} totalSize  size of the update, in bytes
-   * @param {number} totalFiles number of files to be updated
-   */
-  _onUpdateStart(totalSize: number, totalFiles: number): void {
-    console.log('Update total size: ' + totalSize + ', total files: ' + totalFiles);
-    this.setState({
-      showUpdateProgress: true,
-      totalFiles: totalFiles,
-      totalProgress: 0,
-      totalSize: totalSize,
-    });
+        .then(() => self.props.navigator.push({id: 'main'}));
   }
 
   /**
@@ -292,26 +273,22 @@ class UpdateScreenCommon extends React.Component {
    * @param {Object} download results of the download
    */
   _onDownloadComplete(download: Object): void {
-    const filesDownloaded: Array < string > = this.state.filesDownloaded.slice(0);
-    filesDownloaded.push(download.filename);
-
-    this.setState({
-      currentDownload: null,
-      filesDownloaded: filesDownloaded,
-      intermediateProgress: 0,
-      totalProgress: this.state.totalProgress + download.bytesWritten,
-    });
-  }
-
-  /**
-   * Provides details about each file being downloaded.
-   *
-   * @param {Object} download details about the download
-   */
-  _onDowloadStart(download: Object): void {
-    this.setState({
-      currentDownload: download.filename,
-    });
+    const totalProgress = this.props.totalProgress;
+    if (this.props.filesDownloaded != null && totalProgress != null) {
+      const filesDownloaded: Array < string > = this.props.filesDownloaded.slice(0);
+      filesDownloaded.push(download.filename);
+      this.props.onDownloadComplete(filesDownloaded, totalProgress, download.bytesWritten);
+    } else {
+      console.error(
+        (String:any).format(
+          'Something\'s null, but it shouldn\'t be!\n\t{0}: {1},\n\t{2}: {3}',
+          'this.props.filesDownloaded',
+          this.props.filesDownloaded,
+          'this.props.totalProgress',
+          this.props.totalProgress,
+        )
+      );
+    }
   }
 
   /**
@@ -321,9 +298,65 @@ class UpdateScreenCommon extends React.Component {
    *                                                  place
    */
   _onDownloadProgress(progress: Object): void {
-    this.setState({
-      intermediateProgress: progress.bytesWritten,
-    });
+    this.props.onDownloadProgress(progress.bytesWritten);
+  }
+
+  /**
+   * Provides details about each file being downloaded.
+   *
+   * @param {Object} download details about the download
+   */
+  _onDowloadStart(download: Object): void {
+    this.props.onDownloadStart(download.filename);
+  }
+
+  /**
+   * Handles event for when update starts.
+   *
+   * @param {number} totalSize  size of the update, in bytes
+   * @param {number} totalFiles number of files to be updated
+   */
+  _onUpdateStart(totalSize: number, totalFiles: number): void {
+    this.props.onUpdateStart(totalFiles, totalSize);
+  }
+
+  /**
+   * Renders a set of messages regarding update progress so far.
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render
+   */
+  _renderStatusMessages(): ReactElement < any > {
+    const language = this.props.language;
+    const currentDownload: ?ReactElement < any > = (this.props.currentDownload == null)
+      ? null
+      : (
+        <Text style={_styles.progressText}>
+          {(String:any).format(CoreTranslations[language].file_is_updating, this.props.currentDownload)}
+        </Text>
+      );
+
+    const filesDownloaded = (this.props.filesDownloaded == null)
+      ? null
+      : (
+        <View>
+          {this.props.filesDownloaded.map((filename, index) => (
+            <Text
+                key={index}
+                style={_styles.progressText}>
+              {(String:any).format(CoreTranslations[language].file_has_been_updated, filename)}
+            </Text>
+          ))}
+        </View>
+      );
+
+    return (
+      <View style={_styles.container}>
+        <ScrollView contentContainerStyle={{alignItems: 'center'}}>
+          {filesDownloaded}
+          {currentDownload}
+        </ScrollView>
+      </View>
+    );
   }
 
   /**
@@ -334,26 +367,75 @@ class UpdateScreenCommon extends React.Component {
   render(): ReactElement < any > {
     const language = this.props.language;
 
-    // Get background color for screen
+    // Get background color for screen, and color for progress bar
     let backgroundColor = Constants.Colors.garnet;
+    let foregroundColor = Constants.Colors.charcoalGrey;
     if (language === 'fr') {
       backgroundColor = Constants.Colors.charcoalGrey;
+      foregroundColor = Constants.Colors.garnet;
     }
 
-    return (
-      <View style={{flex: 1, backgroundColor: backgroundColor, justifyContent: 'center'}}>
-        <TouchableOpacity onPress={this._checkConnection}>
-          <View style={_styles.textContainer}>
-            <Text style={_styles.text}>{CoreTranslations[language].retry_update}</Text>
+    if (this.props.showRetry) {
+      return (
+        <View style={[_styles.buttonContainer, {backgroundColor: backgroundColor}]}>
+          <TouchableOpacity onPress={this._checkConnection}>
+            <View style={_styles.textContainer}>
+              <Text style={_styles.text}>{CoreTranslations[language].retry_update}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+    } else if (this.props.showUpdateProgress) {
+      const progress = (Platform.OS === 'android')
+          ? (
+            <ProgressBar
+                indeterminate={false}
+                progress={this._getProgress()}
+                progressTintColor={foregroundColor}
+                style={_styles.progress}
+                styleAttr='Horizontal' />
+          )
+          : (
+            <ProgressBar
+                progress={this._getProgress()}
+                progressTintColor={foregroundColor}
+                style={_styles.progress} />
+          );
+
+      return (
+        <View style={[_styles.container, {backgroundColor: backgroundColor}]}>
+          <View style={_styles.container}>
+            <View style={_styles.container} />
+            {progress}
+            <Text style={_styles.downloading}>{CoreTranslations[language].downloading}</Text>
           </View>
-        </TouchableOpacity>
-      </View>
-    );
+          {this._renderStatusMessages()}
+        </View>
+      );
+    } else {
+      return (
+        <View style={_styles.container} />
+      );
+    }
   }
 }
 
 // Private styles for component
 const _styles = StyleSheet.create({
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  container: {
+    flex: 1,
+  },
+  downloading: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    marginTop: Constants.Sizes.Margins.Expanded,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    alignSelf: 'center',
+  },
   text: {
     marginLeft: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
@@ -366,13 +448,53 @@ const _styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: Constants.Colors.darkTransparentBackground,
   },
+  progress: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+  },
+  progressText: {
+    alignSelf: 'center',
+    color: Constants.Colors.secondaryWhiteText,
+    fontSize: Constants.Sizes.Text.Caption,
+  },
 });
 
 // Map state to props
 const select = (store) => {
   return {
+    filesDownloaded: store.update.filesDownloaded,
+    intermediateProgress: store.update.intermediateProgress,
     language: store.config.language,
+    showRetry: store.update.showRetry,
+    showUpdateProgress: store.update.showUpdateProgress,
+    totalProgress: store.update.totalProgress,
+    totalSize: store.update.totalSize,
   };
 };
 
-module.exports = connect(select)(UpdateScreenCommon);
+// Map dispatch to props
+const actions = (dispatch) => {
+  return {
+    updateFailed: () => dispatch(updateProgress({showUpdateProgress: false, showRetry: true})),
+    onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => {
+      dispatch(updateProgress({
+        currentDownload: null,
+        filesDownloaded: filesDownloaded,
+        intermediateProgress: 0,
+        totalProgress: totalProgress + fileSize,
+      }));
+    },
+    onDownloadProgress: (bytesWritten: number) => dispatch(updateProgress({intermediateProgress: bytesWritten})),
+    onDownloadStart: (fileName: string) => dispatch(updateProgress({currentDownload: fileName})),
+    onUpdateStart: (totalFiles: number, totalSize: number) => {
+      dispatch(updateProgress({
+        showUpdateProgress: true,
+        totalProgress: 0,
+        totalFiles,
+        totalSize,
+      }));
+    },
+  };
+};
+
+module.exports = connect(select, actions)(UpdateScreenCommon);
