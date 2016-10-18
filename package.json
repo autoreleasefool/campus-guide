@@ -15,7 +15,7 @@
   "dependencies": {
     "http-status-codes": "^1.0.6",
     "react": "^15.3.2",
-    "react-native": "^0.34.1",
+    "react-native": "^0.35.0",
     "react-native-admob": "^1.1.5",
     "react-native-device-info": "^0.9.6",
     "react-native-fs": "^1.5.1",
