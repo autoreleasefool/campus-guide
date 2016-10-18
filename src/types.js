@@ -66,7 +66,8 @@ export type PlatformIcon =
       ios: Icon,
       android: Icon,
     }
-  | Icon;
+  | Icon
+  ;
 
 //-----------------------------------------------------------------------------
 //  Languages
@@ -77,6 +78,15 @@ export type Language =
     'en'
   | 'fr'
   ;
+
+//-----------------------------------------------------------------------------
+//  Platforms
+//-----------------------------------------------------------------------------
+
+/** Platform types. Android or iOS. */
+export type PlatformString =
+    | 'ios'
+    | 'android';
 
 //-----------------------------------------------------------------------------
 //  Semesters
@@ -122,6 +132,27 @@ export type Route = {
   id: number | string, // Unique ID for the route
   data: any,           // Any data to pass along to be used to render the view
 };
+
+//-----------------------------------------------------------------------------
+//  Buildings
+//-----------------------------------------------------------------------------
+
+/** Types of facilities that a certain building on campus may offer. */
+export type Facility =
+  | 'atm'
+  | 'food'
+  | 'printer'
+  | 'store'
+  | 'bed'
+  | 'alcohol'
+  | 'laundry'
+  | 'library'
+  | 'parking'
+  | 'mail'
+  | 'pharmacy'
+  | 'gym'
+  | 'pool'
+  ;
 
 //-----------------------------------------------------------------------------
 //  Configuration

@@ -115,8 +115,9 @@ class TabBar extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
-    activeTab: number,
-    tabs: Array < any >,
+    activeTab: number,              // Current active tab
+    switchTab: (tab: Tab) => void,  // Switches the current tab
+    tabs: Array < any >,            // Array of tabs to render
   }
 
   /**
@@ -133,16 +134,22 @@ class TabBar extends React.Component {
     return (
       <View style={_styles.tabContainer}>
         {this.props.tabs.map((tab, i) => {
-          const icon: Icon = DisplayUtils.getPlatformIcon(Platform.OS, tabIcons[Constants.Tabs[i]]);
-          const iconView: ReactElement < any > = (icon.class === 'ionicons')
-              ? <Ionicons
-                  color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
-                  name={icon.name}
-                  size={Constants.Sizes.Icons.Large} />
-              : <MaterialIcons
-                  color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
-                  name={icon.name}
-                  size={Constants.Sizes.Icons.Large} />;
+          const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, tabIcons[Constants.Tabs[i]]);
+          let iconView: ?ReactElement < any >;
+
+          if (icon == null) {
+            iconView = null;
+          } else {
+            iconView = (icon.class === 'ionicons')
+                ? <Ionicons
+                    color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
+                    name={icon.name}
+                    size={Constants.Sizes.Icons.Large} />
+                : <MaterialIcons
+                    color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
+                    name={icon.name}
+                    size={Constants.Sizes.Icons.Large} />;
+          }
 
           return (
             <TouchableOpacity
