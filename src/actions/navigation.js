@@ -17,22 +17,22 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file index.js
- * @providesModule actions
- * @description Combines all actions
+ * @file navigation.js
+ * @description Provides navigation actions.
  *
  * @flow
  */
 'use strict';
 
-// Imports
-const configActions = require('./config');
-const navigationActions = require('./navigation');
-const updateActions = require('./update');
+// Types
+import type {
+  Action,
+  Tab,
+} from 'types';
 
-// Combine and export actions
 module.exports = {
-  ...configActions,
-  ...navigationActions,
-  ...updateActions,
+  switchTab: (tab: Tab): Action => ({
+    type: 'SWITCH_TAB',
+    tab,
+  }),
 };

@@ -368,11 +368,11 @@ class UpdateScreenCommon extends React.Component {
     const language = this.props.language;
 
     // Get background color for screen, and color for progress bar
-    let backgroundColor = Constants.Colors.garnet;
-    let foregroundColor = Constants.Colors.charcoalGrey;
+    let backgroundColor = Constants.Colors.primaryBackground;
+    let foregroundColor = Constants.Colors.secondaryBackground;
     if (language === 'fr') {
-      backgroundColor = Constants.Colors.charcoalGrey;
-      foregroundColor = Constants.Colors.garnet;
+      backgroundColor = Constants.Colors.secondaryBackground;
+      foregroundColor = Constants.Colors.primaryBackground;
     }
 
     if (this.props.showRetry) {

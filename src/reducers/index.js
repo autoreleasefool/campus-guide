@@ -30,7 +30,7 @@ const {combineReducers} = require('redux');
 // Combine and export reducers
 module.exports = combineReducers({
   config: require('./config'),
-  // navigation: require('./navigation'),
+  navigation: require('./navigation'),
   search: require('./search'),
   update: require('./update'),
 });

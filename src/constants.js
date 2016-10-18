@@ -34,6 +34,29 @@ const colors = {
   polarGrey: '#F2F2F2',
   lightGrey: '#ACA39A',
   charcoalGrey: '#2D2D2C',
+
+  white: 'white',
+  transpareWhite: 'rgba(255, 255, 255, 0.7)',
+  black: 'black',
+  transparentBlack: 'rgba(0, 0, 0, 0.7)',
+};
+
+/**
+ * Base icon sizes.
+ */
+const iconSizes = {
+  Small: 18,
+  Medium: 24,
+  Large: 30,
+};
+
+/**
+ * Base margin sizes.
+ */
+const marginSizes = {
+  Regular: 8,
+  Condensed: 4,
+  Expanded: 16,
 };
 
 /**
@@ -47,13 +70,15 @@ const textSizes = {
 };
 
 /**
- * Base margin sizes.
+ * Defines the order of tabs in the app.
  */
-const marginSizes = {
-  Regular: 8,
-  Condensed: 4,
-  Expanded: 16,
-};
+const tabs = [
+  'find',
+  'schedule',
+  'discover',
+  'search',
+  'settings',
+];
 
 module.exports = {
 
@@ -63,10 +88,15 @@ module.exports = {
   Colors: {
     ...colors,                                            // Import basic color definitions
     primaryBackground: colors.garnet,                     // Primary background color for the application
-    primaryWhiteText: 'white',                            // Primary color when white text is needed
-    secondaryWhiteText: 'rgba(255, 255, 255, 0.7)',       // Secondary color when white text is needed
-    primaryBlackText: 'black',                            // Primary color when black text is needed
-    secondaryBlackText: 'rgba(0, 0, 0, 0.7)',             // Secondary color when black text is needed
+    secondaryBackground: colors.charcoalGrey,             // Secondary background color for the application
+    primaryWhiteText: colors.white,                       // Primary color when white text is needed
+    secondaryWhiteText: colors.transpareWhite,            // Secondary color when white text is needed
+    primaryBlackText: colors.black,                       // Primary color when black text is needed
+    secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
+    primaryWhiteIcon: colors.white,                       // Primary color when white text is needed
+    secondaryWhiteIcon: colors.transpareWhite,            // Secondary color when white text is needed
+    primaryBlackIcon: colors.black,                       // Primary color when black text is needed
+    secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black text is needed
     darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
     lightTransparentBackground: 'rgba(255,255,255,0.8)',  // Light transparent background color for components
   },
@@ -75,8 +105,14 @@ module.exports = {
    * Common element sizes to use throughout the application.
    */
   Sizes: {
-    Text: textSizes,
+    Icons: iconSizes,
     Margins: marginSizes,
+    Text: textSizes,
   },
+
+  /**
+   * Tabs within the app
+   */
+  Tabs: tabs,
 
 };

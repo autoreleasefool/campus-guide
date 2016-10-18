@@ -33,22 +33,40 @@
 export type VoidFunction = () => void;
 
 /** A name, valid in English or French. */
-export type DefaultName = {name: string};
+export type Name = {name: string};
 
 /** A name, translated for English and French. */
 export type TranslatedName = {name_en: string, name_fr: string};
 
 /** A link, valid in English or French. */
-export type DefaultLink = {link: string};
+export type Link = {link: string};
 
 /** A link, translated for English and French. */
 export type TranslatedLink = {link_en: string, link_fr: string};
 
 /** A set of details, valid in English or French. */
-export type DefaultDetails = {details: Array < string >};
+export type Details = {details: Array < string >};
 
 /** A set of details, translated for English and French. */
 export type TranslatedDetails = {details_en: Array < string >, details_fr: Array < string >};
+
+//-----------------------------------------------------------------------------
+//  Icons
+//-----------------------------------------------------------------------------
+
+/** A cross-platform icon object. */
+export type Icon = {
+  name: string,
+  class: string,
+};
+
+/** An icon object with separate icon definitions for Android and iOS. */
+export type PlatformIcon =
+  | {
+      ios: Icon,
+      android: Icon,
+    }
+  | Icon;
 
 //-----------------------------------------------------------------------------
 //  Languages
@@ -68,7 +86,7 @@ export type Language =
 export type Semester = {
   code: string,
   current?: boolean,
-} & (DefaultName | TranslatedName);
+} & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
 //  Tabs
@@ -90,11 +108,11 @@ export type Tab =
   | 'settings'
   ;
 
-/** Indicates how an object describing tabs must be defined. */
-export type TabItems = {
+/** The set of tabs in the app. */
+export type TabSet = {
+  discover: any,
   find: any,
   schedule: any,
-  discover: any,
   search: any,
   settings: any,
 };

@@ -28,6 +28,7 @@
 import React from 'react';
 import {
   Alert,
+  StyleSheet,
   View,
 } from 'react-native';
 
@@ -41,9 +42,11 @@ import type {
 } from 'types';
 
 // Imports
+const AppHeader = require('AppHeader');
 const Configuration = require('Configuration');
 const Constants = require('Constants');
 const TranslationUtils = require('TranslationUtils');
+const TabView = require('./TabView');
 
 class MainScreen extends React.Component {
 
@@ -118,10 +121,21 @@ class MainScreen extends React.Component {
    */
   render(): ReactElement < any > {
     return (
-      <View style={{flex: 1, backgroundColor: Constants.Colors.charcoalGrey}} />
+      <View style={_styles.container}>
+        <AppHeader />
+        <TabView />
+      </View>
     );
   }
 }
+
+// Private styles for component
+const _styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Constants.Colors.primaryBackground,
+  },
+});
 
 // Map state to props
 const select = (store) => {
