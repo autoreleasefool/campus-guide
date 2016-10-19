@@ -16,22 +16,30 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-07
- * @file index.js
- * @description Collects available reducers
+ * @created 2016-10-18
+ * @file header.js
+ * @description Provides header actions.
  *
  * @flow
  */
 'use strict';
 
-// Redux imports
-const {combineReducers} = require('redux');
+// Types
+import type {
+  Action,
+} from 'types';
 
-// Combine and export reducers
-module.exports = combineReducers({
-  config: require('./config'),
-  header: require('./header'),
-  navigation: require('./navigation'),
-  search: require('./search'),
-  update: require('./update'),
-});
+module.exports = {
+  setHeaderTitle: (title: string): Action => ({
+    type: 'SET_HEADER_TITLE',
+    title,
+  }),
+  setShowBack: (showBack: boolean): Action => ({
+    type: 'HEADER_SHOW_BACK',
+    shouldShowBack: showBack,
+  }),
+  setShowSearch: (showSearch: boolean): Action => ({
+    type: 'HEADER_SHOW_SEARCH',
+    shouldShowSearch: showSearch,
+  }),
+};

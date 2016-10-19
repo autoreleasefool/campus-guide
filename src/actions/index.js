@@ -27,12 +27,14 @@
 
 // Imports
 const configActions = require('./config');
+const headerActions = require('./header');
 const navigationActions = require('./navigation');
 const updateActions = require('./update');
 
 // Combine and export actions
 module.exports = {
   ...configActions,
+  ...headerActions,
   ...navigationActions,
   ...updateActions,
 };

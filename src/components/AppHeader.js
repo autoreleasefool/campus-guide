@@ -51,6 +51,15 @@ const HEADER_PADDING_IOS: number = 25;
 
 class AppHeader extends React.Component {
 
+  /**
+   * Properties this component expects to be provided by its parent.
+   */
+  props: {
+    appTitle: string,           // Title for the header
+    shouldShowBack: boolean,    // Indicates if the header should show a back button
+    shouldShowSearch: boolean,  // Indicates if the header should show a search input option
+  }
+
   _startSearch(): void {
     console.log('Search app');
   }
@@ -124,7 +133,9 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
-    appTitle: 'Campus Guide', // store.config.appTitle,
+    appTitle: store.header.title,
+    shouldShowBack: store.header.shouldShowBack,
+    shouldShowSearch: store.header.shouldShowSearch,
   };
 };
 

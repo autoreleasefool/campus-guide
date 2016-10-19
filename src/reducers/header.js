@@ -16,9 +16,9 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-08
- * @file navigation.js
- * @description Reducers for navigation actions
+ * @created 2016-10-18
+ * @file header.js
+ * @description Reducers for header actions
  *
  * @flow
  */
@@ -27,36 +27,49 @@
 // Types
 import type {
   Action,
-  Tab,
 } from 'types';
 
-// Describes the navigation state.
+// Describes the header state.
 type State = {
-  tab: Tab, // Current tab in the root navigation of the app
+  title: string,              // Title for the current screen
+  shouldShowBack: boolean,    // True to show a back button in the header, false to hide
+  shouldShowSearch: boolean,  // True to show a search field in the header, false to hide
 };
 
-// Initial navigation state.
+// Initial header state.
 const initialState: State = {
-  tab: 'find',
+  title: 'Campus Guide',
+  shouldShowBack: false,
+  shouldShowSearch: false,
 };
 
 /**
- * When provided with a navigation action, parses the parameters and returns an updated state.
+ * When provided with a header action, parses the parameters and returns an updated state.
  *
  * @param {State}  state  the current state
  * @param {Action} action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken.
  */
-function navigation(state: State = initialState, action: Action): State {
+function header(state: State = initialState, action: Action): State {
   switch (action.type) {
-    case 'SWITCH_TAB':
+    case 'SET_HEADER_TITLE':
       return {
         ...state,
-        tab: action.tab,
+        title: action.title,
+      };
+    case 'HEADER_SHOW_BACK':
+      return {
+        ...state,
+        shouldShowBack: action.shouldShowBack,
+      };
+    case 'HEADER_SHOW_SEARCH':
+      return {
+        ...state,
+        shouldShowSearch: action.shouldShowSearch,
       };
     default:
       return state;
   }
 }
 
-module.exports = navigation;
+module.exports = header;
