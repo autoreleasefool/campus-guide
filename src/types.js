@@ -54,10 +54,16 @@ export type TranslatedDetails = {details_en: Array < string >, details_fr: Array
 //  Icons
 //-----------------------------------------------------------------------------
 
+/** Available classes for icons to be from. */
+export type IconClass =
+    'material'
+  | 'ionicons'
+  ;
+
 /** A cross-platform icon object. */
 export type Icon = {
   name: string,
-  class: string,
+  class: IconClass,
 };
 
 /** An icon object with separate icon definitions for Android and iOS. */
@@ -136,6 +142,22 @@ export type Route = {
 //-----------------------------------------------------------------------------
 //  Buildings
 //-----------------------------------------------------------------------------
+
+/** A room on campus, with a name and the facilities it offers represented by an ID. */
+export type BuildingRoom = {
+  name: string,
+  type: number,
+};
+
+/** A building on campus, with details describing it, its location, and its rooms. */
+export type Building = {
+  code: string,
+  facilities: Array < Facility >,
+  image: ReactClass < any >,
+  lat: number,
+  long: number,
+  rooms: Array < BuildingRoom >,
+} & (Name | TranslatedName);
 
 /** Types of facilities that a certain building on campus may offer. */
 export type Facility =

@@ -48,7 +48,7 @@ const TabBar = require('TabBar');
 
 // Tabs
 // const Discover = require('Discover');
-// const Find = require('Find');
+const Find = require('./find/Find');
 // const Schedule = require('Schedule');
 // const Search = require('Search');
 // const Settings = require('Settings');
@@ -73,11 +73,15 @@ class TabView extends React.Component {
     const tabs = [];
     for (let i = 0; i < numberOfTabs; i++) {
       switch (Constants.Tabs[i]) {
+        case 'find':
+          tabs.push(
+            <Find
+                key='find'
+                tabLabel='find' />
+          );
+          break;
         case 'discover':
           // tabs.push(<Discover tabLabel='discover' />);
-          // break;
-        case 'find':
-          // tabs.push(<Find tabLabel='find' />);
           // break;
         case 'schedule':
           // tabs.push(<Schedule tabLabel='schedule' />);
