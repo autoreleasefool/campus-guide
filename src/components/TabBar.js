@@ -46,10 +46,10 @@ import type {
 } from 'types';
 
 // Imports
-const Constants = require('Constants');
-const DisplayUtils = require('DisplayUtils');
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
-const Ionicons = require('react-native-vector-icons/Ionicons');
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Constants from 'Constants';
+import * as DisplayUtils from 'DisplayUtils';
 
 // Icons for tab items
 const tabIcons: TabSet = {
@@ -189,4 +189,4 @@ const actions = (dispatch) => {
   };
 };
 
-module.exports = connect(null, actions)(TabBar);
+export default connect(null, actions)(TabBar);

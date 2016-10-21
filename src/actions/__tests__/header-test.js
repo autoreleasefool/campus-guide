@@ -28,7 +28,7 @@ import * as actions from '../header';
 
 describe('header actions', () => {
   it('should create an action to set the title', () => {
-    const title: string = 'Title';
+    const title = {name: 'Title'};
     const expectedAction = {
       type: 'SET_HEADER_TITLE',
       title,

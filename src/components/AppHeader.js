@@ -41,9 +41,17 @@ import {
 // Redux imports
 import {connect} from 'react-redux';
 
+// Types
+import type {
+  Language,
+  Name,
+  TranslatedName,
+} from 'types';
+
 // Imports
-const Constants = require('Constants');
-const Ionicons = require('react-native-vector-icons/Ionicons');
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as Constants from 'Constants';
+import * as TranslationUtils from 'TranslationUtils';
 
 // Height of the navbar
 const NAVBAR_HEIGHT: number = 60;
@@ -55,9 +63,10 @@ class AppHeader extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
-    appTitle: string,           // Title for the header
-    shouldShowBack: boolean,    // Indicates if the header should show a back button
-    shouldShowSearch: boolean,  // Indicates if the header should show a search input option
+    appTitle: Name | TranslatedName,  // Title for the header
+    language: Language,               // The user's currently selected language
+    shouldShowBack: boolean,          // Indicates if the header should show a back button
+    shouldShowSearch: boolean,        // Indicates if the header should show a search input option
   }
 
   _startSearch(): void {
@@ -74,6 +83,7 @@ class AppHeader extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
+    const appTitle: string = TranslationUtils.getTranslatedName(this.props.language, this.props.appTitle) || '';
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = platformModifier + '-arrow-back';
     const searchIcon: string = platformModifier + '-search';
@@ -90,7 +100,7 @@ class AppHeader extends React.Component {
               style={_styles.icon} />
         </TouchableOpacity>
         <View style={_styles.titleContainer}>
-          <Text style={_styles.title}>{this.props.appTitle}</Text>
+          <Text style={_styles.title}>{appTitle}</Text>
         </View>
         <TouchableOpacity
             style={[_styles.iconWrapper/* , searchIconStyle*/]}
@@ -134,6 +144,7 @@ const _styles = StyleSheet.create({
 const select = (store) => {
   return {
     appTitle: store.header.title,
+    language: store.config.language,
     shouldShowBack: store.header.shouldShowBack,
     shouldShowSearch: store.header.shouldShowSearch,
   };
@@ -144,4 +155,4 @@ const actions = (dispatch) => {
   return {};
 };
 
-module.exports = connect(select, actions)(AppHeader);
+export default connect(select, actions)(AppHeader);

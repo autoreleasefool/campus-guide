@@ -44,11 +44,11 @@ import type {
 } from 'types';
 
 // Imports
-const Configuration = require('Configuration');
-const Constants = require('Constants');
-const CoreTranslations: Object = require('../../../assets/json/CoreTranslations.json');
-const Preferences = require('Preferences');
-const Promise = require('promise');
+import Promise from 'promise';
+import * as Configuration from 'Configuration';
+import * as Constants from 'Constants';
+import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
+import * as Preferences from 'Preferences';
 
 class SplashScreen extends React.Component {
 
@@ -255,4 +255,4 @@ const actions = (dispatch) => {
   };
 };
 
-module.exports = connect(select, actions)(SplashScreen);
+export default connect(select, actions)(SplashScreen);

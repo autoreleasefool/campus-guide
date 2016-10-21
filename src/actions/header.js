@@ -27,10 +27,12 @@
 // Types
 import type {
   Action,
+  Name,
+  TranslatedName,
 } from 'types';
 
 module.exports = {
-  setHeaderTitle: (title: string): Action => ({
+  setHeaderTitle: (title: Name | TranslatedName): Action => ({
     type: 'SET_HEADER_TITLE',
     title,
   }),

@@ -27,11 +27,23 @@
 // Types
 import type {
   Action,
+  Building,
 } from 'types';
 
 module.exports = {
+  navigateTo: (code: string, room: ?string): Action => ({
+    type: 'NAVIGATE_TO',
+    destination: {
+      code,
+      room,
+    },
+  }),
   switchFindView: (view: number): Action => ({
     type: 'FIND_VIEW',
     view,
+  }),
+  viewBuilding: (building: Building): Action => ({
+    type: 'VIEW_BUILDING',
+    building,
   }),
 };

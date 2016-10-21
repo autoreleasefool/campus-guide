@@ -42,11 +42,11 @@ import type {
 } from 'types';
 
 // Imports
-const AppHeader = require('AppHeader');
-const Configuration = require('Configuration');
-const Constants = require('Constants');
-const TranslationUtils = require('TranslationUtils');
-const TabView = require('./TabView');
+import AppHeader from 'AppHeader';
+import TabView from './TabView';
+import * as Configuration from 'Configuration';
+import * as Constants from 'Constants';
+import * as TranslationUtils from 'TranslationUtils';
 
 class MainScreen extends React.Component {
 
@@ -152,4 +152,4 @@ const actions = (dispatch) => {
   };
 };
 
-module.exports = connect(select, actions)(MainScreen);
+export default connect(select, actions)(MainScreen);

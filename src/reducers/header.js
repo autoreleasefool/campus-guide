@@ -27,18 +27,20 @@
 // Types
 import type {
   Action,
+  Name,
+  TranslatedName,
 } from 'types';
 
 // Describes the header state.
 type State = {
-  title: string,              // Title for the current screen
-  shouldShowBack: boolean,    // True to show a back button in the header, false to hide
-  shouldShowSearch: boolean,  // True to show a search field in the header, false to hide
+  title: Name | TranslatedName, // Title for the current screen
+  shouldShowBack: boolean,      // True to show a back button in the header, false to hide
+  shouldShowSearch: boolean,    // True to show a search field in the header, false to hide
 };
 
 // Initial header state.
 const initialState: State = {
-  title: 'Campus Guide',
+  title: {name: 'Campus Guide'},
   shouldShowBack: false,
   shouldShowSearch: false,
 };

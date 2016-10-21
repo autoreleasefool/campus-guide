@@ -378,84 +378,81 @@ async function _deleteConfiguration(): Promise < void > {
   }
 }
 
-module.exports = {
-
-  /**
+/**
    * Returns a promise that resolves if a version of the configuration is available, or rejects if the configuration
    * cannot be found.
    *
    * @returns {Promise<void>} promise that will resolve/reject when configuration is found or not
    */
-  init(): Promise < void > {
-    return new Promise((resolve, reject) => {
-      if (configurationInitialized) {
-        resolve();
-      } else {
-        availablePromises.push({
-          resolve: resolve,
-          reject: reject,
-        });
-
-        if (!configInitializing) {
-          configInitializing = true;
-          _requestConfig()
-              .then(_initSuccess)
-              .catch(_initError);
-        }
-      }
-    });
-  },
-
-  /**
-   * Checks if there is a configuration available to download. Returns true or false in a promise.
-   *
-   * @returns {Promise<boolean>} promise which resolves to true or false depending on if a config update is available
-   */
-  isConfigUpdateAvailable(): Promise < boolean > {
-    checkedForUpdate = true;
-    return _refreshConfigVersions();
-  },
-
-  /**
-   * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
-   *
-   * @param {UpdateCallbacks} callbacks functions to invoke as update progresses
-   * @returns {Promise<void>} a promise which resolves when the update is complete
-   */
-  updateConfig(callbacks: UpdateCallbacks): Promise < void > {
-    return _updateConfig(callbacks);
-  },
-
-  /**
-   * Returns true if the app has already performed a check for a configuration update.
-   *
-   * @returns {boolean} true if the app checked for a configuration update, false otherwise
-   */
-  didCheckForUpdate(): boolean {
-    return checkedForUpdate;
-  },
-
-  /**
-   * Returns a promise that resolves when the config file can be found, or rejects.
-   *
-   * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
-   * @returns {Promise<?Object>} promise that resolves when the configuration is loaded
-   */
-  getConfig(configFile: string): Promise < ?Object > {
-    return _getConfigFile(configFile);
-  },
-
-  /**
-   * Returns the path to the image.
-   *
-   * @param {?string} configImage name of the image to retrieve.
-   * @returns {string} absolute path to the image or the empty string if configImage was null
-   */
-  getImagePath(configImage: ?string): string {
-    if (configImage == null) {
-      return '';
+export function init(): Promise < void > {
+  return new Promise((resolve, reject) => {
+    if (configurationInitialized) {
+      resolve();
     } else {
-      return 'file://' + CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES.image + configImage;
+      availablePromises.push({
+        resolve: resolve,
+        reject: reject,
+      });
+
+      if (!configInitializing) {
+        configInitializing = true;
+        _requestConfig()
+            .then(_initSuccess)
+            .catch(_initError);
+      }
     }
-  },
-};
+  });
+}
+
+/**
+ * Checks if there is a configuration available to download. Returns true or false in a promise.
+ *
+ * @returns {Promise<boolean>} promise which resolves to true or false depending on if a config update is available
+ */
+export function isConfigUpdateAvailable(): Promise < boolean > {
+  checkedForUpdate = true;
+  return _refreshConfigVersions();
+}
+
+/**
+ * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
+ *
+ * @param {UpdateCallbacks} callbacks functions to invoke as update progresses
+ * @returns {Promise<void>} a promise which resolves when the update is complete
+ */
+export function updateConfig(callbacks: UpdateCallbacks): Promise < void > {
+  return _updateConfig(callbacks);
+}
+
+/**
+ * Returns true if the app has already performed a check for a configuration update.
+ *
+ * @returns {boolean} true if the app checked for a configuration update, false otherwise
+ */
+export function didCheckForUpdate(): boolean {
+  return checkedForUpdate;
+}
+
+/**
+ * Returns a promise that resolves when the config file can be found, or rejects.
+ *
+ * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
+ * @returns {Promise<?Object>} promise that resolves when the configuration is loaded
+ */
+export function getConfig(configFile: string): Promise < ?Object > {
+  return _getConfigFile(configFile);
+}
+
+/**
+ * Returns the path to the image.
+ *
+ * @param {?string} configImage name of the image to retrieve.
+ * @returns {string} absolute path to the image or the empty string if configImage was null
+ */
+export function getImagePath(configImage: ?string): string {
+  if (configImage == null) {
+    return '';
+  } else {
+    return 'file://' + CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES.image + configImage;
+  }
+}

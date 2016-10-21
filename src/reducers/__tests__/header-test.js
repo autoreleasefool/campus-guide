@@ -28,7 +28,7 @@ import reducer from '../header';
 
 // Expected initial state
 const initialState = {
-  title: 'Campus Guide',
+  title: {name: 'Campus Guide'},
   shouldShowBack: false,
   shouldShowSearch: false,
 };
@@ -44,14 +44,18 @@ describe('navigation reducer', () => {
         initialState,
         {
           type: 'SET_HEADER_TITLE',
-          title: 'New title',
+          title: {
+            name: 'New title',
+          },
         }
       )
     ).toEqual(
       {
-        title: 'New title',
         shouldShowBack: false,
         shouldShowSearch: false,
+        title: {
+          name: 'New title',
+        },
       }
     );
   });
@@ -67,9 +71,11 @@ describe('navigation reducer', () => {
       )
     ).toEqual(
       {
-        title: 'Campus Guide',
         shouldShowBack: true,
         shouldShowSearch: false,
+        title: {
+          name: 'Campus Guide',
+        },
       }
     );
   });
@@ -85,9 +91,11 @@ describe('navigation reducer', () => {
       )
     ).toEqual(
       {
-        title: 'Campus Guide',
         shouldShowBack: false,
         shouldShowSearch: true,
+        title: {
+          name: 'Campus Guide',
+        },
       }
     );
   });

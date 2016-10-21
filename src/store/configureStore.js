@@ -49,10 +49,8 @@ import reducers from '../reducers';
  * @param {?VoidFunction} onComplete called when the store has been created.
  * @returns {any} redux store
  */
-function configureStore(onComplete: ?VoidFunction): any {
+export default function configureStore(onComplete: ?VoidFunction): any {
   const store = createStore(reducers, applyMiddleware(thunk, preferenceCache));
   onComplete && onComplete();
   return store;
 }
-
-module.exports = configureStore;

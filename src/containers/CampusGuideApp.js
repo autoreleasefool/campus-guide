@@ -43,12 +43,12 @@ type AppRoute = {
 };
 
 // Imports
-const Constants = require('Constants');
-const Main = require('./MainScreen');
-const Splash = require('./welcome/SplashScreen');
-const Update = require('./welcome/UpdateScreen');
+import Main from './MainScreen';
+import Splash from './welcome/SplashScreen';
+import Update from './welcome/UpdateScreen';
+import * as Constants from 'Constants';
 
-class CampusGuideApp extends React.Component {
+export default class CampusGuideApp extends React.Component {
 
   /**
    * Defines the transition between views.
@@ -105,5 +105,3 @@ class CampusGuideApp extends React.Component {
     );
   }
 }
-
-module.exports = CampusGuideApp;

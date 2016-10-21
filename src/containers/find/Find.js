@@ -41,6 +41,11 @@ import type {
   Route,
 } from 'types';
 
+// Type definition for component props.
+type Props = {
+  view: number, // The current view
+};
+
 // Views in the Find tab
 export const Views = {
   Home: 0,          // Home find view where user can select a building
@@ -53,8 +58,8 @@ export const Views = {
 // const TranslationUtils = require('TranslationUtils');
 
 // Screen imports
-// const BuildingDetails = require('BuildingDetails');
-const FindHome = require('./FindHome');
+import Building from './Building';
+import Home from './Home';
 // const NavigationHome = require('NavigationHome');
 
 class Find extends React.Component {
@@ -62,9 +67,18 @@ class Find extends React.Component {
   /**
    * Properties this component expects to be provided by its parent.
    */
-  props: {
-    view: number, // The current view
-  };
+  props: Props;
+
+  /**
+   * Present the updated view.
+   *
+   * @param {Props} nextProps the new props being received
+   */
+  componentWillReceiveProps(nextProps: Props): void {
+    if (nextProps.view != this.props.view) {
+      this.refs.Navigator.push({id: nextProps.view});
+    }
+  }
 
   /**
    * Sets the transition between two views in the navigator.
@@ -85,13 +99,11 @@ class Find extends React.Component {
     switch (route.id) {
       case Views.Home:
         return (
-          <FindHome />
+          <Home />
         );
       case Views.Building:
         return (
-          <View style={_styles.container}>
-            <Text>{'Building'}</Text>
-          </View>
+          <Building />
         );
       case Views.StartingPoint:
         return (
@@ -133,4 +145,4 @@ const select = (store) => {
   };
 };
 
-module.exports = connect(select)(Find);
+export default connect(select)(Find);

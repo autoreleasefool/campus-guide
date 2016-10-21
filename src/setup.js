@@ -36,17 +36,17 @@ import {
 
 // Redux imports
 import {Provider} from 'react-redux';
-const configureStore = require('./store/configureStore');
+import configureStore from './store/configureStore';
 
 // Imports
-const CampusGuideApp = require('CampusGuideApp');
+import CampusGuideApp from 'CampusGuideApp';
 
 /**
  * Applies global settings to the app and returns the root view.
  *
  * @returns {ReactClass<any>} Returns the root component for the app
  */
-function setup(): ReactClass < any > {
+export default function setup(): ReactClass < any > {
 
   // Fix function not found error
   // http://stackoverflow.com/a/35305611/4896787
@@ -84,5 +84,3 @@ function setup(): ReactClass < any > {
 
   return Root;
 }
-
-module.exports = setup;

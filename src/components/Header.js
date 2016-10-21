@@ -41,24 +41,24 @@ import type {
 } from 'types';
 
 // Imports
-const Constants = require('Constants');
-const DisplayUtils = require('DisplayUtils');
-const Ionicons = require('react-native-vector-icons/Ionicons');
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons');
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as DisplayUtils from 'DisplayUtils';
+import * as Constants from 'Constants';
 
-class Header extends React.Component {
+export default class Header extends React.Component {
 
   /**
    * Properties which the parent component should make available to this component.
    */
   props: {
-    backgroundColor: ?string,         // Background color for the view
+    backgroundColor?: string,         // Background color for the view
     title: string,                    // Title for the header
-    icon: ?Icon,                      // Large icon to represent the section
-    iconCallback: ?VoidFunction,      // Callback function for icon on press
-    subtitle: ?string,                // Subtitle text
-    subtitleIcon: ?Icon,              // Small icon for the subtitle
-    subtitleCallback: ?VoidFunction,  // Callback function for subtitle on press
+    icon?: Icon,                      // Large icon to represent the section
+    iconCallback?: VoidFunction,      // Callback function for icon on press
+    subtitle?: string,                // Subtitle text
+    subtitleIcon?: Icon,              // Small icon for the subtitle
+    subtitleCallback?: VoidFunction,  // Callback function for subtitle on press
   };
 
   /**
@@ -198,7 +198,7 @@ class Header extends React.Component {
    */
   render(): ReactElement < any > {
     // Set the background color of the header to a default value if not provided
-    const headerBackground = this.props.background || Constants.Colors.darkTransparentBackground;
+    const headerBackground = this.props.backgroundColor || Constants.Colors.darkTransparentBackground;
     let primaryForeground = Constants.Colors.primaryBlackText;
     let secondaryForeground = Constants.Colors.secondaryBlackText;
     if (DisplayUtils.isColorDark(headerBackground)) {
@@ -232,7 +232,7 @@ const _styles = StyleSheet.create({
   },
   icon: {
     marginBottom: Constants.Sizes.Margins.Regular,
-    marginLeft: Constants.Sizes.Margins.Regular,
+    marginLeft: Constants.Sizes.Margins.Expanded,
     marginTop: Constants.Sizes.Margins.Regular,
   },
   subtitle: {
@@ -240,11 +240,11 @@ const _styles = StyleSheet.create({
   },
   subtitleIcon: {
     marginBottom: Constants.Sizes.Margins.Regular,
-    marginRight: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Expanded,
     marginTop: Constants.Sizes.Margins.Regular,
   },
   subtitleText: {
-    fontSize: Constants.Sizes.Text.Small,
+    fontSize: Constants.Sizes.Text.Caption,
   },
   title: {
     marginLeft: Constants.Sizes.Margins.Expanded,
@@ -254,5 +254,3 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-module.exports = Header;

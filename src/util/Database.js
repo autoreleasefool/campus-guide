@@ -31,9 +31,9 @@ import type {
 } from 'types';
 
 // Imports
-const ArrayUtils = require('ArrayUtils');
-const Promise = require('promise');
-const store = require('react-native-simple-store');
+import Promise from 'promise';
+import * as ArrayUtils from 'ArrayUtils';
+import * as store from 'react-native-simple-store';
 
 /** Identifier for storing Configuration file versions.  */
 const STORE_CONFIG_VERSIONS = 'configFiles';

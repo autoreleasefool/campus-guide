@@ -48,11 +48,11 @@ import type {
 } from 'types';
 
 // Imports
-const Configuration = require('Configuration');
-const Constants = require('Constants');
-const CoreTranslations: Object = require('../../../assets/json/CoreTranslations.json');
-const emptyFunction = require('empty/function');
-const TranslationUtils = require('TranslationUtils');
+import emptyFunction from 'empty/function';
+import * as Configuration from 'Configuration';
+import * as Constants from 'Constants';
+import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
+import * as TranslationUtils from 'TranslationUtils';
 
 // Amount of time to wait before checking for connection, to ensure connection event listener is registered
 const CONNECTION_CHECK_TIMEOUT = 250;
@@ -497,4 +497,4 @@ const actions = (dispatch) => {
   };
 };
 
-module.exports = connect(select, actions)(UpdateScreenCommon);
+export default connect(select, actions)(UpdateScreenCommon);

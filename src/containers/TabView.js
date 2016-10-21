@@ -42,13 +42,13 @@ import type {
 } from 'types';
 
 // Imports
-const Constants = require('Constants');
-const ScrollableTabView = require('react-native-scrollable-tab-view');
-const TabBar = require('TabBar');
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import TabBar from 'TabBar';
+import * as Constants from 'Constants';
 
 // Tabs
 // const Discover = require('Discover');
-const Find = require('./find/Find');
+import Find from './find/Find';
 // const Schedule = require('Schedule');
 // const Search = require('Search');
 // const Settings = require('Settings');
@@ -135,4 +135,4 @@ const select = (store) => {
   };
 };
 
-module.exports = connect(select)(TabView);
+export default connect(select)(TabView);

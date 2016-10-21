@@ -27,15 +27,26 @@
 // Types
 import type {
   Action,
+  Building,
 } from 'types';
 
 // Describes the find state.
 type State = {
-  view: number, // Current view to display in the Find navigator
+  building: ?Building,  // The building selected by the user to navigate to, or view
+  destination: {
+    code: ?string,      // The code of the building the user wishes to navigate to
+    room: ?string,      // The room number in the building the user wishes to navigate to
+  },
+  view: number,         // Current view to display in the Find navigator
 };
 
 // Initial find state.
 const initialState: State = {
+  building: null,
+  destination: {
+    code: null,
+    room: null,
+  },
   view: 0,
 };
 
@@ -52,6 +63,19 @@ function find(state: State = initialState, action: Action): State {
       return {
         ...state,
         view: action.view,
+      };
+    case 'NAVIGATE_TO':
+      return {
+        ...state,
+        destination: {
+          code: action.destination.code,
+          room: action.destination.room,
+        },
+      };
+    case 'VIEW_BUILDING':
+      return {
+        ...state,
+        building: action.building,
       };
     default:
       return state;

@@ -57,7 +57,7 @@ export type TranslatedDetails = {details_en: Array < string >, details_fr: Array
 /** Available classes for icons to be from. */
 export type IconClass =
     'material'
-  | 'ionicons'
+  | 'ionicon'
   ;
 
 /** A cross-platform icon object. */
@@ -143,15 +143,27 @@ export type Route = {
 //  Buildings
 //-----------------------------------------------------------------------------
 
+/** A destination for navigation on campus. */
+export type NavigationDestination = {
+  code: string,
+  room: ?string,
+};
+
 /** A room on campus, with a name and the facilities it offers represented by an ID. */
 export type BuildingRoom = {
   name: string,
   type: number,
 };
 
+/** A predefined type of room and how it should be represented visually. */
+export type RoomType = {
+  icon: PlatformIcon,
+} & (Name | TranslatedName);
+
 /** A building on campus, with details describing it, its location, and its rooms. */
 export type Building = {
   code: string,
+  default_room_type: number,
   facilities: Array < Facility >,
   image: ReactClass < any >,
   lat: number,
@@ -221,7 +233,10 @@ export type Action =
   | { type: 'CHANGE_LANGUAGE', language: Language }
   | { type: 'UPDATE_CONFIGURATION', options: ConfigurationOptions }
   | { type: 'UPDATE_PROGRESS', update: Update }
-  | { type: 'SET_HEADER_TITLE', title: string }
+  | { type: 'SET_HEADER_TITLE', title: Name | TranslatedName }
   | { type: 'HEADER_SHOW_BACK', shouldShowBack: boolean }
   | { type: 'HEADER_SHOW_SEARCH', shouldShowSearch: boolean }
+  | { type: 'FIND_VIEW', view: number }
+  | { type: 'NAVIGATE_TO', destination: NavigationDestination }
+  | { type: 'VIEW_BUILDING', building: Building }
   ;

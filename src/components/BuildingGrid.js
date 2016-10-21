@@ -55,17 +55,15 @@ type Props = {
 // Type definition for component state
 type State = {
   dataSource: ListView.DataSource,  // List of buildings for the ListView
-  loaded: boolean,                  // Indicates if this view has finished loading
 };
 
 // Imports
-const Constants = require('Constants');
+import * as Constants from 'Constants';
 
 // Determining size of building icons based on the screen size.
 const {width} = Dimensions.get('window');
-// const BUILDING_IMAGE_SIZE: number = Math.floor(width / BUILDING_COLUMNS);
 
-class BuildingGrid extends React.Component {
+export default class BuildingGrid extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -82,26 +80,20 @@ class BuildingGrid extends React.Component {
    *
    * @param {props} props component props
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
       }),
-      loaded: false,
     };
-
-    // Explicitly binding 'this' to all methods that need it
-    // (this:any)._filterBuildings = this._filterBuildings.bind(this);
   }
 
   /**
    * Loads the buildings once the view has been mounted, and registers a search listener.
    */
   componentDidMount(): void {
-    if (!this.state.loaded) {
-      this._filterBuildings(this.props.filter);
-    }
+    this._filterBuildings(this.props.filter);
   }
 
   /**
@@ -114,14 +106,6 @@ class BuildingGrid extends React.Component {
       this._filterBuildings(nextProps.filter);
     }
   }
-
-  // shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-  //   if (this.props.filter != nextProps.filter) {
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
 
   /* List of buildings on the campus. */
   _buildingsList: Array < Object > = [];
@@ -161,7 +145,6 @@ class BuildingGrid extends React.Component {
     // Update the state so the app reflects the changes made
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(filteredBuildings),
-      loaded: true,
     });
   }
 
@@ -198,19 +181,11 @@ class BuildingGrid extends React.Component {
   }
 
   /**
-   * Renders the view. Displays an empty view before the buildings have loaded and a list of the building names and
-   * icons once they have.
+   * Renders a list of the building names and icons once they have.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    if (!this.state.loaded) {
-      // Return an empty view until the data has been loaded
-      return (
-        <View />
-      );
-    }
-
     return (
       <ListView
           contentContainerStyle={_styles.listView}
@@ -248,5 +223,3 @@ const _styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
 });
-
-module.exports = BuildingGrid;

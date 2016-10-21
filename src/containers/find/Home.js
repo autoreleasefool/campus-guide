@@ -33,18 +33,29 @@ import {
 
 // Redux imports
 import {connect} from 'react-redux';
+import {
+  setHeaderTitle,
+  switchFindView,
+  viewBuilding,
+} from 'actions';
 
 // Type imports
 import type {
   Building,
   Language,
+  Name,
+  TranslatedName,
 } from 'types';
 
 // Imports
-const BuildingGrid = require('BuildingGrid');
-const Constants = require('Constants');
-const Header = require('Header');
-const TranslationUtils = require('TranslationUtils');
+import BuildingGrid from 'BuildingGrid';
+import Header from 'Header';
+import * as Constants from 'Constants';
+import * as TranslationUtils from 'TranslationUtils';
+
+import {
+  Views,
+} from './Find';
 
 // Number of columns to display in building grid
 const BUILDING_COLUMNS: number = 3;
@@ -55,7 +66,9 @@ class FindHome extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
-    language: Language, // The current language, selected by the user
+    filter: ?string,                                                    // The current filter for buildings
+    language: Language,                                                 // The current language, selected by the user
+    onBuildingSelect: (b: Building, n: Name | TranslatedName) => void,  // Updates the state when a building is selected
   }
 
   /**
@@ -64,7 +77,12 @@ class FindHome extends React.Component {
    * @param {Building} building object describing the building
    */
   _onBuildingSelect(building: Building): void {
-    this.props.onBuildingSelect(building);
+    const name = {
+      name_en: TranslationUtils.getTranslatedName('en', building) || '',
+      name_fr: TranslationUtils.getTranslatedName('fr', building) || '',
+    };
+
+    this.props.onBuildingSelect(building, name);
   }
 
   /**
@@ -112,8 +130,12 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    onBuildingSelect: (building: Building) => console.log('Building selected: ' + JSON.stringify(building)),
+    onBuildingSelect: (building: Building, buildingName: Name | TranslatedName) => {
+      dispatch(setHeaderTitle(buildingName));
+      dispatch(viewBuilding(building));
+      dispatch(switchFindView(Views.Building));
+    },
   };
 };
 
-module.exports = connect(select, actions)(FindHome);
+export default connect(select, actions)(FindHome);
