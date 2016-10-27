@@ -16,25 +16,31 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-07
- * @file index.js
- * @description Collects available reducers
+ * @created 2016-10-27
+ * @file discover.js
+ * @description Provides discover actions.
  *
  * @flow
  */
 'use strict';
 
-// Redux imports
-const {combineReducers} = require('redux');
+// Types
+import type {
+  Action,
+  DiscoverSection,
+} from 'types';
 
-// Combine and export reducers
-module.exports = combineReducers({
-  config: require('./config'),
-  discover: require('./discover'),
-  find: require('./find'),
-  header: require('./header'),
-  navigation: require('./navigation'),
-  // schedule: require('./schedule'),
-  search: require('./search'),
-  update: require('./update'),
-});
+module.exports = {
+  switchDiscoverView: (view: number): Action => ({
+    type: 'DISCOVER_VIEW',
+    view,
+  }),
+  switchDiscoverSection: (section: number): Action => ({
+    type: 'DISCOVER_SECTION',
+    section,
+  }),
+  setDiscoverSections: (sections: Array < DiscoverSection >): Action => ({
+    type: 'SET_DISCOVER_SECTIONS',
+    sections,
+  }),
+};

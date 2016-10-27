@@ -167,6 +167,17 @@ export type Route = {
 };
 
 //-----------------------------------------------------------------------------
+//  Discover
+//-----------------------------------------------------------------------------
+
+/** A section of the university the user can explore. */
+export type DiscoverSection = {
+  icon: PlatformIcon,
+  id: string,
+  image: any,
+} & (Name | TranslatedName);
+
+//-----------------------------------------------------------------------------
 //  Buildings
 //-----------------------------------------------------------------------------
 
@@ -266,4 +277,8 @@ export type Action =
   | { type: 'FIND_VIEW', view: number }
   | { type: 'NAVIGATE_TO', destination: NavigationDestination }
   | { type: 'VIEW_BUILDING', building: Building }
+  | { type: 'DISCOVER_VIEW', view: number }
+  | { type: 'DISCOVER_SECTION', section: number }
+  | { type: 'SET_DISCOVER_SECTIONS', sections: Array < DiscoverSection > }
+  | { type: 'SCHEDULE_VIEW', view: number }
   ;

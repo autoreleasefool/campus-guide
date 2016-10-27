@@ -47,7 +47,7 @@ import TabBar from 'TabBar';
 import * as Constants from 'Constants';
 
 // Tabs
-// const Discover = require('Discover');
+import Discover from './discover/Discover';
 import Find from './find/Find';
 // import Schedule from './schedule/Schedule';
 // const Search = require('Search');
@@ -81,8 +81,12 @@ class TabView extends React.Component {
           );
           break;
         case 'discover':
-          // tabs.push(<Discover tabLabel='discover' />);
-          // break;
+          tabs.push(
+            <Discover
+                key='discover'
+                tabLabel='discover' />
+          );
+          break;
         case 'schedule':
         //   tabs.push(
         //     <Schedule

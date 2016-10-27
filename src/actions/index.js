@@ -26,16 +26,18 @@
 'use strict';
 
 // Imports
-const configActions = require('./config');
-const findActions = require('./find');
-const headerActions = require('./header');
-const navigationActions = require('./navigation');
+import * as configActions from './config';
+import * as discoverActions from './discover';
+import * as findActions from './find';
+import * as headerActions from './header';
+import * as navigationActions from './navigation';
 // const scheduleActions = require('./schedule');
-const updateActions = require('./update');
+import * as updateActions from './update';
 
 // Combine and export actions
 module.exports = {
   ...configActions,
+  ...discoverActions,
   ...findActions,
   ...headerActions,
   ...navigationActions,

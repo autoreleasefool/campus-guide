@@ -20,7 +20,7 @@
  * @description View for enabling the user to create a schedule of their classes and see the schedule in an organized
  *              manner.
  *
- * @flow
+ * TODO: re-add flow
  */
 'use strict';
 
