@@ -919,6 +919,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = ca.josephroque.campusguide;
 				PRODUCT_NAME = CampusGuide;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -951,6 +952,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = ca.josephroque.campusguide;
 				PRODUCT_NAME = CampusGuide;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
