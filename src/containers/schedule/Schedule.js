@@ -16,9 +16,9 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-19
- * @file Find.js
- * @description Navigator for managing views for finding rooms on campus.
+ * @created 2016-10-27
+ * @file Schedule.js
+ * @description Navigator for managing views for organizing a schedule.
  *
  * @flow
  */
@@ -29,7 +29,6 @@ import React from 'react';
 import {
   Navigator,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -46,19 +45,15 @@ type Props = {
   view: number, // The current view
 };
 
-// Views in the Find tab
+// Views in the Schedule tab
 export const Views = {
-  Home: 0,          // Home find view where user can select a building
-  Building: 1,      // Building details, where user can see details of a single building
-  StartingPoint: 2, // User can select their starting point for directions
+  Home: 0,          // Home schedule view where user can see and edit their schedule
 };
 
 // Screen imports
-import Building from './Building';
 import Home from './Home';
-// const NavigationHome = require('NavigationHome');
 
-class Find extends React.Component {
+class Schedule extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -97,16 +92,6 @@ class Find extends React.Component {
         return (
           <Home />
         );
-      case Views.Building:
-        return (
-          <Building />
-        );
-      case Views.StartingPoint:
-        return (
-          <View style={_styles.container}>
-            <Text>{'StartingPoint'}</Text>
-          </View>
-        );
       default:
         // TODO: generic error view?
         return (
@@ -137,8 +122,8 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
-    view: store.find.view,
+    view: store.schedule.view,
   };
 };
 
-export default connect(select)(Find);
+export default connect(select)(Schedule);

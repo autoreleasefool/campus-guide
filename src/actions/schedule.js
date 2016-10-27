@@ -16,29 +16,22 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-08
- * @file index.js
- * @providesModule actions
- * @description Combines all actions
+ * @created 2016-10-27
+ * @file schedule.js
+ * @description Provides schedule actions.
  *
  * @flow
  */
 'use strict';
 
-// Imports
-const configActions = require('./config');
-const findActions = require('./find');
-const headerActions = require('./header');
-const navigationActions = require('./navigation');
-// const scheduleActions = require('./schedule');
-const updateActions = require('./update');
+// Types
+import type {
+  Action,
+} from 'types';
 
-// Combine and export actions
 module.exports = {
-  ...configActions,
-  ...findActions,
-  ...headerActions,
-  ...navigationActions,
-  // ...scheduleActions,
-  ...updateActions,
+  switchScheduleView: (view: number): Action => ({
+    type: 'SCHEDULE_VIEW',
+    view,
+  }),
 };

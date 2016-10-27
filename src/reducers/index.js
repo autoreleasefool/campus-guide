@@ -33,6 +33,7 @@ module.exports = combineReducers({
   find: require('./find'),
   header: require('./header'),
   navigation: require('./navigation'),
+  // schedule: require('./schedule'),
   search: require('./search'),
   update: require('./update'),
 });
