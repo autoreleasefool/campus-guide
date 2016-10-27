@@ -111,8 +111,8 @@ export default class RoomGrid extends React.Component {
   componentDidMount(): void {
     if (!this.state.loaded) {
       Configuration.init()
-          .then(this._onRoomSearch)
-          .catch((err: any) => console.error('Configuration could not be initialized for room list.', err));
+          .then(() => this._onRoomSearch())
+          .catch((err: any) => console.error('Configuration could not be initialized for room grid.', err));
     }
   }
 
