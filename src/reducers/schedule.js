@@ -31,7 +31,7 @@ import type {
 
 // Describes the schedule state.
 type State = {
-  view: number,         // Current view to display in the Find navigator
+  view: number, // Current view to display in the schedule navigator
 };
 
 // Initial schedule state.
@@ -46,7 +46,7 @@ const initialState: State = {
  * @param {Action} action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken.
  */
-function find(state: State = initialState, action: Action): State {
+function schedule(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'SCHEDULE_VIEW':
       return {
@@ -58,4 +58,4 @@ function find(state: State = initialState, action: Action): State {
   }
 }
 
-module.exports = find;
+module.exports = schedule;
