@@ -62,15 +62,15 @@ export type IconClass =
 
 /** A cross-platform icon object. */
 export type Icon = {
-  name: string,
-  class: IconClass,
+  name: string,     // Name of the icon in the class
+  class: IconClass, // Class of the icon
 };
 
 /** An icon object with separate icon definitions for Android and iOS. */
 export type PlatformIcon =
   | {
-      ios: Icon,
-      android: Icon,
+      android: Icon,  // Icon to use on Android
+      ios: Icon,      // Icon to use on iOS
     }
   | Icon
   ;
@@ -100,8 +100,8 @@ export type PlatformString =
 
 /** A semester at the school, with its name, identifier, and other info. */
 export type Semester = {
-  code: string,
-  current?: boolean,
+  code: string,       // Unique identifier for the semester
+  current?: boolean,  // True if this is the current semester
 } & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
@@ -110,25 +110,25 @@ export type Semester = {
 
 /** A set of lectures. */
 export type Course = {
-  name: string,
-  lectures: Array < Lecture >,
+  name: string,                 // Name of the course
+  lectures: Array < Lecture >,  // List of lectures that are a part of the course
 };
 
 /** A single lecture of a course. */
 export type Lecture = {
-  dayOfTheWeek: number,
-  duration: number,
-  formatCode: string,
-  location?: {
-    buildingCode: string,
-    room: string,
+  dayOfTheWeek: number,   // Day of the week the course occurs. 0 is Monday
+  duration: number,       // Length of the course, in minutes
+  formatCode: string,     // ID of the course format
+  location?: {            // Location the lecture is located, if known
+    buildingCode: string, // Shorthand building code
+    room: string,         // Room in the building
   },
-  startingTime: string,
+  startingTime: string,   // Time the course starts at
 };
 
 /** The format of a single lecture in a course. */
 export type LectureFormat = {
-  code: string,
+  code: string, // Unique code for the lecture format
 } & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
@@ -153,11 +153,11 @@ export type Tab =
 
 /** The set of tabs in the app. */
 export type TabSet = {
-  discover: any,
-  find: any,
-  schedule: any,
-  search: any,
-  settings: any,
+  discover: any,  // Represents the discovery tab
+  find: any,      // Represents the find tab
+  schedule: any,  // Represents the schedule tab
+  search: any,    // Represents the search tab
+  settings: any,  // Represents the setting tab
 };
 
 /** A navigator route. */
@@ -172,9 +172,9 @@ export type Route = {
 
 /** A section of the university the user can explore. */
 export type DiscoverSection = {
-  icon: PlatformIcon,
-  id: string,
-  image: any,
+  icon: PlatformIcon, // Icon to display for the section
+  id: string,         // Unique ID of the section
+  image: any,         // Image to display for the section
 } & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
@@ -183,30 +183,30 @@ export type DiscoverSection = {
 
 /** A destination for navigation on campus. */
 export type NavigationDestination = {
-  code: string,
-  room: ?string,
+  code: string,   // Shorthand builing code
+  room: ?string,  // Room number in the building
 };
 
 /** A room on campus, with a name and the facilities it offers represented by an ID. */
 export type BuildingRoom = {
-  name: string,
-  type: number,
+  name: string, // Name of the room
+  type: number, // Type of the room, corresponding to a RoomType
 };
 
 /** A predefined type of room and how it should be represented visually. */
 export type RoomType = {
-  icon: PlatformIcon,
+  icon: PlatformIcon, // Icon to display for the room type
 } & (Name | TranslatedName);
 
 /** A building on campus, with details describing it, its location, and its rooms. */
 export type Building = {
-  code: string,
-  default_room_type: number,
-  facilities: Array < Facility >,
-  image: ReactClass < any >,
-  lat: number,
-  long: number,
-  rooms: Array < BuildingRoom >,
+  code: string,                   // Shorthand building code
+  default_room_type: number,      // Default room type when one is not specified for a room
+  facilities: Array < Facility >, // List of facilities in the building
+  image: ReactClass < any >,      // Image to display for the building
+  lat: number,                    // Latitude of the building
+  long: number,                   // Longitude of the building
+  rooms: Array < BuildingRoom >,  // List of rooms in the building
 } & (Name | TranslatedName);
 
 /** Types of facilities that a certain building on campus may offer. */
