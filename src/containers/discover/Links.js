@@ -85,10 +85,12 @@ class Links extends React.Component {
       );
     } else {
       return (
-        <Menu
-            language={this.props.language}
-            sections={this.props.links}
-            onSectionSelected={this.props.onSectionSelected} />
+        <View style={_styles.container}>
+          <Menu
+              language={this.props.language}
+              sections={this.props.links}
+              onSectionSelected={this.props.onSectionSelected} />
+        </View>
       );
     }
   }

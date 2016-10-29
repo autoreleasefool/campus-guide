@@ -34,6 +34,9 @@ import {
 
 // Redux imports
 import {connect} from 'react-redux';
+import {
+  switchDiscoverView,
+} from 'actions';
 
 // Type imports
 import type {
@@ -42,7 +45,8 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  view: number, // The current view
+  onBackNavigation: (view: number) => void, // Callback when user pops the stacks
+  view: number,                             // The current view
 };
 
 // Views in the Discover tab
@@ -63,12 +67,24 @@ class Discover extends React.Component {
   props: Props;
 
   /**
+   * Adds a listener for navigation events.
+   */
+  componentDidMount(): void {
+    this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+  }
+
+  /**
    * Present the updated view.
    *
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.view != this.props.view) {
+      const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+      if (currentRoutes != null && currentRoutes.length > 0
+          && nextProps.view === currentRoutes[currentRoutes.length - 1].id) {
+        return;
+      }
       this.refs.Navigator.push({id: nextProps.view});
     }
   }
@@ -80,6 +96,16 @@ class Discover extends React.Component {
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
+  }
+
+  /**
+   * Handles navigation events.
+   *
+   * @param {any} event the event taking place
+   */
+  _handleNavigationEvent(): void {
+    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    this.props.onBackNavigation(currentRoutes[currentRoutes.length - 1].id);
   }
 
   /**
@@ -132,4 +158,11 @@ const select = (store) => {
   };
 };
 
-export default connect(select)(Discover);
+// Map dispatch to props
+const actions = (dispatch) => {
+  return {
+    onBackNavigation: (view: number) => dispatch(switchDiscoverView(view)),
+  };
+};
+
+export default connect(select, actions)(Discover);
