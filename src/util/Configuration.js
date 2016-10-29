@@ -345,7 +345,6 @@ async function _getConfigFile(configFile: string): Promise < ?Object > {
 
 /**
  * Deletes the configuration on the disk and clears versions in the database. Used for debugging.
- * TODO: remove this method in release.
  */
 async function _deleteConfiguration(): Promise < void > {
   try {

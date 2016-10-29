@@ -41,8 +41,6 @@ import type {
 import {preferenceCache} from './preferences';
 import reducers from '../reducers';
 
-// TODO: add middleware to save preferences
-
 /**
  * Creates a redux store from the reducers and returns it.
  *
