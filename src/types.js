@@ -50,6 +50,9 @@ export type Details = {details: Array < string >};
 /** A set of details, translated for English and French. */
 export type TranslatedDetails = {details_en: Array < string >, details_fr: Array < string >};
 
+/** A URL and a name to display it with. */
+export type NamedLink = (Name | TranslatedName) & (Link | TranslatedLink);
+
 //-----------------------------------------------------------------------------
 //  Icons
 //-----------------------------------------------------------------------------
@@ -170,11 +173,21 @@ export type Route = {
 //  Menus
 //-----------------------------------------------------------------------------
 
-// Expected format for menu sections that can be selected.
-export type MenuSection = {
+// Expected format for discover sections.
+export type DiscoverSection = {
   icon: PlatformIcon, // Icon for the section to display
   id: string,         // Unique id to report which section was selected
-  image: string,      // Image to display when section is expanded
+  image?: string,     // Image to display when section is expanded
+} & (Name | TranslatedName);
+
+// Expected format for link sections.
+export type LinkSection = {
+  icon: PlatformIcon,                 // Icon for the section to display
+  id: string,                         // Unique id to report which section was selected
+  image?: string,                     // Image to display when section is expanded
+  links?: Array < NamedLink >,        // List of links in the category
+  social?: Array < NamedLink >,       // List of social media links in the platform
+  categories?: Array < LinkSection >, // List of subcategories
 } & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
@@ -279,6 +292,7 @@ export type Action =
   | { type: 'VIEW_BUILDING', building: Building }
   | { type: 'DISCOVER_VIEW', view: number }
   | { type: 'DISCOVER_SECTION', section: number }
-  | { type: 'SET_DISCOVER_SECTIONS', sections: Array < MenuSection > }
+  | { type: 'SET_DISCOVER_SECTIONS', sections: Array < DiscoverSection > }
+  | { type: 'SET_DISCOVER_LINKS', links: Array < LinkSection > }
   | { type: 'SCHEDULE_VIEW', view: number }
   ;

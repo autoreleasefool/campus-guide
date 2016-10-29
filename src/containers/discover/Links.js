@@ -33,14 +33,13 @@ import {
 // Redux imports
 import {connect} from 'react-redux';
 import {
-  setDiscoverSections,
-  switchDiscoverView,
+  setDiscoverLinks,
 } from 'actions';
 
 // Type imports
 import type {
   Language,
-  DiscoverSection,
+  LinkSection,
 } from 'types';
 
 // Imports
@@ -48,33 +47,29 @@ import Menu from 'Menu';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 
-import {
-  Views,
-} from './Discover';
-
-class DiscoverHome extends React.Component {
+class Links extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
    */
   props: {
-    language: Language,                                               // The current language, selected by the user
-    onSectionSelected: (section: string) => void,                     // Displays contents of the section in a new view
-    onSectionsLoaded: (sections: Array < DiscoverSection >) => void,  // Sets the sections in the view
-    sections: Array < DiscoverSection >,                              // The sections in the view
+    language: Language,                                        // The current language, selected by the user
+    onSectionSelected: (section: string) => void,              // Displays contents of the section in a new view
+    onSectionsLoaded: (links: Array < LinkSection >) => void,  // Sets the sections in the view
+    links: Array < LinkSection >,                              // The sections in the view
   }
 
   /**
    * If the sections have not been loaded, then load them.
    */
   componentDidMount(): void {
-    if (this.props.sections.length === 0) {
+    if (this.props.links == null || this.props.links.length === 0) {
       Configuration.init()
-          .then(() => Configuration.getConfig('/discover.json'))
-          .then((discoverSections: Array < DiscoverSection >) => {
-            this.props.onSectionsLoaded(discoverSections);
+          .then(() => Configuration.getConfig('/useful_links.json'))
+          .then((linkSections: Array < LinkSection >) => {
+            this.props.onSectionsLoaded(linkSections);
           })
-          .catch((err: any) => console.error('Configuration could not be initialized for discovery.', err));
+          .catch((err: any) => console.error('Configuration could not be initialized for useful links.', err));
     }
   }
 
@@ -84,18 +79,16 @@ class DiscoverHome extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    if (this.props.sections == null || this.props.sections.length === 0) {
+    if (this.props.links == null || this.props.links.length === 0) {
       return (
         <View style={_styles.container} />
       );
     } else {
       return (
-        <View style={_styles.container}>
-          <Menu
-              language={this.props.language}
-              sections={this.props.sections}
-              onSectionSelected={this.props.onSectionSelected} />
-        </View>
+        <Menu
+            language={this.props.language}
+            sections={this.props.links}
+            onSectionSelected={this.props.onSectionSelected} />
       );
     }
   }
@@ -113,7 +106,7 @@ const _styles = StyleSheet.create({
 const select = (store) => {
   return {
     language: store.config.language,
-    sections: store.discover.sections,
+    links: store.discover.links,
   };
 };
 
@@ -121,24 +114,25 @@ const select = (store) => {
 const actions = (dispatch) => {
   return {
     onSectionSelected: (section: string) => {
-      let view: number = Views.Home;
+      console.log('Section selected: ' + section);
+      // let view: number = Views.Home;
 
-      switch (section) {
-        case 'use':
-          view = Views.Links;
-          break;
-        case 'stu':
-        case 'bus':
-        case 'shu':
-        default:
-          // Does nothing
-          // Return to default view, Views.Home
-      }
+      // switch (section) {
+      //   case 'use':
+      //     view = Views.Links;
+      //     break;
+      //   case 'stu':
+      //   case 'bus':
+      //   case 'shu':
+      //   default:
+      //     // Does nothing
+      //     // Return to default view, Views.Home
+      // }
 
-      dispatch(switchDiscoverView(view));
+      // dispatch(switchDiscoverView(view));
     },
-    onSectionsLoaded: (sections: Array < DiscoverSection >) => dispatch(setDiscoverSections(sections)),
+    onSectionsLoaded: (links: Array < LinkSection >) => dispatch(setDiscoverLinks(links)),
   };
 };
 
-export default connect(select, actions)(DiscoverHome);
+export default connect(select, actions)(Links);

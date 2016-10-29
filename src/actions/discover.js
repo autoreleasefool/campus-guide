@@ -27,7 +27,8 @@
 // Types
 import type {
   Action,
-  MenuSection,
+  DiscoverSection,
+  LinkSection,
 } from 'types';
 
 module.exports = {
@@ -35,12 +36,12 @@ module.exports = {
     type: 'DISCOVER_VIEW',
     view,
   }),
-  switchDiscoverSection: (section: number): Action => ({
-    type: 'DISCOVER_SECTION',
-    section,
-  }),
-  setDiscoverSections: (sections: Array < MenuSection >): Action => ({
+  setDiscoverSections: (sections: Array < DiscoverSection >): Action => ({
     type: 'SET_DISCOVER_SECTIONS',
     sections,
+  }),
+  setDiscoverLinks: (links: Array < LinkSection >): Action => ({
+    type: 'SET_DISCOVER_LINKS',
+    links,
   }),
 };

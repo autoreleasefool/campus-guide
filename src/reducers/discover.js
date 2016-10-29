@@ -27,19 +27,22 @@
 // Types
 import type {
   Action,
-  MenuSection,
+  LinkSection,
+  DiscoverSection,
 } from 'types';
 
 // Describes the discover state.
 type State = {
-  expandedSection: number,          // Current section the user has expanded
-  sections: Array < MenuSection >,  // Sections of info about the university
-  view: number,                     // Current view to display in the Discover navigator
+  expandedSection: number,              // Current section the user has expanded
+  links: Array < LinkSection >,         // Sections of useful links
+  sections: Array < DiscoverSection >,  // Sections of info about the university
+  view: number,                         // Current view to display in the Discover navigator
 };
 
 // Initial discover state.
 const initialState: State = {
   expandedSection: 0,
+  links: [],
   sections: [],
   view: 0,
 };
@@ -67,6 +70,11 @@ function discover(state: State = initialState, action: Action): State {
       return {
         ...state,
         sections: action.sections,
+      };
+    case 'SET_DISCOVER_LINKS':
+      return {
+        ...state,
+        links: action.links,
       };
     default:
       return state;

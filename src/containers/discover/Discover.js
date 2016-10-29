@@ -53,6 +53,7 @@ export const Views = {
 
 // Screen imports
 import Home from './Home';
+import Links from './Links';
 
 class Discover extends React.Component {
 
@@ -92,6 +93,10 @@ class Discover extends React.Component {
       case Views.Home:
         return (
           <Home />
+        );
+      case Views.Links:
+        return (
+          <Links />
         );
       default:
         // TODO: generic error view?

@@ -39,7 +39,6 @@ import {
 import type {
   Icon,
   Language,
-  MenuSection,
   VoidFunction,
 } from 'types';
 
@@ -47,7 +46,7 @@ import type {
 type Props = {
   language: Language,                           // The user's currently selected language
   onSectionSelected: (section: string) => void, // Displays contents of the section in a new view
-  sections: Array < MenuSection >,              // List of sections to display
+  sections: Array < Object >,                   // List of sections to display
 };
 
 // Type definition for component state.
@@ -58,7 +57,6 @@ type State = {
 // Imports
 import Header from 'Header';
 import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as TranslationUtils from 'TranslationUtils';
 
@@ -106,11 +104,11 @@ export default class Menu extends React.Component {
    * Returns a view for a section which displays the section name and icon, as well as an image if the section is
    * currently selected.
    *
-   * @param {number}      index   index of section to render
-   * @param {MenuSection} section section to render
+   * @param {number} index   index of section to render
+   * @param {Object} section section to render
    * @returns {ReactElement<any>} a view with an image and title which is clickable by the user
    */
-  _getSectionView(index: number, section: MenuSection): ReactElement < any > {
+  _getSectionView(index: number, section: Object): ReactElement < any > {
     let onPress: VoidFunction;
     if (index === this.state.expandedSection) {
       onPress = () => this.props.onSectionSelected(section.id);
@@ -123,7 +121,7 @@ export default class Menu extends React.Component {
     let touchableStyle: Object = {};
     let subtitleIconName: string = 'expand-more';
 
-    if (index === this.state.expandedSection) {
+    if (index === this.state.expandedSection && section.image != null) {
       sectionImage = (
         <Image
             resizeMode={'cover'}
@@ -161,7 +159,7 @@ export default class Menu extends React.Component {
     } else {
       return (
         <View style={_styles.container}>
-          {this.props.sections.map((section: MenuSection, index: number) => (
+          {this.props.sections.map((section: Object, index: number) => (
             this._getSectionView(index, section)
           ))}
         </View>
@@ -174,7 +172,6 @@ export default class Menu extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.Colors.darkGrey,
   },
   sectionImage: {
     flex: 1,
