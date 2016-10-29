@@ -26,11 +26,7 @@
 // React imports
 import React from 'react';
 import {
-  Image,
-  LayoutAnimation,
-  Platform,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -39,22 +35,23 @@ import {connect} from 'react-redux';
 import {
   setDiscoverSections,
   switchDiscoverSection,
+  switchDiscoverView,
 } from 'actions';
 
 // Type imports
 import type {
-  DiscoverSection,
   Language,
-  Icon,
-  VoidFunction,
+  MenuSection,
 } from 'types';
 
 // Imports
-import Header from 'Header';
+import Menu from 'Menu';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+
+import {
+  Views,
+} from './Discover';
 
 class DiscoverHome extends React.Component {
 
@@ -62,12 +59,10 @@ class DiscoverHome extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
-    expandedSection: number,                                          // The current section to expand
     language: Language,                                               // The current language, selected by the user
-    onSectionExpanded: (section: number) => void,                     // Updates the state when a building is selected
-    onSectionSelected: (section: number) => void,                    // Displays contents of the section in a new view
-    onSectionsLoaded: (sections: Array < DiscoverSection >) => void,  // Sets the sections in the view
-    sections: Array < DiscoverSection >,                              // The sections in the view
+    onSectionSelected: (section: string) => void,                     // Displays contents of the section in a new view
+    onSectionsLoaded: (sections: Array < MenuSection >) => void,  // Sets the sections in the view
+    sections: Array < MenuSection >,                              // The sections in the view
   }
 
   /**
@@ -77,72 +72,11 @@ class DiscoverHome extends React.Component {
     if (this.props.sections.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/discover.json'))
-          .then((discoverSections: Array < DiscoverSection >) => {
-            this.props.onSectionExpanded(0);
+          .then((discoverSections: Array < MenuSection >) => {
             this.props.onSectionsLoaded(discoverSections);
           })
           .catch((err: any) => console.error('Configuration could not be initialized for discovery.', err));
     }
-  }
-
-  /**
-   * Focuses a new section for the user, hides the old section's image and shows the new section's image.
-   *
-   * @param {number} section new section to focus.
-   */
-  _focusSection(section: number): void {
-    if (this.props.expandedSection === section) {
-      return;
-    }
-
-    LayoutAnimation.easeInEaseOut();
-    this.props.onSectionExpanded(section);
-  }
-
-  /**
-   * Returns a view for a section which displays the section name and icon, as well as an image if the section is
-   * currently selected.
-   *
-   * @param {number}          index   index of section to render
-   * @param {DiscoverSection} section section to render
-   * @returns {ReactElement<any>} a view with an image and title which is clickable by the user
-   */
-  _getSectionView(index: number, section: DiscoverSection): ReactElement < any > {
-    let onPress: VoidFunction;
-    if (index === this.props.expandedSection) {
-      onPress = () => this.props.onSectionSelected(index);
-    } else {
-      onPress = () => this._focusSection(index);
-    }
-
-    const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, section);
-    let sectionImage: ?ReactElement < any > = null;
-    let touchableStyle: Object = {};
-    let subtitleIconName: string = 'expand-more';
-
-    if (index === this.props.expandedSection) {
-      sectionImage = (
-        <Image
-            resizeMode={'cover'}
-            source={{uri: Configuration.getImagePath(section.image)}}
-            style={_styles.sectionImage} />
-      );
-      touchableStyle = {flex: 1, overflow: 'hidden'};
-      subtitleIconName = 'chevron-right';
-    }
-
-    return (
-      <TouchableOpacity
-          key={section.id}
-          style={touchableStyle}
-          onPress={onPress}>
-        {sectionImage}
-        <Header
-            icon={icon}
-            subtitleIcon={{name: subtitleIconName, class: 'material'}}
-            title={TranslationUtils.getTranslatedName(this.props.language, section) || ''} />
-      </TouchableOpacity>
-    );
   }
 
   /**
@@ -157,11 +91,10 @@ class DiscoverHome extends React.Component {
       );
     } else {
       return (
-        <View style={_styles.container}>
-          {this.props.sections.map((section: DiscoverSection, index: number) => (
-            this._getSectionView(index, section)
-          ))}
-        </View>
+        <Menu
+            language={this.props.language}
+            sections={this.props.sections}
+            onSectionSelected={this.props.onSectionSelected} />
       );
     }
   }
@@ -172,16 +105,6 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.darkGrey,
-  },
-  sectionImage: {
-    flex: 1,
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    width: null,
-    height: null,
   },
 });
 
@@ -200,11 +123,26 @@ const actions = (dispatch) => {
     onSectionExpanded: (section: number) => {
       dispatch(switchDiscoverSection(section));
     },
-    onSectionSelected: (section: number) => {
-      console.log('Section selected: ' + section);
-      // TODO: switchDiscoverView
+    onSectionSelected: (section: string) => {
+      let view: number = Views.Home;
+
+      switch (section) {
+        case 'use':
+          view = Views.Links;
+          break;
+        case 'stu':
+        case 'bus':
+        case 'shu':
+        default:
+          // Does nothing
+          // Return to default view, Views.Home
+      }
+
+      console.log('Switch to section: ' + view);
+
+      // dispatch(switchDiscoverView(view));
     },
-    onSectionsLoaded: (sections: Array < DiscoverSection >) => dispatch(setDiscoverSections(sections)),
+    onSectionsLoaded: (sections: Array < MenuSection >) => dispatch(setDiscoverSections(sections)),
   };
 };
 

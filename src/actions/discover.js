@@ -27,7 +27,7 @@
 // Types
 import type {
   Action,
-  DiscoverSection,
+  MenuSection,
 } from 'types';
 
 module.exports = {
@@ -39,7 +39,7 @@ module.exports = {
     type: 'DISCOVER_SECTION',
     section,
   }),
-  setDiscoverSections: (sections: Array < DiscoverSection >): Action => ({
+  setDiscoverSections: (sections: Array < MenuSection >): Action => ({
     type: 'SET_DISCOVER_SECTIONS',
     sections,
   }),

@@ -48,6 +48,7 @@ type Props = {
 // Views in the Discover tab
 export const Views = {
   Home: 0,  // Home discover view where user can see elements of university they can explore
+  Links: 1, // Displays a list of useful links to the user
 };
 
 // Screen imports

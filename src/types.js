@@ -167,14 +167,14 @@ export type Route = {
 };
 
 //-----------------------------------------------------------------------------
-//  Discover
+//  Menus
 //-----------------------------------------------------------------------------
 
-/** A section of the university the user can explore. */
-export type DiscoverSection = {
-  icon: PlatformIcon, // Icon to display for the section
-  id: string,         // Unique ID of the section
-  image: any,         // Image to display for the section
+// Expected format for menu sections that can be selected.
+export type MenuSection = {
+  icon: PlatformIcon, // Icon for the section to display
+  id: string,         // Unique id to report which section was selected
+  image: string,      // Image to display when section is expanded
 } & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
@@ -279,6 +279,6 @@ export type Action =
   | { type: 'VIEW_BUILDING', building: Building }
   | { type: 'DISCOVER_VIEW', view: number }
   | { type: 'DISCOVER_SECTION', section: number }
-  | { type: 'SET_DISCOVER_SECTIONS', sections: Array < DiscoverSection > }
+  | { type: 'SET_DISCOVER_SECTIONS', sections: Array < MenuSection > }
   | { type: 'SCHEDULE_VIEW', view: number }
   ;

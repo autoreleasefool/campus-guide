@@ -27,14 +27,14 @@
 // Types
 import type {
   Action,
-  DiscoverSection,
+  MenuSection,
 } from 'types';
 
 // Describes the discover state.
 type State = {
-  expandedSection: number,              // Current section the user has expanded
-  sections: Array < DiscoverSection >,  // Sections of info about the university
-  view: number,                         // Current view to display in the Discover navigator
+  expandedSection: number,          // Current section the user has expanded
+  sections: Array < MenuSection >,  // Sections of info about the university
+  view: number,                     // Current view to display in the Discover navigator
 };
 
 // Initial discover state.
