@@ -39,6 +39,21 @@ const colors = {
   transpareWhite: 'rgba(255, 255, 255, 0.7)',
   black: 'black',
   transparentBlack: 'rgba(0, 0, 0, 0.7)',
+
+  /**
+   * School faculty colours
+   */
+
+  arts: '#FFFFFF',
+  law: '#A9343A',
+  engineering: '#DF4526',
+  education: '#628FB6',
+  graduate: '#35343B',
+  healthSciences: '#B9BF15',
+  telfer: '#8C2633',
+  medicine: '#2F1A45',
+  sciences: '#FFDA00',
+  socialSciences: '#009D93',
 };
 
 /**
