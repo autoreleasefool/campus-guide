@@ -23,6 +23,7 @@
 .*/Libraries/react-native/React.js
 .*/Libraries/react-native/ReactNative.js
 .*/node_modules/jest-runtime/build/__tests__/.*
+.*/node_modules/react-static-container/.*
 
 # Ignore old files during rewrite
 <PROJECT_ROOT>/old/.*
