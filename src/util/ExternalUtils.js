@@ -62,3 +62,12 @@ export function openLink(url: ?string,
       })
       .catch((err: any) => console.error('An error occurred opening the link.', err));
 }
+
+/**
+ * Gets a link to use in place of a missing link.
+ *
+ * @returns {string} a default link.
+ */
+export function getDefaultLink(): string {
+  return 'https://google.ca';
+}

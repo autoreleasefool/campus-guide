@@ -33,7 +33,6 @@ import type {
 
 // Describes the discover state.
 type State = {
-  expandedSection: number,              // Current section the user has expanded
   links: Array < LinkSection >,         // Sections of useful links
   sections: Array < DiscoverSection >,  // Sections of info about the university
   view: number,                         // Current view to display in the Discover navigator

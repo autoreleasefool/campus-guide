@@ -199,12 +199,13 @@ class Links extends React.Component {
   /**
    * Returns a list of touchable views which lead to new pages of categories of links.
    *
-   * @param {Array<LinkSection>} categories       subcategories of links
-   * @param {boolean}            isBackgroundDark indicates if the background color of the category is dark
+   * @param {?Array<LinkSection>} categoryList     subcategories of links
+   * @param {boolean}             isBackgroundDark indicates if the background color of the category is dark
    * @returns {?ReactElement<any>} for each index in categories, a TouchableOpacity with the name of the category,
    *                               or null if there are no categories
    */
-  _renderSectionCategories(categories: Array < LinkSection >, isBackgroundDark: boolean): ?ReactElement < any > {
+  _renderSectionCategories(categoryList: ?Array < LinkSection >, isBackgroundDark: boolean): ?ReactElement < any > {
+    const categories = categoryList;
     if (categories == null) {
       return null;
     }
@@ -243,12 +244,13 @@ class Links extends React.Component {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param {Array<NamedLink>} links            list of links in the current category.
-   * @param {boolean}          isBackgroundDark indicates if the background color of the category is dark.
+   * @param {?Array<NamedLink>} linkList         list of links in the current category.
+   * @param {boolean}           isBackgroundDark indicates if the background color of the category is dark.
    * @returns {?ReactElement<any>} for each index in {links}, a {TouchableOpacity} with the name of the link
    *                               or null if there are no links
    */
-  _renderSectionLinks(links: Array < NamedLink >, isBackgroundDark: boolean): ?ReactElement < any > {
+  _renderSectionLinks(linkList: ?Array < NamedLink >, isBackgroundDark: boolean): ?ReactElement < any > {
+    const links = linkList;
     if (links == null) {
       return null;
     }
@@ -271,7 +273,7 @@ class Links extends React.Component {
             title={Translations.useful_links} />
         {links.map((link, index) => {
           const translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
-              || Configuration.getDefaultLink();
+              || ExternalUtils.getDefaultLink();
           const translatedName: string = TranslationUtils.getTranslatedName(language, link)
               || translatedLink;
 
@@ -302,11 +304,12 @@ class Links extends React.Component {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param {Array<NamedLink>} links list of links to social media sites in the current category
+   * @param {?Array<NamedLink>} linkList list of links to social media sites in the current category
    * @returns {?ReactElement<any>} for each index in links, a TouchableOpacity with an icon representing
    *                              the social media site, or null if there are no links
    */
-  _renderSectionSocialMedia(links: ?Array < NamedLink >): ?ReactElement < any > {
+  _renderSectionSocialMedia(linkList: ?Array < NamedLink >): ?ReactElement < any > {
+    const links = linkList;
     if (links == null) {
       return null;
     }
@@ -319,7 +322,7 @@ class Links extends React.Component {
       <View style={_styles.socialMediaContainer}>
         {links.map((link: NamedLink) => {
           const url: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
-              || Configuration.getDefaultLink();
+              || ExternalUtils.getDefaultLink();
           const name: ?string = TranslationUtils.getTranslatedName(language, link);
 
           if (name == null) {
@@ -365,7 +368,7 @@ class Links extends React.Component {
 
           if (depth === ids.length - 1) {
             currentSection = categoryList[i];
-          } else {
+          } else if (categoryList[i].categories != null) {
             categoryList = categoryList[i].categories;
             depth += 1;
           }
