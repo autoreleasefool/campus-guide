@@ -41,7 +41,6 @@ type State = {
 
 // Initial discover state.
 const initialState: State = {
-  expandedSection: 0,
   links: [],
   sections: [],
   view: 0,
@@ -60,11 +59,6 @@ function discover(state: State = initialState, action: Action): State {
       return {
         ...state,
         view: action.view,
-      };
-    case 'DISCOVER_SECTION':
-      return {
-        ...state,
-        expandedSection: action.section,
       };
     case 'SET_DISCOVER_SECTIONS':
       return {
