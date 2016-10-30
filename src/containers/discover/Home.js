@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
+ * @created 2016-10-27
  * @file Home.js
  * @description Root view for info which help users become acquainted with the school.
  *

@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
+ * @created 2016-10-27
  * @file  Home.js
  * @description View for enabling the user to create a schedule of their classes and see the schedule in an organized
  *              manner.
