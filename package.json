@@ -29,15 +29,19 @@
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.0.0",
+    "babel-eslint": "^7.1.0",
     "babel-jest": "^16.0.0",
     "babel-polyfill": "^6.16.0",
+    "babel-preset-react-native": "^1.9.0",
     "empty": "^0.10.1",
-    "eslint": "^3.8.1",
+    "eslint": "^3.9.0",
     "eslint-plugin-react": "^6.4.1",
     "eslint-plugin-react-native": "^2.0.0",
     "flow-bin": "^0.32.0",
-    "jest-cli": "^16.0.1"
+    "jest": "^16.0.2",
+    "jest-cli": "^16.0.2",
+    "jest-react-native": "^16.0.0",
+    "react-test-renderer": "^15.3.2"
   },
   "jest": {
     "coverageThreshold": {
@@ -51,21 +55,12 @@
     "globals": {
       "__DEV__": true
     },
-    "haste": {
-      "defaultPlatform": "ios",
-      "platforms": [
-        "ios",
-        "android"
-      ],
-      "providesModuleNodeModules": [
-        "react-native"
-      ]
-    },
     "moduleNameMapper": {
       "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
     },
+    "preset": "jest-react-native",
     "testPathIgnorePatterns": [
-      "/node_modules/",
+      "node_modules",
       "<rootDir>/old/"
     ]
   }

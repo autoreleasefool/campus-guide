@@ -33,7 +33,9 @@
  * @returns {number} the index of the object with the key/value pair in the array, or -1 if it was not found
  */
 export function searchObjectArrayByKeyValue(array: Array < Object >, key: string, value: any) {
-  if (array == null || key == null) {
+  if (array == null || key == null || array.length === 0) {
+    return -1;
+  } else if (!(key in array[0])) {
     return -1;
   }
 

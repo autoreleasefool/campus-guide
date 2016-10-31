@@ -53,29 +53,29 @@ export function getConfigVersions(): Promise < Array < ConfigFile > > {
 /**
  * Update versions in the database for config files provided.
  *
- * @param {ConfigFile} updatedConfigFiles set of config files and versions
+ * @param {ConfigFile} update set of config files and versions
  * @returns {Promise<void>} promise which resolves when all updates have finished
  */
-export function updateConfigVersions(updatedConfigFiles: Array < ConfigFile >): Promise < void > {
+export function updateConfigVersions(update: Array < ConfigFile >): Promise < void > {
   return store.get(STORE_CONFIG_VERSIONS)
-      .then((configFiles) => {
-        let updated = updatedConfigFiles;
+      .then((original: Array < ConfigFile >) => {
+        let final = update;
 
-        if (configFiles != null) {
-          const sortedConfigFiles = ArrayUtils.sortObjectArrayByKeyValues(configFiles, 'name');
+        if (original != null) {
+          const sorted = ArrayUtils.sortObjectArrayByKeyValues(original, 'name');
 
           // Replace any config versions that should be updated
-          for (let i = 0; i < updatedConfigFiles.length; i++) {
-            const index = ArrayUtils.searchObjectArrayByKeyValue(sortedConfigFiles, 'name', updatedConfigFiles[i].name);
+          for (let i = 0; i < update.length; i++) {
+            const index = ArrayUtils.searchObjectArrayByKeyValue(sorted, 'name', update[i].name);
             if (index >= 0) {
-              sortedConfigFiles.splice(index, 1);
+              sorted.splice(index, 1);
             }
           }
 
-          updated = updated.concat(sortedConfigFiles);
+          final = final.concat(sorted);
         }
 
         // Save the updated config files
-        return store.save(STORE_CONFIG_VERSIONS, updated);
+        return store.save(STORE_CONFIG_VERSIONS, final);
       });
 }
