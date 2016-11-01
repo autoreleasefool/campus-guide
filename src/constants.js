@@ -95,6 +95,38 @@ const tabs = [
   'settings',
 ];
 
+/**
+ * List of available building facilities
+ */
+const facilities = [
+  'atm',
+  'food',
+  'printer',
+  'store',
+  'bed',
+  'alcohol',
+  'laundry',
+  'library',
+  'parking',
+  'mail',
+  'pharmacy',
+  'gym',
+  'pool',
+  'invalid',
+];
+
+/**
+ * List of common social media platforms
+ */
+const socialMediaPlatforms = [
+  'linkedin',
+  'twitter',
+  'facebook',
+  'instagram',
+  'youtube',
+  'tumblr',
+];
+
 module.exports = {
 
   /**
@@ -129,5 +161,15 @@ module.exports = {
    * Tabs within the app
    */
   Tabs: tabs,
+
+  /**
+   * Building facilities
+   */
+  Facilities: facilities,
+
+  /**
+   * Social media platforms
+   */
+  SocialMediaPlatforms: socialMediaPlatforms,
 
 };
