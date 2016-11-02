@@ -16,15 +16,16 @@
  * limitations under the License.
  *
  * @author Joseph Roque
+ * @created 2016-11-1
  * @file DisplayUtils-test.js
  * @description Tests the functionality of DisplayUtils
  *
  */
 'use strict';
 
-// Unmock modules so the real module is used.
-jest.unmock('DisplayUtils');
-jest.unmock('Constants');
+// Require the modules used in testing
+import * as Constants from 'Constants';
+import * as DisplayUtils from '../DisplayUtils';
 
 // Example object containing an icon object which describes the android and iOS icons.
 const exampleObjectWithPlatformSpecificIcons = {
@@ -79,10 +80,6 @@ const expectedDefaultIcon = {
   name: 'example_name',
   class: 'example_class',
 };
-
-// Require the modules used in testing
-const Constants = require('Constants');
-const DisplayUtils = require('DisplayUtils');
 
 describe('DisplayUtils-test', () => {
 

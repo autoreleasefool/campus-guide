@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
+ * @created 2016-11-1
  * @file Preferences-test.js
  * @description Test the preferences for the application.
  *

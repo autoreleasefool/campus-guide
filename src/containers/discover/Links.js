@@ -157,7 +157,7 @@ class Links extends React.Component {
    * @param {Object} Translations language translations.
    */
   _openLink(link: ?string, Translations: Object): void {
-    ExternalUtils.openLink(link, Translations, Linking, Alert, Clipboard);
+    ExternalUtils.openLink(link, Translations, Linking, Alert, Clipboard, TextUtils);
   }
 
   /**

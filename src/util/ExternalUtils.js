@@ -25,42 +25,44 @@
  */
 'use strict';
 
-// Imports
-const TextUtils = require('TextUtils');
-
 /**
  * Opens a URL if the URL is valid.
  *
- * @param {?string} url         URL to open.
- * @param {Object} Translations translations in the current language of certain text.
- * @param {Object} Linking      an instance of the React Native Linking class.
- * @param {Object} Alert        an instance of the React Native Alert class.
- * @param {Object} Clipboard    an instance of the React Native Clipboard class.
+ * @param {?string} url         URL to open
+ * @param {Object} Translations translations in the current language of certain text
+ * @param {Object} Linking      an instance of the React Native Linking class
+ * @param {Object} Alert        an instance of the React Native Alert class
+ * @param {Object} Clipboard    an instance of the React Native Clipboard class
+ * @param {Object} TextUtils    an instance of the TextUtils utility class
  * @returns {Promise<void>} a promise indicating the result of whether the link was opened
  */
 export function openLink(url: ?string,
                          Translations: Object,
                          Linking: Object,
                          Alert: Object,
-                         Clipboard: Object): Promise < void > {
+                         Clipboard: Object,
+                         TextUtils: Object): Promise < void > {
   const formattedUrl = TextUtils.formatLink(url);
 
-  return Linking.canOpenURL(url)
-      .then((supported: boolean) => {
-        if (supported) {
-          return Linking.openURL(url);
-        } else {
-          return Alert.alert(
-            Translations.cannot_open_url,
-            formattedUrl,
-            [
-              {text: Translations.cancel, style: 'cancel'},
-              {text: Translations.copy_link, onPress: () => Clipboard.setString(formattedUrl)},
-            ],
-          );
-        }
-      })
-      .catch((err: any) => console.error('An error occurred opening the link.', err));
+  return new Promise((resolve, reject) => {
+    Linking.canOpenURL(url)
+        .then((supported: boolean) => {
+          if (supported) {
+            Linking.openURL(url);
+          } else {
+            Alert.alert(
+              Translations.cannot_open_url,
+              formattedUrl,
+              [
+                {text: Translations.cancel, style: 'cancel'},
+                {text: Translations.copy_link, onPress: () => Clipboard.setString(formattedUrl)},
+              ],
+            );
+          }
+          resolve();
+        })
+        .catch((err: any) => reject('An error occurred opening the link.', err));
+  });
 }
 
 /**

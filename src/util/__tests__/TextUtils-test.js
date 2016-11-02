@@ -16,14 +16,12 @@
  * limitations under the License.
  *
  * @author Joseph Roque
+ * @created 2016-11-1
  * @file TextUtils-test.js
  * @description Tests text formatting and adjustments.
  *
  */
 'use strict';
-
-// Unmock modules so the real module is used.
-jest.unmock('TextUtils');
 
 // An example valid URL to open.
 const exampleURL = 'http://google.com';
@@ -54,7 +52,7 @@ const expectedTimeFormats = {
 };
 
 // Require modules for testing
-const TextUtils = require('TextUtils');
+import * as TextUtils from '../TextUtils';
 
 // Add the String.format function
 if (!String.format) {

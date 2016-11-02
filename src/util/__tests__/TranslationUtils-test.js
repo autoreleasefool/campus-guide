@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
+ * @created 2016-11-1
  * @file TranslationUtils-test.js
  * @description Tests retrieving translations from objects.
  *
@@ -23,10 +24,9 @@
 'use strict';
 
 /* async seems to cause an issue with this rule. */
-/* eslint-disable arrow-parens */
 
-// Unmock modules so the real module is used.
-jest.unmock('TranslationUtils');
+// Require modules for testing
+import * as TranslationUtils from '../TranslationUtils';
 
 jest.setMock('Configuration', {
   init: async function init() {
@@ -94,9 +94,6 @@ const invalidObject = {
   no_details: 'invalid',
   no_name: 'invalid',
 };
-
-// Require modules for testing
-const TranslationUtils = require('TranslationUtils');
 
 // Error message for when Configuration.init fails
 const initErrorMessage = 'Init error. This error is being thrown for testing purposes.';

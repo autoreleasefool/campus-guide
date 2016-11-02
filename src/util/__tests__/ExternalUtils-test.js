@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
+ * @created 2016-11-1
  * @file ExternalUtils-test.js
  * @description Tests the interaction of the application with external mediums.
  *
@@ -25,11 +26,12 @@
 /* async seems to cause an issue with this rule. */
 /* eslint-disable arrow-parens */
 
-// Unmock modules so the real module is used.
-jest.unmock('ExternalUtils');
+// Require modules used in testing
+import * as ExternalUtils from '../ExternalUtils';
+const Translations = {};
 
 // An example valid URL to open.
-const exampleURL = 'http://google.com';
+const exampleURL = 'https://google.ca';
 // An example valid telephone number to open.
 const exampleTelephone = 'tel:1235556789';
 // An example valid shortened telephone number to open.
@@ -41,39 +43,32 @@ const invalidURL = 'thisisnotavalidURL';
 // When this URL is requested, an error is thrown.
 const exceptionURL = 'throwAnExceptionURL';
 
-// Mock various modules required in testing.
-jest.setMock('Alert', {
+const Alert = {
   alert: jest.fn(),
-});
+};
 
-jest.setMock('Clipboard', {
+const Clipboard = {
   setString: jest.fn(),
-});
+};
 
-jest.setMock('Linking', {
-  canOpenURL: jest.fn(async (url) => {
+const Linking = {
+  canOpenURL: jest.fn((url) => {
+
+    console.log(`URL: ${url}`);
     if (url === exceptionURL) {
-      throw new Error('This error is being thrown for testing purposes.');
+      return Promise.reject('This error is being thrown for testing purposes.');
     } else {
-      return url !== invalidURL;
+      return Promise.resolve(url !== invalidURL);
     }
   }),
   openURL: jest.fn(),
-});
+};
 
-jest.setMock('../TextUtils', {
-  formatLink: jest.fn(url => url),
-});
-
-// Require dummy modules
-const Alert = require('Alert');
-const Clipboard = require('Clipboard');
-const Linking = require('Linking');
-const TextUtils = require('TextUtils');
-
-// Require modules used in testing
-const ExternalUtils = require('ExternalUtils');
-const Translations = {};
+const TextUtils = {
+  formatLink: jest.fn(url => {
+    return url;
+  }),
+};
 
 describe('ExternalUtils-test', () => {
 
@@ -82,58 +77,57 @@ describe('ExternalUtils-test', () => {
     Clipboard.setString.mockClear();
     Linking.canOpenURL.mockClear();
     Linking.openURL.mockClear();
+    TextUtils.formatLink.mockClear();
   });
 
   it('tests that the proper default link is returned', () => {
     expect(ExternalUtils.getDefaultLink()).toEqual('https://google.ca');
   });
 
-  it('tests that links are formatted before opening.', async () => {
-    try {
-      await ExternalUtils.openLink(exampleURL, Translations, Linking, Alert, Clipboard);
-      expect(TextUtils.formatLink).toBeCalledWith(exampleURL);
+  pit('tests that links are formatted before opening.', () => {
 
-      await ExternalUtils.openLink(exampleTelephone, Translations, Linking, Alert, Clipboard);
-      expect(TextUtils.formatLink).toBeCalledWith(exampleTelephone);
+    return ExternalUtils.openLink(exampleURL, Translations, Linking, Alert, Clipboard, TextUtils)
+        .then(() => {
+          expect(TextUtils.formatLink).toHaveBeenCalledWith(exampleURL);
+          return ExternalUtils.openLink(exampleTelephone, Translations, Linking, Alert, Clipboard, TextUtils);
+        })
+        .then(() => {
+          expect(TextUtils.formatLink).toHaveBeenCalledWith(exampleTelephone);
+          return ExternalUtils.openLink(exampleShortTelephone, Translations, Linking, Alert, Clipboard, TextUtils);
+        })
+        .then(() => {
+          expect(TextUtils.formatLink).toHaveBeenCalledWith(exampleShortTelephone);
+          return ExternalUtils.openLink(exampleEmail, Translations, Linking, Alert, Clipboard, TextUtils);
+        })
+        .then(() => {
+          expect(TextUtils.formatLink).toHaveBeenCalledWith(exampleEmail);
 
-      await ExternalUtils.openLink(exampleShortTelephone, Translations, Linking, Alert, Clipboard);
-      expect(TextUtils.formatLink).toBeCalledWith(exampleShortTelephone);
-
-      await ExternalUtils.openLink(exampleEmail, Translations, Linking, Alert, Clipboard);
-      expect(TextUtils.formatLink).toBeCalledWith(exampleEmail);
-
-      expect(Alert.alert).not.toBeCalled();
-      expect(Clipboard.setString).not.toBeCalled();
-      expect(Linking.openURL).toBeCalled();
-    } catch (object) {
-      console.error('An error should not be thrown.', object);
-    }
+          expect(Alert.alert).not.toHaveBeenCalled();
+          expect(Clipboard.setString).not.toHaveBeenCalled();
+          expect(Linking.openURL).toHaveBeenCalled();
+        });
   });
 
-  it('tests that invalid links are not opened.', async () => {
-    try {
-      await ExternalUtils.openLink(invalidURL, Translations, Linking, Alert, Clipboard);
+  pit('tests that invalid links are not opened.', () => {
+    return ExternalUtils.openLink(invalidURL, Translations, Linking, Alert, Clipboard, TextUtils)
+        .then(() => {
+          expect(Alert.alert).toHaveBeenCalled();
+          expect(Clipboard.setString).not.toHaveBeenCalled();
+          expect(Linking.openURL).not.toHaveBeenCalled();
 
-      expect(Alert.alert).toBeCalled();
-      expect(Clipboard.setString).not.toBeCalled();
-      expect(Linking.openURL).not.toBeCalled();
-
-      Alert.alert.mock.calls[0][2][1].onPress();
-      expect(Clipboard.setString).toBeCalledWith(invalidURL);
-    } catch (object) {
-      console.error('An error should not be thrown.', object);
-    }
+          Alert.alert.mock.calls[0][2][1].onPress();
+          expect(Clipboard.setString).toHaveBeenCalledWith(invalidURL);
+        });
   });
 
-  it('tests that errors in links are handled.', async () => {
-    try {
-      await ExternalUtils.openLink(exceptionURL, Translations, Linking, Alert, Clipboard);
-
-      expect(Alert.alert).not.toBeCalled();
-      expect(Clipboard.setString).not.toBeCalled();
-      expect(Linking.openURL).not.toBeCalled();
-    } catch (object) {
-      console.error('An error should not be thrown.', object);
-    }
+  pit('tests that errors in links are handled.', () => {
+    return ExternalUtils.openLink(exceptionURL, Translations, Linking, Alert, Clipboard, TextUtils)
+        .then(() => expect(false).toBeTruthy())
+        .catch((err) => {
+          console.error('An error was expected to be thrown.', err);
+          expect(Alert.alert).not.toHaveBeenCalled();
+          expect(Clipboard.setString).not.toHaveBeenCalled();
+          expect(Linking.openURL).not.toHaveBeenCalled();
+        });
   });
 });
