@@ -24,6 +24,9 @@
  */
 'use strict';
 
+/* eslint-disable react/prefer-stateless-function */
+/* Better to keep this as a class for consistency. */
+
 // React imports
 import React from 'react';
 import {

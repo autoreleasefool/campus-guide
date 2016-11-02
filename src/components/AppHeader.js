@@ -150,9 +150,4 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
-  return {};
-};
-
-export default connect(select, actions)(AppHeader);
+export default connect(select)(AppHeader);
