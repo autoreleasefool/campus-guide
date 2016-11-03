@@ -128,8 +128,9 @@ const actions = (dispatch) => {
         case 'use':
           view = Views.Links;
           break;
-        case 'stu':
         case 'bus':
+          view = Views.Bus;
+        case 'stu':
         case 'shu':
         default:
           // Does nothing

@@ -107,6 +107,12 @@ export type Semester = {
   current?: boolean,  // True if this is the current semester
 } & (Name | TranslatedName);
 
+/** Collection of bus stops near a University campus. */
+export type BusCampus = {
+  background: string, // Background color for the campus
+  image: any,         // Image of the bus campus
+} & (Name | TranslatedName);
+
 //-----------------------------------------------------------------------------
 //  Courses
 //-----------------------------------------------------------------------------
@@ -294,5 +300,6 @@ export type Action =
   | { type: 'DISCOVER_SECTION', section: number }
   | { type: 'SET_DISCOVER_SECTIONS', sections: Array < DiscoverSection > }
   | { type: 'SET_DISCOVER_LINKS', links: Array < LinkSection > }
+  | { type: 'SHOW_BUSES', campus: ?BusCampus }
   | { type: 'SCHEDULE_VIEW', view: number }
   ;

@@ -108,4 +108,19 @@ describe('discover actions', () => {
 
     expect(actions.setDiscoverLinks(links)).toEqual(expectedAction);
   });
+
+  it('should show a bus campus', () => {
+    const campus = {
+      background: 'background_color',
+      image: 'image.jpg',
+      name: 'campus_name',
+    };
+
+    const expectedAction = {
+      type: 'SHOW_BUSES',
+      campus,
+    };
+
+    expect(actions.showBusCampus(campus)).toEqual(expectedAction);
+  });
 });

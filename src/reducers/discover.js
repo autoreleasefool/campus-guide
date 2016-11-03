@@ -27,12 +27,14 @@
 // Types
 import type {
   Action,
+  BusCampus,
   LinkSection,
   DiscoverSection,
 } from 'types';
 
 // Describes the discover state.
 type State = {
+  campus: ?BusCampus,                   // Selected bus campus to display info for
   links: Array < LinkSection >,         // Sections of useful links
   sections: Array < DiscoverSection >,  // Sections of info about the university
   view: number,                         // Current view to display in the Discover navigator
@@ -40,6 +42,7 @@ type State = {
 
 // Initial discover state.
 const initialState: State = {
+  campus: null,
   links: [],
   sections: [],
   view: 0,
@@ -68,6 +71,11 @@ function discover(state: State = initialState, action: Action): State {
       return {
         ...state,
         links: action.links,
+      };
+    case 'SHOW_BUSES':
+      return {
+        ...state,
+        campus: action.campus,
       };
     default:
       return state;

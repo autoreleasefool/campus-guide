@@ -28,6 +28,7 @@ import reducer from '../discover';
 
 // Expected initial state
 const initialState = {
+  campus: null,
   links: [],
   sections: [],
   view: 0,
@@ -49,8 +50,7 @@ describe('discover reducer', () => {
       )
     ).toEqual(
       {
-        links: [],
-        sections: [],
+        ...initialState,
         view: 1,
       }
     );
@@ -88,8 +88,7 @@ describe('discover reducer', () => {
       )
     ).toEqual(
       {
-        links: [],
-        view: 0,
+        ...initialState,
         sections,
       }
     );
@@ -139,9 +138,31 @@ describe('discover reducer', () => {
       )
     ).toEqual(
       {
-        sections: [],
-        view: 0,
+        ...initialState,
         links,
+      }
+    );
+  });
+
+  it ('should set the bus campus to display', () => {
+    const campus = {
+      background: 'background',
+      image: 'image',
+      name: 'name',
+    };
+
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'SHOW_BUSES',
+          campus,
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        campus,
       }
     );
   });

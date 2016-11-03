@@ -53,9 +53,11 @@ type Props = {
 export const Views = {
   Home: 0,  // Home discover view where user can see elements of university they can explore
   Links: 1, // Displays a list of useful links to the user
+  Bus: 2,   // Displays information about the buses in the city
 };
 
 // Screen imports
+import Buses from './Buses';
 import Home from './Home';
 import Links from './Links';
 
@@ -123,6 +125,10 @@ class Discover extends React.Component {
       case Views.Links:
         return (
           <Links />
+        );
+      case Views.Bus:
+        return (
+          <Buses />
         );
       default:
         // TODO: generic error view?

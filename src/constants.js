@@ -29,11 +29,16 @@
  * Theme colors.
  */
 const colors = {
-  garnet: '#8F001A',
-  darkGrey: '#80746C',
-  polarGrey: '#F2F2F2',
-  lightGrey: '#ACA39A',
-  charcoalGrey: '#2D2D2C',
+  garnet: '#8F001A', // rgb(143, 0, 26)
+  transparentGarnet: 'rgba(143, 0, 26, 0.8)',
+  darkGrey: '#80746C', // rgb(128, 116, 108)
+  transparentDarkGrey: 'rgba(128, 116, 108, 0.8)',
+  polarGrey: '#F2F2F2', // rgb(242, 242, 242)
+  transparentPolarGrey: 'rgba(242, 242, 242, 0.8)',
+  lightGrey: '#ACA39A', // rgb(172, 164, 154)
+  transparentLighGrey: 'rgba(172, 163, 154, 0.8)',
+  charcoalGrey: '#2D2D2C', // rgb(45, 45, 44)
+  transparentCharcoalGrey: 'rgba(45, 45, 45, 0.8)',
 
   white: 'white',
   transpareWhite: 'rgba(255, 255, 255, 0.7)',
