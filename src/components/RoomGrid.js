@@ -160,7 +160,7 @@ export default class RoomGrid extends React.Component {
     }
 
     for (let i = 0; i < rooms.length; i++) {
-      const roomName: string = (String:any).format('{0} {1}', this.props.code, rooms[i].name.toUpperCase());
+      const roomName: string = `${this.props.code} ${rooms[i].name.toUpperCase()}`;
       const roomAltName: ?string = TranslationUtils.getTranslatedVariant(this.props.language, 'alt_name', rooms[i]);
 
       if (!rooms[i].type) {
