@@ -71,33 +71,33 @@ describe('TextUtils-test', () => {
   it('tests converting time formats with invalid params', () => {
     const invalidTime = 'not a time';
     const invalidFormat = '00';
-    expect(() => TextUtils.convertTimeFormat('12', invalidTime)).toThrow();
+    expect(() => TextUtils.convertTimeFormat('12h', invalidTime)).toThrow();
     expect(() => TextUtils.convertTimeFormat(invalidFormat, '12:00')).toThrow();
   });
 
   it('tests converting to a 12h time format', () => {
-    expect(TextUtils.convertTimeFormat('12', '12:00 am')).toBe('12:00 am');
-    expect(TextUtils.convertTimeFormat('12', '12:00 a.m.')).toBe('12:00 am');
-    expect(TextUtils.convertTimeFormat('12', '12:00 AM')).toBe('12:00 am');
-    expect(TextUtils.convertTimeFormat('12', '12:00 A.M.')).toBe('12:00 am');
-    expect(TextUtils.convertTimeFormat('12', '00:00')).toBe('12:00 am');
-    expect(TextUtils.convertTimeFormat('12', '23:59')).toBe('11:59 pm');
-    expect(TextUtils.convertTimeFormat('12', '06:00')).toBe('6:00 am');
-    expect(TextUtils.convertTimeFormat('12', '12:00')).toBe('12:00 pm');
-    expect(TextUtils.convertTimeFormat('12', '18:00')).toBe('6:00 pm');
+    expect(TextUtils.convertTimeFormat('12h', '12:00 am')).toBe('12:00 am');
+    expect(TextUtils.convertTimeFormat('12h', '12:00 a.m.')).toBe('12:00 am');
+    expect(TextUtils.convertTimeFormat('12h', '12:00 AM')).toBe('12:00 am');
+    expect(TextUtils.convertTimeFormat('12h', '12:00 A.M.')).toBe('12:00 am');
+    expect(TextUtils.convertTimeFormat('12h', '00:00')).toBe('12:00 am');
+    expect(TextUtils.convertTimeFormat('12h', '23:59')).toBe('11:59 pm');
+    expect(TextUtils.convertTimeFormat('12h', '06:00')).toBe('6:00 am');
+    expect(TextUtils.convertTimeFormat('12h', '12:00')).toBe('12:00 pm');
+    expect(TextUtils.convertTimeFormat('12h', '18:00')).toBe('6:00 pm');
   });
 
   it('tests converting to a 24h time format', () => {
-    expect(TextUtils.convertTimeFormat('24', '23:59')).toBe('23:59');
-    expect(TextUtils.convertTimeFormat('24', '6:00 am')).toBe('06:00');
-    expect(TextUtils.convertTimeFormat('24', '11:59 pm')).toBe('23:59');
-    expect(TextUtils.convertTimeFormat('24', '11:59 p.m.')).toBe('23:59');
-    expect(TextUtils.convertTimeFormat('24', '11:59 PM')).toBe('23:59');
-    expect(TextUtils.convertTimeFormat('24', '11:59 P.M.')).toBe('23:59');
-    expect(TextUtils.convertTimeFormat('24', '12:00 am')).toBe('00:00');
-    expect(TextUtils.convertTimeFormat('24', '12:00 a.m.')).toBe('00:00');
-    expect(TextUtils.convertTimeFormat('24', '12:00 AM')).toBe('00:00');
-    expect(TextUtils.convertTimeFormat('24', '12:00 A.M.')).toBe('00:00');
+    expect(TextUtils.convertTimeFormat('24h', '23:59')).toBe('23:59');
+    expect(TextUtils.convertTimeFormat('24h', '6:00 am')).toBe('06:00');
+    expect(TextUtils.convertTimeFormat('24h', '11:59 pm')).toBe('23:59');
+    expect(TextUtils.convertTimeFormat('24h', '11:59 p.m.')).toBe('23:59');
+    expect(TextUtils.convertTimeFormat('24h', '11:59 PM')).toBe('23:59');
+    expect(TextUtils.convertTimeFormat('24h', '11:59 P.M.')).toBe('23:59');
+    expect(TextUtils.convertTimeFormat('24h', '12:00 am')).toBe('00:00');
+    expect(TextUtils.convertTimeFormat('24h', '12:00 a.m.')).toBe('00:00');
+    expect(TextUtils.convertTimeFormat('24h', '12:00 AM')).toBe('00:00');
+    expect(TextUtils.convertTimeFormat('24h', '12:00 A.M.')).toBe('00:00');
   });
 
   it('tests that formatting a link returns the proper value.', () => {

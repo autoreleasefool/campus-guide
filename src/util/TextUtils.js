@@ -27,8 +27,9 @@
 
 /* eslint-disable no-magic-numbers */
 
-/** Possible time formats */
-type TimeFormat = '12' | '24';
+import type {
+  TimeFormat,
+} from 'types';
 
 /**
  * Formats certain link formats to display.
@@ -122,13 +123,13 @@ export function leftPad(text: string, desiredLength: number, char: ?string): str
  * @returns {string} the converted time, with 'am' or 'pm' suffix for 12h time format
  */
 export function convertTimeFormat(format: TimeFormat, time: string): string {
-  if (format !== '24' && format !== '12') {
+  if (format !== '24h' && format !== '12h') {
     throw new Error('Invalid time format: ' + format);
   }
 
   if (/^([0-1][0-9]|2[0-4]):[0-5][0-9]$/.test(time)) {
     // 24 hour time
-    if (format === '24') {
+    if (format === '24h') {
       return time;
     } else {
       // Convert to 12h time
@@ -145,11 +146,11 @@ export function convertTimeFormat(format: TimeFormat, time: string): string {
         hours = 12;
       }
 
-      return (String:any).format('{0}:{1} {2}', hours, time.substr(3, 2), suffix);
+      return `${hours}:${time.substr(3, 2)} ${suffix}`;
     }
   } else if (/^([1-9]|1[0-2]):[0-5][0-9] ?[ap]\.?m\.?$/i.test(time)) {
     // 12 hour time
-    if (format === '12') {
+    if (format === '12h') {
       return time.replace(/[.]/g, '').toLowerCase();
     } else {
       const colonIndex = time.indexOf(':');
@@ -167,10 +168,10 @@ export function convertTimeFormat(format: TimeFormat, time: string): string {
       }
 
       const strHours = (hours < 10)
-          ? (String:any).format('0{0}', hours)
+          ? `0${hours}`
           : hours.toString();
 
-      return (String:any).format('{0}:{1}', strHours, time.substr(colonIndex + 1, 2));
+      return `${strHours}:${time.substr(colonIndex + 1, 2)}`;
     }
   } else {
     // invalid time format

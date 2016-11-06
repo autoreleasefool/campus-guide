@@ -39,7 +39,10 @@ import {
 
 // Redux imports
 import {connect} from 'react-redux';
-import {updateProgress} from 'actions';
+import {
+  updateConfiguration,
+  updateProgress,
+} from 'actions';
 
 // Types
 import type {
@@ -61,23 +64,22 @@ const ProgressBar = (Platform.OS === 'android')
     ? require('ProgressBarAndroid')
     : require('ProgressViewIOS');
 
-class UpdateScreenCommon extends React.Component {
+class UpdateScreen extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
    */
   props: Update & {
-    updateFailed: () => void,    // Hides the progress bar to show a retry button
-    language: Language,             // The current language, selected by the user
-    navigator: ReactClass < any >,  // Parent navigator
+    updateConfiguration: (university: Object) => void,  // Updates the app configuration
+    updateFailed: () => void,                           // Hides the progress bar to show a retry button
+    language: Language,                                 // The current language, selected by the user
+    navigator: ReactClass < any >,                      // Parent navigator
     onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => void,
-                                    // Updates state when a download is finished
-    onDownloadProgress: (bytesWritten: number) => void,
-                                    // Updates state when a download reports intermediate progress
-    onDownloadStart: (fileName: string) => void,
-                                    // Updates state when a download begins
+                                                        // Updates state when a download is finished
+    onDownloadProgress: (bytesWritten: number) => void, // Updates state when a download reports intermediate progress
+    onDownloadStart: (fileName: string) => void,        // Updates state when a download begins
     onUpdateStart: (totalFiles: number, totalSize: number) => void,
-                                    // Updates state when the app update begins
+                                                        // Updates state when the app update begins
   };
 
   /**
@@ -116,7 +118,7 @@ class UpdateScreenCommon extends React.Component {
    * Checks to see if a new configuration update is available and, if so, begins downloading.
    */
   _beginUpdate(): void {
-    const self: UpdateScreenCommon = this;
+    const self: UpdateScreen = this;
     const callbacks = {
       onUpdateStart: this._onUpdateStart.bind(this),
       onDownloadStart: this._onDowloadStart.bind(this),
@@ -147,7 +149,7 @@ class UpdateScreenCommon extends React.Component {
    * Checks for an Internet connection and, if one is available, starts the update.
    */
   _checkConnection(): void {
-    const self: UpdateScreenCommon = this;
+    const self: UpdateScreen = this;
     setTimeout(() => {
       NetInfo.isConnected.fetch()
           .then((isConnected: boolean) => {
@@ -262,8 +264,12 @@ class UpdateScreenCommon extends React.Component {
    * Return to the main screen.
    */
   _returnToMain(): void {
-    const self: UpdateScreenCommon = this;
-    TranslationUtils.loadTranslations(this.props.language)
+    const self: UpdateScreen = this;
+    Configuration.getConfig('/university.json')
+        .then((university: Object) => {
+          self.props.updateConfiguration(university);
+          return TranslationUtils.loadTranslations(this.props.language);
+        })
         .then(() => self.props.navigator.push({id: 'main'}));
   }
 
@@ -475,6 +481,7 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
+    updateConfiguration: (university: Object) => dispatch(updateConfiguration({semesters: university.semesters})),
     updateFailed: () => dispatch(updateProgress({showUpdateProgress: false, showRetry: true})),
     onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => {
       dispatch(updateProgress({
@@ -497,4 +504,4 @@ const actions = (dispatch) => {
   };
 };
 
-export default connect(select, actions)(UpdateScreenCommon);
+export default connect(select, actions)(UpdateScreen);

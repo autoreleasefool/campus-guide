@@ -89,6 +89,16 @@ export type Language =
   ;
 
 //-----------------------------------------------------------------------------
+//  Time
+//-----------------------------------------------------------------------------
+
+/** Either 12 or 24 hour time formats. */
+export type TimeFormat =
+    '12h'
+  | '24h'
+  ;
+
+//-----------------------------------------------------------------------------
 //  Platforms
 //-----------------------------------------------------------------------------
 
@@ -307,13 +317,13 @@ export type Facility =
 
 /** Describes configuration state. */
 export type ConfigurationOptions = {
-  alwaysSearchAll?: boolean,       // Always search the entire app, never within a view
-  currentSemester?: number,        // Current semester for editing, selected by the user
-  firstTime?: boolean,             // Indicates if it's the user's first time in the app
-  language?: ?Language,            // User's preferred language
-  preferredTimeFormat?: string,    // Either 12 or 24h time
-  prefersWheelchair?: boolean,     // Only provide wheelchair accessible routes
-  semesters?: Array < Semester >,  // List of semesters currently available
+  alwaysSearchAll?: boolean,        // Always search the entire app, never within a view
+  currentSemester?: number,         // Current semester for editing, selected by the user
+  firstTime?: boolean,              // Indicates if it's the user's first time in the app
+  language?: ?Language,             // User's preferred language
+  preferredTimeFormat?: TimeFormat, // Either 12 or 24h time
+  prefersWheelchair?: boolean,      // Only provide wheelchair accessible routes
+  semesters?: Array < Semester >,   // List of semesters currently available
 };
 
 /** Describes a configuration file. */
