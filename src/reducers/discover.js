@@ -27,14 +27,14 @@
 // Types
 import type {
   Action,
-  BusCampus,
+  Campus,
   LinkSection,
   DiscoverSection,
 } from 'types';
 
 // Describes the discover state.
 type State = {
-  campus: ?BusCampus,                   // Selected bus campus to display info for
+  campus: ?Campus,                      // Selected bus campus to display info for
   links: Array < LinkSection >,         // Sections of useful links
   sections: Array < DiscoverSection >,  // Sections of info about the university
   view: number,                         // Current view to display in the Discover navigator

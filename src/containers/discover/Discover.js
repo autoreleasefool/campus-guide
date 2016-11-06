@@ -138,6 +138,11 @@ class Discover extends React.Component {
     }
   }
 
+  /**
+   * Renders a navigator.
+   *
+   * @returns {ReactElement<any>} a Navigator instance to render
+   */
   render(): ReactElement < any > {
     return (
       <Navigator

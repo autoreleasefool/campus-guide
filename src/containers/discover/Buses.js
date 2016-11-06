@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  Navigator,
   StyleSheet,
   View,
 } from 'react-native';
@@ -39,25 +40,33 @@ import {
 
 // Type imports
 import type {
-  BusCampus,
+  Campus,
   Language,
+  Route,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  campus: ?BusCampus,                             // The currently selected bus campus to display info for
-  language: Language,                             // The current language, selected by the user
-  onCampuSelected: (campus: ?BusCampus) => void,  // Displays details about a bus campus
+  campus: ?Campus,                              // The currently selected bus campus to display info for
+  language: Language,                           // The current language, selected by the user
+  onCampusSelected: (campus: ?Campus) => void,  // Displays details about a bus campus
 }
 
 // Type definition for component state.
 type State = {
-  campuses: Array < BusCampus >,
+  campuses: Array < Campus >,  // Array of bus campuses to display info for
 }
 
 // Imports
+import BusCampusMap from 'BusCampusMap';
 import FourSquare from 'FourSquareGrid';
 import * as Constants from 'Constants';
+import {getTranslatedName} from 'TranslationUtils';
+
+// Constant for navigation - show the campus selection screen
+const MENU: number = 0;
+// Constant for navigation - show a specific campus
+const CAMPUS: number = 1;
 
 class Buses extends React.Component {
 
@@ -71,6 +80,11 @@ class Buses extends React.Component {
    */
   state: State;
 
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -90,12 +104,111 @@ class Buses extends React.Component {
   }
 
   /**
+   * Adds a listener for navigation events.
+   */
+  componentDidMount(): void {
+    this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+  }
+
+  /**
+   * Present the updated view.
+   *
+   * @param {Props} nextProps the new props being received
+   */
+  componentWillReceiveProps(nextProps: Props): void {
+    if (nextProps.campus != this.props.campus) {
+      if (nextProps.campus == null) {
+        this.refs.Navigator.pop();
+      } else {
+        this.refs.Navigator.push({id: CAMPUS});
+      }
+    }
+  }
+
+  /**
+   * Sets the transition between two views in the navigator.
+   *
+   * @returns {Object} a configuration for the transition between scenes.
+   */
+  _configureScene(): Object {
+    return Navigator.SceneConfigs.PushFromRight;
+  }
+
+  /**
+   * Handles navigation events.
+   *
+   * @param {any} event the event taking place
+   */
+  _handleNavigationEvent(): void {
+    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    if (currentRoutes[currentRoutes.length - 1].id == MENU) {
+      this.props.onCampusSelected(null);
+    }
+  }
+
+  /**
    * Sets the selected campus to render.
    *
    * @param {number} index the index of the selected campus in this.state.campuses
    */
   _onCampusSelected(index: number): void {
-    this.props.onCampuSelected(this.state.campuses[index]);
+    this.props.onCampusSelected(this.state.campuses[index]);
+  }
+
+  /**
+   * Returns a map and list of stops near a bus campus.
+   *
+   * @param {?Campus} campusInfo details of the campus to display
+   * @returns {ReactElement<any>} a map and list of stops/buses
+   */
+  _renderCampus(campusInfo: ?Campus): ReactElement < any > {
+    const campus = campusInfo;
+    if (campus == null) {
+      // TODO: return generic error view?
+      return (
+        <View />
+      );
+    }
+
+    const campusId = getTranslatedName('en', campus);
+    if (campusId == null) {
+      // TODO: return generic error view?
+      return (
+        <View />
+      );
+    }
+
+    return (
+      <BusCampusMap
+          backgroundColor={campus.background}
+          campusId={campusId}
+          language={this.props.language} />
+    );
+  }
+
+  /**
+   * Renders a view according to the current route of the navigator.
+   *
+   * @param {Route} route object with properties to identify the route to display.
+   * @returns {ReactElement<any>} the view to render, based on {route}.
+   */
+  _renderScene(route: Route): ReactElement < any > {
+    switch (route.id) {
+      case MENU:
+        return (
+          <FourSquare
+              language={this.props.language}
+              squares={this.state.campuses}
+              onSelect={this._onCampusSelected.bind(this)} />
+        );
+      case CAMPUS:
+        return this._renderCampus(this.props.campus);
+      default:
+        // TODO: return generic error view?
+        return (
+          <View />
+        );
+    }
   }
 
   /**
@@ -110,12 +223,12 @@ class Buses extends React.Component {
       );
     } else {
       return (
-        <View style={_styles.container}>
-          <FourSquare
-              language={this.props.language}
-              squares={this.state.campuses}
-              onSelect={this._onCampusSelected.bind(this)} />
-        </View>
+        <Navigator
+            configureScene={this._configureScene}
+            initialRoute={{id: MENU}}
+            ref='Navigator'
+            renderScene={this._renderScene.bind(this)}
+            style={_styles.container} />
       );
     }
   }
@@ -140,7 +253,7 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    onCampuSelected: (campus: ?BusCampus) => dispatch(showBusCampus(campus)),
+    onCampusSelected: (campus: ?Campus) => dispatch(showBusCampus(campus)),
   };
 };
 

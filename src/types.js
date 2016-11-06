@@ -98,6 +98,32 @@ export type PlatformString =
     | 'android';
 
 //-----------------------------------------------------------------------------
+//  Location
+//-----------------------------------------------------------------------------
+
+/** Latitude and longitude of a location. */
+export type LatLong = {
+ latitude: number,
+ longitude: number,
+};
+
+/** Difference in latitude and longitude on a map. */
+export type LatLongDelta = {
+ latitudeDelta: number,
+ longitudeDelta: number,
+}
+
+//-----------------------------------------------------------------------------
+//  University
+//-----------------------------------------------------------------------------
+
+/** Information describing a campus of the university. */
+export type Campus = {
+  background: string, // Background color for the campus
+  image: any,         // Image of the bus campus
+} & (Name | TranslatedName);
+
+//-----------------------------------------------------------------------------
 //  Semesters
 //-----------------------------------------------------------------------------
 
@@ -107,11 +133,41 @@ export type Semester = {
   current?: boolean,  // True if this is the current semester
 } & (Name | TranslatedName);
 
-/** Collection of bus stops near a University campus. */
-export type BusCampus = {
-  background: string, // Background color for the campus
-  image: any,         // Image of the bus campus
+//-----------------------------------------------------------------------------
+//  Buses
+//-----------------------------------------------------------------------------
+
+/** Information about a bus transit route. */
+export type RouteDetails = {
+  number: number, // Transit bus number
+  sign: string,   // Display sign
+  days: Object,   // Days that the route runs
+};
+
+/** Information about a bus transit stop. */
+export type TransitStop = {
+  code: string,                   // Short code identifying the stop (not necessarily unique)
+  id: string,                     // ID of the stop
+  key?: number,                   // Unique key for rendering the stop
+  lat: number,                    // Central latitude for the stop
+  long: number,                   // Central longitude for the stop
+  name: string,                   // Name of the stop
+  routes: Array < RouteDetails >, // List of bus routes that serve the stop
+  sorted?: boolean,               // True to indicate the routes have been sorted, false or null otherwise
+};
+
+/** Information about a bus transit campus. */
+export type TransitCampus = {
+  id: string,                   // Campus id
+  lat: number,                  // Central latitude for the campus to display on a map
+  long: number,                 // Central longitude for the campus to display on a map
+  stops: Array < TransitStop >, // List of stops near the campus
 } & (Name | TranslatedName);
+
+/** Information regarding the city transit. */
+export type TransitInfo = {
+  campuses: Array < TransitCampus >,  // List of campuses that will be served by the city transit
+} & (Name | TranslatedName) & (Link | TranslatedLink);
 
 //-----------------------------------------------------------------------------
 //  Courses
@@ -300,6 +356,6 @@ export type Action =
   | { type: 'DISCOVER_SECTION', section: number }
   | { type: 'SET_DISCOVER_SECTIONS', sections: Array < DiscoverSection > }
   | { type: 'SET_DISCOVER_LINKS', links: Array < LinkSection > }
-  | { type: 'SHOW_BUSES', campus: ?BusCampus }
+  | { type: 'SHOW_BUSES', campus: ?Campus }
   | { type: 'SCHEDULE_VIEW', view: number }
   ;

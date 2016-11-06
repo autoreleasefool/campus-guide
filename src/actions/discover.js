@@ -27,7 +27,7 @@
 // Types
 import type {
   Action,
-  BusCampus,
+  Campus,
   DiscoverSection,
   LinkSection,
 } from 'types';
@@ -45,7 +45,7 @@ module.exports = {
     type: 'SET_DISCOVER_LINKS',
     links,
   }),
-  showBusCampus: (campus: ?BusCampus): Action => ({
+  showBusCampus: (campus: ?Campus): Action => ({
     type: 'SHOW_BUSES',
     campus,
   }),
