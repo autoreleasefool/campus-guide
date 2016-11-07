@@ -36,6 +36,7 @@ import {
 // Redux imports
 import {connect} from 'react-redux';
 import {
+  setHeaderTitle,
   switchFindView,
 } from 'actions';
 
@@ -170,7 +171,13 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    onBackNavigation: (view: number) => dispatch(switchFindView(view)),
+    onBackNavigation: (view: number) => {
+      if (view === Views.Home) {
+        dispatch(setHeaderTitle(null))
+      }
+      // dispatch()
+      dispatch(switchFindView(view));
+    },
   };
 };
 

@@ -24,6 +24,9 @@
  */
 'use strict';
 
+// Import default translations
+const CoreTranslations = require('../../assets/json/CoreTranslations');
+
 // Types
 import type {
   Action,
@@ -40,7 +43,7 @@ type State = {
 
 // Initial header state.
 const initialState: State = {
-  title: {name: 'Campus Guide'},
+  title: {name_en: CoreTranslations.en.app_name, name_fr: CoreTranslations.fr.app_name},
   shouldShowBack: false,
   shouldShowSearch: false,
 };
@@ -57,7 +60,7 @@ function header(state: State = initialState, action: Action): State {
     case 'SET_HEADER_TITLE':
       return {
         ...state,
-        title: action.title,
+        title: action.title || initialState.title,
       };
     case 'HEADER_SHOW_BACK':
       return {

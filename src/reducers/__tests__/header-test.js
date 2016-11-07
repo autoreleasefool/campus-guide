@@ -23,12 +23,23 @@
  */
 'use strict';
 
+// Import default translations
+// const CoreTranslations = require('../../assets/json/CoreTranslations');
+jest.setMock('../../../assets/json/CoreTranslations', {
+  fr: {
+    name: 'Guide de campus',
+  },
+  en: {
+    name: 'Campus Guide',
+  },
+});
+
 // Imports
 import reducer from '../header';
 
 // Expected initial state
 const initialState = {
-  title: {name: 'Campus Guide'},
+  title: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
   shouldShowBack: false,
   shouldShowSearch: false,
 };
@@ -57,6 +68,20 @@ describe('navigation reducer', () => {
           name: 'New title',
         },
       }
+    );
+  });
+
+  it ('should use the default header title', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'SET_HEADER_TITLE',
+          title: null,
+        }
+      )
+    ).toEqual(
+      initialState
     );
   });
 
