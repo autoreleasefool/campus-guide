@@ -41,9 +41,15 @@ type State = {
   shouldShowSearch: boolean,    // True to show a search field in the header, false to hide
 };
 
+// Default title to use for the header
+const defaultTitle = {
+  name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.app_name : 'Campus Guide',
+  name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.app_name : 'Guide de campus',
+};
+
 // Initial header state.
 const initialState: State = {
-  title: {name_en: CoreTranslations.en.app_name, name_fr: CoreTranslations.fr.app_name},
+  title: defaultTitle,
   shouldShowBack: false,
   shouldShowSearch: false,
 };

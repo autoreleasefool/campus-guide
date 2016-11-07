@@ -23,17 +23,6 @@
  */
 'use strict';
 
-// Import default translations
-// const CoreTranslations = require('../../assets/json/CoreTranslations');
-jest.setMock('../../../assets/json/CoreTranslations', {
-  fr: {
-    name: 'Guide de campus',
-  },
-  en: {
-    name: 'Campus Guide',
-  },
-});
-
 // Imports
 import reducer from '../header';
 
@@ -62,8 +51,7 @@ describe('navigation reducer', () => {
       )
     ).toEqual(
       {
-        shouldShowBack: false,
-        shouldShowSearch: false,
+        ...initialState,
         title: {
           name: 'New title',
         },
@@ -96,11 +84,8 @@ describe('navigation reducer', () => {
       )
     ).toEqual(
       {
+        ...initialState,
         shouldShowBack: true,
-        shouldShowSearch: false,
-        title: {
-          name: 'Campus Guide',
-        },
       }
     );
   });
@@ -116,11 +101,8 @@ describe('navigation reducer', () => {
       )
     ).toEqual(
       {
-        shouldShowBack: false,
+        ...initialState,
         shouldShowSearch: true,
-        title: {
-          name: 'Campus Guide',
-        },
       }
     );
   });
