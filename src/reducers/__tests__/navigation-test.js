@@ -28,6 +28,7 @@ import reducer from '../navigation';
 
 // Expected initial state
 const initialState = {
+  backNavigations: 0,
   tab: 'find',
 };
 
@@ -47,7 +48,24 @@ describe('navigation reducer', () => {
       )
     ).toEqual(
       {
+        ...initialState,
         tab: 'schedule',
+      }
+    );
+  });
+
+  it('should increase the back navigations', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'NAVIGATE_BACK',
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        backNavigations: 1,
       }
     );
   });

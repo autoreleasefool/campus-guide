@@ -31,6 +31,9 @@ import type {
 } from 'types';
 
 module.exports = {
+  navigateBack: () => ({
+    type: 'NAVIGATE_BACK',
+  }),
   switchTab: (tab: Tab): Action => ({
     type: 'SWITCH_TAB',
     tab,

@@ -32,9 +32,6 @@ import type {
 } from 'types';
 
 module.exports = {
-  navigateBack: () => ({
-    type: 'NAVIGATE_BACK',
-  }),
   setHeaderTitle: (title: ?(Name | TranslatedName)): Action => ({
     type: 'SET_HEADER_TITLE',
     title,

@@ -169,8 +169,8 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
-    backCount: store.header.backNavigation,
     appTab: store.navigation.tab,
+    backCount: store.navigation.backNavigations,
     view: store.find.view,
   };
 };

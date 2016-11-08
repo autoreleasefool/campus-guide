@@ -41,4 +41,12 @@ describe('navigation actions', () => {
 
     expect(actions.switchTab(tab)).toEqual(expectedAction);
   });
+
+  it('should create an action to navigate backwards', () => {
+    const expectedAction = {
+      type: 'NAVIGATE_BACK',
+    };
+
+    expect(actions.navigateBack()).toEqual(expectedAction);
+  });
 });

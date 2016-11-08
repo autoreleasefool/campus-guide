@@ -36,7 +36,6 @@ import type {
 
 // Describes the header state.
 type State = {
-  backNavigation: number,       // Count of the times the user has navigated back in the app
   title: Name | TranslatedName, // Title for the current screen
   shouldShowBack: boolean,      // True to show a back button in the header, false to hide
   shouldShowSearch: boolean,    // True to show a search field in the header, false to hide
@@ -50,7 +49,6 @@ const defaultTitle = {
 
 // Initial header state.
 const initialState: State = {
-  backNavigation: 0,
   title: defaultTitle,
   shouldShowBack: false,
   shouldShowSearch: false,
@@ -65,11 +63,6 @@ const initialState: State = {
  */
 function header(state: State = initialState, action: Action): State {
   switch (action.type) {
-    case 'NAVIGATE_BACK':
-      return {
-        ...state,
-        backNavigation: state.backNavigation + 1,
-      };
     case 'SET_HEADER_TITLE':
       return {
         ...state,

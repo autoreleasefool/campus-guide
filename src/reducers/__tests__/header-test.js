@@ -28,7 +28,6 @@ import reducer from '../header';
 
 // Expected initial state
 const initialState = {
-  backNavigation: 0,
   title: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
   shouldShowBack: false,
   shouldShowSearch: false,
@@ -56,22 +55,6 @@ describe('navigation reducer', () => {
         title: {
           name: 'New title',
         },
-      }
-    );
-  });
-
-  it('should increase the back navigations', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'NAVIGATE_BACK',
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        backNavigation: 1,
       }
     );
   });
