@@ -35,6 +35,7 @@ import {
 // Redux imports
 import {connect} from 'react-redux';
 import {
+  canNavigateBack,
   showBusCampus,
 } from 'actions';
 
@@ -43,11 +44,15 @@ import type {
   Campus,
   Language,
   Route,
+  Tab,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
+  appTab: Tab,                                  // The current tab the app is showing
+  backCount: number,                            // Number of times the user has requested back navigation
   campus: ?Campus,                              // The currently selected bus campus to display info for
+  canNavigateBack: (can: boolean) => void,      // Indicate whether the app can navigate back
   language: Language,                           // The current language, selected by the user
   onCampusSelected: (campus: ?Campus) => void,  // Displays details about a bus campus
 }
@@ -123,6 +128,13 @@ class Buses extends React.Component {
         this.refs.Navigator.push({id: CAMPUS});
       }
     }
+
+    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    if (nextProps.appTab === 'discover'
+        && nextProps.backCount != this.props.backCount
+        && currentRoutes.length > 1) {
+      this.props.onCampusSelected(null);
+    }
   }
 
   /**
@@ -144,6 +156,8 @@ class Buses extends React.Component {
     if (currentRoutes[currentRoutes.length - 1].id == MENU) {
       this.props.onCampusSelected(null);
     }
+
+    this.props.canNavigateBack(currentRoutes.length > 1);
   }
 
   /**
@@ -217,20 +231,14 @@ class Buses extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    if (this.state.campuses.length == 0) {
-      return (
-        <View style={_styles.container} />
-      );
-    } else {
-      return (
-        <Navigator
-            configureScene={this._configureScene}
-            initialRoute={{id: MENU}}
-            ref='Navigator'
-            renderScene={this._renderScene.bind(this)}
-            style={_styles.container} />
-      );
-    }
+    return (
+      <Navigator
+          configureScene={this._configureScene}
+          initialRoute={{id: MENU}}
+          ref='Navigator'
+          renderScene={this._renderScene.bind(this)}
+          style={_styles.container} />
+    );
   }
 }
 
@@ -245,14 +253,17 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
-    language: store.config.language,
+    appTab: store.navigation.tab,
+    backCount: store.navigation.backNavigations,
     campus: store.discover.campus,
+    language: store.config.language,
   };
 };
 
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
+    canNavigateBack: (can: boolean) => dispatch(canNavigateBack('buses', can)),
     onCampusSelected: (campus: ?Campus) => dispatch(showBusCampus(campus)),
   };
 };

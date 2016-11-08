@@ -353,10 +353,11 @@ export type Action =
     { type: 'SEARCH_ALL', searchTerms: ?string }
   | { type: 'CLEAR_SEARCH' }
   | { type: 'SWITCH_TAB', tab: Tab; }
+  | { type: 'NAVIGATE_BACK' }
+  | { type: 'CAN_NAVIGATE_BACK', key: string, can: boolean }
   | { type: 'CHANGE_LANGUAGE', language: Language }
   | { type: 'UPDATE_CONFIGURATION', options: ConfigurationOptions }
   | { type: 'UPDATE_PROGRESS', update: Update }
-  | { type: 'NAVIGATE_BACK' }
   | { type: 'SET_HEADER_TITLE', title: ?(Name | TranslatedName) }
   | { type: 'HEADER_SHOW_BACK', shouldShowBack: boolean }
   | { type: 'HEADER_SHOW_SEARCH', shouldShowSearch: boolean }

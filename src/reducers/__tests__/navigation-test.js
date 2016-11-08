@@ -29,6 +29,7 @@ import reducer from '../navigation';
 // Expected initial state
 const initialState = {
   backNavigations: 0,
+  canNavigateBack: {},
   tab: 'find',
 };
 
@@ -66,6 +67,26 @@ describe('navigation reducer', () => {
       {
         ...initialState,
         backNavigations: 1,
+      }
+    );
+  });
+
+  it('should set the state for a key which can back navigate', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'CAN_NAVIGATE_BACK',
+          key: 'test_key',
+          can: true,
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        canNavigateBack: {
+          test_key: true,
+        },
       }
     );
   });

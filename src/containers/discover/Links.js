@@ -43,6 +43,7 @@ import {
 // Redux imports
 import {connect} from 'react-redux';
 import {
+  canNavigateBack,
   setDiscoverLinks,
 } from 'actions';
 
@@ -52,7 +53,18 @@ import type {
   LinkSection,
   NamedLink,
   Route,
+  Tab,
 } from 'types';
+
+// Type definition for component props.
+type Props = {
+  appTab: Tab,                                              // The current tab the app is showing
+  backCount: number,                                        // Number of times the user has requested back navigation
+  canNavigateBack: (can: boolean) => void,                  // Indicate whether the app can navigate back
+  language: Language,                                       // The current language, selected by the user
+  links: Array < LinkSection >,                             // The sections in the view
+  onSectionsLoaded: (links: Array < LinkSection >) => void, // Sets the sections in the view
+}
 
 // Imports
 import Header from 'Header';
@@ -74,16 +86,14 @@ class Links extends React.Component {
   /**
    * Properties this component expects to be provided by its parent.
    */
-  props: {
-    language: Language,                                        // The current language, selected by the user
-    onSectionsLoaded: (links: Array < LinkSection >) => void,  // Sets the sections in the view
-    links: Array < LinkSection >,                              // The sections in the view
-  }
+  props: Props;
 
   /**
-   * If the sections have not been loaded, then load them.
+   * If the sections have not been loaded, then load them. Adds a listener to navigation events.
    */
   componentDidMount(): void {
+    this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+
     if (this.props.links == null || this.props.links.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/useful_links.json'))
@@ -91,6 +101,20 @@ class Links extends React.Component {
             this.props.onSectionsLoaded(linkSections);
           })
           .catch((err: any) => console.error('Configuration could not be initialized for useful links.', err));
+    }
+  }
+
+  /**
+   * Present the updated view.
+   *
+   * @param {Props} nextProps the new props being received
+   */
+  componentWillReceiveProps(nextProps: Props): void {
+    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    if (nextProps.appTab === 'discover'
+        && nextProps.backCount != this.props.backCount
+        && currentRoutes.length > 1) {
+      this.refs.Navigator.pop();
     }
   }
 
@@ -148,6 +172,16 @@ class Links extends React.Component {
           size={Constants.Sizes.Icons.Medium}
           style={_styles.linkIcon} />
     );
+  }
+
+  /**
+   * Handles navigation events.
+   *
+   * @param {any} event the event taking place
+   */
+  _handleNavigationEvent(): void {
+    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    this.props.canNavigateBack(currentRoutes.length > 1);
   }
 
   /**
@@ -441,20 +475,14 @@ class Links extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    if (this.props.links == null || this.props.links.length === 0) {
-      return (
-        <View style={_styles.container} />
-      );
-    } else {
-      return (
-        <Navigator
-            configureScene={this._configureScene}
-            initialRoute={{id: 0}}
-            ref='Navigator'
-            renderScene={this._renderScene.bind(this)}
-            style={_styles.container} />
-      );
-    }
+    return (
+      <Navigator
+          configureScene={this._configureScene}
+          initialRoute={{id: 0}}
+          ref='Navigator'
+          renderScene={this._renderScene.bind(this)}
+          style={_styles.container} />
+    );
   }
 }
 
@@ -524,6 +552,8 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
+    appTab: store.navigation.tab,
+    backCount: store.navigation.backNavigations,
     language: store.config.language,
     links: store.discover.links,
   };
@@ -532,6 +562,7 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
+    canNavigateBack: (can: boolean) => dispatch(canNavigateBack('links', can)),
     onSectionsLoaded: (links: Array < LinkSection >) => dispatch(setDiscoverLinks(links)),
   };
 };

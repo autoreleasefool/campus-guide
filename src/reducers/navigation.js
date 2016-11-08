@@ -33,12 +33,14 @@ import type {
 // Describes the navigation state.
 type State = {
   backNavigations: number,  // Count of the times the user has navigated back in the app
+  canNavigateBack: Object,  // Indicates which subsections of the app can navigate backwards
   tab: Tab,                 // Current tab in the root navigation of the app
 };
 
 // Initial navigation state.
 const initialState: State = {
   backNavigations: 0,
+  canNavigateBack: {},
   tab: 'find',
 };
 
@@ -51,6 +53,16 @@ const initialState: State = {
  */
 function navigation(state: State = initialState, action: Action): State {
   switch (action.type) {
+    case 'CAN_NAVIGATE_BACK': {
+      const can = {
+        ...state.canNavigateBack,
+      };
+      can[action.key] = action.can;
+      return {
+        ...state,
+        canNavigateBack: can,
+      };
+    }
     case 'NAVIGATE_BACK':
       return {
         ...state,

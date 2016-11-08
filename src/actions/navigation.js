@@ -31,6 +31,11 @@ import type {
 } from 'types';
 
 module.exports = {
+  canNavigateBack: (key: string, can: boolean) => ({
+    type: 'CAN_NAVIGATE_BACK',
+    key,
+    can,
+  }),
   navigateBack: () => ({
     type: 'NAVIGATE_BACK',
   }),

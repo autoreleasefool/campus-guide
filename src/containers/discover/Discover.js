@@ -48,6 +48,8 @@ import type {
 type Props = {
   appTab: Tab,                              // The current tab the app is showing
   backCount: number,                        // Number of times the user has requested back navigation
+  busesCanNavigate: boolean,                // Indicates if the bus subview can navigate backwards
+  linksCanNavigate: boolean,                // Indicates if the link subview can navigate backwards
   onBackNavigation: (view: number) => void, // Callback when user pops the stacks
   view: number,                             // The current view
 };
@@ -91,7 +93,10 @@ class Discover extends React.Component {
         return;
       }
       this.refs.Navigator.push({id: nextProps.view});
-    } else if (nextProps.appTab === 'discover' && nextProps.backCount != this.props.backCount) {
+    } else if (nextProps.appTab === 'discover'
+        && nextProps.backCount != this.props.backCount
+        && !(nextProps.view === Views.Links && this.props.linksCanNavigate)
+        && !(nextProps.view === Views.Bus && this.props.busesCanNavigate)) {
       this.refs.Navigator.pop();
     }
   }
@@ -172,6 +177,8 @@ const select = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
+    busesCanNavigate: store.navigation.canNavigateBack.buses || false,
+    linksCanNavigate: store.navigation.canNavigateBack.links || false,
     view: store.discover.view,
   };
 };

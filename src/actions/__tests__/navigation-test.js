@@ -49,4 +49,15 @@ describe('navigation actions', () => {
 
     expect(actions.navigateBack()).toEqual(expectedAction);
   });
+
+  it('should set the state for a key which can back navigate', () => {
+    const key = 'test_key';
+    const expectedAction = {
+      type: 'CAN_NAVIGATE_BACK',
+      can: true,
+      key,
+    };
+
+    expect(actions.canNavigateBack(key, true)).toEqual(expectedAction);
+  });
 });
