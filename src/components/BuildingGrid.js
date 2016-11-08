@@ -102,7 +102,7 @@ export default class BuildingGrid extends React.Component {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    if (this.props.filter != nextProps.filter) {
+    if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
       this._filterBuildings(nextProps.filter);
     }
   }

@@ -255,20 +255,6 @@ export default class CampusMap extends React.Component {
             onSelect={this._stopSelected.bind(this)} />
       </View>
     );
-
-    // if (this.state.campus == null) {
-    //   return (
-    //     <View style={_styles.container} />
-    //   );
-    // } else {
-    //   return (
-    //     <StopDetails
-    //         backgroundIsDark={DisplayUtils.isColorDark(this.props.campusColor)}
-    //         campus={this.state.campus}
-    //         campusName={this.props.campusName}
-    //         onStopSelected={this._busStopSelected} />
-    //   );
-    // }
   }
 
   /**

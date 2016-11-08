@@ -131,9 +131,11 @@ export default class BusStops extends React.Component {
   componentWillReceiveProps(nextProps: Props): void {
     const routes = this.refs.Navigator.getCurrentRoutes();
     if (routes.length > 0) {
-      if (routes[routes.length - 1].id === STOPS && this.props.stopFilter != nextProps.stopFilter) {
+      if (routes[routes.length - 1].id === STOPS
+          && (nextProps.stopFilter != this.props.stopFilter || nextProps.language != this.props.language)) {
         this._onStopSearch(nextProps.stopFilter);
-      } else if (routes[routes.length - 1].id === TIMES && this.props.timeFilter != nextProps.timeFilter) {
+      } else if (routes[routes.length - 1].id === TIMES
+          && (nextProps.timeFilter != this.props.timeFilter || nextProps.language != this.props.language)) {
         this._onTimeSearch(null, nextProps.timeFilter);
       }
     }
