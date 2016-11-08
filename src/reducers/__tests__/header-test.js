@@ -28,6 +28,7 @@ import reducer from '../header';
 
 // Expected initial state
 const initialState = {
+  backNavigation: 0,
   title: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
   shouldShowBack: false,
   shouldShowSearch: false,
@@ -38,7 +39,7 @@ describe('navigation reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it ('should set a new header title', () => {
+  it('should set a new header title', () => {
     expect(
       reducer(
         initialState,
@@ -59,7 +60,23 @@ describe('navigation reducer', () => {
     );
   });
 
-  it ('should use the default header title', () => {
+  it('should increase the back navigations', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'NAVIGATE_BACK',
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        backNavigation: 1,
+      }
+    );
+  });
+
+  it('should use the default header title', () => {
     expect(
       reducer(
         initialState,
@@ -73,7 +90,7 @@ describe('navigation reducer', () => {
     );
   });
 
-  it ('should show the back button', () => {
+  it('should show the back button', () => {
     expect(
       reducer(
         initialState,
@@ -90,7 +107,7 @@ describe('navigation reducer', () => {
     );
   });
 
-  it ('should show the search button', () => {
+  it('should show the search button', () => {
     expect(
       reducer(
         initialState,

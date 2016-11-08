@@ -56,4 +56,12 @@ describe('header actions', () => {
 
     expect(actions.setShowSearch(showSearch)).toEqual(expectedAction);
   });
+
+  it('should create an action to navigate backwards', () => {
+    const expectedAction = {
+      type: 'NAVIGATE_BACK',
+    };
+
+    expect(actions.navigateBack()).toEqual(expectedAction);
+  });
 });

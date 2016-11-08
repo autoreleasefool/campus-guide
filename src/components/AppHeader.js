@@ -40,6 +40,9 @@ import {
 
 // Redux imports
 import {connect} from 'react-redux';
+import {
+  navigateBack,
+} from 'actions';
 
 // Types
 import type {
@@ -65,6 +68,7 @@ class AppHeader extends React.Component {
   props: {
     appTitle: Name | TranslatedName,  // Title for the header
     language: Language,               // The user's currently selected language
+    onBack: () => void,               // Tells the app to navigate one screen backwards
     shouldShowBack: boolean,          // Indicates if the header should show a back button
     shouldShowSearch: boolean,        // Indicates if the header should show a search input option
   }
@@ -74,7 +78,7 @@ class AppHeader extends React.Component {
   }
 
   _onBack(): void {
-    console.log('Navigate back');
+    this.props.onBack();
   }
 
   /**
@@ -150,4 +154,11 @@ const select = (store) => {
   };
 };
 
-export default connect(select)(AppHeader);
+// Map dispatch to props
+const actions = (dispatch) => {
+  return {
+    onBack: () => dispatch(navigateBack()),
+  };
+};
+
+export default connect(select, actions)(AppHeader);

@@ -43,10 +43,13 @@ import {
 // Type imports
 import type {
   Route,
+  Tab,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
+  appTab: Tab,                              // The current tab the app is showing
+  backCount: number,                        // Number of times the user has requested back navigation
   onBackNavigation: (view: number) => void, // Callback when user pops the stacks
   view: number,                             // The current view
 };
@@ -90,6 +93,8 @@ class Find extends React.Component {
         return;
       }
       this.refs.Navigator.push({id: nextProps.view});
+    } else if (nextProps.appTab === 'find' && nextProps.backCount != this.props.backCount) {
+      this.refs.Navigator.pop();
     }
   }
 
@@ -164,6 +169,8 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
+    backCount: store.header.backNavigation,
+    appTab: store.navigation.tab,
     view: store.find.view,
   };
 };
