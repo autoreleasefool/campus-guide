@@ -36,7 +36,7 @@ describe('schedule reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it ('should switch to a new view', () => {
+  it('should switch to a new view', () => {
     expect(
       reducer(
         initialState,

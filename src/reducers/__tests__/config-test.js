@@ -59,7 +59,7 @@ describe('config reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it ('should update the state', () => {
+  it('should update the state', () => {
     expect(
       reducer(
         initialState,

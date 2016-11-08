@@ -36,7 +36,7 @@ describe('navigation reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it ('should switch to a new tab', () => {
+  it('should switch to a new tab', () => {
     expect(
       reducer(
         initialState,

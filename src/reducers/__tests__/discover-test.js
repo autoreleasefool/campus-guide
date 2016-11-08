@@ -39,7 +39,7 @@ describe('discover reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it ('should switch to a new view', () => {
+  it('should switch to a new view', () => {
     expect(
       reducer(
         initialState,
@@ -56,7 +56,7 @@ describe('discover reducer', () => {
     );
   });
 
-  it ('should set the discover sections', () => {
+  it('should set the discover sections', () => {
     const sections = [
       {
         icon: {
@@ -94,7 +94,7 @@ describe('discover reducer', () => {
     );
   });
 
-  it ('should set the discover links', () => {
+  it('should set the discover links', () => {
     const links = [
       {
         icon: {
@@ -144,7 +144,7 @@ describe('discover reducer', () => {
     );
   });
 
-  it ('should set the bus campus to display', () => {
+  it('should set the bus campus to display', () => {
     const campus = {
       background: 'background',
       image: 'image',

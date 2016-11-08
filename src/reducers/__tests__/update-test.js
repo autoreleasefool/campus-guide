@@ -70,7 +70,7 @@ describe('update reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it ('should update the progress', () => {
+  it('should update the progress', () => {
     expect(
       reducer(
         initialState,

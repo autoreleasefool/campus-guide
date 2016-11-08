@@ -41,7 +41,7 @@ describe('find reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it ('should switch to a new view', () => {
+  it('should switch to a new view', () => {
     expect(
       reducer(
         initialState,
@@ -62,7 +62,7 @@ describe('find reducer', () => {
     );
   });
 
-  it ('should set the room to navigate to', () => {
+  it('should set the room to navigate to', () => {
     const code = 'code';
     const room = 'room';
 
@@ -89,7 +89,7 @@ describe('find reducer', () => {
     );
   });
 
-  it ('should set the building to display details for', () => {
+  it('should set the building to display details for', () => {
     const building = {
       code: 'code',
       default_room_type: 1,
