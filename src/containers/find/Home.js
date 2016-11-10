@@ -131,7 +131,7 @@ const select = (store) => {
 const actions = (dispatch) => {
   return {
     onBuildingSelect: (building: Building, buildingName: Name | TranslatedName) => {
-      dispatch(setHeaderTitle(buildingName));
+      dispatch(setHeaderTitle(buildingName, 'find'));
       dispatch(viewBuilding(building));
       dispatch(switchFindView(Views.Building));
     },

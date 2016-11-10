@@ -29,6 +29,13 @@ import reducer from '../header';
 // Expected initial state
 const initialState = {
   title: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+  tabTitles: {
+    find: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+    schedule: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+    discover: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+    search: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+    settings: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+  },
   shouldShowBack: false,
   shouldShowSearch: false,
 };
@@ -86,6 +93,32 @@ describe('navigation reducer', () => {
       {
         ...initialState,
         shouldShowBack: true,
+      }
+    );
+  });
+
+  it('should set the title when the tab changes', () => {
+    const updatedState = reducer(
+      initialState,
+      {
+        type: 'SET_HEADER_TITLE',
+        title: 'schedule',
+        tab: 'schedule',
+      }
+    );
+
+    expect(
+      reducer(
+        updatedState,
+        {
+          type: 'SWITCH_TAB',
+          tab: 'schedule',
+        }
+      )
+    ).toEqual(
+      {
+        ...updatedState,
+        title: 'schedule',
       }
     );
   });

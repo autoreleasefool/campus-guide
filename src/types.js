@@ -358,7 +358,7 @@ export type Action =
   | { type: 'CHANGE_LANGUAGE', language: Language }
   | { type: 'UPDATE_CONFIGURATION', options: ConfigurationOptions }
   | { type: 'UPDATE_PROGRESS', update: Update }
-  | { type: 'SET_HEADER_TITLE', title: ?(Name | TranslatedName) }
+  | { type: 'SET_HEADER_TITLE', title: ?(Name | TranslatedName | string), tab: ?Tab }
   | { type: 'HEADER_SHOW_BACK', shouldShowBack: boolean }
   | { type: 'HEADER_SHOW_SEARCH', shouldShowSearch: boolean }
   | { type: 'FIND_VIEW', view: number }

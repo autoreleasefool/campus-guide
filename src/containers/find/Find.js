@@ -180,7 +180,7 @@ const actions = (dispatch) => {
   return {
     onBackNavigation: (view: number) => {
       if (view === Views.Home) {
-        dispatch(setHeaderTitle(null));
+        dispatch(setHeaderTitle(null, 'find'));
       }
       dispatch(switchFindView(view));
     },

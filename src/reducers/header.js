@@ -32,13 +32,15 @@ import type {
   Action,
   Name,
   TranslatedName,
+  TabSet,
 } from 'types';
 
 // Describes the header state.
 type State = {
-  title: Name | TranslatedName, // Title for the current screen
-  shouldShowBack: boolean,      // True to show a back button in the header, false to hide
-  shouldShowSearch: boolean,    // True to show a search field in the header, false to hide
+  title: Name | TranslatedName | string,  // Title for the current screen
+  tabTitles: TabSet,                      // Title last set in the tab
+  shouldShowBack: boolean,                // True to show a back button in the header, false to hide
+  shouldShowSearch: boolean,              // True to show a search field in the header, false to hide
 };
 
 // Default title to use for the header
@@ -50,6 +52,28 @@ const defaultTitle = {
 // Initial header state.
 const initialState: State = {
   title: defaultTitle,
+  tabTitles: {
+    find: {
+      name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.find : 'Campus Guide',
+      name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.find : 'Guide de campus',
+    },
+    schedule: {
+      name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.schedule : 'Campus Guide',
+      name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.schedule : 'Guide de campus',
+    },
+    discover: {
+      name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.discover : 'Campus Guide',
+      name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.discover : 'Guide de campus',
+    },
+    search: {
+      name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.search : 'Campus Guide',
+      name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.search : 'Guide de campus',
+    },
+    settings: {
+      name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.settings : 'Campus Guide',
+      name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.settings : 'Guide de campus',
+    },
+  },
   shouldShowBack: false,
   shouldShowSearch: false,
 };
@@ -63,11 +87,26 @@ const initialState: State = {
  */
 function header(state: State = initialState, action: Action): State {
   switch (action.type) {
-    case 'SET_HEADER_TITLE':
+    case 'SWITCH_TAB':
       return {
         ...state,
-        title: action.title || initialState.title,
+        title: state.tabTitles[action.tab],
       };
+    case 'SET_HEADER_TITLE': {
+      const tabTitles = {
+        ...state.tabTitles,
+      };
+
+      if (action.tab != null) {
+        tabTitles[action.tab] = action.title || initialState.tabTitles[action.tab];
+      }
+
+      return {
+        ...state,
+        title: (action.tab && !action.title) ? tabTitles[action.tab] : action.title || initialState.title,
+        tabTitles,
+      };
+    }
     case 'HEADER_SHOW_BACK':
       return {
         ...state,

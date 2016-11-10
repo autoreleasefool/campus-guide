@@ -45,25 +45,29 @@ import {connect} from 'react-redux';
 import {
   canNavigateBack,
   setDiscoverLinks,
+  setHeaderTitle,
 } from 'actions';
 
 // Type imports
 import type {
   Language,
   LinkSection,
+  Name,
   NamedLink,
   Route,
   Tab,
+  TranslatedName,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  appTab: Tab,                                              // The current tab the app is showing
-  backCount: number,                                        // Number of times the user has requested back navigation
-  canNavigateBack: (can: boolean) => void,                  // Indicate whether the app can navigate back
-  language: Language,                                       // The current language, selected by the user
-  links: Array < LinkSection >,                             // The sections in the view
-  onSectionsLoaded: (links: Array < LinkSection >) => void, // Sets the sections in the view
+  appTab: Tab,                                                    // The current tab the app is showing
+  backCount: number,                                              // Number of times user has requested back navigation
+  canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
+  language: Language,                                             // The current language, selected by the user
+  links: Array < LinkSection >,                                   // The sections in the view
+  onSectionsLoaded: (links: Array < LinkSection >) => void,       // Sets the sections in the view
+  setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
 }
 
 // Imports
@@ -175,12 +179,62 @@ class Links extends React.Component {
   }
 
   /**
+   * Gets the LinkSection from the set of useful links.
+   *
+   * @param {string} id identifiers for category and subcategories, delimited by dashes
+   * @returns {?LinkSection} the LinkSection found, or null
+   */
+  _getSection(id: string): ?LinkSection {
+    const ids: Array < string > = id.split('-');
+    let categoryList: Array < LinkSection > = this.props.links;
+    let depth: number = 0;
+
+    let currentSection: ?LinkSection = null;
+    let sectionImage: ?string = null;
+
+    while (currentSection == null && categoryList != null && depth < ids.length) {
+      for (let i = 0; i < categoryList.length; i++) {
+        if (categoryList[i].id == ids[depth]) {
+          if (depth == 0) {
+            sectionImage = categoryList[i].image;
+          }
+
+          if (depth === ids.length - 1) {
+            currentSection = categoryList[i];
+          } else if (categoryList[i].categories != null) {
+            categoryList = categoryList[i].categories;
+            depth += 1;
+          }
+          break;
+        }
+      }
+    }
+
+    if (sectionImage != null && currentSection != null) {
+      currentSection.image = sectionImage;
+    }
+
+    return currentSection;
+  }
+
+  /**
    * Handles navigation events.
    *
    * @param {any} event the event taking place
    */
   _handleNavigationEvent(): void {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+
+    if (currentRoutes.length > 1) {
+      const section = this._getSection(currentRoutes[currentRoutes.length - 1].id);
+      const title = {
+        name_en: TranslationUtils.getTranslatedName('en', section) || '',
+        name_fr: TranslationUtils.getTranslatedName('fr', section) || '',
+      };
+      this.props.setHeaderTitle(title);
+    } else {
+      this.props.setHeaderTitle('useful_links');
+    }
     this.props.canNavigateBack(currentRoutes.length > 1);
   }
 
@@ -386,41 +440,12 @@ class Links extends React.Component {
    * @returns {ReactElement<any>} the set of views to render
    */
   _renderSection(id: string): ReactElement < any > {
-    const ids: Array < string > = id.split('-');
-    let categoryList: Array < LinkSection > = this.props.links;
-    let depth: number = 0;
-
-    let currentSection: ?LinkSection = null;
-    let sectionImage: ?string = null;
-
-    while (currentSection == null && categoryList != null && depth < ids.length) {
-      for (let i = 0; i < categoryList.length; i++) {
-        if (categoryList[i].id == ids[depth]) {
-          if (depth == 0) {
-            sectionImage = categoryList[i].image;
-          }
-
-          if (depth === ids.length - 1) {
-            currentSection = categoryList[i];
-          } else if (categoryList[i].categories != null) {
-            categoryList = categoryList[i].categories;
-            depth += 1;
-          }
-          break;
-        }
-      }
-    }
-
-    const section = currentSection;
+    const section = this._getSection(id);
     if (section == null) {
       // TODO: return generic error view?
       return (
         <View style={_styles.container} />
       );
-    }
-
-    if (sectionImage != null) {
-      section.image = sectionImage;
     }
 
     let categoryBackgroundColor: string = Constants.Colors.primaryBackground;
@@ -564,6 +589,7 @@ const actions = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(canNavigateBack('links', can)),
     onSectionsLoaded: (links: Array < LinkSection >) => dispatch(setDiscoverLinks(links)),
+    setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
   };
 };
 

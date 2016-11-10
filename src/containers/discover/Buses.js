@@ -36,6 +36,7 @@ import {
 import {connect} from 'react-redux';
 import {
   canNavigateBack,
+  setHeaderTitle,
   showBusCampus,
 } from 'actions';
 
@@ -43,18 +44,21 @@ import {
 import type {
   Campus,
   Language,
+  Name,
   Route,
   Tab,
+  TranslatedName,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  appTab: Tab,                                  // The current tab the app is showing
-  backCount: number,                            // Number of times the user has requested back navigation
-  campus: ?Campus,                              // The currently selected bus campus to display info for
-  canNavigateBack: (can: boolean) => void,      // Indicate whether the app can navigate back
-  language: Language,                           // The current language, selected by the user
-  onCampusSelected: (campus: ?Campus) => void,  // Displays details about a bus campus
+  appTab: Tab,                                                    // The current tab the app is showing
+  backCount: number,                                              // Number of times user has requested back navigation
+  campus: ?Campus,                                                // The current selected bus campus to display info for
+  canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
+  language: Language,                                             // The current language, selected by the user
+  onCampusSelected: (campus: ?Campus) => void,                    // Displays details about a bus campus
+  setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
 }
 
 // Type definition for component state.
@@ -153,8 +157,15 @@ class Buses extends React.Component {
    */
   _handleNavigationEvent(): void {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
-    if (currentRoutes[currentRoutes.length - 1].id == MENU) {
+    if (currentRoutes[currentRoutes.length - 1].id === MENU) {
       this.props.onCampusSelected(null);
+      this.props.setHeaderTitle('bus_company');
+    } else {
+      const title = {
+        name_en: getTranslatedName('en', this.props.campus) || '',
+        name_fr: getTranslatedName('fr', this.props.campus) || '',
+      };
+      this.props.setHeaderTitle(title);
     }
 
     this.props.canNavigateBack(currentRoutes.length > 1);
@@ -265,6 +276,7 @@ const actions = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(canNavigateBack('buses', can)),
     onCampusSelected: (campus: ?Campus) => dispatch(showBusCampus(campus)),
+    setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
   };
 };
 

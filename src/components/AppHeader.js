@@ -87,11 +87,19 @@ class AppHeader extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
-    const appTitle: string = TranslationUtils.getTranslatedName(this.props.language, this.props.appTitle) || '';
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = platformModifier + '-arrow-back';
     const searchIcon: string = platformModifier + '-search';
 
+    // If title is string, use it as key for translations
+    let appTitle: string;
+    if (typeof (this.props.appTitle) === 'string') {
+      // Get current language for translations
+      const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+      appTitle = Translations[this.props.appTitle];
+    } else {
+      appTitle = TranslationUtils.getTranslatedName(this.props.language, this.props.appTitle) || '';
+    }
     return (
       <View style={_styles.container}>
         <TouchableOpacity

@@ -28,13 +28,15 @@
 import type {
   Action,
   Name,
+  Tab,
   TranslatedName,
 } from 'types';
 
 module.exports = {
-  setHeaderTitle: (title: ?(Name | TranslatedName)): Action => ({
+  setHeaderTitle: (title: ?(Name | TranslatedName | string), tab?: Tab): Action => ({
     type: 'SET_HEADER_TITLE',
     title,
+    tab,
   }),
   setShowBack: (showBack: boolean): Action => ({
     type: 'HEADER_SHOW_BACK',

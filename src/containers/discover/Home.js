@@ -35,13 +35,14 @@ import {
 import {connect} from 'react-redux';
 import {
   setDiscoverSections,
+  setHeaderTitle,
   switchDiscoverView,
 } from 'actions';
 
 // Type imports
 import type {
-  Language,
   DiscoverSection,
+  Language,
 } from 'types';
 
 // Imports
@@ -60,7 +61,7 @@ class DiscoverHome extends React.Component {
    */
   props: {
     language: Language,                                               // The current language, selected by the user
-    onSectionSelected: (section: string) => void,                     // Displays contents of the section in a new view
+    onSectionSelected: (section: string) => void,                     // Display contents of the section in new view
     onSectionsLoaded: (sections: Array < DiscoverSection >) => void,  // Sets the sections in the view
     sections: Array < DiscoverSection >,                              // The sections in the view
   }
@@ -123,13 +124,17 @@ const actions = (dispatch) => {
   return {
     onSectionSelected: (section: string) => {
       let view: number = Views.Home;
+      let title: ?string = null;
 
       switch (section) {
         case 'use':
           view = Views.Links;
+          title = 'useful_links';
           break;
         case 'bus':
           view = Views.Bus;
+          title = 'bus_company';
+          break;
         case 'stu':
         case 'shu':
         default:
@@ -137,6 +142,7 @@ const actions = (dispatch) => {
           // Return to default view, Views.Home
       }
 
+      dispatch(setHeaderTitle(title, 'discover'));
       dispatch(switchDiscoverView(view));
     },
     onSectionsLoaded: (sections: Array < DiscoverSection >) => dispatch(setDiscoverSections(sections)),

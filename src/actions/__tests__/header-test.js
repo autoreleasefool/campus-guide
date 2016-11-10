@@ -37,6 +37,18 @@ describe('header actions', () => {
     expect(actions.setHeaderTitle(title)).toEqual(expectedAction);
   });
 
+  it('should create an action to set the title for a tab', () => {
+    const title = 'name';
+    const tab = 'find';
+    const expectedAction = {
+      type: 'SET_HEADER_TITLE',
+      title,
+      tab,
+    };
+
+    expect(actions.setHeaderTitle(title, tab)).toEqual(expectedAction);
+  });
+
   it('should create an action to show the back button', () => {
     const showBack: boolean = true;
     const expectedAction = {
