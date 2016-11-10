@@ -14,7 +14,6 @@ import com.facebook.react.shell.MainReactPackage;
 import com.github.yamill.orientation.OrientationPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
-import org.pgsqlite.SQLitePluginPackage;
 import com.rnfs.RNFSPackage;
 
 import java.util.Arrays;
@@ -38,8 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
           new VectorIconsPackage(),
           new AirPackage(),
           new RNDeviceInfo(),
-          new RNFSPackage(),
-          new SQLitePluginPackage()
+          new RNFSPackage()
       );
     }
   };

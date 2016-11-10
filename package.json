@@ -15,7 +15,7 @@
   "dependencies": {
     "http-status-codes": "^1.0.6",
     "react": "^15.3.2",
-    "react-native": "^0.35.0",
+    "react-native": "^0.37.0",
     "react-native-admob": "^1.1.5",
     "react-native-device-info": "^0.9.6",
     "react-native-fs": "^1.5.1",
@@ -23,7 +23,7 @@
     "react-native-orientation": "^1.17.0",
     "react-native-scrollable-tab-view": "^0.6.0",
     "react-native-simple-store": "^1.1.0",
-    "react-native-vector-icons": "^2.1.0",
+    "react-native-vector-icons": "^3.0.0",
     "react-redux": "^4.4.5",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0"
@@ -37,7 +37,7 @@
     "eslint": "^3.9.1",
     "eslint-plugin-react": "^6.6.0",
     "eslint-plugin-react-native": "^2.0.0",
-    "flow-bin": "^0.32.0",
+    "flow-bin": "^0.33.0",
     "jest": "^17.0.0",
     "jest-cli": "^17.0.0",
     "jest-react-native": "^17.0.0",
