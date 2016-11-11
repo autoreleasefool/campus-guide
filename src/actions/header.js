@@ -38,12 +38,14 @@ module.exports = {
     title,
     tab,
   }),
-  setShowBack: (showBack: boolean): Action => ({
+  setShowBack: (showBack: boolean, tab?: Tab): Action => ({
     type: 'HEADER_SHOW_BACK',
     shouldShowBack: showBack,
+    tab,
   }),
-  setShowSearch: (showSearch: boolean): Action => ({
+  setShowSearch: (showSearch: boolean, tab?: Tab): Action => ({
     type: 'HEADER_SHOW_SEARCH',
     shouldShowSearch: showSearch,
+    tab,
   }),
 };

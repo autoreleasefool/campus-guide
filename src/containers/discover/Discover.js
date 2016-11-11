@@ -36,6 +36,7 @@ import {
 import {connect} from 'react-redux';
 import {
   setHeaderTitle,
+  setShowBack,
   switchDiscoverView,
 } from 'actions';
 
@@ -51,7 +52,7 @@ type Props = {
   backCount: number,                        // Number of times the user has requested back navigation
   busesCanNavigate: boolean,                // Indicates if the bus subview can navigate backwards
   linksCanNavigate: boolean,                // Indicates if the link subview can navigate backwards
-  onBackNavigation: (view: number) => void, // Callback when user pops the stacks
+  onNavigation: (view: number) => void,     // Callback when user navigates in the discover view
   view: number,                             // The current view
 };
 
@@ -118,7 +119,7 @@ class Discover extends React.Component {
    */
   _handleNavigationEvent(): void {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
-    this.props.onBackNavigation(currentRoutes[currentRoutes.length - 1].id);
+    this.props.onNavigation(currentRoutes[currentRoutes.length - 1].id);
   }
 
   /**
@@ -187,9 +188,12 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    onBackNavigation: (view: number) => {
+    onNavigation: (view: number) => {
       if (view === Views.Home) {
+        dispatch(setShowBack(false, 'discover'));
         dispatch(setHeaderTitle(null, 'discover'));
+      } else {
+        dispatch(setShowBack(true, 'discover'));
       }
       dispatch(switchDiscoverView(view));
     },

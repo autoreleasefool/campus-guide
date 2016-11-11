@@ -40,7 +40,9 @@ type State = {
   title: Name | TranslatedName | string,  // Title for the current screen
   tabTitles: TabSet,                      // Title last set in the tab
   shouldShowBack: boolean,                // True to show a back button in the header, false to hide
+  tabShowBack: TabSet,                    // Whether the tab should show a back button
   shouldShowSearch: boolean,              // True to show a search field in the header, false to hide
+  tabShowSearch: TabSet,                  // Whether the tab should show a search button
 };
 
 // Default title to use for the header
@@ -75,7 +77,21 @@ const initialState: State = {
     },
   },
   shouldShowBack: false,
+  tabShowBack: {
+    find: false,
+    schedule: false,
+    discover: false,
+    search: false,
+    settings: false,
+  },
   shouldShowSearch: false,
+  tabShowSearch: {
+    find: false,
+    schedule: false,
+    discover: false,
+    search: false,
+    settings: false,
+  },
 };
 
 /**
@@ -91,6 +107,8 @@ function header(state: State = initialState, action: Action): State {
       return {
         ...state,
         title: state.tabTitles[action.tab],
+        shouldShowBack: state.tabShowBack[action.tab],
+        shouldShowSearch: state.tabShowSearch[action.tab],
       };
     case 'SET_HEADER_TITLE': {
       const tabTitles = {
@@ -107,16 +125,36 @@ function header(state: State = initialState, action: Action): State {
         tabTitles,
       };
     }
-    case 'HEADER_SHOW_BACK':
+    case 'HEADER_SHOW_BACK': {
+      const tabShowBack = {
+        ...state.tabShowBack,
+      };
+
+      if (action.tab != null) {
+        tabShowBack[action.tab] = action.shouldShowBack || initialState.tabShowBack[action.tab];
+      }
+
       return {
         ...state,
         shouldShowBack: action.shouldShowBack,
+        tabShowBack,
       };
-    case 'HEADER_SHOW_SEARCH':
+    }
+    case 'HEADER_SHOW_SEARCH': {
+      const tabShowSearch = {
+        ...state.tabShowSearch,
+      };
+
+      if (action.tab != null) {
+        tabShowSearch[action.tab] = action.shouldShowSearch || initialState.tabShowSearch[action.tab];
+      }
+
       return {
         ...state,
         shouldShowSearch: action.shouldShowSearch,
+        tabShowSearch,
       };
+    }
     default:
       return state;
   }
