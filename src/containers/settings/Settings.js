@@ -72,6 +72,8 @@ type State = {
 };
 
 // Imports
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Header from 'Header';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
@@ -81,13 +83,13 @@ import * as TranslationUtils from 'TranslationUtils';
 let Icon: any;
 let settingIcons: SettingIcons;
 if (Platform.OS === 'ios') {
-  Icon = require('react-native-vector-icons/Ionicons');
+  Icon = Ionicons;
   settingIcons = {
     checkEnabled: 'md-checkbox',
     checkDisabled: 'md-square',
   };
 } else {
-  Icon = require('react-native-vector-icons/MaterialIcons');
+  Icon = MaterialIcons;
   settingIcons = {
     checkEnabled: 'check-box-outline-blank',
     checkDisabled: 'check-box',
@@ -130,7 +132,7 @@ class Settings extends React.Component {
         .then(() => TranslationUtils.loadTranslations('fr'))
         .then(() => Configuration.getConfig('/settings.json'))
         .then((configSettings: Object) => {
-          console.log(this.props);
+          console.log(JSON.stringify(configSettings));
           this._settings = configSettings;
           for (const section in this._settings) {
             if (this._settings.hasOwnProperty(section)) {
@@ -143,6 +145,7 @@ class Settings extends React.Component {
             }
           }
 
+          console.log(JSON.stringify(this._settingsCache));
           this.setState({
             dataSource: this.state.dataSource.cloneWithRowsAndSections(this._settings),
           });
@@ -185,9 +188,6 @@ class Settings extends React.Component {
     const settingValue = this._getSetting(key);
     const changed = this._settingsCache[key] !== settingValue;
 
-    console.log(`Setting: ${settingValue}`);
-    console.log('Cache: ' + JSON.stringify(this._settingsCache));
-
     if (changed) {
       this._settingsCache[key] = settingValue;
     }
@@ -203,6 +203,7 @@ class Settings extends React.Component {
    * @returns {any} the value of the setting corresponding to {key}, or null.
    */
   _getSetting(key: string): any {
+    console.log('Retrieving key: ' + key);
     if (key === 'pref_lang') {
       return (this.props.language === 'en')
           ? 'English'
