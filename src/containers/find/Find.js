@@ -37,6 +37,7 @@ import {
 import {connect} from 'react-redux';
 import {
   setHeaderTitle,
+  setShowBack,
   switchFindView,
 } from 'actions';
 
@@ -180,7 +181,10 @@ const actions = (dispatch) => {
   return {
     onBackNavigation: (view: number) => {
       if (view === Views.Home) {
+        dispatch(setShowBack(false, 'find'));
         dispatch(setHeaderTitle(null, 'find'));
+      } else {
+        dispatch(setShowBack(true, 'find'));
       }
       dispatch(switchFindView(view));
     },
