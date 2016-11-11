@@ -37,7 +37,21 @@ const initialState = {
     settings: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
   },
   shouldShowBack: false,
+  tabShowBack: {
+    find: false,
+    schedule: false,
+    discover: false,
+    search: false,
+    settings: false,
+  },
   shouldShowSearch: false,
+  tabShowSearch: {
+    find: false,
+    schedule: false,
+    discover: false,
+    search: false,
+    settings: false,
+  },
 };
 
 describe('navigation reducer', () => {
@@ -66,6 +80,35 @@ describe('navigation reducer', () => {
     );
   });
 
+  it('should set a new header title for a tab', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'SET_HEADER_TITLE',
+          tab: 'find',
+          title: {
+            name: 'New title',
+          },
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        title: {
+          name: 'New title',
+        },
+        tabTitles: {
+          find: {name: 'New title'},
+          schedule: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+          discover: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+          search: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+          settings: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+        },
+      }
+    );
+  });
+
   it('should use the default header title', () => {
     expect(
       reducer(
@@ -73,6 +116,21 @@ describe('navigation reducer', () => {
         {
           type: 'SET_HEADER_TITLE',
           title: null,
+        }
+      )
+    ).toEqual(
+      initialState
+    );
+  });
+
+  it('should use the default header title for a tab', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'SET_HEADER_TITLE',
+          title: null,
+          tab: 'find',
         }
       )
     ).toEqual(
@@ -97,12 +155,80 @@ describe('navigation reducer', () => {
     );
   });
 
-  it('should set the title when the tab changes', () => {
-    const updatedState = reducer(
+  it('should show the back button for a tab', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'HEADER_SHOW_BACK',
+          tab: 'find',
+          shouldShowBack: true,
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        shouldShowBack: true,
+        tabShowBack: {
+          find: true,
+          schedule: false,
+          discover: false,
+          search: false,
+          settings: false,
+        },
+      }
+    );
+  });
+
+  it('should show the search button for a tab', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'HEADER_SHOW_SEARCH',
+          tab: 'find',
+          shouldShowSearch: true,
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        shouldShowSearch: true,
+        tabShowSearch: {
+          find: true,
+          schedule: false,
+          discover: false,
+          search: false,
+          settings: false,
+        },
+      }
+    );
+  });
+
+  it('should set the title and back/search buttons when the tab changes', () => {
+    let updatedState = reducer(
       initialState,
       {
         type: 'SET_HEADER_TITLE',
         title: 'schedule',
+        tab: 'schedule',
+      }
+    );
+
+    updatedState = reducer(
+      updatedState,
+      {
+        type: 'HEADER_SHOW_BACK',
+        shouldShowBack: true,
+        tab: 'schedule',
+      }
+    );
+
+    updatedState = reducer(
+      updatedState,
+      {
+        type: 'HEADER_SHOW_SEARCH',
+        shouldShowSearch: true,
         tab: 'schedule',
       }
     );
@@ -119,6 +245,8 @@ describe('navigation reducer', () => {
       {
         ...updatedState,
         title: 'schedule',
+        shouldShowBack: true,
+        shouldShowSearch: true,
       }
     );
   });

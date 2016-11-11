@@ -49,6 +49,30 @@ describe('header actions', () => {
     expect(actions.setHeaderTitle(title, tab)).toEqual(expectedAction);
   });
 
+  it('should create an action to show the back button for a tab', () => {
+    const shouldShowBack = true;
+    const tab = 'find';
+    const expectedAction = {
+      type: 'HEADER_SHOW_BACK',
+      shouldShowBack,
+      tab,
+    };
+
+    expect(actions.setShowBack(shouldShowBack, tab)).toEqual(expectedAction);
+  });
+
+  it('should create an action to show the search button for a tab', () => {
+    const shouldShowSearch = true;
+    const tab = 'find';
+    const expectedAction = {
+      type: 'HEADER_SHOW_SEARCH',
+      shouldShowSearch,
+      tab,
+    };
+
+    expect(actions.setShowSearch(shouldShowSearch, tab)).toEqual(expectedAction);
+  });
+
   it('should create an action to show the back button', () => {
     const showBack: boolean = true;
     const expectedAction = {
