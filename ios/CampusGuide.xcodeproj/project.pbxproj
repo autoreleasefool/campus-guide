@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -38,6 +37,7 @@
 		CAB52A691DD4BE2A0018A5B1 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAB52A681DD4BE2A0018A5B1 /* GoogleMobileAds.framework */; };
 		CE41A4010FD44D17A3D69B1C /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C3C083ACD83B4D05BE7492FD /* libRNFS.a */; };
 		EBFB19A76AE84E458BB02ABC /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4ABD75139C63407CA3D2A263 /* FontAwesome.ttf */; };
+		37A659A9AC974D5BBC7B3703 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41A832C983934141B33BA092 /* libAirMaps.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -246,6 +246,8 @@
 		EB51506EBC8F4254BDFF68F4 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
 		FA8D0E7237564926A999DCAD /* RNAdMobManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNAdMobManager.xcodeproj; path = "../node_modules/react-native-admob/ios/RNAdMobManager.xcodeproj"; sourceTree = "<group>"; };
 		FB72EBC47C8C4E648935120B /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
+		7CC5C70F7D774D78BE7A47B8 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; name = "AirMaps.xcodeproj"; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		41A832C983934141B33BA092 /* libAirMaps.a */ = {isa = PBXFileReference; name = "libAirMaps.a"; path = "libAirMaps.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,6 +279,7 @@
 				3CC240618842455EB7AF2E31 /* libRNDeviceInfo.a in Frameworks */,
 				CE41A4010FD44D17A3D69B1C /* libRNFS.a in Frameworks */,
 				C441677708B84AEBBE007792 /* libRNAdMobManager.a in Frameworks */,
+				37A659A9AC974D5BBC7B3703 /* libAirMaps.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +414,7 @@
 				EB51506EBC8F4254BDFF68F4 /* RNDeviceInfo.xcodeproj */,
 				9448AEE14FA1434BA55EDBF6 /* RNFS.xcodeproj */,
 				FA8D0E7237564926A999DCAD /* RNAdMobManager.xcodeproj */,
+				7CC5C70F7D774D78BE7A47B8 /* AirMaps.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -898,6 +902,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CampusGuide.app/CampusGuide";
@@ -914,6 +919,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -944,6 +950,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
 				);
 				INFOPLIST_FILE = CampusGuide/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -976,6 +983,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
 				);
 				INFOPLIST_FILE = CampusGuide/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1033,6 +1041,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1078,6 +1087,7 @@
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-admob/ios",
+					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
