@@ -37,6 +37,7 @@ import {connect} from 'react-redux';
 import {
   canNavigateBack,
   setHeaderTitle,
+  setShowSearch,
   showBusCampus,
 } from 'actions';
 
@@ -59,6 +60,7 @@ type Props = {
   language: Language,                                             // The current language, selected by the user
   onCampusSelected: (campus: ?Campus) => void,                    // Displays details about a bus campus
   setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
+  showSearch: (show: boolean) => void,                            // Shows or hides the search button
 }
 
 // Type definition for component state.
@@ -169,6 +171,7 @@ class Buses extends React.Component {
     }
 
     this.props.canNavigateBack(currentRoutes.length > 1);
+    this.props.showSearch(currentRoutes.length > 1);
   }
 
   /**
@@ -277,6 +280,7 @@ const actions = (dispatch) => {
     canNavigateBack: (can: boolean) => dispatch(canNavigateBack('buses', can)),
     onCampusSelected: (campus: ?Campus) => dispatch(showBusCampus(campus)),
     setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
+    showSearch: (show: boolean) => dispatch(setShowSearch(show, 'discover')),
   };
 };
 

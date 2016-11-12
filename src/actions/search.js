@@ -16,33 +16,22 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-08
- * @file index.js
- * @providesModule actions
- * @description Combines all actions
+ * @created 2016-11-12
+ * @file search.js
+ * @description Provides search actions.
  *
  * @flow
  */
 'use strict';
 
-// Imports
-import * as configActions from './config';
-import * as discoverActions from './discover';
-import * as findActions from './find';
-import * as headerActions from './header';
-import * as navigationActions from './navigation';
-import * as searchActions from './search';
-// const scheduleActions = require('./schedule');
-import * as updateActions from './update';
+// Types
+import type {
+  Action,
+} from 'types';
 
-// Combine and export actions
 module.exports = {
-  ...configActions,
-  ...discoverActions,
-  ...findActions,
-  ...headerActions,
-  ...navigationActions,
-  ...searchActions,
-  // ...scheduleActions,
-  ...updateActions,
+  search: (searchTerms: ?string): Action => ({
+    type: 'SEARCH',
+    searchTerms,
+  }),
 };

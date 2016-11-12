@@ -183,11 +183,11 @@ const actions = (dispatch) => {
     onBackNavigation: (view: number) => {
       if (view === Views.Home) {
         dispatch(setShowBack(false, 'find'));
-        dispatch(setShowSearch(true, 'find'));
         dispatch(setHeaderTitle(null, 'find'));
       } else {
         dispatch(setShowBack(true, 'find'));
       }
+      dispatch(setShowSearch(true, 'find'));
       dispatch(switchFindView(view));
     },
   };

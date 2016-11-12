@@ -43,6 +43,7 @@ import {
 import {connect} from 'react-redux';
 import {
   navigateBack,
+  search,
 } from 'actions';
 
 // Types
@@ -57,6 +58,7 @@ type Props = {
   appTitle: Name | TranslatedName,  // Title for the header
   language: Language,               // The user's currently selected language
   onBack: () => void,               // Tells the app to navigate one screen backwards
+  onSearch: (st: ?string) => void,  // Updates the user's search terms
   shouldShowBack: boolean,          // Indicates if the header should show a back button
   shouldShowSearch: boolean,        // Indicates if the header should show a search input option
 }
@@ -116,6 +118,10 @@ class AppHeader extends React.Component {
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.shouldShowBack != this.props.shouldShowBack
         || nextProps.shouldShowSearch != this.props.shouldShowSearch) {
+      if (!(nextProps.shouldShowSearch && this.state.shouldShowSearchBar)) {
+        this.refs.SearchInput.blur();
+      }
+
       LayoutAnimation.easeInEaseOut();
       this.setState({
         shouldShowBack: nextProps.shouldShowBack,
@@ -129,6 +135,12 @@ class AppHeader extends React.Component {
    * Shows/hides the search input.
    */
   _toggleSearch(): void {
+    if (this.state.shouldShowSearchBar) {
+      this.refs.SearchInput.blur();
+    } else {
+      this.refs.SearchInput.focus();
+    }
+
     LayoutAnimation.easeInEaseOut();
     this.setState({
       shouldShowSearchBar: !this.state.shouldShowSearchBar,
@@ -140,6 +152,15 @@ class AppHeader extends React.Component {
    */
   _onBack(): void {
     this.props.onBack();
+  }
+
+  /**
+   * Prompts the app to search.
+   *
+   * @param {?string} text params to search for.
+   */
+  _onSearch(text: ?string): void {
+    this.props.onSearch(text);
   }
 
   /**
@@ -214,7 +235,8 @@ class AppHeader extends React.Component {
               placeholder={searchPlaceholder}
               placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
-              style={_styles.searchText} />
+              style={_styles.searchText}
+              onChangeText={this._onSearch.bind(this)} />
         </View>
         <TouchableOpacity
             style={[_styles.icon, searchIconStyle]}
@@ -285,7 +307,7 @@ const _styles = StyleSheet.create({
   },
   noBackground: {
     backgroundColor: 'rgba(0,0,0,0)',
-  }
+  },
 });
 
 // Map state to props
@@ -302,6 +324,7 @@ const select = (store) => {
 const actions = (dispatch) => {
   return {
     onBack: () => dispatch(navigateBack()),
+    onSearch: (text: ?string) => dispatch(search(text)),
   };
 };
 

@@ -350,7 +350,7 @@ export type Update = {
 
 /** Available actions for modifying the application state. */
 export type Action =
-    { type: 'SEARCH_ALL', searchTerms: ?string }
+    { type: 'SEARCH', searchTerms: ?string }
   | { type: 'CLEAR_SEARCH' }
   | { type: 'SWITCH_TAB', tab: Tab; }
   | { type: 'NAVIGATE_BACK' }

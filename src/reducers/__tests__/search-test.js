@@ -44,7 +44,7 @@ describe('search reducer', () => {
       reducer(
         undefined,
         {
-          type: 'SEARCH_ALL',
+          type: 'SEARCH',
           searchTerms: testSearchTerms,
         }
       )
@@ -54,7 +54,7 @@ describe('search reducer', () => {
       reducer(
         {searchTerms: testSearchTerms},
         {
-          type: 'SEARCH_ALL',
+          type: 'SEARCH',
           searchTerms: otherSearchTerms,
         }
       )

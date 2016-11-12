@@ -122,7 +122,7 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
-    filter: null,
+    filter: store.search.searchTerms,
     language: store.config.language,
   };
 };

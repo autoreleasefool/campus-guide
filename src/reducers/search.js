@@ -48,7 +48,7 @@ const initialState: Search = {
  */
 function search(state: Search = initialState, action: Action): Search {
   switch (action.type) {
-    case 'SEARCH_ALL':
+    case 'SEARCH':
       return {
         searchTerms: action.searchTerms,
       };

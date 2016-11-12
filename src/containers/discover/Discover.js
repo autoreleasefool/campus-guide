@@ -37,6 +37,7 @@ import {connect} from 'react-redux';
 import {
   setHeaderTitle,
   setShowBack,
+  setShowSearch,
   switchDiscoverView,
 } from 'actions';
 
@@ -189,12 +190,16 @@ const select = (store) => {
 const actions = (dispatch) => {
   return {
     onNavigation: (view: number) => {
-      if (view === Views.Home) {
-        dispatch(setShowBack(false, 'discover'));
-        dispatch(setHeaderTitle(null, 'discover'));
-      } else {
-        dispatch(setShowBack(true, 'discover'));
+      switch (view) {
+        case Views.Home:
+          dispatch(setShowBack(false, 'discover'));
+          dispatch(setShowSearch(false, 'discover'));
+          dispatch(setHeaderTitle(null, 'discover'));
+          break;
+        default:
+          dispatch(setShowBack(true, 'discover'));
       }
+
       dispatch(switchDiscoverView(view));
     },
   };

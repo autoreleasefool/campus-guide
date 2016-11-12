@@ -46,6 +46,7 @@ import {
   canNavigateBack,
   setDiscoverLinks,
   setHeaderTitle,
+  setShowSearch,
 } from 'actions';
 
 // Type imports
@@ -68,6 +69,7 @@ type Props = {
   links: Array < LinkSection >,                                   // The sections in the view
   onSectionsLoaded: (links: Array < LinkSection >) => void,       // Sets the sections in the view
   setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
+  showSearch: (show: boolean) => void,                            // Shows or hides the search button
 }
 
 // Imports
@@ -235,7 +237,9 @@ class Links extends React.Component {
     } else {
       this.props.setHeaderTitle('useful_links');
     }
+
     this.props.canNavigateBack(currentRoutes.length > 1);
+    this.props.showSearch(currentRoutes.length > 1);
   }
 
   /**
@@ -590,6 +594,7 @@ const actions = (dispatch) => {
     canNavigateBack: (can: boolean) => dispatch(canNavigateBack('links', can)),
     onSectionsLoaded: (links: Array < LinkSection >) => dispatch(setDiscoverLinks(links)),
     setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
+    showSearch: (show: boolean) => dispatch(setShowSearch(show, 'discover')),
   };
 };
 
