@@ -46,7 +46,7 @@ const initialState = {
   },
   shouldShowSearch: false,
   tabShowSearch: {
-    find: false,
+    find: true,
     schedule: false,
     discover: false,
     search: false,
@@ -186,7 +186,7 @@ describe('navigation reducer', () => {
         initialState,
         {
           type: 'HEADER_SHOW_SEARCH',
-          tab: 'find',
+          tab: 'schedule',
           shouldShowSearch: true,
         }
       )
@@ -196,7 +196,7 @@ describe('navigation reducer', () => {
         shouldShowSearch: true,
         tabShowSearch: {
           find: true,
-          schedule: false,
+          schedule: true,
           discover: false,
           search: false,
           settings: false,

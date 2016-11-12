@@ -29,12 +29,13 @@
 // React imports
 import React from 'react';
 import {
+  Dimensions,
   LayoutAnimation,
   Platform,
   StyleSheet,
   TouchableOpacity,
   Text,
-  // TextInput,
+  TextInput,
   View,
 } from 'react-native';
 
@@ -63,7 +64,8 @@ type Props = {
 // Type definition for component state.
 type State = {
   shouldShowBack: boolean,          // Indicates if the header should show a back button
-  shouldShowSearch: boolean,        // Indicates if the header should show a search input option
+  shouldShowSearch: boolean,        // Indicates if the header should show a search button
+  shouldShowSearchBar: boolean,     // Indicates if the header should hide the title and show a search input
 }
 
 // Imports
@@ -74,6 +76,11 @@ import * as TranslationUtils from 'TranslationUtils';
 // Height of the navbar
 const NAVBAR_HEIGHT: number = 50;
 const HEADER_PADDING_IOS: number = 25;
+const ICON_SIZE: number = 50;
+
+// Width of the search input
+const {width} = Dimensions.get('window');
+const SEARCH_INPUT_WIDTH = width - ICON_SIZE * 2;
 
 class AppHeader extends React.Component {
 
@@ -97,6 +104,7 @@ class AppHeader extends React.Component {
     this.state = {
       shouldShowBack: false,
       shouldShowSearch: false,
+      shouldShowSearchBar: false,
     };
   }
 
@@ -112,14 +120,24 @@ class AppHeader extends React.Component {
       this.setState({
         shouldShowBack: nextProps.shouldShowBack,
         shouldShowSearch: nextProps.shouldShowSearch,
+        shouldShowSearchBar: nextProps.shouldShowSearch && this.state.shouldShowSearchBar,
       });
     }
   }
 
-  _startSearch(): void {
-    console.log('Search app');
+  /**
+   * Shows/hides the search input.
+   */
+  _toggleSearch(): void {
+    LayoutAnimation.easeInEaseOut();
+    this.setState({
+      shouldShowSearchBar: !this.state.shouldShowSearchBar,
+    });
   }
 
+  /**
+   * Navigates back in the application.
+   */
   _onBack(): void {
     this.props.onBack();
   }
@@ -133,6 +151,13 @@ class AppHeader extends React.Component {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = platformModifier + '-arrow-back';
     const searchIcon: string = platformModifier + '-search';
+    // const closeIcon: string = platformModifier + '-close';
+
+    // // If there is a placeholder to display, show it. Otherwise, use default
+    // const searchPlaceholder = this.state.searchPlaceholder == null || Preferences.getAlwaysSearchAll()
+    //     ? Translations.search_placeholder
+    //     : this.state.searchPlaceholder;
+    const searchPlaceholder = 'Search...';
 
     // If title is string, use it as key for translations
     let appTitle: string;
@@ -145,29 +170,60 @@ class AppHeader extends React.Component {
     }
 
     // Hide/show back button
-    let backIconStyle: Object = {left: -50};
+    let backIconStyle: Object = {left: -ICON_SIZE};
     if (this.props.shouldShowBack) {
       backIconStyle = {left: 0};
     }
 
-    // Hide/show search button
-    let searchIconStyle: Object = {right: -50};
+    // Hide/show search button, title
+    let searchIconStyle: Object = {right: -ICON_SIZE};
     if (this.props.shouldShowSearch) {
       searchIconStyle = {right: 0};
     }
 
+    // Hide/show title and search input
+    let titleStyle: Object = {};
+    let searchInputStyle: Object = {right: -SEARCH_INPUT_WIDTH};
+    if (this.state.shouldShowSearchBar) {
+      titleStyle = {opacity: 0};
+      searchInputStyle = {right: ICON_SIZE};
+    }
+
+    // {(this.state.searching)
+    //           ? <Ionicons
+    //               color={'white'}
+    //               name={closeIcon}
+    //               size={Constants.Icons.Large}
+    //               style={_styles.clearIcon}
+    //               onPress={this.clearSearch.bind(this)} /> : null}
+
     return (
       <View style={_styles.container}>
-        <View style={_styles.titleContainer}>
+        <View style={[_styles.titleContainer, titleStyle]}>
           <Text style={_styles.title}>{appTitle}</Text>
+        </View>
+        <View style={[_styles.searchContainer, searchInputStyle]}>
+          <Ionicons
+              color={'white'}
+              name={searchIcon}
+              size={Constants.Sizes.Icons.Medium}
+              style={_styles.searchIcon}
+              onPress={() => this.refs.SearchInput.focus()} />
+          <TextInput
+              autoCorrect={false}
+              placeholder={searchPlaceholder}
+              placeholderTextColor={Constants.Colors.lightGrey}
+              ref='SearchInput'
+              style={_styles.searchText} />
         </View>
         <TouchableOpacity
             style={[_styles.icon, searchIconStyle]}
-            onPress={this._startSearch.bind(this)}>
+            onPress={this._toggleSearch.bind(this)}>
           <Ionicons
               color={Constants.Colors.primaryWhiteIcon}
               name={searchIcon}
-              size={Constants.Sizes.Icons.Medium} />
+              size={Constants.Sizes.Icons.Medium}
+              style={_styles.noBackground} />
         </TouchableOpacity>
         <TouchableOpacity
             style={[_styles.icon, backIconStyle]}
@@ -175,7 +231,8 @@ class AppHeader extends React.Component {
           <Ionicons
               color={Constants.Colors.primaryWhiteIcon}
               name={backArrowIcon}
-              size={Constants.Sizes.Icons.Medium} />
+              size={Constants.Sizes.Icons.Medium}
+              style={_styles.noBackground} />
         </TouchableOpacity>
       </View>
     );
@@ -191,10 +248,29 @@ const _styles = StyleSheet.create({
     height: NAVBAR_HEIGHT,
     marginTop: Platform.OS === 'ios' ? HEADER_PADDING_IOS : 0,
   },
+  searchContainer: {
+    flex: 1,
+    width: SEARCH_INPUT_WIDTH,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderRadius: Constants.Sizes.Margins.Regular,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    margin: Constants.Sizes.Margins.Regular,
+    position: 'absolute',
+  },
+  searchIcon: {
+    marginLeft: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Regular,
+  },
+  searchText: {
+    flex: 1,
+    height: 35,
+    color: Constants.Colors.polarGrey,
+  },
   icon: {
     position: 'absolute',
-    width: 50,
-    height: 50,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -207,6 +283,9 @@ const _styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  noBackground: {
+    backgroundColor: 'rgba(0,0,0,0)',
+  }
 });
 
 // Map state to props

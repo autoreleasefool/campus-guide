@@ -86,7 +86,7 @@ const initialState: State = {
   },
   shouldShowSearch: false,
   tabShowSearch: {
-    find: false,
+    find: true,
     schedule: false,
     discover: false,
     search: false,
