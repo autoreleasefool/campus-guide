@@ -162,7 +162,7 @@ const _styles = StyleSheet.create({
 const select = (store) => {
   return {
     building: store.find.building,
-    filter: null,
+    filter: store.search.searchTerms,
     language: store.config.language,
   };
 };

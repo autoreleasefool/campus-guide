@@ -34,4 +34,7 @@ module.exports = {
     type: 'SEARCH',
     searchTerms,
   }),
+  clearSearch: (): Action => ({
+    type: 'CLEAR_SEARCH',
+  }),
 };

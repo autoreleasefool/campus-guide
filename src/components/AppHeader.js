@@ -42,6 +42,7 @@ import {
 // Redux imports
 import {connect} from 'react-redux';
 import {
+  clearSearch,
   navigateBack,
   search,
 } from 'actions';
@@ -151,6 +152,8 @@ class AppHeader extends React.Component {
    * Navigates back in the application.
    */
   _onBack(): void {
+    this.refs.SearchInput.clear();
+    this.refs.SearchInput.blur();
     this.props.onBack();
   }
 
@@ -172,19 +175,13 @@ class AppHeader extends React.Component {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = platformModifier + '-arrow-back';
     const searchIcon: string = platformModifier + '-search';
-    // const closeIcon: string = platformModifier + '-close';
 
-    // // If there is a placeholder to display, show it. Otherwise, use default
-    // const searchPlaceholder = this.state.searchPlaceholder == null || Preferences.getAlwaysSearchAll()
-    //     ? Translations.search_placeholder
-    //     : this.state.searchPlaceholder;
-    const searchPlaceholder = 'Search...';
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
     // If title is string, use it as key for translations
     let appTitle: string;
     if (typeof (this.props.appTitle) === 'string') {
-      // Get current language for translations
-      const Translations: Object = TranslationUtils.getTranslations(this.props.language);
       appTitle = Translations[this.props.appTitle];
     } else {
       appTitle = TranslationUtils.getTranslatedName(this.props.language, this.props.appTitle) || '';
@@ -210,14 +207,6 @@ class AppHeader extends React.Component {
       searchInputStyle = {right: ICON_SIZE};
     }
 
-    // {(this.state.searching)
-    //           ? <Ionicons
-    //               color={'white'}
-    //               name={closeIcon}
-    //               size={Constants.Icons.Large}
-    //               style={_styles.clearIcon}
-    //               onPress={this.clearSearch.bind(this)} /> : null}
-
     return (
       <View style={_styles.container}>
         <View style={[_styles.titleContainer, titleStyle]}>
@@ -232,7 +221,7 @@ class AppHeader extends React.Component {
               onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
               autoCorrect={false}
-              placeholder={searchPlaceholder}
+              placeholder={Translations.search_placeholder}
               placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
               style={_styles.searchText}
@@ -323,7 +312,10 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    onBack: () => dispatch(navigateBack()),
+    onBack: () => {
+      dispatch(navigateBack());
+      dispatch(clearSearch());
+    },
     onSearch: (text: ?string) => dispatch(search(text)),
   };
 };
