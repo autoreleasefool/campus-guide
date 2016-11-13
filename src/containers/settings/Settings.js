@@ -30,6 +30,7 @@ import {
   ListView,
   Platform,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -49,12 +50,6 @@ import type {
   TimeFormat,
 } from 'types';
 
-// Type definition for settings icons.
-type SettingIcons = {
-  checkEnabled: string,
-  checkDisabled: string,
-};
-
 // Type definition for component props.
 type Props = {
   alwaysSearchAll: boolean,                               // If the user prefers to always search the entire app
@@ -72,29 +67,13 @@ type State = {
 };
 
 // Imports
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Header from 'Header';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 
-// Declaring icons depending on the platform
-let Icon: any;
-let settingIcons: SettingIcons;
-if (Platform.OS === 'ios') {
-  Icon = Ionicons;
-  settingIcons = {
-    checkEnabled: 'md-checkbox',
-    checkDisabled: 'md-square',
-  };
-} else {
-  Icon = MaterialIcons;
-  settingIcons = {
-    checkEnabled: 'check-box-outline-blank',
-    checkDisabled: 'check-box',
-  };
-}
+// Default opacity for tap when setting is not a boolean
+const DEFAULT_OPACITY: number = 0.4;
 
 class Settings extends React.Component {
 
@@ -224,9 +203,15 @@ class Settings extends React.Component {
   /**
    * Updates the setting for the row pressed.
    *
-   * @param {string} key identifier for the setting pressed.
+   * @param {string} type type of setting
+   * @param {string} key  identifier for the setting pressed.
    */
-  _onPressRow(key: string): void {
+  _onPressRow(type: string, key: string): void {
+    if (type === 'boolean') {
+      // Ignore boolean settings, they can only be manipulated by switch
+      return;
+    }
+
     if (key === 'pref_lang') {
       this.props.updateConfiguration({language: this.props.language === 'en' ? 'fr' : 'en'});
     } else if (key === 'pref_wheel') {
@@ -263,24 +248,18 @@ class Settings extends React.Component {
     } else if (setting.type === 'boolean') {
       content = (
         <View style={_styles.settingContent}>
-          {
-            this._getSetting(setting.key)
-                ? <Icon
-                    color={Constants.Colors.charcoalGrey}
-                    name={settingIcons.checkEnabled}
-                    size={Constants.Sizes.Icons.Medium} />
-                : <Icon
-                    color={Constants.Colors.charcoalGrey}
-                    name={settingIcons.checkDisabled}
-                    size={Constants.Sizes.Icons.Medium} />
-          }
+          <Switch
+              value={this._getSetting(setting.key)}
+              onValueChange={() => this._onPressRow('', setting.key)} />
         </View>
       );
     }
 
     return (
       <View style={_styles.settingContainer}>
-        <TouchableOpacity onPress={this._onPressRow.bind(this, setting.key)}>
+        <TouchableOpacity
+            activeOpacity={setting.type === 'boolean' ? 1 : DEFAULT_OPACITY}
+            onPress={this._onPressRow.bind(this, setting.type, setting.key)}>
           <View style={_styles.setting}>
             <Text style={_styles.settingText}>{TranslationUtils.getTranslatedName(this.props.language, setting)}</Text>
             {content}
@@ -360,7 +339,8 @@ const _styles = StyleSheet.create({
   settingContent: {
     position: 'absolute',
     right: 20,
-    top: 15,
+    height: 50,
+    justifyContent: 'center',
   },
   settingText: {
     marginLeft: Constants.Sizes.Margins.Expanded,
