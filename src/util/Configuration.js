@@ -49,11 +49,12 @@ export type UpdateCallbacks = {
 };
 
 // Imports
-const Database = require('Database');
-const DeviceInfo = require('react-native-device-info');
-const HttpStatus = require('http-status-codes');
-const Promise = require('promise');
-const RNFS = require('react-native-fs');
+import Promise from 'promise';
+import * as Database from 'Database';
+import * as DeviceInfo from 'react-native-device-info';
+import * as env from 'env';
+import * as HttpStatus from 'http-status-codes';
+import * as RNFS from 'react-native-fs';
 
 // Subdirectories which files of certain types should be placed/found in
 const CONFIG_SUBDIRECTORIES = {
@@ -157,10 +158,6 @@ function _initError(err: any): void {
  * @returns {Promise<boolean>} promise which resolves to true or false depending on if a config update is available
  */
 async function _refreshConfigVersions(): Promise < boolean > {
-
-  // Load environment variables
-  const env = require('env');
-
   try {
     // Get current config versions
     const configVersions = await Database.getConfigVersions();

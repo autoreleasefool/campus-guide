@@ -36,6 +36,8 @@ const translations: Object = {
   fr: null,
 };
 
+import * as Configuration from 'Configuration';
+
 /**
  * Loads and parses a set of translations from the downloaded configuration.
  *
@@ -49,7 +51,6 @@ async function _loadTranslations(language: Language): Promise < Object > {
   }
 
   // Check for the configuration
-  const Configuration = require('Configuration');
   try {
     await Configuration.init();
   } catch (e) {

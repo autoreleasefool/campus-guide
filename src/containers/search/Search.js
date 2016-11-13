@@ -68,6 +68,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
+import * as env from 'env';
 import * as Searchable from './Searchable';
 import * as TranslationUtils from 'TranslationUtils';
 
@@ -231,8 +232,6 @@ class Search extends React.Component {
    * @returns {ReactElement<any>} a list of results
    */
   render(): ReactElement < any > {
-    const env = require('env');
-
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 

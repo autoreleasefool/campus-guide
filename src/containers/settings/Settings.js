@@ -182,7 +182,6 @@ class Settings extends React.Component {
    * @returns {any} the value of the setting corresponding to {key}, or null.
    */
   _getSetting(key: string): any {
-    console.log('Retrieving key: ' + key);
     if (key === 'pref_lang') {
       return (this.props.language === 'en')
           ? 'English'
