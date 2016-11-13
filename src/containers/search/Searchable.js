@@ -16,6 +16,7 @@
  * limitations under the License.
  *
  * @author Joseph Roque
+ * @created 2016-11-12
  * @file Searchable.js
  * @description Exports the various sources the app should search and present results for.
  *
