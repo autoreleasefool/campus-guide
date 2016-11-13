@@ -49,7 +49,7 @@ const initialState = {
     find: true,
     schedule: false,
     discover: false,
-    search: false,
+    search: true,
     settings: false,
   },
 };

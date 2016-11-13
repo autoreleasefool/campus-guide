@@ -115,8 +115,11 @@ class Search extends React.Component {
     this._updateSearch(nextProps.filter);
   }
 
-  /** List of currently displayed search results */
+  /** List of currently displayed search results. */
   _searchResults: Object;
+
+  /** Set of icons to display for each search result. */
+  _searchIcons: Object;
 
   /**
    * Outputs an error when one occurs while loading an ad.
@@ -149,8 +152,8 @@ class Search extends React.Component {
     } else {
       Searchable.getResults(this.props.language, searchTerms)
           .then((results: Object) => {
-            console.log(`Results: ${JSON.stringify(results)}`);
-            this._searchResults = results;
+            this._searchResults = results.results;
+            this._searchIcons = results.icons;
             this.setState({
               anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
               searchResults: this.state.searchResults.cloneWithRowsAndSections(this._searchResults),
@@ -210,9 +213,14 @@ class Search extends React.Component {
    * @returns {ReactElement<any>} a {SectionHeader} with the name of the source.
    */
   _renderSource(sectionData: Object, sectionName: string): ReactElement < any > {
+    const icon = DisplayUtils.getPlatformIcon(Platform.OS, this._searchIcons[sectionName])
+        || {name: 'search', class: 'material'};
+
     return (
       <View style={{backgroundColor: Constants.Colors.primaryBackground}}>
-        <Header title={sectionName} />
+        <Header
+            icon={icon}
+            title={sectionName} />
       </View>
     );
   }

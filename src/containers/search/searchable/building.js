@@ -176,3 +176,30 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
         .catch((err: any) => reject(err));
   });
 }
+
+/**
+ * Returns an object which maps the section names to an icon which represents it.
+ *
+ * @param {Language} language the current language
+ * @returns {Object} section names mapped to icon objects
+ */
+export function getResultIcons(language: Language): Object {
+  // Get current language for translations
+  const Translations: Object = TranslationUtils.getTranslations(language);
+
+  const icons = {};
+  icons[Translations.buildings] = {
+    icon: {
+      class: 'material',
+      name: 'store',
+    },
+  };
+  icons[Translations.rooms] = {
+    icon: {
+      class: 'material',
+      name: 'room',
+    },
+  };
+
+  return icons;
+}

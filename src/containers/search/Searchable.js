@@ -65,13 +65,19 @@ function _getSources(): Array < Object > {
 export function getResults(language: Language, searchTerms: ?string): Promise < Object > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      resolve({});
+      resolve({results: {}, icons: {}});
     }
 
     const sources: Array < Object > = _getSources();
     const sourcePromises: Array < Promise > = [];
+    let sourceIcons: Object = {};
 
     for (let i = 0; i < sources.length; i++) {
+      sourceIcons = {
+        ...sourceIcons,
+        ...sources[i].getResultIcons(language),
+      };
+
       sourcePromises.push(sources[i].getResults(language, searchTerms));
     }
 
@@ -92,7 +98,7 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
             }
           }
 
-          resolve(results);
+          resolve({results, icons: sourceIcons});
         })
         .catch((err: any) => reject(err));
   });
