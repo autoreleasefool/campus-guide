@@ -89,7 +89,7 @@ const initialState: State = {
     find: true,
     schedule: false,
     discover: false,
-    search: false,
+    search: true,
     settings: false,
   },
 };

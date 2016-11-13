@@ -52,6 +52,7 @@ import type {
   Language,
   Name,
   TranslatedName,
+  Tab,
 } from 'types';
 
 // Type definition for component props.
@@ -62,6 +63,7 @@ type Props = {
   onSearch: (st: ?string) => void,  // Updates the user's search terms
   shouldShowBack: boolean,          // Indicates if the header should show a back button
   shouldShowSearch: boolean,        // Indicates if the header should show a search input option
+  tab: Tab,                         // The current tab the user has open
 }
 
 // Type definition for component state.
@@ -306,6 +308,7 @@ const select = (store) => {
     language: store.config.language,
     shouldShowBack: store.header.shouldShowBack,
     shouldShowSearch: store.header.shouldShowSearch,
+    tab: store.navigation.tab,
   };
 };
 

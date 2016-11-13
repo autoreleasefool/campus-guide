@@ -52,10 +52,8 @@ import * as Constants from 'Constants';
 // Tabs
 import Discover from './discover/Discover';
 import Find from './find/Find';
+import Search from './search/Search';
 import Settings from './settings/Settings';
-// import Schedule from './schedule/Schedule';
-// const Search = require('Search');
-// const Settings = require('Settings');
 
 class TabView extends React.Component {
 
@@ -91,6 +89,13 @@ class TabView extends React.Component {
                 tabLabel='discover' />
           );
           break;
+        case 'search':
+          tabs.push(
+            <Search
+                key='search'
+                tabLabel='search' />
+          );
+          break;
         case 'settings':
           tabs.push(
             <Settings
@@ -105,9 +110,6 @@ class TabView extends React.Component {
         //         tabLabel='schedule' />
         //   );
         //   break;
-        case 'search':
-          // tabs.push(<Search tabLabel='search' />);
-          // break;
         default:
           tabs.push(
             <View
