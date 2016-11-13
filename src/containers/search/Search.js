@@ -250,12 +250,12 @@ class Search extends React.Component {
 
     return (
       <View style={_styles.container}>
-        {results}
         <AdMobBanner
             adUnitID={env.admobUnitIds.search}
             bannerSize='smartBannerPortrait'
             didFailToReceiveAdWithError={this._adError.bind(this)}
             testDeviceID='EMULATOR' />
+        {results}
       </View>
     );
   }
