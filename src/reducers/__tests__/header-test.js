@@ -198,7 +198,7 @@ describe('navigation reducer', () => {
           find: true,
           schedule: true,
           discover: false,
-          search: false,
+          search: true,
           settings: false,
         },
       }
