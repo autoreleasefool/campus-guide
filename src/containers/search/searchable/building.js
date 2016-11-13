@@ -116,20 +116,44 @@ function _getRoomResults(language: Language,
         .then((roomTypes: Array < RoomType >) => {
           const results: Array < SearchResult > = [];
 
+          // Cache list of room types that match the search terms
+          const matchingRoomTypes = [];
+          for (let i = 0; i < roomTypes.length; i++) {
+            const roomTypeName = TranslationUtils.getTranslatedName(language, roomTypes[i]);
+            if (roomTypeName != null && roomTypeName.toUpperCase().indexOf(searchTerms) >= 0) {
+              matchingRoomTypes.push(i);
+            }
+          }
+
           for (let i = 0; i < buildings.length; i++) {
-            // Search the rooms in the building and add them to results
-            for (let j = 0; j < buildings[i].rooms.length; j++) {
-              const room = buildings[i].rooms[j];
-              if (room.name.toUpperCase().indexOf(searchTerms) >= 0) {
+            const building: Building = buildings[i];
+
+            for (let j = 0; j < building.rooms.length; j++) {
+              const room = building.rooms[j];
+              const roomName: string = `${building.code} ${room.name.toUpperCase()}`;
+              const roomAltName: ?string = TranslationUtils.getTranslatedVariant(language, 'alt_name', room);
+
+              if (!room.type) {
+                room.type = building.default_room_type;
+              }
+
+              if (matchingRoomTypes.indexOf(room.type) >= 0
+                  || roomName.toUpperCase().indexOf(searchTerms) >= 0
+                  || (roomAltName != null && roomAltName.toUpperCase().indexOf(searchTerms) >= 0)) {
                 const description = TranslationUtils.getTranslatedName(language, roomTypes[room.type]) || '';
-                const title = TranslationUtils.getTranslatedName(language, buildings[i]) || '';
+                const title = TranslationUtils.getTranslatedName(language, building) || '';
                 const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomTypes[room.type]);
+
+                const matchedTerms = [roomName.toUpperCase(), description.toUpperCase()];
+                if (roomAltName != null) {
+                  matchedTerms.push(roomAltName.toUpperCase());
+                }
 
                 results.push({
                   description: description,
                   icon: icon || {name: 'search', class: 'material'},
-                  matchedTerms: [room.name.toUpperCase()],
-                  title: title + ' > ' + room.name,
+                  matchedTerms: matchedTerms,
+                  title: `${title} > ${room.name}`,
                 });
               }
             }
