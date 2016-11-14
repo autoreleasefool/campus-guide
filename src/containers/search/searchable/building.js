@@ -85,6 +85,7 @@ function _getBuildingResults(language: Language,
       if (matchedTerms.length > 0) {
         results.push({
           description: name,
+          data: buildings[i],
           icon: {
             name: 'store',
             class: 'material',
@@ -151,6 +152,7 @@ function _getRoomResults(language: Language,
 
                 results.push({
                   description: description,
+                  data: building,
                   icon: icon || {name: 'search', class: 'material'},
                   matchedTerms: matchedTerms,
                   title: `${title} > ${room.name}`,

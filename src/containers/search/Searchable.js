@@ -33,6 +33,7 @@ import type {
 /** Defines the information provided by a search result. */
 export type SearchResult = {
   description: string,            // Description of the result
+  data: any,                      // Additional data for displaying the result if selected
   icon: PlatformIcon,             // Icon describing the result type
   matchedTerms: Array < string >, // Terms that should be used to narrow the result further
   title: string,                  // Title of the result

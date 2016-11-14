@@ -31,13 +31,18 @@ import {
   Platform,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
 // Redux imports
 import {connect} from 'react-redux';
-// import {
-// } from 'actions';
+import {
+  setHeaderTitle,
+  switchFindView,
+  switchTab,
+  viewBuilding,
+} from 'actions';
 
 // Admob imports
 import {
@@ -52,12 +57,14 @@ import type {
 
 // Type definition for component props
 type Props = {
-  filter: ?string,    // Search terms
-  language: Language, // The current language, selected by the user
+  filter: ?string,                                        // Search terms
+  language: Language,                                     // The current language, selected by the user
+  onResultSelect: (sectionID: string, data: any) => void, // Callback for when result is selected
 };
 
 // Type definition for component state
 type State = {
+  adLoaded: boolean,                  // Indicates if the ad successfully loaded
   anyResults: boolean,                // False if no search results were returned
   searchResults: ListView.DataSource, // List of search results
 };
@@ -92,6 +99,7 @@ class Search extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
+      adLoaded: true,
       anyResults: false,
       searchResults: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
@@ -134,6 +142,10 @@ class Search extends React.Component {
     } else {
       console.log(err);
     }
+
+    this.setState({
+      adLoaded: false,
+    });
   }
 
   /**
@@ -164,13 +176,19 @@ class Search extends React.Component {
     }
   }
 
+
+  _onResultSelect(result: Searchable.SearchResult, sectionID: string) {
+    this.props.onResultSelect(sectionID, result.data);
+  }
+
   /**
    * Renders a search result based on its source.
    *
-   * @param {SearchResult} result the result and its source to render
+   * @param {SearchResult} result    the result and its source to render
+   * @param {string}       sectionID id of the section
    * @returns {?ReactElement<any>} a view describing the result, or null
    */
-  _renderResult(result: Searchable.SearchResult): ?ReactElement < any > {
+  _renderResult(result: Searchable.SearchResult, sectionID: string): ?ReactElement < any > {
     // Construct the icon view for the result
     const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, result);
     let iconView: any = null;
@@ -196,13 +214,15 @@ class Search extends React.Component {
     }
 
     return (
-      <View style={[_styles.result, {}]}>
-        {iconView}
-        <View style={_styles.text}>
-          <Text style={_styles.title}>{result.title}</Text>
-          <Text style={_styles.body}>{result.description}</Text>
+      <TouchableOpacity onPress={this._onResultSelect.bind(this, result, sectionID)}>
+        <View style={_styles.result}>
+          {iconView}
+          <View style={_styles.resultText}>
+            <Text style={_styles.title}>{result.title}</Text>
+            <Text style={_styles.body}>{result.description}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -250,6 +270,7 @@ class Search extends React.Component {
         <ListView
             dataSource={this.state.searchResults}
             enableEmptySections={true}
+            keyboardShouldPersistTaps={true}
             renderRow={this._renderResult.bind(this)}
             renderSectionHeader={this._renderSource.bind(this)} />
       );
@@ -257,11 +278,13 @@ class Search extends React.Component {
 
     return (
       <View style={_styles.container}>
-        <AdMobBanner
-            adUnitID={env.admobUnitIds.search}
-            bannerSize='smartBannerPortrait'
-            didFailToReceiveAdWithError={this._adError.bind(this)}
-            testDeviceID='EMULATOR' />
+        {this.state.adLoaded ?
+          <AdMobBanner
+              adUnitID={env.admobUnitIds.search}
+              bannerSize='smartBannerPortrait'
+              didFailToReceiveAdWithError={this._adError.bind(this)}
+              testDeviceID='EMULATOR' />
+          : null}
         {results}
       </View>
     );
@@ -271,14 +294,16 @@ class Search extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Constants.Colors.secondaryBackground,
   },
   result: {
     alignItems: 'center',
     flexDirection: 'row',
+    backgroundColor: Constants.Colors.primaryBackground,
+  },
+  resultText: {
     marginBottom: Constants.Sizes.Margins.Regular,
     marginTop: Constants.Sizes.Margins.Regular,
-  },
-  text: {
     flexDirection: 'column',
   },
   title: {
@@ -315,8 +340,28 @@ const select = (store) => {
 };
 
 // Map dispatch to props
-// const actions = (dispatch) => {
-//   return {};
-// };
+const actions = (dispatch) => {
+  return {
+    onResultSelect: (sectionID: string, data: any) => {
+      switch (sectionID) {
+        case 'Buildings':
+        case 'Bâtiments': {
+          const name = {
+            name_en: TranslationUtils.getTranslatedName('en', data) || '',
+            name_fr: TranslationUtils.getTranslatedName('fr', data) || '',
+          };
 
-export default connect(select)(Search);
+          dispatch(setHeaderTitle(name, 'find'));
+          dispatch(viewBuilding(data));
+          dispatch(switchFindView(Constants.Views.Find.Building));
+          dispatch(switchTab('find'));
+          break;
+        }
+        default:
+          throw new Error(`Unrecognized search result type: ${sectionID}`);
+      }
+    },
+  };
+};
+
+export default connect(select, actions)(Search);
