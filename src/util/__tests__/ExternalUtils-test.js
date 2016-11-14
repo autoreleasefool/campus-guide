@@ -54,7 +54,6 @@ const Clipboard = {
 const Linking = {
   canOpenURL: jest.fn((url) => {
 
-    console.log(`URL: ${url}`);
     if (url === exceptionURL) {
       return Promise.reject('This error is being thrown for testing purposes.');
     } else {

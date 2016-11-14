@@ -70,7 +70,7 @@ type State = {
 import Header from 'Header';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import {loadTranslations, unloadTranslations, getTranslations, getTranslatedName} from 'TranslationUtils';
 
 // Default opacity for tap when setting is not a boolean
 const DEFAULT_OPACITY: number = 0.4;
@@ -107,11 +107,10 @@ class Settings extends React.Component {
    */
   componentDidMount(): void {
     Configuration.init()
-        .then(() => TranslationUtils.loadTranslations('en'))
-        .then(() => TranslationUtils.loadTranslations('fr'))
+        .then(() => loadTranslations('en'))
+        .then(() => loadTranslations('fr'))
         .then(() => Configuration.getConfig('/settings.json'))
         .then((configSettings: Object) => {
-          console.log(JSON.stringify(configSettings));
           this._settings = configSettings;
           for (const section in this._settings) {
             if (this._settings.hasOwnProperty(section)) {
@@ -124,7 +123,6 @@ class Settings extends React.Component {
             }
           }
 
-          console.log(JSON.stringify(this._settingsCache));
           this.setState({
             dataSource: this.state.dataSource.cloneWithRowsAndSections(this._settings),
           });
@@ -145,7 +143,7 @@ class Settings extends React.Component {
    * Unloads the unused language.
    */
   componentWillUnmount(): void {
-    TranslationUtils.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
+    unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
   }
 
   /** Set of settings to display. */
@@ -182,48 +180,48 @@ class Settings extends React.Component {
    * @returns {any} the value of the setting corresponding to {key}, or null.
    */
   _getSetting(key: string): any {
-    if (key === 'pref_lang') {
-      return (this.props.language === 'en')
+    switch (key) {
+      case 'pref_lang':
+        return (this.props.language === 'en')
           ? 'English'
           : 'Français';
-    } else if (key === 'pref_wheel') {
-      return this.props.prefersWheelchair;
-    } else if (key === 'pref_semester') {
-      return TranslationUtils.getTranslatedName(this.props.language, this.props.semesters[this.props.currentSemester]);
-    } else if (key === 'pref_search_all_always') {
-      return this.props.alwaysSearchAll;
-    } else if (key === 'pref_time_format') {
-      return this.props.timeFormat;
+      case 'pref_wheel':
+        return this.props.prefersWheelchair;
+      case 'pref_semester':
+        return getTranslatedName(this.props.language, this.props.semesters[this.props.currentSemester]);
+      case 'pref_search_all_always':
+        return this.props.alwaysSearchAll;
+      case 'pref_time_format':
+        return this.props.timeFormat;
+      default:
+        return null;
     }
-
-    return null;
   }
 
   /**
    * Updates the setting for the row pressed.
    *
-   * @param {string} type type of setting
-   * @param {string} key  identifier for the setting pressed.
+   * @param {Object} setting setting that was pressed
    */
-  _onPressRow(type: string, key: string): void {
-    if (type === 'boolean') {
+  _onPressRow(setting: Object): void {
+    if (setting.type === 'boolean') {
       // Ignore boolean settings, they can only be manipulated by switch
       return;
     }
 
-    if (key === 'pref_lang') {
+    if (setting.key === 'pref_lang') {
       this.props.updateConfiguration({language: this.props.language === 'en' ? 'fr' : 'en'});
-    } else if (key === 'pref_wheel') {
+    } else if (setting.key === 'pref_wheel') {
       this.props.updateConfiguration({prefersWheelchair: !this.props.prefersWheelchair});
-    } else if (key === 'pref_semester') {
+    } else if (setting.key === 'pref_semester') {
       let nextSemester = this.props.currentSemester + 1;
       if (nextSemester >= this.props.semesters.length) {
         nextSemester = 0;
       }
       this.props.updateConfiguration({currentSemester: nextSemester});
-    } else if (key === 'pref_search_all_always') {
+    } else if (setting.key === 'pref_search_all_always') {
       this.props.updateConfiguration({alwaysSearchAll: !this.props.alwaysSearchAll});
-    } else if (key === 'pref_time_format') {
+    } else if (setting.key === 'pref_time_format') {
       this.props.updateConfiguration({preferredTimeFormat: this.props.timeFormat === '12h' ? '24h' : '12h'});
     }
 
@@ -238,7 +236,7 @@ class Settings extends React.Component {
    */
   _renderRow(setting: Object): ReactElement < any > {
     let content = null;
-    if (setting.type === 'multi') {
+    if (setting.type === 'multi' || setting.type === 'text') {
       content = (
         <View style={_styles.settingContent}>
           <Text style={_styles.settingValue}>{this._getSetting(setting.key)}</Text>
@@ -249,7 +247,7 @@ class Settings extends React.Component {
         <View style={_styles.settingContent}>
           <Switch
               value={this._getSetting(setting.key)}
-              onValueChange={() => this._onPressRow('', setting.key)} />
+              onValueChange={() => this._onPressRow(setting)} />
         </View>
       );
     }
@@ -258,9 +256,9 @@ class Settings extends React.Component {
       <View style={_styles.settingContainer}>
         <TouchableOpacity
             activeOpacity={setting.type === 'boolean' ? 1 : DEFAULT_OPACITY}
-            onPress={this._onPressRow.bind(this, setting.type, setting.key)}>
+            onPress={this._onPressRow.bind(this, setting)}>
           <View style={_styles.setting}>
-            <Text style={_styles.settingText}>{TranslationUtils.getTranslatedName(this.props.language, setting)}</Text>
+            <Text style={_styles.settingText}>{getTranslatedName(this.props.language, setting)}</Text>
             {content}
           </View>
         </TouchableOpacity>
@@ -294,6 +292,21 @@ class Settings extends React.Component {
   }
 
   /**
+   * Renders a separator line between rows.
+   *
+   * @param {any} sectionID section id
+   * @param {any} rowID     row id
+   * @returns {ReactElement<any>} a separator for the list of settings
+   */
+  _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
+    return (
+      <View
+          key={`${sectionID},${rowID}`}
+          style={_styles.separator} />
+    );
+  }
+
+  /**
    * Displays a list of settings.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render
@@ -311,7 +324,8 @@ class Settings extends React.Component {
         <ListView
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
-            renderSectionHeader={this._renderSectionHeader.bind(this)} />
+            renderSectionHeader={this._renderSectionHeader.bind(this)}
+            renderSeparator={this._renderSeparator.bind(this)} />
       </View>
     );
   }
@@ -345,6 +359,12 @@ const _styles = StyleSheet.create({
     marginLeft: Constants.Sizes.Margins.Expanded,
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.darkTransparentBackground,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
   },
   settingValue: {
     color: Constants.Colors.primaryBlackText,
