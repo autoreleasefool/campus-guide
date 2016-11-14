@@ -57,12 +57,8 @@ type Props = {
   view: number,                             // The current view
 };
 
-// Views in the Discover tab
-export const Views = {
-  Home: 0,  // Home discover view where user can see elements of university they can explore
-  Links: 1, // Displays a list of useful links to the user
-  Bus: 2,   // Displays information about the buses in the city
-};
+// Imports
+import * as Constants from 'Constants';
 
 // Screen imports
 import Buses from './Buses';
@@ -98,8 +94,8 @@ class Discover extends React.Component {
       this.refs.Navigator.push({id: nextProps.view});
     } else if (nextProps.appTab === 'discover'
         && nextProps.backCount != this.props.backCount
-        && !(nextProps.view === Views.Links && this.props.linksCanNavigate)
-        && !(nextProps.view === Views.Bus && this.props.busesCanNavigate)) {
+        && !(nextProps.view === Constants.Views.Discover.Links && this.props.linksCanNavigate)
+        && !(nextProps.view === Constants.Views.Discover.Bus && this.props.busesCanNavigate)) {
       this.refs.Navigator.pop();
     }
   }
@@ -131,15 +127,15 @@ class Discover extends React.Component {
    */
   _renderScene(route: Route): ReactElement < any > {
     switch (route.id) {
-      case Views.Home:
+      case Constants.Views.Discover.Home:
         return (
           <Home />
         );
-      case Views.Links:
+      case Constants.Views.Discover.Links:
         return (
           <Links />
         );
-      case Views.Bus:
+      case Constants.Views.Discover.Bus:
         return (
           <Buses />
         );
@@ -160,7 +156,7 @@ class Discover extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: Views.Home}}
+          initialRoute={{id: Constants.Views.Discover.Home}}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
           style={_styles.container} />
@@ -191,7 +187,7 @@ const actions = (dispatch) => {
   return {
     onNavigation: (view: number) => {
       switch (view) {
-        case Views.Home:
+        case Constants.Views.Discover.Home:
           dispatch(setShowBack(false, 'discover'));
           dispatch(setShowSearch(false, 'discover'));
           dispatch(setHeaderTitle(null, 'discover'));

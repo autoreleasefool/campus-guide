@@ -56,12 +56,8 @@ type Props = {
   view: number,                             // The current view
 };
 
-// Views in the Find tab
-export const Views = {
-  Home: 0,          // Home find view where user can select a building
-  Building: 1,      // Building details, where user can see details of a single building
-  StartingPoint: 2, // User can select their starting point for directions
-};
+// Imports
+import * as Constants from 'Constants';
 
 // Screen imports
 import Building from './Building';
@@ -127,15 +123,15 @@ class Find extends React.Component {
    */
   _renderScene(route: Route): ReactElement < any > {
     switch (route.id) {
-      case Views.Home:
+      case Constants.Views.Find.Home:
         return (
           <Home />
         );
-      case Views.Building:
+      case Constants.Views.Find.Building:
         return (
           <Building />
         );
-      case Views.StartingPoint:
+      case Constants.Views.Find.StartingPoint:
         return (
           <View style={_styles.container}>
             <Text>{'StartingPoint'}</Text>
@@ -153,7 +149,7 @@ class Find extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: Views.Home}}
+          initialRoute={{id: Constants.Views.Find.Home}}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
           style={_styles.container} />
@@ -181,7 +177,7 @@ const select = (store) => {
 const actions = (dispatch) => {
   return {
     onBackNavigation: (view: number) => {
-      if (view === Views.Home) {
+      if (view === Constants.Views.Find.Home) {
         dispatch(setShowBack(false, 'find'));
         dispatch(setHeaderTitle(null, 'find'));
       } else {

@@ -53,10 +53,6 @@ import Header from 'Header';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 
-import {
-  Views,
-} from './Find';
-
 // Number of columns to display in building grid
 const BUILDING_COLUMNS: number = 3;
 
@@ -133,7 +129,7 @@ const actions = (dispatch) => {
     onBuildingSelect: (building: Building, buildingName: Name | TranslatedName) => {
       dispatch(setHeaderTitle(buildingName, 'find'));
       dispatch(viewBuilding(building));
-      dispatch(switchFindView(Views.Building));
+      dispatch(switchFindView(Constants.Views.Find.Building));
     },
   };
 };

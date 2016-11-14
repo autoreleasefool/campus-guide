@@ -132,6 +132,24 @@ const socialMediaPlatforms = [
   'tumblr',
 ];
 
+/**
+ * Set of views to navigate through within FIND tab
+ */
+const Find = {
+  Home: 0,          // Home find view where user can select a building
+  Building: 1,      // Building details, where user can see details of a single building
+  StartingPoint: 2, // User can select their starting point for directions
+};
+
+/**
+ * Set of views to navigate through within DISCOVER tab
+ */
+const Discover = {
+  Home: 0,  // Home discover view where user can see elements of university they can explore
+  Links: 1, // Displays a list of useful links to the user
+  Bus: 2,   // Displays information about the buses in the city
+};
+
 module.exports = {
 
   /**
@@ -177,4 +195,11 @@ module.exports = {
    */
   SocialMediaPlatforms: socialMediaPlatforms,
 
+  /**
+   * Views for navigation
+   */
+  Views: {
+    Find,
+    Discover,
+  },
 };

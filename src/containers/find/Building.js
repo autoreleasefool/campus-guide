@@ -53,10 +53,6 @@ import RoomGrid from 'RoomGrid';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 
-import {
-  Views,
-} from './Find';
-
 class BuildingComponent extends React.Component {
 
   /**
@@ -172,7 +168,7 @@ const actions = (dispatch) => {
   return {
     onDestinationSelected: (code: string, room: ?string) => {
       dispatch(navigateTo(code, room));
-      dispatch(switchFindView(Views.StartingPoint));
+      dispatch(switchFindView(Constants.Views.Find.StartingPoint));
     },
   };
 };

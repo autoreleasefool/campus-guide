@@ -50,10 +50,6 @@ import Menu from 'Menu';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 
-import {
-  Views,
-} from './Discover';
-
 class DiscoverHome extends React.Component {
 
   /**
@@ -123,16 +119,16 @@ const select = (store) => {
 const actions = (dispatch) => {
   return {
     onSectionSelected: (section: string) => {
-      let view: number = Views.Home;
+      let view: number = Constants.Views.Discover.Home;
       let title: ?string = null;
 
       switch (section) {
         case 'use':
-          view = Views.Links;
+          view = Constants.Views.Discover.Links;
           title = 'useful_links';
           break;
         case 'bus':
-          view = Views.Bus;
+          view = Constants.Views.Discover.Bus;
           title = 'bus_company';
           break;
         case 'stu':
