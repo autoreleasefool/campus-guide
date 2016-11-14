@@ -38,7 +38,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  WebView,
 } from 'react-native';
 
 // Redux imports
@@ -72,8 +71,6 @@ type State = {
   listModalDataSource: ListView.DataSource, // List of data to display in modal
   listModalTitle: string,                   // Title of the list view modal
   listModalVisible: boolean,                // Indicates if the list modal should be visible
-  url: string,                              // URL to visit if WebView modal is visible
-  webViewModalVisible: boolean,             // Indicates if the web rendering modal should be visible
 };
 
 // Imports
@@ -121,8 +118,6 @@ class Settings extends React.Component {
       }),
       listModalTitle: '',
       listModalVisible: false,
-      url: '',
-      webViewModalVisible: false,
     };
   }
 
@@ -203,8 +198,6 @@ class Settings extends React.Component {
     this.setState({
       listModalDataSource: this.state.listModalDataSource.cloneWithRowsAndSections({}),
       listModalVisible: false,
-      url: '',
-      webViewModalVisible: false,
     });
   }
 
@@ -364,22 +357,6 @@ class Settings extends React.Component {
   }
 
   /**
-   * Renders content for the webview modal.
-   *
-   * @returns {ReactElement<any>} a webview with the set URL or HTML loaded
-   */
-  _renderWebViewModal(): ReactElement < any > {
-    let source = null;
-    if (this.state.webViewModalVisible) {
-      source = {uri: this.state.url};
-    }
-
-    return (
-      <WebView source={source} />
-    );
-  }
-
-  /**
    * Displays a single row, representing a setting which can be changed.
    *
    * @param {Object} setting defines the setting contents to render
@@ -473,14 +450,6 @@ class Settings extends React.Component {
             visible={this.state.listModalVisible}
             onRequestClose={this._closeModal.bind(this)}>
           {this._renderListModal()}
-        </Modal>
-
-        <Modal
-            animationType={'slide'}
-            transparent={false}
-            visible={this.state.webViewModalVisible}
-            onRequestClose={this._closeModal.bind(this)}>
-          {this._renderWebViewModal()}
         </Modal>
 
         <View style={_styles.headerContainer}>
