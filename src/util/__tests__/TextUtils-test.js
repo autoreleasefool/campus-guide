@@ -35,6 +35,8 @@ const exampleShortTelephone = 'tel:123';
 const exampleShortFormattedTelephone = '123';
 // An example valid email to open.
 const exampleEmail = 'mailto:google@google.com';
+// An example valid long email to open.
+const exampleLongEmail = 'mailto:google@google.com?subject=Test';
 // An example valid formatted email to display.
 const exampleFormattedEmail = 'google@google.com';
 // An example of an invalid URL.
@@ -105,6 +107,7 @@ describe('TextUtils-test', () => {
     expect(TextUtils.formatLink(exampleTelephone)).toBe(exampleFormattedTelephone);
     expect(TextUtils.formatLink(exampleShortTelephone)).toBe(exampleShortFormattedTelephone);
     expect(TextUtils.formatLink(exampleEmail)).toBe(exampleFormattedEmail);
+    expect(TextUtils.formatLink(exampleLongEmail)).toBe(exampleFormattedEmail);
     expect(TextUtils.formatLink(invalidURL)).toBe(invalidURL);
     expect(TextUtils.formatLink('')).toBe('');
     expect(TextUtils.formatLink(null)).toBe('');
