@@ -49,7 +49,12 @@ export function formatLink(link: ?string): string {
       return link.substring(4);
     }
   } else if (link.indexOf('mailto:') === 0) {
-    return link.substring(7);
+    const questionMark = link.indexOf('?');
+    if (questionMark >= 0) {
+      return link.substring(7, questionMark);
+    } else {
+      return link.substring(7);
+    }
   } else {
     return link;
   }
