@@ -65,6 +65,7 @@ type Props = {
   appTab: Tab,                                                    // The current tab the app is showing
   backCount: number,                                              // Number of times user has requested back navigation
   canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
+  filter: ?string,                                                // Keywords to filter links by
   language: Language,                                             // The current language, selected by the user
   links: Array < LinkSection >,                                   // The sections in the view
   onSectionsLoaded: (links: Array < LinkSection >) => void,       // Sets the sections in the view
@@ -358,6 +359,9 @@ class Links extends React.Component {
     const language: Language = this.props.language;
     const Translations: Object = TranslationUtils.getTranslations(language);
 
+    // Search terms to filter links by
+    const filter = this.props.filter ? this.props.filter.toUpperCase() : null;
+
     return (
       <View>
         <Header
@@ -368,6 +372,11 @@ class Links extends React.Component {
               || ExternalUtils.getDefaultLink();
           const translatedName: string = TranslationUtils.getTranslatedName(language, link)
               || translatedLink;
+
+          // Compare name to search terms and do not render if they don't match
+          if (filter != null && translatedName.toUpperCase().indexOf(filter) < 0) {
+            return null;
+          }
 
           return (
             <View key={translatedLink}>
@@ -583,6 +592,7 @@ const select = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
+    filter: store.search.searchTerms,
     language: store.config.language,
     links: store.discover.links,
   };
