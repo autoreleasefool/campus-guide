@@ -76,8 +76,11 @@ type State = {
 // Imports
 import DeviceInfo from 'react-native-device-info';
 import Header from 'Header';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
+import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
@@ -234,10 +237,11 @@ class Settings extends React.Component {
   /**
    * Updates the setting for the row pressed.
    *
-   * @param {Object} setting setting that was pressed
+   * @param {Object} setting   setting that was pressed
+   * @param {Object} tappedRow indicates if the row was tapped, or another area
    */
-  _onPressRow(setting: Object): void {
-    if (setting.type === 'boolean') {
+  _onPressRow(setting: Object, tappedRow: boolean): void {
+    if (setting.type === 'boolean' && tappedRow) {
       // Ignore boolean settings, they can only be manipulated by switch
       return;
     } else if (setting.type === 'link') {
@@ -375,16 +379,34 @@ class Settings extends React.Component {
         <View style={_styles.settingContent}>
           <Switch
               value={this._getSetting(setting.key)}
-              onValueChange={() => this._onPressRow(setting)} />
+              onValueChange={() => this._onPressRow(setting, false)} />
         </View>
       );
+    } else if (setting.type === 'link') {
+      const icon = DisplayUtils.getPlatformIcon(Platform.OS, setting);
+      if (icon != null) {
+        content = (
+          <View style={_styles.settingContent}>
+            {icon.class === 'ionicon' ?
+              <Ionicons
+                  color={Constants.Colors.primaryBlackIcon}
+                  name={icon.name}
+                  size={Constants.Sizes.Icons.Medium} />
+              :
+              <MaterialIcons
+                  color={Constants.Colors.primaryBlackIcon}
+                  name={icon.name}
+                  size={Constants.Sizes.Icons.Medium} />}
+          </View>
+        );
+      }
     }
 
     return (
       <View style={_styles.settingContainer}>
         <TouchableOpacity
             activeOpacity={setting.type === 'boolean' ? 1 : DEFAULT_OPACITY}
-            onPress={this._onPressRow.bind(this, setting)}>
+            onPress={this._onPressRow.bind(this, setting, true)}>
           <View style={_styles.setting}>
             <Text style={_styles.settingText}>{TranslationUtils.getTranslatedName(this.props.language, setting)}</Text>
             {content}
