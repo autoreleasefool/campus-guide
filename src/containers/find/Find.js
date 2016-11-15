@@ -86,9 +86,11 @@ class Find extends React.Component {
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.view != this.props.view) {
       const currentRoutes = this.refs.Navigator.getCurrentRoutes();
-      if (currentRoutes != null && currentRoutes.length > 0
-          && nextProps.view === currentRoutes[currentRoutes.length - 1].id) {
-        return;
+      for (let i = 0; i < currentRoutes.length; i++) {
+        if (nextProps.view === currentRoutes[i].id) {
+          this.refs.Navigator.popToRoute(currentRoutes[i]);
+          return;
+        }
       }
       this.refs.Navigator.push({id: nextProps.view});
     } else if (nextProps.appTab === 'find' && nextProps.backCount != this.props.backCount) {
