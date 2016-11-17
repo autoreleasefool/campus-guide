@@ -25,9 +25,6 @@
 .*/node_modules/jest-runtime/build/__tests__/.*
 .*/node_modules/react-static-container/.*
 
-# Ignore old files during rewrite
-<PROJECT_ROOT>/old/.*
-
 [include]
 
 [libs]

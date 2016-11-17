@@ -33,8 +33,7 @@ rm -r ./android/app/src/main/java/com/
 
 # Link react-native dependencies
 react-native link react-native-vector-icons
-# react-native link react-native-maps
-react-native link react-native-orientation
+react-native link react-native-maps
 react-native link react-native-device-info
 react-native link react-native-fs
 react-native link react-native-admob
