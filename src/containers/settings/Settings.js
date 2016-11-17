@@ -387,13 +387,12 @@ class Settings extends React.Component {
       if (icon != null) {
         content = (
           <View style={_styles.settingContent}>
-            {icon.class === 'ionicon' ?
-              <Ionicons
+            {icon.class === 'ionicon'
+              ? <Ionicons
                   color={Constants.Colors.primaryBlackIcon}
                   name={icon.name}
                   size={Constants.Sizes.Icons.Medium} />
-              :
-              <MaterialIcons
+              : <MaterialIcons
                   color={Constants.Colors.primaryBlackIcon}
                   name={icon.name}
                   size={Constants.Sizes.Icons.Medium} />}

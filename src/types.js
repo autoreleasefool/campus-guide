@@ -321,7 +321,7 @@ export type Facility =
 /** Describes configuration state. */
 export type ConfigurationOptions = {
   alwaysSearchAll?: boolean,        // Always search the entire app, never within a view
-  busInfo: ?BusInfo,                // Information about the city buses
+  busInfo?: ?BusInfo,               // Information about the city buses
   currentSemester?: number,         // Current semester for editing, selected by the user
   firstTime?: boolean,              // Indicates if it's the user's first time in the app
   language?: ?Language,             // User's preferred language
