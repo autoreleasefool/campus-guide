@@ -481,7 +481,14 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    updateConfiguration: (university: Object) => dispatch(updateConfiguration({semesters: university.semesters})),
+    updateConfiguration: (university: Object) => {
+      const semesters = university.semesters;
+      const busInfo = university.busInfo;
+      dispatch(updateConfiguration({
+        semesters,
+        busInfo,
+      }));
+    },
     updateFailed: () => dispatch(updateProgress({showUpdateProgress: false, showRetry: true})),
     onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => {
       dispatch(updateProgress({

@@ -27,8 +27,12 @@
 // React imports
 import React from 'react';
 import {
+  Alert,
+  Clipboard,
+  Linking,
   Navigator,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -43,6 +47,7 @@ import {
 
 // Type imports
 import type {
+  BusInfo,
   Campus,
   Language,
   Name,
@@ -55,6 +60,7 @@ import type {
 type Props = {
   appTab: Tab,                                                    // The current tab the app is showing
   backCount: number,                                              // Number of times user has requested back navigation
+  busInfo: ?BusInfo,                                              // Information about the city buses
   campus: ?Campus,                                                // The current selected bus campus to display info for
   canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
   language: Language,                                             // The current language, selected by the user
@@ -71,8 +77,11 @@ type State = {
 // Imports
 import BusCampusMap from 'BusCampusMap';
 import FourSquare from 'FourSquareGrid';
+import Header from 'Header';
 import * as Constants from 'Constants';
-import {getTranslatedName} from 'TranslationUtils';
+import * as ExternalUtils from 'ExternalUtils';
+import * as TextUtils from 'TextUtils';
+import * as TranslationUtils from 'TranslationUtils';
 
 // Constant for navigation - show the campus selection screen
 const MENU: number = 0;
@@ -164,14 +173,34 @@ class Buses extends React.Component {
       this.props.setHeaderTitle('bus_company');
     } else {
       const title = {
-        name_en: getTranslatedName('en', this.props.campus) || '',
-        name_fr: getTranslatedName('fr', this.props.campus) || '',
+        name_en: TranslationUtils.getTranslatedName('en', this.props.campus) || '',
+        name_fr: TranslationUtils.getTranslatedName('fr', this.props.campus) || '',
       };
       this.props.setHeaderTitle(title);
     }
 
     this.props.canNavigateBack(currentRoutes.length > 1);
     this.props.showSearch(currentRoutes.length > 1);
+  }
+
+  /**
+   * Opens the bus company website.
+   *
+   * @param {Object} Translations translations in the current language of certain text.
+   */
+  _openLink(Translations: Object): void {
+    const link = this.props.busInfo
+        ? TranslationUtils.getTranslatedVariant(this.props.language, 'link', this.props.busInfo)
+        : ExternalUtils.getDefaultLink();
+
+    ExternalUtils.openLink(
+        link,
+        Translations,
+        Linking,
+        Alert,
+        Clipboard,
+        TextUtils
+    );
   }
 
   /**
@@ -198,7 +227,7 @@ class Buses extends React.Component {
       );
     }
 
-    const campusId = getTranslatedName('en', campus);
+    const campusId = TranslationUtils.getTranslatedName('en', campus);
     if (campusId == null) {
       // TODO: return generic error view?
       return (
@@ -214,6 +243,28 @@ class Buses extends React.Component {
     );
   }
 
+  _renderGrid(): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+
+    return (
+      <View style={_styles.container}>
+        <FourSquare
+            language={this.props.language}
+            squares={this.state.campuses}
+            style={_styles.container}
+            onSelect={this._onCampusSelected.bind(this)} />
+        <TouchableOpacity onPress={() => this._openLink(Translations || {})}>
+          <Header
+              backgroundColor={Constants.Colors.primaryBackground}
+              icon={{name: 'md-open', class: 'ionicon'}}
+              subtitleIcon={{name: 'chevron-right', class: 'material'}}
+              title={Translations.bus_company} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   /**
    * Renders a view according to the current route of the navigator.
    *
@@ -223,12 +274,7 @@ class Buses extends React.Component {
   _renderScene(route: Route): ReactElement < any > {
     switch (route.id) {
       case MENU:
-        return (
-          <FourSquare
-              language={this.props.language}
-              squares={this.state.campuses}
-              onSelect={this._onCampusSelected.bind(this)} />
-        );
+        return this._renderGrid();
       case CAMPUS:
         return this._renderCampus(this.props.campus);
       default:
@@ -269,6 +315,7 @@ const select = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
+    busInfo: store.config.busInfo,
     campus: store.discover.campus,
     language: store.config.language,
   };

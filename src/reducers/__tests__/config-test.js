@@ -29,6 +29,7 @@ import reducer from '../config';
 // Expected initial state
 const initialState = {
   alwaysSearchAll: false,
+  busInfo: null,
   currentSemester: 0,
   firstTime: false,
   language: null,
@@ -46,6 +47,7 @@ const configurationUpdate = {
 // Expected state when configuration updated
 const updatedState = {
   alwaysSearchAll: true,
+  busInfo: {name: 'Buses', link: 'http://example.com'},
   currentSemester: 0,
   firstTime: false,
   language: 'en',

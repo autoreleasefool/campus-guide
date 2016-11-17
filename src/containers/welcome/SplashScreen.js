@@ -236,7 +236,14 @@ const select = (store) => {
 const actions = (dispatch) => {
   return {
     onLanguageSelect: (language: Language) => dispatch(updateConfiguration({language, firstTime: true})),
-    updateConfiguration: (university: Object) => dispatch(updateConfiguration({semesters: university.semesters})),
+    updateConfiguration: (university: Object) => {
+      const semesters = university.semesters;
+      const busInfo = university.busInfo;
+      dispatch(updateConfiguration({
+        semesters,
+        busInfo,
+      }));
+    },
     updatePreferences: (preferences: Array < any >) => {
 
       /* eslint-disable no-magic-numbers */
