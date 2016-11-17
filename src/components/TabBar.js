@@ -141,14 +141,18 @@ class TabBar extends React.Component {
             iconView = null;
           } else {
             iconView = (icon.class === 'ionicons')
-                ? <Ionicons
-                    color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
-                    name={icon.name}
-                    size={Constants.Sizes.Icons.Large} />
-                : <MaterialIcons
-                    color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
-                    name={icon.name}
-                    size={Constants.Sizes.Icons.Large} />;
+                ? (
+                  <Ionicons
+                      color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
+                      name={icon.name}
+                      size={Constants.Sizes.Icons.Large} />
+                )
+                : (
+                  <MaterialIcons
+                      color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
+                      name={icon.name}
+                      size={Constants.Sizes.Icons.Large} />
+                );
           }
 
           return (

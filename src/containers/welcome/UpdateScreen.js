@@ -336,23 +336,23 @@ class UpdateScreen extends React.Component {
     const currentDownload: ?ReactElement < any > = (this.props.currentDownload == null)
       ? null
       : (
-      <Text style={_styles.progressText}>
-        {(String:any).format(CoreTranslations[language].file_is_updating, this.props.currentDownload)}
-      </Text>
+        <Text style={_styles.progressText}>
+          {(String:any).format(CoreTranslations[language].file_is_updating, this.props.currentDownload)}
+        </Text>
       );
 
     const filesDownloaded = (this.props.filesDownloaded == null)
       ? null
       : (
-      <View>
-        {this.props.filesDownloaded.map((filename, index) => (
-          <Text
-              key={index}
-              style={_styles.progressText}>
-            {(String:any).format(CoreTranslations[language].file_has_been_updated, filename)}
-          </Text>
-        ))}
-      </View>
+        <View>
+          {this.props.filesDownloaded.map((filename, index) => (
+            <Text
+                key={index}
+                style={_styles.progressText}>
+              {(String:any).format(CoreTranslations[language].file_has_been_updated, filename)}
+            </Text>
+          ))}
+        </View>
       );
 
     return (
@@ -402,10 +402,10 @@ class UpdateScreen extends React.Component {
                 styleAttr='Horizontal' />
           )
           : (
-          <ProgressBar
-              progress={this._getProgress()}
-              progressTintColor={foregroundColor}
-              style={_styles.progress} />
+            <ProgressBar
+                progress={this._getProgress()}
+                progressTintColor={foregroundColor}
+                style={_styles.progress} />
           );
 
       return (

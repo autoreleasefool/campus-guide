@@ -247,16 +247,20 @@ export default class RoomGrid extends React.Component {
     let icon: ?ReactElement < any > = null;
     if (room.icon != null) {
       icon = room.icon.class === 'ionicon'
-          ? <Ionicon
-              color={Constants.Colors.primaryWhiteText}
-              name={room.icon.name}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.roomIcon} />
-          : <MaterialIcons
-              color={Constants.Colors.primaryWhiteText}
-              name={room.icon.name}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.roomIcon} />;
+          ? (
+            <Ionicon
+                color={Constants.Colors.primaryWhiteText}
+                name={room.icon.name}
+                size={Constants.Sizes.Icons.Medium}
+                style={_styles.roomIcon} />
+          )
+          : (
+            <MaterialIcons
+                color={Constants.Colors.primaryWhiteText}
+                name={room.icon.name}
+                size={Constants.Sizes.Icons.Medium}
+                style={_styles.roomIcon} />
+          );
     }
 
     return (
