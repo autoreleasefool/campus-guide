@@ -41,6 +41,7 @@ const initialState = {
 // Test configuration update
 const configurationUpdate = {
   alwaysSearchAll: true,
+  busInfo: {name: 'Buses', link: 'http://example.com'},
   language: 'en',
 };
 
