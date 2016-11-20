@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-11-6
- * @file building.js
+ * @file buildings.js
  * @description Describes how buildings in the app should be searched.
  *
  * @flow
