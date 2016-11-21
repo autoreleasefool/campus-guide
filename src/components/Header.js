@@ -56,7 +56,7 @@ export default class Header extends React.Component {
     title: string,                    // Title for the header
     icon?: ?Icon,                     // Large icon to represent the section
     iconCallback?: VoidFunction,      // Callback function for icon on press
-    subtitle?: string,                // Subtitle text
+    subtitle?: ?string,               // Subtitle text
     subtitleIcon?: ?Icon,             // Small icon for the subtitle
     subtitleCallback?: VoidFunction,  // Callback function for subtitle on press
   };
@@ -237,15 +237,17 @@ const _styles = StyleSheet.create({
   },
   subtitle: {
     flexDirection: 'row',
-    marginRight: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Regular,
   },
   subtitleIcon: {
     marginBottom: Constants.Sizes.Margins.Regular,
-    marginRight: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Regular,
     marginTop: Constants.Sizes.Margins.Regular,
   },
   subtitleText: {
+    alignSelf: 'center',
     fontSize: Constants.Sizes.Text.Caption,
+    marginRight: Constants.Sizes.Margins.Regular,
   },
   title: {
     marginLeft: Constants.Sizes.Margins.Expanded,

@@ -175,8 +175,8 @@ class AppHeader extends React.Component {
    */
   render(): ReactElement < any > {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
-    const backArrowIcon: string = platformModifier + '-arrow-back';
-    const searchIcon: string = platformModifier + '-search';
+    const backArrowIcon: string = `${platformModifier}-arrow-back`;
+    const searchIcon: string = `${platformModifier}-search`;
 
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
