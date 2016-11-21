@@ -50,7 +50,8 @@ import Promise from 'promise';
 function _getSources(): Array < Object > {
   const sources: Array < Object > = [];
 
-  sources.push(require('./searchable/building'));
+  sources.push(require('./searchable/buildings'));
+  sources.push(require('./searchable/links'));
 
   return sources;
 }
