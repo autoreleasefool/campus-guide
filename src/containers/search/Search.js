@@ -138,13 +138,13 @@ class Search extends React.Component {
   }
 
   /** Set of complete, unaltered search results */
-  _searchResults: Object;
+  _searchResults: Object = {};
 
   /** Set of search result categories with their top results. */
-  _filteredResults: Object;
+  _filteredResults: Object = {};
 
   /** Set of specific search results to be displayed. */
-  _singleResults: Array < Searchable.SearchResult >;
+  _singleResults: Array < Searchable.SearchResult > = [];
 
   /** Set of icons to display for each search result. */
   _searchIcons: Object;
@@ -208,9 +208,15 @@ class Search extends React.Component {
         && searchTerms.indexOf(this.props.filter) >= 0) {
       this._searchResults = Searchable.narrowResults(searchTerms, this._searchResults);
       this._filteredResults = this._filterTopResults(this._searchResults);
+
+      if (this.state.singleResultTitle.length > 0) {
+        this._singleResults = this._searchResults[this.state.singleResultTitle];
+      }
+
       this.setState({
         anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
         filteredResults: this.state.filteredResults.cloneWithRowsAndSections(this._filteredResults),
+        singleResults: this.state.singleResults.cloneWithRows(this._singleResults),
       });
     } else {
       Searchable.getResults(this.props.language, searchTerms)
@@ -218,9 +224,15 @@ class Search extends React.Component {
             this._searchResults = results.results;
             this._searchIcons = results.icons;
             this._filteredResults = this._filterTopResults(this._searchResults);
+
+            if (this.state.singleResultTitle.length > 0) {
+              this._singleResults = this._searchResults[this.state.singleResultTitle];
+            }
+
             this.setState({
               anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
               filteredResults: this.state.filteredResults.cloneWithRowsAndSections(this._filteredResults),
+              singleResults: this.state.singleResults.cloneWithRows(this._singleResults),
             });
           })
           .catch((err: any) => console.log('Could not get search results.', err));
@@ -331,7 +343,7 @@ class Search extends React.Component {
       let subtitle = null;
       let subtitleIcon = null;
       if (this._searchResults[sectionName].length > 2) {
-        subtitle = Translations.more;
+        subtitle = `${this._searchResults[sectionName].length} ${Translations.more}`;
         subtitleIcon = {name: 'chevron-right', class: 'material'};
       }
 
