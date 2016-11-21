@@ -237,6 +237,7 @@ const _styles = StyleSheet.create({
   },
   subtitle: {
     flexDirection: 'row',
+    marginRight: Constants.Sizes.Margins.Expanded,
   },
   subtitleIcon: {
     marginBottom: Constants.Sizes.Margins.Regular,
