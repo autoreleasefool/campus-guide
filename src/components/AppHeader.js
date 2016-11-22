@@ -58,6 +58,7 @@ import type {
 // Type definition for component props.
 type Props = {
   appTitle: Name | TranslatedName,  // Title for the header
+  filter: ?string,                  // The current search terms
   language: Language,               // The user's currently selected language
   onBack: () => void,               // Tells the app to navigate one screen backwards
   onSearch: (st: ?string) => void,  // Updates the user's search terms
@@ -165,6 +166,9 @@ class AppHeader extends React.Component {
    * @param {?string} text params to search for.
    */
   _onSearch(text: ?string): void {
+    if (text === this.props.filter) {
+      return;
+    }
     this.props.onSearch(text);
   }
 
@@ -227,6 +231,7 @@ class AppHeader extends React.Component {
               placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
               style={_styles.searchText}
+              value={this.props.filter}
               onChangeText={this._onSearch.bind(this)} />
         </View>
         <TouchableOpacity
@@ -305,6 +310,7 @@ const _styles = StyleSheet.create({
 const select = (store) => {
   return {
     appTitle: store.header.title,
+    filter: store.search.searchTerms,
     language: store.config.language,
     shouldShowBack: store.header.shouldShowBack,
     shouldShowSearch: store.header.shouldShowSearch,

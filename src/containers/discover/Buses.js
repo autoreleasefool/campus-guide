@@ -40,6 +40,7 @@ import {
 import {connect} from 'react-redux';
 import {
   canNavigateBack,
+  search,
   setHeaderTitle,
   setShowSearch,
   showBusCampus,
@@ -54,6 +55,7 @@ import type {
   Route,
   Tab,
   TranslatedName,
+  VoidFunction,
 } from 'types';
 
 // Type definition for component props.
@@ -63,8 +65,10 @@ type Props = {
   busInfo: ?BusInfo,                                              // Information about the city buses
   campus: ?Campus,                                                // The current selected bus campus to display info for
   canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
+  filter: ?string,                                                // The current filter for bus routes
   language: Language,                                             // The current language, selected by the user
   onCampusSelected: (campus: ?Campus) => void,                    // Displays details about a bus campus
+  resetFilter: VoidFunction,                                      // Clears the current search terms
   setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
   showSearch: (show: boolean) => void,                            // Shows or hides the search button
 }
@@ -239,7 +243,9 @@ class Buses extends React.Component {
       <BusCampusMap
           backgroundColor={campus.background}
           campusId={campusId}
-          language={this.props.language} />
+          filter={this.props.filter}
+          language={this.props.language}
+          resetFilter={this.props.resetFilter} />
     );
   }
 
@@ -317,6 +323,7 @@ const select = (store) => {
     backCount: store.navigation.backNavigations,
     busInfo: store.config.busInfo,
     campus: store.discover.campus,
+    filter: store.search.searchTerms,
     language: store.config.language,
   };
 };
@@ -326,6 +333,7 @@ const actions = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(canNavigateBack('buses', can)),
     onCampusSelected: (campus: ?Campus) => dispatch(showBusCampus(campus)),
+    resetFilter: () => dispatch(search(null)),
     setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
     showSearch: (show: boolean) => dispatch(setShowSearch(show, 'discover')),
   };

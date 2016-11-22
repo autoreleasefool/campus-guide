@@ -48,10 +48,9 @@ import type {
 // Type definition for component props.
 type Props = {
   campus: TransitCampus,        // Information about the campus with transit service
+  filter: ?string,              // Filter stops and times
   language: Language,           // The current language, selected by the user
   onSelect: (stop: any) => any, // Callback for when a stop is selected
-  stopFilter: ?string,          // Filter stops
-  timeFilter: ?string,          // Filter times
 };
 
 // Type definition for component state.
@@ -118,7 +117,7 @@ export default class BusStops extends React.Component {
   componentDidMount(): void {
     if (!this.state.loaded) {
       Configuration.init()
-          .then(() => this._onStopSearch(this.props.stopFilter))
+          .then(() => this._onStopSearch(this.props.filter))
           .catch((err: any) => console.error('Configuration could not be initialized for stop details.', err));
     }
   }
@@ -132,11 +131,11 @@ export default class BusStops extends React.Component {
     const routes = this.refs.Navigator.getCurrentRoutes();
     if (routes.length > 0) {
       if (routes[routes.length - 1].id === STOPS
-          && (nextProps.stopFilter != this.props.stopFilter || nextProps.language != this.props.language)) {
-        this._onStopSearch(nextProps.stopFilter);
+          && (nextProps.filter != this.props.filter || nextProps.language != this.props.language)) {
+        this._onStopSearch(nextProps.filter);
       } else if (routes[routes.length - 1].id === TIMES
-          && (nextProps.timeFilter != this.props.timeFilter || nextProps.language != this.props.language)) {
-        this._onTimeSearch(null, nextProps.timeFilter);
+          && (nextProps.filter != this.props.filter || nextProps.language != this.props.language)) {
+        this._onTimeSearch(null, nextProps.filter);
       }
     }
   }
@@ -165,7 +164,7 @@ export default class BusStops extends React.Component {
    */
   _pressRow(stop: TransitStop): void {
     this.props.onSelect(stop);
-    this._onTimeSearch(stop, this.props.timeFilter);
+    this._onTimeSearch(stop, null);
     this.refs.Navigator.push({id: TIMES});
   }
 

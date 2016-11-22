@@ -43,13 +43,16 @@ import type {
   TransitCampus,
   TransitInfo,
   TransitStop,
+  VoidFunction,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  backgroundColor: string,  // Background color for the view
-  campusId: string,         // Identifier for the bus campus info to display
-  language: Language,       // The current language, selected by the user
+  backgroundColor: string,    // Background color for the view
+  campusId: string,           // Identifier for the bus campus info to display
+  filter: ?string,            // The current filter for bus routes
+  language: Language,         // The current language, selected by the user
+  resetFilter: VoidFunction,  // Should reset the search filter
 };
 
 // Type definition for component state.
@@ -155,6 +158,8 @@ export default class CampusMap extends React.Component {
         region: null,
       });
     } else {
+      this.props.resetFilter();
+
       // Show stop name and code
       this.refs[this._getMarkerReference(stop)].showCallout();
 
@@ -248,10 +253,9 @@ export default class CampusMap extends React.Component {
         </TouchableOpacity>
         <BusStops
             campus={campus}
+            filter={this.props.filter}
             language={this.props.language}
-            stopFilter={null}
             style={stopStyle}
-            timeFilter={null}
             onSelect={this._stopSelected.bind(this)} />
       </View>
     );
