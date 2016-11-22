@@ -30,6 +30,7 @@ import React from 'react';
 import {
   Platform,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -41,6 +42,7 @@ import {switchTab} from 'actions';
 // Types
 import type {
   Icon,
+  Language,
   Tab,
   TabSet,
 } from 'types';
@@ -50,6 +52,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
+import * as TranslationUtils from 'TranslationUtils';
 
 // Icons for tab items
 const tabIcons: TabSet = {
@@ -116,6 +119,7 @@ class TabBar extends React.Component {
    */
   props: {
     activeTab: number,              // Current active tab
+    language: Language,             // The user's currently selected language
     switchTab: (tab: Tab) => void,  // Switches the current tab
     tabs: Array < any >,            // Array of tabs to render
   }
@@ -127,14 +131,17 @@ class TabBar extends React.Component {
    */
   _switchTab(tab: number): void {
     this.props.switchTab(Constants.Tabs[tab]);
-    // this.props.goToPage(tab);
   }
 
   render(): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+
     return (
       <View style={_styles.tabContainer}>
         {this.props.tabs.map((tab, i) => {
           const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, tabIcons[Constants.Tabs[i]]);
+          const color = this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey;
           let iconView: ?ReactElement < any >;
 
           if (icon == null) {
@@ -143,15 +150,15 @@ class TabBar extends React.Component {
             iconView = (icon.class === 'ionicons')
                 ? (
                   <Ionicons
-                      color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
+                      color={color}
                       name={icon.name}
-                      size={Constants.Sizes.Icons.Large} />
+                      size={Constants.Sizes.Icons.Tab} />
                 )
                 : (
                   <MaterialIcons
-                      color={this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey}
+                      color={color}
                       name={icon.name}
-                      size={Constants.Sizes.Icons.Large} />
+                      size={Constants.Sizes.Icons.Tab} />
                 );
           }
 
@@ -162,6 +169,7 @@ class TabBar extends React.Component {
                 style={_styles.tab}
                 onPress={this._switchTab.bind(this, i)}>
               {iconView}
+              <Text style={[_styles.caption, {color: color}]}>{Translations[Constants.Tabs[i]]}</Text>
             </TouchableOpacity>
           );
         })}
@@ -173,7 +181,7 @@ class TabBar extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   tabContainer: {
-    height: 45,
+    // height: 50,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: 'rgba(0, 0, 0, 0.25)',
@@ -183,8 +191,21 @@ const _styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 2,
+    marginBottom: 2,
+  },
+  caption: {
+    fontSize: Constants.Sizes.Text.Caption,
+    marginTop: 2,
   },
 });
+
+// Map state to props
+const select = (store) => {
+  return {
+    language: store.config.language,
+  };
+};
 
 // Map dispatch to props
 const actions = (dispatch) => {
@@ -193,4 +214,4 @@ const actions = (dispatch) => {
   };
 };
 
-export default connect(null, actions)(TabBar);
+export default connect(select, actions)(TabBar);

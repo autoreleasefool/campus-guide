@@ -68,6 +68,7 @@ const iconSizes = {
   Small: 18,
   Medium: 24,
   Large: 30,
+  Tab: 26,
 };
 
 /**
