@@ -45,8 +45,8 @@ module.exports = {
     type: 'SET_DISCOVER_LINKS',
     links,
   }),
-  showBusCampus: (campus: ?Campus): Action => ({
-    type: 'SHOW_BUSES',
+  showTransitCampus: (campus: ?Campus): Action => ({
+    type: 'SHOW_TRANSIT_CAMPUS',
     campus,
   }),
 };

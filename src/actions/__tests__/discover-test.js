@@ -109,7 +109,7 @@ describe('discover actions', () => {
     expect(actions.setDiscoverLinks(links)).toEqual(expectedAction);
   });
 
-  it('should show a bus campus', () => {
+  it('should show a transit campus', () => {
     const campus = {
       background: 'background_color',
       image: 'image.jpg',
@@ -117,10 +117,10 @@ describe('discover actions', () => {
     };
 
     const expectedAction = {
-      type: 'SHOW_BUSES',
+      type: 'SHOW_TRANSIT_CAMPUS',
       campus,
     };
 
-    expect(actions.showBusCampus(campus)).toEqual(expectedAction);
+    expect(actions.showTransitCampus(campus)).toEqual(expectedAction);
   });
 });

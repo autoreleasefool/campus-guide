@@ -144,7 +144,7 @@ describe('discover reducer', () => {
     );
   });
 
-  it('should set the bus campus to display', () => {
+  it('should set the transit campus to display', () => {
     const campus = {
       background: 'background',
       image: 'image',
@@ -155,7 +155,7 @@ describe('discover reducer', () => {
       reducer(
         initialState,
         {
-          type: 'SHOW_BUSES',
+          type: 'SHOW_TRANSIT_CAMPUS',
           campus,
         }
       )

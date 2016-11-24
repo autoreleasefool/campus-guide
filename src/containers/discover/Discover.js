@@ -51,7 +51,7 @@ import type {
 type Props = {
   appTab: Tab,                              // The current tab the app is showing
   backCount: number,                        // Number of times the user has requested back navigation
-  busesCanNavigate: boolean,                // Indicates if the bus subview can navigate backwards
+  transitCanNavigate: boolean,              // Indicates if the transit subview can navigate backwards
   linksCanNavigate: boolean,                // Indicates if the link subview can navigate backwards
   onNavigation: (view: number) => void,     // Callback when user navigates in the discover view
   view: number,                             // The current view
@@ -61,7 +61,7 @@ type Props = {
 import * as Constants from 'Constants';
 
 // Screen imports
-import Buses from './Buses';
+import Transit from './Transit';
 import Home from './Home';
 import Links from './Links';
 
@@ -95,7 +95,7 @@ class Discover extends React.Component {
     } else if (nextProps.appTab === 'discover'
         && nextProps.backCount != this.props.backCount
         && !(nextProps.view === Constants.Views.Discover.Links && this.props.linksCanNavigate)
-        && !(nextProps.view === Constants.Views.Discover.Bus && this.props.busesCanNavigate)) {
+        && !(nextProps.view === Constants.Views.Discover.Transit && this.props.transitCanNavigate)) {
       this.refs.Navigator.pop();
     }
   }
@@ -135,9 +135,9 @@ class Discover extends React.Component {
         return (
           <Links />
         );
-      case Constants.Views.Discover.Bus:
+      case Constants.Views.Discover.Transit:
         return (
-          <Buses />
+          <Transit />
         );
       default:
         // TODO: generic error view?
@@ -176,7 +176,7 @@ const select = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    busesCanNavigate: store.navigation.canNavigateBack.buses || false,
+    transitCanNavigate: store.navigation.canNavigateBack.transit || false,
     linksCanNavigate: store.navigation.canNavigateBack.links || false,
     view: store.discover.view,
   };

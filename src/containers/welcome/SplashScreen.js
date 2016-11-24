@@ -41,6 +41,7 @@ import {updateConfiguration} from 'actions';
 // Types
 import type {
   Language,
+  TransitInfo,
 } from 'types';
 
 // Imports
@@ -49,6 +50,7 @@ import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
 import * as Preferences from 'Preferences';
+import * as TranslationUtils from 'TranslationUtils';
 
 class SplashScreen extends React.Component {
 
@@ -56,9 +58,11 @@ class SplashScreen extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
+    language: Language,                                       // Language currently selected by user
     navigator: ReactClass < any >,                            // Parent navigator
     onLanguageSelect: (language: Language) => void,           // Changes the user's selected language
-    updateConfiguration: (university: Object) => void,        // Updates the app configuration
+    setTransit: (transitInfo: TransitInfo) => void,           // Updates the transit info object in the config
+    setUniversity: (university: Object) => void,              // Updates the university object in the config
     updatePreferences: (preferences: Array < any >) => void,  // Updates the user's preferences
   };
 
@@ -95,8 +99,13 @@ class SplashScreen extends React.Component {
     Configuration.init()
         .then(() => Configuration.getConfig('/university.json'))
         .then((university: Object) => {
-          this.props.updateConfiguration(university);
-          this.props.navigator.push({id: 'main'});
+          this.props.setUniversity(university);
+          return TranslationUtils.loadTranslations(this.props.language);
+        })
+        .then(() => Configuration.getConfig('/transit.json'))
+        .then((transitInfo: TransitInfo) => {
+          this.props.setTransit(transitInfo);
+          this.refs.Navigator.push({id: 'main'});
         })
         .catch((err: any) => {
           console.log('Assuming configuration is not available.', err);
@@ -236,14 +245,15 @@ const select = (store) => {
 const actions = (dispatch) => {
   return {
     onLanguageSelect: (language: Language) => dispatch(updateConfiguration({language, firstTime: true})),
-    updateConfiguration: (university: Object) => {
-      const semesters = university.semesters;
-      const busInfo = university.busInfo;
-      dispatch(updateConfiguration({
-        semesters,
-        busInfo,
-      }));
-    },
+    setUniversity: (university: Object) => dispatch(updateConfiguration({semesters: university.semesters})),
+    setTransit: (transitInfo: TransitInfo) => dispatch(updateConfiguration({
+      transitInfo: {
+        name_en: TranslationUtils.getEnglishName(transitInfo) || '',
+        name_fr: TranslationUtils.getFrenchName(transitInfo) || '',
+        link_en: TranslationUtils.getEnglishVariant('link', transitInfo) || '',
+        link_fr: TranslationUtils.getFrenchVariant('link', transitInfo) || '',
+      },
+    })),
     updatePreferences: (preferences: Array < any >) => {
 
       /* eslint-disable no-magic-numbers */

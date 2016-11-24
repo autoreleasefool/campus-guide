@@ -17,8 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-11-5
- * @file BusStops.js
- * @providesModule BusStops
+ * @file TransitStops.js
+ * @providesModule TransitStops
  * @description Displays details about the city transit stops.
  *
  * @flow
@@ -42,27 +42,25 @@ import type {
   Route,
   RouteDetails,
   TransitCampus,
-  TransitStop,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  campus: TransitCampus,        // Information about the campus with transit service
-  filter: ?string,              // Filter stops and times
-  language: Language,           // The current language, selected by the user
-  onSelect: (stop: any) => any, // Callback for when a stop is selected
+  campus: TransitCampus,                // Information about the campus with transit service
+  filter: ?string,                      // Filter stops and times
+  language: Language,                   // The current language, selected by the user
+  onSelect: (stopId: ?string) => void,  // Callback for when a stop is selected
+  stops: Object,                        // Set of stop ids mapped to details about the stop
 };
 
 // Type definition for component state.
 type State = {
   dataSourceStops: ListView.DataSource, // List of transit stops near the campus
   dataSourceTimes: ListView.DataSource, // List of times that buses visit the stops
-  loaded: boolean,                      // Indicates if the data has been loaded
-  selectedStop: ?TransitStop,           // Currently selected stop to display details for
+  selectedStopId: ?string,              // Currently selected stop to display details for
 };
 
 // Imports
-import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
@@ -76,10 +74,10 @@ const TIMES: number = 1;
 const MAX_UPCOMING_TIMES: number = 4;
 // Number of days in a week
 const DAYS_IN_WEEK: number = 7;
-// Time that bus schedules roll over
-const BUS_SCHEDULE_ROLLOVER: number = 4;
+// Time that transit schedules roll over
+const TRANSIT_SCHEDULE_ROLLOVER: number = 4;
 
-export default class BusStops extends React.Component {
+export default class TransitStops extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -106,8 +104,7 @@ export default class BusStops extends React.Component {
       dataSourceTimes: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
       }),
-      loaded: false,
-      selectedStop: null,
+      selectedStopId: null,
     };
   }
 
@@ -115,11 +112,7 @@ export default class BusStops extends React.Component {
    * If the stops have not beed loaded, then loads them.
    */
   componentDidMount(): void {
-    if (!this.state.loaded) {
-      Configuration.init()
-          .then(() => this._onStopSearch(this.props.filter))
-          .catch((err: any) => console.error('Configuration could not be initialized for stop details.', err));
-    }
+    this._onStopSearch(this.props.filter);
   }
 
   /**
@@ -160,11 +153,11 @@ export default class BusStops extends React.Component {
   /**
    * Displays details about a single stop.
    *
-   * @param {TransitStop} stop details about the stop to display.
+   * @param {string} stopId identifies the stop to display details about
    */
-  _pressRow(stop: TransitStop): void {
-    this.props.onSelect(stop);
-    this._onTimeSearch(stop, null);
+  _pressRow(stopId: string): void {
+    this.props.onSelect(stopId);
+    this._onTimeSearch(stopId, null);
     this.refs.Navigator.push({id: TIMES});
   }
 
@@ -184,7 +177,7 @@ export default class BusStops extends React.Component {
         + TextUtils.leftPad(now.getMinutes().toString(), 2, '0');
 
     let currentDay = ((now.getDay() - 1) % DAYS_IN_WEEK);
-    if (now.getHours() < BUS_SCHEDULE_ROLLOVER) {
+    if (now.getHours() < TRANSIT_SCHEDULE_ROLLOVER) {
       currentDay = (currentDay - 1) % DAYS_IN_WEEK;
     }
     currentDay = currentDay.toString();
@@ -221,7 +214,7 @@ export default class BusStops extends React.Component {
    * @param {Array<{number: number}>} routes list of routes to sort
    * @returns {Array<{number: number}>} the modified, sorted list
    */
-  _sortByRouteNumber(routes: Array < { number: number } & Object >): Array < { number: number } & Object > {
+  _sortByRouteNumber(routes: Array < Object >): Array < Object > {
     routes.sort((a, b) => {
       return a.number - b.number;
     });
@@ -239,53 +232,53 @@ export default class BusStops extends React.Component {
         ? null
         : searchTerms.toUpperCase();
 
-    const stops: Array < TransitStop > = [];
-    for (let i = 0; i < this.props.campus.stops.length; i++) {
-      const stop = this.props.campus.stops[i];
-      let matches: boolean = false;
+    const stops: Array < string > = [];
+    for (const stopId in this.props.campus.stops) {
+      if (this.props.campus.stops.hasOwnProperty(stopId)) {
+        const stop = this.props.stops[stopId];
+        let matches: boolean = false;
 
-      // Sort the list of routes, if they haven't been sorted yet
-      if (!stop.sorted) {
-        this._sortByRouteNumber(stop.routes);
-        stop.sorted = true;
-      }
-
-      // Compare stop details to the search terms
-      matches = adjustedSearchTerms == null
-          || stop.code.toString().indexOf(adjustedSearchTerms) >= 0
-          || stop.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
-
-      // Compare each route number to the search terms until one matches
-      for (let j = 0; j < stop.routes.length && !matches; j++) {
-        if (adjustedSearchTerms == null
-            || stop.routes[j].number.toString().indexOf(adjustedSearchTerms) >= 0
-            || stop.routes[j].sign.indexOf(adjustedSearchTerms) >= 0) {
-          matches = true;
-          break;
+        // Sort the list of routes, if they haven't been sorted yet
+        if (!stop.sorted) {
+          this._sortByRouteNumber(this.props.campus.stops[stopId]);
+          stop.sorted = true;
         }
-      }
 
-      if (matches) {
-        stop.key = stops.length;
-        stops.push(stop);
+        // Compare stop details to the search terms
+        matches = adjustedSearchTerms == null
+            || stop.code.toString().indexOf(adjustedSearchTerms) >= 0
+            || stop.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
+
+        // Compare each route number to the search terms until one matches
+        for (let j = 0; j < this.props.campus.stops[stopId].length && !matches; j++) {
+          if (adjustedSearchTerms == null
+              || this.props.campus.stops[stopId][j].number.toString().indexOf(adjustedSearchTerms) >= 0
+              || this.props.campus.stops[stopId][j].sign.indexOf(adjustedSearchTerms) >= 0) {
+            matches = true;
+            break;
+          }
+        }
+
+        if (matches) {
+          stops.push(stopId);
+        }
       }
     }
 
     this.setState({
       dataSourceStops: this.state.dataSourceStops.cloneWithRows(stops),
-      loaded: true,
     });
   }
 
   /**
    * Filters the routes for which times are displayed, based on the provided search terms.
    *
-   * @param {?TransitStop} newStop     the stop to search for routes and times, or null to use state
-   * @param {?string}      searchTerms a string of search terms, or null for an empty search (all results should return)
+   * @param {?string} newStopId   the stop id to search for routes and times, or null to use state
+   * @param {?string} searchTerms a string of search terms, or null for an empty search (all results should return)
    */
-  _onTimeSearch(newStop: ?TransitStop, searchTerms: ?string): void {
-    const stop = newStop || this.state.selectedStop;
-    if (stop == null) {
+  _onTimeSearch(newStopId: ?string, searchTerms: ?string): void {
+    const stopId = newStopId || this.state.selectedStopId;
+    if (stopId == null) {
       return;
     }
 
@@ -294,16 +287,17 @@ export default class BusStops extends React.Component {
         ? null
         : searchTerms.toUpperCase();
 
+    const stopRoutes = this.props.campus.stops[stopId];
     const routesAndTimes: Array < RouteDetails > = [];
-    if (stop.routes != null) {
-      for (let i = 0; i < stop.routes.length; i++) {
+    if (this.props.campus.stops[stopId] != null) {
+      for (let i = 0; i < stopRoutes.length; i++) {
         let matches: boolean = false;
         matches = adjustedSearchTerms == null
-            || stop.routes[i].number.toString().indexOf(adjustedSearchTerms) >= 0
-            || stop.routes[i].sign.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
+            || stopRoutes[i].number.toString().indexOf(adjustedSearchTerms) >= 0
+            || stopRoutes[i].sign.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
 
-        for (const day in stop.routes[i].days) {
-          if (!matches && adjustedSearchTerms != null && stop.routes[i].days.hasOwnProperty(day)) {
+        for (const day in stopRoutes[i].days) {
+          if (!matches && adjustedSearchTerms != null && stopRoutes[i].days.hasOwnProperty(day)) {
             for (let j = 0; j < day.length; j++) {
               const weekday = TranslationUtils.numberToDay(this.props.language, parseInt(day.charAt(j)));
 
@@ -316,9 +310,9 @@ export default class BusStops extends React.Component {
 
         if (matches) {
           routesAndTimes.push({
-            number: stop.routes[i].number,
-            sign: stop.routes[i].sign,
-            days: stop.routes[i].days,
+            number: stopRoutes[i].number,
+            sign: stopRoutes[i].sign,
+            days: stopRoutes[i].days,
           });
         }
       }
@@ -327,28 +321,28 @@ export default class BusStops extends React.Component {
     this._sortByRouteNumber(routesAndTimes);
     this.setState({
       dataSourceTimes: this.state.dataSourceTimes.cloneWithRows(routesAndTimes),
-      selectedStop: stop,
+      selectedStopId: stopId,
     });
   }
 
   /**
    * Shows partial details about a stop.
    *
-   * @param {TransitStop} stop         details about the stop to display.
-   * @param {string}      sectionIndex index of the section the stop is in.
-   * @param {number}      rowIndex     index of the row the stop is in.
-   * @returns {ReactElement<any>} the name of the stop, its unique code, and the list of routes
-   *                              that serve the stop.
+   * @param {string} stopId       details about the stop to display.
+   * @param {string} sectionIndex index of the section the stop is in.
+   * @param {number} rowIndex     index of the row the stop is in.
+   * @returns {ReactElement<any>} the name of the stop, its unique code, and the list of routes that serve the stop.
    */
-  _renderStopRow(stop: TransitStop, sectionIndex: string, rowIndex: number): ReactElement < any > {
+  _renderStopRow(stopId: string, sectionIndex: string, rowIndex: number): ReactElement < any > {
+    const stop = this.props.stops[stopId];
     return (
       <View>
-        <TouchableOpacity onPress={this._pressRow.bind(this, stop)}>
+        <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
           <View style={_styles.header}>
             <Text style={_styles.headerTitle}>{stop.name}</Text>
             <Text style={_styles.headerSubtitle}>{stop.code}</Text>
           </View>
-          {stop.routes.map((route: RouteDetails) => (
+          {this.props.campus.stops[stopId].map((route: RouteDetails) => (
             <Text
                 key={route.number}
                 style={_styles.stopRoutes}>

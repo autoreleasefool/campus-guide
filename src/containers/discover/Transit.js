@@ -17,8 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-11-2
- * @file Buses.js
- * @description Displays bus information for the city surrounding the university.
+ * @file Transit.js
+ * @description Displays transit information for the city surrounding the university.
  *
  * @flow
  */
@@ -43,12 +43,12 @@ import {
   search,
   setHeaderTitle,
   setShowSearch,
-  showBusCampus,
+  showTransitCampus,
 } from 'actions';
 
 // Type imports
 import type {
-  BusInfo,
+  TransitInfo,
   Campus,
   Language,
   Name,
@@ -62,12 +62,12 @@ import type {
 type Props = {
   appTab: Tab,                                                    // The current tab the app is showing
   backCount: number,                                              // Number of times user has requested back navigation
-  busInfo: ?BusInfo,                                              // Information about the city buses
-  campus: ?Campus,                                                // The current selected bus campus to display info for
+  transitInfo: ?TransitInfo,                                      // Information about the city transit system
+  campus: ?Campus,                                                // The current transit campus to display info for
   canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
-  filter: ?string,                                                // The current filter for bus routes
+  filter: ?string,                                                // The current filter for transit routes
   language: Language,                                             // The current language, selected by the user
-  onCampusSelected: (campus: ?Campus) => void,                    // Displays details about a bus campus
+  onCampusSelected: (campus: ?Campus) => void,                    // Displays details about a transit campus
   resetFilter: VoidFunction,                                      // Clears the current search terms
   setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
   showSearch: (show: boolean) => void,                            // Shows or hides the search button
@@ -75,11 +75,11 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  campuses: Array < Campus >,  // Array of bus campuses to display info for
+  campuses: Array < Campus >,  // Array of transit campuses to display info for
 }
 
 // Imports
-import BusCampusMap from 'BusCampusMap';
+import TransitCampusMap from 'TransitCampusMap';
 import FourSquare from 'FourSquareGrid';
 import Header from 'Header';
 import * as Constants from 'Constants';
@@ -92,7 +92,7 @@ const MENU: number = 0;
 // Constant for navigation - show a specific campus
 const CAMPUS: number = 1;
 
-class Buses extends React.Component {
+class Transit extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -117,12 +117,12 @@ class Buses extends React.Component {
   }
 
   /**
-   * If the bus campus info has not been loaded, then load it.
+   * If the transit campus info has not been loaded, then load it.
    */
   componentWillMount(): void {
     if (this.state.campuses.length === 0) {
       this.setState({
-        campuses: require('../../../assets/js/BusCampuses'),
+        campuses: require('../../../assets/js/TransitCampuses'),
       });
     }
   }
@@ -174,7 +174,7 @@ class Buses extends React.Component {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
     if (currentRoutes[currentRoutes.length - 1].id === MENU) {
       this.props.onCampusSelected(null);
-      this.props.setHeaderTitle('bus_company');
+      this.props.setHeaderTitle('transit_company');
     } else {
       const title = {
         name_en: TranslationUtils.getTranslatedName('en', this.props.campus) || '',
@@ -188,13 +188,13 @@ class Buses extends React.Component {
   }
 
   /**
-   * Opens the bus company website.
+   * Opens the transit company website.
    *
    * @param {Object} Translations translations in the current language of certain text.
    */
   _openLink(Translations: Object): void {
-    const link = this.props.busInfo
-        ? TranslationUtils.getTranslatedVariant(this.props.language, 'link', this.props.busInfo)
+    const link = this.props.transitInfo
+        ? TranslationUtils.getTranslatedVariant(this.props.language, 'link', this.props.transitInfo)
         : ExternalUtils.getDefaultLink();
 
     ExternalUtils.openLink(
@@ -217,10 +217,10 @@ class Buses extends React.Component {
   }
 
   /**
-   * Returns a map and list of stops near a bus campus.
+   * Returns a map and list of stops near a transit campus.
    *
    * @param {?Campus} campusInfo details of the campus to display
-   * @returns {ReactElement<any>} a map and list of stops/buses
+   * @returns {ReactElement<any>} a map and list of stops/routes
    */
   _renderCampus(campusInfo: ?Campus): ReactElement < any > {
     const campus = campusInfo;
@@ -240,7 +240,7 @@ class Buses extends React.Component {
     }
 
     return (
-      <BusCampusMap
+      <TransitCampusMap
           backgroundColor={campus.background}
           campusId={campusId}
           filter={this.props.filter}
@@ -265,7 +265,7 @@ class Buses extends React.Component {
               backgroundColor={Constants.Colors.primaryBackground}
               icon={{name: 'md-open', class: 'ionicon'}}
               subtitleIcon={{name: 'chevron-right', class: 'material'}}
-              title={Translations.bus_company} />
+              title={Translations.transit_company} />
         </TouchableOpacity>
       </View>
     );
@@ -321,7 +321,7 @@ const select = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    busInfo: store.config.busInfo,
+    transitInfo: store.config.transitInfo,
     campus: store.discover.campus,
     filter: store.search.searchTerms,
     language: store.config.language,
@@ -331,12 +331,12 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    canNavigateBack: (can: boolean) => dispatch(canNavigateBack('buses', can)),
-    onCampusSelected: (campus: ?Campus) => dispatch(showBusCampus(campus)),
+    canNavigateBack: (can: boolean) => dispatch(canNavigateBack('transit', can)),
+    onCampusSelected: (campus: ?Campus) => dispatch(showTransitCampus(campus)),
     resetFilter: () => dispatch(search(null)),
     setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
     showSearch: (show: boolean) => dispatch(setShowSearch(show, 'discover')),
   };
 };
 
-export default connect(select, actions)(Buses);
+export default connect(select, actions)(Transit);

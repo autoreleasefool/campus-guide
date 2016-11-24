@@ -130,7 +130,7 @@ export type LatLongDelta = {
 /** Information describing a campus of the university. */
 export type Campus = {
   background: string, // Background color for the campus
-  image: any,         // Image of the bus campus
+  image: any,         // Image of the campus
 } & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
@@ -144,43 +144,41 @@ export type Semester = {
 } & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
-//  Buses
+//  Transit
 //-----------------------------------------------------------------------------
 
-/** Information about a bus transit route. */
+/** Information about a transit route. */
 export type RouteDetails = {
   number: number, // Transit bus number
   sign: string,   // Display sign
   days: Object,   // Days that the route runs
 };
 
-/** Information about a bus transit stop. */
+/** Information about a transit stop. */
 export type TransitStop = {
   code: string,                   // Short code identifying the stop (not necessarily unique)
-  id: string,                     // ID of the stop
-  key?: number,                   // Unique key for rendering the stop
   lat: number,                    // Central latitude for the stop
   long: number,                   // Central longitude for the stop
   name: string,                   // Name of the stop
-  routes: Array < RouteDetails >, // List of bus routes that serve the stop
   sorted?: boolean,               // True to indicate the routes have been sorted, false or null otherwise
 };
 
-/** Information about a bus transit campus. */
+/** Information about a transit campus. */
 export type TransitCampus = {
   id: string,                   // Campus id
   lat: number,                  // Central latitude for the campus to display on a map
   long: number,                 // Central longitude for the campus to display on a map
-  stops: Array < TransitStop >, // List of stops near the campus
+  stops: Object,                // List of stops near the campus
 } & (Name | TranslatedName);
 
-/** Information regarding the city transit. */
-export type TransitInfo = {
+/** Details of the city transit system. */
+export type TransitSystem = {
   campuses: Array < TransitCampus >,  // List of campuses that will be served by the city transit
-} & (Name | TranslatedName) & (Link | TranslatedLink);
+  stopDetails: Object,                // Set of stops identified by their ID
+};
 
-/** Information about the city bus system. */
-export type BusInfo = (Name | TranslatedName) & (Link | TranslatedLink);
+/** High level information about the city transit system. */
+export type TransitInfo = (Name | TranslatedName) & (Link | TranslatedLink);
 
 //-----------------------------------------------------------------------------
 //  Courses
@@ -321,7 +319,7 @@ export type Facility =
 /** Describes configuration state. */
 export type ConfigurationOptions = {
   alwaysSearchAll?: boolean,        // Always search the entire app, never within a view
-  busInfo?: ?BusInfo,               // Information about the city buses
+  transitInfo?: ?TransitInfo,       // High level information about the city transit
   currentSemester?: number,         // Current semester for editing, selected by the user
   firstTime?: boolean,              // Indicates if it's the user's first time in the app
   language?: ?Language,             // User's preferred language
@@ -372,6 +370,6 @@ export type Action =
   | { type: 'DISCOVER_SECTION', section: number }
   | { type: 'SET_DISCOVER_SECTIONS', sections: Array < DiscoverSection > }
   | { type: 'SET_DISCOVER_LINKS', links: Array < LinkSection > }
-  | { type: 'SHOW_BUSES', campus: ?Campus }
+  | { type: 'SHOW_TRANSIT_CAMPUS', campus: ?Campus }
   | { type: 'SCHEDULE_VIEW', view: number }
   ;

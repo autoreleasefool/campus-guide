@@ -127,9 +127,9 @@ const actions = (dispatch) => {
           view = Constants.Views.Discover.Links;
           title = 'useful_links';
           break;
-        case 'bus':
-          view = Constants.Views.Discover.Bus;
-          title = 'bus_company';
+        case 'trn':
+          view = Constants.Views.Discover.Transit;
+          title = 'transit_company';
           break;
         case 'stu':
         case 'shu':

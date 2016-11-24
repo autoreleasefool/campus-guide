@@ -29,7 +29,7 @@ import reducer from '../config';
 // Expected initial state
 const initialState = {
   alwaysSearchAll: false,
-  busInfo: null,
+  transitInfo: null,
   currentSemester: 0,
   firstTime: false,
   language: null,
@@ -41,14 +41,14 @@ const initialState = {
 // Test configuration update
 const configurationUpdate = {
   alwaysSearchAll: true,
-  busInfo: {name: 'Buses', link: 'http://example.com'},
+  transitInfo: {name: 'Transit', link: 'http://example.com'},
   language: 'en',
 };
 
 // Expected state when configuration updated
 const updatedState = {
   alwaysSearchAll: true,
-  busInfo: {name: 'Buses', link: 'http://example.com'},
+  transitInfo: {name: 'Transit', link: 'http://example.com'},
   currentSemester: 0,
   firstTime: false,
   language: 'en',

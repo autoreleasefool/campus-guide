@@ -17,8 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-11-3
- * @file BusCampusMap.js
- * @providesModule BusCampusMap
+ * @file TransitCampusMap.js
+ * @providesModule TransitCampusMap
  * @description Displays a campus' location on a map, relative to a user's location, as well as a list of the stops
  *              near the campus.
  *
@@ -41,30 +41,30 @@ import type {
   LatLong,
   LatLongDelta,
   TransitCampus,
-  TransitInfo,
-  TransitStop,
+  TransitSystem,
   VoidFunction,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
   backgroundColor: string,    // Background color for the view
-  campusId: string,           // Identifier for the bus campus info to display
-  filter: ?string,            // The current filter for bus routes
+  campusId: string,           // Identifier for the transit campus info to display
+  filter: ?string,            // The current filter for transit routes
   language: Language,         // The current language, selected by the user
   resetFilter: VoidFunction,  // Should reset the search filter
 };
 
 // Type definition for component state.
 type State = {
-  campus: ?TransitCampus,
-  initialRegion: LatLong & LatLongDelta,
-  region: ?(LatLong & LatLongDelta),
-  routesExpanded: boolean,
+  campus: ?TransitCampus,                 // Name and routes that visit the campus
+  initialRegion: LatLong & LatLongDelta,  // Initial location to display on map
+  region: ?(LatLong & LatLongDelta),      // Current region displayed by map
+  routesExpanded: boolean,                // True to indicate the routes and times are expanded
+  stops: Object,                          // Set of stop details
 };
 
 // Imports
-import BusStops from 'BusStops';
+import TransitStops from 'TransitStops';
 import Header from 'Header';
 import MapView from 'react-native-maps';
 import * as Configuration from 'Configuration';
@@ -74,7 +74,7 @@ import * as TranslationUtils from 'TranslationUtils';
 // Default delta in latitude and longitude to show
 const DEFAULT_LOCATION_DELTA = 0.02;
 
-export default class CampusMap extends React.Component {
+export default class TransitCampusMap extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -107,6 +107,7 @@ export default class CampusMap extends React.Component {
 
       region: null,
       routesExpanded: false,
+      stops: {},
     };
   }
 
@@ -116,12 +117,14 @@ export default class CampusMap extends React.Component {
   componentDidMount(): void {
     if (this.state.campus == null) {
       Configuration.init()
-          .then(() => Configuration.getConfig('/bus.json'))
-          .then((busInfo: TransitInfo) => {
-            const campuses = busInfo.campuses;
+          .then(() => Configuration.getConfig('/transit.json'))
+          .then((transitSystem: TransitSystem) => {
+            const campuses = transitSystem.campuses;
+            const stops = transitSystem.stopDetails;
             for (let i = 0; i < campuses.length; i++) {
               if (campuses[i].id === this.props.campusId) {
                 this.setState({
+                  stops: stops,
                   campus: campuses[i],
                   initialRegion: {
                     latitude: campuses[i].lat,
@@ -133,27 +136,27 @@ export default class CampusMap extends React.Component {
               }
             }
           })
-          .catch((err: any) => console.error('Configuration could not be initialized for bus campus.', err));
+          .catch((err: any) => console.error('Configuration could not be initialized for transit campus.', err));
     }
   }
 
   /**
    * Gets a string which can be used to identify a marker on the map for a particular stop.
    *
-   * @param {TransitStop} stop bus stop to get marker reference name
+   * @param {string} stopId unique id of the transit stop
    * @returns {string} marker reference name
    */
-  _getMarkerReference(stop: TransitStop): string {
-    return `Marker${stop.id}`;
+  _getMarkerReference(stopId: string): string {
+    return `Marker${stopId}`;
   }
 
   /**
    * Invoked when the user selects a stop.
    *
-   * @param {?TransitStop} stop properties of the selected stop
+   * @param {?string} stopId id of the selected stop
    */
-  _stopSelected(stop: ?TransitStop): void {
-    if (stop == null) {
+  _stopSelected(stopId: ?string): void {
+    if (stopId == null) {
       this.setState({
         region: null,
       });
@@ -161,13 +164,13 @@ export default class CampusMap extends React.Component {
       this.props.resetFilter();
 
       // Show stop name and code
-      this.refs[this._getMarkerReference(stop)].showCallout();
+      this.refs[this._getMarkerReference(stopId)].showCallout();
 
       // Center on the stop
       this.setState({
         region: {
-          latitude: stop.lat,
-          longitude: stop.long,
+          latitude: this.state.stops[stopId].lat,
+          longitude: this.state.stops[stopId].long,
           latitudeDelta: DEFAULT_LOCATION_DELTA,
           longitudeDelta: DEFAULT_LOCATION_DELTA,
         },
@@ -186,15 +189,19 @@ export default class CampusMap extends React.Component {
   }
 
   /**
-   * Renders a map with a list of markers to denote bus stops near the campus.
+   * Renders a map with a list of markers to denote transit stops near the campus.
    *
    * @returns {ReactElement<any>} a {MapView} with a list of markers placed at the stops on the campus
    */
   _renderCampusMap(): ReactElement < any > {
-    let markers: Array < TransitStop > = [];
+    const markers: Array < string > = [];
 
     if (this.state.campus != null) {
-      markers = this.state.campus.stops;
+      for (const stopId in this.state.campus.stops) {
+        if (this.state.campus.stops.hasOwnProperty(stopId)) {
+          markers.push(stopId);
+        }
+      }
     }
 
     // TODO: onCalloutPress (below) does not currently work for iOS
@@ -204,15 +211,18 @@ export default class CampusMap extends React.Component {
       <MapView
           region={this.state.region || this.state.initialRegion}
           style={_styles.map}>
-        {markers.map((stop: TransitStop) => (
-          <MapView.Marker
-              coordinate={{latitude: stop.lat, longitude: stop.long}}
-              description={stop.code}
-              key={stop.id}
-              ref={this._getMarkerReference(stop)}
-              title={stop.name}
-              onCalloutPress={this._stopSelected.bind(this, stop)} />
-        ))}
+        {markers.map((stopId: string) => {
+          const stop = this.state.stops[stopId];
+          return (
+            <MapView.Marker
+                coordinate={{latitude: stop.lat, longitude: stop.long}}
+                description={stop.code}
+                key={stopId}
+                ref={this._getMarkerReference(stopId)}
+                title={stop.name}
+                onCalloutPress={this._stopSelected.bind(this, stopId)} />
+          );
+        })}
       </MapView>
     );
   }
@@ -225,7 +235,8 @@ export default class CampusMap extends React.Component {
    */
   _renderCampusStops(): ReactElement < any > {
     const campus = this.state.campus;
-    if (campus == null) {
+    const stops = this.state.stops;
+    if (campus == null || stops == null) {
       return (
         <View />
       );
@@ -251,10 +262,11 @@ export default class CampusMap extends React.Component {
               subtitleIcon={{name: expandIcon, class: 'material'}}
               title={Translations.routes_and_times} />
         </TouchableOpacity>
-        <BusStops
+        <TransitStops
             campus={campus}
             filter={this.props.filter}
             language={this.props.language}
+            stops={stops}
             style={stopStyle}
             onSelect={this._stopSelected.bind(this)} />
       </View>

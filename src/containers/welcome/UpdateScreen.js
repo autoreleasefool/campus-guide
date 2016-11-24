@@ -47,6 +47,7 @@ import {
 // Types
 import type {
   Language,
+  TransitInfo,
   Update,
 } from 'types';
 
@@ -70,8 +71,6 @@ class UpdateScreen extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: Update & {
-    updateConfiguration: (university: Object) => void,  // Updates the app configuration
-    updateFailed: () => void,                           // Hides the progress bar to show a retry button
     language: Language,                                 // The current language, selected by the user
     navigator: ReactClass < any >,                      // Parent navigator
     onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => void,
@@ -80,6 +79,9 @@ class UpdateScreen extends React.Component {
     onDownloadStart: (fileName: string) => void,        // Updates state when a download begins
     onUpdateStart: (totalFiles: number, totalSize: number) => void,
                                                         // Updates state when the app update begins
+    setTransit: (transitInfo: TransitInfo) => void,     // Updates the transit info object in the config
+    setUniversity: (university: Object) => void,        // Updates the university object in the config
+    updateFailed: () => void,                           // Hides the progress bar to show a retry button
   };
 
   /**
@@ -264,13 +266,15 @@ class UpdateScreen extends React.Component {
    * Return to the main screen.
    */
   _returnToMain(): void {
-    const self: UpdateScreen = this;
-    Configuration.getConfig('/university.json')
+    Configuration.init()
+        .then(() => Configuration.getConfig('/university.json'))
         .then((university: Object) => {
-          self.props.updateConfiguration(university);
+          this.props.setUniversity(university);
           return TranslationUtils.loadTranslations(this.props.language);
         })
-        .then(() => self.props.navigator.push({id: 'main'}));
+        .then(() => Configuration.getConfig('/transit.json'))
+        .then((transitInfo: TransitInfo) => this.props.setTransit(transitInfo))
+        .then(() => this.props.navigator.push({id: 'main'}));
   }
 
   /**
@@ -481,14 +485,15 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
-    updateConfiguration: (university: Object) => {
-      const semesters = university.semesters;
-      const busInfo = university.busInfo;
-      dispatch(updateConfiguration({
-        semesters,
-        busInfo,
-      }));
-    },
+    setUniversity: (university: Object) => dispatch(updateConfiguration({semesters: university.semesters})),
+    setTransit: (transitInfo: TransitInfo) => dispatch(updateConfiguration({
+      transitInfo: {
+        name_en: TranslationUtils.getEnglishName(transitInfo) || '',
+        name_fr: TranslationUtils.getFrenchName(transitInfo) || '',
+        link_en: TranslationUtils.getEnglishVariant('link', transitInfo) || '',
+        link_fr: TranslationUtils.getFrenchVariant('link', transitInfo) || '',
+      },
+    })),
     updateFailed: () => dispatch(updateProgress({showUpdateProgress: false, showRetry: true})),
     onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => {
       dispatch(updateProgress({

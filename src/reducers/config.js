@@ -33,7 +33,7 @@ import type {
 // Initial update state.
 const initialState: ConfigurationOptions = {
   alwaysSearchAll: false,
-  busInfo: null,
+  transitInfo: null,
   currentSemester: 0,
   firstTime: false,
   language: null,
