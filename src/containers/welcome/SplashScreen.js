@@ -121,7 +121,6 @@ class SplashScreen extends React.Component {
       Preferences.getSelectedLanguage(AsyncStorage),
       Preferences.getCurrentSemester(AsyncStorage),
       Preferences.getPrefersWheelchair(AsyncStorage),
-      Preferences.getAlwaysSearchAll(AsyncStorage),
       Preferences.getPreferredTimeFormat(AsyncStorage),
     ])
         .then((results: Array < any >) => {
@@ -263,8 +262,7 @@ const actions = (dispatch) => {
         language: preferences[0],
         currentSemester: preferences[1],
         prefersWheelchair: preferences[2],
-        alwaysSearchAll: preferences[3],
-        preferredTimeFormat: preferences[4],
+        preferredTimeFormat: preferences[3],
       }));
 
       /* eslint-enable no-magic-numbers */

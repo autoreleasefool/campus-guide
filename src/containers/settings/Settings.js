@@ -56,7 +56,6 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  alwaysSearchAll: boolean,                               // If the user prefers to always search the entire app
   currentSemester: number,                                // The current semester, selected by the user
   language: Language,                                     // The current language, selected by the user
   prefersWheelchair: boolean,                             // Whether the user prefers wheelchair accessible routes
@@ -223,8 +222,6 @@ class Settings extends React.Component {
         const semester = this.props.semesters[this.props.currentSemester];
         return TranslationUtils.getTranslatedName(this.props.language, semester);
       }
-      case 'pref_search_all_always':
-        return this.props.alwaysSearchAll;
       case 'pref_time_format':
         return this.props.timeFormat;
       case 'app_version':
@@ -271,8 +268,6 @@ class Settings extends React.Component {
         nextSemester = 0;
       }
       this.props.updateConfiguration({currentSemester: nextSemester});
-    } else if (setting.key === 'pref_search_all_always') {
-      this.props.updateConfiguration({alwaysSearchAll: !this.props.alwaysSearchAll});
     } else if (setting.key === 'pref_time_format') {
       this.props.updateConfiguration({preferredTimeFormat: this.props.timeFormat === '12h' ? '24h' : '12h'});
     } else if (setting.key === 'app_open_source') {
@@ -562,7 +557,6 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
-    alwaysSearchAll: store.config.alwaysSearchAll,
     currentSemester: store.config.currentSemester,
     language: store.config.language,
     prefersWheelchair: store.config.prefersWheelchair,

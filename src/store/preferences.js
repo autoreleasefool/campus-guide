@@ -43,9 +43,6 @@ export const preferenceCache = () => (next: any) => (action: Action) => {
     for (const option in action.options) {
       if (action.options.hasOwnProperty(option)) {
         switch (option) {
-          case 'alwaysSearchAll':
-            Preferences.setAlwaysSearchAll(AsyncStorage, action.options[option]);
-            break;
           case 'currentSemester':
             Preferences.setCurrentSemester(AsyncStorage, action.options[option]);
             break;

@@ -36,8 +36,6 @@ const SELECTED_LANGUAGE: string = 'app_selected_language';
 const CURRENT_SEMESTER: string = 'app_current_semester';
 // Represents if the user prefers routes with wheelchair access
 const PREFER_WHEELCHAIR: string = 'app_pref_wheel';
-// Represents if the user wants the app to always search all, without being prompted
-const ALWAYS_SEARCH_ALL: string = 'app_search_all_always';
 // Represents the user's preferred time format, 12 or 24 hour
 const PREFERRED_TIME_FORMAT: string = 'app_time_format';
 
@@ -132,31 +130,6 @@ export async function getPrefersWheelchair(AsyncStorage: any): Promise < boolean
 export function setPrefersWheelchair(AsyncStorage: any, prefer: any): void {
   if (prefer === true || prefer === false) {
     AsyncStorage.setItem(PREFER_WHEELCHAIR, prefer.toString());
-  }
-}
-
-/**
- * Indicates if the user prefers the app always search the entire app.
- *
- * @param {any} AsyncStorage instance of the React Native AsyncStorage
- * @returns {boolean} true to always search the entire app, false by default
- */
-export async function getAlwaysSearchAll(AsyncStorage: any): Promise < boolean > {
-  const value = await retrieveFromAsyncStorage(AsyncStorage, ALWAYS_SEARCH_ALL);
-  return (value === null)
-      ? false
-      : (value === 'true');
-}
-
-/**
- * Updates the user's preference for always searching the entire app.
- *
- * @param {any}     AsyncStorage instance of the React Native AsyncStorage
- * @param {boolean} always       true to always search entire app, false to search components
- */
-export function setAlwaysSearchAll(AsyncStorage: any, always: any): void {
-  if (always === true || always === false) {
-    AsyncStorage.setItem(ALWAYS_SEARCH_ALL, always.toString());
   }
 }
 
