@@ -61,6 +61,7 @@ type State = {
 };
 
 // Imports
+import {renderConnector, getConnectorWidth} from 'Connector';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
@@ -100,6 +101,7 @@ export default class TransitStops extends React.Component {
     this.state = {
       dataSourceStops: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
+        sectionHeaderHasChanged: (s1: any, s2: any) => s1 !== s2,
       }),
       dataSourceTimes: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
@@ -232,7 +234,7 @@ export default class TransitStops extends React.Component {
         ? null
         : searchTerms.toUpperCase();
 
-    const stops: Array < string > = [];
+    const stops: Object = {};
     for (const stopId in this.props.campus.stops) {
       if (this.props.campus.stops.hasOwnProperty(stopId)) {
         const stop = this.props.stops[stopId];
@@ -260,13 +262,13 @@ export default class TransitStops extends React.Component {
         }
 
         if (matches) {
-          stops.push(stopId);
+          stops[stopId] = this.props.campus.stops[stopId];
         }
       }
     }
 
     this.setState({
-      dataSourceStops: this.state.dataSourceStops.cloneWithRows(stops),
+      dataSourceStops: this.state.dataSourceStops.cloneWithRowsAndSections(stops),
     });
   }
 
@@ -326,34 +328,47 @@ export default class TransitStops extends React.Component {
   }
 
   /**
-   * Shows partial details about a stop.
+   * Shows the name and code of a stop.
    *
-   * @param {string} stopId       details about the stop to display.
-   * @param {string} sectionIndex index of the section the stop is in.
-   * @param {number} rowIndex     index of the row the stop is in.
-   * @returns {ReactElement<any>} the name of the stop, its unique code, and the list of routes that serve the stop.
+   * @param {Object} sectionData section object
+   * @param {string} stopId      id of the stop
+   * @returns {ReactElement<any>} details of the stop and its code
    */
-  _renderStopRow(stopId: string, sectionIndex: string, rowIndex: number): ReactElement < any > {
+  _renderStopHeader(sectionData: Object, stopId: string): ReactElement < any > {
     const stop = this.props.stops[stopId];
     return (
-      <View>
-        <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
-          <View style={_styles.header}>
+      <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
+        <View style={_styles.stopHeaderContainer}>
+          {renderConnector({large: true, bottomConnection: true, color: Constants.Colors.lightGrey})}
+          <View style={_styles.stopHeader}>
             <Text style={_styles.headerTitle}>{stop.name}</Text>
             <Text style={_styles.headerSubtitle}>{stop.code}</Text>
           </View>
-          {this.props.campus.stops[stopId].map((route: RouteDetails) => (
-            <Text
-                key={route.number}
-                style={_styles.stopRoutes}>
-              {`${route.number} - ${route.sign}`}
-            </Text>
-          ))}
-        </TouchableOpacity>
-        {(rowIndex < this.state.dataSourceStops.getRowCount() - 1)
-            ? <View style={_styles.divider} />
-            : null}
-      </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  /**
+   * Shows details of a route serving a stop
+   *
+   * @param {string} route  the route
+   * @param {string} stopId stop id
+   * @returns {ReactElement<any>} a route that serves the stop
+   */
+  _renderStopRow(route: RouteDetails, stopId: string): ReactElement < any > {
+    const needsBottom = route !== this.props.campus.stops[stopId][this.props.campus.stops[stopId].length - 1];
+    return (
+      <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
+        <View style={_styles.stopRowContainer}>
+          {renderConnector({topConnection: true, bottomConnection: needsBottom, color: Constants.Colors.lightGrey})}
+          <Text
+              key={route.number}
+              style={_styles.stopRoute}>
+            {`${route.number} - ${route.sign}`}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 
@@ -368,7 +383,7 @@ export default class TransitStops extends React.Component {
   _renderTimeRow(route: RouteDetails, sectionIndex: string, rowIndex: number): ReactElement < any > {
     return (
       <View>
-        <View style={_styles.header}>
+        <View style={_styles.timeHeader}>
           <Text style={_styles.headerTitle}>{route.sign}</Text>
           <Text style={_styles.headerSubtitle}>{route.number}</Text>
         </View>
@@ -393,7 +408,7 @@ export default class TransitStops extends React.Component {
             dataSource={this.state.dataSourceTimes}
             enableEmptySections={true}
             renderRow={this._renderTimeRow.bind(this)}
-            style={_styles.timeContainer} />
+            style={[_styles.container, _styles.timeContainer]} />
       );
     } else {
       return (
@@ -401,7 +416,8 @@ export default class TransitStops extends React.Component {
             dataSource={this.state.dataSourceStops}
             enableEmptySections={true}
             renderRow={this._renderStopRow.bind(this)}
-            style={_styles.stopContainer} />
+            renderSectionHeader={this._renderStopHeader.bind(this)}
+            style={[_styles.container, _styles.stopContainer]} />
       );
     }
   }
@@ -429,22 +445,36 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   stopContainer: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
   },
   timeContainer: {
-    flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
   },
-  header: {
+  stopHeaderContainer: {
+    height: 40,
+    justifyContent: 'center',
+    backgroundColor: Constants.Colors.primaryBackground,
+  },
+  stopHeader: {
+    marginLeft: getConnectorWidth() + Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Expanded,
     flexDirection: 'row',
     alignItems: 'center',
-    margin: Constants.Sizes.Margins.Regular,
+  },
+  stopRowContainer: {
+    height: 24,
+    justifyContent: 'center',
+  },
+  stopRoute: {
+    marginLeft: getConnectorWidth() + Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Regular,
+    fontSize: Constants.Sizes.Text.Body,
+    color: Constants.Colors.primaryWhiteText,
   },
   headerTitle: {
     flex: 1,
     textAlign: 'left',
-    fontSize: Constants.Sizes.Text.Title,
+    fontSize: Constants.Sizes.Text.Subtitle,
     color: Constants.Colors.primaryWhiteText,
   },
   headerSubtitle: {
@@ -452,17 +482,18 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Sizes.Text.Caption,
     color: Constants.Colors.secondaryWhiteText,
   },
-  stopRoutes: {
-    marginLeft: Constants.Sizes.Margins.Expanded * 2,
-    marginRight: Constants.Sizes.Margins.Regular,
-    marginBottom: Constants.Sizes.Margins.Regular,
-    fontSize: Constants.Sizes.Text.Caption,
-    color: Constants.Colors.primaryWhiteText,
+  timeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
   },
   stopTimes: {
-    marginLeft: Constants.Sizes.Margins.Regular,
-    marginRight: Constants.Sizes.Margins.Regular,
-    marginBottom: Constants.Sizes.Margins.Regular,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Regular,
+    marginBottom: Constants.Sizes.Margins.Expanded,
     fontStyle: 'italic',
     fontSize: Constants.Sizes.Text.Body,
     color: Constants.Colors.secondaryWhiteText,
@@ -470,8 +501,8 @@ const _styles = StyleSheet.create({
   divider: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    marginLeft: Constants.Sizes.Margins.Regular,
-    marginRight: Constants.Sizes.Margins.Regular,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
     backgroundColor: Constants.Colors.secondaryWhiteText,
   },
 });
