@@ -41,6 +41,7 @@ import type {
   Language,
   Route,
   RouteDetails,
+  TimeFormat,
   TransitCampus,
 } from 'types';
 
@@ -51,6 +52,7 @@ type Props = {
   language: Language,                   // The current language, selected by the user
   onSelect: (stopId: ?string) => void,  // Callback for when a stop is selected
   stops: Object,                        // Set of stop ids mapped to details about the stop
+  timeFormat: TimeFormat,               // Format to display times in
 };
 
 // Type definition for component state.
@@ -129,7 +131,9 @@ export default class TransitStops extends React.Component {
           && (nextProps.filter != this.props.filter || nextProps.language != this.props.language)) {
         this._onStopSearch(nextProps.filter);
       } else if (routes[routes.length - 1].id === TIMES
-          && (nextProps.filter != this.props.filter || nextProps.language != this.props.language)) {
+          && (nextProps.filter != this.props.filter
+              || nextProps.language != this.props.language
+              || nextProps.timeFormat != this.props.timeFormat)) {
         this._onTimeSearch(null, nextProps.filter);
       }
     }
@@ -192,7 +196,9 @@ export default class TransitStops extends React.Component {
             if (days[day][i].localeCompare(currentTime) < 0 || i == 0) {
               let j = 1;
               while (j < MAX_UPCOMING_TIMES && i + j < days[day].length) {
-                upcomingTimes.push(TextUtils.get24HourAdjustedTime(days[day][i + j]));
+                let time = TextUtils.get24HourAdjustedTime(days[day][i + j]);
+                time = TextUtils.convertTimeFormat(this.props.timeFormat, time);
+                upcomingTimes.push(time);
                 j += 1;
               }
               break;
@@ -204,7 +210,7 @@ export default class TransitStops extends React.Component {
     }
 
     if (upcomingTimes.length > 0) {
-      return upcomingTimes.join('   ');
+      return upcomingTimes.join('    ');
     } else {
       return Translations.no_upcoming_buses;
     }

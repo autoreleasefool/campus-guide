@@ -40,6 +40,7 @@ import type {
   Language,
   LatLong,
   LatLongDelta,
+  TimeFormat,
   TransitCampus,
   TransitSystem,
   VoidFunction,
@@ -52,6 +53,7 @@ type Props = {
   filter: ?string,            // The current filter for transit routes
   language: Language,         // The current language, selected by the user
   resetFilter: VoidFunction,  // Should reset the search filter
+  timeFormat: TimeFormat,     // Format to display times in
 };
 
 // Type definition for component state.
@@ -268,6 +270,7 @@ export default class TransitCampusMap extends React.Component {
             language={this.props.language}
             stops={stops}
             style={stopStyle}
+            timeFormat={this.props.timeFormat}
             onSelect={this._stopSelected.bind(this)} />
       </View>
     );

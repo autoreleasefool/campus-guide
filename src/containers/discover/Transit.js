@@ -48,12 +48,13 @@ import {
 
 // Type imports
 import type {
-  TransitInfo,
   Campus,
   Language,
   Name,
   Route,
   Tab,
+  TimeFormat,
+  TransitInfo,
   TranslatedName,
   VoidFunction,
 } from 'types';
@@ -71,6 +72,7 @@ type Props = {
   resetFilter: VoidFunction,                                      // Clears the current search terms
   setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
   showSearch: (show: boolean) => void,                            // Shows or hides the search button
+  timeFormat: TimeFormat,                                         // Format to display times in
 }
 
 // Type definition for component state.
@@ -245,7 +247,8 @@ class Transit extends React.Component {
           campusId={campusId}
           filter={this.props.filter}
           language={this.props.language}
-          resetFilter={this.props.resetFilter} />
+          resetFilter={this.props.resetFilter}
+          timeFormat={this.props.timeFormat} />
     );
   }
 
@@ -321,10 +324,11 @@ const select = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    transitInfo: store.config.transitInfo,
     campus: store.discover.campus,
     filter: store.search.searchTerms,
     language: store.config.language,
+    timeFormat: store.config.preferredTimeFormat,
+    transitInfo: store.config.transitInfo,
   };
 };
 
