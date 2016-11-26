@@ -36,6 +36,7 @@ import type {
 type State = {
   campus: ?Campus,                      // Selected transit campus to display info for
   links: Array < LinkSection >,         // Sections of useful links
+  linkId: ?string | number,             // Currently selected link category id
   sections: Array < DiscoverSection >,  // Sections of info about the university
   view: number,                         // Current view to display in the Discover navigator
 };
@@ -44,6 +45,7 @@ type State = {
 const initialState: State = {
   campus: null,
   links: [],
+  linkId: 0,
   sections: [],
   view: 0,
 };
@@ -71,6 +73,11 @@ function discover(state: State = initialState, action: Action): State {
       return {
         ...state,
         links: action.links,
+      };
+    case 'SHOW_LINK_CATEGORY':
+      return {
+        ...state,
+        linkId: action.linkId,
       };
     case 'SHOW_TRANSIT_CAMPUS':
       return {

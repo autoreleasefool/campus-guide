@@ -46,6 +46,7 @@ import {
   canNavigateBack,
   setDiscoverLinks,
   setHeaderTitle,
+  showLinkCategory,
   setShowSearch,
 } from 'actions';
 
@@ -68,8 +69,10 @@ type Props = {
   filter: ?string,                                                // Keywords to filter links by
   language: Language,                                             // The current language, selected by the user
   links: Array < LinkSection >,                                   // The sections in the view
+  linkId: ?string,                                                // The selected link category
   onSectionsLoaded: (links: Array < LinkSection >) => void,       // Sets the sections in the view
   setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
+  showCategory: (id: ?string) => void,                            // Shows a link category
   showSearch: (show: boolean) => void,                            // Shows or hides the search button
 }
 
@@ -122,6 +125,8 @@ class Links extends React.Component {
         && nextProps.backCount != this.props.backCount
         && currentRoutes.length > 1) {
       this.refs.Navigator.pop();
+    } else if (nextProps.linkId != this.props.linkId) {
+      this.refs.Navigator.push({id: nextProps.linkId});
     }
   }
 
@@ -228,7 +233,7 @@ class Links extends React.Component {
   _handleNavigationEvent(): void {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
 
-    if (currentRoutes.length > 1) {
+    if (currentRoutes.length > 1 && this.props.links.length > 0) {
       const section = this._getSection(currentRoutes[currentRoutes.length - 1].id);
       const title = {
         name_en: TranslationUtils.getTranslatedName('en', section) || '',
@@ -261,9 +266,9 @@ class Links extends React.Component {
   _onCategorySelected(id: string): void {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
     if (currentRoutes != null && currentRoutes.length > 1) {
-      this.refs.Navigator.push({id: currentRoutes[currentRoutes.length - 1].id + '-' + id});
+      this.props.showCategory(`${currentRoutes[currentRoutes.length - 1].id}-${id}`);
     } else {
-      this.refs.Navigator.push({id: id});
+      this.props.showCategory(id);
     }
   }
 
@@ -487,23 +492,15 @@ class Links extends React.Component {
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
   _renderScene(route: Route): ReactElement < any > {
-    if (typeof (route.id) == 'string') {
+    if (typeof (route.id) == 'string' && this.props.links.length > 0) {
       return this._renderSection(route.id);
-    }
-
-    switch (route.id) {
-      case 0:
-        return (
-          <Menu
-              language={this.props.language}
-              sections={this.props.links}
-              onSectionSelected={this._onCategorySelected.bind(this)} />
-        );
-      default:
-        // TODO: return generic error view?
-        return (
-          <View style={_styles.container} />
-        );
+    } else {
+      return (
+        <Menu
+            language={this.props.language}
+            sections={this.props.links}
+            onSectionSelected={this._onCategorySelected.bind(this)} />
+      );
     }
   }
 
@@ -516,7 +513,7 @@ class Links extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: 0}}
+          initialRoute={{id: this.props.linkId || 0}}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
           style={_styles.container} />
@@ -595,6 +592,7 @@ const select = (store) => {
     filter: store.search.searchTerms,
     language: store.config.language,
     links: store.discover.links,
+    linkId: store.discover.linkId,
   };
 };
 
@@ -604,6 +602,7 @@ const actions = (dispatch) => {
     canNavigateBack: (can: boolean) => dispatch(canNavigateBack('links', can)),
     onSectionsLoaded: (links: Array < LinkSection >) => dispatch(setDiscoverLinks(links)),
     setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
+    showCategory: (id: ?string) => dispatch(showLinkCategory(id)),
     showSearch: (show: boolean) => dispatch(setShowSearch(show, 'discover')),
   };
 };

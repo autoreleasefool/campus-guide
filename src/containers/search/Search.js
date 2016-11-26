@@ -39,7 +39,10 @@ import {
 // Redux imports
 import {connect} from 'react-redux';
 import {
+  navigateTo,
   setHeaderTitle,
+  showLinkCategory,
+  switchDiscoverView,
   switchFindView,
   switchTab,
   viewBuilding,
@@ -205,12 +208,14 @@ class Search extends React.Component {
   _updateSearch(searchTerms: ?string): void {
     if (this.props.filter != null && this.props.filter.length > 0
         && searchTerms != null && searchTerms.length > 0
-        && searchTerms.indexOf(this.props.filter) >= 0) {
+        && searchTerms.indexOf(this.props.filter) >= 0
+        && Object.keys(this._searchResults).length > 0) {
+
       this._searchResults = Searchable.narrowResults(searchTerms, this._searchResults);
       this._filteredResults = this._filterTopResults(this._searchResults);
 
       if (this.state.singleResultTitle.length > 0) {
-        this._singleResults = this._searchResults[this.state.singleResultTitle];
+        this._singleResults = this._searchResults[this.state.singleResultTitle] || [];
       }
 
       this.setState({
@@ -246,7 +251,13 @@ class Search extends React.Component {
    * @param {string}                  sectionID id of the section the result belongs to
    */
   _onResultSelect(result: Searchable.SearchResult, sectionID: string): void {
-    this.props.onResultSelect(sectionID, result.data);
+    const routes = this.refs.Navigator.getCurrentRoutes();
+    if (routes != null && routes[routes.length - 1].id === SINGLE) {
+      this.props.onResultSelect(this.state.singleResultTitle, result.data);
+    } else {
+      this.props.onResultSelect(sectionID, result.data);
+    }
+    this.refs.Navigator.pop();
   }
 
   /**
@@ -256,6 +267,9 @@ class Search extends React.Component {
    */
   _onSourceSelect(source: ?string): void {
     if (source == null) {
+      this.setState({
+        singleResultTitle: '',
+      });
       this.refs.Navigator.pop();
     } else {
       this._singleResults = this._searchResults[source];
@@ -552,6 +566,30 @@ const actions = (dispatch) => {
           dispatch(viewBuilding(data));
           dispatch(switchFindView(Constants.Views.Find.Building));
           dispatch(switchTab('find'));
+          break;
+        }
+        case 'Rooms':
+        case 'Chambres': {
+          const name = {
+            name_en: TranslationUtils.getTranslatedName('en', data.building) || '',
+            name_fr: TranslationUtils.getTranslatedName('fr', data.building) || '',
+          };
+
+          dispatch(setHeaderTitle(name, 'find'));
+          dispatch(navigateTo(data.code, data.room));
+          dispatch(switchFindView(Constants.Views.Find.StartingPoint));
+          dispatch(switchTab('find'));
+          break;
+        }
+        case 'Useful links':
+        case 'Liens utiles': {
+          dispatch(showLinkCategory(data));
+          dispatch(switchDiscoverView(Constants.Views.Discover.Links));
+          dispatch(switchTab('discover'));
+          break;
+        }
+        case 'External links':
+        case 'Liens externes': {
           break;
         }
         default:

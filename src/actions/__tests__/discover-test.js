@@ -109,6 +109,16 @@ describe('discover actions', () => {
     expect(actions.setDiscoverLinks(links)).toEqual(expectedAction);
   });
 
+  it('should show a link category', () => {
+    const linkId = 'fake_id';
+    const expectedAction = {
+      type: 'SHOW_LINK_CATEGORY',
+      linkId,
+    };
+
+    expect(actions.showLinkCategory(linkId)).toEqual(expectedAction);
+  });
+
   it('should show a transit campus', () => {
     const campus = {
       background: 'background_color',

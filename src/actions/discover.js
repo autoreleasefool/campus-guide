@@ -45,6 +45,10 @@ module.exports = {
     type: 'SET_DISCOVER_LINKS',
     links,
   }),
+  showLinkCategory: (id: ?string | number): Action => ({
+    type: 'SHOW_LINK_CATEGORY',
+    linkId: id,
+  }),
   showTransitCampus: (campus: ?Campus): Action => ({
     type: 'SHOW_TRANSIT_CAMPUS',
     campus,

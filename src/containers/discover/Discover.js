@@ -45,12 +45,14 @@ import {
 import type {
   Route,
   Tab,
+  VoidFunction,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
   appTab: Tab,                              // The current tab the app is showing
   backCount: number,                        // Number of times the user has requested back navigation
+  canNavigateBack: VoidFunction,            // Indicates back navigation is possible
   transitCanNavigate: boolean,              // Indicates if the transit subview can navigate backwards
   linksCanNavigate: boolean,                // Indicates if the link subview can navigate backwards
   onNavigation: (view: number) => void,     // Callback when user navigates in the discover view
@@ -61,9 +63,9 @@ type Props = {
 import * as Constants from 'Constants';
 
 // Screen imports
-import Transit from './Transit';
 import Home from './Home';
 import Links from './Links';
+import Transit from './Transit';
 
 class Discover extends React.Component {
 
@@ -71,6 +73,15 @@ class Discover extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: Props;
+
+  /**
+   * Determines whether the initial route can be navigated back from.
+   */
+  componentWillMount(): void {
+    if (this.props.view != Constants.Views.Discover.Home) {
+      this.props.canNavigateBack();
+    }
+  }
 
   /**
    * Adds a listener for navigation events.
@@ -85,6 +96,7 @@ class Discover extends React.Component {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
+    console.log(`Receiving props in discover: ${JSON.stringify(nextProps)}`);
     if (nextProps.view != this.props.view) {
       const currentRoutes = this.refs.Navigator.getCurrentRoutes();
       if (currentRoutes != null && currentRoutes.length > 0
@@ -153,10 +165,15 @@ class Discover extends React.Component {
    * @returns {ReactElement<any>} a Navigator instance to render
    */
   render(): ReactElement < any > {
+    const routeStack = [{id: Constants.Views.Discover.Home}];
+    if (this.props.view != Constants.Views.Discover.Home) {
+      routeStack.push({id: this.props.view});
+    }
+
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: Constants.Views.Discover.Home}}
+          initialRouteStack={routeStack}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
           style={_styles.container} />
@@ -185,6 +202,7 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
+    canNavigateBack: () => dispatch(setShowBack(true, 'discover')),
     onNavigation: (view: number) => {
       switch (view) {
         case Constants.Views.Discover.Home:

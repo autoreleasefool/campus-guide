@@ -152,7 +152,7 @@ function _getRoomResults(language: Language,
 
                 results.push({
                   description: description,
-                  data: building,
+                  data: {building: building, code: building.code, room: room.name},
                   icon: icon || {name: 'search', class: 'material'},
                   matchedTerms: matchedTerms,
                   title: `${title} > ${room.name}`,

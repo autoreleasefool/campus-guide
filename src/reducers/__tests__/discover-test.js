@@ -30,6 +30,7 @@ import reducer from '../discover';
 const initialState = {
   campus: null,
   links: [],
+  linkId: 0,
   sections: [],
   view: 0,
 };
@@ -140,6 +141,24 @@ describe('discover reducer', () => {
       {
         ...initialState,
         links,
+      }
+    );
+  });
+
+  it('should open a link category', () => {
+    const linkId = 'fake_id';
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'SHOW_LINK_CATEGORY',
+          linkId,
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        linkId,
       }
     );
   });

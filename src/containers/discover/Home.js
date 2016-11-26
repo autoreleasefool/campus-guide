@@ -36,6 +36,7 @@ import {connect} from 'react-redux';
 import {
   setDiscoverSections,
   setHeaderTitle,
+  showLinkCategory,
   switchDiscoverView,
 } from 'actions';
 
@@ -126,6 +127,7 @@ const actions = (dispatch) => {
         case 'use':
           view = Constants.Views.Discover.Links;
           title = 'useful_links';
+          dispatch(showLinkCategory(0));
           break;
         case 'trn':
           view = Constants.Views.Discover.Transit;

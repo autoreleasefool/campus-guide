@@ -49,8 +49,8 @@ import * as TranslationUtils from 'TranslationUtils';
  * @returns {Promise<Object>} promise which resolves with the results of the search, containing links
  */
 function _getResults(language: Language,
-                         searchTerms: string,
-                         linkSections: Array < LinkSection >): Promise < Object > {
+                     searchTerms: string,
+                     linkSections: Array < LinkSection >): Promise < Object > {
   return new Promise((resolve) => {
     const links: Array < SearchResult > = [];
     const categories: Array < SearchResult > = [];
@@ -88,7 +88,7 @@ function _getResults(language: Language,
           description: Translations.see_related_links,
           data: section.id,
           icon: section.icon,
-          matchedTerms: [sectionName],
+          matchedTerms: [sectionName.toUpperCase()],
           title: sectionName,
         });
 
@@ -133,6 +133,9 @@ function _getResults(language: Language,
 
       // Add subcategories to be searched
       if (section.categories) {
+        for (let j = 0; j < section.categories.length; j++) {
+          section.categories[j].id = `${section.id}-${section.categories[j].id}`;
+        }
         sectionsToSearch = sectionsToSearch.concat(section.categories);
       }
     }
