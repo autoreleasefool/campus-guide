@@ -38,6 +38,7 @@ import type {
 import Promise from 'promise';
 import * as Configuration from 'Configuration';
 import * as DisplayUtils from 'DisplayUtils';
+import * as ExternalUtils from 'ExternalUtils';
 import * as TranslationUtils from 'TranslationUtils';
 
 /**
@@ -64,9 +65,11 @@ function _getResults(language: Language,
                       iconName: string,
                       link: Object,
                       matchedSectionName: boolean) => {
+      const translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
+          || ExternalUtils.getDefaultLink();
       links.push({
         description: sectionName,
-        data: link,
+        data: {link: translatedLink, translations: Translations},
         icon: {
           name: iconName,
           class: 'ionicon',

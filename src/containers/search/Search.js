@@ -27,6 +27,9 @@
 // React imports
 import React from 'react';
 import {
+  Alert,
+  Clipboard,
+  Linking,
   ListView,
   Navigator,
   Platform,
@@ -82,8 +85,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
+import * as ExternalUtils from 'ExternalUtils';
 import * as env from 'env';
 import * as Searchable from './Searchable';
+import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
 
 // Render top filtered results
@@ -590,6 +595,7 @@ const actions = (dispatch) => {
         }
         case 'External links':
         case 'Liens externes': {
+          ExternalUtils.openLink(data.link, data.translations, Linking, Alert, Clipboard, TextUtils);
           break;
         }
         default:
