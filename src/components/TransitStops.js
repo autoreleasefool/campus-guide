@@ -345,10 +345,15 @@ export default class TransitStops extends React.Component {
     return (
       <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
         <View style={_styles.stopHeaderContainer}>
-          {renderConnector({large: true, bottomConnection: true, color: Constants.Colors.lightGrey})}
+          {renderConnector({
+            large: true,
+            bottom: true,
+            circleColor: Constants.Colors.lightGrey,
+            lineColor: Constants.Colors.transparentLighGrey,
+          })}
           <View style={_styles.stopHeader}>
-            <Text style={_styles.headerTitle}>{stop.name}</Text>
-            <Text style={_styles.headerSubtitle}>{stop.code}</Text>
+            <Text style={[_styles.headerTitle, {color: Constants.Colors.primaryBlackText}]}>{stop.name}</Text>
+            <Text style={[_styles.headerSubtitle, {color: Constants.Colors.secondaryBlackText}]}>{stop.code}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -367,7 +372,12 @@ export default class TransitStops extends React.Component {
     return (
       <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
         <View style={_styles.stopRowContainer}>
-          {renderConnector({topConnection: true, bottomConnection: needsBottom, color: Constants.Colors.lightGrey})}
+          {renderConnector({
+            top: true,
+            bottom: needsBottom,
+            circleColor: Constants.Colors.lightGrey,
+            lineColor: Constants.Colors.transparentLighGrey,
+          })}
           <Text
               key={route.number}
               style={_styles.stopRoute}>
@@ -390,8 +400,8 @@ export default class TransitStops extends React.Component {
     return (
       <View>
         <View style={_styles.timeHeader}>
-          <Text style={_styles.headerTitle}>{route.sign}</Text>
-          <Text style={_styles.headerSubtitle}>{route.number}</Text>
+          <Text style={[_styles.headerTitle, {color: Constants.Colors.primaryWhiteText}]}>{route.sign}</Text>
+          <Text style={[_styles.headerSubtitle, {color: Constants.Colors.secondaryWhiteText}]}>{route.number}</Text>
         </View>
         <Text style={_styles.stopTimes}>{this._retrieveUpcomingTimes(route.days)}</Text>
         {(rowIndex < this.state.dataSourceTimes.getRowCount() - 1)
@@ -451,7 +461,7 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   stopContainer: {
-    backgroundColor: Constants.Colors.primaryBackground,
+    backgroundColor: Constants.Colors.secondaryBackground,
   },
   timeContainer: {
     backgroundColor: Constants.Colors.secondaryBackground,
@@ -459,7 +469,7 @@ const _styles = StyleSheet.create({
   stopHeaderContainer: {
     height: 40,
     justifyContent: 'center',
-    backgroundColor: Constants.Colors.primaryBackground,
+    backgroundColor: Constants.Colors.polarGrey,
   },
   stopHeader: {
     marginLeft: getConnectorWidth() + Constants.Sizes.Margins.Regular,
@@ -481,12 +491,10 @@ const _styles = StyleSheet.create({
     flex: 1,
     textAlign: 'left',
     fontSize: Constants.Sizes.Text.Subtitle,
-    color: Constants.Colors.primaryWhiteText,
   },
   headerSubtitle: {
     textAlign: 'right',
     fontSize: Constants.Sizes.Text.Caption,
-    color: Constants.Colors.secondaryWhiteText,
   },
   timeHeader: {
     flexDirection: 'row',

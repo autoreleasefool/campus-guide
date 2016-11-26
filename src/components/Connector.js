@@ -34,10 +34,11 @@ import {
 
 // Types
 type ConnectorOptions = {
-  topConnection?: boolean,    // True to render a connection to the row above
-  bottomConnection?: boolean, // True to render a connection to the row below
-  large?: boolean,            // True to render a larger connection for a header
-  color?: string,             // Default background is white
+  top?: boolean,        // True to render a connection to the row above
+  bottom?: boolean,     // True to render a connection to the row below
+  large?: boolean,      // True to render a larger connection for a header
+  circleColor?: string, // Default background is white
+  lineColor?: string,   // Default background is transparent white
 }
 
 // Imports
@@ -51,17 +52,18 @@ import * as Constants from 'Constants';
  */
 export function renderConnector(options: ConnectorOptions): ReactElement < any > {
   const circleSize = options.large ? _styles.largeCircle : _styles.smallCircle;
-  const background = {backgroundColor: options.color ? options.color : Constants.Colors.primaryWhiteIcon};
+  const background = {backgroundColor: options.circleColor ? options.circleColor : Constants.Colors.primaryWhiteIcon};
 
   const connectorSize = options.large ? _styles.largeConnector : _styles.smallConnector;
-  const topConnector = options.topConnection ? {} : _styles.invisible;
-  const bottomConnector = options.bottomConnection ? {} : _styles.invisible;
+  const connectorColor = {backgroundColor: options.lineColor ? options.lineColor : Constants.Colors.secondaryWhiteIcon};
+  const topConnector = options.top ? {} : _styles.invisible;
+  const bottomConnector = options.bottom ? {} : _styles.invisible;
 
   return (
     <View style={_styles.container}>
       <View style={[_styles.connectorContainer, connectorSize]}>
-        <View style={[_styles.connector, _styles.top, topConnector]} />
-        <View style={[_styles.connector, _styles.bottom, bottomConnector]} />
+        <View style={[_styles.connector, _styles.top, connectorColor, topConnector]} />
+        <View style={[_styles.connector, _styles.bottom, connectorColor, bottomConnector]} />
       </View>
       <View style={[circleSize, background]} />
     </View>
@@ -104,7 +106,6 @@ const _styles = StyleSheet.create({
     borderRadius: Constants.Sizes.Margins.Regular / 2,
   },
   connector: {
-    backgroundColor: Constants.Colors.secondaryWhiteText,
     width: Constants.Sizes.Margins.Condensed / 2,
   },
   invisible: {
