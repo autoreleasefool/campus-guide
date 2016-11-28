@@ -81,7 +81,7 @@ import * as TranslationUtils from 'TranslationUtils';
 
 // Height of the navbar
 const NAVBAR_HEIGHT: number = 50;
-const HEADER_PADDING_IOS: number = 25;
+const HEADER_PADDING_IOS: number = 20;
 const ICON_SIZE: number = 50;
 
 // Width of the search input
