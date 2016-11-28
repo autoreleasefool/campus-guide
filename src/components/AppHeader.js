@@ -121,16 +121,22 @@ class AppHeader extends React.Component {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.shouldShowBack != this.props.shouldShowBack
-        || nextProps.shouldShowSearch != this.props.shouldShowSearch) {
+        || nextProps.shouldShowSearch != this.props.shouldShowSearch
+        || nextProps.tab != this.props.tab) {
       if (!(nextProps.shouldShowSearch && this.state.shouldShowSearchBar)) {
         this.refs.SearchInput.blur();
+      }
+
+      if (nextProps.tab != this.props.tab && nextProps.tab === 'search') {
+        this.refs.SearchInput.focus();
       }
 
       LayoutAnimation.easeInEaseOut();
       this.setState({
         shouldShowBack: nextProps.shouldShowBack,
-        shouldShowSearch: nextProps.shouldShowSearch,
-        shouldShowSearchBar: nextProps.shouldShowSearch && this.state.shouldShowSearchBar,
+        shouldShowSearch: nextProps.shouldShowSearch || nextProps.tab === 'search',
+        shouldShowSearchBar: (nextProps.shouldShowSearch && this.state.shouldShowSearchBar)
+            || nextProps.tab === 'search',
       });
     }
   }
@@ -230,6 +236,7 @@ class AppHeader extends React.Component {
               placeholder={Translations.search_placeholder}
               placeholderTextColor={Constants.Colors.lightGrey}
               ref='SearchInput'
+              returnKeyType={'done'}
               style={_styles.searchText}
               value={this.props.filter}
               onChangeText={this._onSearch.bind(this)} />
