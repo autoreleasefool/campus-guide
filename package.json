@@ -20,7 +20,7 @@
     "react-native-device-info": "^0.9.6",
     "react-native-fs": "^1.5.1",
     "react-native-maps": "^0.11.0",
-    "react-native-scrollable-tab-view": "^0.6.0",
+    "react-native-scrollable-tab-view": "^0.7.0",
     "react-native-simple-store": "^1.1.0",
     "react-native-vector-icons": "^3.0.0",
     "react-redux": "^4.4.5",
