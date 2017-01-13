@@ -1,9 +1,9 @@
 # Campus Guide
 
-[![Build status](https://travis-ci.org/joseph-roque/campus-guide.svg?branch=master)](https://travis-ci.org/joseph-roque/campus-guide)
-[![Dependency Status](https://david-dm.org/joseph-roque/campus-guide.svg)](https://david-dm.org/joseph-roque/campus-guide)
-[![devDependency Status](https://david-dm.org/joseph-roque/campus-guide/dev-status.svg)](https://david-dm.org/joseph-roque/campus-guide?type=dev)
-[![codecov](https://codecov.io/gh/joseph-roque/campus-guide/branch/master/graph/badge.svg)](https://codecov.io/gh/joseph-roque/campus-guide)
+[![Build status](https://travis-ci.org/josephroque/campus-guide.svg?branch=master)](https://travis-ci.org/josephroque/campus-guide)
+[![Dependency Status](https://david-dm.org/josephroque/campus-guide.svg)](https://david-dm.org/josephroque/campus-guide)
+[![devDependency Status](https://david-dm.org/josephroque/campus-guide/dev-status.svg)](https://david-dm.org/josephroque/campus-guide?type=dev)
+[![codecov](https://codecov.io/gh/josephroque/campus-guide/branch/master/graph/badge.svg)](https://codecov.io/gh/josephroque/campus-guide)
 
 
 A mobile app, developed with React Native, to help students of the University of Ottawa find their classes on campus.
@@ -16,7 +16,7 @@ While the app is in development, all of the data collected about the University 
 
 ### Setup
 
-1. Clone the repository: `git clone https://github.com/joseph-roque/campus-guide`
+1. Clone the repository: `git clone https://github.com/josephroque/campus-guide`
 2. The recommended development environment is [Nuclide](https://nuclide.io/). With this IDE, you can utilize live updates of the Flow type checker.
 3. Make your changes.
 4. Ensure the following requirements for a contribution are met when running these commands:
