@@ -21,6 +21,7 @@ ios/main.jsbundle
 
 # Update the package name of the app
 sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/build.gradle
+sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/src/main/AndroidManifest.xml
 
 # Update .flowconfig to map filenames
 sed -i '' 's/[[]options[]]/[options]\'$'\n''module.name_mapper='"'"'env'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/csv\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/js\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/json\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''/g' ./.flowconfig

@@ -15,31 +15,31 @@
   "dependencies": {
     "http-status-codes": "^1.0.6",
     "react": "^15.4.1",
-    "react-native": "^0.38.0",
+    "react-native": "^0.40.0",
     "react-native-admob": "^1.1.5",
     "react-native-device-info": "^0.9.7",
-    "react-native-fs": "^1.5.1",
-    "react-native-maps": "^0.11.0",
+    "react-native-fs": "^2.1.0-rc.1",
+    "react-native-maps": "^0.12.4",
     "react-native-scrollable-tab-view": "^0.7.0",
     "react-native-simple-store": "^1.1.0",
-    "react-native-vector-icons": "^3.0.0",
-    "react-redux": "^4.4.5",
+    "react-native-vector-icons": "^4.0.0",
+    "react-redux": "^5.0.2",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
-    "babel-jest": "^17.0.0",
+    "babel-jest": "^18.0.0",
     "babel-polyfill": "^6.16.0",
     "babel-preset-react-native": "^1.9.0",
     "empty": "^0.10.1",
     "eslint": "^3.11.1",
     "eslint-plugin-react": "^6.8.0",
     "eslint-plugin-react-native": "^2.2.0",
-    "flow-bin": "^0.33.0",
-    "jest": "^17.0.0",
-    "jest-cli": "^17.0.0",
-    "jest-react-native": "^17.1.0"
+    "flow-bin": "^0.36.0",
+    "jest": "^18.1.0",
+    "jest-cli": "^18.1.0",
+    "jest-react-native": "^18.0.0"
   },
   "jest": {
     "coverageThreshold": {
