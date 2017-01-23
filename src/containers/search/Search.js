@@ -51,11 +51,6 @@ import {
   viewBuilding,
 } from 'actions';
 
-// Admob imports
-import {
-  AdMobBanner,
-} from 'react-native-admob';
-
 // Type imports
 import type {
   Icon,
@@ -72,8 +67,7 @@ type Props = {
 
 // Type definition for component state
 type State = {
-  adLoaded: boolean,                          // Indicates if the ad successfully loaded
-  anyResults: boolean,                        // False if no search results were returned
+  anyResults: boolean,                  // False if no search results were returned
   filteredResults: ListView.DataSource, // Categories and their top results
   singleResults: ListView.DataSource,   // List of search results for a single category
   singleResultTitle: string,            // Category of search results being displayed
@@ -116,7 +110,6 @@ class Search extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      adLoaded: true,
       anyResults: false,
       filteredResults: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
@@ -156,24 +149,6 @@ class Search extends React.Component {
 
   /** Set of icons to display for each search result. */
   _searchIcons: Object;
-
-  /**
-   * Outputs an error when one occurs while loading an ad.
-   *
-   * @param {any} err the error that occurred
-   */
-  _adError(err: any) {
-    console.log('Error occurred while loading ad:');
-    if (typeof (err) === 'object') {
-      console.log(JSON.stringify(err));
-    } else {
-      console.log(err);
-    }
-
-    this.setState({
-      adLoaded: false,
-    });
-  }
 
   /**
    * Sets the transition between two views in the navigator.
@@ -488,13 +463,6 @@ class Search extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
-        {this.state.adLoaded ?
-          <AdMobBanner
-              adUnitID={env.admobUnitIds.search}
-              bannerSize='smartBannerPortrait'
-              didFailToReceiveAdWithError={this._adError.bind(this)}
-              testDeviceID='EMULATOR' />
-          : null}
         <Navigator
             configureScene={this._configureScene}
             initialRoute={{id: FILTERED}}
