@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -475,7 +475,7 @@ class Links extends React.Component {
 
     return (
       <View style={[_styles.container, {backgroundColor: categoryBackgroundColor}]}>
-        <ScrollView style={_styles.scrollview}>
+        <ScrollView style={_styles.scrollView}>
           {this._renderSectionBanner(section)}
           {this._renderSectionSocialMedia(section.social)}
           {this._renderSectionCategories(section.categories, isBackgroundDark)}
@@ -560,7 +560,7 @@ const _styles = StyleSheet.create({
   socialMediaIcon: {
     margin: Constants.Sizes.Margins.Regular,
   },
-  scrollview: {
+  scrollView: {
     flex: 1,
   },
   link: {

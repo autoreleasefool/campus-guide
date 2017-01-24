@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,7 +177,7 @@ class Settings extends React.Component {
   _keyChanged: ?string = null;
 
   /**
-   * Returns true if a setting's current value does not match its cached value, and updates the cached value if so.
+   * Returns true if the current value of a setting does not match its cached value, and updates the cached value if so.
    *
    * @param {string} key identifier for the setting to check
    * @returns {boolean} true if the value in the cache was updated.
@@ -329,7 +329,7 @@ class Settings extends React.Component {
   }
 
   /**
-   * Displays a single row, representing an item in the listview.
+   * Displays a single row, representing an item in the list view.
    *
    * @param {string} item text to be rendered
    * @returns {ReactElement<any>} views to render the setting in the list

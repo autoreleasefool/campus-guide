@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ const exampleShortTelephone = 'tel:123';
 // An example valid email to open.
 const exampleEmail = 'mailto:google@google.com';
 // An example of an invalid URL.
-const invalidURL = 'thisisnotavalidURL';
+const invalidURL = 'thisIsNotAValidURL';
 // When this URL is requested, an error is thrown.
 const exceptionURL = 'throwAnExceptionURL';
 

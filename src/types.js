@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -211,7 +211,7 @@ export type LectureFormat = {
 //  Tabs
 //-----------------------------------------------------------------------------
 
-/** Describes the tabs available in the app's initial state. */
+/** Describes the tabs available in the app initial state. */
 export type WelcomeTab =
     'splash'
   | 'update'
@@ -269,7 +269,7 @@ export type LinkSection = {
 
 /** A destination for navigation on campus. */
 export type NavigationDestination = {
-  code: string,   // Shorthand builing code
+  code: string,   // Shorthand building code
   room: ?string,  // Room number in the building
 };
 

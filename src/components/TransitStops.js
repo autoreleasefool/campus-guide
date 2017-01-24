@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -349,7 +349,7 @@ export default class TransitStops extends React.Component {
             large: true,
             bottom: true,
             circleColor: Constants.Colors.lightGrey,
-            lineColor: Constants.Colors.transparentLighGrey,
+            lineColor: Constants.Colors.transparentLightGrey,
           })}
           <View style={_styles.stopHeader}>
             <Text style={[_styles.headerTitle, {color: Constants.Colors.primaryBlackText}]}>{stop.name}</Text>
@@ -376,7 +376,7 @@ export default class TransitStops extends React.Component {
             top: true,
             bottom: needsBottom,
             circleColor: Constants.Colors.lightGrey,
-            lineColor: Constants.Colors.transparentLighGrey,
+            lineColor: Constants.Colors.transparentLightGrey,
           })}
           <Text
               key={route.number}

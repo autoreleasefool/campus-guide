@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 'use strict';
 
 /* eslint-disable no-magic-numbers */
-/* Let us define exactly where in the array a valud should be expected to be found. */
+/* Let us define exactly where in the array a value should be expected to be found. */
 
 // Require the modules used in testing
 import * as ArrayUtils from '../ArrayUtils';

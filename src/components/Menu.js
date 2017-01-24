@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ export default class Menu extends React.Component {
    *
    * @param {number} index   index of section to render
    * @param {Object} section section to render
-   * @returns {ReactElement<any>} a view with an image and title which is clickable by the user
+   * @returns {ReactElement<any>} a view with an image and title which can be clicked by the user
    */
   _getSectionView(index: number, section: Object): ReactElement < any > {
     let onPress: VoidFunction;

@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -222,7 +222,7 @@ export function isColorDark(color: string): boolean {
   const RED_BIT_SHIFT: number = 16;
   const GREEN_BIT_SHIFT: number = 8;
 
-  // Hexedemical value to extract bits pertaining to certain colors
+  // Hexadecimal value to extract bits pertaining to certain colors
   const RED_HEX: number = 0xff0000;
   const GREEN_HEX: number = 0xff00;
   const BLUE_HEX: number = 0xff;

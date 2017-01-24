@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -363,7 +363,7 @@ class Search extends React.Component {
    * Renders a view which indicates the user's search returned no results.
    *
    * @param {Object} Translations translations for the current language
-   * @returns {ReactElement<any>} a centered text view with text indicating no results were found
+   * @returns {ReactElement<any>} a centred text view with text indicating no results were found
    */
   _renderNoResults(Translations: Object): ReactElement < any > {
     const searchTerms = this.props.filter || '';
@@ -567,7 +567,7 @@ const actions = (dispatch) => {
           break;
         }
         default:
-          throw new Error(`Unrecognized search result type: ${sectionID}`);
+          throw new Error(`Search result type not recognized: ${sectionID}`);
       }
     },
   };

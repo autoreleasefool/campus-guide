@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016 Joseph Roque
+ * Copyright (C) 2016-2017 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,12 +36,12 @@ const colors = {
   polarGrey: '#F2F2F2', // rgb(242, 242, 242)
   transparentPolarGrey: 'rgba(242, 242, 242, 0.8)',
   lightGrey: '#ACA39A', // rgb(172, 164, 154)
-  transparentLighGrey: 'rgba(172, 163, 154, 0.8)',
+  transparentLightGrey: 'rgba(172, 163, 154, 0.8)',
   charcoalGrey: '#2D2D2C', // rgb(45, 45, 44)
   transparentCharcoalGrey: 'rgba(45, 45, 45, 0.8)',
 
   white: 'white',
-  transpareWhite: 'rgba(255, 255, 255, 0.7)',
+  transparentWhite: 'rgba(255, 255, 255, 0.7)',
   black: 'black',
   transparentBlack: 'rgba(0, 0, 0, 0.7)',
 
@@ -161,11 +161,11 @@ module.exports = {
     primaryBackground: colors.garnet,                     // Primary background color for the application
     secondaryBackground: colors.charcoalGrey,             // Secondary background color for the application
     primaryWhiteText: colors.white,                       // Primary color when white text is needed
-    secondaryWhiteText: colors.transpareWhite,            // Secondary color when white text is needed
+    secondaryWhiteText: colors.transparentWhite,            // Secondary color when white text is needed
     primaryBlackText: colors.black,                       // Primary color when black text is needed
     secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
     primaryWhiteIcon: colors.white,                       // Primary color when white text is needed
-    secondaryWhiteIcon: colors.transpareWhite,            // Secondary color when white text is needed
+    secondaryWhiteIcon: colors.transparentWhite,            // Secondary color when white text is needed
     primaryBlackIcon: colors.black,                       // Primary color when black text is needed
     secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black text is needed
     darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
