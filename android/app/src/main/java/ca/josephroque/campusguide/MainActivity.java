@@ -1,10 +1,6 @@
 package ca.josephroque.campusguide;
 
-import android.content.Intent;
-import android.content.res.Configuration;
-
 import com.facebook.react.ReactActivity;
-import com.airbnb.android.react.maps.MapsPackage;
 
 public class MainActivity extends ReactActivity {
 
@@ -15,13 +11,5 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "CampusGuide";
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Intent intent = new Intent("onConfigurationChanged");
-        intent.putExtra("newConfig", newConfig);
-        this.sendBroadcast(intent);
     }
 }
