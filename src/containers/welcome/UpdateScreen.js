@@ -123,7 +123,7 @@ class UpdateScreen extends React.Component {
     const self: UpdateScreen = this;
     const callbacks = {
       onUpdateStart: this._onUpdateStart.bind(this),
-      onDownloadStart: this._onDowloadStart.bind(this),
+      onDownloadStart: this._onDownloadStart.bind(this),
       onDownloadProgress: this._onDownloadProgress.bind(this),
       onDownloadComplete: this._onDownloadComplete.bind(this),
     };
@@ -316,7 +316,7 @@ class UpdateScreen extends React.Component {
    *
    * @param {Object} download details about the download
    */
-  _onDowloadStart(download: Object): void {
+  _onDownloadStart(download: Object): void {
     this.props.onDownloadStart(download.filename);
   }
 

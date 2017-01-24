@@ -266,7 +266,7 @@ async function _updateConfig(callbacks: UpdateCallbacks): Promise < void > {
         toFile: TEMP_CONFIG_DIRECTORY + configurationUpdates[i].name,
         progress: callbacks.onDownloadProgress,
         begin: (download) => onStart(configurationUpdates[i].name, download),
-      });
+      }).promise;
 
       /* eslint-enable no-loop-func */
 
