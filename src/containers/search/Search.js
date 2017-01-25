@@ -337,7 +337,7 @@ class Search extends React.Component {
       let subtitle = null;
       let subtitleIcon = null;
       if (this._searchResults[sectionName].length > 2) {
-        subtitle = `${this._searchResults[sectionName].length} ${Translations.more}`;
+        subtitle = `${this._searchResults[sectionName].length - 2} ${Translations.more}`;
         subtitleIcon = {name: 'chevron-right', class: 'material'};
       }
 
@@ -393,7 +393,7 @@ class Search extends React.Component {
         <ListView
             dataSource={this.state.filteredResults}
             enableEmptySections={true}
-            keyboardShouldPersistTaps={true}
+            keyboardShouldPersistTaps={'always'}
             renderRow={this._renderResult.bind(this)}
             renderSectionHeader={this._renderSource.bind(this)} />
       );
@@ -423,7 +423,7 @@ class Search extends React.Component {
         <ListView
             dataSource={this.state.singleResults}
             enableEmptySections={true}
-            keyboardShouldPersistTaps={true}
+            keyboardShouldPersistTaps={'always'}
             renderRow={this._renderResult.bind(this)} />
       );
     }
