@@ -80,7 +80,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
-import * as env from 'env';
 import * as Searchable from './Searchable';
 import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
