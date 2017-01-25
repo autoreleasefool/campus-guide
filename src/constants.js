@@ -31,6 +31,7 @@
 const colors = {
   garnet: '#8F001A', // rgb(143, 0, 26)
   transparentGarnet: 'rgba(143, 0, 26, 0.8)',
+  invisibleGarnet: 'rgba(143, 0, 26, 0)',
   darkGrey: '#80746C', // rgb(128, 116, 108)
   transparentDarkGrey: 'rgba(128, 116, 108, 0.8)',
   polarGrey: '#F2F2F2', // rgb(242, 242, 242)

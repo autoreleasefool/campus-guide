@@ -28,6 +28,7 @@
 import React from 'react';
 import {
   Alert,
+  Dimensions,
   NetInfo,
   Platform,
   ScrollView,
@@ -53,14 +54,19 @@ import type {
 
 // Imports
 import emptyFunction from 'empty/function';
+import LinearGradient from 'react-native-linear-gradient';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
 import * as TranslationUtils from 'TranslationUtils';
 
+// Height of te screen
+const screenHeight = Dimensions.get('window').height;
+
 // Amount of time to wait before checking for connection, to ensure connection event listener is registered
 const CONNECTION_CHECK_TIMEOUT = 250;
 
+// Progress bar API to use depending on OS
 const ProgressBar = (Platform.OS === 'android')
     ? require('ProgressBarAndroid')
     : require('ProgressViewIOS');
@@ -286,7 +292,7 @@ class UpdateScreen extends React.Component {
     const totalProgress = this.props.totalProgress;
     if (this.props.filesDownloaded != null && totalProgress != null) {
       const filesDownloaded: Array < string > = this.props.filesDownloaded.slice(0);
-      filesDownloaded.push(download.filename);
+      filesDownloaded.splice(0, 0, download.filename);
       this.props.onDownloadComplete(filesDownloaded, totalProgress, download.bytesWritten);
     } else {
       console.error(
@@ -337,34 +343,28 @@ class UpdateScreen extends React.Component {
    */
   _renderStatusMessages(): ReactElement < any > {
     const language = this.props.language;
-    const currentDownload: ?ReactElement < any > = (this.props.currentDownload == null)
-      ? null
-      : (
-        <Text style={_styles.progressText}>
-          {(String:any).format(CoreTranslations[language].file_is_updating, this.props.currentDownload)}
-        </Text>
-      );
-
     const filesDownloaded = (this.props.filesDownloaded == null)
       ? null
       : (
         <View>
           {this.props.filesDownloaded.map((filename, index) => (
-            <Text
+            <View
                 key={index}
-                style={_styles.progressText}>
-              {(String:any).format(CoreTranslations[language].file_has_been_updated, filename)}
-            </Text>
+                style={_styles.downloadingContainer}>
+              <Text style={_styles.downloadedText}>
+                {CoreTranslations[language].downloaded} <Text style={_styles.fileText}>{filename}</Text>
+              </Text>
+            </View>
           ))}
         </View>
       );
 
     return (
       <View style={_styles.container}>
-        <ScrollView contentContainerStyle={{alignItems: 'center'}}>
+        <ScrollView contentContainerStyle={_styles.scrollView}>
           {filesDownloaded}
-          {currentDownload}
         </ScrollView>
+        <View style={_styles.container} />
       </View>
     );
   }
@@ -389,8 +389,8 @@ class UpdateScreen extends React.Component {
       return (
         <View style={[_styles.buttonContainer, {backgroundColor: backgroundColor}]}>
           <TouchableOpacity onPress={this._checkConnection}>
-            <View style={_styles.textContainer}>
-              <Text style={_styles.text}>{CoreTranslations[language].retry_update}</Text>
+            <View style={_styles.retryContainer}>
+              <Text style={_styles.retryText}>{CoreTranslations[language].retry_update}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -417,9 +417,11 @@ class UpdateScreen extends React.Component {
           <View style={_styles.container}>
             <View style={_styles.container} />
             {progress}
-            <Text style={_styles.downloading}>{CoreTranslations[language].downloading}</Text>
           </View>
           {this._renderStatusMessages()}
+          <LinearGradient
+              colors={[Constants.Colors.invisibleGarnet, Constants.Colors.garnet]}
+              style={_styles.linearGradient} />
         </View>
       );
     } else {
@@ -439,14 +441,7 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  downloading: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
-    marginTop: Constants.Sizes.Margins.Expanded,
-    marginBottom: Constants.Sizes.Margins.Expanded,
-    alignSelf: 'center',
-  },
-  text: {
+  retryText: {
     marginLeft: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
     marginTop: Constants.Sizes.Margins.Regular,
@@ -454,7 +449,7 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Sizes.Text.Body,
     color: Constants.Colors.primaryWhiteText,
   },
-  textContainer: {
+  retryContainer: {
     alignSelf: 'center',
     backgroundColor: Constants.Colors.darkTransparentBackground,
   },
@@ -462,10 +457,31 @@ const _styles = StyleSheet.create({
     marginLeft: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
   },
-  progressText: {
-    alignSelf: 'center',
-    color: Constants.Colors.secondaryWhiteText,
+  downloadingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  downloadedText: {
+    color: Constants.Colors.polarGrey,
     fontSize: Constants.Sizes.Text.Caption,
+  },
+  fileText: {
+    color: Constants.Colors.lightGrey,
+  },
+  scrollView: {
+    alignItems: 'center',
+    marginTop: Constants.Sizes.Margins.Regular,
+    flex: 3,
+  },
+  linearGradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+
+    /* eslint-disable no-magic-numbers */
+    top: screenHeight / 4 * 3 - 30,
+    bottom: screenHeight / 4 - 10,
+    /* eslint-enable no-magic-numbers */
   },
 });
 

@@ -52,6 +52,9 @@ import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
 import * as Preferences from 'Preferences';
 import * as TranslationUtils from 'TranslationUtils';
 
+// Set to true to force splash screen
+const alwaysShowSplash = false;
+
 class SplashScreen extends React.Component {
 
   /**
@@ -125,7 +128,7 @@ class SplashScreen extends React.Component {
     ])
         .then((results: Array < any >) => {
           this.props.updatePreferences(results);
-          if (results[0] == null) {
+          if (results[0] == null || (__DEV__ && alwaysShowSplash)) {
             // Language has not been selected
             this.setState({
               loading: false,
