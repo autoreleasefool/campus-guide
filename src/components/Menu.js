@@ -119,7 +119,7 @@ export default class Menu extends React.Component {
 
     const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, section);
     let sectionImage: ?ReactElement < any > = null;
-    let touchableStyle: Object = {};
+    let touchableStyle: Object = {flexShrink: 1};
     let subtitleIconName: string = 'expand-more';
 
     if (index === this.state.expandedSection && section.image != null) {
@@ -129,7 +129,7 @@ export default class Menu extends React.Component {
             source={{uri: Configuration.getImagePath(section.image)}}
             style={_styles.sectionImage} />
       );
-      touchableStyle = {flex: 1, overflow: 'hidden'};
+      touchableStyle = {flexGrow: 1};
       subtitleIconName = 'chevron-right';
     }
 
