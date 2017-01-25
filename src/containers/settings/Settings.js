@@ -241,7 +241,7 @@ class Settings extends React.Component {
     if (setting.type === 'boolean' && tappedRow) {
       // Ignore boolean settings, they can only be manipulated by switch
       return;
-    } else if (setting.type === 'link') {
+    } else if (setting.type === 'link' && setting.key != 'app_open_source') {
       // Get current language for translations
       const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
