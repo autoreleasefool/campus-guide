@@ -77,7 +77,7 @@ describe('Preferences-test', () => {
     shouldThrowError = false;
   });
 
-  pit('tests the retrieval of default preferences', () => {
+  it('tests the retrieval of default preferences', () => {
     return Preferences.getSelectedLanguage(AsyncStorage)
         .then((language) => {
           expect(language).toBeNull();
@@ -96,7 +96,7 @@ describe('Preferences-test', () => {
         });
   });
 
-  pit('tests setting preferences', () => {
+  it('tests setting preferences', () => {
     const preferences: PreferenceOptions = {
       language: 'fr',
       semester: 2,
@@ -123,7 +123,7 @@ describe('Preferences-test', () => {
         });
   });
 
-  pit('tests setting invalid preferences', () => {
+  it('tests setting invalid preferences', () => {
     // Set defaults for the app to load
     dataStore = {
       app_selected_language: 'en',
@@ -159,7 +159,7 @@ describe('Preferences-test', () => {
         });
   });
 
-  pit('tests the retrieval of non-default preferences', () => {
+  it('tests the retrieval of non-default preferences', () => {
     // Set defaults for the app to load
     dataStore = {
       app_selected_language: 'en',
@@ -186,7 +186,7 @@ describe('Preferences-test', () => {
         });
   });
 
-  pit('tests error handling preferences', () => {
+  it('tests error handling preferences', () => {
     shouldThrowError = true;
 
     // Set defaults for the app to load

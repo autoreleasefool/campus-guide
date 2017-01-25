@@ -83,7 +83,7 @@ describe('ExternalUtils-test', () => {
     expect(ExternalUtils.getDefaultLink()).toEqual('https://google.ca');
   });
 
-  pit('tests that links are formatted before opening.', () => {
+  it('tests that links are formatted before opening.', () => {
 
     return ExternalUtils.openLink(exampleURL, Translations, Linking, Alert, Clipboard, TextUtils)
         .then(() => {
@@ -107,7 +107,7 @@ describe('ExternalUtils-test', () => {
         });
   });
 
-  pit('tests that invalid links are not opened.', () => {
+  it('tests that invalid links are not opened.', () => {
     return ExternalUtils.openLink(invalidURL, Translations, Linking, Alert, Clipboard, TextUtils)
         .then(() => {
           expect(Alert.alert).toHaveBeenCalled();
@@ -119,7 +119,7 @@ describe('ExternalUtils-test', () => {
         });
   });
 
-  pit('tests that errors in links are handled.', () => {
+  it('tests that errors in links are handled.', () => {
     return ExternalUtils.openLink(exceptionURL, Translations, Linking, Alert, Clipboard, TextUtils)
         .then(() => expect(false).toBeTruthy())
         .catch((err) => {

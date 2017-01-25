@@ -99,13 +99,13 @@ describe('Database-test', () => {
     require('react-native-simple-store').__setDatastore({});
   });
 
-  pit('tests retrieving empty config file versions', () => {
+  it('tests retrieving empty config file versions', () => {
     return Database.getConfigVersions().then((versions) => {
       expect(versions).toBeNull();
     });
   });
 
-  pit('tests saving and retrieving config file versions 1', () => {
+  it('tests saving and retrieving config file versions 1', () => {
     return Database.updateConfigVersions(baseVersions)
         .then(() => Database.getConfigVersions())
         .then((versions) => {
@@ -118,7 +118,7 @@ describe('Database-test', () => {
         });
   });
 
-  pit('tests saving and retrieving config file versions 2', () => {
+  it('tests saving and retrieving config file versions 2', () => {
     return Database.updateConfigVersions(baseVersions)
         .then(() => Database.getConfigVersions())
         .then((versions) => {
