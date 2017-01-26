@@ -36,4 +36,24 @@ describe('schedule actions', () => {
 
     expect(actions.switchScheduleView(view)).toEqual(expectedAction);
   });
+
+  it('should create an action to update the user\'s schedule', () => {
+    const schedule = {
+      semester1: {
+        name_en: 'English name',
+        name_fr: 'French name',
+      },
+      semester2: {
+        name_en: 'Second English name',
+        name_fr: 'Second French name',
+      },
+    };
+
+    const expectedAction = {
+      type: 'SCHEDULE_UPDATE',
+      schedule,
+    };
+
+    expect(actions.updateSchedule(schedule)).toEqual(expectedAction);
+  });
 });

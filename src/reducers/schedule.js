@@ -31,12 +31,14 @@ import type {
 
 // Describes the schedule state.
 type State = {
-  view: number, // Current view to display in the schedule navigator
+  view: number,     // Current view to display in the schedule navigator
+  schedule: Object, // The user's defined schedule
 };
 
 // Initial schedule state.
 const initialState: State = {
   view: 0,
+  schedule: {},
 };
 
 /**
@@ -52,6 +54,11 @@ function schedule(state: State = initialState, action: Action): State {
       return {
         ...state,
         view: action.view,
+      };
+    case 'SCHEDULE_UPDATE':
+      return {
+        ...state,
+        schedule: action.schedule,
       };
     default:
       return state;

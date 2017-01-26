@@ -38,7 +38,7 @@ import type {
 } from 'types';
 
 // Imports
-import {preferenceCache} from './preferences';
+import {persist} from './persist';
 import reducers from '../reducers';
 
 /**
@@ -48,7 +48,7 @@ import reducers from '../reducers';
  * @returns {any} redux store
  */
 export default function configureStore(onComplete: ?VoidFunction): any {
-  const store = createStore(reducers, applyMiddleware(thunk, preferenceCache));
+  const store = createStore(reducers, applyMiddleware(thunk, persist));
   onComplete && onComplete();
   return store;
 }

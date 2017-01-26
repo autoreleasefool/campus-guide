@@ -34,4 +34,8 @@ module.exports = {
     type: 'SCHEDULE_VIEW',
     view,
   }),
+  updateSchedule: (schedule: Object): Action => ({
+    type: 'SCHEDULE_UPDATE',
+    schedule,
+  }),
 };

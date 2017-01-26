@@ -28,8 +28,6 @@
 // Type imports
 import type {
   ConfigFile,
-  Course,
-  Lecture,
 } from 'types';
 
 // Imports
@@ -65,82 +63,6 @@ export function getSchedule(): Promise < Object > {
 export function saveSchedule(schedule: Object): Promise < void > {
   return store.save(STORE_SCHEDULE, schedule);
 }
-
-/**
- * Adds a semester to the database. Semesters are uniquely defined by their ID, so if a semester
- * already exists, it is overwritten.
- *
- * @param {string}         id      unique id for the semester
- * @param {?string}        nameEn  English name of the semester. Optional.
- * @param {?string}        nameFr  French name of the semester. Optional.
- * @param {?Array<Course>} courses a list of courses the user has in the semester. Optional.
- * @returns {Promise<void>} a promise which resolves when the semester has been saved
- */
-// export function addSemester(
-//     id: string,
-//     nameEn: ?string,
-//     nameFr: ?string,
-//     courses: ?Array < Course > = []): Promise < void > {
-//   return store.get(STORE_SCHEDULE)
-//       .then((schedule) => {
-//         let updatedSchedule = schedule;
-//         if (updatedSchedule == null) {
-//           updatedSchedule = {};
-//         }
-
-//         updatedSchedule[id] = {
-//           name_en: nameEn,
-//           name_fr: nameFr,
-//           courses,
-//         };
-
-//         return store.save(STORE_SCHEDULE, updatedSchedule);
-//       });
-// }
-
-/**
- * Adds a course to the database. Courses are uniquely defined within a semester by their code, so if a course
- * already exists, it is overwritten.
- *
- * @param {string}         semesterId semester the course belongs to. If the semester does not exist, throws an error
- * @param {?string}        code       unique code of the course
- * @param {Array<Lecture>} lectures   list of lectures in the course
- * @returns {Promise<void>} a promise which resolves when the course has been saved
- */
-// export function addCourse(semesterId: string, code: string, lectures: Array < Lecture > = []): Promise < void > {
-//   return store.get(STORE_SCHEDULE)
-//       .then((schedule) => {
-//         if (!(semesterId in schedule)) {
-//           throw new Error(`Semester '${semesterId}' does not exist.`);
-//         }
-
-//         const semester = schedule[semesterId];
-//         const newCourse = {
-//           code,
-//           lectures,
-//         };
-
-//         // Insert the course in sorted order
-//         const lowerCaseCode = code.toLowerCase();
-//         let inserted = false;
-//         for (let i = 0; !inserted && i < semester.courses.length; i++) {
-//           const currentCourseLowerCase = semester.courses[i].code.toLowerCase();
-//           if (currentCourseLowerCase > lowerCaseCode) {
-//             inserted = true;
-//             semester.courses.splice(i, 0, newCourse);
-//           } else if (currentCourseLowerCase == lowerCaseCode) {
-//             inserted = true;
-//             semester.courses[i] = newCourse;
-//           }
-//         }
-
-//         if (!inserted) {
-//           schedule[semesterId].courses.push(newCourse);
-//         }
-
-//         return store.save(STORE_SCHEDULE, schedule);
-//       });
-// }
 
 /**
  * Gets a list of config files and their versions from the database.

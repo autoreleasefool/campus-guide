@@ -93,6 +93,34 @@ const baseAndUpdates2 = [
   },
 ];
 
+// Initial base schedule to load and save
+const baseSchedule = {
+  semester1: {
+    name_en: 'English name',
+    name_fr: 'French name',
+  },
+  semester2: {
+    name_en: 'Second English name',
+    name_fr: 'Second French name',
+  },
+};
+
+// Update schedule to test saving
+const updatedSchedule = {
+  semester1: {
+    name_en: 'English name',
+    name_fr: 'French name',
+  },
+  semester2: {
+    name_en: '2nd English name',
+    name_fr: '2nd French name',
+  },
+  semester3: {
+    name_en: 'Third English name',
+    name_fr: 'Third French name',
+  },
+};
+
 describe('Database-test', () => {
   beforeEach(() => {
     // Reset the datastore between tests
@@ -128,6 +156,26 @@ describe('Database-test', () => {
         .then(() => Database.getConfigVersions())
         .then((versions) => {
           expect(versions).toEqual(baseAndUpdates2);
+        });
+  });
+
+  it('tests retrieving the empty schedule', () => {
+    return Database.getSchedule()
+        .then((schedule) => {
+          expect(schedule).toBeNull();
+        });
+  });
+
+  it('tests saving and retrieving the schedule', () => {
+    return Database.saveSchedule(baseSchedule)
+        .then(() => Database.getSchedule())
+        .then((schedule) => {
+          expect(schedule).toEqual(baseSchedule);
+          return Database.saveSchedule(updatedSchedule);
+        })
+        .then(() => Database.getSchedule())
+        .then((schedule) => {
+          expect(schedule).toEqual(updatedSchedule);
         });
   });
 });

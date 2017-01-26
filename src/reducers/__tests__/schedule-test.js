@@ -29,6 +29,7 @@ import reducer from '../schedule';
 // Expected initial state
 const initialState = {
   view: 0,
+  schedule: {},
 };
 
 describe('schedule reducer', () => {
@@ -47,7 +48,36 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
+        ...initialState,
         view: 1,
+      }
+    );
+  });
+
+  it('should update the schedule', () => {
+    const schedule = {
+      semester1: {
+        name_en: 'English name',
+        name_fr: 'French name',
+      },
+      semester2: {
+        name_en: 'Second English name',
+        name_fr: 'Second French name',
+      },
+    };
+
+    expect(
+      reducer(
+        initialState,
+        {
+          type: 'SCHEDULE_UPDATE',
+          schedule,
+        }
+      )
+    ).toEqual(
+      {
+        ...initialState,
+        schedule,
       }
     );
   });

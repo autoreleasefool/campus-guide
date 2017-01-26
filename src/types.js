@@ -134,16 +134,6 @@ export type Campus = {
 } & (Name | TranslatedName);
 
 //-----------------------------------------------------------------------------
-//  Semesters
-//-----------------------------------------------------------------------------
-
-/** A semester at the school, with its name, identifier, and other info. */
-export type Semester = {
-  code: string,       // Unique identifier for the semester
-  current?: boolean,  // True if this is the current semester
-} & (Name | TranslatedName);
-
-//-----------------------------------------------------------------------------
 //  Transit
 //-----------------------------------------------------------------------------
 
@@ -184,9 +174,16 @@ export type TransitInfo = (Name | TranslatedName) & (Link | TranslatedLink);
 //  Courses
 //-----------------------------------------------------------------------------
 
+/** A semester at the school, with its name, identifier, and other info. */
+export type Semester = {
+  code: string,               // Unique identifier for the semester
+  current?: boolean,          // True if this is the current semester
+  courses?: Array < Course >  // Courses the user has defined in the semester
+} & (Name | TranslatedName);
+
 /** A set of lectures. */
 export type Course = {
-  name: string,                 // Name of the course
+  code: string,                 // Course code
   lectures: Array < Lecture >,  // List of lectures that are a part of the course
 };
 
@@ -373,4 +370,5 @@ export type Action =
   | { type: 'SHOW_LINK_CATEGORY', linkId: ?string | number }
   | { type: 'SHOW_TRANSIT_CAMPUS', campus: ?Campus }
   | { type: 'SCHEDULE_VIEW', view: number }
+  | { type: 'SCHEDULE_UPDATE', schedule: Object }
   ;
