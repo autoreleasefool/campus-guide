@@ -96,7 +96,7 @@ const textSizes = {
  */
 const tabs = [
   'find',
-  // 'schedule',
+  'schedule',
   'discover',
   'search',
   'settings',

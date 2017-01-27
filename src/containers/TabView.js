@@ -52,6 +52,7 @@ import * as Constants from 'Constants';
 // Tabs
 import Discover from './discover/Discover';
 import Find from './find/Find';
+import Schedule from './schedule/Schedule';
 import Search from './search/Search';
 import Settings from './settings/Settings';
 
@@ -104,12 +105,12 @@ class TabView extends React.Component {
           );
           break;
         case 'schedule':
-        //   tabs.push(
-        //     <Schedule
-        //         key='schedule'
-        //         tabLabel='schedule' />
-        //   );
-        //   break;
+          tabs.push(
+            <Schedule
+                key='schedule'
+                tabLabel='schedule' />
+          );
+          break;
         default:
           tabs.push(
             <View

@@ -190,13 +190,13 @@ export type Course = {
 /** A single lecture of a course. */
 export type Lecture = {
   dayOfTheWeek: number,   // Day of the week the course occurs. 0 is Monday
-  duration: number,       // Length of the course, in minutes
+  endingTime: number,     // Time the course ends at
   formatCode: string,     // ID of the course format
   location?: {            // Location the lecture is located, if known
     buildingCode: string, // Shorthand building code
     room: string,         // Room in the building
   },
-  startingTime: string,   // Time the course starts at
+  startingTime: number,   // Time the course starts at
 };
 
 /** The format of a single lecture in a course. */
