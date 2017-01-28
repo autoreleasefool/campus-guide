@@ -30,27 +30,8 @@
 import * as ArrayUtils from '../ArrayUtils';
 
 // Empty array for testing
-const emptyArray = [];
-
-// Unsorted array of objects with 2 keys for testing
-const unsortedArray = [
-  {
-    key: 'b',
-    other_key: 1,
-  },
-  {
-    key: 'a',
-    other_key: 3,
-  },
-  {
-    key: 'c',
-    other_key: 2,
-  },
-  {
-    key: 'b',
-    other_key: 1,
-  },
-];
+let emptyArray = [];
+let unsortedArray = [];
 
 // Array of objects, sorted by 'key'
 const sortedArrayByKey = [
@@ -60,7 +41,7 @@ const sortedArrayByKey = [
   },
   {
     key: 'b',
-    other_key: 1,
+    other_key: 4,
   },
   {
     key: 'b',
@@ -79,10 +60,6 @@ const sortedArrayByOtherKey = [
     other_key: 1,
   },
   {
-    key: 'b',
-    other_key: 1,
-  },
-  {
     key: 'c',
     other_key: 2,
   },
@@ -90,12 +67,61 @@ const sortedArrayByOtherKey = [
     key: 'a',
     other_key: 3,
   },
+  {
+    key: 'b',
+    other_key: 4,
+  },
+];
+
+const sortedArrayByBothKeys = [
+  {
+    key: 'a',
+    other_key: 3,
+  },
+  {
+    key: 'b',
+    other_key: 1,
+  },
+  {
+    key: 'b',
+    other_key: 4,
+  },
+  {
+    key: 'c',
+    other_key: 2,
+  },
 ];
 
 describe('ArrayUtils-test', () => {
+  beforeEach(() => {
+    emptyArray = [];
+    unsortedArray = [
+      {
+        key: 'b',
+        other_key: 4,
+      },
+      {
+        key: 'a',
+        other_key: 3,
+      },
+      {
+        key: 'c',
+        other_key: 2,
+      },
+      {
+        key: 'b',
+        other_key: 1,
+      },
+    ];
+  });
+
   it('tests sorting an array by a key', () => {
     expect(ArrayUtils.sortObjectArrayByKeyValues(unsortedArray, 'key')).toEqual(sortedArrayByKey);
     expect(ArrayUtils.sortObjectArrayByKeyValues(unsortedArray, 'other_key')).toEqual(sortedArrayByOtherKey);
+  });
+
+  it('tests sorting an array by multiple keys', () => {
+    expect(ArrayUtils.sortObjectArrayByKeyValues(unsortedArray, 'key', 'other_key')).toEqual(sortedArrayByBothKeys);
   });
 
   it('tests sorting an invalid array', () => {
@@ -108,18 +134,38 @@ describe('ArrayUtils-test', () => {
     expect(ArrayUtils.sortObjectArrayByKeyValues(unsortedArray, '')).toEqual(unsortedArray);
   });
 
-  it('tests searching an array by a key', () => {
-    expect(ArrayUtils.searchObjectArrayByKeyValue(sortedArrayByKey, 'key', 'a')).toEqual(0);
-    expect(ArrayUtils.searchObjectArrayByKeyValue(sortedArrayByKey, 'key', 'c')).toEqual(3);
+  it('tests sorting by an invalid secondary key', () => {
+    expect(ArrayUtils.sortObjectArrayByKeyValues(unsortedArray, 'key', null)).toEqual(sortedArrayByKey);
+    expect(ArrayUtils.sortObjectArrayByKeyValues(unsortedArray, 'key', '')).toEqual(sortedArrayByKey);
   });
 
-  it('tests searching an invalid array', () => {
-    expect(ArrayUtils.searchObjectArrayByKeyValue([], 'key', 'a')).toEqual(-1);
-    expect(ArrayUtils.searchObjectArrayByKeyValue(null, 'key', 'a')).toEqual(-1);
+  it('tests binary searching an array by a key', () => {
+    expect(ArrayUtils.binarySearchObjectArrayByKeyValue(sortedArrayByKey, 'key', 'a')).toEqual(0);
+    expect(ArrayUtils.binarySearchObjectArrayByKeyValue(sortedArrayByKey, 'key', 'c')).toEqual(3);
   });
 
-  it('tests searching an array by an invalid key', () => {
-    expect(ArrayUtils.searchObjectArrayByKeyValue(sortedArrayByKey, null, 'a')).toEqual(-1);
-    expect(ArrayUtils.searchObjectArrayByKeyValue(sortedArrayByKey, 'not_a_key', 'a')).toEqual(-1);
+  it('tests binary searching an invalid array', () => {
+    expect(ArrayUtils.binarySearchObjectArrayByKeyValue([], 'key', 'a')).toEqual(-1);
+    expect(ArrayUtils.binarySearchObjectArrayByKeyValue(null, 'key', 'a')).toEqual(-1);
+  });
+
+  it('tests binary searching an array by an invalid key', () => {
+    expect(ArrayUtils.binarySearchObjectArrayByKeyValue(sortedArrayByKey, null, 'a')).toEqual(-1);
+    expect(ArrayUtils.binarySearchObjectArrayByKeyValue(sortedArrayByKey, 'not_a_key', 'a')).toEqual(-1);
+  });
+
+  it('tests linear searching an array by a key', () => {
+    expect(ArrayUtils.linearSearchObjectArrayByKeyValue(unsortedArray, 'key', 'a')).toEqual(1);
+    expect(ArrayUtils.linearSearchObjectArrayByKeyValue(unsortedArray, 'key', 'c')).toEqual(2);
+  });
+
+  it('tests linear searching an invalid array', () => {
+    expect(ArrayUtils.linearSearchObjectArrayByKeyValue([], 'key', 'a')).toEqual(-1);
+    expect(ArrayUtils.linearSearchObjectArrayByKeyValue(null, 'key', 'a')).toEqual(-1);
+  });
+
+  it('tests linear searching an array by an invalid key', () => {
+    expect(ArrayUtils.linearSearchObjectArrayByKeyValue(sortedArrayByKey, null, 'a')).toEqual(-1);
+    expect(ArrayUtils.linearSearchObjectArrayByKeyValue(sortedArrayByKey, 'not_a_key', 'a')).toEqual(-1);
   });
 });
