@@ -92,7 +92,7 @@ export function updateConfigVersions(update: Array < ConfigFile >): Promise < vo
 
           // Replace any config versions that should be updated
           for (let i = 0; i < update.length; i++) {
-            const index = ArrayUtils.searchObjectArrayByKeyValue(sorted, 'name', update[i].name);
+            const index = ArrayUtils.binarySearchObjectArrayByKeyValue(sorted, 'name', update[i].name);
             if (index >= 0) {
               sorted.splice(index, 1);
             }

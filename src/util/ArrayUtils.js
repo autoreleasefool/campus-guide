@@ -34,7 +34,7 @@
  * @returns {number} the index of the object with the key/value pair in the array, or -1 if it was not found
  */
 export function binarySearchObjectArrayByKeyValue(array: Array < Object >, key: string, value: any) {
-  if (array == null || key == null || array.length === 0) {
+  if (array == null || key == null || value == null || array.length === 0) {
     return -1;
   } else if (!(key in array[0])) {
     return -1;
@@ -67,7 +67,7 @@ export function binarySearchObjectArrayByKeyValue(array: Array < Object >, key: 
  * @returns {number} the index of the object with the key/value pair in the array, or -1 if it was not found
  */
 export function linearSearchObjectArrayByKeyValue(array: Array < Object >, key: string, value: any) {
-  if (array == null || key == null || array.length === 0) {
+  if (array == null || key == null || value == null || array.length === 0) {
     return -1;
   } else if (!(key in array[0])) {
     return -1;
