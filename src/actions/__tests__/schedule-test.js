@@ -27,33 +27,84 @@
 import * as actions from '../schedule';
 
 describe('schedule actions', () => {
-  it('should create an action to switch the schedule view', () => {
-    const view = 1;
-    const expectedAction = {
-      type: 'SCHEDULE_VIEW',
-      view,
+  it('creates an action to add a new semester', () => {
+    const semester = {
+      id: 'semester1',
+      courses: [],
+      name: 'semester 1',
     };
 
-    expect(actions.switchScheduleView(view)).toEqual(expectedAction);
+    const expectedAction = {
+      type: 'SCHEDULE_ADD_SEMESTER',
+      semester,
+    };
+
+    expect(actions.addSemester(semester)).toEqual(expectedAction);
   });
 
-  it('should create an action to update the user\'s schedule', () => {
-    const schedule = {
-      semester1: {
-        name_en: 'English name',
-        name_fr: 'French name',
-      },
-      semester2: {
-        name_en: 'Second English name',
-        name_fr: 'Second French name',
-      },
+  it('creates an action to add a new course', () => {
+    const semester = 'semester1';
+    const course = {
+      code: 'COURSE_CODE',
+      lectures: [],
     };
 
     const expectedAction = {
-      type: 'SCHEDULE_UPDATE',
-      schedule,
+      type: 'SCHEDULE_ADD_COURSE',
+      semester,
+      course,
     };
 
-    expect(actions.updateSchedule(schedule)).toEqual(expectedAction);
+    expect(actions.addCourse(semester, course)).toEqual(expectedAction);
+  });
+
+  it('creates an action to remove a course', () => {
+    const semester = 'semester1';
+    const courseCode = 'COURSE_CODE';
+
+    const expectedAction = {
+      type: 'SCHEDULE_REMOVE_COURSE',
+      semester,
+      courseCode,
+    };
+
+    expect(actions.removeCourse(semester, courseCode)).toEqual(expectedAction);
+  });
+
+  it('creates an action to add a lecture', () => {
+    const semester = 'semester1';
+    const courseCode = 'COURSE_CODE';
+    const lecture = {
+      day: 1,
+      endTime: 90,
+      format: 0,
+      startTime: 0,
+    };
+
+    const expectedAction = {
+      type: 'SCHEDULE_ADD_LECTURE',
+      semester,
+      courseCode,
+      lecture,
+    };
+
+    expect(actions.addLecture(semester, courseCode, lecture)).toEqual(expectedAction);
+  });
+
+  it('creates an action to remove a lecture', () => {
+    const semester = 'semester1';
+    const courseCode = 'COURSE_CODE';
+    const day = 1;
+    const startTime = 0;
+
+    const expectedAction = {
+      type: 'SCHEDULE_REMOVE_LECTURE',
+      semester,
+      courseCode,
+      day,
+      startTime,
+    };
+
+    expect(actions.removeLecture(semester, courseCode, day, startTime)).toEqual(expectedAction);
   });
 });

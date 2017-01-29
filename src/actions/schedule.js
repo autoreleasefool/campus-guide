@@ -27,15 +27,37 @@
 // Types
 import type {
   Action,
+  Course,
+  Lecture,
+  Semester,
 } from 'types';
 
 module.exports = {
-  switchScheduleView: (view: number): Action => ({
-    type: 'SCHEDULE_VIEW',
-    view,
+  addSemester: (semester: Semester): Action => ({
+    type: 'SCHEDULE_ADD_SEMESTER',
+    semester,
   }),
-  updateSchedule: (schedule: Object): Action => ({
-    type: 'SCHEDULE_UPDATE',
-    schedule,
+  addCourse: (semester: string, course: Course): Action => ({
+    type: 'SCHEDULE_ADD_COURSE',
+    semester,
+    course,
+  }),
+  removeCourse: (semester: string, courseCode: string): Action => ({
+    type: 'SCHEDULE_REMOVE_COURSE',
+    semester,
+    courseCode,
+  }),
+  addLecture: (semester: string, courseCode: string, lecture: Lecture): Action => ({
+    type: 'SCHEDULE_ADD_LECTURE',
+    semester,
+    courseCode,
+    lecture,
+  }),
+  removeLecture: (semester: string, courseCode: string, day: number, startTime: number): Action => ({
+    type: 'SCHEDULE_REMOVE_LECTURE',
+    semester,
+    courseCode,
+    day,
+    startTime,
   }),
 };

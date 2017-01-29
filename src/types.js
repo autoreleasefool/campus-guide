@@ -176,7 +176,7 @@ export type TransitInfo = (Name | TranslatedName) & (Link | TranslatedLink);
 
 /** A semester at the school, with its name, identifier, and other info. */
 export type Semester = {
-  code: string,               // Unique identifier for the semester
+  id: string,               // Unique identifier for the semester
   current?: boolean,          // True if this is the current semester
   courses?: Array < Course >  // Courses the user has defined in the semester
 } & (Name | TranslatedName);
@@ -189,14 +189,11 @@ export type Course = {
 
 /** A single lecture of a course. */
 export type Lecture = {
-  dayOfTheWeek: number,   // Day of the week the course occurs. 0 is Monday
-  endingTime: number,     // Time the course ends at
-  formatCode: string,     // ID of the course format
-  location?: {            // Location the lecture is located, if known
-    buildingCode: string, // Shorthand building code
-    room: string,         // Room in the building
-  },
-  startingTime: number,   // Time the course starts at
+  day: number,                      // Day of the week the course occurs. 0 is Monday
+  endTime: number,                  // Time the course ends at
+  format: number,                   // Index of the course format
+  location?: NavigationDestination, // Location of the lecture
+  startTime: number,                // Time the course starts at
 };
 
 /** The format of a single lecture in a course. */
@@ -369,6 +366,9 @@ export type Action =
   | { type: 'SET_DISCOVER_LINKS', links: Array < LinkSection > }
   | { type: 'SHOW_LINK_CATEGORY', linkId: ?string | number }
   | { type: 'SHOW_TRANSIT_CAMPUS', campus: ?Campus }
-  | { type: 'SCHEDULE_VIEW', view: number }
-  | { type: 'SCHEDULE_UPDATE', schedule: Object }
+  | { type: 'SCHEDULE_ADD_SEMESTER', semester: Semester }
+  | { type: 'SCHEDULE_ADD_COURSE', semester: string, course: Course }
+  | { type: 'SCHEDULE_REMOVE_COURSE', semester: string, courseCode: string }
+  | { type: 'SCHEDULE_ADD_LECTURE', semester: string, courseCode: string, lecture: Lecture }
+  | { type: 'SCHEDULE_REMOVE_LECTURE', semester: string, courseCode: string, day: number, startTime: number }
   ;
