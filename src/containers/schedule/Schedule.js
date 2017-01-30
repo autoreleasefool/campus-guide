@@ -32,6 +32,7 @@ import {
   Picker,
   Platform,
   StyleSheet,
+  TextInput,
   View,
 } from 'react-native';
 
@@ -60,9 +61,10 @@ type Props = {
 
 // Type definition for component state.
 type State = {
+  courseCodeInput: string,      // Value for course code
   courseModalTitle: string,     // Title of the course modal
   courseModalVisible: boolean,  // True to show the modal to add or edit a course
-  lectureModalTitle: string,     // Title of the lecture modal
+  lectureModalTitle: string,    // Title of the lecture modal
   lectureModalVisible: boolean, // True to show the modal to add or edit a lecture
   showSemesters: boolean,       // True to show drop down to swap semesters
 };
@@ -74,6 +76,7 @@ import ModalHeader from 'ModalHeader';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {getPlatformIcon} from 'DisplayUtils';
 
 // Tabs
@@ -114,6 +117,7 @@ class Schedule extends React.Component {
     this.state = {
       courseModalTitle: '',
       courseModalVisible: false,
+      courseCodeInput: '',
       lectureModalTitle: '',
       lectureModalVisible: false,
       showSemesters: false,
@@ -133,6 +137,7 @@ class Schedule extends React.Component {
    */
   _addNewCourse(): void {
     this.setState({
+      courseCodeInput: '',
       courseModalTitle: 'add_course',
       courseModalVisible: true,
     });
@@ -142,7 +147,10 @@ class Schedule extends React.Component {
    * Opens the lecture modal to add a new lecture.
    */
   _addNewLecture(): void {
-
+    this.setState({
+      lectureModalTitle: 'add_lecture',
+      lectureModalVisible: true,
+    });
   }
 
   /**
@@ -158,7 +166,6 @@ class Schedule extends React.Component {
     }
   }
 
-
   /**
    * Opens the course modal with preset data about a course to edit it.
    */
@@ -173,7 +180,10 @@ class Schedule extends React.Component {
    * Opens the lecture modal with preset data about a lecture to edit it.
    */
   _editLecture(): void {
-
+    this.setState({
+      lectureModalTitle: 'edit_lecture',
+      lectureModalVisible: true,
+    });
   }
 
   /**
@@ -220,6 +230,7 @@ class Schedule extends React.Component {
           transparent={false}
           visible={this.state.courseModalVisible}
           onRequestClose={this._closeModal.bind(this, true)}>
+        {this._renderLectureModal(Translations)}
         <View style={_styles.modalContainer}>
           <ModalHeader
               leftActionEnabled={true}
@@ -229,6 +240,34 @@ class Schedule extends React.Component {
               title={Translations[this.state.courseModalTitle]}
               onLeftAction={this._closeModal.bind(this, true)}
               onRightAction={this._saveCourse} />
+          <KeyboardAwareScrollView>
+            <Header title={Translations.semester} />
+            <Picker
+                itemStyle={_styles.semesterItem}
+                selectedValue={this.props.currentSemester}
+                onValueChange={(value) => this._switchSemester(value)}>
+              {this.props.semesters.map((semester, index) => {
+                const name = TranslationUtils.getTranslatedName(this.props.language, semester);
+                return (
+                  <Picker.Item
+                      key={name}
+                      label={name}
+                      value={index} />
+                );
+              })}
+            </Picker>
+            <Header title={Translations.course_code} />
+            <TextInput
+                autoCapitalize={'characters'}
+                returnKeyType={'done'}
+                style={_styles.textInput}
+                value={this.state.courseCodeInput}
+                onChangeText={(value) => this.setState({courseCodeInput: value})} />
+            <Header
+                subtitleCallback={this._addNewLecture}
+                subtitleIcon={{class: 'material', name: 'add'}}
+                title={Translations.sessions} />
+          </KeyboardAwareScrollView>
         </View>
       </Modal>
     );
@@ -304,7 +343,6 @@ class Schedule extends React.Component {
     return (
       <View style={_styles.container}>
         {this._renderCourseModal(Translations)}
-        {this._renderLectureModal(Translations)}
         <ScrollableTabView
             style={{borderBottomWidth: 0}}
             tabBarActiveTextColor={Constants.Colors.primaryWhiteText}
@@ -340,6 +378,16 @@ const _styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
   },
+  textInput: {
+    height: 30,
+    margin: Constants.Sizes.Margins.Regular,
+    paddingLeft: Constants.Sizes.Margins.Regular,
+    fontSize: Constants.Sizes.Text.Body,
+    color: Constants.Colors.primaryWhiteText,
+    borderColor: Constants.Colors.primaryWhiteText,
+    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.secondaryBackground,
+  },
   semesterItem: {
     color: Constants.Colors.primaryWhiteText,
   },
@@ -350,6 +398,7 @@ const select = (store) => {
   return {
     currentSemester: store.config.currentSemester,
     language: store.config.language,
+    schedule: store.schedule.semesters,
     semesters: store.config.semesters,
     timeFormat: store.config.preferredTimeFormat,
   };
