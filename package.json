@@ -15,6 +15,7 @@
     "react-native-action-button": "^2.0.20",
     "react-native-device-info": "^0.9.7",
     "react-native-fs": "^2.1.0-rc.1",
+    "react-native-keyboard-aware-scroll-view": "^0.2.6",
     "react-native-linear-gradient": "^2.0.0",
     "react-native-maps": "^0.13.0",
     "react-native-scrollable-tab-view": "^0.7.0",
