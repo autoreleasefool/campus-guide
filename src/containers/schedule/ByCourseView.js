@@ -28,7 +28,6 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -38,7 +37,7 @@ export default class ByCourse extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
-        <Text>{'Course'}</Text>
+        {this.props.children}
       </View>
     );
   }
@@ -48,6 +47,6 @@ export default class ByCourse extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.Colors.garnet,
+    backgroundColor: Constants.Colors.secondaryBackground,
   },
 });

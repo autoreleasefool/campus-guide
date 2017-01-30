@@ -141,7 +141,9 @@ class TabBar extends React.Component {
       <View style={_styles.tabContainer}>
         {this.props.tabs.map((tab, i) => {
           const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, tabIcons[Constants.Tabs[i]]);
-          const color = this.props.activeTab === i ? Constants.Colors.garnet : Constants.Colors.charcoalGrey;
+          const color = this.props.activeTab === i
+              ? Constants.Colors.primaryBackground
+              : Constants.Colors.secondaryBackground;
           let iconView: ?ReactElement < any >;
 
           if (icon == null) {

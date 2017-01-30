@@ -211,11 +211,11 @@ const _styles = StyleSheet.create({
   },
   englishContainer: {
     flex: 1,
-    backgroundColor: Constants.Colors.garnet,
+    backgroundColor: Constants.Colors.primaryBackground,
   },
   frenchContainer: {
     flex: 1,
-    backgroundColor: Constants.Colors.charcoalGrey,
+    backgroundColor: Constants.Colors.secondaryBackground,
   },
   languageContainer: {
     position: 'absolute',

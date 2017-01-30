@@ -111,7 +111,7 @@ class FindHome extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.Colors.garnet,
+    backgroundColor: Constants.Colors.primaryBackground,
   },
 });
 
