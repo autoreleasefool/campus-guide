@@ -32,7 +32,7 @@ import * as findActions from './find';
 import * as headerActions from './header';
 import * as navigationActions from './navigation';
 import * as searchActions from './search';
-// const scheduleActions = require('./schedule');
+import * as scheduleActions from './schedule';
 import * as updateActions from './update';
 
 // Combine and export actions
@@ -43,6 +43,6 @@ module.exports = {
   ...headerActions,
   ...navigationActions,
   ...searchActions,
-  // ...scheduleActions,
+  ...scheduleActions,
   ...updateActions,
 };
