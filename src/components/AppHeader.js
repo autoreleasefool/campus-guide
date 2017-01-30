@@ -81,7 +81,6 @@ import * as TranslationUtils from 'TranslationUtils';
 
 // Height of the navbar
 const NAVBAR_HEIGHT: number = 50;
-const HEADER_PADDING_IOS: number = 20;
 const ICON_SIZE: number = 50;
 
 // Width of the search input
@@ -271,7 +270,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: NAVBAR_HEIGHT,
-    marginTop: Platform.OS === 'ios' ? HEADER_PADDING_IOS : 0,
+    marginTop: Constants.Sizes.HeaderPadding[Platform.OS],
   },
   searchContainer: {
     flex: 1,

@@ -180,6 +180,10 @@ module.exports = {
     Icons: iconSizes,
     Margins: marginSizes,
     Text: textSizes,
+    HeaderPadding: {
+      android: 0,
+      ios: 20,
+    },
   },
 
   /**
