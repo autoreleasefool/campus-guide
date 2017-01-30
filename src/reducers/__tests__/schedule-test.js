@@ -28,7 +28,7 @@ import reducer from '../schedule';
 
 // Expected initial state
 const initialState = {
-  schedule: {},
+  semesters: {},
 };
 
 // Basic semesters for testing
@@ -110,7 +110,7 @@ describe('schedule reducer', () => {
     ).toEqual(
       {
         ...initialState,
-        schedule: {
+        semesters: {
           semester1: testSemesters[0],
         },
       }
@@ -130,9 +130,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [testCourses[0]],
           },
         },
@@ -155,9 +156,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [testCourses[2], testCourses[1]],
           },
         },
@@ -180,9 +182,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [testCourses[0]],
           },
         },
@@ -205,9 +208,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [testCourses[0], testCourses[1]],
           },
         },
@@ -228,9 +232,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [],
           },
         },
@@ -252,9 +257,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [testCourses[0]],
           },
         },
@@ -277,9 +283,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [
               {
                 ...testCourses[0],
@@ -327,9 +334,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [
               {
                 ...testCourses[0],
@@ -357,9 +365,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [
               {
                 ...testCourses[0],
@@ -398,9 +407,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [
               {
                 ...testCourses[0],
@@ -428,9 +438,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [
               {
                 ...testCourses[0],
@@ -469,9 +480,10 @@ describe('schedule reducer', () => {
       )
     ).toEqual(
       {
-        schedule: {
+        ...state,
+        semesters: {
           semester1: {
-            ...state.schedule.semester1,
+            ...state.semesters.semester1,
             courses: [
               {
                 ...testCourses[0],

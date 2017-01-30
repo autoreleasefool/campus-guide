@@ -34,12 +34,12 @@ import * as ArrayUtils from 'ArrayUtils';
 
 // Describes the schedule state.
 type State = {
-  schedule: Object, // The user's defined schedule
+  semesters: Object, // The user's defined schedule
 };
 
 // Initial schedule state.
 const initialState: State = {
-  schedule: {},
+  semesters: {},
 };
 
 /**
@@ -52,20 +52,20 @@ const initialState: State = {
 function schedule(state: State = initialState, action: Action): State {
   switch (action.type) {
     case 'SCHEDULE_ADD_SEMESTER': {
-      const semesters = JSON.parse(JSON.stringify(state.schedule));
+      const semesters = JSON.parse(JSON.stringify(state.semesters));
       semesters[action.semester.id] = action.semester;
 
       return {
         ...state,
-        schedule: semesters,
+        semesters,
       };
     }
     case 'SCHEDULE_ADD_COURSE': {
-      if (!(action.semester in state.schedule)) {
+      if (!(action.semester in state.semesters)) {
         return state;
       }
 
-      const semesters = JSON.parse(JSON.stringify(state.schedule));
+      const semesters = JSON.parse(JSON.stringify(state.semesters));
       const courses = semesters[action.semester].courses;
 
       // Find the course if it already exists
@@ -82,15 +82,15 @@ function schedule(state: State = initialState, action: Action): State {
 
       return {
         ...state,
-        schedule: semesters,
+        semesters,
       };
     }
     case 'SCHEDULE_REMOVE_COURSE': {
-      if (!(action.semester in state.schedule)) {
+      if (!(action.semester in state.semesters)) {
         return state;
       }
 
-      const semesters = JSON.parse(JSON.stringify(state.schedule));
+      const semesters = JSON.parse(JSON.stringify(state.semesters));
       const courses = semesters[action.semester].courses;
 
       // Find the course if it exists and delete it
@@ -101,15 +101,15 @@ function schedule(state: State = initialState, action: Action): State {
 
       return {
         ...state,
-        schedule: semesters,
+        semesters,
       };
     }
     case 'SCHEDULE_ADD_LECTURE': {
-      if (!(action.semester in state.schedule)) {
+      if (!(action.semester in state.semesters)) {
         return state;
       }
 
-      const semesters = JSON.parse(JSON.stringify(state.schedule));
+      const semesters = JSON.parse(JSON.stringify(state.semesters));
       const courses = semesters[action.semester].courses;
 
       // Find the course to add the lecture to
@@ -123,15 +123,15 @@ function schedule(state: State = initialState, action: Action): State {
 
       return {
         ...state,
-        schedule: semesters,
+        semesters,
       };
     }
     case 'SCHEDULE_REMOVE_LECTURE': {
-      if (!(action.semester in state.schedule)) {
+      if (!(action.semester in state.semesters)) {
         return state;
       }
 
-      const semesters = JSON.parse(JSON.stringify(state.schedule));
+      const semesters = JSON.parse(JSON.stringify(state.semesters));
       const courses = semesters[action.semester].courses;
 
       // Find the course to remove the lecture from
@@ -152,7 +152,7 @@ function schedule(state: State = initialState, action: Action): State {
 
       return {
         ...state,
-        schedule: semesters,
+        semesters,
       };
     }
     default:
