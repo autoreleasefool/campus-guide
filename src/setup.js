@@ -77,7 +77,7 @@ export default function setup(): ReactClass < any > {
     /**
      * Renders the base component.
      *
-     * @return {ReactElement<any>} the base component for the app to render
+     * @returns {ReactElement<any>} the base component for the app to render
      */
     render(): ReactElement < any > {
       return (

@@ -217,9 +217,9 @@ class LectureModal extends React.Component {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = `${platformModifier}-arrow-back`;
 
-    let title = '';
-    let options = [];
-    let selectedValue = 0;
+    let title: string = '';
+    let options: Array < any > = [];
+    let selectedValue: any = 0;
     let getName = () => '';
     let setValue = () => this.setState({});
     switch (picking) {

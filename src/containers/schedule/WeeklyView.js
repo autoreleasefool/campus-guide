@@ -34,20 +34,18 @@ import {
 // Imports
 import * as Constants from 'Constants';
 
-export default class Weekly extends React.Component {
-
-  /**
+/**
    * Renders a list of the user's courses, organized by days.
    *
+   * @param {any} props the props passed
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
-    return (
-      <View style={_styles.container}>
-        {this.props.children}
-      </View>
-    );
-  }
+export default function render(props: any): ReactElement < any > {
+  return (
+    <View style={_styles.container}>
+      {props.children}
+    </View>
+  );
 }
 
 // Private styles for component

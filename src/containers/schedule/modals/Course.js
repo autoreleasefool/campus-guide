@@ -58,8 +58,8 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  courseCode: string,     // Value for course code
-  courseSemester: number, // Value for course semester
+  code: string,     // Value for course code
+  semester: number, // Value for course semester
 };
 
 // Imports
@@ -89,8 +89,8 @@ class CourseModal extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      courseCode: '',
-      courseSemester: props.currentSemester,
+      code: '',
+      semester: props.currentSemester,
     };
 
     (this:any)._saveCourse = this._saveCourse.bind(this);
@@ -100,7 +100,7 @@ class CourseModal extends React.Component {
    * Saves the course being edited or created.
    */
   _saveCourse(): void {
-
+    console.log(`Saving course ${this.state.code}, ${this.state.semester}`);
   }
 
   /**
@@ -133,8 +133,8 @@ class CourseModal extends React.Component {
           <Header title={Translations.semester} />
           <Picker
               itemStyle={_styles.semesterItem}
-              selectedValue={this.state.courseSemester}
-              onValueChange={(value) => this.setState({courseSemester: value})}>
+              selectedValue={this.state.semester}
+              onValueChange={(semester) => this.setState({semester})}>
             {this.props.semesters.map((semester, index) => {
               const name = TranslationUtils.getTranslatedName(this.props.language, semester);
               return (
@@ -150,8 +150,8 @@ class CourseModal extends React.Component {
               autoCapitalize={'characters'}
               returnKeyType={'done'}
               style={_styles.textInput}
-              value={this.state.courseCode}
-              onChangeText={(value) => this.setState({courseCode: value})} />
+              value={this.state.code}
+              onChangeText={(code) => this.setState({code})} />
           <Header
               subtitleCallback={() => this.props.onAddLecture()}
               subtitleIcon={{class: 'material', name: 'add'}}
@@ -194,9 +194,4 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
-  return {};
-};
-
-export default connect(select, actions)(CourseModal);
+export default connect(select)(CourseModal);
