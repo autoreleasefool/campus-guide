@@ -27,9 +27,12 @@
 // React imports
 import React from 'react';
 import {
+  Navigator,
   Picker,
+  Platform,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -68,7 +71,41 @@ type State = {
 import Header from 'Header';
 import ModalHeader from 'ModalHeader';
 import * as Constants from 'Constants';
+import * as CoreTranslations from '../../../../assets/json/CoreTranslations.json';
 import * as TranslationUtils from 'TranslationUtils';
+
+// Navigation values
+const MENU = 0;
+const REGULAR_PICKER = 1;
+const TIME_PICKER = 2;
+
+// Values to select by picker
+const PICKER_FORMAT = 0;
+const PICKER_DAY = 1;
+const PICKER_STARTS = 2;
+const PICKER_ENDS = 3;
+
+// Day name translations for picker
+const DAYS: {en: Array < string >, fr: Array < string >} = {
+  en: [
+    CoreTranslations.en.monday,
+    CoreTranslations.en.tuesday,
+    CoreTranslations.en.wednesday,
+    CoreTranslations.en.thursday,
+    CoreTranslations.en.friday,
+    CoreTranslations.en.saturday,
+    CoreTranslations.en.sunday,
+  ],
+  fr: [
+    CoreTranslations.fr.monday,
+    CoreTranslations.fr.tuesday,
+    CoreTranslations.fr.wednesday,
+    CoreTranslations.fr.thursday,
+    CoreTranslations.fr.friday,
+    CoreTranslations.fr.saturday,
+    CoreTranslations.fr.sunday,
+  ],
+};
 
 class LectureModal extends React.Component {
 
@@ -92,18 +129,177 @@ class LectureModal extends React.Component {
     this.state = {
       day: 0,
       format: 0,
-      starts: 0,
-      ends: 0,
+      starts: 780,
+      ends: 870,
     };
 
+    (this:any)._renderMenu = this._renderMenu.bind(this);
+    (this:any)._renderRegularPicker = this._renderRegularPicker.bind(this);
+    (this:any)._renderTimePicker = this._renderTimePicker.bind(this);
     (this:any)._saveLecture = this._saveLecture.bind(this);
+  }
+
+  /**
+   * Defines the transition between views.
+   *
+   * @returns {Object} a configuration for scene transitions in the navigator.
+   */
+  _configureScene(): Object {
+    return {
+      ...Navigator.SceneConfigs.PushFromRight,
+      gestures: false,
+    };
   }
 
   /**
    * Saves the lecture being edited or created.
    */
   _saveLecture(): void {
+    console.log(`Saving lecture ${this.state.format}, ${this.state.day}, ${this.state.starts}, ${this.state.ends}`);
+  }
 
+  /**
+   * Shows the picker to pick a value.
+   *
+   * @param {number} picking the value to pick
+   */
+  _showPicker(picking: number) {
+    if (picking === PICKER_STARTS || picking === PICKER_ENDS) {
+      this.refs.Navigator.push({id: TIME_PICKER, picking});
+    } else {
+      this.refs.Navigator.push({id: REGULAR_PICKER, picking});
+    }
+  }
+
+  /**
+   * Renders a menu to display the values selected so far, and touchable elements to change these values.
+   *
+   * @param {Object} Translations translations in the current language of certain text
+   * @returns {ReactElement<any>} a set of headers depicting the item and value
+   */
+  _renderMenu(Translations: Object): ReactElement < any > {
+    const pickIcon = {
+      class: 'material',
+      name: 'chevron-right',
+    };
+
+    const format: string = this.props.lectureFormats[this.state.format].code;
+    const day: string = DAYS[this.props.language][this.state.day] || '';
+
+    return (
+      <ScrollView>
+        <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_FORMAT)}>
+          <Header
+              subtitle={format}
+              subtitleIcon={pickIcon}
+              title={Translations.format} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_DAY)}>
+          <Header
+              subtitle={day}
+              subtitleIcon={pickIcon}
+              title={Translations.day} />
+        </TouchableOpacity>
+        <Header title={Translations.starts} />
+        <Header title={Translations.ends} />
+      </ScrollView>
+    );
+  }
+
+  /**
+   * Renders a picker with a set of values for the user to choose from.
+   *
+   * @param {Object} Translations translations in the current language of certain text
+   * @param {number} picking      the value being picked
+   * @returns {ReactElement<any>} the picker with the options to select between
+   */
+  _renderRegularPicker(Translations: Object, picking: number): ReactElement < any > {
+    const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
+    const backArrowIcon: string = `${platformModifier}-arrow-back`;
+
+    let title = '';
+    let options = [];
+    let selectedValue = 0;
+    let getName = () => '';
+    let setValue = () => this.setState({});
+    switch (picking) {
+      case PICKER_FORMAT:
+        title = 'format';
+        options = this.props.lectureFormats;
+        selectedValue = this.state.format;
+        getName = (format) => {
+          const name = TranslationUtils.getTranslatedName(this.props.language, this.props.lectureFormats[format]) || '';
+          return `(${this.props.lectureFormats[format].code}) ${name}`;
+        };
+        setValue = (value) => this.setState({format: value});
+        break;
+      case PICKER_DAY:
+        title = 'day';
+        options = DAYS[this.props.language];
+        selectedValue = this.state.day;
+        getName = (day) => DAYS[this.props.language][day];
+        setValue = (value) => this.setState({day: value});
+        break;
+      default:
+        // do nothing
+        // TODO: return some error view
+    }
+
+    return (
+      <View style={_styles.container}>
+        <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
+          <Header
+              icon={{name: backArrowIcon, class: 'ionicon'}}
+              title={Translations[title]} />
+        </TouchableOpacity>
+        <Picker
+            itemStyle={_styles.pickerItem}
+            selectedValue={selectedValue}
+            onValueChange={setValue}>
+          {options.map((option, index) => {
+            return (
+              <Picker.Item
+                  key={getName(index)}
+                  label={getName(index)}
+                  value={index} />
+            );
+          })}
+        </Picker>
+      </View>
+    );
+  }
+
+  /**
+   * Renders a picker with a set of times for the user to choose from.
+   *
+   * @param {Object} Translations translations in the current language of certain text
+   * @param {number} picking      the value being picked
+   * @returns {ReactElement<any>} the time picker with the options to select between
+   */
+  _renderTimePicker(Translations: Object, picking: number): ReactElement < any > {
+    console.log(`TODO: pick ${picking}`);
+    return (
+      <View />
+    );
+  }
+
+  _renderScene(route: {id: number, picking?: number}): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+
+    switch (route.id) {
+      case MENU:
+        return this._renderMenu(Translations);
+      case REGULAR_PICKER:
+        return this._renderRegularPicker(Translations, route.picking || PICKER_FORMAT);
+      case TIME_PICKER:
+        return this._renderTimePicker(Translations, route.picking || PICKER_STARTS);
+      default:
+        // TODO: return some error view
+        return (
+          <View />
+        );
+    }
   }
 
   /**
@@ -132,27 +328,12 @@ class LectureModal extends React.Component {
             title={Translations[modalTitle]}
             onLeftAction={() => this.props.onClose()}
             onRightAction={this._saveLecture} />
-        <ScrollView>
-          <Header title={Translations.format} />
-          <Picker
-              itemStyle={_styles.pickerItem}
-              selectedValue={this.state.format}
-              onValueChange={(value) => this.setState({format: value})}>
-            {this.props.lectureFormats.map((format, index) => {
-              const name = TranslationUtils.getTranslatedName(this.props.language, format) || '';
-              const formattedName = `(${format.code}) ${name}`;
-              return (
-                <Picker.Item
-                    key={format.code}
-                    label={formattedName}
-                    value={index} />
-              );
-            })}
-          </Picker>
-          <Header title={Translations.day} />
-          <Header title={Translations.starts} />
-          <Header title={Translations.ends} />
-        </ScrollView>
+        <Navigator
+            configureScene={this._configureScene}
+            initialRoute={{id: MENU}}
+            ref='Navigator'
+            renderScene={this._renderScene.bind(this)}
+            style={_styles.container} />
       </View>
     );
   }
@@ -166,6 +347,7 @@ const _styles = StyleSheet.create({
   },
   pickerItem: {
     color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
   },
 });
 
@@ -180,9 +362,4 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
-  return {};
-};
-
-export default connect(select, actions)(LectureModal);
+export default connect(select)(LectureModal);
