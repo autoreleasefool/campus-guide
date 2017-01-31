@@ -32,7 +32,6 @@ import {
   Picker,
   Platform,
   StyleSheet,
-  TextInput,
   View,
 } from 'react-native';
 
@@ -46,6 +45,7 @@ import {
 import type {
   ConfigurationOptions,
   Language,
+  LectureFormat,
   Semester,
   TimeFormat,
 } from 'types';
@@ -61,23 +61,26 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  courseCodeInput: string,      // Value for course code
-  courseModalTitle: string,     // Title of the course modal
-  courseModalVisible: boolean,  // True to show the modal to add or edit a course
-  lectureModalTitle: string,    // Title of the lecture modal
-  lectureModalVisible: boolean, // True to show the modal to add or edit a lecture
-  showSemesters: boolean,       // True to show drop down to swap semesters
+  addingCourse: boolean,                    // True to use the course modal to add a course, false to edit
+  addingLecture: boolean,                   // True to use the lecture modal to add a lecture, false to edit
+  courseModalVisible: boolean,              // True to show the modal to add or edit a course
+  lectureModalVisible: boolean,             // True to show the modal to add or edit a lecture
+  lectureFormats: Array < LectureFormat >,  // Array of available lecture types
+  showSemesters: boolean,                   // True to show drop down to swap semesters
 };
 
 // Imports
 import ActionButton from 'react-native-action-button';
 import Header from 'Header';
-import ModalHeader from 'ModalHeader';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {getPlatformIcon} from 'DisplayUtils';
+
+// Modals
+import CourseModal from './modals/Course';
+import LectureModal from './modals/Lecture';
 
 // Tabs
 import Weekly from './WeeklyView';
@@ -115,41 +118,47 @@ class Schedule extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      courseModalTitle: '',
+      addingCourse: true,
+      addingLecture: true,
       courseModalVisible: false,
-      courseCodeInput: '',
-      lectureModalTitle: '',
       lectureModalVisible: false,
+      lectureFormats: [],
       showSemesters: false,
     };
 
     (this:any)._toggleSwitchSemester = this._toggleSwitchSemester.bind(this);
-    (this:any)._addNewCourse = this._addNewCourse.bind(this);
-    (this:any)._addNewLecture = this._addNewLecture.bind(this);
-    (this:any)._editCourse = this._editCourse.bind(this);
-    (this:any)._editLecture = this._editLecture.bind(this);
-    (this:any)._saveCourse = this._saveCourse.bind(this);
-    (this:any)._saveLecture = this._saveLecture.bind(this);
+  }
+
+  componentDidMount(): void {
+    if (this.state.lectureFormats.length === 0) {
+      Configuration.init()
+          .then(() => Configuration.getConfig('/lecture_formats.json'))
+          .then((lectureFormats) => this.setState({lectureFormats}))
+          .catch((err: any) => console.error('Configuration could not be initialized for lecture modal.', err));
+    }
   }
 
   /**
-   * Opens the course modal to add a new course.
+   * Opens the course modal to add or edit a course.
+   *
+   * @param {boolean} addingCourse true to use the modal to add a course, false to edit
    */
-  _addNewCourse(): void {
+  _showCourseModal(addingCourse: boolean): void {
     this.setState({
-      courseCodeInput: '',
-      courseModalTitle: 'add_course',
       courseModalVisible: true,
+      addingCourse,
     });
   }
 
   /**
-   * Opens the lecture modal to add a new lecture.
+   * Opens the lecture modal to add or edit a lecture.
+   *
+   * @param {boolean} addingLecture true to use the modal to add a lecture, false to edit
    */
-  _addNewLecture(): void {
+  _showLectureModal(addingLecture: boolean): void {
     this.setState({
-      lectureModalTitle: 'add_lecture',
       lectureModalVisible: true,
+      addingLecture,
     });
   }
 
@@ -167,128 +176,11 @@ class Schedule extends React.Component {
   }
 
   /**
-   * Opens the course modal with preset data about a course to edit it.
-   */
-  _editCourse(): void {
-    this.setState({
-      courseModalTitle: 'edit_course',
-      courseModalVisible: true,
-    });
-  }
-
-  /**
-   * Opens the lecture modal with preset data about a lecture to edit it.
-   */
-  _editLecture(): void {
-    this.setState({
-      lectureModalTitle: 'edit_lecture',
-      lectureModalVisible: true,
-    });
-  }
-
-  /**
-   * Saves the course being edited or created.
-   */
-  _saveCourse(): void {
-
-  }
-
-  /**
-   * Saves the lecture being edited or created.
-   */
-  _saveLecture(): void {
-
-  }
-
-  /**
-   * Updates the current semester.
-   *
-   * @param {number} semester the semester to switch to
-   */
-  _switchSemester(semester: number): void {
-    this.props.updateConfiguration({currentSemester: semester});
-  }
-
-  /**
    * Toggles the drop down to switch semesters.
    */
   _toggleSwitchSemester(): void {
     LayoutAnimation.easeInEaseOut();
     this.setState({showSemesters: !this.state.showSemesters});
-  }
-
-  /**
-   * Renders the modal for adding or editing courses.
-   *
-   * @param {Object} Translations translations in the current language of certain text
-   * @returns {ReactElement<any>} the elements to render
-   */
-  _renderCourseModal(Translations: Object): ReactElement < any > {
-    return (
-      <Modal
-          animationType={'slide'}
-          transparent={false}
-          visible={this.state.courseModalVisible}
-          onRequestClose={this._closeModal.bind(this, true)}>
-        {this._renderLectureModal(Translations)}
-        <View style={_styles.modalContainer}>
-          <ModalHeader
-              leftActionEnabled={true}
-              leftActionText={Translations.cancel}
-              rightActionEnabled={true}
-              rightActionText={Translations.add}
-              title={Translations[this.state.courseModalTitle]}
-              onLeftAction={this._closeModal.bind(this, true)}
-              onRightAction={this._saveCourse} />
-          <KeyboardAwareScrollView>
-            <Header title={Translations.semester} />
-            <Picker
-                itemStyle={_styles.semesterItem}
-                selectedValue={this.props.currentSemester}
-                onValueChange={(value) => this._switchSemester(value)}>
-              {this.props.semesters.map((semester, index) => {
-                const name = TranslationUtils.getTranslatedName(this.props.language, semester);
-                return (
-                  <Picker.Item
-                      key={name}
-                      label={name}
-                      value={index} />
-                );
-              })}
-            </Picker>
-            <Header title={Translations.course_code} />
-            <TextInput
-                autoCapitalize={'characters'}
-                returnKeyType={'done'}
-                style={_styles.textInput}
-                value={this.state.courseCodeInput}
-                onChangeText={(value) => this.setState({courseCodeInput: value})} />
-            <Header
-                subtitleCallback={this._addNewLecture}
-                subtitleIcon={{class: 'material', name: 'add'}}
-                title={Translations.sessions} />
-          </KeyboardAwareScrollView>
-        </View>
-      </Modal>
-    );
-  }
-
-  /**
-   * Renders the modal for adding or editing courses.
-   *
-   * @param {Object} Translations translations in the current language of certain text
-   * @returns {ReactElement<any>} the elements to render
-   */
-  _renderLectureModal(Translations: Object): ReactElement < any > {
-    return (
-      <Modal
-          animationType={'slide'}
-          transparent={false}
-          visible={this.state.lectureModalVisible}
-          onRequestClose={this._closeModal.bind(this, false)}>
-        <View style={_styles.modalContainer} />
-      </Modal>
-    );
   }
 
   /**
@@ -315,7 +207,7 @@ class Schedule extends React.Component {
             <Picker
                 itemStyle={_styles.semesterItem}
                 selectedValue={this.props.currentSemester}
-                onValueChange={(value) => this._switchSemester(value)}>
+                onValueChange={(value) => this.props.updateConfiguration({currentSemester: value})}>
               {this.props.semesters.map((semester, index) => {
                 const name = TranslationUtils.getTranslatedName(this.props.language, semester);
                 return (
@@ -342,7 +234,27 @@ class Schedule extends React.Component {
 
     return (
       <View style={_styles.container}>
-        {this._renderCourseModal(Translations)}
+        <Modal
+            animationType={'slide'}
+            transparent={false}
+            visible={this.state.courseModalVisible}
+            onRequestClose={this._closeModal.bind(this, true)}>
+          <Modal
+              animationType={'slide'}
+              transparent={false}
+              visible={this.state.lectureModalVisible}
+              onRequestClose={this._closeModal.bind(this, false)}>
+            <LectureModal
+                addingLecture={this.state.addingLecture}
+                lectureFormats={this.state.lectureFormats}
+                onClose={this._closeModal.bind(this, false)} />
+          </Modal>
+          <CourseModal
+              addingCourse={this.state.addingCourse}
+              onAddLecture={this._showLectureModal.bind(this, true)}
+              onClose={this._closeModal.bind(this, true)}
+              onEditLecture={this._showLectureModal.bind(this, false)} />
+        </Modal>
         <ScrollableTabView
             style={{borderBottomWidth: 0}}
             tabBarActiveTextColor={Constants.Colors.primaryWhiteText}
@@ -361,7 +273,7 @@ class Schedule extends React.Component {
             buttonColor={Constants.Colors.primaryBackground}
             offsetX={Constants.Sizes.Margins.Expanded}
             offsetY={Constants.Sizes.Margins.Regular}
-            onPress={this._addNewCourse} />
+            onPress={this._showCourseModal.bind(this, true)} />
       </View>
     );
 
@@ -373,20 +285,6 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: Constants.Colors.secondaryBackground,
-  },
-  textInput: {
-    height: 30,
-    margin: Constants.Sizes.Margins.Regular,
-    paddingLeft: Constants.Sizes.Margins.Regular,
-    fontSize: Constants.Sizes.Text.Body,
-    color: Constants.Colors.primaryWhiteText,
-    borderColor: Constants.Colors.primaryWhiteText,
-    borderWidth: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.secondaryBackground,
   },
   semesterItem: {
     color: Constants.Colors.primaryWhiteText,
