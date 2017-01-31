@@ -73,7 +73,13 @@ export default function setup(): ReactClass < any > {
   const store = configureStore();
 
   class Root extends React.Component {
-    render() {
+
+    /**
+     * Renders the base component.
+     *
+     * @return {ReactElement<any>} the base component for the app to render
+     */
+    render(): ReactElement < any > {
       return (
         <Provider store={store}>
           <CampusGuideApp />

@@ -34,6 +34,12 @@ import {
 import * as Constants from 'Constants';
 
 export default class ByCourse extends React.Component {
+
+  /**
+   * Renders a list of the user's courses, organized by course.
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render
+   */
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>

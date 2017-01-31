@@ -108,6 +108,9 @@ export default class RoomGrid extends React.Component {
     (this:any)._filterRooms = this._filterRooms.bind(this);
   }
 
+  /**
+   * Loads configuration file containing data of rooms.
+   */
   componentDidMount(): void {
     if (!this.state.loaded) {
       Configuration.init()

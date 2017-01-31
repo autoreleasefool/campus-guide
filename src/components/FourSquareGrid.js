@@ -63,6 +63,9 @@ const MAX_SQUARES: number = 4;
 
 export default class FourSquareGrid extends React.Component {
 
+  /**
+   * Properties this component expects to be provided by its parent.
+   */
   props: {
     onSelect: (index: number) => void,  // Callback for when user selects a section
     language: Language,                 // The user's currently selected language
@@ -78,6 +81,11 @@ export default class FourSquareGrid extends React.Component {
     this.props.onSelect(index);
   }
 
+  /**
+   * Renders a grid of four touchable components.
+   *
+   * @returns {ReactElement<any>} the hierarchy of components to render
+   */
   render(): ReactElement < any > {
     if (this.props.squares == null || this.props.squares.length > MAX_SQUARES) {
       console.error(`Too many squares for FourSquareGrid: ${this.props.squares.length}`);

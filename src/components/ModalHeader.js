@@ -78,7 +78,12 @@ export default class ModalHeader extends React.Component {
     this.props.onLeftAction && this.props.onLeftAction();
   }
 
-  render() {
+  /**
+   * Renders a header with left and right interactions and a title.
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render
+   */
+  render(): ReactElement < any > {
     const headerBackground = this.props.backgroundColor || Constants.Colors.primaryBackground;
     const leftActionStyle = {
       color: this.props.leftActionEnabled ? Constants.Colors.primaryWhiteText : Constants.Colors.secondaryWhiteText,

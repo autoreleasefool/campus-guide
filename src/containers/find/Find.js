@@ -62,7 +62,6 @@ import * as Constants from 'Constants';
 // Screen imports
 import Building from './Building';
 import Home from './Home';
-// const NavigationHome = require('NavigationHome');
 
 class Find extends React.Component {
 
@@ -147,6 +146,11 @@ class Find extends React.Component {
     }
   }
 
+  /**
+   * Renders a navigator to switch between views in the Find screen.
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render
+   */
   render(): ReactElement < any > {
     return (
       <Navigator

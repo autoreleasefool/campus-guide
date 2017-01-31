@@ -133,6 +133,11 @@ class TabBar extends React.Component {
     this.props.switchTab(Constants.Tabs[tab]);
   }
 
+  /**
+   * Renders an icon and name for each available tab in the bar.
+   *
+   * @returns {ReactElement<any>} the hierarchy of views to render
+   */
   render(): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);

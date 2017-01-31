@@ -310,8 +310,7 @@ class UpdateScreen extends React.Component {
   /**
    * Handles event for when progress update is received.
    *
-   * @param {Object} progress details about the progress of the download currently taking
-   *                                                  place
+   * @param {Object} progress details about the progress of the download currently taking place
    */
   _onDownloadProgress(progress: Object): void {
     this.props.onDownloadProgress(progress.bytesWritten);
