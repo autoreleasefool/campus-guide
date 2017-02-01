@@ -135,6 +135,20 @@ const socialMediaPlatforms = [
 ];
 
 /**
+ * Time constants
+ */
+const time = {
+  MILLISECONDS_IN_SECOND: 1000,
+  SECONDS_IN_MINUTE: 60,
+  MINUTES_IN_HOUR: 60,
+  HOURS_IN_DAY: 12,
+  DAYS_IN_WEEK: 7,
+  HOURS_UNDER_PREFIXED: 10,
+  MINUTES_UNDER_PREFIXED: 10,
+  SECONDS_UNDER_PREFIXED: 10,
+};
+
+/**
  * Set of views to navigate through within FIND tab
  */
 const Find = {
@@ -208,4 +222,9 @@ module.exports = {
     Find,
     Discover,
   },
+
+  /**
+   * Time constants
+   */
+  Time: time,
 };

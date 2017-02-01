@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  DatePickerIOS,
   Navigator,
   Picker,
   Platform,
@@ -70,9 +71,11 @@ type State = {
 // Imports
 import Header from 'Header';
 import ModalHeader from 'ModalHeader';
+import moment from 'moment';
 import * as Constants from 'Constants';
 import * as CoreTranslations from '../../../../assets/json/CoreTranslations.json';
 import * as TranslationUtils from 'TranslationUtils';
+import {convertTimeFormat} from 'TextUtils';
 
 // Navigation values
 const MENU = 0;
@@ -152,6 +155,36 @@ class LectureModal extends React.Component {
   }
 
   /**
+   * Converts a number of minutes since midnight to a string.
+   *
+   * @param {number}     minutesSinceMidnight minutes since midnight
+   * @param {TimeFormat} formatOverride       specify a format to return instead of the user's preference
+   * @returns {string} Returns a string of the format '1:00 pm' in 12 hour time or
+   *                   '13:00' in 24 hour time.
+   */
+  _getFormattedTime(minutesSinceMidnight: number, formatOverride: ?TimeFormat): string {
+    const hours = Math.floor(minutesSinceMidnight / Constants.Time.MINUTES_IN_HOUR);
+    const minutes = minutesSinceMidnight - (hours * Constants.Time.MINUTES_IN_HOUR);
+    const timeString = `${hours >= Constants.Time.HOURS_UNDER_PREFIXED ? '' : '0'}${hours}:`
+        + `${minutes >= Constants.Time.MINUTES_UNDER_PREFIXED ? '' : '0'}${minutes}`;
+    return convertTimeFormat(formatOverride || this.props.timeFormat, timeString);
+  }
+
+  /**
+   * Converts a time in 24h format to a number of minutes since midnight.
+   *
+   * @param {string} formattedTime the time to convert
+   * @returns {number} the minutes since midnight
+   */
+  _getMinutesFromMidnight(formattedTime: string): number {
+    const MINUTES_POSITION = 3;
+
+    const hours = parseInt(formattedTime.substr(0, 2));
+    const minutes = parseInt(formattedTime.substr(MINUTES_POSITION));
+    return hours * Constants.Time.MINUTES_IN_HOUR + minutes;
+  }
+
+  /**
    * Saves the lecture being edited or created.
    */
   _saveLecture(): void {
@@ -165,7 +198,12 @@ class LectureModal extends React.Component {
    */
   _showPicker(picking: number) {
     if (picking === PICKER_STARTS || picking === PICKER_ENDS) {
-      this.refs.Navigator.push({id: TIME_PICKER, picking});
+      if (Platform.OS === 'android') {
+        console.log('TODO: setup android picker');
+        throw new Error('No android picker setup');
+      } else {
+        this.refs.Navigator.push({id: TIME_PICKER, picking});
+      }
     } else {
       this.refs.Navigator.push({id: REGULAR_PICKER, picking});
     }
@@ -183,8 +221,10 @@ class LectureModal extends React.Component {
       name: 'chevron-right',
     };
 
-    const format: string = this.props.lectureFormats[this.state.format].code;
-    const day: string = DAYS[this.props.language][this.state.day] || '';
+    const format = this.props.lectureFormats[this.state.format].code;
+    const day = DAYS[this.props.language][this.state.day];
+    const startTime = this._getFormattedTime(this.state.starts);
+    const endTime = this._getFormattedTime(this.state.ends);
 
     return (
       <ScrollView>
@@ -200,8 +240,18 @@ class LectureModal extends React.Component {
               subtitleIcon={pickIcon}
               title={Translations.day} />
         </TouchableOpacity>
-        <Header title={Translations.starts} />
-        <Header title={Translations.ends} />
+        <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_STARTS)}>
+          <Header
+              subtitle={startTime}
+              subtitleIcon={pickIcon}
+              title={Translations.starts} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_ENDS)}>
+          <Header
+              subtitle={endTime}
+              subtitleIcon={pickIcon}
+              title={Translations.ends} />
+        </TouchableOpacity>
       </ScrollView>
     );
   }
@@ -254,7 +304,9 @@ class LectureModal extends React.Component {
         </TouchableOpacity>
         <Picker
             itemStyle={_styles.pickerItem}
+            prompt={Translations[title]}
             selectedValue={selectedValue}
+            style={_styles.pickerContainer}
             onValueChange={setValue}>
           {options.map((option, index) => {
             return (
@@ -277,12 +329,57 @@ class LectureModal extends React.Component {
    * @returns {ReactElement<any>} the time picker with the options to select between
    */
   _renderTimePicker(Translations: Object, picking: number): ReactElement < any > {
-    console.log(`TODO: pick ${picking}`);
+    let title: string = '';
+    let time = '13:00';
+    let setValue = () => this.setState({});
+    switch (picking) {
+      case PICKER_STARTS:
+        title = 'starts';
+        time = moment(this._getFormattedTime(this.state.starts, '24h'), 'HH:mm').toDate();
+        setValue = (value) => {
+          const updatedStartTime = this._getMinutesFromMidnight(moment(value).format('HH:mm'));
+          const updatedEndTime = updatedStartTime + (this.state.ends - this.state.starts);
+          this.setState({starts: updatedStartTime, ends: updatedEndTime});
+        };
+        break;
+      case PICKER_ENDS:
+        title = 'ends';
+        time = moment(this._getFormattedTime(this.state.ends, '24h'), 'HH:mm').toDate();
+        setValue = (value) => {
+          const updatedEndTime = this._getMinutesFromMidnight(moment(value).format('HH:mm'));
+          if (updatedEndTime > this.state.starts) {
+            this.setState({ends: updatedEndTime});
+          }
+        };
+        break;
+      default:
+        // do nothing
+        // TODO: return some error view
+    }
+
     return (
-      <View />
+      <View style={_styles.container}>
+        <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
+          <Header
+              icon={{name: 'ios-arrow-back', class: 'ionicon'}}
+              title={Translations[title]} />
+        </TouchableOpacity>
+        <DatePickerIOS
+            date={time}
+            minuteInterval={5}
+            mode={'time'}
+            style={_styles.pickerContainer}
+            onDateChange={setValue} />
+      </View>
     );
   }
 
+  /**
+   * Renders the current scene based on the navigation route.
+   *
+   * @param {Object} route the route to render
+   * @returns {ReactElement<any>} the rendering of the scene
+   */
   _renderScene(route: {id: number, picking?: number}): ReactElement < any > {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
@@ -345,9 +442,13 @@ const _styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
   },
+  pickerContainer: {
+    flex: 1,
+    backgroundColor: Constants.Colors.polarGrey,
+  },
   pickerItem: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
+    color: Constants.Colors.primaryBlackText,
+    fontSize: Constants.Sizes.Text.Subtitle,
   },
 });
 

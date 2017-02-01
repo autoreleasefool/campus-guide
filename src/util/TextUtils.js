@@ -31,6 +31,8 @@ import type {
   TimeFormat,
 } from 'types';
 
+import moment from 'moment';
+
 /**
  * Formats certain link formats to display.
  *
@@ -123,63 +125,31 @@ export function leftPad(text: string, desiredLength: number, char: ?string): str
  * Converts a time to either a 12h or 24h format. If the time is already in the format specified,
  * then it is returned. If the time is invalid, an error is thrown.
  *
- * @param {TimeFormat} format either '12' or '24',
+ * @param {TimeFormat} format either '12h' or '24h'
  * @param {string} time       the time to convert
  * @returns {string} the converted time, with 'am' or 'pm' suffix for 12h time format
  */
 export function convertTimeFormat(format: TimeFormat, time: string): string {
-  if (format !== '24h' && format !== '12h') {
-    throw new Error('Invalid time format: ' + format);
+  if (format !== '12h' && format !== '24h') {
+    throw new Error(`Invalid format argument: ${format}`);
   }
 
   if (/^([0-1][0-9]|2[0-4]):[0-5][0-9]$/.test(time)) {
-    // 24 hour time
     if (format === '24h') {
       return time;
-    } else {
-      // Convert to 12h time
-      let suffix;
-      let hours = parseInt(time.substr(0, 2));
-      if (hours >= 12) {
-        hours -= 12;
-        suffix = 'pm';
-      } else {
-        suffix = 'am';
-      }
-
-      if (hours === 0) {
-        hours = 12;
-      }
-
-      return `${hours}:${time.substr(3, 2)} ${suffix}`;
     }
+
+    return moment(time, 'HH:mm').format('h:mm a');
   } else if (/^([1-9]|1[0-2]):[0-5][0-9] ?[ap]\.?m\.?$/i.test(time)) {
-    // 12 hour time
     if (format === '12h') {
-      return time.replace(/[.]/g, '').toLowerCase();
-    } else {
-      const colonIndex = time.indexOf(':');
-
-      // Convert to 24h time
-      let hours = parseInt(time.substring(0, colonIndex));
-      if (/a/i.test(time)) {
-        // Time is AM
-        if (hours === 12) {
-          hours = 0;
-        }
-      } else {
-        // Time is PM
-        hours += 12;
-      }
-
-      const strHours = (hours < 10)
-          ? `0${hours}`
-          : hours.toString();
-
-      return `${strHours}:${time.substr(colonIndex + 1, 2)}`;
+      return time.toLowerCase().replace(/[.]/g, '');
     }
+
+    return moment(time, 'h:mm a')
+        .format('HH:mm')
+        .toLowerCase()
+        .replace(/[.]/g, '');
   } else {
-    // invalid time format
-    throw new Error('Invalid time format (not 12h or 24h): ' + time);
+    throw new Error(`Invalid time format: ${time}`);
   }
 }

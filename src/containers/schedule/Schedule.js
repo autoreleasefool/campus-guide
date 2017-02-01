@@ -206,6 +206,7 @@ class Schedule extends React.Component {
           ?
             <Picker
                 itemStyle={_styles.semesterItem}
+                prompt={Translations.semester}
                 selectedValue={this.props.currentSemester}
                 onValueChange={(value) => this.props.updateConfiguration({currentSemester: value})}>
               {this.props.semesters.map((semester, index) => {

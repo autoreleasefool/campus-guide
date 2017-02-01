@@ -27,9 +27,12 @@
 // React imports
 import React from 'react';
 import {
+  Navigator,
   Picker,
+  Platform,
   StyleSheet,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -69,6 +72,10 @@ import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
+// Navigation values
+const MENU = 0;
+const PICKER = 1;
+
 class CourseModal extends React.Component {
 
   /**
@@ -93,7 +100,21 @@ class CourseModal extends React.Component {
       semester: props.currentSemester,
     };
 
+    (this:any)._renderMenu = this._renderMenu.bind(this);
+    (this:any)._renderPicker = this._renderPicker.bind(this);
     (this:any)._saveCourse = this._saveCourse.bind(this);
+  }
+
+  /**
+   * Defines the transition between views.
+   *
+   * @returns {Object} a configuration for scene transitions in the navigator.
+   */
+  _configureScene(): Object {
+    return {
+      ...Navigator.SceneConfigs.PushFromRight,
+      gestures: false,
+    };
   }
 
   /**
@@ -101,6 +122,111 @@ class CourseModal extends React.Component {
    */
   _saveCourse(): void {
     console.log(`Saving course ${this.state.code}, ${this.state.semester}`);
+  }
+
+  /**
+   * Shows the picker to pick a semester.
+   */
+  _showSemesterPicker() {
+    if (Platform.OS === 'android') {
+      console.log('TODO: setup android picker');
+      throw new Error('No android picker setup');
+    } else {
+      this.refs.Navigator.push({id: PICKER});
+    }
+  }
+
+  /**
+   * Renders the values defined so far for the new course and elements to change them.
+   *
+   * @param {Object} Translations translations in the current language of certain text
+   * @returns {ReactElement<any>} the hierarchy of views to render
+   */
+  _renderMenu(Translations: Object): ReactElement < any > {
+    const semesterName = TranslationUtils.getTranslatedName(this.props.language,
+        this.props.semesters[this.state.semester]) || '';
+
+    return (
+      <KeyboardAwareScrollView>
+        <TouchableOpacity onPress={this._showSemesterPicker.bind(this)}>
+          <Header
+              subtitle={semesterName}
+              subtitleIcon={{class: 'material', name: 'chevron-right'}}
+              title={Translations.semester} />
+        </TouchableOpacity>
+        <Header title={Translations.course_code} />
+        <TextInput
+            autoCapitalize={'characters'}
+            returnKeyType={'done'}
+            style={_styles.textInput}
+            value={this.state.code}
+            onChangeText={(code) => this.setState({code})} />
+        <Header
+            subtitleCallback={() => this.props.onAddLecture()}
+            subtitleIcon={{class: 'material', name: 'add'}}
+            title={Translations.sessions} />
+      </KeyboardAwareScrollView>
+    );
+  }
+
+  /**
+   * Renders a picker with a set of semesters for the user to choose from.
+   *
+   * @param {Object} Translations translations in the current language of certain text
+   * @returns {ReactElement<any>} the picker with the options to select between
+   */
+  _renderPicker(Translations: Object): ReactElement < any > {
+    const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
+    const backArrowIcon: string = `${platformModifier}-arrow-back`;
+
+    return (
+      <View style={_styles.container}>
+        <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
+          <Header
+              icon={{name: backArrowIcon, class: 'ionicon'}}
+              title={Translations.semester} />
+        </TouchableOpacity>
+        <Picker
+            itemStyle={_styles.pickerItem}
+            prompt={Translations.semester}
+            selectedValue={this.state.semester}
+            style={_styles.pickerContainer}
+            onValueChange={(semester) => this.setState({semester})}>
+          {this.props.semesters.map((semester, index) => {
+            const name = TranslationUtils.getTranslatedName(this.props.language, semester);
+            return (
+              <Picker.Item
+                  key={name}
+                  label={name}
+                  value={index} />
+            );
+          })}
+        </Picker>
+      </View>
+    );
+  }
+
+  /**
+   * Renders the current scene based on the navigation route.
+   *
+   * @param {Object} route the route to render
+   * @returns {ReactElement<any>} the rendering of the scene
+   */
+  _renderScene(route: {id: number}): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+
+    switch (route.id) {
+      case MENU:
+        return this._renderMenu(Translations);
+      case PICKER:
+        return this._renderPicker(Translations);
+      default:
+        // TODO: return some error view
+        return (
+          <View />
+        );
+    }
   }
 
   /**
@@ -129,34 +255,12 @@ class CourseModal extends React.Component {
             title={Translations[modalTitle]}
             onLeftAction={() => this.props.onClose()}
             onRightAction={this._saveCourse} />
-        <KeyboardAwareScrollView>
-          <Header title={Translations.semester} />
-          <Picker
-              itemStyle={_styles.semesterItem}
-              selectedValue={this.state.semester}
-              onValueChange={(semester) => this.setState({semester})}>
-            {this.props.semesters.map((semester, index) => {
-              const name = TranslationUtils.getTranslatedName(this.props.language, semester);
-              return (
-                <Picker.Item
-                    key={name}
-                    label={name}
-                    value={index} />
-              );
-            })}
-          </Picker>
-          <Header title={Translations.course_code} />
-          <TextInput
-              autoCapitalize={'characters'}
-              returnKeyType={'done'}
-              style={_styles.textInput}
-              value={this.state.code}
-              onChangeText={(code) => this.setState({code})} />
-          <Header
-              subtitleCallback={() => this.props.onAddLecture()}
-              subtitleIcon={{class: 'material', name: 'add'}}
-              title={Translations.sessions} />
-        </KeyboardAwareScrollView>
+        <Navigator
+            configureScene={this._configureScene}
+            initialRoute={{id: MENU}}
+            ref='Navigator'
+            renderScene={this._renderScene.bind(this)}
+            style={_styles.container} />
       </View>
     );
   }
@@ -178,8 +282,13 @@ const _styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.secondaryBackground,
   },
-  semesterItem: {
-    color: Constants.Colors.primaryWhiteText,
+  pickerContainer: {
+    flex: 1,
+    backgroundColor: Constants.Colors.polarGrey,
+  },
+  pickerItem: {
+    color: Constants.Colors.primaryBlackText,
+    fontSize: Constants.Sizes.Text.Subtitle,
   },
 });
 
