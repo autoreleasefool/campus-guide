@@ -59,6 +59,7 @@ export default class Header extends React.Component {
     subtitle?: ?string,               // Subtitle text
     subtitleIcon?: ?Icon,             // Small icon for the subtitle
     subtitleCallback?: VoidFunction,  // Callback function for subtitle on press
+    largeSubtitle?: boolean,         // Request a larger font size for subtitles
   };
 
   /**
@@ -179,10 +180,14 @@ export default class Header extends React.Component {
    */
   _renderSubtitleText(color: string): ?ReactElement < any > {
     let subtitleText: ?ReactElement < any > = null;
+    const style = {
+      fontSize: this.props.largeSubtitle ? Constants.Sizes.Text.Body : Constants.Sizes.Text.Caption,
+      color,
+    };
 
     if (this.props.subtitle != null) {
       subtitleText = (
-        <Text style={[_styles.subtitleText, {color: color}]}>
+        <Text style={[_styles.subtitleText, style]}>
           {this.props.subtitle.toUpperCase()}
         </Text>
       );
@@ -246,7 +251,6 @@ const _styles = StyleSheet.create({
   },
   subtitleText: {
     alignSelf: 'center',
-    fontSize: Constants.Sizes.Text.Caption,
     marginRight: Constants.Sizes.Margins.Regular,
   },
   title: {

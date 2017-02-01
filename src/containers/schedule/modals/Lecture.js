@@ -230,24 +230,28 @@ class LectureModal extends React.Component {
       <ScrollView>
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_FORMAT)}>
           <Header
+              largeSubtitle={true}
               subtitle={format}
               subtitleIcon={pickIcon}
               title={Translations.format} />
         </TouchableOpacity>
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_DAY)}>
           <Header
+              largeSubtitle={true}
               subtitle={day}
               subtitleIcon={pickIcon}
               title={Translations.day} />
         </TouchableOpacity>
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_STARTS)}>
           <Header
+              largeSubtitle={true}
               subtitle={startTime}
               subtitleIcon={pickIcon}
               title={Translations.starts} />
         </TouchableOpacity>
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_ENDS)}>
           <Header
+              largeSubtitle={true}
               subtitle={endTime}
               subtitleIcon={pickIcon}
               title={Translations.ends} />

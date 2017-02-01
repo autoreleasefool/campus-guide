@@ -150,6 +150,7 @@ class CourseModal extends React.Component {
       <KeyboardAwareScrollView>
         <TouchableOpacity onPress={this._showSemesterPicker.bind(this)}>
           <Header
+              largeSubtitle={true}
               subtitle={semesterName}
               subtitleIcon={{class: 'material', name: 'chevron-right'}}
               title={Translations.semester} />
