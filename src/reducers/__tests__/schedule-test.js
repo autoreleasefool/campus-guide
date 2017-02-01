@@ -51,26 +51,6 @@ const testSemesters = [
   },
 ];
 
-// Basic courses for testing
-const testCourses = [
-  {
-    code: 'code1',
-    lectures: [],
-  },
-  {
-    code: 'code2',
-    lectures: [],
-  },
-  {
-    code: 'code1',
-    lectures: [
-      {
-        name: 'Empty Lecture',
-      },
-    ],
-  },
-];
-
 // Basic lectures for testing
 const testLectures = [
   {
@@ -90,6 +70,29 @@ const testLectures = [
     endTime: 180,
     format: 1,
     startTime: 90,
+  },
+];
+
+// Basic courses for testing
+const testCourses = [
+  {
+    code: 'code1',
+    lectures: [],
+  },
+  {
+    code: 'code2',
+    lectures: [
+      testLectures[0],
+      testLectures[1],
+    ],
+  },
+  {
+    code: 'code1',
+    lectures: [
+      {
+        name: 'Empty Lecture',
+      },
+    ],
   },
 ];
 
@@ -268,204 +271,9 @@ describe('schedule reducer', () => {
     );
   });
 
-  it('should add new lecture to the schedule', () => {
-    let state = reducer(initialState, {type: 'SCHEDULE_ADD_SEMESTER', semester: testSemesters[0]});
-    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[0]});
-    expect(
-      reducer(
-        state,
-        {
-          type: 'SCHEDULE_ADD_LECTURE',
-          semester: testSemesters[0].id,
-          courseCode: testCourses[0].code,
-          lecture: testLectures[0],
-        }
-      )
-    ).toEqual(
-      {
-        ...state,
-        semesters: {
-          semester1: {
-            ...state.semesters.semester1,
-            courses: [
-              {
-                ...testCourses[0],
-                lectures: [testLectures[0]],
-              },
-            ],
-          },
-        },
-      }
-    );
-  });
-
   it('should remove a lecture from the schedule', () => {
     let state = reducer(initialState, {type: 'SCHEDULE_ADD_SEMESTER', semester: testSemesters[0]});
-    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[0]});
-    state = reducer(
-      state,
-      {
-        type: 'SCHEDULE_ADD_LECTURE',
-        semester: testSemesters[0].id,
-        courseCode: testCourses[0].code,
-        lecture: testLectures[0],
-      }
-    );
-    state = reducer(
-      state,
-      {
-        type: 'SCHEDULE_ADD_LECTURE',
-        semester: testSemesters[0].id,
-        courseCode: testCourses[0].code,
-        lecture: testLectures[1],
-      }
-    );
-
-    expect(
-      reducer(
-        state,
-        {
-          type: 'SCHEDULE_REMOVE_LECTURE',
-          semester: testSemesters[0].id,
-          courseCode: testCourses[0].code,
-          day: testLectures[1].day,
-          startTime: testLectures[1].startTime,
-        }
-      )
-    ).toEqual(
-      {
-        ...state,
-        semesters: {
-          semester1: {
-            ...state.semesters.semester1,
-            courses: [
-              {
-                ...testCourses[0],
-                lectures: [testLectures[0]],
-              },
-            ],
-          },
-        },
-      }
-    );
-  });
-
-  it('should not find the semester to add a new lecture to the schedule', () => {
-    let state = reducer(initialState, {type: 'SCHEDULE_ADD_SEMESTER', semester: testSemesters[0]});
-    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[0]});
-    expect(
-      reducer(
-        state,
-        {
-          type: 'SCHEDULE_ADD_LECTURE',
-          semester: testSemesters[1].id,
-          courseCode: testCourses[0].code,
-          lecture: testLectures[0],
-        }
-      )
-    ).toEqual(
-      {
-        ...state,
-        semesters: {
-          semester1: {
-            ...state.semesters.semester1,
-            courses: [
-              {
-                ...testCourses[0],
-                lectures: [],
-              },
-            ],
-          },
-        },
-      }
-    );
-  });
-
-  it('should not find the semester to remove a lecture', () => {
-    let state = reducer(initialState, {type: 'SCHEDULE_ADD_SEMESTER', semester: testSemesters[0]});
-    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[0]});
-    state = reducer(
-      state,
-      {
-        type: 'SCHEDULE_ADD_LECTURE',
-        semester: testSemesters[0].id,
-        courseCode: testCourses[0].code,
-        lecture: testLectures[0],
-      }
-    );
-
-    expect(
-      reducer(
-        state,
-        {
-          type: 'SCHEDULE_REMOVE_LECTURE',
-          semester: testSemesters[1].id,
-          courseCode: testCourses[0].code,
-          day: testLectures[1].day,
-          startTime: testLectures[1].startTime,
-        }
-      )
-    ).toEqual(
-      {
-        ...state,
-        semesters: {
-          semester1: {
-            ...state.semesters.semester1,
-            courses: [
-              {
-                ...testCourses[0],
-                lectures: [testLectures[0]],
-              },
-            ],
-          },
-        },
-      }
-    );
-  });
-
-  it('should not find the course to add a new lecture to the schedule', () => {
-    let state = reducer(initialState, {type: 'SCHEDULE_ADD_SEMESTER', semester: testSemesters[0]});
-    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[0]});
-    expect(
-      reducer(
-        state,
-        {
-          type: 'SCHEDULE_ADD_LECTURE',
-          semester: testSemesters[0].id,
-          courseCode: testCourses[1].code,
-          lecture: testLectures[0],
-        }
-      )
-    ).toEqual(
-      {
-        ...state,
-        semesters: {
-          semester1: {
-            ...state.semesters.semester1,
-            courses: [
-              {
-                ...testCourses[0],
-                lectures: [],
-              },
-            ],
-          },
-        },
-      }
-    );
-  });
-
-  it('should not find the semester to remove a lecture', () => {
-    let state = reducer(initialState, {type: 'SCHEDULE_ADD_SEMESTER', semester: testSemesters[0]});
-    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[0]});
-    state = reducer(
-      state,
-      {
-        type: 'SCHEDULE_ADD_LECTURE',
-        semester: testSemesters[0].id,
-        courseCode: testCourses[0].code,
-        lecture: testLectures[0],
-      }
-    );
+    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[1]});
 
     expect(
       reducer(
@@ -486,9 +294,69 @@ describe('schedule reducer', () => {
             ...state.semesters.semester1,
             courses: [
               {
-                ...testCourses[0],
+                ...testCourses[1],
                 lectures: [testLectures[0]],
               },
+            ],
+          },
+        },
+      }
+    );
+  });
+
+  it('should not find the semester to remove a lecture', () => {
+    let state = reducer(initialState, {type: 'SCHEDULE_ADD_SEMESTER', semester: testSemesters[0]});
+    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[1]});
+
+    expect(
+      reducer(
+        state,
+        {
+          type: 'SCHEDULE_REMOVE_LECTURE',
+          semester: testSemesters[1].id,
+          courseCode: testCourses[1].code,
+          day: testLectures[1].day,
+          startTime: testLectures[1].startTime,
+        }
+      )
+    ).toEqual(
+      {
+        ...state,
+        semesters: {
+          semester1: {
+            ...state.semesters.semester1,
+            courses: [
+              testCourses[1],
+            ],
+          },
+        },
+      }
+    );
+  });
+
+  it('should not find the course to remove a lecture', () => {
+    let state = reducer(initialState, {type: 'SCHEDULE_ADD_SEMESTER', semester: testSemesters[0]});
+    state = reducer(state, {type: 'SCHEDULE_ADD_COURSE', semester: testSemesters[0].id, course: testCourses[1]});
+
+    expect(
+      reducer(
+        state,
+        {
+          type: 'SCHEDULE_REMOVE_LECTURE',
+          semester: testSemesters[0].id,
+          courseCode: testCourses[0].code,
+          day: testLectures[1].day,
+          startTime: testLectures[1].startTime,
+        }
+      )
+    ).toEqual(
+      {
+        ...state,
+        semesters: {
+          semester1: {
+            ...state.semesters.semester1,
+            courses: [
+              testCourses[1],
             ],
           },
         },

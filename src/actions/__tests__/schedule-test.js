@@ -71,26 +71,6 @@ describe('schedule actions', () => {
     expect(actions.removeCourse(semester, courseCode)).toEqual(expectedAction);
   });
 
-  it('creates an action to add a lecture', () => {
-    const semester = 'semester1';
-    const courseCode = 'COURSE_CODE';
-    const lecture = {
-      day: 1,
-      endTime: 90,
-      format: 0,
-      startTime: 0,
-    };
-
-    const expectedAction = {
-      type: 'SCHEDULE_ADD_LECTURE',
-      semester,
-      courseCode,
-      lecture,
-    };
-
-    expect(actions.addLecture(semester, courseCode, lecture)).toEqual(expectedAction);
-  });
-
   it('creates an action to remove a lecture', () => {
     const semester = 'semester1';
     const courseCode = 'COURSE_CODE';

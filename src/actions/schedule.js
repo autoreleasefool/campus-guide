@@ -47,12 +47,6 @@ module.exports = {
     semester,
     courseCode,
   }),
-  addLecture: (semester: string, courseCode: string, lecture: Lecture): Action => ({
-    type: 'SCHEDULE_ADD_LECTURE',
-    semester,
-    courseCode,
-    lecture,
-  }),
   removeLecture: (semester: string, courseCode: string, day: number, startTime: number): Action => ({
     type: 'SCHEDULE_REMOVE_LECTURE',
     semester,

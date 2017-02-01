@@ -104,28 +104,6 @@ function schedule(state: State = initialState, action: Action): State {
         semesters,
       };
     }
-    case 'SCHEDULE_ADD_LECTURE': {
-      if (!(action.semester in state.semesters)) {
-        return state;
-      }
-
-      const semesters = JSON.parse(JSON.stringify(state.semesters));
-      const courses = semesters[action.semester].courses;
-
-      // Find the course to add the lecture to
-      const position = ArrayUtils.binarySearchObjectArrayByKeyValue(courses, 'code', action.courseCode);
-      if (position >= 0) {
-        courses[position].lectures.push(action.lecture);
-        ArrayUtils.sortObjectArrayByKeyValues(courses[position].lectures, 'day', 'startTime');
-      } else {
-        return state;
-      }
-
-      return {
-        ...state,
-        semesters,
-      };
-    }
     case 'SCHEDULE_REMOVE_LECTURE': {
       if (!(action.semester in state.semesters)) {
         return state;
