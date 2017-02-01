@@ -42,22 +42,23 @@ import {connect} from 'react-redux';
 
 // Types
 import type {
+  Course,
   Language,
+  Lecture,
   LectureFormat,
-  Semester,
   TimeFormat,
   VoidFunction,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  addingLecture: boolean,                   // True when adding a new course, false when editing
-  currentSemester: number,                  // The current semester, selected by the user
-  language: Language,                       // The current language, selected by the user
-  lectureFormats: Array < LectureFormat >,  // Array of available lecture types
-  semesters: Array < Semester >,            // Semesters available at the university
-  timeFormat: TimeFormat,                   // The user's preferred time format
-  onClose: VoidFunction,                    // Callback for when the modal is closed
+  addingLecture: boolean,                     // True when adding a new course, false when editing
+  course: Course,                             // The course the lecture will be added to
+  language: Language,                         // The current language, selected by the user
+  lectureFormats: Array < LectureFormat >,    // Array of available lecture types
+  timeFormat: TimeFormat,                     // The user's preferred time format
+  onClose: VoidFunction,                      // Callback for when the modal is closed
+  onSaveLecture: (lecture: Lecture) => void,  // Callback to save a lecture
 };
 
 // Type definition for component state.
@@ -66,6 +67,7 @@ type State = {
   format: number,                           // Format type of the lecture
   starts: number,                           // Start time of the lecture, in minutes from midnight
   ends: number,                             // End time of the lecture, in minutes from midnight
+  rightActionEnabled: boolean,              // Indicates if the right modal action should be enabled
 };
 
 // Imports
@@ -110,6 +112,15 @@ const DAYS: {en: Array < string >, fr: Array < string >} = {
   ],
 };
 
+// Default day of a new lecture
+const DEFAULT_DAY = 0;          // Monday
+// Default format of a new lecture
+const DEFAULT_FORMAT = 0;       // LEC
+// Default start time of a new lecture
+const DEFAULT_START_TIME = 780; // 1:00 pm
+// Default end time of a new lecture
+const DEFAULT_END_TIME = 870;   // 2:30 pm
+
 class LectureModal extends React.Component {
 
   /**
@@ -130,16 +141,17 @@ class LectureModal extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      day: 0,
-      format: 0,
-      starts: 780,
-      ends: 870,
+      day: DEFAULT_DAY,
+      format: DEFAULT_FORMAT,
+      starts: DEFAULT_START_TIME,
+      ends: DEFAULT_END_TIME,
+      rightActionEnabled: this._isLectureStartUnique(props.course, 0, DEFAULT_START_TIME),
     };
 
+    (this:any)._isLectureStartUnique = this._isLectureStartUnique.bind(this);
     (this:any)._renderMenu = this._renderMenu.bind(this);
     (this:any)._renderRegularPicker = this._renderRegularPicker.bind(this);
     (this:any)._renderTimePicker = this._renderTimePicker.bind(this);
-    (this:any)._saveLecture = this._saveLecture.bind(this);
   }
 
   /**
@@ -188,7 +200,72 @@ class LectureModal extends React.Component {
    * Saves the lecture being edited or created.
    */
   _saveLecture(): void {
-    console.log(`Saving lecture ${this.state.format}, ${this.state.day}, ${this.state.starts}, ${this.state.ends}`);
+    const day = this.state.day;
+    const format = this.state.format;
+    const startTime = this.state.starts;
+    const endTime = this.state.ends;
+
+    if (!this._isLectureStartUnique(this.props.course, day, startTime)) {
+      return;
+    }
+
+    this.props.onSaveLecture({day, format, startTime, endTime}); // TODO: add location
+    this.props.onClose();
+  }
+
+  /**
+   * Checks if the start time of a lecture is unique.
+   *
+   * @param {Course} course    the course to check
+   * @param {number} day       the day the lecture takes place
+   * @param {number} startTime the start time of the lecture in minutes since midnight
+   * @returns {boolean} true if the lecture start time is unique on the day, false otherwise
+   */
+  _isLectureStartUnique(course: Course, day: number, startTime: number): boolean {
+    const lecturesLength = course.lectures.length;
+    for (let i = 0; i < lecturesLength; i++) {
+      if (course.lectures[i].day === day
+          && course.lectures[i].startTime === startTime) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Sets the day the lecture will occur.
+   *
+   * @param {number} day day of the week. 0 is monday
+   */
+  _setDay(day: number): void {
+    const rightActionEnabled = this._isLectureStartUnique(this.props.course, day, this.state.starts);
+    this.setState({day, rightActionEnabled});
+  }
+
+  /**
+   * Sets the start or end time for the lecture
+   *
+   * @param {Date}    time        the time to set
+   * @param {boolean} isStartTime true to set the start time, false to set ends time
+   */
+  _setTime(time: Date, isStartTime: boolean): void {
+    if (isStartTime) {
+      const updatedStartTime = this._getMinutesFromMidnight(moment(time).format('HH:mm'));
+      const updatedEndTime = updatedStartTime + (this.state.ends - this.state.starts);
+      const rightActionEnabled = this._isLectureStartUnique(this.props.course, this.state.day, updatedStartTime);
+
+      this.setState({
+        starts: updatedStartTime,
+        ends: updatedEndTime,
+        rightActionEnabled,
+      });
+    } else {
+      const updatedEndTime = this._getMinutesFromMidnight(moment(time).format('HH:mm'));
+      if (updatedEndTime > this.state.starts) {
+        this.setState({ends: updatedEndTime});
+      }
+    }
   }
 
   /**
@@ -292,7 +369,7 @@ class LectureModal extends React.Component {
         options = DAYS[this.props.language];
         selectedValue = this.state.day;
         getName = (day) => DAYS[this.props.language][day];
-        setValue = (value) => this.setState({day: value});
+        setValue = (value) => this._setDay(value);
         break;
       default:
         // do nothing
@@ -340,21 +417,12 @@ class LectureModal extends React.Component {
       case PICKER_STARTS:
         title = 'starts';
         time = moment(this._getFormattedTime(this.state.starts, '24h'), 'HH:mm').toDate();
-        setValue = (value) => {
-          const updatedStartTime = this._getMinutesFromMidnight(moment(value).format('HH:mm'));
-          const updatedEndTime = updatedStartTime + (this.state.ends - this.state.starts);
-          this.setState({starts: updatedStartTime, ends: updatedEndTime});
-        };
+        setValue = (value) => this._setTime(value, true);
         break;
       case PICKER_ENDS:
         title = 'ends';
         time = moment(this._getFormattedTime(this.state.ends, '24h'), 'HH:mm').toDate();
-        setValue = (value) => {
-          const updatedEndTime = this._getMinutesFromMidnight(moment(value).format('HH:mm'));
-          if (updatedEndTime > this.state.starts) {
-            this.setState({ends: updatedEndTime});
-          }
-        };
+        setValue = (value) => this._setTime(value, false);
         break;
       default:
         // do nothing
@@ -424,11 +492,11 @@ class LectureModal extends React.Component {
         <ModalHeader
             leftActionEnabled={true}
             leftActionText={Translations.cancel}
-            rightActionEnabled={true}
+            rightActionEnabled={this.state.rightActionEnabled}
             rightActionText={Translations[modalRightAction]}
             title={Translations[modalTitle]}
             onLeftAction={() => this.props.onClose()}
-            onRightAction={this._saveLecture} />
+            onRightAction={this._saveLecture.bind(this)} />
         <Navigator
             configureScene={this._configureScene}
             initialRoute={{id: MENU}}
@@ -459,10 +527,7 @@ const _styles = StyleSheet.create({
 // Map state to props
 const select = (store) => {
   return {
-    currentSemester: store.config.currentSemester,
     language: store.config.language,
-    schedule: store.schedule.semesters,
-    semesters: store.config.semesters,
     timeFormat: store.config.preferredTimeFormat,
   };
 };

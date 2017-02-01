@@ -28,7 +28,6 @@
 import type {
   Action,
   Course,
-  Lecture,
   Semester,
 } from 'types';
 

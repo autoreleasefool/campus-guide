@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  Modal,
   Navigator,
   Picker,
   Platform,
@@ -42,6 +43,8 @@ import {connect} from 'react-redux';
 // Types
 import type {
   Language,
+  Lecture,
+  LectureFormat,
   Semester,
   TimeFormat,
   VoidFunction,
@@ -49,28 +52,32 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  addingCourse: boolean,          // True when adding a new course, false when editing
-  currentSemester: number,        // The current semester, selected by the user
-  language: Language,             // The current language, selected by the user
-  semesters: Array < Semester >,  // Semesters available at the university
-  timeFormat: TimeFormat,         // The user's preferred time format
-  onAddLecture: VoidFunction,     // Callback for when the user requests to add a new lecture
-  onEditLecture: any,             // TODO: get proper function signature
-  onClose: VoidFunction,          // Callback for when the modal is closed
+  addingCourse: boolean,                    // True when adding a new course, false when editing
+  currentSemester: number,                  // The current semester, selected by the user
+  language: Language,                       // The current language, selected by the user
+  lectureFormats: Array < LectureFormat >,  // Array of available lecture types
+  semesters: Array < Semester >,            // Semesters available at the university
+  timeFormat: TimeFormat,                   // The user's preferred time format
+  onClose: VoidFunction,                    // Callback for when the modal is closed
 };
 
 // Type definition for component state.
 type State = {
-  code: string,     // Value for course code
-  semester: number, // Value for course semester
+  addingLecture: boolean,       // True to use the lecture modal to add a lecture, false to edit
+  code: string,                 // Value for course code
+  lectureModalVisible: boolean, // True to show the modal to add or edit a lecture
+  lectures: Array < Lecture >,  // The lectures in the course
+  semester: number,             // Value for course semester
 };
 
 // Imports
 import Header from 'Header';
+import LectureModal from './Lecture';
 import ModalHeader from 'ModalHeader';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {sortObjectArrayByKeyValues} from 'ArrayUtils';
 
 // Navigation values
 const MENU = 0;
@@ -96,13 +103,36 @@ class CourseModal extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
+      addingLecture: true,
       code: '',
+      lectures: [],
+      lectureModalVisible: false,
       semester: props.currentSemester,
     };
 
+    (this:any)._closeModal = this._closeModal.bind(this);
     (this:any)._renderMenu = this._renderMenu.bind(this);
     (this:any)._renderPicker = this._renderPicker.bind(this);
     (this:any)._saveCourse = this._saveCourse.bind(this);
+  }
+
+  /**
+   * Adds a lecture to the course, or overrides an existing lecture.
+   *
+   * @param {Lecture} lecture the lecture to add
+   */
+  _addLecture(lecture: Lecture): void {
+    const lectures = this.state.lectures.slice();
+    lectures.push(lecture);
+    sortObjectArrayByKeyValues(lectures, 'day', 'startTime');
+    this.setState({lectures});
+  }
+
+  /**
+   * Closes the lecture modal.
+   */
+  _closeModal(): void {
+    this.setState({lectureModalVisible: false});
   }
 
   /**
@@ -122,6 +152,18 @@ class CourseModal extends React.Component {
    */
   _saveCourse(): void {
     console.log(`Saving course ${this.state.code}, ${this.state.semester}`);
+  }
+
+  /**
+   * Opens the lecture modal to add or edit a lecture.
+   *
+   * @param {boolean} addingLecture true to use the modal to add a lecture, false to edit
+   */
+  _showLectureModal(addingLecture: boolean): void {
+    this.setState({
+      lectureModalVisible: true,
+      addingLecture,
+    });
   }
 
   /**
@@ -163,9 +205,14 @@ class CourseModal extends React.Component {
             value={this.state.code}
             onChangeText={(code) => this.setState({code})} />
         <Header
-            subtitleCallback={() => this.props.onAddLecture()}
+            subtitleCallback={this._showLectureModal.bind(this, true)}
             subtitleIcon={{class: 'material', name: 'add'}}
             title={Translations.sessions} />
+        {this.state.lectures.map((lecture, index) => (
+          <Header
+              key={index}
+              title={`${lecture.day} - ${lecture.startTime}`} />
+        ))}
       </KeyboardAwareScrollView>
     );
   }
@@ -248,6 +295,18 @@ class CourseModal extends React.Component {
 
     return (
       <View style={_styles.container}>
+        <Modal
+            animationType={'slide'}
+            transparent={false}
+            visible={this.state.lectureModalVisible}
+            onRequestClose={this._closeModal}>
+          <LectureModal
+              addingLecture={this.state.addingLecture}
+              course={{code: this.state.code, lectures: this.state.lectures}}
+              lectureFormats={this.props.lectureFormats}
+              onClose={this._closeModal}
+              onSaveLecture={this._addLecture.bind(this)} />
+        </Modal>
         <ModalHeader
             leftActionEnabled={true}
             leftActionText={Translations.cancel}

@@ -62,25 +62,20 @@ type Props = {
 // Type definition for component state.
 type State = {
   addingCourse: boolean,                    // True to use the course modal to add a course, false to edit
-  addingLecture: boolean,                   // True to use the lecture modal to add a lecture, false to edit
   courseModalVisible: boolean,              // True to show the modal to add or edit a course
-  lectureModalVisible: boolean,             // True to show the modal to add or edit a lecture
   lectureFormats: Array < LectureFormat >,  // Array of available lecture types
   showSemesters: boolean,                   // True to show drop down to swap semesters
 };
 
 // Imports
 import ActionButton from 'react-native-action-button';
+import CourseModal from './modals/Course';
 import Header from 'Header';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 import {getPlatformIcon} from 'DisplayUtils';
-
-// Modals
-import CourseModal from './modals/Course';
-import LectureModal from './modals/Lecture';
 
 // Tabs
 import Weekly from './WeeklyView';
@@ -119,13 +114,12 @@ class Schedule extends React.Component {
     super(props);
     this.state = {
       addingCourse: true,
-      addingLecture: true,
       courseModalVisible: false,
-      lectureModalVisible: false,
       lectureFormats: [],
       showSemesters: false,
     };
 
+    (this:any)._closeModal = this._closeModal.bind(this);
     (this:any)._toggleSwitchSemester = this._toggleSwitchSemester.bind(this);
   }
 
@@ -139,6 +133,13 @@ class Schedule extends React.Component {
   }
 
   /**
+   * Closes the course modal.
+   */
+  _closeModal(): void {
+    this.setState({courseModalVisible: false});
+  }
+
+  /**
    * Opens the course modal to add or edit a course.
    *
    * @param {boolean} addingCourse true to use the modal to add a course, false to edit
@@ -148,31 +149,6 @@ class Schedule extends React.Component {
       courseModalVisible: true,
       addingCourse,
     });
-  }
-
-  /**
-   * Opens the lecture modal to add or edit a lecture.
-   *
-   * @param {boolean} addingLecture true to use the modal to add a lecture, false to edit
-   */
-  _showLectureModal(addingLecture: boolean): void {
-    this.setState({
-      lectureModalVisible: true,
-      addingLecture,
-    });
-  }
-
-  /**
-   * Closes the specified modal.
-   *
-   * @param {boolean} courseOrLecture true to hide the course modal, false to hide the lecture modal
-   */
-  _closeModal(courseOrLecture: boolean): void {
-    if (courseOrLecture) {
-      this.setState({courseModalVisible: false});
-    } else {
-      this.setState({lectureModalVisible: false});
-    }
   }
 
   /**
@@ -239,22 +215,11 @@ class Schedule extends React.Component {
             animationType={'slide'}
             transparent={false}
             visible={this.state.courseModalVisible}
-            onRequestClose={this._closeModal.bind(this, true)}>
-          <Modal
-              animationType={'slide'}
-              transparent={false}
-              visible={this.state.lectureModalVisible}
-              onRequestClose={this._closeModal.bind(this, false)}>
-            <LectureModal
-                addingLecture={this.state.addingLecture}
-                lectureFormats={this.state.lectureFormats}
-                onClose={this._closeModal.bind(this, false)} />
-          </Modal>
+            onRequestClose={this._closeModal}>
           <CourseModal
               addingCourse={this.state.addingCourse}
-              onAddLecture={this._showLectureModal.bind(this, true)}
-              onClose={this._closeModal.bind(this, true)}
-              onEditLecture={this._showLectureModal.bind(this, false)} />
+              lectureFormats={this.state.lectureFormats}
+              onClose={this._closeModal} />
         </Modal>
         <ScrollableTabView
             style={{borderBottomWidth: 0}}
@@ -297,7 +262,6 @@ const select = (store) => {
   return {
     currentSemester: store.config.currentSemester,
     language: store.config.language,
-    schedule: store.schedule.semesters,
     semesters: store.config.semesters,
     timeFormat: store.config.preferredTimeFormat,
   };
