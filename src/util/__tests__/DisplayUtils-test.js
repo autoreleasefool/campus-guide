@@ -23,6 +23,28 @@
  */
 'use strict';
 
+// Mock translations for days
+jest.mock('../../../assets/json/CoreTranslations.json', () => ({
+  en: {
+    monday: 'Day',
+    tuesday: 'Day',
+    wednesday: 'Day',
+    thursday: 'Day',
+    friday: 'Day',
+    saturday: 'Day',
+    sunday: 'Day',
+  },
+  fr: {
+    monday: 'Day',
+    tuesday: 'Day',
+    wednesday: 'Day',
+    thursday: 'Day',
+    friday: 'Day',
+    saturday: 'Day',
+    sunday: 'Day',
+  },
+}));
+
 // Require the modules used in testing
 import * as Constants from 'Constants';
 import * as DisplayUtils from '../DisplayUtils';

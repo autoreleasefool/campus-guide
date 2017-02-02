@@ -25,6 +25,8 @@
  */
 'use strict';
 
+import * as CoreTranslations from '../assets/json/CoreTranslations.json';
+
 /**
  * Theme colors.
  */
@@ -149,6 +151,30 @@ const time = {
 };
 
 /**
+ * Day translations, in order.
+ */
+const days = {
+  en: [
+    CoreTranslations.en.monday,
+    CoreTranslations.en.tuesday,
+    CoreTranslations.en.wednesday,
+    CoreTranslations.en.thursday,
+    CoreTranslations.en.friday,
+    CoreTranslations.en.saturday,
+    CoreTranslations.en.sunday,
+  ],
+  fr: [
+    CoreTranslations.fr.monday,
+    CoreTranslations.fr.tuesday,
+    CoreTranslations.fr.wednesday,
+    CoreTranslations.fr.thursday,
+    CoreTranslations.fr.friday,
+    CoreTranslations.fr.saturday,
+    CoreTranslations.fr.sunday,
+  ],
+};
+
+/**
  * Set of views to navigate through within FIND tab
  */
 const Find = {
@@ -176,16 +202,22 @@ module.exports = {
     primaryBackground: colors.garnet,                     // Primary background color for the application
     secondaryBackground: colors.charcoalGrey,             // Secondary background color for the application
     primaryWhiteText: colors.white,                       // Primary color when white text is needed
-    secondaryWhiteText: colors.transparentWhite,            // Secondary color when white text is needed
+    secondaryWhiteText: colors.transparentWhite,          // Secondary color when white text is needed
     primaryBlackText: colors.black,                       // Primary color when black text is needed
     secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
     primaryWhiteIcon: colors.white,                       // Primary color when white text is needed
-    secondaryWhiteIcon: colors.transparentWhite,            // Secondary color when white text is needed
+    secondaryWhiteIcon: colors.transparentWhite,          // Secondary color when white text is needed
     primaryBlackIcon: colors.black,                       // Primary color when black text is needed
     secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black text is needed
     darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
+    darkMoreTransparentBackground: 'rgba(0,0,0,0.2)',     // Dark transparent background color for components
     lightTransparentBackground: 'rgba(255,255,255,0.8)',  // Light transparent background color for components
   },
+
+  /**
+   * Day translations
+   */
+  Days: days,
 
   /**
    * Common element sizes to use throughout the application.

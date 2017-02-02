@@ -32,6 +32,7 @@ import type {
 } from 'types';
 
 import moment from 'moment';
+import * as Constants from 'Constants';
 
 /**
  * Formats certain link formats to display.
@@ -152,4 +153,22 @@ export function convertTimeFormat(format: TimeFormat, time: string): string {
   } else {
     throw new Error(`Invalid time format: ${time}`);
   }
+}
+
+/**
+ * Converts a number of minutes since midnight to a string.
+ *
+ * @param {number}     minutesSinceMidnight minutes since midnight
+ * @param {TimeFormat} format               specify a format to return
+ * @returns {string} Returns a string of the format '1:00 pm' in 12 hour time or
+ *                   '13:00' in 24 hour time.
+ */
+export function getFormattedTimeSinceMidnight(
+    minutesSinceMidnight: number,
+    format: TimeFormat): string {
+  const hours = Math.floor(minutesSinceMidnight / Constants.Time.MINUTES_IN_HOUR);
+  const minutes = minutesSinceMidnight - (hours * Constants.Time.MINUTES_IN_HOUR);
+  const timeString = `${hours >= Constants.Time.HOURS_UNDER_PREFIXED ? '' : '0'}${hours}:`
+      + `${minutes >= Constants.Time.MINUTES_UNDER_PREFIXED ? '' : '0'}${minutes}`;
+  return convertTimeFormat(format, timeString);
 }

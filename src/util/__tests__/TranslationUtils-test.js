@@ -53,28 +53,6 @@ jest.setMock('Configuration', {
   },
 });
 
-// Mock translations for days
-jest.setMock('../../../assets/json/CoreTranslations.json', {
-  en: {
-    monday: 'Day',
-    tuesday: 'Day',
-    wednesday: 'Day',
-    thursday: 'Day',
-    friday: 'Day',
-    saturday: 'Day',
-    sunday: 'Day',
-  },
-  fr: {
-    monday: 'Day',
-    tuesday: 'Day',
-    wednesday: 'Day',
-    thursday: 'Day',
-    friday: 'Day',
-    saturday: 'Day',
-    sunday: 'Day',
-  },
-});
-
 // An object with non-translated properties.
 const objectWithDefaultProperties = {
   details: 'default_details',
@@ -110,17 +88,6 @@ describe('TranslationUtils-test', () => {
   beforeEach(() => {
     initShouldThrowError = false;
     getConfigShouldThrowError = false;
-  });
-
-  it('tests that converting a number to a day returns a valid value', () => {
-    const NUMBER_OF_DAYS = 7;
-    for (let i = 0; i < NUMBER_OF_DAYS; i++) {
-      expect(TranslationUtils.numberToDay('en', i)).toBe('Day');
-      expect(TranslationUtils.numberToDay('fr', i)).toBe('Day');
-    }
-
-    expect(TranslationUtils.numberToDay('en', -1)).toBeNull();
-    expect(TranslationUtils.numberToDay('fr', -1)).toBeNull();
   });
 
   it('tests invalid configuration while loading translations', async () => {

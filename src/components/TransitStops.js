@@ -307,7 +307,7 @@ export default class TransitStops extends React.Component {
         for (const day in stopRoutes[i].days) {
           if (!matches && adjustedSearchTerms != null && stopRoutes[i].days.hasOwnProperty(day)) {
             for (let j = 0; j < day.length; j++) {
-              const weekday = TranslationUtils.numberToDay(this.props.language, parseInt(day.charAt(j)));
+              const weekday = Constants.Days[this.props.language][parseInt(day.charAt(j))];
 
               if (weekday != null && weekday.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
                 matches = true;

@@ -23,6 +23,28 @@
  */
 'use strict';
 
+// Mock translations for days
+jest.mock('../../../assets/json/CoreTranslations.json', () => ({
+  en: {
+    monday: 'Day',
+    tuesday: 'Day',
+    wednesday: 'Day',
+    thursday: 'Day',
+    friday: 'Day',
+    saturday: 'Day',
+    sunday: 'Day',
+  },
+  fr: {
+    monday: 'Day',
+    tuesday: 'Day',
+    wednesday: 'Day',
+    thursday: 'Day',
+    friday: 'Day',
+    saturday: 'Day',
+    sunday: 'Day',
+  },
+}));
+
 // An example valid URL to open.
 const exampleURL = 'http://google.com';
 // An example valid telephone number to open.
@@ -148,5 +170,20 @@ describe('TextUtils-test', () => {
         expect(TextUtils.get24HourAdjustedTime(time)).toBe(expectedTimeFormats[time]);
       }
     }
+  });
+
+  it('tests converting a time in minutes since midnight to text', () => {
+
+    /* eslint-disable no-magic-numbers */
+
+    expect(TextUtils.getFormattedTimeSinceMidnight(0, '24h')).toEqual('00:00');
+    expect(TextUtils.getFormattedTimeSinceMidnight(0, '12h')).toEqual('12:00 am');
+    expect(TextUtils.getFormattedTimeSinceMidnight(321, '24h')).toEqual('05:21');
+    expect(TextUtils.getFormattedTimeSinceMidnight(321, '12h')).toEqual('5:21 am');
+    expect(TextUtils.getFormattedTimeSinceMidnight(1300, '24h')).toEqual('21:40');
+    expect(TextUtils.getFormattedTimeSinceMidnight(1300, '12h')).toEqual('9:40 pm');
+
+    /* eslint-enable no-magic-numbers */
+
   });
 });
