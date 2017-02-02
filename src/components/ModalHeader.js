@@ -48,6 +48,9 @@ import * as Constants from 'Constants';
 const MODAL_HEADER_HEIGHT = 50;
 const screenWidth = Dimensions.get('window').width;
 
+// Default opacity when touching a left or right action
+const DEFAULT_TOUCH_OPACITY = 0.4;
+
 export default class ModalHeader extends React.Component {
 
   /**
@@ -99,7 +102,9 @@ export default class ModalHeader extends React.Component {
           ? null
           :
           <View style={_styles.leftActionWrapper}>
-            <TouchableOpacity onPress={this._onLeftAction.bind(this)}>
+            <TouchableOpacity
+                activeOpacity={this.props.leftActionEnabled ? DEFAULT_TOUCH_OPACITY : 1}
+                onPress={this._onLeftAction.bind(this)}>
               <Text style={[_styles.action, leftActionStyle]}>{this.props.leftActionText}</Text>
             </TouchableOpacity>
           </View>}
@@ -107,7 +112,9 @@ export default class ModalHeader extends React.Component {
           ? null
           :
           <View style={_styles.rightActionWrapper}>
-            <TouchableOpacity onPress={this._onRightAction.bind(this)}>
+            <TouchableOpacity
+                activeOpacity={this.props.rightActionEnabled ? DEFAULT_TOUCH_OPACITY : 1}
+                onPress={this._onRightAction.bind(this)}>
               <Text style={[_styles.action, rightActionStyle]}>{this.props.rightActionText}</Text>
             </TouchableOpacity>
           </View>}
