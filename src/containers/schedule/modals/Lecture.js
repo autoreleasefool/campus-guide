@@ -42,7 +42,9 @@ import {connect} from 'react-redux';
 
 // Types
 import type {
+  Building,
   Course,
+  Destination,
   Language,
   Lecture,
   LectureFormat,
@@ -63,31 +65,37 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  day: number,                              // Day of the week the lecture takes place. 0 for monday.
-  format: number,                           // Format type of the lecture
-  starts: number,                           // Start time of the lecture, in minutes from midnight
-  ends: number,                             // End time of the lecture, in minutes from midnight
-  rightActionEnabled: boolean,              // Indicates if the right modal action should be enabled
+  day: number,                  // Day of the week the lecture takes place. 0 for monday.
+  format: number,               // Format type of the lecture
+  starts: number,               // Start time of the lecture, in minutes from midnight
+  ends: number,                 // End time of the lecture, in minutes from midnight\
+  location: ?Destination,       // Location where the class will take place
+  rightActionEnabled: boolean,  // Indicates if the right modal action should be enabled
 };
 
 // Imports
+import BuildingGrid from 'BuildingGrid';
 import Header from 'Header';
 import ModalHeader from 'ModalHeader';
 import moment from 'moment';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
-import {getFormattedTimeSinceMidnight} from 'TextUtils';
+import {destinationToString, getFormattedTimeSinceMidnight} from 'TextUtils';
 
 // Navigation values
 const MENU = 0;
 const REGULAR_PICKER = 1;
 const TIME_PICKER = 2;
+const BUILDING_PICKER = 3;
+const ROOM_PICKER = 4;
 
 // Values to select by picker
 const PICKER_FORMAT = 0;
 const PICKER_DAY = 1;
 const PICKER_STARTS = 2;
 const PICKER_ENDS = 3;
+const PICKER_BUILDING = 4;
+const PICKER_ROOM = 5;
 
 // Default day of a new lecture
 const DEFAULT_DAY = 0;          // Monday
@@ -97,6 +105,11 @@ const DEFAULT_FORMAT = 0;       // LEC
 const DEFAULT_START_TIME = 780; // 1:00 pm
 // Default end time of a new lecture
 const DEFAULT_END_TIME = 870;   // 2:30 pm
+// Default location of a new lecture
+const DEFAULT_LOCATION = null;  // null
+
+// Number of columns to display buildings in
+const BUILDING_COLUMNS = 3;
 
 class LectureModal extends React.Component {
 
@@ -122,6 +135,7 @@ class LectureModal extends React.Component {
       format: DEFAULT_FORMAT,
       starts: DEFAULT_START_TIME,
       ends: DEFAULT_END_TIME,
+      location: DEFAULT_LOCATION,
       rightActionEnabled: this._isLectureStartUnique(props.course, 0, DEFAULT_START_TIME),
     };
 
@@ -165,12 +179,13 @@ class LectureModal extends React.Component {
     const format = this.state.format;
     const startTime = this.state.starts;
     const endTime = this.state.ends;
+    const location = this.state.location;
 
     if (!this._isLectureStartUnique(this.props.course, day, startTime)) {
       return;
     }
 
-    this.props.onSaveLecture({day, format, startTime, endTime}); // TODO: add location
+    this.props.onSaveLecture({day, format, startTime, endTime, location});
     this.props.onClose();
   }
 
@@ -242,9 +257,77 @@ class LectureModal extends React.Component {
       } else {
         this.refs.Navigator.push({id: TIME_PICKER, picking});
       }
+    } else if (picking === PICKER_BUILDING) {
+      this.refs.Navigator.push({id: BUILDING_PICKER});
+    } else if (picking === PICKER_ROOM) {
+      this.refs.Navigator.push({id: ROOM_PICKER});
     } else {
       this.refs.Navigator.push({id: REGULAR_PICKER, picking});
     }
+  }
+
+  /**
+   * Handles when a building is selected.
+   *
+   * @param {?Building} building the building selected
+   */
+  _onBuildingSelect(building: ?Building): void {
+    if (building == null) {
+      this.setState({location: null});
+      this.refs.Navigator.pop();
+    } else {
+      this.setState({location: {code: building.code, room: null}});
+      this._showPicker(PICKER_ROOM);
+    }
+  }
+
+  /**
+   * Renders a view to select a building on campus.
+   *
+   * @param {Object} Translations translations in the current language of certain text
+   * @returns {ReactElement<any>} a building grid to select a building
+   */
+  _renderBuildingPicker(Translations: Object): ReactElement < any > {
+    const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
+    const backArrowIcon: string = `${platformModifier}-arrow-back`;
+
+    return (
+      <View style={_styles.container}>
+        <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
+          <Header
+              icon={{name: backArrowIcon, class: 'ionicon'}}
+              title={`${Translations.location} - ${Translations.building}`} />
+        </TouchableOpacity>
+        <BuildingGrid
+            columns={BUILDING_COLUMNS}
+            disableImages={true}
+            filter={''}
+            includeClear={true}
+            language={this.props.language}
+            onSelect={this._onBuildingSelect.bind(this)} />
+      </View>
+    );
+  }
+
+  /**
+   * Renders a view to select a room in the building.
+   *
+   * @param {Object} Translations translations in the current language of certain text
+   * @returns {ReactElement<any>} a room grid to select a room
+   */
+  _renderRoomPicker(Translations: Object): ReactElement < any > {
+    const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
+    const backArrowIcon: string = `${platformModifier}-arrow-back`;
+
+    return (
+      <View style={_styles.container}>
+        <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
+          <Header
+              icon={{name: backArrowIcon, class: 'ionicon'}}
+              title={`${Translations.location} - ${Translations.room}`} />
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   /**
@@ -263,6 +346,7 @@ class LectureModal extends React.Component {
     const day = Constants.Days[this.props.language][this.state.day];
     const startTime = getFormattedTimeSinceMidnight(this.state.starts, this.props.timeFormat);
     const endTime = getFormattedTimeSinceMidnight(this.state.ends, this.props.timeFormat);
+    const location = this.state.location ? destinationToString(this.state.location) : '';
 
     return (
       <ScrollView>
@@ -293,6 +377,13 @@ class LectureModal extends React.Component {
               subtitle={endTime}
               subtitleIcon={pickIcon}
               title={Translations.ends} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_BUILDING)}>
+          <Header
+              largeSubtitle={true}
+              subtitle={location}
+              subtitleIcon={pickIcon}
+              title={Translations.location} />
         </TouchableOpacity>
       </ScrollView>
     );
@@ -424,6 +515,10 @@ class LectureModal extends React.Component {
         return this._renderRegularPicker(Translations, route.picking || PICKER_FORMAT);
       case TIME_PICKER:
         return this._renderTimePicker(Translations, route.picking || PICKER_STARTS);
+      case BUILDING_PICKER:
+        return this._renderBuildingPicker(Translations);
+      case ROOM_PICKER:
+        return this._renderRoomPicker(Translations);
       default:
         // TODO: return some error view
         return (

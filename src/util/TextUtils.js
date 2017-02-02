@@ -28,11 +28,59 @@
 /* eslint-disable no-magic-numbers */
 
 import type {
+  Destination,
   TimeFormat,
 } from 'types';
 
 import moment from 'moment';
 import * as Constants from 'Constants';
+
+/**
+ * Converts a time to either a 12h or 24h format. If the time is already in the format specified,
+ * then it is returned. If the time is invalid, an error is thrown.
+ *
+ * @param {TimeFormat} format either '12h' or '24h'
+ * @param {string} time       the time to convert
+ * @returns {string} the converted time, with 'am' or 'pm' suffix for 12h time format
+ */
+export function convertTimeFormat(format: TimeFormat, time: string): string {
+  if (format !== '12h' && format !== '24h') {
+    throw new Error(`Invalid format argument: ${format}`);
+  }
+
+  if (/^([0-1][0-9]|2[0-4]):[0-5][0-9]$/.test(time)) {
+    if (format === '24h') {
+      return time;
+    }
+
+    return moment(time, 'HH:mm').format('h:mm a');
+  } else if (/^([1-9]|1[0-2]):[0-5][0-9] ?[ap]\.?m\.?$/i.test(time)) {
+    if (format === '12h') {
+      return time.toLowerCase().replace(/[.]/g, '');
+    }
+
+    return moment(time, 'h:mm a')
+        .format('HH:mm')
+        .toLowerCase()
+        .replace(/[.]/g, '');
+  } else {
+    throw new Error(`Invalid time format: ${time}`);
+  }
+}
+
+/**
+ * Returns the string representation of a destination.
+ *
+ * @param {Destination} destination the destination to stringify
+ * @returns {string} the string representation
+ */
+export function destinationToString(destination: Destination): string {
+  if (destination.room == null) {
+    return `${destination.code}`;
+  } else {
+    return `${destination.code} ${destination.room}`;
+  }
+}
 
 /**
  * Formats certain link formats to display.
@@ -63,7 +111,6 @@ export function formatLink(link: ?string): string {
   }
 }
 
-
 /**
  * If a time has an hour greater than 23, it is adjusted to be within 24 hours.
  *
@@ -78,6 +125,24 @@ export function get24HourAdjustedTime(time: string): string {
   }
 
   return leftPad(hours.toString(), 2, '0') + ':' + minutes;
+}
+
+/**
+ * Converts a number of minutes since midnight to a string.
+ *
+ * @param {number}     minutesSinceMidnight minutes since midnight
+ * @param {TimeFormat} format               specify a format to return
+ * @returns {string} Returns a string of the format '1:00 pm' in 12 hour time or
+ *                   '13:00' in 24 hour time.
+ */
+export function getFormattedTimeSinceMidnight(
+    minutesSinceMidnight: number,
+    format: TimeFormat): string {
+  const hours = Math.floor(minutesSinceMidnight / Constants.Time.MINUTES_IN_HOUR);
+  const minutes = minutesSinceMidnight - (hours * Constants.Time.MINUTES_IN_HOUR);
+  const timeString = `${hours >= Constants.Time.HOURS_UNDER_PREFIXED ? '' : '0'}${hours}:`
+      + `${minutes >= Constants.Time.MINUTES_UNDER_PREFIXED ? '' : '0'}${minutes}`;
+  return convertTimeFormat(format, timeString);
 }
 
 /**
@@ -120,55 +185,4 @@ export function leftPad(text: string, desiredLength: number, char: ?string): str
   }
 
   return replacedString;
-}
-
-/**
- * Converts a time to either a 12h or 24h format. If the time is already in the format specified,
- * then it is returned. If the time is invalid, an error is thrown.
- *
- * @param {TimeFormat} format either '12h' or '24h'
- * @param {string} time       the time to convert
- * @returns {string} the converted time, with 'am' or 'pm' suffix for 12h time format
- */
-export function convertTimeFormat(format: TimeFormat, time: string): string {
-  if (format !== '12h' && format !== '24h') {
-    throw new Error(`Invalid format argument: ${format}`);
-  }
-
-  if (/^([0-1][0-9]|2[0-4]):[0-5][0-9]$/.test(time)) {
-    if (format === '24h') {
-      return time;
-    }
-
-    return moment(time, 'HH:mm').format('h:mm a');
-  } else if (/^([1-9]|1[0-2]):[0-5][0-9] ?[ap]\.?m\.?$/i.test(time)) {
-    if (format === '12h') {
-      return time.toLowerCase().replace(/[.]/g, '');
-    }
-
-    return moment(time, 'h:mm a')
-        .format('HH:mm')
-        .toLowerCase()
-        .replace(/[.]/g, '');
-  } else {
-    throw new Error(`Invalid time format: ${time}`);
-  }
-}
-
-/**
- * Converts a number of minutes since midnight to a string.
- *
- * @param {number}     minutesSinceMidnight minutes since midnight
- * @param {TimeFormat} format               specify a format to return
- * @returns {string} Returns a string of the format '1:00 pm' in 12 hour time or
- *                   '13:00' in 24 hour time.
- */
-export function getFormattedTimeSinceMidnight(
-    minutesSinceMidnight: number,
-    format: TimeFormat): string {
-  const hours = Math.floor(minutesSinceMidnight / Constants.Time.MINUTES_IN_HOUR);
-  const minutes = minutesSinceMidnight - (hours * Constants.Time.MINUTES_IN_HOUR);
-  const timeString = `${hours >= Constants.Time.HOURS_UNDER_PREFIXED ? '' : '0'}${hours}:`
-      + `${minutes >= Constants.Time.MINUTES_UNDER_PREFIXED ? '' : '0'}${minutes}`;
-  return convertTimeFormat(format, timeString);
 }

@@ -72,13 +72,15 @@ class FindHome extends React.Component {
    *
    * @param {Building} building object describing the building
    */
-  _onBuildingSelect(building: Building): void {
-    const name = {
-      name_en: TranslationUtils.getTranslatedName('en', building) || '',
-      name_fr: TranslationUtils.getTranslatedName('fr', building) || '',
-    };
+  _onBuildingSelect(building: ?Building): void {
+    if (building != null) {
+      const name = {
+        name_en: TranslationUtils.getTranslatedName('en', building) || '',
+        name_fr: TranslationUtils.getTranslatedName('fr', building) || '',
+      };
 
-    this.props.onBuildingSelect(building, name);
+      this.props.onBuildingSelect(building, name);
+    }
   }
 
   /**

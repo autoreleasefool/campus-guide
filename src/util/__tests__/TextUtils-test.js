@@ -186,4 +186,9 @@ describe('TextUtils-test', () => {
     /* eslint-enable no-magic-numbers */
 
   });
+
+  it('converts a destination to a string', () => {
+    expect(TextUtils.destinationToString({code: 'STE'})).toEqual('STE');
+    expect(TextUtils.destinationToString({code: 'STE', room: 'F0126'})).toEqual('STE F0126');
+  });
 });

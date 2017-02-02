@@ -189,11 +189,11 @@ export type Course = {
 
 /** A single lecture of a course. */
 export type Lecture = {
-  day: number,                      // Day of the week the course occurs. 0 is Monday
-  endTime: number,                  // Time the course ends at
-  format: number,                   // Index of the course format
-  location?: NavigationDestination, // Location of the lecture
-  startTime: number,                // Time the course starts at
+  day: number,            // Day of the week the course occurs. 0 is Monday
+  endTime: number,        // Time the course ends at
+  format: number,         // Index of the course format
+  location: ?Destination, // Location of the lecture
+  startTime: number,      // Time the course starts at
 };
 
 /** The format of a single lecture in a course. */
@@ -262,7 +262,7 @@ export type LinkSection = {
 //-----------------------------------------------------------------------------
 
 /** A destination for navigation on campus. */
-export type NavigationDestination = {
+export type Destination = {
   code: string,   // Shorthand building code
   room: ?string,  // Room number in the building
 };
@@ -358,7 +358,7 @@ export type Action =
   | { type: 'HEADER_SHOW_BACK', shouldShowBack: boolean, tab: ?Tab }
   | { type: 'HEADER_SHOW_SEARCH', shouldShowSearch: boolean, tab: ?Tab }
   | { type: 'FIND_VIEW', view: number }
-  | { type: 'NAVIGATE_TO', destination: NavigationDestination }
+  | { type: 'NAVIGATE_TO', destination: Destination }
   | { type: 'VIEW_BUILDING', building: Building }
   | { type: 'DISCOVER_VIEW', view: number }
   | { type: 'DISCOVER_SECTION', section: number }

@@ -47,9 +47,10 @@ import type {
 type Props = {
   columns: number,                  // Number of columns to show buildings in
   disableImages?: boolean,          // If true, grid should only show a list of names, with no images
+  includeClear?: boolean,           // If true, an empty cell should be available to clear the choice
   filter: ?string,                  // Filter the list of buildings
   language: Language,               // Language to display building names in
-  onSelect: (b: Building) => void,  // Callback for when a building is selected
+  onSelect: (b: ?Building) => void, // Callback for when a building is selected
 }
 
 // Type definition for component state
@@ -59,6 +60,7 @@ type State = {
 
 // Imports
 import * as Constants from 'Constants';
+import {getTranslations} from 'TranslationUtils';
 
 // Determining size of building icons based on the screen size.
 const {width} = Dimensions.get('window');
@@ -127,7 +129,11 @@ export default class BuildingGrid extends React.Component {
         : searchTerms.toUpperCase();
 
     // Create array for buildings
-    const filteredBuildings: Array < Building > = [];
+    const filteredBuildings: Array < ?Building > = [];
+
+    if (this.props.includeClear) {
+      filteredBuildings.push(null);
+    }
 
     for (let i = 0; i < this._buildingsList.length; i++) {
       // If the search terms are empty, or the building name contains the terms, add it to the list
@@ -151,15 +157,25 @@ export default class BuildingGrid extends React.Component {
   /**
    * Displays a building's name and image.
    *
-   * @param {Building} building information about the building to display
+   * @param {?Building} building information about the building to display
    * @returns {ReactElement<any>} an image (if enabled) and name for the building
    */
-  _renderRow(building: Building): ReactElement < any > {
+  _renderRow(building: ?Building): ReactElement < any > {
+    // Get current language for translations
+    const Translations: Object = getTranslations(this.props.language);
+
     const buildingImageSize: number = Math.floor(width / this.props.columns);
 
-    const buildingStyle = (this.props.disableImages)
-        ? {margin: 1, width: buildingImageSize - 2}
-        : {height: buildingImageSize, width: buildingImageSize};
+    let buildingStyle = {height: buildingImageSize, width: buildingImageSize};
+    let textStyle = {backgroundColor: Constants.Colors.darkTransparentBackground};
+    if (this.props.disableImages) {
+      buildingStyle = {margin: 1, width: buildingImageSize - 2};
+      textStyle = {
+        backgroundColor: Constants.Colors.darkMoreTransparentBackground,
+        paddingTop: Constants.Sizes.Margins.Expanded,
+        paddingBottom: Constants.Sizes.Margins.Expanded,
+      };
+    }
 
     const imageStyle = {
       width: width / this.props.columns,
@@ -169,12 +185,14 @@ export default class BuildingGrid extends React.Component {
     return (
       <TouchableOpacity onPress={() => this.props.onSelect(building)}>
         <View style={[_styles.building, buildingStyle]}>
-          {this.props.disableImages
+          {this.props.disableImages || building == null
             ? null
             : <Image
                 source={building.image}
                 style={[_styles.image, imageStyle]} />}
-          <Text style={_styles.buildingCode}>{building.code}</Text>
+          <Text style={[_styles.buildingCode, textStyle]}>
+            {building == null ? Translations.none : building.code}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -186,13 +204,22 @@ export default class BuildingGrid extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
+    let style = {};
+    if (this.props.disableImages) {
+      style = {
+        marginTop: 1,
+        marginBottom: 1,
+      };
+    }
+
     return (
       <ListView
           contentContainerStyle={_styles.listView}
           dataSource={this.state.dataSource}
           enableEmptySections={true}
           pageSize={this.props.columns}
-          renderRow={this._renderRow.bind(this)} />
+          renderRow={this._renderRow.bind(this)}
+          style={style} />
     );
   }
 }
@@ -203,7 +230,6 @@ const _styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   buildingCode: {
-    backgroundColor: Constants.Colors.darkTransparentBackground,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     textAlign: 'center',

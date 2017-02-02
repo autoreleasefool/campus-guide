@@ -80,7 +80,7 @@ import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {sortObjectArrayByKeyValues} from 'ArrayUtils';
-import {getFormattedTimeSinceMidnight} from 'TextUtils';
+import {destinationToString, getFormattedTimeSinceMidnight} from 'TextUtils';
 
 // Navigation values
 const MENU = 0;
@@ -192,6 +192,7 @@ class CourseModal extends React.Component {
    *
    * @param {Lecture} lecture the lecture to render
    * @param {boolean} isLast  true if the the lecture is the last in the section
+   * @returns {ReactElement<any>} the lecture view hierarchy
    */
   _renderLecture(lecture: Lecture, isLast: boolean): ReactElement < any > {
     return (
@@ -207,7 +208,7 @@ class CourseModal extends React.Component {
             {getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
           </Text>
           <Text style={[_styles.lectureText, _styles.lectureTextRight]}>
-            {'STE F0126'}
+            {lecture.location ? destinationToString(lecture.location) : ''}
           </Text>
         </View>
         {isLast ? null : <View style={_styles.lectureSeparator} />}
@@ -398,8 +399,8 @@ const _styles = StyleSheet.create({
   lectureText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
-    paddingTop: Constants.Sizes.Margins.Regular,
-    paddingBottom: Constants.Sizes.Margins.Regular,
+    paddingTop: Constants.Sizes.Margins.Expanded,
+    paddingBottom: Constants.Sizes.Margins.Expanded,
   },
   lectureTextInner: {
     textAlign: 'left',
