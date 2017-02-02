@@ -75,9 +75,8 @@ import Header from 'Header';
 import ModalHeader from 'ModalHeader';
 import moment from 'moment';
 import * as Constants from 'Constants';
-import * as CoreTranslations from '../../../../assets/json/CoreTranslations.json';
 import * as TranslationUtils from 'TranslationUtils';
-import {convertTimeFormat} from 'TextUtils';
+import {getFormattedTimeSinceMidnight} from 'TextUtils';
 
 // Navigation values
 const MENU = 0;
@@ -89,28 +88,6 @@ const PICKER_FORMAT = 0;
 const PICKER_DAY = 1;
 const PICKER_STARTS = 2;
 const PICKER_ENDS = 3;
-
-// Day name translations for picker
-const DAYS: {en: Array < string >, fr: Array < string >} = {
-  en: [
-    CoreTranslations.en.monday,
-    CoreTranslations.en.tuesday,
-    CoreTranslations.en.wednesday,
-    CoreTranslations.en.thursday,
-    CoreTranslations.en.friday,
-    CoreTranslations.en.saturday,
-    CoreTranslations.en.sunday,
-  ],
-  fr: [
-    CoreTranslations.fr.monday,
-    CoreTranslations.fr.tuesday,
-    CoreTranslations.fr.wednesday,
-    CoreTranslations.fr.thursday,
-    CoreTranslations.fr.friday,
-    CoreTranslations.fr.saturday,
-    CoreTranslations.fr.sunday,
-  ],
-};
 
 // Default day of a new lecture
 const DEFAULT_DAY = 0;          // Monday
@@ -164,22 +141,6 @@ class LectureModal extends React.Component {
       ...Navigator.SceneConfigs.PushFromRight,
       gestures: false,
     };
-  }
-
-  /**
-   * Converts a number of minutes since midnight to a string.
-   *
-   * @param {number}     minutesSinceMidnight minutes since midnight
-   * @param {TimeFormat} formatOverride       specify a format to return instead of the user's preference
-   * @returns {string} Returns a string of the format '1:00 pm' in 12 hour time or
-   *                   '13:00' in 24 hour time.
-   */
-  _getFormattedTime(minutesSinceMidnight: number, formatOverride: ?TimeFormat): string {
-    const hours = Math.floor(minutesSinceMidnight / Constants.Time.MINUTES_IN_HOUR);
-    const minutes = minutesSinceMidnight - (hours * Constants.Time.MINUTES_IN_HOUR);
-    const timeString = `${hours >= Constants.Time.HOURS_UNDER_PREFIXED ? '' : '0'}${hours}:`
-        + `${minutes >= Constants.Time.MINUTES_UNDER_PREFIXED ? '' : '0'}${minutes}`;
-    return convertTimeFormat(formatOverride || this.props.timeFormat, timeString);
   }
 
   /**
@@ -299,9 +260,9 @@ class LectureModal extends React.Component {
     };
 
     const format = this.props.lectureFormats[this.state.format].code;
-    const day = DAYS[this.props.language][this.state.day];
-    const startTime = this._getFormattedTime(this.state.starts);
-    const endTime = this._getFormattedTime(this.state.ends);
+    const day = Constants.Days[this.props.language][this.state.day];
+    const startTime = getFormattedTimeSinceMidnight(this.state.starts, this.props.timeFormat);
+    const endTime = getFormattedTimeSinceMidnight(this.state.ends, this.props.timeFormat);
 
     return (
       <ScrollView>
@@ -366,9 +327,9 @@ class LectureModal extends React.Component {
         break;
       case PICKER_DAY:
         title = 'day';
-        options = DAYS[this.props.language];
+        options = Constants.Days[this.props.language];
         selectedValue = this.state.day;
-        getName = (day) => DAYS[this.props.language][day];
+        getName = (day) => Constants.Days[this.props.language][day];
         setValue = (value) => this._setDay(value);
         break;
       default:
@@ -416,12 +377,12 @@ class LectureModal extends React.Component {
     switch (picking) {
       case PICKER_STARTS:
         title = 'starts';
-        time = moment(this._getFormattedTime(this.state.starts, '24h'), 'HH:mm').toDate();
+        time = moment(getFormattedTimeSinceMidnight(this.state.starts, '24h'), 'HH:mm').toDate();
         setValue = (value) => this._setTime(value, true);
         break;
       case PICKER_ENDS:
         title = 'ends';
-        time = moment(this._getFormattedTime(this.state.ends, '24h'), 'HH:mm').toDate();
+        time = moment(getFormattedTimeSinceMidnight(this.state.ends, '24h'), 'HH:mm').toDate();
         setValue = (value) => this._setTime(value, false);
         break;
       default:

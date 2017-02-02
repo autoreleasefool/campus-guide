@@ -27,11 +27,13 @@
 // React imports
 import React from 'react';
 import {
+  Dimensions,
   Modal,
   Navigator,
   Picker,
   Platform,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -78,10 +80,17 @@ import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {sortObjectArrayByKeyValues} from 'ArrayUtils';
+import {getFormattedTimeSinceMidnight} from 'TextUtils';
 
 // Navigation values
 const MENU = 0;
 const PICKER = 1;
+
+// Screen dimensions
+const screenWidth = Dimensions.get('window').width;
+const LECTURE_TIME_WIDTH_PCT = 0.2;
+const LECTURE_DAY_WIDTH_PCT = 0.3;
+const LECTURE_ROOM_WIDTH_PCT = 0.3;
 
 class CourseModal extends React.Component {
 
@@ -179,6 +188,34 @@ class CourseModal extends React.Component {
   }
 
   /**
+   * Renders a view describing a lecture in the course.
+   *
+   * @param {Lecture} lecture the lecture to render
+   * @param {boolean} isLast  true if the the lecture is the last in the section
+   */
+  _renderLecture(lecture: Lecture, isLast: boolean): ReactElement < any > {
+    return (
+      <View key={`${lecture.day} - ${lecture.startTime}`}>
+        <View style={_styles.lectureContainer}>
+          <Text style={[_styles.lectureText, _styles.lectureTextLeft]}>
+            {Constants.Days[this.props.language][lecture.day]}
+          </Text>
+          <Text style={[_styles.lectureText, _styles.lectureTextInner]}>
+            {getFormattedTimeSinceMidnight(lecture.startTime, this.props.timeFormat)}
+          </Text>
+          <Text style={[_styles.lectureText, _styles.lectureTextInner]}>
+            {getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
+          </Text>
+          <Text style={[_styles.lectureText, _styles.lectureTextRight]}>
+            {'STE F0126'}
+          </Text>
+        </View>
+        {isLast ? null : <View style={_styles.lectureSeparator} />}
+      </View>
+    );
+  }
+
+  /**
    * Renders the values defined so far for the new course and elements to change them.
    *
    * @param {Object} Translations translations in the current language of certain text
@@ -208,11 +245,22 @@ class CourseModal extends React.Component {
             subtitleCallback={this._showLectureModal.bind(this, true)}
             subtitleIcon={{class: 'material', name: 'add'}}
             title={Translations.sessions} />
-        {this.state.lectures.map((lecture, index) => (
-          <Header
-              key={index}
-              title={`${lecture.day} - ${lecture.startTime}`} />
-        ))}
+        {this.props.lectureFormats.map((format, index) => {
+          const lectures = this.state.lectures.filter((lecture) => lecture.format === index);
+          if (lectures.length > 0) {
+            const formatName = TranslationUtils.getTranslatedName(this.props.language, format) || '';
+            return (
+              <View key={formatName}>
+                <Header
+                    backgroundColor={Constants.Colors.darkMoreTransparentBackground}
+                    title={formatName} />
+                {lectures.map((lecture, lecIndex) => this._renderLecture(lecture, lecIndex === lectures.length - 1))}
+              </View>
+            );
+          } else {
+            return null;
+          }
+        })}
       </KeyboardAwareScrollView>
     );
   }
@@ -341,6 +389,41 @@ const _styles = StyleSheet.create({
     borderColor: Constants.Colors.primaryWhiteText,
     borderWidth: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.secondaryBackground,
+  },
+  lectureContainer: {
+    flexDirection: 'row',
+    marginLeft: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Regular,
+  },
+  lectureText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    paddingTop: Constants.Sizes.Margins.Regular,
+    paddingBottom: Constants.Sizes.Margins.Regular,
+  },
+  lectureTextInner: {
+    textAlign: 'left',
+    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_TIME_WIDTH_PCT,
+    paddingLeft: Constants.Sizes.Margins.Condensed,
+    paddingRight: Constants.Sizes.Margins.Condensed,
+  },
+  lectureTextLeft: {
+    textAlign: 'left',
+    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_DAY_WIDTH_PCT,
+    paddingLeft: Constants.Sizes.Margins.Regular,
+    paddingRight: Constants.Sizes.Margins.Condensed,
+  },
+  lectureTextRight: {
+    textAlign: 'right',
+    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_ROOM_WIDTH_PCT,
+    paddingLeft: Constants.Sizes.Margins.Condensed,
+    paddingRight: Constants.Sizes.Margins.Regular,
+  },
+  lectureSeparator: {
+    width: screenWidth - Constants.Sizes.Margins.Expanded * 2,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded * 2,
+    backgroundColor: Constants.Colors.lightTransparentBackground,
   },
   pickerContainer: {
     flex: 1,
