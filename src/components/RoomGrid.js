@@ -155,9 +155,8 @@ export default class RoomGrid extends React.Component {
     const matchingRoomTypes = [];
     for (let i = 0; i < this._roomTypes.length; i++) {
       const roomTypeName = TranslationUtils.getTranslatedName(this.props.language, this._roomTypes[i]);
-      if (adjustedSearchTerms != null
-          && roomTypeName != null
-          && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+      if (adjustedSearchTerms == null
+          || (roomTypeName != null && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
         matchingRoomTypes.push(i);
       }
     }
@@ -288,12 +287,6 @@ export default class RoomGrid extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    if (!this.state.loaded) {
-      return (
-        <View />
-      );
-    }
-
     return (
       <ListView
           dataSource={this.state.dataSource}

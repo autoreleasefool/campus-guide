@@ -135,7 +135,7 @@ class BuildingComponent extends React.Component {
       <View style={_styles.container}>
         <RoomGrid
             code={building.code}
-            defaultRoomType={building.default_room_type}
+            defaultRoomType={Constants.DefaultRoomType}
             filter={this.props.filter}
             language={this.props.language}
             renderHeader={this._renderHeader.bind(this)}

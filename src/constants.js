@@ -259,4 +259,9 @@ module.exports = {
    * Time constants
    */
   Time: time,
+
+  /**
+   * Default type to assign to rooms when not defined
+   */
+  DefaultRoomType: 5,
 };

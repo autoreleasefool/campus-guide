@@ -92,7 +92,6 @@ describe('find reducer', () => {
   it('should set the building to display details for', () => {
     const building = {
       code: 'code',
-      default_room_type: 1,
       facilities: ['atm', 'gym'],
       image: 'image.png',
       lat: 100,

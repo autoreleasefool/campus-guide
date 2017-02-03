@@ -55,7 +55,6 @@ describe('find actions', () => {
   it('should set a building to view details for', () => {
     const building = {
       code: 'code',
-      default_room_type: 1,
       facilities: ['atm', 'gym'],
       image: 'image.png',
       lat: 100,

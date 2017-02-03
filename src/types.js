@@ -281,7 +281,6 @@ export type RoomType = {
 /** A building on campus, with details describing it, its location, and its rooms. */
 export type Building = {
   code: string,                   // Shorthand building code
-  default_room_type: number,      // Default room type when one is not specified for a room
   facilities: Array < Facility >, // List of facilities in the building
   image: ReactClass < any >,      // Image to display for the building
   lat: number,                    // Latitude of the building

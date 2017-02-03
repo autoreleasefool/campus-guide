@@ -43,6 +43,7 @@ import type {
 // Imports
 import Promise from 'promise';
 import * as Configuration from 'Configuration';
+import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as TranslationUtils from 'TranslationUtils';
 
@@ -135,7 +136,7 @@ function _getRoomResults(language: Language,
               const roomAltName: ?string = TranslationUtils.getTranslatedVariant(language, 'alt_name', room);
 
               if (!room.type) {
-                room.type = building.default_room_type;
+                room.type = Constants.DefaultRoomType;
               }
 
               if (matchingRoomTypes.indexOf(room.type) >= 0
