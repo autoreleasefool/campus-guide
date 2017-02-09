@@ -46,11 +46,4 @@ module.exports = {
     semester,
     courseCode,
   }),
-  removeLecture: (semester: string, courseCode: string, day: number, startTime: number): Action => ({
-    type: 'SCHEDULE_REMOVE_LECTURE',
-    semester,
-    courseCode,
-    day,
-    startTime,
-  }),
 };

@@ -58,6 +58,7 @@ type Props = {
   course: Course,                             // The course the lecture will be added to
   language: Language,                         // The current language, selected by the user
   lectureFormats: Array < LectureFormat >,    // Array of available lecture types
+  lectureToEdit: ?Lecture,                    // Instance of a lecture to pre-populate in the modal
   timeFormat: TimeFormat,                     // The user's preferred time format
   onClose: VoidFunction,                      // Callback for when the modal is closed
   onSaveLecture: (lecture: Lecture) => void,  // Callback to save a lecture
@@ -130,19 +131,33 @@ class LectureModal extends React.Component {
    */
   constructor(props: Props) {
     super(props);
+
+    const day = props.lectureToEdit ? props.lectureToEdit.day : DEFAULT_DAY;
+    const starts = props.lectureToEdit ? props.lectureToEdit.startTime : DEFAULT_START_TIME;
     this.state = {
-      day: DEFAULT_DAY,
-      format: DEFAULT_FORMAT,
-      starts: DEFAULT_START_TIME,
-      ends: DEFAULT_END_TIME,
-      location: DEFAULT_LOCATION,
-      rightActionEnabled: this._isLectureStartUnique(props.course, 0, DEFAULT_START_TIME),
+      format: props.lectureToEdit ? props.lectureToEdit.format : DEFAULT_FORMAT,
+      ends: props.lectureToEdit ? props.lectureToEdit.endTime : DEFAULT_END_TIME,
+      location: props.lectureToEdit ? props.lectureToEdit.location : DEFAULT_LOCATION,
+      day,
+      starts,
+      rightActionEnabled: this._isLectureStartUnique(props.course, day, starts),
     };
 
     (this:any)._isLectureStartUnique = this._isLectureStartUnique.bind(this);
     (this:any)._renderMenu = this._renderMenu.bind(this);
     (this:any)._renderRegularPicker = this._renderRegularPicker.bind(this);
     (this:any)._renderTimePicker = this._renderTimePicker.bind(this);
+  }
+
+  /**
+   * Closes this menu and, if editing, re-saves the provided lecture.
+   */
+  _close(): void {
+    if (!this.props.addingLecture && this.props.lectureToEdit != null) {
+      this._saveLecture(this.props.lectureToEdit);
+    } else {
+      this.props.onClose();
+    }
   }
 
   /**
@@ -173,19 +188,15 @@ class LectureModal extends React.Component {
 
   /**
    * Saves the lecture being edited or created.
+   *
+   * @param {Lecture} lecture the lecture to save
    */
-  _saveLecture(): void {
-    const day = this.state.day;
-    const format = this.state.format;
-    const startTime = this.state.starts;
-    const endTime = this.state.ends;
-    const location = this.state.location;
-
-    if (!this._isLectureStartUnique(this.props.course, day, startTime)) {
+  _saveLecture(lecture: Lecture): void {
+    if (!this._isLectureStartUnique(this.props.course, lecture.day, lecture.startTime)) {
       return;
     }
 
-    this.props.onSaveLecture({day, format, startTime, endTime, location});
+    this.props.onSaveLecture(lecture);
     this.props.onClose();
   }
 
@@ -249,7 +260,7 @@ class LectureModal extends React.Component {
    *
    * @param {number} picking the value to pick
    */
-  _showPicker(picking: number) {
+  _showPicker(picking: number): void {
     if (picking === PICKER_STARTS || picking === PICKER_ENDS) {
       if (Platform.OS === 'android') {
         console.log('TODO: setup android picker');
@@ -551,8 +562,14 @@ class LectureModal extends React.Component {
             rightActionEnabled={this.state.rightActionEnabled}
             rightActionText={Translations[modalRightAction]}
             title={Translations[modalTitle]}
-            onLeftAction={() => this.props.onClose()}
-            onRightAction={this._saveLecture.bind(this)} />
+            onLeftAction={this._close.bind(this)}
+            onRightAction={() => this._saveLecture({
+              day: this.state.day,
+              format: this.state.format,
+              startTime: this.state.starts,
+              endTime: this.state.ends,
+              location: this.state.location,
+            })} />
         <Navigator
             configureScene={this._configureScene}
             initialRoute={{id: MENU}}

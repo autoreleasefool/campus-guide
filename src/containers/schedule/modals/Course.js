@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  Alert,
   Dimensions,
   Modal,
   Navigator,
@@ -67,14 +68,18 @@ type Props = {
 type State = {
   addingLecture: boolean,       // True to use the lecture modal to add a lecture, false to edit
   code: string,                 // Value for course code
+  editingLectures: boolean,     // True to show buttons to edit or remove lectures
   lectureModalVisible: boolean, // True to show the modal to add or edit a lecture
   lectures: Array < Lecture >,  // The lectures in the course
+  lectureToEdit: ?Lecture,      // The lecture being edited
   semester: number,             // Value for course semester
 };
 
 // Imports
+import ActionButton from 'react-native-action-button';
 import Header from 'Header';
 import LectureModal from './Lecture';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import ModalHeader from 'ModalHeader';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
@@ -114,8 +119,10 @@ class CourseModal extends React.Component {
     this.state = {
       addingLecture: true,
       code: '',
+      editingLectures: false,
       lectures: [],
       lectureModalVisible: false,
+      lectureToEdit: null,
       semester: props.currentSemester,
     };
 
@@ -134,6 +141,23 @@ class CourseModal extends React.Component {
     const lectures = this.state.lectures.slice();
     lectures.push(lecture);
     sortObjectArrayByKeyValues(lectures, 'day', 'startTime');
+    this.setState({lectures});
+  }
+
+  /**
+   * Removes a lecture from the course.
+   *
+   * @param {Lecture} lecture the lecture to remove
+   */
+  _deleteLecture(lecture: Lecture): void {
+    const lectures = this.state.lectures.slice();
+    const lecturesLength = lectures.length;
+    for (let i = 0; i < lecturesLength; i++) {
+      if (lectures[i].day === lecture.day && lectures[i].startTime === lecture.startTime) {
+        lectures.splice(i, 1);
+        break;
+      }
+    }
     this.setState({lectures});
   }
 
@@ -157,6 +181,36 @@ class CourseModal extends React.Component {
   }
 
   /**
+   * Prompts the user to delete a lecture, and deletes it if they respond positively.
+   *
+   * @param {Lecture} lecture details of the lecture to delete
+   */
+  _handleDeleteLecture(lecture: Lecture): void {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+
+    Alert.alert(
+      (String:any).format(Translations.q_delete_x, this.props.lectureFormats[lecture.format].code),
+      Translations.cannot_be_undone_confirmation,
+      [
+        {text: Translations.cancel, style: 'cancel'},
+        {text: Translations.delete, onPress: () => this._deleteLecture(lecture)},
+      ],
+      {cancelable: false}
+    );
+  }
+
+  /**
+   * Opens the lecture modal to allow the user to edit a lecture.
+   *
+   * @param {Lecture} lecture the lecture to edit
+   */
+  _handleEditLecture(lecture: Lecture): void {
+    this._deleteLecture(lecture);
+    this._showLectureModal(false, lecture);
+  }
+
+  /**
    * Saves the course being edited or created.
    */
   _saveCourse(): void {
@@ -166,11 +220,13 @@ class CourseModal extends React.Component {
   /**
    * Opens the lecture modal to add or edit a lecture.
    *
-   * @param {boolean} addingLecture true to use the modal to add a lecture, false to edit
+   * @param {boolean}  addingLecture true to use the modal to add a lecture, false to edit
+   * @param {?Lecture} lectureToEdit a lecture to edit, or null
    */
-  _showLectureModal(addingLecture: boolean): void {
+  _showLectureModal(addingLecture: boolean, lectureToEdit: ?Lecture): void {
     this.setState({
       lectureModalVisible: true,
+      lectureToEdit,
       addingLecture,
     });
   }
@@ -188,6 +244,13 @@ class CourseModal extends React.Component {
   }
 
   /**
+   * Shows or hides options next to each lecture to edit or remove.
+   */
+  _toggleLectureEditOptions(): void {
+    this.setState({editingLectures: !this.state.editingLectures});
+  }
+
+  /**
    * Renders a view describing a lecture in the course.
    *
    * @param {Lecture} lecture the lecture to render
@@ -195,6 +258,36 @@ class CourseModal extends React.Component {
    * @returns {ReactElement<any>} the lecture view hierarchy
    */
   _renderLecture(lecture: Lecture, isLast: boolean): ReactElement < any > {
+    let roomOrOptions = null;
+    if (this.state.editingLectures) {
+      const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
+      const closeIcon = `${platformModifier}-close`;
+      const editIcon = `${platformModifier}-create`;
+
+      roomOrOptions = (
+        <View style={_styles.lectureOptions}>
+          <TouchableOpacity onPress={this._handleEditLecture.bind(this, lecture)}>
+            <Ionicons
+                color={Constants.Colors.secondaryWhiteText}
+                name={editIcon}
+                size={Constants.Sizes.Icons.Medium} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this._handleDeleteLecture.bind(this, lecture)}>
+            <Ionicons
+                color={Constants.Colors.secondaryWhiteText}
+                name={closeIcon}
+                size={Constants.Sizes.Icons.Medium} />
+          </TouchableOpacity>
+        </View>
+      );
+    } else if (lecture.location) {
+      roomOrOptions = (
+        <Text style={[_styles.lectureText, _styles.lectureTextRight]}>
+          {lecture.location ? destinationToString(lecture.location) : ''}
+        </Text>
+      );
+    }
+
     return (
       <View key={`${lecture.day} - ${lecture.startTime}`}>
         <View style={_styles.lectureContainer}>
@@ -207,9 +300,7 @@ class CourseModal extends React.Component {
           <Text style={[_styles.lectureText, _styles.lectureTextInner]}>
             {getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
           </Text>
-          <Text style={[_styles.lectureText, _styles.lectureTextRight]}>
-            {lecture.location ? destinationToString(lecture.location) : ''}
-          </Text>
+          {roomOrOptions}
         </View>
         {isLast ? null : <View style={_styles.lectureSeparator} />}
       </View>
@@ -227,42 +318,50 @@ class CourseModal extends React.Component {
         this.props.semesters[this.state.semester]) || '';
 
     return (
-      <KeyboardAwareScrollView>
-        <TouchableOpacity onPress={this._showSemesterPicker.bind(this)}>
+      <View style={{flex: 1}}>
+        <KeyboardAwareScrollView>
+          <TouchableOpacity onPress={this._showSemesterPicker.bind(this)}>
+            <Header
+                largeSubtitle={true}
+                subtitle={semesterName}
+                subtitleIcon={{class: 'material', name: 'chevron-right'}}
+                title={Translations.semester} />
+          </TouchableOpacity>
+          <Header title={Translations.course_code} />
+          <TextInput
+              autoCapitalize={'characters'}
+              returnKeyType={'done'}
+              style={_styles.textInput}
+              value={this.state.code}
+              onChangeText={(code) => this.setState({code})} />
           <Header
-              largeSubtitle={true}
-              subtitle={semesterName}
-              subtitleIcon={{class: 'material', name: 'chevron-right'}}
-              title={Translations.semester} />
-        </TouchableOpacity>
-        <Header title={Translations.course_code} />
-        <TextInput
-            autoCapitalize={'characters'}
-            returnKeyType={'done'}
-            style={_styles.textInput}
-            value={this.state.code}
-            onChangeText={(code) => this.setState({code})} />
-        <Header
-            subtitleCallback={this._showLectureModal.bind(this, true)}
-            subtitleIcon={{class: 'material', name: 'add'}}
-            title={Translations.sessions} />
-        {this.props.lectureFormats.map((format, index) => {
-          const lectures = this.state.lectures.filter((lecture) => lecture.format === index);
-          if (lectures.length > 0) {
-            const formatName = TranslationUtils.getTranslatedName(this.props.language, format) || '';
-            return (
-              <View key={formatName}>
-                <Header
-                    backgroundColor={Constants.Colors.darkMoreTransparentBackground}
-                    title={formatName} />
-                {lectures.map((lecture, lecIndex) => this._renderLecture(lecture, lecIndex === lectures.length - 1))}
-              </View>
-            );
-          } else {
-            return null;
-          }
-        })}
-      </KeyboardAwareScrollView>
+              subtitle={this.state.editingLectures ? Translations.cancel : Translations.edit}
+              subtitleCallback={this._toggleLectureEditOptions.bind(this)}
+              title={Translations.sessions} />
+          {this.props.lectureFormats.map((format, index) => {
+            const lectures = this.state.lectures.filter((lecture) => lecture.format === index);
+            if (lectures.length > 0) {
+              const formatName = TranslationUtils.getTranslatedName(this.props.language, format) || '';
+              return (
+                <View key={formatName}>
+                  <Header
+                      backgroundColor={Constants.Colors.darkMoreTransparentBackground}
+                      title={formatName} />
+                  {lectures.map((lecture, lecIndex) => this._renderLecture(lecture, lecIndex === lectures.length - 1))}
+                </View>
+              );
+            } else {
+              return null;
+            }
+          })}
+          <View style={{height: 100}} />
+        </KeyboardAwareScrollView>
+        <ActionButton
+            buttonColor={Constants.Colors.primaryBackground}
+            offsetX={Constants.Sizes.Margins.Expanded}
+            offsetY={Constants.Sizes.Margins.Regular}
+            onPress={this._showLectureModal.bind(this, true)} />
+      </View>
     );
   }
 
@@ -353,6 +452,7 @@ class CourseModal extends React.Component {
               addingLecture={this.state.addingLecture}
               course={{code: this.state.code, lectures: this.state.lectures}}
               lectureFormats={this.props.lectureFormats}
+              lectureToEdit={this.state.lectureToEdit}
               onClose={this._closeModal}
               onSaveLecture={this._addLecture.bind(this)} />
         </Modal>
@@ -416,6 +516,14 @@ const _styles = StyleSheet.create({
   },
   lectureTextRight: {
     textAlign: 'right',
+    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_ROOM_WIDTH_PCT,
+    paddingLeft: Constants.Sizes.Margins.Condensed,
+    paddingRight: Constants.Sizes.Margins.Regular,
+  },
+  lectureOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_ROOM_WIDTH_PCT,
     paddingLeft: Constants.Sizes.Margins.Condensed,
     paddingRight: Constants.Sizes.Margins.Regular,

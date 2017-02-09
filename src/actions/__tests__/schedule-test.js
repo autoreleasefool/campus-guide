@@ -70,21 +70,4 @@ describe('schedule actions', () => {
 
     expect(actions.removeCourse(semester, courseCode)).toEqual(expectedAction);
   });
-
-  it('creates an action to remove a lecture', () => {
-    const semester = 'semester1';
-    const courseCode = 'COURSE_CODE';
-    const day = 1;
-    const startTime = 0;
-
-    const expectedAction = {
-      type: 'SCHEDULE_REMOVE_LECTURE',
-      semester,
-      courseCode,
-      day,
-      startTime,
-    };
-
-    expect(actions.removeLecture(semester, courseCode, day, startTime)).toEqual(expectedAction);
-  });
 });

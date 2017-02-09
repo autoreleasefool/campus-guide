@@ -368,5 +368,4 @@ export type Action =
   | { type: 'SCHEDULE_ADD_SEMESTER', semester: Semester }
   | { type: 'SCHEDULE_ADD_COURSE', semester: string, course: Course }
   | { type: 'SCHEDULE_REMOVE_COURSE', semester: string, courseCode: string }
-  | { type: 'SCHEDULE_REMOVE_LECTURE', semester: string, courseCode: string, day: number, startTime: number }
   ;

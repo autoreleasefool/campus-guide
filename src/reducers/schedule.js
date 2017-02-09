@@ -104,35 +104,6 @@ function schedule(state: State = initialState, action: Action): State {
         semesters,
       };
     }
-    case 'SCHEDULE_REMOVE_LECTURE': {
-      if (!(action.semester in state.semesters)) {
-        return state;
-      }
-
-      const semesters = JSON.parse(JSON.stringify(state.semesters));
-      const courses = semesters[action.semester].courses;
-
-      // Find the course to remove the lecture from
-      const position = ArrayUtils.binarySearchObjectArrayByKeyValue(courses, 'code', action.courseCode);
-      if (position >= 0) {
-        // Find and remove the lecture with the specified day and starting time
-        const lectures = courses[position].lectures;
-        const lecturesLength = lectures.length;
-        for (let i = 0; i < lecturesLength; i++) {
-          if (lectures[i].day === action.day && lectures[i].startTime === action.startTime) {
-            lectures.splice(i, 1);
-            break;
-          }
-        }
-      } else {
-        return state;
-      }
-
-      return {
-        ...state,
-        semesters,
-      };
-    }
     default:
       return state;
   }
