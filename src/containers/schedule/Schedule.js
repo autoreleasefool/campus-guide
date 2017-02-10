@@ -38,12 +38,14 @@ import {
 // Redux imports
 import {connect} from 'react-redux';
 import {
+  addCourse,
   updateConfiguration,
 } from 'actions';
 
 // Types
 import type {
   ConfigurationOptions,
+  Course,
   Language,
   LectureFormat,
   Semester,
@@ -54,6 +56,7 @@ import type {
 type Props = {
   currentSemester: number,                                // The current semester, selected by the user
   language: Language,                                     // The current language, selected by the user
+  saveCourse: (s: string, course: Course) => void,        // Saves a course to the semester
   semesters: Array < Semester >,                          // Semesters available at the university
   timeFormat: TimeFormat,                                 // The user's preferred time format
   updateConfiguration: (o: ConfigurationOptions) => void, // Update the global configuration state
@@ -62,6 +65,7 @@ type Props = {
 // Type definition for component state.
 type State = {
   addingCourse: boolean,                    // True to use the course modal to add a course, false to edit
+  courseToEdit: ?Course,                    // Course selected by user to edit
   courseModalVisible: boolean,              // True to show the modal to add or edit a course
   lectureFormats: Array < LectureFormat >,  // Array of available lecture types
   showSemesters: boolean,                   // True to show drop down to swap semesters
@@ -114,6 +118,7 @@ class Schedule extends React.Component {
     super(props);
     this.state = {
       addingCourse: true,
+      courseToEdit: null,
       courseModalVisible: false,
       lectureFormats: [],
       showSemesters: false,
@@ -143,11 +148,13 @@ class Schedule extends React.Component {
    * Opens the course modal to add or edit a course.
    *
    * @param {boolean} addingCourse true to use the modal to add a course, false to edit
+   * @param {?Course} courseToEdit the course to edit, or null when adding a new course
    */
-  _showCourseModal(addingCourse: boolean): void {
+  _showCourseModal(addingCourse: boolean, courseToEdit: ?Course): void {
     this.setState({
       courseModalVisible: true,
       addingCourse,
+      courseToEdit,
     });
   }
 
@@ -157,6 +164,16 @@ class Schedule extends React.Component {
   _toggleSwitchSemester(): void {
     LayoutAnimation.easeInEaseOut();
     this.setState({showSemesters: !this.state.showSemesters});
+  }
+
+  /**
+   * Saves a course to the provided semester.
+   *
+   * @param {number} semester the semester to add the course to
+   * @param {Course} course   the course being saved
+   */
+  _onSaveCourse(semester: string, course: Course): void {
+    addCourse(semester, course);
   }
 
   /**
@@ -218,8 +235,10 @@ class Schedule extends React.Component {
             onRequestClose={this._closeModal}>
           <CourseModal
               addingCourse={this.state.addingCourse}
+              courseToEdit={this.state.courseToEdit}
               lectureFormats={this.state.lectureFormats}
-              onClose={this._closeModal} />
+              onClose={this._closeModal}
+              onSaveCourse={this._onSaveCourse.bind(this)} />
         </Modal>
         <ScrollableTabView
             style={{borderBottomWidth: 0}}
@@ -242,7 +261,6 @@ class Schedule extends React.Component {
             onPress={this._showCourseModal.bind(this, true)} />
       </View>
     );
-
   }
 }
 
@@ -270,6 +288,7 @@ const select = (store) => {
 // Map dispatch to props
 const actions = (dispatch) => {
   return {
+    saveCourse: (semester: string, course: Course) => dispatch(addCourse(semester, course)),
     updateConfiguration: (options: ConfigurationOptions) => dispatch(updateConfiguration(options)),
   };
 };

@@ -45,6 +45,7 @@ import {connect} from 'react-redux';
 
 // Types
 import type {
+  Course,
   Language,
   Lecture,
   LectureFormat,
@@ -56,12 +57,15 @@ import type {
 // Type definition for component props.
 type Props = {
   addingCourse: boolean,                    // True when adding a new course, false when editing
+  courseToEdit: ?Course,                    // The course being edited
   currentSemester: number,                  // The current semester, selected by the user
   language: Language,                       // The current language, selected by the user
   lectureFormats: Array < LectureFormat >,  // Array of available lecture types
+  schedule: Object,                         // The user's current schedule
   semesters: Array < Semester >,            // Semesters available at the university
   timeFormat: TimeFormat,                   // The user's preferred time format
   onClose: VoidFunction,                    // Callback for when the modal is closed
+  onSaveCourse: (c: Course) => void,        // Callback to save a course
 };
 
 // Type definition for component state.
@@ -72,6 +76,7 @@ type State = {
   lectureModalVisible: boolean, // True to show the modal to add or edit a lecture
   lectures: Array < Lecture >,  // The lectures in the course
   lectureToEdit: ?Lecture,      // The lecture being edited
+  rightActionEnabled: boolean,  // Indicates if the right modal action should be enabled
   semester: number,             // Value for course semester
 };
 
@@ -84,7 +89,7 @@ import ModalHeader from 'ModalHeader';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {sortObjectArrayByKeyValues} from 'ArrayUtils';
+import {binarySearchObjectArrayByKeyValue, sortObjectArrayByKeyValues} from 'ArrayUtils';
 import {destinationToString, getFormattedTimeSinceMidnight} from 'TextUtils';
 
 // Navigation values
@@ -115,21 +120,24 @@ class CourseModal extends React.Component {
    * @param {props} props component props
    */
   constructor(props: Props) {
+    const code = props.courseToEdit ? props.courseToEdit.code : '';
+    const lectures = props.courseToEdit ? props.courseToEdit.lectures : [];
+
     super(props);
     this.state = {
       addingLecture: true,
-      code: '',
       editingLectures: false,
-      lectures: [],
       lectureModalVisible: false,
       lectureToEdit: null,
       semester: props.currentSemester,
+      code,
+      lectures,
+      rightActionEnabled: this._isCourseCodeUnique(props.currentSemester, code),
     };
 
-    (this:any)._closeModal = this._closeModal.bind(this);
+    (this:any)._closeLectureModal = this._closeLectureModal.bind(this);
     (this:any)._renderMenu = this._renderMenu.bind(this);
     (this:any)._renderPicker = this._renderPicker.bind(this);
-    (this:any)._saveCourse = this._saveCourse.bind(this);
   }
 
   /**
@@ -142,6 +150,36 @@ class CourseModal extends React.Component {
     lectures.push(lecture);
     sortObjectArrayByKeyValues(lectures, 'day', 'startTime');
     this.setState({lectures});
+  }
+
+  /**
+   * Closes this menu and, if editing, re-saves the provided lecture.
+   */
+  _close(): void {
+    if (!this.props.addingCourse && this.props.courseToEdit != null) {
+      this._saveCourse(this.props.currentSemester, this.props.courseToEdit);
+    } else {
+      this.props.onClose();
+    }
+  }
+
+  /**
+   * Closes the lecture modal.
+   */
+  _closeLectureModal(): void {
+    this.setState({lectureModalVisible: false});
+  }
+
+  /**
+   * Defines the transition between views.
+   *
+   * @returns {Object} a configuration for scene transitions in the navigator.
+   */
+  _configureScene(): Object {
+    return {
+      ...Navigator.SceneConfigs.PushFromRight,
+      gestures: false,
+    };
   }
 
   /**
@@ -159,25 +197,6 @@ class CourseModal extends React.Component {
       }
     }
     this.setState({lectures});
-  }
-
-  /**
-   * Closes the lecture modal.
-   */
-  _closeModal(): void {
-    this.setState({lectureModalVisible: false});
-  }
-
-  /**
-   * Defines the transition between views.
-   *
-   * @returns {Object} a configuration for scene transitions in the navigator.
-   */
-  _configureScene(): Object {
-    return {
-      ...Navigator.SceneConfigs.PushFromRight,
-      gestures: false,
-    };
   }
 
   /**
@@ -211,10 +230,29 @@ class CourseModal extends React.Component {
   }
 
   /**
-   * Saves the course being edited or created.
+   * Checks if a course code is unique in a semester.
+   *
+   * @param {Semester} semester   the semester to check
+   * @param {string}   courseCode the code given to the course
+   * @returns {boolean} true if the course code is unique in the semester, false otherwise
    */
-  _saveCourse(): void {
-    console.log(`Saving course ${this.state.code}, ${this.state.semester}`);
+  _isCourseCodeUnique(semester: Semester, courseCode: string) {
+    return binarySearchObjectArrayByKeyValue(semester.courses, 'code', courseCode) < 0;
+  }
+
+  /**
+   * Saves the course being edited or created.
+   *
+   * @param {number} semester index of the semester to add the course to
+   * @param {Course} course   the course to save
+   */
+  _saveCourse(semester: number, course: Course): void {
+    if (!this._isCourseCodeUnique(this.props.schedule[this.props.semesters[semester].id], course.code)) {
+      return;
+    }
+
+    this.props.onSaveCourse(this.props.semesters[semester].id, course);
+    this.props.onClose();
   }
 
   /**
@@ -333,7 +371,8 @@ class CourseModal extends React.Component {
               returnKeyType={'done'}
               style={_styles.textInput}
               value={this.state.code}
-              onChangeText={(code) => this.setState({code})} />
+              onChangeText={(code) =>
+                this.setState({code, rightActionEnabled: this._isCourseCodeUnique(this.state.semester, code)})} />
           <Header
               subtitle={this.state.editingLectures ? Translations.cancel : Translations.edit}
               subtitleCallback={this._toggleLectureEditOptions.bind(this)}
@@ -447,23 +486,24 @@ class CourseModal extends React.Component {
             animationType={'slide'}
             transparent={false}
             visible={this.state.lectureModalVisible}
-            onRequestClose={this._closeModal}>
+            onRequestClose={this._closeLectureModal}>
           <LectureModal
               addingLecture={this.state.addingLecture}
               course={{code: this.state.code, lectures: this.state.lectures}}
               lectureFormats={this.props.lectureFormats}
               lectureToEdit={this.state.lectureToEdit}
-              onClose={this._closeModal}
+              onClose={this._closeLectureModal}
               onSaveLecture={this._addLecture.bind(this)} />
         </Modal>
         <ModalHeader
             leftActionEnabled={true}
             leftActionText={Translations.cancel}
-            rightActionEnabled={true}
+            rightActionEnabled={this.state.rightActionEnabled}
             rightActionText={Translations[modalRightAction]}
             title={Translations[modalTitle]}
             onLeftAction={() => this.props.onClose()}
-            onRightAction={this._saveCourse} />
+            onRightAction={() =>
+              this._saveCourse(this.state.semester, {code: this.state.code, lectures: this.state.lectures})} />
         <Navigator
             configureScene={this._configureScene}
             initialRoute={{id: MENU}}
