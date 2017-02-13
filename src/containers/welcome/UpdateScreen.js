@@ -288,11 +288,7 @@ class UpdateScreen extends React.Component {
       filesDownloaded.splice(0, 0, download.filename);
       this.props.onDownloadComplete(filesDownloaded, totalProgress, download.bytesWritten);
     } else {
-      console.error(
-        'Something\'s null, but it shouldn\'t be!',
-        `this.props.filesDownloaded: ${this.props.filesDownloaded}`,
-        `this.props.totalProgress: ${this.props.totalProgress}`,
-      );
+      console.error('Something\'s null, but it shouldn\'t be! Check filesDownloaded and totalProgress');
     }
   }
 
@@ -475,13 +471,13 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    filesDownloaded: store.update.filesDownloaded,
-    intermediateProgress: store.update.intermediateProgress,
-    language: store.config.language,
-    showRetry: store.update.showRetry,
-    showUpdateProgress: store.update.showUpdateProgress,
-    totalProgress: store.update.totalProgress,
-    totalSize: store.update.totalSize,
+    filesDownloaded: store.config.update.filesDownloaded,
+    intermediateProgress: store.config.update.intermediateProgress,
+    language: store.config.options.language,
+    showRetry: store.config.update.showRetry,
+    showUpdateProgress: store.config.update.showUpdateProgress,
+    totalProgress: store.config.update.totalProgress,
+    totalSize: store.config.update.totalSize,
   };
 };
 

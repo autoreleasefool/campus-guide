@@ -49,6 +49,7 @@ import type {
 
 // Type definition for component props.
 type Props = {
+  children: any,                  // Components from the parent component
   currentSemester: number,        // The current semester, selected by the user
   language: Language,             // The current language, selected by the user
   lectureFormats: Array < LectureFormat >,  // Array of available lecture types
@@ -75,6 +76,15 @@ class WeeklyView extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: Props;
+
+  /**
+   * Requests a modal for the user to edit an existing course.
+   *
+   * @param {Course} course the course to edit
+   */
+  _handleEditCourse(course: Course): void {
+    console.log(`Edit this course: ${JSON.stringify(course)}`);
+  }
 
   /**
    * Renders a single course in the current semester.
@@ -203,11 +213,11 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    currentSemester: store.config.currentSemester,
-    language: store.config.language,
+    currentSemester: store.config.options.currentSemester,
+    language: store.config.options.language,
     schedule: store.schedule.semesters,
-    semesters: store.config.semesters,
-    timeFormat: store.config.preferredTimeFormat,
+    semesters: store.config.options.semesters,
+    timeFormat: store.config.options.preferredTimeFormat,
   };
 };
 

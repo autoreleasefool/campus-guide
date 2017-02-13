@@ -179,24 +179,24 @@ const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    transitCanNavigate: store.navigation.canNavigateBack.transit || false,
-    linksCanNavigate: store.navigation.canNavigateBack.links || false,
-    view: store.discover.view,
+    transitCanNavigate: store.navigation.canBack.transit || false,
+    linksCanNavigate: store.navigation.canBack.links || false,
+    view: store.navigation.discoverView,
   };
 };
 
 const mapDispatchToprops = (dispatch) => {
   return {
-    canNavigateBack: () => dispatch(actions.setShowBack(true, 'discover')),
+    canNavigateBack: () => dispatch(actions.showBack(true, 'discover')),
     onNavigation: (view: number) => {
       switch (view) {
         case Constants.Views.Discover.Home:
-          dispatch(actions.setShowBack(false, 'discover'));
-          dispatch(actions.setShowSearch(false, 'discover'));
+          dispatch(actions.showBack(false, 'discover'));
+          dispatch(actions.showSearch(false, 'discover'));
           dispatch(actions.setHeaderTitle(null, 'discover'));
           break;
         default:
-          dispatch(actions.setShowBack(true, 'discover'));
+          dispatch(actions.showBack(true, 'discover'));
       }
 
       dispatch(actions.switchDiscoverView(view));

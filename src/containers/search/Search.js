@@ -504,8 +504,8 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    filter: store.search.searchTerms,
-    language: store.config.language,
+    filter: store.search.terms,
+    language: store.config.options.language,
   };
 };
 
@@ -534,14 +534,14 @@ const mapDispatchToProps = (dispatch) => {
           };
 
           dispatch(actions.setHeaderTitle(name, 'find'));
-          dispatch(actions.navigateTo(data.code, data.room));
+          dispatch(actions.setDestination({ code: data.code, room: data.room }));
           dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
           dispatch(actions.switchTab('find'));
           break;
         }
         case 'Useful links':
         case 'Liens utiles': {
-          dispatch(actions.showLinkCategory(data));
+          dispatch(actions.switchLinkCategory(data));
           dispatch(actions.switchDiscoverView(Constants.Views.Discover.Links));
           dispatch(actions.switchTab('discover'));
           break;

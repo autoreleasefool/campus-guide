@@ -25,10 +25,8 @@
  */
 'use strict';
 
-// Type imports
-import type {
-  Language,
-} from 'types';
+// Types
+import type { Language } from 'types';
 
 // Cache of the translations
 const translations: Object = {

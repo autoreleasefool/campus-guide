@@ -78,8 +78,8 @@ class BuildingComponent extends React.Component {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
-    const navigateToBuilding =
-        `${Translations.navigate_to} ${TranslationUtils.getTranslatedName(this.props.language, this.props.building)}`;
+    const navigateToBuilding = `${Translations.navigate_to} `
+        + (TranslationUtils.getTranslatedName(this.props.language, this.props.building) || '');
 
     return (
       <TouchableOpacity onPress={this._onDestinationSelected.bind(this, this.props.building.code)}>
@@ -148,16 +148,16 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    building: store.find.building,
-    filter: store.search.searchTerms,
-    language: store.config.language,
+    building: store.directions.building,
+    filter: store.search.terms,
+    language: store.config.options.language,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onDestinationSelected: (code: string, room: ?string) => {
-      dispatch(actions.navigateTo(code, room));
+      dispatch(actions.setDestination({ code, room }));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
     },
   };

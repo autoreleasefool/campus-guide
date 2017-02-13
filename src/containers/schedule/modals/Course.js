@@ -132,7 +132,7 @@ class CourseModal extends React.Component {
       semester: props.currentSemester,
       code,
       lectures,
-      rightActionEnabled: this._isCourseCodeUnique(props.currentSemester, code),
+      rightActionEnabled: this._isCourseCodeUnique(props.schedule[props.semesters[props.currentSemester].id], code),
     };
 
     (this:any)._closeLectureModal = this._closeLectureModal.bind(this);
@@ -236,22 +236,25 @@ class CourseModal extends React.Component {
    * @param {string}   courseCode the code given to the course
    * @returns {boolean} true if the course code is unique in the semester, false otherwise
    */
-  _isCourseCodeUnique(semester: Semester, courseCode: string): void {
-    return ArrayUtils.binarySearchObjectArrayByKeyValue(semester.courses, 'code', courseCode) < 0;
+  _isCourseCodeUnique(semester: Semester, courseCode: string): boolean {
+    return semester.courses == null
+        ? false
+        : ArrayUtils.binarySearchObjectArrayByKeyValue(semester.courses, 'code', courseCode) < 0;
   }
 
   /**
    * Saves the course being edited or created.
    *
-   * @param {number} semester index of the semester to add the course to
-   * @param {Course} course   the course to save
+   * @param {number} semesterIndex index of the semester to add the course to
+   * @param {Course} course        the course to save
    */
-  _saveCourse(semester: number, course: Course): void {
-    if (!this._isCourseCodeUnique(this.props.schedule[this.props.semesters[semester].id], course.code)) {
+  _saveCourse(semesterIndex: number, course: Course): void {
+    const semester = this.props.schedule[this.props.semesters[semesterIndex].id];
+    if (!this._isCourseCodeUnique(semester, course.code)) {
       return;
     }
 
-    this.props.onSaveCourse(this.props.semesters[semester].id, course);
+    this.props.onSaveCourse(semester.id, course);
     this.props.onClose();
   }
 
@@ -352,8 +355,8 @@ class CourseModal extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   _renderMenu(Translations: Object): ReactElement < any > {
-    const semesterName = TranslationUtils.getTranslatedName(this.props.language,
-        this.props.semesters[this.state.semester]) || '';
+    const semester = this.props.semesters[this.state.semester];
+    const semesterName = TranslationUtils.getTranslatedName(this.props.language, semester) || '';
 
     return (
       <View style={{ flex: 1 }}>
@@ -372,7 +375,7 @@ class CourseModal extends React.Component {
               style={_styles.textInput}
               value={this.state.code}
               onChangeText={(code) =>
-                this.setState({ code, rightActionEnabled: this._isCourseCodeUnique(this.state.semester, code) })} />
+                this.setState({ code, rightActionEnabled: this._isCourseCodeUnique(semester, code) })} />
           <Header
               subtitle={this.state.editingLectures ? Translations.cancel : Translations.edit}
               subtitleCallback={this._toggleLectureEditOptions.bind(this)}
@@ -589,11 +592,11 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    currentSemester: store.config.currentSemester,
-    language: store.config.language,
+    currentSemester: store.config.options.currentSemester,
+    language: store.config.options.language,
     schedule: store.schedule.semesters,
-    semesters: store.config.semesters,
-    timeFormat: store.config.preferredTimeFormat,
+    semesters: store.config.options.semesters,
+    timeFormat: store.config.options.preferredTimeFormat,
   };
 };
 

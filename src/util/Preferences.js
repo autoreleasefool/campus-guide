@@ -26,9 +26,7 @@
 'use strict';
 
 // Types
-import type {
-  Language,
-} from 'types';
+import type { Language } from 'types';
 
 // Represents the language selected by the user to use the app in
 const SELECTED_LANGUAGE: string = 'app_selected_language';

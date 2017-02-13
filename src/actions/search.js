@@ -25,14 +25,13 @@
 'use strict';
 
 // Types
-import type { Action } from 'types';
 import { SEARCH } from 'actionTypes';
 
 module.exports = {
 
-  search: (searchTerms: ?string): Action => ({
+  search: (terms: ?string) => ({
     type: SEARCH,
-    searchTerms,
+    terms,
   }),
 
 };

@@ -170,7 +170,7 @@ class Schedule extends React.Component {
    * @param {Course} course   the course being saved
    */
   _onSaveCourse(semester: string, course: Course): void {
-    console.log(`TODO: save course: ${semester} - ${course}`);
+    console.log(`TODO: save course: ${semester} - ${JSON.stringify(course)}`);
   }
 
   /**
@@ -274,10 +274,10 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    currentSemester: store.config.currentSemester,
-    language: store.config.language,
-    semesters: store.config.semesters,
-    timeFormat: store.config.preferredTimeFormat,
+    currentSemester: store.config.options.currentSemester,
+    language: store.config.options.language,
+    semesters: store.config.options.semesters,
+    timeFormat: store.config.options.preferredTimeFormat,
   };
 };
 

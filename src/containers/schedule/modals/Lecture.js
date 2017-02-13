@@ -572,7 +572,7 @@ class LectureModal extends React.Component {
             })} />
         <Navigator
             configureScene={this._configureScene}
-            initialRoute={{id: MENU}}
+            initialRoute={{ id: MENU }}
             ref='Navigator'
             renderScene={this._renderScene.bind(this)}
             style={_styles.container} />
@@ -599,8 +599,8 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    language: store.config.language,
-    timeFormat: store.config.preferredTimeFormat,
+    language: store.config.options.language,
+    timeFormat: store.config.options.preferredTimeFormat,
   };
 };
 

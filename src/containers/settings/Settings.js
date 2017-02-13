@@ -549,11 +549,11 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    currentSemester: store.config.currentSemester,
-    language: store.config.language,
-    prefersWheelchair: store.config.prefersWheelchair,
-    semesters: store.config.semesters,
-    timeFormat: store.config.preferredTimeFormat,
+    currentSemester: store.config.options.currentSemester,
+    language: store.config.options.language,
+    prefersWheelchair: store.config.options.prefersWheelchair,
+    semesters: store.config.options.semesters,
+    timeFormat: store.config.options.preferredTimeFormat,
   };
 };
 

@@ -25,23 +25,23 @@
 'use strict';
 
 // Types
-import type { Action, Course, Semester } from 'types';
+import type { Course, Semester } from 'types';
 import { ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
 
 module.exports = {
 
-  addSemester: (semester: Semester): Action => ({
+  addSemester: (semester: Semester) => ({
     type: ADD_SEMESTER,
     semester,
   }),
 
-  addCourse: (semester: string, course: Course): Action => ({
+  addCourse: (semester: string, course: Course) => ({
     type: ADD_COURSE,
     semester,
     course,
   }),
 
-  removeCourse: (semester: string, courseCode: string): Action => ({
+  removeCourse: (semester: string, courseCode: string) => ({
     type: REMOVE_COURSE,
     semester,
     courseCode,

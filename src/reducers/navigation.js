@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Action, Campus, Tab } from 'types';
+import type { Campus, Tab } from 'types';
 import {
   NAVIGATE_BACK,
   SET_CAN_BACK,
@@ -65,11 +65,11 @@ const initialState: State = {
 /**
  * When provided with a navigation action, parses the parameters and returns an updated state.
  *
- * @param {State}  state  the current state
- * @param {Action} action the action being taken
+ * @param {State} state  the current state
+ * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken.
  */
-function navigation(state: State = initialState, action: Action): State {
+function navigation(state: State = initialState, action: any): State {
   switch (action.type) {
     case NAVIGATE_BACK:
       return {

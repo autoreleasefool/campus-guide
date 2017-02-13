@@ -25,7 +25,6 @@
 'use strict';
 
 // Types
-import type { Action } from 'types';
 import { ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
 
 // Imports
@@ -44,11 +43,11 @@ const initialState: State = {
 /**
  * When provided with a schedule action, parses the parameters and returns an updated state.
  *
- * @param {State}  state  the current state
- * @param {Action} action the action being taken
+ * @param {State} state  the current state
+ * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken.
  */
-function schedule(state: State = initialState, action: Action): State {
+function schedule(state: State = initialState, action: any): State {
   switch (action.type) {
     case ADD_SEMESTER: {
       const semesters = JSON.parse(JSON.stringify(state.semesters));

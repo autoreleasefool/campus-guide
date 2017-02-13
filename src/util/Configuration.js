@@ -26,9 +26,7 @@
 'use strict';
 
 // Types
-import type {
-  ConfigFile,
-} from 'types';
+import type { ConfigFile } from 'types';
 
 /** Description of a file which is being updated. */
 type FileUpdate = {

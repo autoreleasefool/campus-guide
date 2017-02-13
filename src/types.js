@@ -176,7 +176,7 @@ export type TransitInfo = (Name | TranslatedName) & (Link | TranslatedLink);
 
 /** A semester at the school, with its name, identifier, and other info. */
 export type Semester = {
-  id: string,               // Unique identifier for the semester
+  id: string,                 // Unique identifier for the semester
   current?: boolean,          // True if this is the current semester
   courses?: Array < Course >  // Courses the user has defined in the semester
 } & (Name | TranslatedName);
@@ -338,31 +338,3 @@ export type Update = {
   totalProgress?: number,              // Total bytes downloaded
   totalSize?: number,                  // Total number of bytes across all files
 }
-
-//-----------------------------------------------------------------------------
-//  Actions
-//-----------------------------------------------------------------------------
-
-import * as Actions from 'actionTypes';
-
-/** Available actions for modifying the application state. */
-export type Action =
-    { type: Actions.SEARCH, searchTerms: ?string }
-  | { type: Actions.SWITCH_TAB, tab: Tab; }
-  | { type: Actions.NAVIGATE_BACK }
-  | { type: Actions.SET_CAN_BACK, key: string, can: boolean }
-  | { type: Actions.UPDATE_CONFIGURATION, options: ConfigurationOptions }
-  | { type: Actions.UPDATE_PROGRESS, update: Update }
-  | { type: Actions.SET_HEADER_TITLE, title: ?(Name | TranslatedName | string), tab: ?Tab }
-  | { type: Actions.SHOW_BACK, show: boolean, tab: ?Tab }
-  | { type: Actions.SHOW_SEARCH, show: boolean, tab: ?Tab }
-  | { type: Actions.SWITCH_FIND_VIEW, view: number }
-  | { type: Actions.SET_DESTINATION, destination: Destination }
-  | { type: Actions.VIEW_BUILDING, building: Building }
-  | { type: Actions.SWITCH_DISCOVER_VIEW, view: number }
-  | { type: Actions.SWITCH_DISCOVER_LINK, linkId: ?string | number }
-  | { type: Actions.SWITCH_DISCOVER_TRANSIT_CAMPUS, campus: ?Campus }
-  | { type: Actions.ADD_SEMESTER, semester: Semester }
-  | { type: Actions.ADD_COURSE, semester: string, course: Course }
-  | { type: Actions.REMOVE_COURSE, semester: string, courseCode: string }
-  ;

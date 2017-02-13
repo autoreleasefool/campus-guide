@@ -31,7 +31,7 @@ import reducer from '../search';
 
 // Expected initial state
 const initialState = {
-  searchTerms: null,
+  terms: null,
 };
 
 describe('search reducer', () => {
@@ -41,17 +41,17 @@ describe('search reducer', () => {
   });
 
   it('should perform a set of searches', () => {
-    const testSearchTerms = 'search';
-    const otherSearchTerms = 'other_search';
+    const testTerms = 'search';
+    const otherTerms = 'other_search';
 
-    expect(reducer(initialState, { type: SEARCH, searchTerms: testSearchTerms }))
-        .toEqual({ ...initialState, searchTerms: testSearchTerms });
+    expect(reducer(initialState, { type: SEARCH, terms: testTerms }))
+        .toEqual({ ...initialState, terms: testTerms });
 
-    expect(reducer(initialState, { type: SEARCH, searchTerms: otherSearchTerms }))
-        .toEqual({ ...initialState, searchTerms: otherSearchTerms });
+    expect(reducer(initialState, { type: SEARCH, terms: otherTerms }))
+        .toEqual({ ...initialState, terms: otherTerms });
 
-    expect(reducer(initialState, { type: SEARCH, searchTerms: null }))
-        .toEqual({ ...initialState, searchTerms: null });
+    expect(reducer(initialState, { type: SEARCH, terms: null }))
+        .toEqual({ ...initialState, terms: null });
   });
 
 });

@@ -28,14 +28,13 @@
 import { AsyncStorage } from 'react-native';
 
 // Types
-import type { Action } from 'types';
 import { UPDATE_CONFIGURATION, ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
 
 // Imports
 import { saveSchedule } from 'Database';
 import * as Preferences from 'Preferences';
 
-export const persist = () => (next: any) => (action: Action) => {
+export const persist = () => (next: any) => (action: any) => {
   switch (action.type) {
     case UPDATE_CONFIGURATION:
       for (const option in action.options) {

@@ -26,9 +26,7 @@
 'use strict';
 
 // Type imports
-import type {
-  ConfigFile,
-} from 'types';
+import type { ConfigFile } from 'types';
 
 // Imports
 import Promise from 'promise';

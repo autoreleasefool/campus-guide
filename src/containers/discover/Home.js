@@ -35,6 +35,18 @@ import * as actions from 'actions';
 // Types
 import type { DiscoverSection, Language } from 'types';
 
+// Type definition for component props.
+type Props = {
+  language: Language,                                               // The current language, selected by the user
+  onSectionSelected: (section: string) => void,                     // Display contents of the section in new view
+  onSectionsLoaded: (sections: Array < DiscoverSection >) => void,  // Sets the sections in the view
+}
+
+// Type definition for component state.
+type State = {
+  sections: ?Array < DiscoverSection >,  // Sections in the discover section
+};
+
 // Imports
 import Menu from 'Menu';
 import * as Configuration from 'Configuration';
@@ -45,23 +57,33 @@ class DiscoverHome extends React.Component {
   /**
    * Properties this component expects to be provided by its parent.
    */
-  props: {
-    language: Language,                                               // The current language, selected by the user
-    onSectionSelected: (section: string) => void,                     // Display contents of the section in new view
-    onSectionsLoaded: (sections: Array < DiscoverSection >) => void,  // Sets the sections in the view
-    sections: Array < DiscoverSection >,                              // The sections in the view
+  props: Props
+
+  /**
+   * Current state of the component.
+   */
+  state: State;
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      sections: null,
+    };
   }
 
   /**
    * If the sections have not been loaded, then load them.
    */
   componentDidMount(): void {
-    if (this.props.sections.length === 0) {
+    if (this.state.sections == null) {
       Configuration.init()
           .then(() => Configuration.getConfig('/discover.json'))
-          .then((discoverSections: Array < DiscoverSection >) => {
-            this.props.onSectionsLoaded(discoverSections);
-          })
+          .then((sections: Array < DiscoverSection >) => this.setState({ sections }))
           .catch((err: any) => console.error('Configuration could not be initialized for discovery.', err));
     }
   }
@@ -72,7 +94,7 @@ class DiscoverHome extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    if (this.props.sections == null || this.props.sections.length === 0) {
+    if (this.state.sections == null) {
       return (
         <View style={_styles.container} />
       );
@@ -81,7 +103,7 @@ class DiscoverHome extends React.Component {
         <View style={_styles.container}>
           <Menu
               language={this.props.language}
-              sections={this.props.sections}
+              sections={this.state.sections}
               onSectionSelected={this.props.onSectionSelected} />
         </View>
       );
@@ -99,8 +121,7 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    language: store.config.language,
-    sections: store.discover.sections,
+    language: store.config.options.language,
   };
 };
 
@@ -114,7 +135,7 @@ const mapDispatchToProps = (dispatch) => {
         case 'use':
           view = Constants.Views.Discover.Links;
           title = 'useful_links';
-          dispatch(actions.showLinkCategory(0));
+          dispatch(actions.switchLinkCategory(0));
           break;
         case 'trn':
           view = Constants.Views.Discover.Transit;
@@ -130,7 +151,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.setHeaderTitle(title, 'discover'));
       dispatch(actions.switchDiscoverView(view));
     },
-    onSectionsLoaded: (sections: Array < DiscoverSection >) => dispatch(actions.setDiscoverSections(sections)),
   };
 };
 

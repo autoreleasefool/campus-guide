@@ -32,14 +32,14 @@ import * as actions from '../search';
 describe('search actions', () => {
 
   it('creates an action to search for a search term', () => {
-    const searchTerms = 'search term';
-    const expectedAction = { type: SEARCH, searchTerms };
-    expect(actions.search(searchTerms)).toEqual(expectedAction);
+    const terms = 'search term';
+    const expectedAction = { type: SEARCH, terms };
+    expect(actions.search(terms)).toEqual(expectedAction);
   });
 
   it('creates an action to clear the search', () => {
-    const searchTerms = null;
-    const expectedAction = { type: SEARCH, searchTerms };
+    const terms = null;
+    const expectedAction = { type: SEARCH, terms };
     expect(actions.search(null)).toEqual(expectedAction);
   });
 

@@ -107,8 +107,8 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    filter: store.search.searchTerms,
-    language: store.config.language,
+    filter: store.search.terms,
+    language: store.config.options.language,
   };
 };
 

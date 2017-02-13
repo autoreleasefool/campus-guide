@@ -25,12 +25,8 @@
  */
 'use strict';
 
-// Import types
-import type {
-  Icon,
-  Facility,
-  PlatformString,
-} from 'types';
+// Types
+import type { Icon, Facility, PlatformString } from 'types';
 
 /**
  * Returns the icon and class for an icon to use for the Android platform, defined in the object.
@@ -43,9 +39,9 @@ export function getAndroidIcon(obj: Object): ?Icon {
   if ('icon' in obj) {
     const icon = obj.icon;
     if (('android' in icon) && ('name' in icon.android) && ('class' in icon.android)) {
-      return {name: icon.android.name, class: icon.android.class};
+      return { name: icon.android.name, class: icon.android.class };
     } else if (('name' in icon) && ('class' in icon)) {
-      return {name: icon.name, class: icon.class};
+      return { name: icon.name, class: icon.class };
     }
   }
 
@@ -130,9 +126,9 @@ export function getIOSIcon(obj: Object): ?Icon {
   if ('icon' in obj) {
     const icon = obj.icon;
     if (('ios' in icon) && ('name' in icon.ios) && ('class' in icon.ios)) {
-      return {name: icon.ios.name, class: icon.ios.class};
+      return { name: icon.ios.name, class: icon.ios.class };
     } else if (('name' in icon) && ('class' in icon)) {
-      return {name: icon.name, class: icon.class};
+      return { name: icon.name, class: icon.class };
     }
   }
 

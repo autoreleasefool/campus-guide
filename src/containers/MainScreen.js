@@ -131,8 +131,8 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    language: store.config.language,
-    shouldShowLanguageMessage: store.config.firstTime,
+    language: store.config.options.language,
+    shouldShowLanguageMessage: store.config.options.firstTime,
   };
 };
 

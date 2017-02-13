@@ -25,17 +25,17 @@
 'use strict';
 
 // Types
-import type { Action, ConfigurationOptions, Update } from 'types';
+import type { ConfigurationOptions, Update } from 'types';
 import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
 
 module.exports = {
 
-  updateConfiguration: (configOptions: ConfigurationOptions): Action => ({
+  updateConfiguration: (options: ConfigurationOptions) => ({
     type: UPDATE_CONFIGURATION,
-    configOptions,
+    options,
   }),
 
-  updateProgress: (update: Update): Action => ({
+  updateProgress: (update: Update) => ({
     type: UPDATE_PROGRESS,
     update,
   }),

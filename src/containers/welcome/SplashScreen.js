@@ -238,7 +238,7 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store) => {
   return {
-    language: store.config.language,
+    language: store.config.options.language,
   };
 };
 

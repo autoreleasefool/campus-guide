@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Action, Name, TranslatedName, TabSet } from 'types';
+import type { Name, TranslatedName, TabSet } from 'types';
 import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH, SWITCH_TAB } from 'actionTypes';
 
 // Import default translations
@@ -93,11 +93,11 @@ const initialState: State = {
 /**
  * When provided with a header action, parses the parameters and returns an updated state.
  *
- * @param {State}  state  the current state
- * @param {Action} action the action being taken
+ * @param {State} state  the current state
+ * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken.
  */
-function header(state: State = initialState, action: Action): State {
+function header(state: State = initialState, action: any): State {
   switch (action.type) {
     case SWITCH_TAB:
       return {

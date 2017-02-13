@@ -25,17 +25,17 @@
 'use strict';
 
 // Types
-import type { Action, ConfigurationOptions, Update } from 'types';
+import type { ConfigurationOptions, Update } from 'types';
 import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
 
 type State = {
-  configOptions: ConfigurationOptions,
+  options: ConfigurationOptions,
   update: Update,
 }
 
 // Initial update state.
 const initialState: State = {
-  configOptions: {
+  options: {
     alwaysSearchAll: false,
     transitInfo: null,
     currentSemester: 0,
@@ -60,20 +60,20 @@ const initialState: State = {
 /**
  * When provided with a configuration action, parses the parameters and returns an updated state.
  *
- * @param {State}  state  the current state
- * @param {Action} action the action being taken
+ * @param {State} state  the current state
+ * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken.
  */
-function config(state: State = initialState, action: Action): State {
+function config(state: State = initialState, action: any): State {
   switch (action.type) {
     case UPDATE_CONFIGURATION:
       return {
-        configOptions: Object.assign({}, state.configOptions, action.configOptions),
+        options: Object.assign({}, state.options, action.options),
         update: Object.assign({}, state.update),
       };
     case UPDATE_PROGRESS:
       return {
-        configOptions: Object.assign({}, state.configOptions),
+        options: Object.assign({}, state.options),
         update: Object.assign({}, state.update, action.update),
       };
     default:

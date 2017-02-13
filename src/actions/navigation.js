@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Action, Campus, Tab } from 'types';
+import type { Campus, Tab } from 'types';
 import {
   NAVIGATE_BACK,
   SET_CAN_BACK,
@@ -48,27 +48,27 @@ module.exports = {
     type: NAVIGATE_BACK,
   }),
 
-  switchTab: (tab: Tab): Action => ({
+  switchTab: (tab: Tab) => ({
     type: SWITCH_TAB,
     tab,
   }),
 
-  switchFindView: (view: number): Action => ({
+  switchFindView: (view: number) => ({
     type: SWITCH_FIND_VIEW,
     view,
   }),
 
-  switchDiscoverView: (view: number): Action => ({
+  switchDiscoverView: (view: number) => ({
     type: SWITCH_DISCOVER_VIEW,
     view,
   }),
 
-  switchLinkCategory: (linkId: ?string | number): Action => ({
+  switchLinkCategory: (linkId: ?string | number) => ({
     type: SWITCH_DISCOVER_LINK,
     linkId,
   }),
 
-  switchTransitCampus: (campus: ?Campus): Action => ({
+  switchTransitCampus: (campus: ?Campus) => ({
     type: SWITCH_DISCOVER_TRANSIT_CAMPUS,
     campus,
   }),

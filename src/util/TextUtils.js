@@ -27,11 +27,10 @@
 
 /* eslint-disable no-magic-numbers */
 
-import type {
-  Destination,
-  TimeFormat,
-} from 'types';
+// Types
+import type { Destination, TimeFormat } from 'types';
 
+// Imports
 import moment from 'moment';
 import * as Constants from 'Constants';
 

@@ -54,8 +54,8 @@ export function openLink(url: ?string,
               Translations.cannot_open_url,
               formattedUrl,
               [
-                {text: Translations.cancel, style: 'cancel'},
-                {text: Translations.copy_link, onPress: () => Clipboard.setString(formattedUrl)},
+                { text: Translations.cancel, style: 'cancel' },
+                { text: Translations.copy_link, onPress: () => Clipboard.setString(formattedUrl) },
               ],
             );
           }

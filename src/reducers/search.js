@@ -25,32 +25,31 @@
 'use strict';
 
 // Types
-import type { Action } from 'types';
 import { SEARCH } from 'actionTypes';
 
 // Describes a search.
 export type Search = {
-  searchTerms: ?string, // Search terms to filter results by
+  terms: ?string, // Search terms to filter results by
 };
 
 // Initial search state.
 const initialState: Search = {
-  searchTerms: null,
+  terms: null,
 };
 
 /**
  * When provided with a search action, parses the search terms and returns an updated state.
  *
- * @param {Search} state  the current state
- * @param {Action} action the action being taken
+ * @param {State} state  the current state
+ * @param {any}   action the action being taken
  * @returns {Search} an updated state based on the previous state and the action taken.
  */
-function search(state: Search = initialState, action: Action): Search {
+function search(state: Search = initialState, action: any): Search {
   switch (action.type) {
     case SEARCH:
       return {
         ...state,
-        searchTerms: action.searchTerms,
+        terms: action.terms,
       };
     default:
       return state;

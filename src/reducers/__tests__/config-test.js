@@ -31,7 +31,7 @@ import reducer from '../config';
 
 // Expected initial state
 const initialState = {
-  configOptions: {
+  options: {
     alwaysSearchAll: false,
     transitInfo: null,
     currentSemester: 0,
@@ -63,7 +63,7 @@ const configurationUpdate = {
 // Expected state when configuration updated
 const updatedConfigOptions = {
   update: initialState.update,
-  configOptions: {
+  options: {
     alwaysSearchAll: true,
     transitInfo: { name: 'Transit', link: 'http://example.com' },
     currentSemester: 0,
@@ -89,7 +89,7 @@ const progressUpdate = {
 
 // Expected state when progress updated
 const updatedProgress = {
-  configOptions: initialState.configOptions,
+  options: initialState.options,
   update: {
     currentDownload: 'download.jpg',
     filesDownloaded: [
@@ -112,7 +112,7 @@ describe('config reducer', () => {
   });
 
   it('should update the config options', () => {
-    expect(reducer(initialState, { type: UPDATE_CONFIGURATION, configOptions: configurationUpdate }))
+    expect(reducer(initialState, { type: UPDATE_CONFIGURATION, options: configurationUpdate }))
         .toEqual(updatedConfigOptions);
   });
 

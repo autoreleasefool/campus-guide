@@ -25,17 +25,17 @@
 'use strict';
 
 // Types
-import type { Action, Building, Destination } from 'types';
+import type { Building, Destination } from 'types';
 import { SET_DESTINATION, VIEW_BUILDING } from 'actionTypes';
 
 module.exports = {
 
-  setDestination: (destination: Destination): Action => ({
+  setDestination: (destination: Destination) => ({
     type: SET_DESTINATION,
     destination,
   }),
 
-  viewBuilding: (building: Building): Action => ({
+  viewBuilding: (building: Building) => ({
     type: VIEW_BUILDING,
     building,
   }),

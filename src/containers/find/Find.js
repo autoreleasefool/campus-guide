@@ -161,7 +161,7 @@ const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    view: store.find.view,
+    view: store.navigation.findView,
   };
 };
 
@@ -169,12 +169,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onBackNavigation: (view: number) => {
       if (view === Constants.Views.Find.Home) {
-        dispatch(actions.setShowBack(false, 'find'));
+        dispatch(actions.showBack(false, 'find'));
         dispatch(actions.setHeaderTitle(null, 'find'));
       } else {
-        dispatch(actions.setShowBack(true, 'find'));
+        dispatch(actions.showBack(true, 'find'));
       }
-      dispatch(actions.setShowSearch(true, 'find'));
+      dispatch(actions.showSearch(true, 'find'));
       dispatch(actions.switchFindView(view));
     },
   };

@@ -25,24 +25,24 @@
 'use strict';
 
 // Types
-import type { Action, Name, Tab, TranslatedName } from 'types';
+import type { Name, Tab, TranslatedName } from 'types';
 import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH } from 'actionTypes';
 
 module.exports = {
 
-  setHeaderTitle: (title: ?(Name | TranslatedName | string), tab?: Tab): Action => ({
+  setHeaderTitle: (title: ?(Name | TranslatedName | string), tab?: Tab) => ({
     type: SET_HEADER_TITLE,
     title,
     tab,
   }),
 
-  showBack: (show: boolean, tab?: Tab): Action => ({
+  showBack: (show: boolean, tab?: Tab) => ({
     type: SHOW_BACK,
     show,
     tab,
   }),
 
-  showSearch: (show: boolean, tab?: Tab): Action => ({
+  showSearch: (show: boolean, tab?: Tab) => ({
     type: SHOW_SEARCH,
     show,
     tab,

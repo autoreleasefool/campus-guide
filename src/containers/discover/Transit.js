@@ -317,21 +317,21 @@ const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    campus: store.discover.campus,
-    filter: store.search.searchTerms,
-    language: store.config.language,
-    timeFormat: store.config.preferredTimeFormat,
-    transitInfo: store.config.transitInfo,
+    campus: store.navigation.campus,
+    filter: store.search.terms,
+    language: store.config.options.language,
+    timeFormat: store.config.options.preferredTimeFormat,
+    transitInfo: store.config.options.transitInfo,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('transit', can)),
-    onCampusSelected: (campus: ?Campus) => dispatch(actions.showTransitCampus(campus)),
+    onCampusSelected: (campus: ?Campus) => dispatch(actions.switchTransitCampus(campus)),
     resetFilter: () => dispatch(actions.search(null)),
     setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
-    showSearch: (show: boolean) => dispatch(actions.setShowSearch(show, 'discover')),
+    showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
   };
 };
 

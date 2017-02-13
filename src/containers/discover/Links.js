@@ -62,13 +62,16 @@ type Props = {
   canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
   filter: ?string,                                                // Keywords to filter links by
   language: Language,                                             // The current language, selected by the user
-  links: Array < LinkSection >,                                   // The sections in the view
   linkId: ?string,                                                // The selected link category
-  onSectionsLoaded: (links: Array < LinkSection >) => void,       // Sets the sections in the view
   setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
   showCategory: (id: ?string) => void,                            // Shows a link category
   showSearch: (show: boolean) => void,                            // Shows or hides the search button
 }
+
+// Type definition for component state.
+type State = {
+  links: ?Array < LinkSection >,  // Sections of links
+};
 
 // Imports
 import Header from 'Header';
@@ -93,17 +96,32 @@ class Links extends React.Component {
   props: Props;
 
   /**
+   * Current state of the component.
+   */
+  state: State;
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      links: null,
+    };
+  }
+
+  /**
    * If the sections have not been loaded, then load them. Adds a listener to navigation events.
    */
   componentDidMount(): void {
     this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
-    if (this.props.links == null || this.props.links.length === 0) {
+    if (this.state.links == null) {
       Configuration.init()
           .then(() => Configuration.getConfig('/useful_links.json'))
-          .then((linkSections: Array < LinkSection >) => {
-            this.props.onSectionsLoaded(linkSections);
-          })
+          .then((links: Array < LinkSection >) => this.setState({ links }))
           .catch((err: any) => console.error('Configuration could not be initialized for useful links.', err));
     }
   }
@@ -188,7 +206,7 @@ class Links extends React.Component {
    */
   _getSection(id: string): ?LinkSection {
     const ids: Array < string > = id.split('-');
-    let categoryList: Array < LinkSection > = this.props.links;
+    let categoryList: Array < LinkSection > = this.state.links || [];
     let depth: number = 0;
 
     let currentSection: ?LinkSection = null;
@@ -227,7 +245,7 @@ class Links extends React.Component {
   _handleNavigationEvent(): void {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
 
-    if (currentRoutes.length > 1 && this.props.links.length > 0) {
+    if (currentRoutes.length > 1 && this.state.links != null) {
       const section = this._getSection(currentRoutes[currentRoutes.length - 1].id);
       const title = {
         name_en: TranslationUtils.getTranslatedName('en', section) || '',
@@ -486,13 +504,17 @@ class Links extends React.Component {
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
   _renderScene(route: Route): ReactElement < any > {
-    if (typeof (route.id) == 'string' && this.props.links.length > 0) {
+    if (typeof (route.id) == 'string' && this.state.links != null) {
       return this._renderSection(route.id);
+    } else if (this.state.links == null) {
+      return (
+        <View style={_styles.container} />
+      );
     } else {
       return (
         <Menu
             language={this.props.language}
-            sections={this.props.links}
+            sections={this.state.links}
             onSectionSelected={this._onCategorySelected.bind(this)} />
       );
     }
@@ -582,20 +604,18 @@ const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    filter: store.search.searchTerms,
-    language: store.config.language,
-    links: store.discover.links,
-    linkId: store.discover.linkId,
+    filter: store.search.terms,
+    language: store.config.options.language,
+    linkId: store.navigation.linkId,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('links', can)),
-    onSectionsLoaded: (links: Array < LinkSection >) => dispatch(actions.setDiscoverLinks(links)),
     setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
-    showCategory: (id: ?string) => dispatch(actions.showLinkCategory(id)),
-    showSearch: (show: boolean) => dispatch(actions.setShowSearch(show, 'discover')),
+    showCategory: (id: ?string) => dispatch(actions.switchLinkCategory(id)),
+    showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
   };
 };
 
