@@ -35,14 +35,11 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {updateConfiguration} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
 // Types
-import type {
-  Language,
-  TransitInfo,
-} from 'types';
+import type { Language, TransitInfo } from 'types';
 
 // Imports
 import Promise from 'promise';
@@ -108,11 +105,11 @@ class SplashScreen extends React.Component {
         .then(() => Configuration.getConfig('/transit.json'))
         .then((transitInfo: TransitInfo) => {
           this.props.setTransit(transitInfo);
-          this.refs.Navigator.push({id: 'main'});
+          this.refs.Navigator.push({ id: 'main' });
         })
         .catch((err: any) => {
           console.log('Assuming configuration is not available.', err);
-          this.props.navigator.push({id: 'update'});
+          this.props.navigator.push({ id: 'update' });
         });
   }
 
@@ -166,14 +163,14 @@ class SplashScreen extends React.Component {
     return (
       <View style={_styles.container}>
         <TouchableWithoutFeedback
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             onPress={this._onLanguageSelect.bind(this, 'en')}>
           <View style={_styles.englishContainer}>
             <View style={_styles.languageContainer}>
               <Text style={_styles.languageSubtitle}>
                 {CoreTranslations.en.continue_in}
               </Text>
-              <View style={{padding: 5}}>
+              <View style={_styles.languageTextContainer}>
                 <Text style={_styles.languageTitle}>
                   {CoreTranslations.en.language}
                 </Text>
@@ -182,14 +179,14 @@ class SplashScreen extends React.Component {
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             onPress={this._onLanguageSelect.bind(this, 'fr')}>
           <View style={_styles.frenchContainer}>
             <View style={_styles.languageContainer}>
               <Text style={_styles.languageSubtitle}>
                 {CoreTranslations.fr.continue_in}
               </Text>
-              <View style={{padding: 5}}>
+              <View style={_styles.languageTextContainer}>
                 <Text style={_styles.languageTitle}>
                   {CoreTranslations.fr.language}
                 </Text>
@@ -234,21 +231,22 @@ const _styles = StyleSheet.create({
     color: 'white',
     fontSize: Constants.Sizes.Text.Subtitle,
   },
+  languageTextContainer: {
+    padding: 5,
+  },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     language: store.config.language,
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onLanguageSelect: (language: Language) => dispatch(updateConfiguration({language, firstTime: true})),
-    setUniversity: (university: Object) => dispatch(updateConfiguration({semesters: university.semesters})),
-    setTransit: (transitInfo: TransitInfo) => dispatch(updateConfiguration({
+    onLanguageSelect: (language: Language) => dispatch(actions.updateConfiguration({ language, firstTime: true })),
+    setUniversity: (university: Object) => dispatch(actions.updateConfiguration({ semesters: university.semesters })),
+    setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
       transitInfo: {
         name_en: TranslationUtils.getEnglishName(transitInfo) || '',
         name_fr: TranslationUtils.getFrenchName(transitInfo) || '',
@@ -261,7 +259,7 @@ const actions = (dispatch) => {
       /* eslint-disable no-magic-numbers */
       /* Order of these preferences determined by loadPreferences() order */
 
-      dispatch(updateConfiguration({
+      dispatch(actions.updateConfiguration({
         language: preferences[0],
         currentSemester: preferences[1],
         prefersWheelchair: preferences[2],
@@ -273,4 +271,4 @@ const actions = (dispatch) => {
   };
 };
 
-export default connect(select, actions)(SplashScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(SplashScreen);

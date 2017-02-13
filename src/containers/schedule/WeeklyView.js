@@ -35,7 +35,7 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 // Types
 import type {
@@ -60,8 +60,8 @@ type Props = {
 // Imports
 import Header from 'Header';
 import * as Constants from 'Constants';
+import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
-import {destinationToString, getFormattedTimeSinceMidnight} from 'TextUtils';
 
 // Screen dimensions
 const screenWidth = Dimensions.get('window').width;
@@ -119,17 +119,17 @@ class WeeklyView extends React.Component {
     return (
       <View key={`${lecture.day} - ${lecture.startTime}`}>
         <View style={_styles.lectureContainer}>
-          <Text style={[_styles.lectureText, _styles.lectureTextLeft]}>
+          <Text style={[ _styles.lectureText, _styles.lectureTextLeft ]}>
             {Constants.Days[this.props.language][lecture.day]}
           </Text>
-          <Text style={[_styles.lectureText, _styles.lectureTextInner]}>
-            {getFormattedTimeSinceMidnight(lecture.startTime, this.props.timeFormat)}
+          <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
+            {TextUtils.getFormattedTimeSinceMidnight(lecture.startTime, this.props.timeFormat)}
           </Text>
-          <Text style={[_styles.lectureText, _styles.lectureTextInner]}>
-            {getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
+          <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
+            {TextUtils.getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
           </Text>
-          <Text style={[_styles.lectureText, _styles.lectureTextRight]}>
-            {lecture.location ? destinationToString(lecture.location) : ''}
+          <Text style={[ _styles.lectureText, _styles.lectureTextRight ]}>
+            {lecture.location ? TextUtils.destinationToString(lecture.location) : ''}
           </Text>
         </View>
         {isLast ? null : <View style={_styles.lectureSeparator} />}
@@ -201,8 +201,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     currentSemester: store.config.currentSemester,
     language: store.config.language,
@@ -212,4 +211,4 @@ const select = (store) => {
   };
 };
 
-export default connect(select)(WeeklyView);
+export default connect(mapStateToProps)(WeeklyView);

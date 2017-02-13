@@ -27,15 +27,10 @@
 
 // React imports
 import React from 'react';
-import {
-  Navigator,
-  View,
-} from 'react-native';
+import { Navigator, View } from 'react-native';
 
 // Types
-import type {
-  WelcomeTab,
-} from 'types';
+import type { WelcomeTab } from 'types';
 
 // Route to describe which view the Navigator should display.
 type AppRoute = {
@@ -99,9 +94,9 @@ export default class CampusGuideApp extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: 'splash'}}
+          initialRoute={{ id: 'splash' }}
           renderScene={this._renderScene}
-          style={{flex: 1, backgroundColor: Constants.Colors.primaryBackground}} />
+          style={{ flex: 1, backgroundColor: Constants.Colors.primaryBackground }} />
     );
   }
 }

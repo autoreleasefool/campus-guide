@@ -41,16 +41,10 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  canNavigateBack,
-  setDiscoverLinks,
-  setHeaderTitle,
-  showLinkCategory,
-  setShowSearch,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
+// Types
 import type {
   Language,
   LinkSection,
@@ -126,7 +120,7 @@ class Links extends React.Component {
         && currentRoutes.length > 1) {
       this.refs.Navigator.pop();
     } else if (nextProps.linkId != this.props.linkId) {
-      this.refs.Navigator.push({id: nextProps.linkId});
+      this.refs.Navigator.push({ id: nextProps.linkId });
     }
   }
 
@@ -151,7 +145,7 @@ class Links extends React.Component {
       return null;
     } else {
       return (
-        <Text style={[_styles.linkSubtitle, {color: textColor}]}>{TextUtils.formatLink(link)}</Text>
+        <Text style={[ _styles.linkSubtitle, { color: textColor }]}>{TextUtils.formatLink(link)}</Text>
       );
     }
   }
@@ -283,7 +277,7 @@ class Links extends React.Component {
       <View style={_styles.banner}>
         <Image
             resizeMode={'cover'}
-            source={{uri: Configuration.getImagePath(section.image)}}
+            source={{ uri: Configuration.getImagePath(section.image) }}
             style={_styles.bannerImage} />
         <View style={_styles.bannerTextContainer}>
           <Text style={_styles.bannerText}>
@@ -326,10 +320,10 @@ class Links extends React.Component {
                 key={categoryName}
                 onPress={() => this._onCategorySelected(category.id)}>
               <Header
-                  icon={{name: 'chevron-right', class: 'material'}}
+                  icon={{ name: 'chevron-right', class: 'material' }}
                   title={categoryName} />
               {(index < categories.length - 1)
-                ? <View style={[_styles.divider, {backgroundColor: dividerColor}]} />
+                ? <View style={[ _styles.divider, { backgroundColor: dividerColor }]} />
                 : null
               }
             </TouchableOpacity>
@@ -370,7 +364,7 @@ class Links extends React.Component {
     return (
       <View>
         <Header
-            icon={{name: 'insert-link', class: 'material'}}
+            icon={{ name: 'insert-link', class: 'material' }}
             title={Translations.useful_links} />
         {links.map((link, index) => {
           const translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
@@ -386,18 +380,18 @@ class Links extends React.Component {
           return (
             <View key={translatedLink}>
               <TouchableOpacity
-                  style={{flexDirection: 'row', alignItems: 'center'}}
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
                   onPress={() => this._openLink(translatedLink, Translations)}>
                 {this._getLinkIcon(translatedLink, iconColor)}
                 <View>
-                  <Text style={[_styles.link, {color: textColor}]}>
+                  <Text style={[ _styles.link, { color: textColor }]}>
                     {translatedName}
                   </Text>
                   {this._getFormattedLink(translatedLink, textColor)}
                 </View>
               </TouchableOpacity>
               {(index < links.length - 1)
-                ? <View style={[_styles.divider, {backgroundColor: textColor}]} />
+                ? <View style={[ _styles.divider, { backgroundColor: textColor }]} />
                 : null
               }
             </View>
@@ -474,7 +468,7 @@ class Links extends React.Component {
     const isBackgroundDark: boolean = DisplayUtils.isColorDark(categoryBackgroundColor);
 
     return (
-      <View style={[_styles.container, {backgroundColor: categoryBackgroundColor}]}>
+      <View style={[ _styles.container, { backgroundColor: categoryBackgroundColor }]}>
         <ScrollView style={_styles.scrollView}>
           {this._renderSectionBanner(section)}
           {this._renderSectionSocialMedia(section.social)}
@@ -513,7 +507,7 @@ class Links extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: this.props.linkId || 0}}
+          initialRoute={{ id: this.props.linkId || 0 }}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
           style={_styles.container} />
@@ -584,8 +578,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -596,15 +589,14 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    canNavigateBack: (can: boolean) => dispatch(canNavigateBack('links', can)),
-    onSectionsLoaded: (links: Array < LinkSection >) => dispatch(setDiscoverLinks(links)),
-    setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
-    showCategory: (id: ?string) => dispatch(showLinkCategory(id)),
-    showSearch: (show: boolean) => dispatch(setShowSearch(show, 'discover')),
+    canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('links', can)),
+    onSectionsLoaded: (links: Array < LinkSection >) => dispatch(actions.setDiscoverLinks(links)),
+    setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
+    showCategory: (id: ?string) => dispatch(actions.showLinkCategory(id)),
+    showSearch: (show: boolean) => dispatch(actions.setShowSearch(show, 'discover')),
   };
 };
 
-export default connect(select, actions)(Links);
+export default connect(mapStateToProps, mapDispatchToProps)(Links);

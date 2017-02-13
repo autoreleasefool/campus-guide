@@ -78,18 +78,6 @@ const expectedTimeFormats = {
 // Require modules for testing
 import * as TextUtils from '../TextUtils';
 
-// Add the String.format function
-if (!String.format) {
-  String.format = function format(str: string) {
-    const args = Array.prototype.slice.call(arguments, 1);
-    return str.replace(/{(\d+)}/g, (match, number) => {
-      return typeof args[number] == 'undefined'
-        ? match
-        : args[number];
-    });
-  };
-}
-
 describe('TextUtils-test', () => {
 
   it('tests converting time formats with invalid params', () => {
@@ -188,7 +176,7 @@ describe('TextUtils-test', () => {
   });
 
   it('converts a destination to a string', () => {
-    expect(TextUtils.destinationToString({code: 'STE'})).toEqual('STE');
-    expect(TextUtils.destinationToString({code: 'STE', room: 'F0126'})).toEqual('STE F0126');
+    expect(TextUtils.destinationToString({ code: 'STE' })).toEqual('STE');
+    expect(TextUtils.destinationToString({ code: 'STE', room: 'F0126' })).toEqual('STE F0126');
   });
 });

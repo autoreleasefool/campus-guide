@@ -26,27 +26,14 @@
 
 // React imports
 import React from 'react';
-import {
-  Navigator,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Navigator, StyleSheet, View } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  setHeaderTitle,
-  setShowBack,
-  setShowSearch,
-  switchDiscoverView,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
-import type {
-  Route,
-  Tab,
-  VoidFunction,
-} from 'types';
+// Types
+import type { Route, Tab, VoidFunction } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -103,7 +90,7 @@ class Discover extends React.Component {
           && nextProps.view === currentRoutes[currentRoutes.length - 1].id) {
         return;
       }
-      this.refs.Navigator.push({id: nextProps.view});
+      this.refs.Navigator.push({ id: nextProps.view });
     } else if (nextProps.appTab === 'discover'
         && nextProps.backCount != this.props.backCount
         && !(nextProps.view === Constants.Views.Discover.Links && this.props.linksCanNavigate)
@@ -165,9 +152,9 @@ class Discover extends React.Component {
    * @returns {ReactElement<any>} a Navigator instance to render
    */
   render(): ReactElement < any > {
-    const routeStack = [{id: Constants.Views.Discover.Home}];
+    const routeStack = [{ id: Constants.Views.Discover.Home }];
     if (this.props.view != Constants.Views.Discover.Home) {
-      routeStack.push({id: this.props.view});
+      routeStack.push({ id: this.props.view });
     }
 
     return (
@@ -188,8 +175,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -199,24 +185,23 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToprops = (dispatch) => {
   return {
-    canNavigateBack: () => dispatch(setShowBack(true, 'discover')),
+    canNavigateBack: () => dispatch(actions.setShowBack(true, 'discover')),
     onNavigation: (view: number) => {
       switch (view) {
         case Constants.Views.Discover.Home:
-          dispatch(setShowBack(false, 'discover'));
-          dispatch(setShowSearch(false, 'discover'));
-          dispatch(setHeaderTitle(null, 'discover'));
+          dispatch(actions.setShowBack(false, 'discover'));
+          dispatch(actions.setShowSearch(false, 'discover'));
+          dispatch(actions.setHeaderTitle(null, 'discover'));
           break;
         default:
-          dispatch(setShowBack(true, 'discover'));
+          dispatch(actions.setShowBack(true, 'discover'));
       }
 
-      dispatch(switchDiscoverView(view));
+      dispatch(actions.switchDiscoverView(view));
     },
   };
 };
 
-export default connect(select, actions)(Discover);
+export default connect(mapStateToProps, mapDispatchToprops)(Discover);

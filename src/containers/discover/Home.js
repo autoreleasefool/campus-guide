@@ -26,25 +26,14 @@
 
 // React imports
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  setDiscoverSections,
-  setHeaderTitle,
-  showLinkCategory,
-  switchDiscoverView,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
-import type {
-  DiscoverSection,
-  Language,
-} from 'types';
+// Types
+import type { DiscoverSection, Language } from 'types';
 
 // Imports
 import Menu from 'Menu';
@@ -108,16 +97,14 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     language: store.config.language,
     sections: store.discover.sections,
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onSectionSelected: (section: string) => {
       let view: number = Constants.Views.Discover.Home;
@@ -127,7 +114,7 @@ const actions = (dispatch) => {
         case 'use':
           view = Constants.Views.Discover.Links;
           title = 'useful_links';
-          dispatch(showLinkCategory(0));
+          dispatch(actions.showLinkCategory(0));
           break;
         case 'trn':
           view = Constants.Views.Discover.Transit;
@@ -140,11 +127,11 @@ const actions = (dispatch) => {
           // Return to default view, Views.Home
       }
 
-      dispatch(setHeaderTitle(title, 'discover'));
-      dispatch(switchDiscoverView(view));
+      dispatch(actions.setHeaderTitle(title, 'discover'));
+      dispatch(actions.switchDiscoverView(view));
     },
-    onSectionsLoaded: (sections: Array < DiscoverSection >) => dispatch(setDiscoverSections(sections)),
+    onSectionsLoaded: (sections: Array < DiscoverSection >) => dispatch(actions.setDiscoverSections(sections)),
   };
 };
 
-export default connect(select, actions)(DiscoverHome);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscoverHome);

@@ -26,27 +26,14 @@
 
 // React imports
 import React from 'react';
-import {
-  Navigator,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Navigator, StyleSheet, Text, View } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  setHeaderTitle,
-  setShowBack,
-  setShowSearch,
-  switchFindView,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
-import type {
-  Route,
-  Tab,
-} from 'types';
+// Types
+import type { Route, Tab } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -91,7 +78,7 @@ class Find extends React.Component {
           return;
         }
       }
-      this.refs.Navigator.push({id: nextProps.view});
+      this.refs.Navigator.push({ id: nextProps.view });
     } else if (nextProps.appTab === 'find' && nextProps.backCount != this.props.backCount) {
       this.refs.Navigator.pop();
     }
@@ -155,7 +142,7 @@ class Find extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: Constants.Views.Find.Home}}
+          initialRoute={{ id: Constants.Views.Find.Home }}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
           style={_styles.container} />
@@ -170,8 +157,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -179,20 +165,19 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onBackNavigation: (view: number) => {
       if (view === Constants.Views.Find.Home) {
-        dispatch(setShowBack(false, 'find'));
-        dispatch(setHeaderTitle(null, 'find'));
+        dispatch(actions.setShowBack(false, 'find'));
+        dispatch(actions.setHeaderTitle(null, 'find'));
       } else {
-        dispatch(setShowBack(true, 'find'));
+        dispatch(actions.setShowBack(true, 'find'));
       }
-      dispatch(setShowSearch(true, 'find'));
-      dispatch(switchFindView(view));
+      dispatch(actions.setShowSearch(true, 'find'));
+      dispatch(actions.switchFindView(view));
     },
   };
 };
 
-export default connect(select, actions)(Find);
+export default connect(mapStateToProps, mapDispatchToProps)(Find);

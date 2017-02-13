@@ -39,18 +39,11 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  updateConfiguration,
-  updateProgress,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
 // Types
-import type {
-  Language,
-  TransitInfo,
-  Update,
-} from 'types';
+import type { Language, TransitInfo, Update } from 'types';
 
 // Imports
 import emptyFunction from 'empty/function';
@@ -202,7 +195,7 @@ class UpdateScreen extends React.Component {
               },
               {
                 text: CoreTranslations[language].later,
-                onPress: () => this.props.navigator.push({id: 'main'}),
+                onPress: () => this.props.navigator.push({ id: 'main' }),
               },
             ],
           );
@@ -244,7 +237,7 @@ class UpdateScreen extends React.Component {
               },
               {
                 text: CoreTranslations[language].later,
-                onPress: () => this.props.navigator.push({id: 'main'}),
+                onPress: () => this.props.navigator.push({ id: 'main' }),
               },
             ],
           );
@@ -280,7 +273,7 @@ class UpdateScreen extends React.Component {
         })
         .then(() => Configuration.getConfig('/transit.json'))
         .then((transitInfo: TransitInfo) => this.props.setTransit(transitInfo))
-        .then(() => this.props.navigator.push({id: 'main'}));
+        .then(() => this.props.navigator.push({ id: 'main' }));
   }
 
   /**
@@ -296,13 +289,9 @@ class UpdateScreen extends React.Component {
       this.props.onDownloadComplete(filesDownloaded, totalProgress, download.bytesWritten);
     } else {
       console.error(
-        (String:any).format(
-          'Something\'s null, but it shouldn\'t be!\n\t{0}: {1},\n\t{2}: {3}',
-          'this.props.filesDownloaded',
-          this.props.filesDownloaded,
-          'this.props.totalProgress',
-          this.props.totalProgress,
-        )
+        'Something\'s null, but it shouldn\'t be!',
+        `this.props.filesDownloaded: ${this.props.filesDownloaded}`,
+        `this.props.totalProgress: ${this.props.totalProgress}`,
       );
     }
   }
@@ -386,7 +375,7 @@ class UpdateScreen extends React.Component {
 
     if (this.props.showRetry) {
       return (
-        <View style={[_styles.buttonContainer, {backgroundColor: backgroundColor}]}>
+        <View style={[ _styles.buttonContainer, { backgroundColor: backgroundColor }]}>
           <TouchableOpacity onPress={this._checkConnection}>
             <View style={_styles.retryContainer}>
               <Text style={_styles.retryText}>{CoreTranslations[language].retry_update}</Text>
@@ -412,14 +401,14 @@ class UpdateScreen extends React.Component {
           );
 
       return (
-        <View style={[_styles.container, {backgroundColor: backgroundColor}]}>
+        <View style={[ _styles.container, { backgroundColor: backgroundColor }]}>
           <View style={_styles.container}>
             <View style={_styles.container} />
             {progress}
           </View>
           {this._renderStatusMessages()}
           <LinearGradient
-              colors={[Constants.Colors.invisibleGarnet, Constants.Colors.garnet]}
+              colors={[ Constants.Colors.invisibleGarnet, Constants.Colors.garnet ]}
               style={_styles.linearGradient} />
         </View>
       );
@@ -484,8 +473,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     filesDownloaded: store.update.filesDownloaded,
     intermediateProgress: store.update.intermediateProgress,
@@ -497,11 +485,10 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setUniversity: (university: Object) => dispatch(updateConfiguration({semesters: university.semesters})),
-    setTransit: (transitInfo: TransitInfo) => dispatch(updateConfiguration({
+    setUniversity: (university: Object) => dispatch(actions.updateConfiguration({ semesters: university.semesters })),
+    setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
       transitInfo: {
         name_en: TranslationUtils.getEnglishName(transitInfo) || '',
         name_fr: TranslationUtils.getFrenchName(transitInfo) || '',
@@ -509,19 +496,21 @@ const actions = (dispatch) => {
         link_fr: TranslationUtils.getFrenchVariant('link', transitInfo) || '',
       },
     })),
-    updateFailed: () => dispatch(updateProgress({showUpdateProgress: false, showRetry: true})),
+    updateFailed: () => dispatch(actions.updateProgress({ showUpdateProgress: false, showRetry: true })),
     onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => {
-      dispatch(updateProgress({
+      dispatch(actions.updateProgress({
         currentDownload: null,
         filesDownloaded: filesDownloaded,
         intermediateProgress: 0,
         totalProgress: totalProgress + fileSize,
       }));
     },
-    onDownloadProgress: (bytesWritten: number) => dispatch(updateProgress({intermediateProgress: bytesWritten})),
-    onDownloadStart: (fileName: string) => dispatch(updateProgress({currentDownload: fileName})),
+    onDownloadProgress: (bytesWritten: number) => {
+      dispatch(actions.updateProgress({ intermediateProgress: bytesWritten }));
+    },
+    onDownloadStart: (fileName: string) => dispatch(actions.updateProgress({ currentDownload: fileName })),
     onUpdateStart: (totalFiles: number, totalSize: number) => {
-      dispatch(updateProgress({
+      dispatch(actions.updateProgress({
         showUpdateProgress: true,
         totalProgress: 0,
         totalFiles,
@@ -531,4 +520,4 @@ const actions = (dispatch) => {
   };
 };
 
-export default connect(select, actions)(UpdateScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateScreen);

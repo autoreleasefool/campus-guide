@@ -41,7 +41,7 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 // Types
 import type {
@@ -86,11 +86,11 @@ import Header from 'Header';
 import LectureModal from './Lecture';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ModalHeader from 'ModalHeader';
+import * as ArrayUtils from 'ArrayUtils';
 import * as Constants from 'Constants';
+import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {binarySearchObjectArrayByKeyValue, sortObjectArrayByKeyValues} from 'ArrayUtils';
-import {destinationToString, getFormattedTimeSinceMidnight} from 'TextUtils';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // Navigation values
 const MENU = 0;
@@ -148,8 +148,8 @@ class CourseModal extends React.Component {
   _addLecture(lecture: Lecture): void {
     const lectures = this.state.lectures.slice();
     lectures.push(lecture);
-    sortObjectArrayByKeyValues(lectures, 'day', 'startTime');
-    this.setState({lectures});
+    ArrayUtils.sortObjectArrayByKeyValues(lectures, 'day', 'startTime');
+    this.setState({ lectures });
   }
 
   /**
@@ -167,7 +167,7 @@ class CourseModal extends React.Component {
    * Closes the lecture modal.
    */
   _closeLectureModal(): void {
-    this.setState({lectureModalVisible: false});
+    this.setState({ lectureModalVisible: false });
   }
 
   /**
@@ -196,7 +196,7 @@ class CourseModal extends React.Component {
         break;
       }
     }
-    this.setState({lectures});
+    this.setState({ lectures });
   }
 
   /**
@@ -209,13 +209,13 @@ class CourseModal extends React.Component {
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
     Alert.alert(
-      (String:any).format(Translations.q_delete_x, this.props.lectureFormats[lecture.format].code),
+      `${Translations.delete} ${this.props.lectureFormats[lecture.format].code}?`,
       Translations.cannot_be_undone_confirmation,
       [
-        {text: Translations.cancel, style: 'cancel'},
-        {text: Translations.delete, onPress: () => this._deleteLecture(lecture)},
+        { text: Translations.cancel, style: 'cancel' },
+        { text: Translations.delete, onPress: () => this._deleteLecture(lecture) },
       ],
-      {cancelable: false}
+      { cancelable: false }
     );
   }
 
@@ -236,8 +236,8 @@ class CourseModal extends React.Component {
    * @param {string}   courseCode the code given to the course
    * @returns {boolean} true if the course code is unique in the semester, false otherwise
    */
-  _isCourseCodeUnique(semester: Semester, courseCode: string) {
-    return binarySearchObjectArrayByKeyValue(semester.courses, 'code', courseCode) < 0;
+  _isCourseCodeUnique(semester: Semester, courseCode: string): void {
+    return ArrayUtils.binarySearchObjectArrayByKeyValue(semester.courses, 'code', courseCode) < 0;
   }
 
   /**
@@ -277,7 +277,7 @@ class CourseModal extends React.Component {
       console.log('TODO: setup android picker');
       throw new Error('No android picker setup');
     } else {
-      this.refs.Navigator.push({id: PICKER});
+      this.refs.Navigator.push({ id: PICKER });
     }
   }
 
@@ -285,7 +285,7 @@ class CourseModal extends React.Component {
    * Shows or hides options next to each lecture to edit or remove.
    */
   _toggleLectureEditOptions(): void {
-    this.setState({editingLectures: !this.state.editingLectures});
+    this.setState({ editingLectures: !this.state.editingLectures });
   }
 
   /**
@@ -320,8 +320,8 @@ class CourseModal extends React.Component {
       );
     } else if (lecture.location) {
       roomOrOptions = (
-        <Text style={[_styles.lectureText, _styles.lectureTextRight]}>
-          {lecture.location ? destinationToString(lecture.location) : ''}
+        <Text style={[ _styles.lectureText, _styles.lectureTextRight ]}>
+          {lecture.location ? TextUtils.destinationToString(lecture.location) : ''}
         </Text>
       );
     }
@@ -329,14 +329,14 @@ class CourseModal extends React.Component {
     return (
       <View key={`${lecture.day} - ${lecture.startTime}`}>
         <View style={_styles.lectureContainer}>
-          <Text style={[_styles.lectureText, _styles.lectureTextLeft]}>
+          <Text style={[ _styles.lectureText, _styles.lectureTextLeft ]}>
             {Constants.Days[this.props.language][lecture.day]}
           </Text>
-          <Text style={[_styles.lectureText, _styles.lectureTextInner]}>
-            {getFormattedTimeSinceMidnight(lecture.startTime, this.props.timeFormat)}
+          <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
+            {TextUtils.getFormattedTimeSinceMidnight(lecture.startTime, this.props.timeFormat)}
           </Text>
-          <Text style={[_styles.lectureText, _styles.lectureTextInner]}>
-            {getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
+          <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
+            {TextUtils.getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
           </Text>
           {roomOrOptions}
         </View>
@@ -356,13 +356,13 @@ class CourseModal extends React.Component {
         this.props.semesters[this.state.semester]) || '';
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <KeyboardAwareScrollView>
           <TouchableOpacity onPress={this._showSemesterPicker.bind(this)}>
             <Header
                 largeSubtitle={true}
                 subtitle={semesterName}
-                subtitleIcon={{class: 'material', name: 'chevron-right'}}
+                subtitleIcon={{ class: 'material', name: 'chevron-right' }}
                 title={Translations.semester} />
           </TouchableOpacity>
           <Header title={Translations.course_code} />
@@ -372,7 +372,7 @@ class CourseModal extends React.Component {
               style={_styles.textInput}
               value={this.state.code}
               onChangeText={(code) =>
-                this.setState({code, rightActionEnabled: this._isCourseCodeUnique(this.state.semester, code)})} />
+                this.setState({ code, rightActionEnabled: this._isCourseCodeUnique(this.state.semester, code) })} />
           <Header
               subtitle={this.state.editingLectures ? Translations.cancel : Translations.edit}
               subtitleCallback={this._toggleLectureEditOptions.bind(this)}
@@ -393,7 +393,7 @@ class CourseModal extends React.Component {
               return null;
             }
           })}
-          <View style={{height: 100}} />
+          <View style={_styles.padding} />
         </KeyboardAwareScrollView>
         <ActionButton
             buttonColor={Constants.Colors.primaryBackground}
@@ -418,7 +418,7 @@ class CourseModal extends React.Component {
       <View style={_styles.container}>
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
-              icon={{name: backArrowIcon, class: 'ionicon'}}
+              icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={Translations.semester} />
         </TouchableOpacity>
         <Picker
@@ -426,7 +426,7 @@ class CourseModal extends React.Component {
             prompt={Translations.semester}
             selectedValue={this.state.semester}
             style={_styles.pickerContainer}
-            onValueChange={(semester) => this.setState({semester})}>
+            onValueChange={(semester) => this.setState({ semester })}>
           {this.props.semesters.map((semester, index) => {
             const name = TranslationUtils.getTranslatedName(this.props.language, semester);
             return (
@@ -489,7 +489,7 @@ class CourseModal extends React.Component {
             onRequestClose={this._closeLectureModal}>
           <LectureModal
               addingLecture={this.state.addingLecture}
-              course={{code: this.state.code, lectures: this.state.lectures}}
+              course={{ code: this.state.code, lectures: this.state.lectures }}
               lectureFormats={this.props.lectureFormats}
               lectureToEdit={this.state.lectureToEdit}
               onClose={this._closeLectureModal}
@@ -503,10 +503,10 @@ class CourseModal extends React.Component {
             title={Translations[modalTitle]}
             onLeftAction={() => this.props.onClose()}
             onRightAction={() =>
-              this._saveCourse(this.state.semester, {code: this.state.code, lectures: this.state.lectures})} />
+              this._saveCourse(this.state.semester, { code: this.state.code, lectures: this.state.lectures })} />
         <Navigator
             configureScene={this._configureScene}
-            initialRoute={{id: MENU}}
+            initialRoute={{ id: MENU }}
             ref='Navigator'
             renderScene={this._renderScene.bind(this)}
             style={_styles.container} />
@@ -520,6 +520,9 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
+  },
+  padding: {
+    height: 100,
   },
   textInput: {
     height: 30,
@@ -584,8 +587,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     currentSemester: store.config.currentSemester,
     language: store.config.language,
@@ -595,4 +597,4 @@ const select = (store) => {
   };
 };
 
-export default connect(select)(CourseModal);
+export default connect(mapStateToProps)(CourseModal);

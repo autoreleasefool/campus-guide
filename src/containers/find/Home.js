@@ -26,26 +26,14 @@
 
 // React imports
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  setHeaderTitle,
-  switchFindView,
-  viewBuilding,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
-import type {
-  Building,
-  Language,
-  Name,
-  TranslatedName,
-} from 'types';
+// Types
+import type { Building, Language, Name, TranslatedName } from 'types';
 
 // Imports
 import BuildingGrid from 'BuildingGrid';
@@ -95,7 +83,7 @@ class FindHome extends React.Component {
     return (
       <View style={_styles.container}>
         <Header
-            icon={{name: 'store', class: 'material'}}
+            icon={{ name: 'store', class: 'material' }}
             title={Translations.building_directory} />
         <View style={_styles.container}>
           <BuildingGrid
@@ -117,23 +105,21 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     filter: store.search.searchTerms,
     language: store.config.language,
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onBuildingSelect: (building: Building, buildingName: Name | TranslatedName) => {
-      dispatch(setHeaderTitle(buildingName, 'find'));
-      dispatch(viewBuilding(building));
-      dispatch(switchFindView(Constants.Views.Find.Building));
+      dispatch(actions.setHeaderTitle(buildingName, 'find'));
+      dispatch(actions.viewBuilding(building));
+      dispatch(actions.switchFindView(Constants.Views.Find.Building));
     },
   };
 };
 
-export default connect(select, actions)(FindHome);
+export default connect(mapStateToProps, mapDispatchToProps)(FindHome);

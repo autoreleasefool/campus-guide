@@ -24,11 +24,8 @@
  */
 'use strict';
 
-// Type imports
-import type {
-  Language,
-  PlatformIcon,
-} from 'types';
+// Types
+import type { Language, PlatformIcon } from 'types';
 
 /** Defines the information provided by a search result. */
 export type SearchResult = {
@@ -67,7 +64,7 @@ function _getSources(): Array < Object > {
 export function getResults(language: Language, searchTerms: ?string): Promise < Object > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      resolve({results: {}, icons: {}});
+      resolve({ results: {}, icons: {}});
     }
 
     const sources: Array < Object > = _getSources();
@@ -100,7 +97,7 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
             }
           }
 
-          resolve({results, icons: sourceIcons});
+          resolve({ results, icons: sourceIcons });
         })
         .catch((err: any) => reject(err));
   });

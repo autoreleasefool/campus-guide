@@ -40,23 +40,11 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  navigateTo,
-  setHeaderTitle,
-  showLinkCategory,
-  switchDiscoverView,
-  switchFindView,
-  switchTab,
-  viewBuilding,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
-import type {
-  Icon,
-  Language,
-  Route,
-} from 'types';
+// Types
+import type { Icon, Language, Route } from 'types';
 
 // Type definition for component props
 type Props = {
@@ -169,9 +157,9 @@ class Search extends React.Component {
     for (const source in searchResults) {
       if (searchResults.hasOwnProperty(source)) {
         if (searchResults[source].length == 1) {
-          filtered[source] = [searchResults[source][0]];
+          filtered[source] = [ searchResults[source][0] ];
         } else if (searchResults[source].length > 1) {
-          filtered[source] = [searchResults[source][0], searchResults[source][1]];
+          filtered[source] = [ searchResults[source][0], searchResults[source][1] ];
         }
       }
     }
@@ -257,7 +245,7 @@ class Search extends React.Component {
           singleResultTitle: source,
           singleResults: this.state.singleResults.cloneWithRows(this._singleResults),
         });
-        this.refs.Navigator.push({id: SINGLE});
+        this.refs.Navigator.push({ id: SINGLE });
       }
     }
   }
@@ -325,19 +313,19 @@ class Search extends React.Component {
       view = (
         <TouchableOpacity onPress={this._onSourceSelect.bind(this, null)}>
           <Header
-              icon={{name: `${platformModifier}-arrow-back`, class: 'ionicon'}}
+              icon={{ name: `${platformModifier}-arrow-back`, class: 'ionicon' }}
               title={sectionName} />
         </TouchableOpacity>
       );
     } else {
       const icon = DisplayUtils.getPlatformIcon(Platform.OS, this._searchIcons[sectionName])
-          || {name: 'search', class: 'material'};
+          || { name: 'search', class: 'material' };
 
       let subtitle = null;
       let subtitleIcon = null;
       if (this._searchResults[sectionName].length > 2) {
         subtitle = `${this._searchResults[sectionName].length - 2} ${Translations.more}`;
-        subtitleIcon = {name: 'chevron-right', class: 'material'};
+        subtitleIcon = { name: 'chevron-right', class: 'material' };
       }
 
       view = (
@@ -352,7 +340,7 @@ class Search extends React.Component {
     }
 
     return (
-      <View style={{backgroundColor: Constants.Colors.primaryBackground}}>
+      <View style={{ backgroundColor: Constants.Colors.primaryBackground }}>
         {view}
       </View>
     );
@@ -367,9 +355,9 @@ class Search extends React.Component {
   _renderNoResults(Translations: Object): ReactElement < any > {
     const searchTerms = this.props.filter || '';
     return (
-      <View style={[_styles.container, _styles.noResults]}>
+      <View style={[ _styles.container, _styles.noResults ]}>
         <Text style={_styles.noResultsText}>
-          {(String:any).format(Translations.no_search_results, searchTerms)}
+          {`${Translations.no_results_for} '${searchTerms}'`}
         </Text>
       </View>
     );
@@ -464,7 +452,7 @@ class Search extends React.Component {
       <View style={_styles.container}>
         <Navigator
             configureScene={this._configureScene}
-            initialRoute={{id: FILTERED}}
+            initialRoute={{ id: FILTERED }}
             ref='Navigator'
             renderScene={this._renderScene.bind(this)}
             style={_styles.container} />
@@ -514,16 +502,14 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     filter: store.search.searchTerms,
     language: store.config.language,
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onResultSelect: (sectionID: string, data: any) => {
       switch (sectionID) {
@@ -534,10 +520,10 @@ const actions = (dispatch) => {
             name_fr: TranslationUtils.getTranslatedName('fr', data) || '',
           };
 
-          dispatch(setHeaderTitle(name, 'find'));
-          dispatch(viewBuilding(data));
-          dispatch(switchFindView(Constants.Views.Find.Building));
-          dispatch(switchTab('find'));
+          dispatch(actions.setHeaderTitle(name, 'find'));
+          dispatch(actions.viewBuilding(data));
+          dispatch(actions.switchFindView(Constants.Views.Find.Building));
+          dispatch(actions.switchTab('find'));
           break;
         }
         case 'Rooms':
@@ -547,17 +533,17 @@ const actions = (dispatch) => {
             name_fr: TranslationUtils.getTranslatedName('fr', data.building) || '',
           };
 
-          dispatch(setHeaderTitle(name, 'find'));
-          dispatch(navigateTo(data.code, data.room));
-          dispatch(switchFindView(Constants.Views.Find.StartingPoint));
-          dispatch(switchTab('find'));
+          dispatch(actions.setHeaderTitle(name, 'find'));
+          dispatch(actions.navigateTo(data.code, data.room));
+          dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
+          dispatch(actions.switchTab('find'));
           break;
         }
         case 'Useful links':
         case 'Liens utiles': {
-          dispatch(showLinkCategory(data));
-          dispatch(switchDiscoverView(Constants.Views.Discover.Links));
-          dispatch(switchTab('discover'));
+          dispatch(actions.showLinkCategory(data));
+          dispatch(actions.switchDiscoverView(Constants.Views.Discover.Links));
+          dispatch(actions.switchTab('discover'));
           break;
         }
         case 'External links':
@@ -572,4 +558,4 @@ const actions = (dispatch) => {
   };
 };
 
-export default connect(select, actions)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

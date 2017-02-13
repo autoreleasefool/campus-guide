@@ -36,11 +36,8 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  addCourse,
-  updateConfiguration,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
 // Types
 import type {
@@ -78,8 +75,8 @@ import Header from 'Header';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
+import * as DisplayUtils from 'DisplayUtils';
 import * as TranslationUtils from 'TranslationUtils';
-import {getPlatformIcon} from 'DisplayUtils';
 
 // Tabs
 import Weekly from './WeeklyView';
@@ -132,7 +129,7 @@ class Schedule extends React.Component {
     if (this.state.lectureFormats.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/lecture_formats.json'))
-          .then((lectureFormats) => this.setState({lectureFormats}))
+          .then((lectureFormats) => this.setState({ lectureFormats }))
           .catch((err: any) => console.error('Configuration could not be initialized for lecture modal.', err));
     }
   }
@@ -141,7 +138,7 @@ class Schedule extends React.Component {
    * Closes the course modal.
    */
   _closeModal(): void {
-    this.setState({courseModalVisible: false});
+    this.setState({ courseModalVisible: false });
   }
 
   /**
@@ -163,7 +160,7 @@ class Schedule extends React.Component {
    */
   _toggleSwitchSemester(): void {
     LayoutAnimation.easeInEaseOut();
-    this.setState({showSemesters: !this.state.showSemesters});
+    this.setState({ showSemesters: !this.state.showSemesters });
   }
 
   /**
@@ -173,7 +170,7 @@ class Schedule extends React.Component {
    * @param {Course} course   the course being saved
    */
   _onSaveCourse(semester: string, course: Course): void {
-    addCourse(semester, course);
+    console.log(`TODO: save course: ${semester} - ${course}`);
   }
 
   /**
@@ -191,7 +188,7 @@ class Schedule extends React.Component {
     return (
       <View>
         <Header
-            icon={getPlatformIcon(Platform.OS, semesterIcon)}
+            icon={DisplayUtils.getPlatformIcon(Platform.OS, semesterIcon)}
             subtitle={(this.state.showSemesters ? Translations.cancel : Translations.switch)}
             subtitleCallback={this._toggleSwitchSemester}
             title={semesterName} />
@@ -201,7 +198,7 @@ class Schedule extends React.Component {
                 itemStyle={_styles.semesterItem}
                 prompt={Translations.semester}
                 selectedValue={this.props.currentSemester}
-                onValueChange={(value) => this.props.updateConfiguration({currentSemester: value})}>
+                onValueChange={(value) => this.props.updateConfiguration({ currentSemester: value })}>
               {this.props.semesters.map((semester, index) => {
                 const name = TranslationUtils.getTranslatedName(this.props.language, semester);
                 return (
@@ -241,12 +238,12 @@ class Schedule extends React.Component {
               onSaveCourse={this._onSaveCourse.bind(this)} />
         </Modal>
         <ScrollableTabView
-            style={{borderBottomWidth: 0}}
+            style={{ borderBottomWidth: 0 }}
             tabBarActiveTextColor={Constants.Colors.primaryWhiteText}
             tabBarBackgroundColor={Constants.Colors.darkTransparentBackground}
             tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
             tabBarPosition='top'
-            tabBarUnderlineStyle={{backgroundColor: Constants.Colors.primaryWhiteText}}>
+            tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.primaryWhiteText }}>
           <Weekly tabLabel={Translations.weekly}>
             {this._renderSemesters(Translations)}
           </Weekly>
@@ -275,8 +272,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     currentSemester: store.config.currentSemester,
     language: store.config.language,
@@ -285,12 +281,11 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    saveCourse: (semester: string, course: Course) => dispatch(addCourse(semester, course)),
-    updateConfiguration: (options: ConfigurationOptions) => dispatch(updateConfiguration(options)),
+    saveCourse: (semester: string, course: Course) => dispatch(actions.addCourse(semester, course)),
+    updateConfiguration: (options: ConfigurationOptions) => dispatch(actions.updateConfiguration(options)),
   };
 };
 
-export default connect(select, actions)(Schedule);
+export default connect(mapStateToProps, mapDispatchToProps)(Schedule);

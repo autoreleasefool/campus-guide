@@ -24,15 +24,9 @@
  */
 'use strict';
 
-// Type imports
-import type {
-  Language,
-  LinkSection,
-} from 'types';
-
-import type {
-  SearchResult,
-} from '../Searchable';
+// Types
+import type { Language, LinkSection } from 'types';
+import type { SearchResult } from '../Searchable';
 
 // Imports
 import Promise from 'promise';
@@ -69,14 +63,14 @@ function _getResults(language: Language,
           || ExternalUtils.getDefaultLink();
       links.push({
         description: sectionName,
-        data: {link: translatedLink, translations: Translations},
+        data: { link: translatedLink, translations: Translations }, // TODO: why did i do this
         icon: {
           name: iconName,
           class: 'ionicon',
         },
         matchedTerms: matchedSectionName
-            ? [sectionName.toUpperCase(), linkName.toUpperCase()]
-            : [linkName.toUpperCase()],
+            ? [ sectionName.toUpperCase(), linkName.toUpperCase() ]
+            : [ linkName.toUpperCase() ],
         title: linkName,
       });
     };
@@ -91,7 +85,7 @@ function _getResults(language: Language,
           description: Translations.see_related_links,
           data: section.id,
           icon: section.icon,
-          matchedTerms: [sectionName.toUpperCase()],
+          matchedTerms: [ sectionName.toUpperCase() ],
           title: sectionName,
         });
 

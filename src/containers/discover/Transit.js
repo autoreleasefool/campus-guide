@@ -37,16 +37,10 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  canNavigateBack,
-  search,
-  setHeaderTitle,
-  setShowSearch,
-  showTransitCampus,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
+// Types
 import type {
   Campus,
   Language,
@@ -146,7 +140,7 @@ class Transit extends React.Component {
       if (nextProps.campus == null) {
         this.refs.Navigator.pop();
       } else {
-        this.refs.Navigator.push({id: CAMPUS});
+        this.refs.Navigator.push({ id: CAMPUS });
       }
     }
 
@@ -266,8 +260,8 @@ class Transit extends React.Component {
         <TouchableOpacity onPress={() => this._openLink(Translations || {})}>
           <Header
               backgroundColor={Constants.Colors.primaryBackground}
-              icon={{name: 'md-open', class: 'ionicon'}}
-              subtitleIcon={{name: 'chevron-right', class: 'material'}}
+              icon={{ name: 'md-open', class: 'ionicon' }}
+              subtitleIcon={{ name: 'chevron-right', class: 'material' }}
               title={Translations.transit_company} />
         </TouchableOpacity>
       </View>
@@ -303,7 +297,7 @@ class Transit extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: MENU}}
+          initialRoute={{ id: MENU }}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
           style={_styles.container} />
@@ -319,8 +313,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -332,15 +325,14 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    canNavigateBack: (can: boolean) => dispatch(canNavigateBack('transit', can)),
-    onCampusSelected: (campus: ?Campus) => dispatch(showTransitCampus(campus)),
-    resetFilter: () => dispatch(search(null)),
-    setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(setHeaderTitle(title, 'discover')),
-    showSearch: (show: boolean) => dispatch(setShowSearch(show, 'discover')),
+    canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('transit', can)),
+    onCampusSelected: (campus: ?Campus) => dispatch(actions.showTransitCampus(campus)),
+    resetFilter: () => dispatch(actions.search(null)),
+    setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
+    showSearch: (show: boolean) => dispatch(actions.setShowSearch(show, 'discover')),
   };
 };
 
-export default connect(select, actions)(Transit);
+export default connect(mapStateToProps, mapDispatchToProps)(Transit);

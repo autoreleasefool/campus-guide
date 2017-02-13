@@ -29,20 +29,13 @@
 
 // React imports
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-// import {switchTab} from 'actions';
+import { connect } from 'react-redux';
 
 // Types
-import type {
-  Tab,
-} from 'types';
+import type { Tab } from 'types';
 
 // Imports
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -147,11 +140,10 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     tab: store.navigation.tab,
   };
 };
 
-export default connect(select)(TabView);
+export default connect(mapStateToProps)(TabView);

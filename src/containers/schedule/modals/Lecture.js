@@ -38,7 +38,7 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 // Types
 import type {
@@ -80,8 +80,8 @@ import Header from 'Header';
 import ModalHeader from 'ModalHeader';
 import moment from 'moment';
 import * as Constants from 'Constants';
+import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
-import {destinationToString, getFormattedTimeSinceMidnight} from 'TextUtils';
 
 // Navigation values
 const MENU = 0;
@@ -227,7 +227,7 @@ class LectureModal extends React.Component {
    */
   _setDay(day: number): void {
     const rightActionEnabled = this._isLectureStartUnique(this.props.course, day, this.state.starts);
-    this.setState({day, rightActionEnabled});
+    this.setState({ day, rightActionEnabled });
   }
 
   /**
@@ -250,7 +250,7 @@ class LectureModal extends React.Component {
     } else {
       const updatedEndTime = this._getMinutesFromMidnight(moment(time).format('HH:mm'));
       if (updatedEndTime > this.state.starts) {
-        this.setState({ends: updatedEndTime});
+        this.setState({ ends: updatedEndTime });
       }
     }
   }
@@ -266,14 +266,14 @@ class LectureModal extends React.Component {
         console.log('TODO: setup android picker');
         throw new Error('No android picker setup');
       } else {
-        this.refs.Navigator.push({id: TIME_PICKER, picking});
+        this.refs.Navigator.push({ id: TIME_PICKER, picking });
       }
     } else if (picking === PICKER_BUILDING) {
-      this.refs.Navigator.push({id: BUILDING_PICKER});
+      this.refs.Navigator.push({ id: BUILDING_PICKER });
     } else if (picking === PICKER_ROOM) {
-      this.refs.Navigator.push({id: ROOM_PICKER});
+      this.refs.Navigator.push({ id: ROOM_PICKER });
     } else {
-      this.refs.Navigator.push({id: REGULAR_PICKER, picking});
+      this.refs.Navigator.push({ id: REGULAR_PICKER, picking });
     }
   }
 
@@ -284,10 +284,10 @@ class LectureModal extends React.Component {
    */
   _onBuildingSelect(building: ?Building): void {
     if (building == null) {
-      this.setState({location: null});
+      this.setState({ location: null });
       this.refs.Navigator.pop();
     } else {
-      this.setState({location: {code: building.code, room: null}});
+      this.setState({ location: { code: building.code, room: null }});
       this._showPicker(PICKER_ROOM);
     }
   }
@@ -306,7 +306,7 @@ class LectureModal extends React.Component {
       <View style={_styles.container}>
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
-              icon={{name: backArrowIcon, class: 'ionicon'}}
+              icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={`${Translations.location} - ${Translations.building}`} />
         </TouchableOpacity>
         <BuildingGrid
@@ -334,7 +334,7 @@ class LectureModal extends React.Component {
       <View style={_styles.container}>
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
-              icon={{name: backArrowIcon, class: 'ionicon'}}
+              icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={`${Translations.location} - ${Translations.room}`} />
         </TouchableOpacity>
       </View>
@@ -355,9 +355,9 @@ class LectureModal extends React.Component {
 
     const format = this.props.lectureFormats[this.state.format].code;
     const day = Constants.Days[this.props.language][this.state.day];
-    const startTime = getFormattedTimeSinceMidnight(this.state.starts, this.props.timeFormat);
-    const endTime = getFormattedTimeSinceMidnight(this.state.ends, this.props.timeFormat);
-    const location = this.state.location ? destinationToString(this.state.location) : '';
+    const startTime = TextUtils.getFormattedTimeSinceMidnight(this.state.starts, this.props.timeFormat);
+    const endTime = TextUtils.getFormattedTimeSinceMidnight(this.state.ends, this.props.timeFormat);
+    const location = this.state.location ? TextUtils.destinationToString(this.state.location) : '';
 
     return (
       <ScrollView>
@@ -425,7 +425,7 @@ class LectureModal extends React.Component {
           const name = TranslationUtils.getTranslatedName(this.props.language, this.props.lectureFormats[format]) || '';
           return `(${this.props.lectureFormats[format].code}) ${name}`;
         };
-        setValue = (value) => this.setState({format: value});
+        setValue = (value) => this.setState({ format: value });
         break;
       case PICKER_DAY:
         title = 'day';
@@ -443,7 +443,7 @@ class LectureModal extends React.Component {
       <View style={_styles.container}>
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
-              icon={{name: backArrowIcon, class: 'ionicon'}}
+              icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={Translations[title]} />
         </TouchableOpacity>
         <Picker
@@ -479,12 +479,12 @@ class LectureModal extends React.Component {
     switch (picking) {
       case PICKER_STARTS:
         title = 'starts';
-        time = moment(getFormattedTimeSinceMidnight(this.state.starts, '24h'), 'HH:mm').toDate();
+        time = moment(TextUtils.getFormattedTimeSinceMidnight(this.state.starts, '24h'), 'HH:mm').toDate();
         setValue = (value) => this._setTime(value, true);
         break;
       case PICKER_ENDS:
         title = 'ends';
-        time = moment(getFormattedTimeSinceMidnight(this.state.ends, '24h'), 'HH:mm').toDate();
+        time = moment(TextUtils.getFormattedTimeSinceMidnight(this.state.ends, '24h'), 'HH:mm').toDate();
         setValue = (value) => this._setTime(value, false);
         break;
       default:
@@ -496,7 +496,7 @@ class LectureModal extends React.Component {
       <View style={_styles.container}>
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
-              icon={{name: 'ios-arrow-back', class: 'ionicon'}}
+              icon={{ name: 'ios-arrow-back', class: 'ionicon' }}
               title={Translations[title]} />
         </TouchableOpacity>
         <DatePickerIOS
@@ -597,12 +597,11 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     language: store.config.language,
     timeFormat: store.config.preferredTimeFormat,
   };
 };
 
-export default connect(select)(LectureModal);
+export default connect(mapStateToProps)(LectureModal);

@@ -41,18 +41,11 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  updateConfiguration,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
-import type {
-  ConfigurationOptions,
-  Language,
-  Semester,
-  TimeFormat,
-} from 'types';
+// Types
+import type { ConfigurationOptions, Language, Semester, TimeFormat } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -259,17 +252,17 @@ class Settings extends React.Component {
     }
 
     if (setting.key === 'pref_lang') {
-      this.props.updateConfiguration({language: this.props.language === 'en' ? 'fr' : 'en'});
+      this.props.updateConfiguration({ language: this.props.language === 'en' ? 'fr' : 'en' });
     } else if (setting.key === 'pref_wheel') {
-      this.props.updateConfiguration({prefersWheelchair: !this.props.prefersWheelchair});
+      this.props.updateConfiguration({ prefersWheelchair: !this.props.prefersWheelchair });
     } else if (setting.key === 'pref_semester') {
       let nextSemester = this.props.currentSemester + 1;
       if (nextSemester >= this.props.semesters.length) {
         nextSemester = 0;
       }
-      this.props.updateConfiguration({currentSemester: nextSemester});
+      this.props.updateConfiguration({ currentSemester: nextSemester });
     } else if (setting.key === 'pref_time_format') {
-      this.props.updateConfiguration({preferredTimeFormat: this.props.timeFormat === '12h' ? '24h' : '12h'});
+      this.props.updateConfiguration({ preferredTimeFormat: this.props.timeFormat === '12h' ? '24h' : '12h' });
     } else if (setting.key === 'app_open_source') {
       const licenses = require('../../../assets/json/licenses.json');
       this.setState({
@@ -309,14 +302,14 @@ class Settings extends React.Component {
     let title = null;
     if (this.state.listModalTitle.length > 0) {
       title = (
-        <View style={[_styles.setting, _styles.modalListTitle]}>
-          <Text style={[_styles.settingText, _styles.modalListTitleText]}>{this.state.listModalTitle}</Text>
+        <View style={[ _styles.setting, _styles.modalListTitle ]}>
+          <Text style={[ _styles.settingText, _styles.modalListTitleText ]}>{this.state.listModalTitle}</Text>
         </View>
       );
     }
 
     return (
-      <View style={[_styles.container, {backgroundColor: Constants.Colors.primaryBackground}]}>
+      <View style={[ _styles.container, { backgroundColor: Constants.Colors.primaryBackground }]}>
         {title}
         <ListView
             dataSource={this.state.listModalDataSource}
@@ -470,7 +463,7 @@ class Settings extends React.Component {
 
         <View style={_styles.headerContainer}>
           <Header
-              icon={{name: Platform.OS === 'ios' ? 'ios-settings' : 'settings', class: 'ionicon'}}
+              icon={{ name: Platform.OS === 'ios' ? 'ios-settings' : 'settings', class: 'ionicon' }}
               title={Translations.settings} />
         </View>
         <ListView
@@ -554,8 +547,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     currentSemester: store.config.currentSemester,
     language: store.config.language,
@@ -565,11 +557,10 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    updateConfiguration: (options: ConfigurationOptions) => dispatch(updateConfiguration(options)),
+    updateConfiguration: (options: ConfigurationOptions) => dispatch(actions.updateConfiguration(options)),
   };
 };
 
-export default connect(select, actions)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

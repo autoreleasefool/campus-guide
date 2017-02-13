@@ -26,20 +26,14 @@
 
 // React imports
 import React from 'react';
-import {
-  Alert,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {updateConfiguration} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
 // Types
-import type {
-  Language,
-} from 'types';
+import type { Language } from 'types';
 
 // Imports
 import AppHeader from 'AppHeader';
@@ -70,9 +64,7 @@ class MainScreen extends React.Component {
       Alert.alert(
         Translations.only_once_title,
         Translations.only_once_message,
-        [
-          {text: Translations.ok, onPress: this._checkConfiguration.bind(this)},
-        ]
+        [{ text: Translations.ok, onPress: this._checkConfiguration.bind(this) }]
       );
     } else {
       this._checkConfiguration();
@@ -98,8 +90,8 @@ class MainScreen extends React.Component {
               Translations.update_available_title,
               Translations.update_available_msg,
               [
-                {text: Translations.cancel, style: 'cancel'},
-                {text: Translations.update, onPress: this._updateConfiguration.bind(this)},
+                { text: Translations.cancel, style: 'cancel' },
+                { text: Translations.update, onPress: this._updateConfiguration.bind(this) },
               ]
             );
           }
@@ -111,7 +103,7 @@ class MainScreen extends React.Component {
    * Opens the update screen to update the configuration.
    */
   _updateConfiguration(): void {
-    this.props.navigator.push({id: 'update'});
+    this.props.navigator.push({ id: 'update' });
   }
 
   /**
@@ -137,19 +129,17 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     language: store.config.language,
     shouldShowLanguageMessage: store.config.firstTime,
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    acknowledgedLanguageMessage: () => dispatch(updateConfiguration({firstTime: false})),
+    acknowledgedLanguageMessage: () => dispatch(actions.updateConfiguration({ firstTime: false })),
   };
 };
 
-export default connect(select, actions)(MainScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);

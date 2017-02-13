@@ -34,17 +34,11 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  navigateTo,
-  switchFindView,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
-// Type imports
-import type {
-  Building,
-  Language,
-} from 'types';
+// Types
+import type { Building, Language } from 'types';
 
 // Imports
 import BuildingHeader from 'BuildingHeader';
@@ -84,16 +78,14 @@ class BuildingComponent extends React.Component {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
-    const navigateToBuilding: string = (String:any).format(
-      Translations.navigate_to,
-      TranslationUtils.getTranslatedName(this.props.language, this.props.building)
-    );
+    const navigateToBuilding =
+        `${Translations.navigate_to} ${TranslationUtils.getTranslatedName(this.props.language, this.props.building)}`;
 
     return (
       <TouchableOpacity onPress={this._onDestinationSelected.bind(this, this.props.building.code)}>
         <Header
             backgroundColor={Constants.Colors.polarGrey}
-            icon={{name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon'}}
+            icon={{ name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon' }}
             title={navigateToBuilding} />
       </TouchableOpacity>
     );
@@ -154,8 +146,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     building: store.find.building,
     filter: store.search.searchTerms,
@@ -163,14 +154,13 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onDestinationSelected: (code: string, room: ?string) => {
-      dispatch(navigateTo(code, room));
-      dispatch(switchFindView(Constants.Views.Find.StartingPoint));
+      dispatch(actions.navigateTo(code, room));
+      dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
     },
   };
 };
 
-export default connect(select, actions)(BuildingComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(BuildingComponent);

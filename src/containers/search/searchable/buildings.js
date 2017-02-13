@@ -25,20 +25,11 @@
 'use strict';
 
 // React imports
-import {
-  Platform,
-} from 'react-native';
+import { Platform } from 'react-native';
 
-// Type imports
-import type {
-  Building,
-  Language,
-  RoomType,
-} from 'types';
-
-import type {
-  SearchResult,
-} from '../Searchable';
+// Types
+import type { Building, Language, RoomType } from 'types';
+import type { SearchResult } from '../Searchable';
 
 // Imports
 import Promise from 'promise';
@@ -146,15 +137,15 @@ function _getRoomResults(language: Language,
                 const title = TranslationUtils.getTranslatedName(language, building) || '';
                 const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomTypes[room.type]);
 
-                const matchedTerms = [roomName.toUpperCase(), description.toUpperCase()];
+                const matchedTerms = [ roomName.toUpperCase(), description.toUpperCase() ];
                 if (roomAltName != null) {
                   matchedTerms.push(roomAltName.toUpperCase());
                 }
 
                 results.push({
                   description: description,
-                  data: {building: building, code: building.code, room: room.name},
-                  icon: icon || {name: 'search', class: 'material'},
+                  data: { building: building, code: building.code, room: room.name },
+                  icon: icon || { name: 'search', class: 'material' },
                   matchedTerms: matchedTerms,
                   title: `${title} > ${room.name}`,
                 });

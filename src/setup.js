@@ -57,18 +57,6 @@ export default function setup(): ReactClass < any > {
     UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 
-  // Add the format function to string
-  if (!(String:any).format) {
-    (String:any).format = function format(str: string) {
-      const args = Array.prototype.slice.call(arguments, 1);
-      return str.replace(/{(\d+)}/g, (match, number) => {
-        return typeof args[number] == 'undefined'
-          ? match
-          : args[number];
-      });
-    };
-  }
-
   // Create the redux store
   const store = configureStore();
 
