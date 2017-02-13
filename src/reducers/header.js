@@ -24,24 +24,20 @@
  */
 'use strict';
 
+// Types
+import type { Action, Name, TranslatedName, TabSet } from 'types';
+import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH, SWITCH_TAB } from 'actionTypes';
+
 // Import default translations
 const CoreTranslations = require('../../assets/json/CoreTranslations');
-
-// Types
-import type {
-  Action,
-  Name,
-  TranslatedName,
-  TabSet,
-} from 'types';
 
 // Describes the header state.
 type State = {
   title: Name | TranslatedName | string,  // Title for the current screen
   tabTitles: TabSet,                      // Title last set in the tab
-  shouldShowBack: boolean,                // True to show a back button in the header, false to hide
+  showBack: boolean,                      // True to show a back button in the header, false to hide
   tabShowBack: TabSet,                    // Whether the tab should show a back button
-  shouldShowSearch: boolean,              // True to show a search field in the header, false to hide
+  showSearch: boolean,                    // True to show a search field in the header, false to hide
   tabShowSearch: TabSet,                  // Whether the tab should show a search button
 };
 
@@ -76,7 +72,7 @@ const initialState: State = {
       name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.settings : 'Guide de campus',
     },
   },
-  shouldShowBack: false,
+  showBack: false,
   tabShowBack: {
     find: false,
     schedule: false,
@@ -84,7 +80,7 @@ const initialState: State = {
     search: false,
     settings: false,
   },
-  shouldShowSearch: true,
+  showSearch: true,
   tabShowSearch: {
     find: true,
     schedule: false,
@@ -103,17 +99,15 @@ const initialState: State = {
  */
 function header(state: State = initialState, action: Action): State {
   switch (action.type) {
-    case 'SWITCH_TAB':
+    case SWITCH_TAB:
       return {
         ...state,
         title: state.tabTitles[action.tab],
-        shouldShowBack: state.tabShowBack[action.tab],
-        shouldShowSearch: state.tabShowSearch[action.tab],
+        showBack: state.tabShowBack[action.tab],
+        showSearch: state.tabShowSearch[action.tab],
       };
-    case 'SET_HEADER_TITLE': {
-      const tabTitles = {
-        ...state.tabTitles,
-      };
+    case SET_HEADER_TITLE: {
+      const tabTitles = { ...state.tabTitles };
 
       if (action.tab != null) {
         tabTitles[action.tab] = action.title || initialState.tabTitles[action.tab];
@@ -125,33 +119,29 @@ function header(state: State = initialState, action: Action): State {
         tabTitles,
       };
     }
-    case 'HEADER_SHOW_BACK': {
-      const tabShowBack = {
-        ...state.tabShowBack,
-      };
+    case SHOW_BACK: {
+      const tabShowBack = { ...state.tabShowBack };
 
       if (action.tab != null) {
-        tabShowBack[action.tab] = action.shouldShowBack || initialState.tabShowBack[action.tab];
+        tabShowBack[action.tab] = action.show;
       }
 
       return {
         ...state,
-        shouldShowBack: action.shouldShowBack,
+        showBack: action.show,
         tabShowBack,
       };
     }
-    case 'HEADER_SHOW_SEARCH': {
-      const tabShowSearch = {
-        ...state.tabShowSearch,
-      };
+    case SHOW_SEARCH: {
+      const tabShowSearch = { ...state.tabShowSearch };
 
       if (action.tab != null) {
-        tabShowSearch[action.tab] = action.shouldShowSearch || initialState.tabShowSearch[action.tab];
+        tabShowSearch[action.tab] = action.show;
       }
 
       return {
         ...state,
-        shouldShowSearch: action.shouldShowSearch,
+        showSearch: action.show,
         tabShowSearch,
       };
     }

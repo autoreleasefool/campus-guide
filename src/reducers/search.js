@@ -25,9 +25,8 @@
 'use strict';
 
 // Types
-import type {
-  Action,
-} from 'types';
+import type { Action } from 'types';
+import { SEARCH } from 'actionTypes';
 
 // Describes a search.
 export type Search = {
@@ -48,13 +47,10 @@ const initialState: Search = {
  */
 function search(state: Search = initialState, action: Action): Search {
   switch (action.type) {
-    case 'SEARCH':
+    case SEARCH:
       return {
+        ...state,
         searchTerms: action.searchTerms,
-      };
-    case 'CLEAR_SEARCH':
-      return {
-        searchTerms: null,
       };
     default:
       return state;

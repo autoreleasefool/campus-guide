@@ -343,29 +343,26 @@ export type Update = {
 //  Actions
 //-----------------------------------------------------------------------------
 
+import * as Actions from 'actionTypes';
+
 /** Available actions for modifying the application state. */
 export type Action =
-    { type: 'SEARCH', searchTerms: ?string }
-  | { type: 'CLEAR_SEARCH' }
-  | { type: 'SWITCH_TAB', tab: Tab; }
-  | { type: 'NAVIGATE_BACK' }
-  | { type: 'CAN_NAVIGATE_BACK', key: string, can: boolean }
-  | { type: 'CHANGE_LANGUAGE', language: Language }
-  | { type: 'UPDATE_CONFIGURATION', options: ConfigurationOptions }
-  | { type: 'UPDATE_PROGRESS', update: Update }
-  | { type: 'SET_HEADER_TITLE', title: ?(Name | TranslatedName | string), tab: ?Tab }
-  | { type: 'HEADER_SHOW_BACK', shouldShowBack: boolean, tab: ?Tab }
-  | { type: 'HEADER_SHOW_SEARCH', shouldShowSearch: boolean, tab: ?Tab }
-  | { type: 'FIND_VIEW', view: number }
-  | { type: 'NAVIGATE_TO', destination: Destination }
-  | { type: 'VIEW_BUILDING', building: Building }
-  | { type: 'DISCOVER_VIEW', view: number }
-  | { type: 'DISCOVER_SECTION', section: number }
-  | { type: 'SET_DISCOVER_SECTIONS', sections: Array < DiscoverSection > }
-  | { type: 'SET_DISCOVER_LINKS', links: Array < LinkSection > }
-  | { type: 'SHOW_LINK_CATEGORY', linkId: ?string | number }
-  | { type: 'SHOW_TRANSIT_CAMPUS', campus: ?Campus }
-  | { type: 'SCHEDULE_ADD_SEMESTER', semester: Semester }
-  | { type: 'SCHEDULE_ADD_COURSE', semester: string, course: Course }
-  | { type: 'SCHEDULE_REMOVE_COURSE', semester: string, courseCode: string }
+    { type: Actions.SEARCH, searchTerms: ?string }
+  | { type: Actions.SWITCH_TAB, tab: Tab; }
+  | { type: Actions.NAVIGATE_BACK }
+  | { type: Actions.SET_CAN_BACK, key: string, can: boolean }
+  | { type: Actions.UPDATE_CONFIGURATION, options: ConfigurationOptions }
+  | { type: Actions.UPDATE_PROGRESS, update: Update }
+  | { type: Actions.SET_HEADER_TITLE, title: ?(Name | TranslatedName | string), tab: ?Tab }
+  | { type: Actions.SHOW_BACK, show: boolean, tab: ?Tab }
+  | { type: Actions.SHOW_SEARCH, show: boolean, tab: ?Tab }
+  | { type: Actions.SWITCH_FIND_VIEW, view: number }
+  | { type: Actions.SET_DESTINATION, destination: Destination }
+  | { type: Actions.VIEW_BUILDING, building: Building }
+  | { type: Actions.SWITCH_DISCOVER_VIEW, view: number }
+  | { type: Actions.SWITCH_DISCOVER_LINK, linkId: ?string | number }
+  | { type: Actions.SWITCH_DISCOVER_TRANSIT_CAMPUS, campus: ?Campus }
+  | { type: Actions.ADD_SEMESTER, semester: Semester }
+  | { type: Actions.ADD_COURSE, semester: string, course: Course }
+  | { type: Actions.REMOVE_COURSE, semester: string, courseCode: string }
   ;

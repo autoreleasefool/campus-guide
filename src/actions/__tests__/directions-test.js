@@ -16,57 +16,37 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-30
- * @file find-test.js
- * @description Tests find actions
+ * @created 2017-02-11
+ * @file directions-test.js
+ * @description Tests direction actions
  *
  */
 'use strict';
 
+// Types
+import { SET_DESTINATION, VIEW_BUILDING } from 'actionTypes';
+
 // Imports
-import * as actions from '../find';
+import * as actions from '../directions';
 
-describe('find actions', () => {
-  it('should create an action to switch the find view', () => {
-    const view = 1;
-    const expectedAction = {
-      type: 'FIND_VIEW',
-      view,
-    };
-
-    expect(actions.switchFindView(view)).toEqual(expectedAction);
-  });
+describe('direction actions', () => {
 
   it('should set a building room to navigate to', () => {
-    const code = 'code';
-    const room = 'room';
-
-    const expectedAction = {
-      type: 'NAVIGATE_TO',
-      destination: {
-        code,
-        room,
-      },
-    };
-
-    expect(actions.navigateTo(code, room)).toEqual(expectedAction);
+    const destination = { code: 'code', room: 'room' };
+    const expectedAction = { type: SET_DESTINATION, destination };
+    expect(actions.setDestination(destination)).toEqual(expectedAction);
   });
 
   it('should set a building to view details for', () => {
     const building = {
       code: 'code',
-      facilities: ['atm', 'gym'],
+      facilities: [ 'atm', 'gym' ],
       image: 'image.png',
       lat: 100,
       long: 200,
-      rooms: [{name: 'room_1', type: 0}, {name: 'name_2', type: 1}],
+      rooms: [ { name: 'room_1', type: 0 }, { name: 'name_2', type: 1 } ],
     };
-
-    const expectedAction = {
-      type: 'VIEW_BUILDING',
-      building,
-    };
-
+    const expectedAction = { type: VIEW_BUILDING, building };
     expect(actions.viewBuilding(building)).toEqual(expectedAction);
   });
 });

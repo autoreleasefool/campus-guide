@@ -16,34 +16,31 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-19
- * @file find.js
- * @description Provides find actions.
+ * @created 2017-02-12
+ * @file search-test.js
+ * @description Tests search actions
  *
- * @flow
  */
 'use strict';
 
 // Types
-import type {
-  Action,
-  Building,
-} from 'types';
+import { SEARCH } from 'actionTypes';
 
-module.exports = {
-  navigateTo: (code: string, room: ?string): Action => ({
-    type: 'NAVIGATE_TO',
-    destination: {
-      code,
-      room,
-    },
-  }),
-  switchFindView: (view: number): Action => ({
-    type: 'FIND_VIEW',
-    view,
-  }),
-  viewBuilding: (building: Building): Action => ({
-    type: 'VIEW_BUILDING',
-    building,
-  }),
-};
+// Imports
+import * as actions from '../search';
+
+describe('search actions', () => {
+
+  it('creates an action to search for a search term', () => {
+    const searchTerms = 'search term';
+    const expectedAction = { type: SEARCH, searchTerms };
+    expect(actions.search(searchTerms)).toEqual(expectedAction);
+  });
+
+  it('creates an action to clear the search', () => {
+    const searchTerms = null;
+    const expectedAction = { type: SEARCH, searchTerms };
+    expect(actions.search(null)).toEqual(expectedAction);
+  });
+
+});

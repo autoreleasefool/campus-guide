@@ -23,6 +23,9 @@
  */
 'use strict';
 
+// Types
+import { SEARCH } from 'actionTypes';
+
 // Imports
 import reducer from '../search';
 
@@ -32,41 +35,23 @@ const initialState = {
 };
 
 describe('search reducer', () => {
+
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it('should update the state', () => {
+  it('should perform a set of searches', () => {
     const testSearchTerms = 'search';
     const otherSearchTerms = 'other_search';
 
-    expect(
-      reducer(
-        undefined,
-        {
-          type: 'SEARCH',
-          searchTerms: testSearchTerms,
-        }
-      )
-    ).toEqual({searchTerms: testSearchTerms});
+    expect(reducer(initialState, { type: SEARCH, searchTerms: testSearchTerms }))
+        .toEqual({ ...initialState, searchTerms: testSearchTerms });
 
-    expect(
-      reducer(
-        {searchTerms: testSearchTerms},
-        {
-          type: 'SEARCH',
-          searchTerms: otherSearchTerms,
-        }
-      )
-    ).toEqual({searchTerms: otherSearchTerms});
+    expect(reducer(initialState, { type: SEARCH, searchTerms: otherSearchTerms }))
+        .toEqual({ ...initialState, searchTerms: otherSearchTerms });
 
-    expect(
-      reducer(
-        {searchTerms: testSearchTerms},
-        {
-          type: 'CLEAR_SEARCH',
-        }
-      )
-    ).toEqual(initialState);
+    expect(reducer(initialState, { type: SEARCH, searchTerms: null }))
+        .toEqual({ ...initialState, searchTerms: null });
   });
+
 });

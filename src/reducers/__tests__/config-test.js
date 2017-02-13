@@ -23,54 +23,102 @@
  */
 'use strict';
 
+// Types
+import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
+
 // Imports
 import reducer from '../config';
 
 // Expected initial state
 const initialState = {
-  alwaysSearchAll: false,
-  transitInfo: null,
-  currentSemester: 0,
-  firstTime: false,
-  language: null,
-  preferredTimeFormat: '12h',
-  prefersWheelchair: false,
-  semesters: [],
+  configOptions: {
+    alwaysSearchAll: false,
+    transitInfo: null,
+    currentSemester: 0,
+    firstTime: false,
+    language: null,
+    preferredTimeFormat: '12h',
+    prefersWheelchair: false,
+    semesters: [],
+  },
+  update: {
+    currentDownload: null,
+    filesDownloaded: [],
+    intermediateProgress: 0,
+    showUpdateProgress: false,
+    showRetry: false,
+    totalFiles: 0,
+    totalProgress: 0,
+    totalSize: 0,
+  },
 };
 
 // Test configuration update
 const configurationUpdate = {
   alwaysSearchAll: true,
-  transitInfo: {name: 'Transit', link: 'http://example.com'},
+  transitInfo: { name: 'Transit', link: 'http://example.com' },
   language: 'en',
 };
 
 // Expected state when configuration updated
-const updatedState = {
-  alwaysSearchAll: true,
-  transitInfo: {name: 'Transit', link: 'http://example.com'},
-  currentSemester: 0,
-  firstTime: false,
-  language: 'en',
-  preferredTimeFormat: '12h',
-  prefersWheelchair: false,
-  semesters: [],
+const updatedConfigOptions = {
+  update: initialState.update,
+  configOptions: {
+    alwaysSearchAll: true,
+    transitInfo: { name: 'Transit', link: 'http://example.com' },
+    currentSemester: 0,
+    firstTime: false,
+    language: 'en',
+    preferredTimeFormat: '12h',
+    prefersWheelchair: false,
+    semesters: [],
+  },
+};
+
+// Test progress update
+const progressUpdate = {
+  currentDownload: 'download.jpg',
+  filesDownloaded: [
+    'download1.jpg',
+    'download2.jpg',
+  ],
+  intermediateProgress: 1,
+  showRetry: true,
+  totalSize: 1,
+};
+
+// Expected state when progress updated
+const updatedProgress = {
+  configOptions: initialState.configOptions,
+  update: {
+    currentDownload: 'download.jpg',
+    filesDownloaded: [
+      'download1.jpg',
+      'download2.jpg',
+    ],
+    intermediateProgress: 1,
+    showUpdateProgress: false,
+    showRetry: true,
+    totalFiles: 0,
+    totalProgress: 0,
+    totalSize: 1,
+  },
 };
 
 describe('config reducer', () => {
+
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it('should update the state', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'UPDATE_CONFIGURATION',
-          options: configurationUpdate,
-        }
-      )
-    ).toEqual(updatedState);
+  it('should update the config options', () => {
+    expect(reducer(initialState, { type: UPDATE_CONFIGURATION, configOptions: configurationUpdate }))
+        .toEqual(updatedConfigOptions);
   });
+
+  it('should update the update options', () => {
+    expect(reducer(initialState, { type: UPDATE_PROGRESS, update: progressUpdate }))
+        .toEqual(updatedProgress);
+  });
+
 });

@@ -25,9 +25,8 @@
 'use strict';
 
 // Types
-import type {
-  Action,
-} from 'types';
+import type { Action } from 'types';
+import { ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
 
 // Imports
 import * as ArrayUtils from 'ArrayUtils';
@@ -51,7 +50,7 @@ const initialState: State = {
  */
 function schedule(state: State = initialState, action: Action): State {
   switch (action.type) {
-    case 'SCHEDULE_ADD_SEMESTER': {
+    case ADD_SEMESTER: {
       const semesters = JSON.parse(JSON.stringify(state.semesters));
       semesters[action.semester.id] = action.semester;
 
@@ -60,7 +59,7 @@ function schedule(state: State = initialState, action: Action): State {
         semesters,
       };
     }
-    case 'SCHEDULE_ADD_COURSE': {
+    case ADD_COURSE: {
       if (!(action.semester in state.semesters)) {
         return state;
       }
@@ -85,7 +84,7 @@ function schedule(state: State = initialState, action: Action): State {
         semesters,
       };
     }
-    case 'SCHEDULE_REMOVE_COURSE': {
+    case REMOVE_COURSE: {
       if (!(action.semester in state.semesters)) {
         return state;
       }

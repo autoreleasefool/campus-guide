@@ -25,34 +25,57 @@
 'use strict';
 
 // Types
-import type {
-  Action,
-  ConfigurationOptions,
-} from 'types';
+import type { Action, ConfigurationOptions, Update } from 'types';
+import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
+
+type State = {
+  configOptions: ConfigurationOptions,
+  update: Update,
+}
 
 // Initial update state.
-const initialState: ConfigurationOptions = {
-  alwaysSearchAll: false,
-  transitInfo: null,
-  currentSemester: 0,
-  firstTime: false,
-  language: null,
-  preferredTimeFormat: '12h',
-  prefersWheelchair: false,
-  semesters: [],
+const initialState: State = {
+  configOptions: {
+    alwaysSearchAll: false,
+    transitInfo: null,
+    currentSemester: 0,
+    firstTime: false,
+    language: null,
+    preferredTimeFormat: '12h',
+    prefersWheelchair: false,
+    semesters: [],
+  },
+  update: {
+    currentDownload: null,
+    filesDownloaded: [],
+    intermediateProgress: 0,
+    showUpdateProgress: false,
+    showRetry: false,
+    totalFiles: 0,
+    totalProgress: 0,
+    totalSize: 0,
+  },
 };
 
 /**
  * When provided with a configuration action, parses the parameters and returns an updated state.
  *
- * @param {ConfigurationOptions} state   the current state
- * @param {Action}               action  the action being taken
- * @returns {ConfigurationOptions} an updated state based on the previous state and the action taken.
+ * @param {State}  state  the current state
+ * @param {Action} action the action being taken
+ * @returns {State} an updated state based on the previous state and the action taken.
  */
-function config(state: ConfigurationOptions = initialState, action: Action): ConfigurationOptions {
+function config(state: State = initialState, action: Action): State {
   switch (action.type) {
-    case 'UPDATE_CONFIGURATION':
-      return Object.assign({}, state, action.options);
+    case UPDATE_CONFIGURATION:
+      return {
+        configOptions: Object.assign({}, state.configOptions, action.configOptions),
+        update: Object.assign({}, state.update),
+      };
+    case UPDATE_PROGRESS:
+      return {
+        configOptions: Object.assign({}, state.configOptions),
+        update: Object.assign({}, state.update, action.update),
+      };
     default:
       return state;
   }

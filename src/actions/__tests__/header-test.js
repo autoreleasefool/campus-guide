@@ -23,73 +23,51 @@
  */
 'use strict';
 
+// Types
+import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH } from 'actionTypes';
+
 // Imports
 import * as actions from '../header';
 
 describe('header actions', () => {
-  it('should create an action to set the title', () => {
-    const title = {name: 'Title'};
-    const expectedAction = {
-      type: 'SET_HEADER_TITLE',
-      title,
-    };
 
+  it('should create an action to set the title', () => {
+    const title = { name: 'Title' };
+    const expectedAction = { type: SET_HEADER_TITLE, title };
     expect(actions.setHeaderTitle(title)).toEqual(expectedAction);
   });
 
   it('should create an action to set the title for a tab', () => {
     const title = 'name';
     const tab = 'find';
-    const expectedAction = {
-      type: 'SET_HEADER_TITLE',
-      title,
-      tab,
-    };
-
+    const expectedAction = { type: SET_HEADER_TITLE, title, tab };
     expect(actions.setHeaderTitle(title, tab)).toEqual(expectedAction);
   });
 
   it('should create an action to show the back button for a tab', () => {
-    const shouldShowBack = true;
+    const show = true;
     const tab = 'find';
-    const expectedAction = {
-      type: 'HEADER_SHOW_BACK',
-      shouldShowBack,
-      tab,
-    };
-
-    expect(actions.setShowBack(shouldShowBack, tab)).toEqual(expectedAction);
+    const expectedAction = { type: SHOW_BACK, show, tab };
+    expect(actions.showBack(show, tab)).toEqual(expectedAction);
   });
 
   it('should create an action to show the search button for a tab', () => {
-    const shouldShowSearch = true;
+    const show = true;
     const tab = 'find';
-    const expectedAction = {
-      type: 'HEADER_SHOW_SEARCH',
-      shouldShowSearch,
-      tab,
-    };
-
-    expect(actions.setShowSearch(shouldShowSearch, tab)).toEqual(expectedAction);
+    const expectedAction = { type: SHOW_SEARCH, show, tab };
+    expect(actions.showSearch(show, tab)).toEqual(expectedAction);
   });
 
   it('should create an action to show the back button', () => {
-    const showBack: boolean = true;
-    const expectedAction = {
-      type: 'HEADER_SHOW_BACK',
-      shouldShowBack: showBack,
-    };
-
-    expect(actions.setShowBack(showBack)).toEqual(expectedAction);
+    const show = true;
+    const expectedAction = { type: SHOW_BACK, show };
+    expect(actions.showBack(show)).toEqual(expectedAction);
   });
 
   it('should create an action to show the search button', () => {
-    const showSearch: boolean = true;
-    const expectedAction = {
-      type: 'HEADER_SHOW_SEARCH',
-      shouldShowSearch: showSearch,
-    };
-
-    expect(actions.setShowSearch(showSearch)).toEqual(expectedAction);
+    const show = true;
+    const expectedAction = { type: SHOW_SEARCH, show };
+    expect(actions.showSearch(show)).toEqual(expectedAction);
   });
+
 });

@@ -23,71 +23,74 @@
  */
 'use strict';
 
+// Types
+import {
+  NAVIGATE_BACK,
+  SET_CAN_BACK,
+  SWITCH_TAB,
+  SWITCH_FIND_VIEW,
+  SWITCH_DISCOVER_VIEW,
+  SWITCH_DISCOVER_LINK,
+  SWITCH_DISCOVER_TRANSIT_CAMPUS,
+} from 'actionTypes';
+
 // Imports
 import reducer from '../navigation';
 
 // Expected initial state
 const initialState = {
   backNavigations: 0,
-  canNavigateBack: {},
+  canBack: {},
   tab: 'find',
+
+  findView: 0,
+
+  discoverView: 0,
+  linkId: 0,
+  campus: null,
 };
 
 describe('navigation reducer', () => {
+
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
   it('should switch to a new tab', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'SWITCH_TAB',
-          tab: 'schedule',
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        tab: 'schedule',
-      }
-    );
+    expect(reducer(initialState, { type: SWITCH_TAB, tab: 'schedule' }))
+        .toEqual({ ...initialState, tab: 'schedule' });
   });
 
-  it('should increase the back navigations', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'NAVIGATE_BACK',
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        backNavigations: 1,
-      }
-    );
+  it('should increase the number of back navigations', () => {
+    expect(reducer(initialState, { type: NAVIGATE_BACK })).toEqual({ ...initialState, backNavigations: 1 });
   });
 
-  it('should set the state for a key which can back navigate', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'CAN_NAVIGATE_BACK',
-          key: 'test_key',
-          can: true,
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        canNavigateBack: {
-          test_key: true,
-        },
-      }
-    );
+  it('should update the state for a key which can back navigate', () => {
+    const updatedState = reducer(initialState, { type: SET_CAN_BACK, key: 'test_key', can: true });
+    expect(updatedState).toEqual({ ...initialState, canBack: { test_key: true }});
+    const finalState = reducer(updatedState, { type: SET_CAN_BACK, key: 'test_key', can: false });
+    expect(finalState).toEqual({ ...initialState, canBack: { test_key: false }});
   });
+
+  it('switches the find view', () => {
+    expect(reducer(initialState, { type: SWITCH_FIND_VIEW, view: 1 }))
+        .toEqual({ ...initialState, findView: 1 });
+  });
+
+  it('switches the discover view', () => {
+    expect(reducer(initialState, { type: SWITCH_DISCOVER_VIEW, view: 1 }))
+        .toEqual({ ...initialState, discoverView: 1 });
+  });
+
+  it('switches the link id', () => {
+    expect(reducer(initialState, { type: SWITCH_DISCOVER_LINK, linkId: 1 }))
+        .toEqual({ ...initialState, linkId: 1 });
+  });
+
+  it('switches the campus', () => {
+    const campus = { background: 'background', image: 'image', name: 'name' };
+    expect(reducer(initialState, { type: SWITCH_DISCOVER_TRANSIT_CAMPUS, campus }))
+        .toEqual({ ...initialState, campus });
+  });
+
 });

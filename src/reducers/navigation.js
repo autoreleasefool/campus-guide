@@ -25,23 +25,41 @@
 'use strict';
 
 // Types
-import type {
-  Action,
-  Tab,
-} from 'types';
+import type { Action, Campus, Tab } from 'types';
+import {
+  NAVIGATE_BACK,
+  SET_CAN_BACK,
+  SWITCH_TAB,
+  SWITCH_FIND_VIEW,
+  SWITCH_DISCOVER_VIEW,
+  SWITCH_DISCOVER_LINK,
+  SWITCH_DISCOVER_TRANSIT_CAMPUS,
+} from 'actionTypes';
 
 // Describes the navigation state.
 type State = {
   backNavigations: number,  // Count of the times the user has navigated back in the app
-  canNavigateBack: Object,  // Indicates which subsections of the app can navigate backwards
+  canBack: Object,          // Indicates which subsections of the app can navigate backwards
   tab: Tab,                 // Current tab in the root navigation of the app
+
+  findView: number,         // The current view to display in the find tab
+
+  discoverView: number,     // The current view to display in the discover tab
+  linkId: ?string | number, // Currently selected link category id
+  campus: ?Campus,          // Selected transit campus to display info for
 };
 
 // Initial navigation state.
 const initialState: State = {
   backNavigations: 0,
-  canNavigateBack: {},
+  canBack: {},
   tab: 'find',
+
+  findView: 0,
+
+  discoverView: 0,
+  linkId: 0,
+  campus: null,
 };
 
 /**
@@ -53,25 +71,45 @@ const initialState: State = {
  */
 function navigation(state: State = initialState, action: Action): State {
   switch (action.type) {
-    case 'CAN_NAVIGATE_BACK': {
-      const can = {
-        ...state.canNavigateBack,
-      };
-      can[action.key] = action.can;
-      return {
-        ...state,
-        canNavigateBack: can,
-      };
-    }
-    case 'NAVIGATE_BACK':
+    case NAVIGATE_BACK:
       return {
         ...state,
         backNavigations: state.backNavigations + 1,
       };
-    case 'SWITCH_TAB':
+    case SET_CAN_BACK: {
+      const can = {
+        ...state.canBack,
+      };
+      can[action.key] = action.can;
+      return {
+        ...state,
+        canBack: can,
+      };
+    }
+    case SWITCH_TAB:
       return {
         ...state,
         tab: action.tab,
+      };
+    case SWITCH_FIND_VIEW:
+      return {
+        ...state,
+        findView: action.view,
+      };
+    case SWITCH_DISCOVER_VIEW:
+      return {
+        ...state,
+        discoverView: action.view,
+      };
+    case SWITCH_DISCOVER_LINK:
+      return {
+        ...state,
+        linkId: action.linkId,
+      };
+    case SWITCH_DISCOVER_TRANSIT_CAMPUS:
+      return {
+        ...state,
+        campus: action.campus,
       };
     default:
       return state;

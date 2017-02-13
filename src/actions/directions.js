@@ -16,41 +16,28 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-27
- * @file discover.js
- * @description Provides discover actions.
+ * @created 2017-02-11
+ * @file directions.js
+ * @description Provides direction actions.
  *
  * @flow
  */
 'use strict';
 
 // Types
-import type {
-  Action,
-  Campus,
-  DiscoverSection,
-  LinkSection,
-} from 'types';
+import type { Action, Building, Destination } from 'types';
+import { SET_DESTINATION, VIEW_BUILDING } from 'actionTypes';
 
 module.exports = {
-  switchDiscoverView: (view: number): Action => ({
-    type: 'DISCOVER_VIEW',
-    view,
+
+  setDestination: (destination: Destination): Action => ({
+    type: SET_DESTINATION,
+    destination,
   }),
-  setDiscoverSections: (sections: Array < DiscoverSection >): Action => ({
-    type: 'SET_DISCOVER_SECTIONS',
-    sections,
+
+  viewBuilding: (building: Building): Action => ({
+    type: VIEW_BUILDING,
+    building,
   }),
-  setDiscoverLinks: (links: Array < LinkSection >): Action => ({
-    type: 'SET_DISCOVER_LINKS',
-    links,
-  }),
-  showLinkCategory: (id: ?string | number): Action => ({
-    type: 'SHOW_LINK_CATEGORY',
-    linkId: id,
-  }),
-  showTransitCampus: (campus: ?Campus): Action => ({
-    type: 'SHOW_TRANSIT_CAMPUS',
-    campus,
-  }),
+
 };

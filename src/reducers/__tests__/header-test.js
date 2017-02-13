@@ -23,20 +23,23 @@
  */
 'use strict';
 
+// Types
+import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH, SWITCH_TAB } from 'actionTypes';
+
 // Imports
 import reducer from '../header';
 
 // Expected initial state
 const initialState = {
-  title: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+  title: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
   tabTitles: {
-    find: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
-    schedule: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
-    discover: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
-    search: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
-    settings: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
+    find: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+    schedule: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+    discover: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+    search: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+    settings: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
   },
-  shouldShowBack: false,
+  showBack: false,
   tabShowBack: {
     find: false,
     schedule: false,
@@ -44,7 +47,7 @@ const initialState = {
     search: false,
     settings: false,
   },
-  shouldShowSearch: true,
+  showSearch: true,
   tabShowSearch: {
     find: true,
     schedule: false,
@@ -54,217 +57,104 @@ const initialState = {
   },
 };
 
-describe('navigation reducer', () => {
+describe('header reducer', () => {
+
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it('should set a new header title', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'SET_HEADER_TITLE',
-          title: {
-            name: 'New title',
-          },
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        title: {
-          name: 'New title',
-        },
-      }
-    );
-  });
-
-  it('should set a new header title for a tab', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'SET_HEADER_TITLE',
-          tab: 'find',
-          title: {
-            name: 'New title',
-          },
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        title: {
-          name: 'New title',
-        },
-        tabTitles: {
-          find: {name: 'New title'},
-          schedule: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
-          discover: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
-          search: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
-          settings: {name_en: 'Campus Guide', name_fr: 'Guide de campus'},
-        },
-      }
-    );
-  });
-
   it('should use the default header title', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'SET_HEADER_TITLE',
-          title: null,
-        }
-      )
-    ).toEqual(
-      initialState
-    );
+    expect(reducer(initialState, { type: SET_HEADER_TITLE, title: null })).toEqual(initialState);
   });
 
   it('should use the default header title for a tab', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'SET_HEADER_TITLE',
-          title: null,
-          tab: 'find',
-        }
-      )
-    ).toEqual(
-      initialState
-    );
+    expect(reducer(initialState, { type: SET_HEADER_TITLE, title: null, tab: 'find' })).toEqual(initialState);
+  });
+
+  it('should set a new header title', () => {
+    expect(reducer(initialState, { type: SET_HEADER_TITLE, title: { name: 'New title' } }))
+        .toEqual({ ...initialState, title: { name: 'New title' } });
+  });
+
+  it('should set a new header title for a tab', () => {
+    expect(reducer(initialState, { type: SET_HEADER_TITLE, tab: 'find', title: { name: 'New title' } }))
+        .toEqual({
+          ...initialState,
+          title: { name: 'New title' },
+          tabTitles: {
+            find: { name: 'New title' },
+            schedule: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+            discover: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+            search: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+            settings: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+          },
+        });
   });
 
   it('should show the back button', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'HEADER_SHOW_BACK',
-          shouldShowBack: true,
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        shouldShowBack: true,
-      }
-    );
+    expect(reducer(initialState, { type: SHOW_BACK, show: true }))
+        .toEqual({ ...initialState, showBack: true });
   });
 
   it('should show the back button for a tab', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'HEADER_SHOW_BACK',
-          tab: 'find',
-          shouldShowBack: true,
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        shouldShowBack: true,
-        tabShowBack: {
-          find: true,
-          schedule: false,
-          discover: false,
-          search: false,
-          settings: false,
-        },
-      }
-    );
-  });
-
-  it('should show the search button for a tab', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'HEADER_SHOW_SEARCH',
-          tab: 'schedule',
-          shouldShowSearch: true,
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        shouldShowSearch: true,
-        tabShowSearch: {
-          find: true,
-          schedule: true,
-          discover: false,
-          search: true,
-          settings: false,
-        },
-      }
-    );
-  });
-
-  it('should set the title and back/search buttons when the tab changes', () => {
-    let updatedState = reducer(
-      initialState,
-      {
-        type: 'SET_HEADER_TITLE',
-        title: 'schedule',
-        tab: 'schedule',
-      }
-    );
-
-    updatedState = reducer(
-      updatedState,
-      {
-        type: 'HEADER_SHOW_BACK',
-        shouldShowBack: true,
-        tab: 'schedule',
-      }
-    );
-
-    updatedState = reducer(
-      updatedState,
-      {
-        type: 'HEADER_SHOW_SEARCH',
-        shouldShowSearch: true,
-        tab: 'schedule',
-      }
-    );
-
-    expect(
-      reducer(
-        updatedState,
-        {
-          type: 'SWITCH_TAB',
-          tab: 'schedule',
-        }
-      )
-    ).toEqual(
-      {
-        ...updatedState,
-        title: 'schedule',
-        shouldShowBack: true,
-        shouldShowSearch: true,
-      }
-    );
+    expect(reducer(initialState, { type: SHOW_BACK, show: true, tab: 'find' }))
+        .toEqual({
+          ...initialState,
+          showBack: true,
+          tabShowBack: {
+            find: true,
+            schedule: false,
+            discover: false,
+            search: false,
+            settings: false,
+          },
+        });
   });
 
   it('should show the search button', () => {
-    expect(
-      reducer(
-        initialState,
-        {
-          type: 'HEADER_SHOW_SEARCH',
-          shouldShowSearch: true,
-        }
-      )
-    ).toEqual(
-      {
-        ...initialState,
-        shouldShowSearch: true,
-      }
-    );
+    expect(reducer(initialState, { type: SHOW_SEARCH, show: true }))
+        .toEqual({ ...initialState, showSearch: true });
   });
+
+  it('should show the search button for a tab', () => {
+    expect(reducer(initialState, { type: SHOW_SEARCH, show: true, tab: 'schedule' }))
+        .toEqual({
+          ...initialState,
+          showSearch: true,
+          tabShowSearch: {
+            find: true,
+            schedule: true,
+            discover: false,
+            search: true,
+            settings: false,
+          },
+        });
+  });
+
+  it('should set the title and back/search buttons when the tab changes', () => {
+    let updatedState = reducer(initialState, { type: SET_HEADER_TITLE, title: 'schedule', tab: 'schedule' });
+    updatedState = reducer(updatedState, { type: SHOW_BACK, show: true, tab: 'schedule' });
+    updatedState = reducer(updatedState, { type: SHOW_SEARCH, show: true, tab: 'schedule' });
+
+    expect(reducer(updatedState, { type: SWITCH_TAB, tab: 'schedule' }))
+        .toEqual({
+          ...initialState,
+          title: 'schedule',
+          tabTitles: {
+            ...initialState.tabTitles,
+            schedule: 'schedule',
+          },
+          showBack: true,
+          tabShowBack: {
+            ...initialState.tabShowBack,
+            schedule: true,
+          },
+          showSearch: true,
+          tabShowSearch: {
+            ...initialState.tabShowSearch,
+            schedule: true,
+          },
+        });
+  });
+
 });

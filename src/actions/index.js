@@ -27,22 +27,18 @@
 
 // Imports
 import * as configActions from './config';
-import * as discoverActions from './discover';
-import * as findActions from './find';
+import * as directionsActions from './directions';
 import * as headerActions from './header';
 import * as navigationActions from './navigation';
-import * as searchActions from './search';
 import * as scheduleActions from './schedule';
-import * as updateActions from './update';
+import * as searchActions from './search';
 
 // Combine and export actions
 module.exports = {
   ...configActions,
-  ...discoverActions,
-  ...findActions,
+  ...directionsActions,
   ...headerActions,
   ...navigationActions,
   ...searchActions,
   ...scheduleActions,
-  ...updateActions,
 };

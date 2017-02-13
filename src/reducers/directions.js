@@ -16,63 +16,45 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-19
- * @file find.js
- * @description Reducers for find actions
+ * @created 2017-02-12
+ * @file directions.js
+ * @description Reducers for direction actions
  *
  * @flow
  */
 'use strict';
 
 // Types
-import type {
-  Action,
-  Building,
-} from 'types';
+import type { Action, Building, Destination } from 'types';
+import { SET_DESTINATION, VIEW_BUILDING } from 'actionTypes';
 
-// Describes the find state.
+// Describes the directions state
 type State = {
-  building: ?Building,  // The building selected by the user to navigate to, or view
-  destination: {
-    code: ?string,      // The code of the building the user wishes to navigate to
-    room: ?string,      // The room number in the building the user wishes to navigate to
-  },
-  view: number,         // Current view to display in the Find navigator
+  building: ?Building,        // The building selected by the user to navigate to, or view
+  destination: ?Destination,  // The building and room the user is navigating to
 };
 
-// Initial find state.
+// Initial directions state
 const initialState: State = {
   building: null,
-  destination: {
-    code: null,
-    room: null,
-  },
-  view: 0,
+  destination: null,
 };
 
 /**
- * When provided with a find action, parses the parameters and returns an updated state.
+ * When provided with a direction action, parses the parameters and returns an updated state.
  *
  * @param {State}  state  the current state
  * @param {Action} action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken.
  */
-function find(state: State = initialState, action: Action): State {
+function directions(state: State = initialState, action: Action): State {
   switch (action.type) {
-    case 'FIND_VIEW':
+    case SET_DESTINATION:
       return {
         ...state,
-        view: action.view,
+        destination: action.destination,
       };
-    case 'NAVIGATE_TO':
-      return {
-        ...state,
-        destination: {
-          code: action.destination.code,
-          room: action.destination.room,
-        },
-      };
-    case 'VIEW_BUILDING':
+    case VIEW_BUILDING:
       return {
         ...state,
         building: action.building,
@@ -82,4 +64,4 @@ function find(state: State = initialState, action: Action): State {
   }
 }
 
-module.exports = find;
+module.exports = directions;

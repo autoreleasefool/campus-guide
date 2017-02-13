@@ -24,40 +24,67 @@
 'use strict';
 
 // Types
-import type {
-  Tab,
-} from 'types';
+import type { Tab } from 'types';
+import {
+  NAVIGATE_BACK,
+  SET_CAN_BACK,
+  SWITCH_TAB,
+  SWITCH_FIND_VIEW,
+  SWITCH_DISCOVER_VIEW,
+  SWITCH_DISCOVER_SECTION,
+  SWITCH_DISCOVER_LINK,
+  SWITCH_DISCOVER_TRANSIT_CAMPUS,
+} from 'actionTypes';
 
 // Imports
 import * as actions from '../navigation';
 
 describe('navigation actions', () => {
+
   it('should create an action to switch the tabs', () => {
     const tab: Tab = 'find';
-    const expectedAction = {
-      type: 'SWITCH_TAB',
-      tab,
-    };
-
+    const expectedAction = { type: SWITCH_TAB, tab };
     expect(actions.switchTab(tab)).toEqual(expectedAction);
   });
 
   it('should create an action to navigate backwards', () => {
-    const expectedAction = {
-      type: 'NAVIGATE_BACK',
-    };
-
+    const expectedAction = { type: NAVIGATE_BACK };
     expect(actions.navigateBack()).toEqual(expectedAction);
   });
 
   it('should set the state for a key which can back navigate', () => {
     const key = 'test_key';
-    const expectedAction = {
-      type: 'CAN_NAVIGATE_BACK',
-      can: true,
-      key,
-    };
-
-    expect(actions.canNavigateBack(key, true)).toEqual(expectedAction);
+    const can = true;
+    const expectedAction = { type: SET_CAN_BACK, can, key };
+    expect(actions.canNavigateBack(key, can)).toEqual(expectedAction);
   });
+
+  it('should create an action to switch the find view', () => {
+    const view = 1;
+    const expectedAction = { type: SWITCH_FIND_VIEW, view };
+    expect(actions.switchFindView(view)).toEqual(expectedAction);
+  });
+
+  it('should create an action to switch the discover view', () => {
+    const view = 1;
+    const expectedAction = { type: SWITCH_DISCOVER_VIEW, view };
+    expect(actions.switchDiscoverView(view)).toEqual(expectedAction);
+  });
+
+  it('should show a link category', () => {
+    const linkId = 'fake_id';
+    const expectedAction = { type: SWITCH_DISCOVER_LINK, linkId };
+    expect(actions.switchLinkCategory(linkId)).toEqual(expectedAction);
+  });
+
+  it('should show a transit campus', () => {
+    const campus = {
+      background: 'background_color',
+      image: 'image.jpg',
+      name: 'campus_name',
+    };
+    const expectedAction = { type: SWITCH_DISCOVER_TRANSIT_CAMPUS, campus };
+    expect(actions.switchTransitCampus(campus)).toEqual(expectedAction);
+  });
+
 });

@@ -23,51 +23,32 @@
  */
 'use strict';
 
+// Types
+import { ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
+
 // Imports
 import * as actions from '../schedule';
 
 describe('schedule actions', () => {
+
   it('creates an action to add a new semester', () => {
-    const semester = {
-      id: 'semester1',
-      courses: [],
-      name: 'semester 1',
-    };
-
-    const expectedAction = {
-      type: 'SCHEDULE_ADD_SEMESTER',
-      semester,
-    };
-
+    const semester = { id: 'semester1', courses: [], name: 'semester 1' };
+    const expectedAction = { type: ADD_SEMESTER, semester };
     expect(actions.addSemester(semester)).toEqual(expectedAction);
   });
 
   it('creates an action to add a new course', () => {
     const semester = 'semester1';
-    const course = {
-      code: 'COURSE_CODE',
-      lectures: [],
-    };
-
-    const expectedAction = {
-      type: 'SCHEDULE_ADD_COURSE',
-      semester,
-      course,
-    };
-
+    const course = { code: 'COURSE_CODE', lectures: [] };
+    const expectedAction = { type: ADD_COURSE, semester, course };
     expect(actions.addCourse(semester, course)).toEqual(expectedAction);
   });
 
   it('creates an action to remove a course', () => {
     const semester = 'semester1';
     const courseCode = 'COURSE_CODE';
-
-    const expectedAction = {
-      type: 'SCHEDULE_REMOVE_COURSE',
-      semester,
-      courseCode,
-    };
-
+    const expectedAction = { type: REMOVE_COURSE, semester, courseCode };
     expect(actions.removeCourse(semester, courseCode)).toEqual(expectedAction);
   });
+
 });

@@ -24,23 +24,28 @@
 'use strict';
 
 // Types
-import type {
-  Language,
-} from 'types';
+import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
 
 // Imports
 import * as actions from '../config';
 
-describe('config actions', () => {
-  it('should create an action to update the configuration', () => {
-    const language: Language = 'en';
-    const expectedAction = {
-      type: 'UPDATE_CONFIGURATION',
-      options: {
-        language,
-      },
-    };
+describe('configuration actions', () => {
 
-    expect(actions.updateConfiguration({language: language})).toEqual(expectedAction);
+  it('should create an action to update the configuration', () => {
+    const language = 'en';
+    const expectedAction = { type: UPDATE_CONFIGURATION, configOptions: { language } };
+    expect(actions.updateConfiguration({ language: language })).toEqual(expectedAction);
   });
+
+  it('should create an action to update the download progress', () => {
+    const update = {
+      currentDownload: 'download.jpg',
+      filesDownloaded: [ 'download1.jpg', 'download2.jpg' ],
+      totalFiles: 1,
+    };
+    const expectedAction = { type: UPDATE_PROGRESS, update };
+
+    expect(actions.updateProgress(update)).toEqual(expectedAction);
+  });
+
 });
