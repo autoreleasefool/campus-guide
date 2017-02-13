@@ -190,7 +190,10 @@
     "no-restricted-modules": "off",
     "no-sync": "off",
 
-    "array-bracket-spacing": ["error", "never"],
+    "array-bracket-spacing": ["error", "always", {
+      "objectsInArrays": false,
+      "arraysInArrays": false
+    }],
     "block-spacing": ["error", "never"],
     "brace-style": ["error", "1tbs"],
     "camelcase": ["error", {
@@ -247,6 +250,7 @@
     "no-unneeded-ternary": "error",
     "no-whitespace-before-property": "error",
     "object-curly-spacing": ["error", "always", {
+      "arraysInObjects": false,
       "objectsInObjects": false
     }],
     "one-var": ["error", "never"],

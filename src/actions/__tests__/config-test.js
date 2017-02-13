@@ -33,7 +33,7 @@ describe('configuration actions', () => {
 
   it('should create an action to update the configuration', () => {
     const language = 'en';
-    const expectedAction = { type: UPDATE_CONFIGURATION, configOptions: { language } };
+    const expectedAction = { type: UPDATE_CONFIGURATION, configOptions: { language }};
     expect(actions.updateConfiguration({ language: language })).toEqual(expectedAction);
   });
 

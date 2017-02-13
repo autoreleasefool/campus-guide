@@ -39,7 +39,7 @@ describe('schedule actions', () => {
 
   it('creates an action to add a new course', () => {
     const semester = 'semester1';
-    const course = { code: 'COURSE_CODE', lectures: [] };
+    const course = { code: 'COURSE_CODE', lectures: []};
     const expectedAction = { type: ADD_COURSE, semester, course };
     expect(actions.addCourse(semester, course)).toEqual(expectedAction);
   });

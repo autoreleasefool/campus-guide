@@ -44,7 +44,7 @@ describe('direction actions', () => {
       image: 'image.png',
       lat: 100,
       long: 200,
-      rooms: [ { name: 'room_1', type: 0 }, { name: 'name_2', type: 1 } ],
+      rooms: [{ name: 'room_1', type: 0 }, { name: 'name_2', type: 1 }],
     };
     const expectedAction = { type: VIEW_BUILDING, building };
     expect(actions.viewBuilding(building)).toEqual(expectedAction);
