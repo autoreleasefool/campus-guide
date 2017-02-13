@@ -118,7 +118,7 @@ describe('schedule reducer', () => {
           semesters: {
             semester1: {
               ...state.semesters.semester1,
-              courses: [testCourses[0]],
+              courses: [ testCourses[0] ],
             },
           },
         });
@@ -134,7 +134,7 @@ describe('schedule reducer', () => {
           semesters: {
             semester1: {
               ...state.semesters.semester1,
-              courses: [testCourses[2], testCourses[1]],
+              courses: [ testCourses[2], testCourses[1] ],
             },
           },
         });
@@ -150,7 +150,7 @@ describe('schedule reducer', () => {
           semesters: {
             semester1: {
               ...state.semesters.semester1,
-              courses: [testCourses[0]],
+              courses: [ testCourses[0] ],
             },
           },
         });
@@ -166,7 +166,7 @@ describe('schedule reducer', () => {
           semesters: {
             semester1: {
               ...state.semesters.semester1,
-              courses: [testCourses[0], testCourses[1]],
+              courses: [ testCourses[0], testCourses[1] ],
             },
           },
         });
@@ -195,7 +195,7 @@ describe('schedule reducer', () => {
           semesters: {
             semester1: {
               ...state.semesters.semester1,
-              courses: [testCourses[0]],
+              courses: [ testCourses[0] ],
             },
           },
         });

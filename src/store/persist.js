@@ -25,22 +25,19 @@
 'use strict';
 
 // React imports
-import {
-  AsyncStorage,
-} from 'react-native';
+import { AsyncStorage } from 'react-native';
 
 // Types
-import type {
-  Action,
-} from 'types';
+import type { Action } from 'types';
+import { UPDATE_CONFIGURATION, ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
 
 // Imports
-import {saveSchedule} from 'Database';
+import { saveSchedule } from 'Database';
 import * as Preferences from 'Preferences';
 
 export const persist = () => (next: any) => (action: Action) => {
   switch (action.type) {
-    case 'UPDATE_CONFIGURATION':
+    case UPDATE_CONFIGURATION:
       for (const option in action.options) {
         if (action.options.hasOwnProperty(option)) {
           switch (option) {
@@ -62,7 +59,9 @@ export const persist = () => (next: any) => (action: Action) => {
         }
       }
       break;
-    case 'SCHEDULE_UPDATE':
+    case ADD_SEMESTER:
+    case ADD_COURSE:
+    case REMOVE_COURSE:
       saveSchedule(action.schedule);
       break;
     default:

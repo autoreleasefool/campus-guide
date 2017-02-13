@@ -72,12 +72,12 @@ describe('header reducer', () => {
   });
 
   it('should set a new header title', () => {
-    expect(reducer(initialState, { type: SET_HEADER_TITLE, title: { name: 'New title' } }))
-        .toEqual({ ...initialState, title: { name: 'New title' } });
+    expect(reducer(initialState, { type: SET_HEADER_TITLE, title: { name: 'New title' }}))
+        .toEqual({ ...initialState, title: { name: 'New title' }});
   });
 
   it('should set a new header title for a tab', () => {
-    expect(reducer(initialState, { type: SET_HEADER_TITLE, tab: 'find', title: { name: 'New title' } }))
+    expect(reducer(initialState, { type: SET_HEADER_TITLE, tab: 'find', title: { name: 'New title' }}))
         .toEqual({
           ...initialState,
           title: { name: 'New title' },

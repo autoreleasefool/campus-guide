@@ -26,19 +26,13 @@
 
 // Redux imports
 import thunk from 'redux-thunk';
-import {
-  applyMiddleware,
-  createStore,
-} from 'redux';
-
+import { applyMiddleware, createStore } from 'redux';
 
 // Types
-import type {
-  VoidFunction,
-} from 'types';
+import type { VoidFunction } from 'types';
 
 // Imports
-import {persist} from './persist';
+import { persist } from './persist';
 import reducers from '../reducers';
 
 /**
