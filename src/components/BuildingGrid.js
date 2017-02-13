@@ -37,11 +37,8 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
-import type {
-  Building,
-  Language,
-} from 'types';
+// Types
+import type { Building, Language } from 'types';
 
 // Type definition for component props
 type Props = {
@@ -60,10 +57,10 @@ type State = {
 
 // Imports
 import * as Constants from 'Constants';
-import {getTranslations} from 'TranslationUtils';
+import * as TranslationUtils from 'TranslationUtils';
 
 // Determining size of building icons based on the screen size.
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default class BuildingGrid extends React.Component {
 
@@ -162,14 +159,14 @@ export default class BuildingGrid extends React.Component {
    */
   _renderRow(building: ?Building): ReactElement < any > {
     // Get current language for translations
-    const Translations: Object = getTranslations(this.props.language);
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
     const buildingImageSize: number = Math.floor(width / this.props.columns);
 
-    let buildingStyle = {height: buildingImageSize, width: buildingImageSize};
-    let textStyle = {backgroundColor: Constants.Colors.darkTransparentBackground};
+    let buildingStyle = { height: buildingImageSize, width: buildingImageSize };
+    let textStyle = { backgroundColor: Constants.Colors.darkTransparentBackground };
     if (this.props.disableImages) {
-      buildingStyle = {margin: 1, width: buildingImageSize - 2};
+      buildingStyle = { margin: 1, width: buildingImageSize - 2 };
       textStyle = {
         backgroundColor: Constants.Colors.darkMoreTransparentBackground,
         paddingTop: Constants.Sizes.Margins.Expanded,
@@ -184,13 +181,13 @@ export default class BuildingGrid extends React.Component {
 
     return (
       <TouchableOpacity onPress={() => this.props.onSelect(building)}>
-        <View style={[_styles.building, buildingStyle]}>
+        <View style={[ _styles.building, buildingStyle ]}>
           {this.props.disableImages || building == null
             ? null
             : <Image
                 source={building.image}
-                style={[_styles.image, imageStyle]} />}
-          <Text style={[_styles.buildingCode, textStyle]}>
+                style={[ _styles.image, imageStyle ]} />}
+          <Text style={[ _styles.buildingCode, textStyle ]}>
             {building == null ? Translations.none : building.code}
           </Text>
         </View>

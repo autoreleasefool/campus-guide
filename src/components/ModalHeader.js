@@ -36,10 +36,8 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
-import type {
-  VoidFunction,
-} from 'types';
+// Types
+import type { VoidFunction } from 'types';
 
 // Imports
 import * as Constants from 'Constants';
@@ -96,7 +94,7 @@ export default class ModalHeader extends React.Component {
     };
 
     return (
-      <View style={[_styles.container, {backgroundColor: headerBackground}]}>
+      <View style={[ _styles.container, { backgroundColor: headerBackground }]}>
         <Text style={_styles.title}>{this.props.title}</Text>
         {this.props.leftActionText == null
           ? null
@@ -105,7 +103,7 @@ export default class ModalHeader extends React.Component {
             <TouchableOpacity
                 activeOpacity={this.props.leftActionEnabled ? DEFAULT_TOUCH_OPACITY : 1}
                 onPress={this._onLeftAction.bind(this)}>
-              <Text style={[_styles.action, leftActionStyle]}>{this.props.leftActionText}</Text>
+              <Text style={[ _styles.action, leftActionStyle ]}>{this.props.leftActionText}</Text>
             </TouchableOpacity>
           </View>}
         {this.props.rightActionText == null
@@ -115,7 +113,7 @@ export default class ModalHeader extends React.Component {
             <TouchableOpacity
                 activeOpacity={this.props.rightActionEnabled ? DEFAULT_TOUCH_OPACITY : 1}
                 onPress={this._onRightAction.bind(this)}>
-              <Text style={[_styles.action, rightActionStyle]}>{this.props.rightActionText}</Text>
+              <Text style={[ _styles.action, rightActionStyle ]}>{this.props.rightActionText}</Text>
             </TouchableOpacity>
           </View>}
       </View>

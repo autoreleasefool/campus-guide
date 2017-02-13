@@ -40,20 +40,11 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {
-  clearSearch,
-  navigateBack,
-  search,
-} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
 // Types
-import type {
-  Language,
-  Name,
-  TranslatedName,
-  Tab,
-} from 'types';
+import type { Language, Name, TranslatedName, Tab } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -84,7 +75,7 @@ const NAVBAR_HEIGHT: number = 50;
 const ICON_SIZE: number = 50;
 
 // Width of the search input
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const SEARCH_INPUT_WIDTH = width - ICON_SIZE * 2;
 
 class AppHeader extends React.Component {
@@ -199,31 +190,31 @@ class AppHeader extends React.Component {
     }
 
     // Hide/show back button
-    let backIconStyle: Object = {left: -ICON_SIZE};
+    let backIconStyle: Object = { left: -ICON_SIZE };
     if (this.props.shouldShowBack) {
-      backIconStyle = {left: 0};
+      backIconStyle = { left: 0 };
     }
 
     // Hide/show search button, title
-    let searchIconStyle: Object = {right: -ICON_SIZE};
+    let searchIconStyle: Object = { right: -ICON_SIZE };
     if (this.props.shouldShowSearch) {
-      searchIconStyle = {right: 0};
+      searchIconStyle = { right: 0 };
     }
 
     // Hide/show title and search input
     let titleStyle: Object = {};
-    let searchInputStyle: Object = {right: -SEARCH_INPUT_WIDTH};
+    let searchInputStyle: Object = { right: -SEARCH_INPUT_WIDTH };
     if (this.state.shouldShowSearchBar) {
-      titleStyle = {opacity: 0};
-      searchInputStyle = {right: ICON_SIZE};
+      titleStyle = { opacity: 0 };
+      searchInputStyle = { right: ICON_SIZE };
     }
 
     return (
       <View style={_styles.container}>
-        <View style={[_styles.titleContainer, titleStyle]}>
+        <View style={[ _styles.titleContainer, titleStyle ]}>
           <Text style={_styles.title}>{appTitle}</Text>
         </View>
-        <View style={[_styles.searchContainer, searchInputStyle]}>
+        <View style={[ _styles.searchContainer, searchInputStyle ]}>
           <Ionicons
               color={'white'}
               name={searchIcon}
@@ -241,7 +232,7 @@ class AppHeader extends React.Component {
               onChangeText={this._onSearch.bind(this)} />
         </View>
         <TouchableOpacity
-            style={[_styles.icon, searchIconStyle]}
+            style={[ _styles.icon, searchIconStyle ]}
             onPress={this._toggleSearch.bind(this)}>
           <Ionicons
               color={Constants.Colors.primaryWhiteIcon}
@@ -250,7 +241,7 @@ class AppHeader extends React.Component {
               style={_styles.noBackground} />
         </TouchableOpacity>
         <TouchableOpacity
-            style={[_styles.icon, backIconStyle]}
+            style={[ _styles.icon, backIconStyle ]}
             onPress={this._onBack.bind(this)}>
           <Ionicons
               color={Constants.Colors.primaryWhiteIcon}
@@ -312,8 +303,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     appTitle: store.header.title,
     filter: store.search.searchTerms,
@@ -324,15 +314,14 @@ const select = (store) => {
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onBack: () => {
-      dispatch(navigateBack());
-      dispatch(clearSearch());
+      dispatch(actions.navigateBack());
+      dispatch(actions.search(null));
     },
-    onSearch: (text: ?string) => dispatch(search(text)),
+    onSearch: (text: ?string) => dispatch(actions.search(text)),
   };
 };
 
-export default connect(select, actions)(AppHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(AppHeader);

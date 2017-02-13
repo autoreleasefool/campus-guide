@@ -36,13 +36,8 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
-import type {
-  BuildingRoom,
-  Icon,
-  Language,
-  RoomType,
-} from 'types';
+// Types
+import type { BuildingRoom, Icon, Language, RoomType } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -267,7 +262,7 @@ export default class RoomGrid extends React.Component {
 
     return (
       <TouchableOpacity onPress={() => this.props.onSelect(this.props.code, room.name)}>
-        <View style={{backgroundColor: color}}>
+        <View style={{ backgroundColor: color }}>
           <View style={_styles.room}>
             {icon}
             <View style={_styles.roomDescription}>

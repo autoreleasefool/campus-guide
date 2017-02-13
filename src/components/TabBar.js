@@ -36,16 +36,11 @@ import {
 } from 'react-native';
 
 // Redux imports
-import {connect} from 'react-redux';
-import {switchTab} from 'actions';
+import { connect } from 'react-redux';
+import * as actions from 'actions';
 
 // Types
-import type {
-  Icon,
-  Language,
-  Tab,
-  TabSet,
-} from 'types';
+import type { Icon, Language, Tab, TabSet } from 'types';
 
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -176,7 +171,7 @@ class TabBar extends React.Component {
                 style={_styles.tab}
                 onPress={this._switchTab.bind(this, i)}>
               {iconView}
-              <Text style={[_styles.caption, {color: color}]}>{Translations[Constants.Tabs[i]]}</Text>
+              <Text style={[ _styles.caption, { color: color }]}>{Translations[Constants.Tabs[i]]}</Text>
             </TouchableOpacity>
           );
         })}
@@ -207,18 +202,16 @@ const _styles = StyleSheet.create({
   },
 });
 
-// Map state to props
-const select = (store) => {
+const mapStateToProps = (store) => {
   return {
     language: store.config.language,
   };
 };
 
-// Map dispatch to props
-const actions = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    switchTab: (tab: Tab) => dispatch(switchTab(tab)),
+    switchTab: (tab: Tab) => dispatch(actions.switchTab(tab)),
   };
 };
 
-export default connect(select, actions)(TabBar);
+export default connect(mapStateToProps, mapDispatchToProps)(TabBar);

@@ -34,11 +34,8 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
-import type {
-  Icon,
-  VoidFunction,
-} from 'types';
+// Types
+import type { Icon, VoidFunction } from 'types';
 
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -187,7 +184,7 @@ export default class Header extends React.Component {
 
     if (this.props.subtitle != null) {
       subtitleText = (
-        <Text style={[_styles.subtitleText, style]}>
+        <Text style={[ _styles.subtitleText, style ]}>
           {this.props.subtitle.toUpperCase()}
         </Text>
       );
@@ -212,13 +209,13 @@ export default class Header extends React.Component {
     }
 
     return (
-      <View style={[_styles.header, {backgroundColor: headerBackground}]}>
+      <View style={[ _styles.header, { backgroundColor: headerBackground }]}>
         {this._renderIcon(primaryForeground)}
         <View style={_styles.titleContainer}>
           <Text
               ellipsizeMode={'tail'}
               numberOfLines={1}
-              style={[_styles.title, {color: primaryForeground}]}>
+              style={[ _styles.title, { color: primaryForeground }]}>
             {this.props.title}
           </Text>
         </View>

@@ -35,9 +35,7 @@ import {
 } from 'react-native';
 
 // Types
-import type {
-  Language,
-} from 'types';
+import type { Language } from 'types';
 
 type Square = {
   background: string, // Background color for the grid square
@@ -48,7 +46,7 @@ type Square = {
 // Imports
 import Header from 'Header';
 import * as Constants from 'Constants';
-import {getTranslatedName} from 'TranslationUtils';
+import * as TranslationUtils from 'TranslationUtils';
 
 // Index for top left square in grid
 const TOP_LEFT: number = 0;
@@ -102,7 +100,7 @@ export default class FourSquareGrid extends React.Component {
       squares.push({
         background: this.props.squares[i].background || defaultBackground,
         image: this.props.squares[i].image,
-        title: getTranslatedName(this.props.language, this.props.squares[i]) || '',
+        title: TranslationUtils.getTranslatedName(this.props.language, this.props.squares[i]) || '',
       });
     }
 
@@ -110,7 +108,7 @@ export default class FourSquareGrid extends React.Component {
       <View style={_styles.container}>
         <View style={_styles.rowContainer}>
           <TouchableOpacity
-              style={{flex: 1}}
+              style={_styles.container}
               onPress={this._onSelect.bind(this, TOP_LEFT)}>
             <View style={_styles.square}>
               <Image
@@ -123,7 +121,7 @@ export default class FourSquareGrid extends React.Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              style={{flex: 1}}
+              style={_styles.container}
               onPress={this._onSelect.bind(this, TOP_RIGHT)}>
             <View style={_styles.square}>
               <Image
@@ -139,7 +137,7 @@ export default class FourSquareGrid extends React.Component {
 
         <View style={_styles.rowContainer}>
           <TouchableOpacity
-              style={{flex: 1}}
+              style={_styles.container}
               onPress={this._onSelect.bind(this, BOTTOM_LEFT)}>
             <View style={_styles.square}>
               <Image
@@ -152,7 +150,7 @@ export default class FourSquareGrid extends React.Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-              style={{flex: 1}}
+              style={_styles.container}
               onPress={this._onSelect.bind(this, BOTTOM_RIGHT)}>
             <View style={_styles.square}>
               <Image

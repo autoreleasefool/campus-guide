@@ -35,7 +35,7 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
+// Types
 import type {
   Language,
   LatLong,
@@ -217,7 +217,7 @@ export default class TransitCampusMap extends React.Component {
           const stop = this.state.stops[stopId];
           return (
             <MapView.Marker
-                coordinate={{latitude: stop.lat, longitude: stop.long}}
+                coordinate={{ latitude: stop.lat, longitude: stop.long }}
                 description={stop.code}
                 key={stopId}
                 ref={this._getMarkerReference(stopId)}
@@ -249,10 +249,10 @@ export default class TransitCampusMap extends React.Component {
 
     let expandIcon = 'expand-less';
     let routeStyle = {};
-    let stopStyle = {height: 0};
+    let stopStyle = { height: 0 };
     if (this.state.routesExpanded) {
       expandIcon = 'expand-more';
-      routeStyle = {flex: 3};
+      routeStyle = { flex: 3 };
       stopStyle = _styles.container;
     }
 
@@ -260,8 +260,8 @@ export default class TransitCampusMap extends React.Component {
       <View style={routeStyle}>
         <TouchableOpacity onPress={this._toggleRoutesExpanded.bind(this)}>
           <Header
-              icon={{name: 'md-time', class: 'ionicon'}}
-              subtitleIcon={{name: expandIcon, class: 'material'}}
+              icon={{ name: 'md-time', class: 'ionicon' }}
+              subtitleIcon={{ name: expandIcon, class: 'material' }}
               title={Translations.routes_and_times} />
         </TouchableOpacity>
         <TransitStops
@@ -283,7 +283,7 @@ export default class TransitCampusMap extends React.Component {
    */
   render(): ReactElement < any > {
     return (
-      <View style={[_styles.container, {backgroundColor: Constants.Colors.primaryBackground}]}>
+      <View style={[ _styles.container, { backgroundColor: Constants.Colors.primaryBackground }]}>
         <View style={_styles.container}>
           {this._renderCampusMap()}
         </View>

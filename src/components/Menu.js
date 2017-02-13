@@ -36,12 +36,8 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
-import type {
-  Icon,
-  Language,
-  VoidFunction,
-} from 'types';
+// Types
+import type { Icon, Language, VoidFunction } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -119,17 +115,17 @@ export default class Menu extends React.Component {
 
     const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, section);
     let sectionImage: ?ReactElement < any > = null;
-    let touchableStyle: Object = {flexShrink: 1};
+    let touchableStyle: Object = { flexShrink: 1 };
     let subtitleIconName: string = 'expand-more';
 
     if (index === this.state.expandedSection && section.image != null) {
       sectionImage = (
         <Image
             resizeMode={'cover'}
-            source={{uri: Configuration.getImagePath(section.image)}}
+            source={{ uri: Configuration.getImagePath(section.image) }}
             style={_styles.sectionImage} />
       );
-      touchableStyle = {flexGrow: 1};
+      touchableStyle = { flexGrow: 1 };
       subtitleIconName = 'chevron-right';
     }
 
@@ -141,7 +137,7 @@ export default class Menu extends React.Component {
         {sectionImage}
         <Header
             icon={icon}
-            subtitleIcon={{name: subtitleIconName, class: 'material'}}
+            subtitleIcon={{ name: subtitleIconName, class: 'material' }}
             title={TranslationUtils.getTranslatedName(this.props.language, section) || ''} />
       </TouchableOpacity>
     );

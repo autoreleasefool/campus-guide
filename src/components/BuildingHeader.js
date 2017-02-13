@@ -40,11 +40,8 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
-import type {
-  Facility,
-  Language,
-} from 'types';
+// Types
+import type { Facility, Language } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -68,7 +65,7 @@ import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as TranslationUtils from 'TranslationUtils';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 // Percentage of banner that banner will take
 const BANNER_TEXT_WIDTH_PCT: number = 0.75;
@@ -185,11 +182,11 @@ export default class BuildingHeader extends React.Component {
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
     const imageStyle = (this.state.bannerPosition === 0)
-        ? {right: 0}
-        : {right: width * BANNER_TEXT_WIDTH_PCT};
+        ? { right: 0 }
+        : { right: width * BANNER_TEXT_WIDTH_PCT };
     const textContainerStyle = (this.state.bannerPosition === 1)
-        ? {left: width * (1 - BANNER_TEXT_WIDTH_PCT)}
-        : {left: width};
+        ? { left: width * (1 - BANNER_TEXT_WIDTH_PCT) }
+        : { left: width };
 
     return (
       <View style={_styles.banner}>
@@ -197,9 +194,9 @@ export default class BuildingHeader extends React.Component {
           <Image
               resizeMode={'cover'}
               source={this.props.image}
-              style={[_styles.image, imageStyle]} />
+              style={[ _styles.image, imageStyle ]} />
         </TouchableWithoutFeedback>
-        <View style={[_styles.textContainer, textContainerStyle]}>
+        <View style={[ _styles.textContainer, textContainerStyle ]}>
           <ScrollView>
             {this._renderFacilityIcons(Translations)}
             <Text style={_styles.title}>{Translations.name}</Text>

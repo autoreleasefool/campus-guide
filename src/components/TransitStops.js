@@ -36,7 +36,7 @@ import {
   View,
 } from 'react-native';
 
-// Type imports
+// Types
 import type {
   Language,
   Route,
@@ -63,7 +63,7 @@ type State = {
 };
 
 // Imports
-import {renderConnector, getConnectorWidth} from 'Connector';
+import * as Connector from 'Connector';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
@@ -164,7 +164,7 @@ export default class TransitStops extends React.Component {
   _pressRow(stopId: string): void {
     this.props.onSelect(stopId);
     this._onTimeSearch(stopId, null);
-    this.refs.Navigator.push({id: TIMES});
+    this.refs.Navigator.push({ id: TIMES });
   }
 
   /**
@@ -345,15 +345,15 @@ export default class TransitStops extends React.Component {
     return (
       <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
         <View style={_styles.stopHeaderContainer}>
-          {renderConnector({
+          {Connector.renderConnector({
             large: true,
             bottom: true,
             circleColor: Constants.Colors.lightGrey,
             lineColor: Constants.Colors.transparentLightGrey,
           })}
           <View style={_styles.stopHeader}>
-            <Text style={[_styles.headerTitle, {color: Constants.Colors.primaryBlackText}]}>{stop.name}</Text>
-            <Text style={[_styles.headerSubtitle, {color: Constants.Colors.secondaryBlackText}]}>{stop.code}</Text>
+            <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryBlackText }]}>{stop.name}</Text>
+            <Text style={[ _styles.headerSubtitle, { color: Constants.Colors.secondaryBlackText }]}>{stop.code}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -372,7 +372,7 @@ export default class TransitStops extends React.Component {
     return (
       <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
         <View style={_styles.stopRowContainer}>
-          {renderConnector({
+          {Connector.renderConnector({
             top: true,
             bottom: needsBottom,
             circleColor: Constants.Colors.lightGrey,
@@ -400,8 +400,8 @@ export default class TransitStops extends React.Component {
     return (
       <View>
         <View style={_styles.timeHeader}>
-          <Text style={[_styles.headerTitle, {color: Constants.Colors.primaryWhiteText}]}>{route.sign}</Text>
-          <Text style={[_styles.headerSubtitle, {color: Constants.Colors.secondaryWhiteText}]}>{route.number}</Text>
+          <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryWhiteText }]}>{route.sign}</Text>
+          <Text style={[ _styles.headerSubtitle, { color: Constants.Colors.secondaryWhiteText }]}>{route.number}</Text>
         </View>
         <Text style={_styles.stopTimes}>{this._retrieveUpcomingTimes(route.days)}</Text>
         {(rowIndex < this.state.dataSourceTimes.getRowCount() - 1)
@@ -424,7 +424,7 @@ export default class TransitStops extends React.Component {
             dataSource={this.state.dataSourceTimes}
             enableEmptySections={true}
             renderRow={this._renderTimeRow.bind(this)}
-            style={[_styles.container, _styles.timeContainer]} />
+            style={[ _styles.container, _styles.timeContainer ]} />
       );
     } else {
       return (
@@ -433,7 +433,7 @@ export default class TransitStops extends React.Component {
             enableEmptySections={true}
             renderRow={this._renderStopRow.bind(this)}
             renderSectionHeader={this._renderStopHeader.bind(this)}
-            style={[_styles.container, _styles.stopContainer]} />
+            style={[ _styles.container, _styles.stopContainer ]} />
       );
     }
   }
@@ -447,7 +447,7 @@ export default class TransitStops extends React.Component {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{id: STOPS}}
+          initialRoute={{ id: STOPS }}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
           style={_styles.container} />
@@ -472,7 +472,7 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.polarGrey,
   },
   stopHeader: {
-    marginLeft: getConnectorWidth() + Constants.Sizes.Margins.Regular,
+    marginLeft: Connector.getConnectorWidth() + Constants.Sizes.Margins.Regular,
     marginRight: Constants.Sizes.Margins.Expanded,
     flexDirection: 'row',
     alignItems: 'center',
@@ -482,7 +482,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   stopRoute: {
-    marginLeft: getConnectorWidth() + Constants.Sizes.Margins.Expanded,
+    marginLeft: Connector.getConnectorWidth() + Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Regular,
     fontSize: Constants.Sizes.Text.Body,
     color: Constants.Colors.primaryWhiteText,

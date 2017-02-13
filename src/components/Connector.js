@@ -27,10 +27,7 @@
 
 // React imports
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 // Types
 type ConnectorOptions = {
@@ -52,20 +49,25 @@ import * as Constants from 'Constants';
  */
 export function renderConnector(options: ConnectorOptions): ReactElement < any > {
   const circleSize = options.large ? _styles.largeCircle : _styles.smallCircle;
-  const background = {backgroundColor: options.circleColor ? options.circleColor : Constants.Colors.primaryWhiteIcon};
+  const background = {
+    backgroundColor: options.circleColor ? options.circleColor : Constants.Colors.primaryWhiteIcon,
+  };
 
   const connectorSize = options.large ? _styles.largeConnector : _styles.smallConnector;
-  const connectorColor = {backgroundColor: options.lineColor ? options.lineColor : Constants.Colors.secondaryWhiteIcon};
+  const connectorColor = {
+    backgroundColor: options.lineColor ? options.lineColor : Constants.Colors.secondaryWhiteIcon,
+  };
+
   const topConnector = options.top ? {} : _styles.invisible;
   const bottomConnector = options.bottom ? {} : _styles.invisible;
 
   return (
     <View style={_styles.container}>
-      <View style={[_styles.connectorContainer, connectorSize]}>
-        <View style={[_styles.connector, _styles.top, connectorColor, topConnector]} />
-        <View style={[_styles.connector, _styles.bottom, connectorColor, bottomConnector]} />
+      <View style={[ _styles.connectorContainer, connectorSize ]}>
+        <View style={[ _styles.connector, _styles.top, connectorColor, topConnector ]} />
+        <View style={[ _styles.connector, _styles.bottom, connectorColor, bottomConnector ]} />
       </View>
-      <View style={[circleSize, background]} />
+      <View style={[ circleSize, background ]} />
     </View>
   );
 }
