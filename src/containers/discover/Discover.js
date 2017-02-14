@@ -83,7 +83,6 @@ class Discover extends React.Component {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    console.log(`Receiving props in discover: ${JSON.stringify(nextProps)}`);
     if (nextProps.view != this.props.view) {
       const currentRoutes = this.refs.Navigator.getCurrentRoutes();
       if (currentRoutes != null && currentRoutes.length > 0

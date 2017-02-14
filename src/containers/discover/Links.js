@@ -136,9 +136,25 @@ class Links extends React.Component {
     if (nextProps.appTab === 'discover'
         && nextProps.backCount != this.props.backCount
         && currentRoutes.length > 1) {
-      this.refs.Navigator.pop();
+      const dashIndex = this.props.linkId.lastIndexOf('-');
+      if (dashIndex >= 0) {
+        this.props.showCategory(this.props.linkId.substr(0, this.props.linkId.lastIndexOf('-')));
+      } else {
+        this.props.showCategory(0);
+      }
     } else if (nextProps.linkId != this.props.linkId) {
-      this.refs.Navigator.push({ id: nextProps.linkId });
+      let popped = false;
+      for (let i = 0; i < currentRoutes.length; i++) {
+        if (currentRoutes[i].id === nextProps.linkId) {
+          this.refs.Navigator.popToRoute(currentRoutes[i]);
+          popped = true;
+          break;
+        }
+      }
+
+      if (!popped) {
+        this.refs.Navigator.push({ id: nextProps.linkId });
+      }
     }
   }
 
@@ -239,12 +255,9 @@ class Links extends React.Component {
 
   /**
    * Handles navigation events.
-   *
-   * @param {any} event the event taking place
    */
   _handleNavigationEvent(): void {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
-
     if (currentRoutes.length > 1 && this.state.links != null) {
       const section = this._getSection(currentRoutes[currentRoutes.length - 1].id);
       const title = {
@@ -252,6 +265,7 @@ class Links extends React.Component {
         name_fr: TranslationUtils.getTranslatedName('fr', section) || '',
       };
       this.props.setHeaderTitle(title);
+      this.props.showCategory(currentRoutes[currentRoutes.length - 1].id);
     } else {
       this.props.setHeaderTitle('useful_links');
     }
