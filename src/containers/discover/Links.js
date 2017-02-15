@@ -64,7 +64,7 @@ type Props = {
   language: Language,                                             // The current language, selected by the user
   linkId: ?string,                                                // The selected link category
   setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
-  showCategory: (id: ?string) => void,                            // Shows a link category
+  showCategory: (id: ?string | number) => void,                   // Shows a link category
   showSearch: (show: boolean) => void,                            // Shows or hides the search button
 }
 
@@ -136,11 +136,14 @@ class Links extends React.Component {
     if (nextProps.appTab === 'discover'
         && nextProps.backCount != this.props.backCount
         && currentRoutes.length > 1) {
-      const dashIndex = this.props.linkId.lastIndexOf('-');
-      if (dashIndex >= 0) {
-        this.props.showCategory(this.props.linkId.substr(0, this.props.linkId.lastIndexOf('-')));
-      } else {
-        this.props.showCategory(0);
+      const linkId = this.props.linkId;
+      if (linkId != null && typeof (linkId) === 'string') {
+        const dashIndex = linkId.lastIndexOf('-');
+        if (dashIndex >= 0) {
+          this.props.showCategory(linkId.substr(0, linkId.lastIndexOf('-')));
+        } else {
+          this.props.showCategory(0);
+        }
       }
     } else if (nextProps.linkId != this.props.linkId) {
       let popped = false;
@@ -628,7 +631,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('links', can)),
     setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
-    showCategory: (id: ?string) => dispatch(actions.switchLinkCategory(id)),
+    showCategory: (id: ?string | number) => dispatch(actions.switchLinkCategory(id)),
     showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
   };
 };
