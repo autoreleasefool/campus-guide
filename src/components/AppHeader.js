@@ -177,6 +177,7 @@ class AppHeader extends React.Component {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = `${platformModifier}-arrow-back`;
     const searchIcon: string = `${platformModifier}-search`;
+    const closeIcon: string = `${platformModifier}-close`;
 
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
@@ -236,7 +237,7 @@ class AppHeader extends React.Component {
             onPress={this._toggleSearch.bind(this)}>
           <Ionicons
               color={Constants.Colors.primaryWhiteIcon}
-              name={searchIcon}
+              name={(this.state.shouldShowSearchBar) ? closeIcon : searchIcon}
               size={Constants.Sizes.Icons.Medium}
               style={_styles.noBackground} />
         </TouchableOpacity>

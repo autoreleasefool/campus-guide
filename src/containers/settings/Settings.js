@@ -509,7 +509,6 @@ const _styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.darkTransparentBackground,
     marginLeft: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
   },
   settingValue: {
     color: Constants.Colors.primaryBlackText,
