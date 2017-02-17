@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "flow": "flow check",
+    "flow": "flow .",
     "lint": "eslint .",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest --coverage"
@@ -39,6 +39,7 @@
     "jest": "^18.1.0",
     "jest-cli": "^18.1.0",
     "jest-react-native": "^18.0.0",
+    "pre-commit": "^1.2.2",
     "react-test-renderer": "^15.4.0-rc.4"
   },
   "jest": {
@@ -54,5 +55,10 @@
       "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
     },
     "preset": "react-native"
-  }
+  },
+  "pre-commit": [
+    "flow",
+    "lint",
+    "test"
+  ]
 }
