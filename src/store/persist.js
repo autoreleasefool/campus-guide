@@ -24,6 +24,9 @@
  */
 'use strict';
 
+/* eslint-disable callback-return */
+// Call the next() middleware then perform persistance based on new state
+
 // React imports
 import { AsyncStorage } from 'react-native';
 
@@ -34,7 +37,10 @@ import { UPDATE_CONFIGURATION, ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'a
 import { saveSchedule } from 'Database';
 import * as Preferences from 'Preferences';
 
-export const persist = () => (next: any) => (action: any) => {
+export const persist = ({ getState }) => (next: any) => (action: any) => {
+  next(action);
+  const store = getState();
+
   switch (action.type) {
     case UPDATE_CONFIGURATION:
       for (const option in action.options) {
@@ -61,12 +67,9 @@ export const persist = () => (next: any) => (action: any) => {
     case ADD_SEMESTER:
     case ADD_COURSE:
     case REMOVE_COURSE:
-      saveSchedule(action.schedule);
+      saveSchedule(store.schedule.semesters);
       break;
     default:
       // does nothing
   }
-
-  // Pass to the next middleware
-  next(action);
 };

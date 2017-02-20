@@ -65,7 +65,11 @@ type Props = {
   semesters: Array < Semester >,            // Semesters available at the university
   timeFormat: TimeFormat,                   // The user's preferred time format
   onClose: VoidFunction,                    // Callback for when the modal is closed
-  onSaveCourse: (c: Course) => void,        // Callback to save a course
+  onSaveCourse: (
+      semesterExists: boolean,              // True if the semester exists, false if it needs to be added
+      semesterId: string,                   // ID of the semester to add the course to
+      course: Course                        // The course to save
+  ) => void,                                // Callback to save a course
 };
 
 // Type definition for component state.
@@ -132,7 +136,7 @@ class CourseModal extends React.Component {
       semester: props.currentSemester,
       code,
       lectures,
-      rightActionEnabled: this._isCourseCodeUnique(props.schedule[props.semesters[props.currentSemester].id], code),
+      rightActionEnabled: this._isCourseCodeValid(props.schedule[props.semesters[props.currentSemester].id], code),
     };
 
     (this:any)._closeLectureModal = this._closeLectureModal.bind(this);
@@ -230,15 +234,19 @@ class CourseModal extends React.Component {
   }
 
   /**
-   * Checks if a course code is unique in a semester.
+   * Checks if a course code is valid and unique in a semester.
    *
    * @param {Semester} semester   the semester to check
    * @param {string}   courseCode the code given to the course
-   * @returns {boolean} true if the course code is unique in the semester, false otherwise
+   * @returns {boolean} true if the course code is valid in the semester, false otherwise
    */
-  _isCourseCodeUnique(semester: Semester, courseCode: string): boolean {
-    return semester.courses == null
-        ? false
+  _isCourseCodeValid(semester: Semester, courseCode: string): boolean {
+    if (courseCode == null || courseCode.length === 0) {
+      return false;
+    }
+
+    return semester == null || semester.courses == null
+        ? true
         : ArrayUtils.binarySearchObjectArrayByKeyValue(semester.courses, 'code', courseCode) < 0;
   }
 
@@ -249,12 +257,13 @@ class CourseModal extends React.Component {
    * @param {Course} course        the course to save
    */
   _saveCourse(semesterIndex: number, course: Course): void {
-    const semester = this.props.schedule[this.props.semesters[semesterIndex].id];
-    if (!this._isCourseCodeUnique(semester, course.code)) {
+    const semesterId = this.props.semesters[semesterIndex].id;
+    const semester = this.props.schedule[semesterId];
+    if (!this._isCourseCodeValid(semester, course.code)) {
       return;
     }
 
-    this.props.onSaveCourse(semester.id, course);
+    this.props.onSaveCourse(semester != null, semesterId, course);
     this.props.onClose();
   }
 
@@ -375,7 +384,7 @@ class CourseModal extends React.Component {
               style={_styles.textInput}
               value={this.state.code}
               onChangeText={(code) =>
-                this.setState({ code, rightActionEnabled: this._isCourseCodeUnique(semester, code) })} />
+                this.setState({ code, rightActionEnabled: this._isCourseCodeValid(semester, code) })} />
           <Header
               subtitle={this.state.editingLectures ? Translations.cancel : Translations.edit}
               subtitleCallback={this._toggleLectureEditOptions.bind(this)}

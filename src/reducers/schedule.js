@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import { ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
+import { ADD_SEMESTER, ADD_COURSE, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
 
 // Imports
 import * as ArrayUtils from 'ArrayUtils';
@@ -49,9 +49,15 @@ const initialState: State = {
  */
 function schedule(state: State = initialState, action: any): State {
   switch (action.type) {
+    case LOAD_SCHEDULE:
+      return {
+        ...state,
+        semesters: action.schedule,
+      };
     case ADD_SEMESTER: {
       const semesters = JSON.parse(JSON.stringify(state.semesters));
       semesters[action.semester.id] = action.semester;
+      semesters[action.semester.id].courses = [];
 
       return {
         ...state,

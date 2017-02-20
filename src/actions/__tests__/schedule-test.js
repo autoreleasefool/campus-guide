@@ -24,12 +24,18 @@
 'use strict';
 
 // Types
-import { ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
+import { ADD_SEMESTER, ADD_COURSE, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
 
 // Imports
 import * as actions from '../schedule';
 
 describe('schedule actions', () => {
+
+  it('creates an action to overwrite the current schedule', () => {
+    const schedule = { semester1: { id: 'semester1', courses: [], name: 'semester 1' }};
+    const expectedAction = { type: LOAD_SCHEDULE, schedule };
+    expect(actions.loadSchedule(schedule)).toEqual(expectedAction);
+  });
 
   it('creates an action to add a new semester', () => {
     const semester = { id: 'semester1', courses: [], name: 'semester 1' };

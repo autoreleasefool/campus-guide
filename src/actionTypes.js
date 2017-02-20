@@ -68,6 +68,7 @@ export const SHOW_SEARCH = 'SHOW_SEARCH';
 //  Schedule
 //-----------------------------------------------------------------------------
 
+export const LOAD_SCHEDULE = 'LOAD_SCHEDULE';
 export const ADD_SEMESTER = 'ADD_SEMESTER';
 export const ADD_COURSE = 'ADD_COURSE';
 export const REMOVE_COURSE = 'REMOVE_COURSE';

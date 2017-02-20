@@ -177,7 +177,6 @@ export type TransitInfo = (Name | TranslatedName) & (Link | TranslatedLink);
 /** A semester at the school, with its name, identifier, and other info. */
 export type Semester = {
   id: string,                 // Unique identifier for the semester
-  current?: boolean,          // True if this is the current semester
   courses?: Array < Course >  // Courses the user has defined in the semester
 } & (Name | TranslatedName);
 

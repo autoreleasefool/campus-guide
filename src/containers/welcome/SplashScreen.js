@@ -46,6 +46,7 @@ import Promise from 'promise';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
+import * as Database from 'Database';
 import * as Preferences from 'Preferences';
 import * as TranslationUtils from 'TranslationUtils';
 
@@ -61,6 +62,7 @@ class SplashScreen extends React.Component {
     language: Language,                                       // Language currently selected by user
     navigator: ReactClass < any >,                            // Parent navigator
     onLanguageSelect: (language: Language) => void,           // Changes the user's selected language
+    setSchedule: (schedule: Object) => void,                  // Updates the user's schedule
     setTransit: (transitInfo: TransitInfo) => void,           // Updates the transit info object in the config
     setUniversity: (university: Object) => void,              // Updates the university object in the config
     updatePreferences: (preferences: Array < any >) => void,  // Updates the user's preferences
@@ -117,13 +119,17 @@ class SplashScreen extends React.Component {
    * Loads the user's saved preferences and updates the redux store.
    */
   _loadPreferences(): void {
+    const SCHEDULE = 4; // Corresponds to index of Database.getSchedule() below
+
     Promise.all([
       Preferences.getSelectedLanguage(AsyncStorage),
       Preferences.getCurrentSemester(AsyncStorage),
       Preferences.getPrefersWheelchair(AsyncStorage),
       Preferences.getPreferredTimeFormat(AsyncStorage),
+      Database.getSchedule(),
     ])
         .then((results: Array < any >) => {
+          this.props.setSchedule(results[SCHEDULE] || {});
           this.props.updatePreferences(results);
           if (results[0] == null || (__DEV__ && alwaysShowSplash)) {
             // Language has not been selected
@@ -245,6 +251,7 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onLanguageSelect: (language: Language) => dispatch(actions.updateConfiguration({ language, firstTime: true })),
+    setSchedule: (schedule: Object) => dispatch(actions.loadSchedule(schedule)),
     setUniversity: (university: Object) => dispatch(actions.updateConfiguration({ semesters: university.semesters })),
     setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
       transitInfo: {

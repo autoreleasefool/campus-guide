@@ -26,9 +26,14 @@
 
 // Types
 import type { Course, Semester } from 'types';
-import { ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
+import { ADD_SEMESTER, ADD_COURSE, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
 
 module.exports = {
+
+  loadSchedule: (schedule: Object) => ({
+    type: LOAD_SCHEDULE,
+    schedule,
+  }),
 
   addSemester: (semester: Semester) => ({
     type: ADD_SEMESTER,

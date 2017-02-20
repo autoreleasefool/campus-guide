@@ -24,7 +24,7 @@
 'use strict';
 
 // Types
-import { ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
+import { ADD_SEMESTER, ADD_COURSE, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
 
 // Imports
 import reducer from '../schedule';
@@ -103,6 +103,13 @@ describe('schedule reducer', () => {
 
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
+  });
+
+  it('should replace the existing schedule', () => {
+    const schedule = { semester1: testSemesters[2] };
+    const state = reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] });
+    expect(reducer(state, { type: LOAD_SCHEDULE, schedule }))
+        .toEqual({ ...initialState, semesters: schedule });
   });
 
   it('should add a new semester to the schedule', () => {

@@ -54,6 +54,7 @@ type Props = {
   currentSemester: number,                                // The current semester, selected by the user
   language: Language,                                     // The current language, selected by the user
   saveCourse: (s: string, course: Course) => void,        // Saves a course to the semester
+  saveSemester: (s: Semester) => void,                    // Saves a semester to the schedule
   semesters: Array < Semester >,                          // Semesters available at the university
   timeFormat: TimeFormat,                                 // The user's preferred time format
   updateConfiguration: (o: ConfigurationOptions) => void, // Update the global configuration state
@@ -73,6 +74,7 @@ import ActionButton from 'react-native-action-button';
 import CourseModal from './modals/Course';
 import Header from 'Header';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import * as ArrayUtils from 'ArrayUtils';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
@@ -166,11 +168,17 @@ class Schedule extends React.Component {
   /**
    * Saves a course to the provided semester.
    *
-   * @param {number} semester the semester to add the course to
-   * @param {Course} course   the course being saved
+   * @param {boolean} semesterExists true if the semester exists, false otherwise
+   * @param {number}  semesterId     the semester to add the course to
+   * @param {Course}  course         the course being saved
    */
-  _onSaveCourse(semester: string, course: Course): void {
-    console.log(`TODO: save course: ${semester} - ${JSON.stringify(course)}`);
+  _onSaveCourse(semesterExists: boolean, semesterId: string, course: Course): void {
+    if (!semesterExists) {
+      const semesterIndex = ArrayUtils.linearSearchObjectArrayByKeyValue(this.props.semesters, 'id', semesterId);
+      this.props.saveSemester(this.props.semesters[semesterIndex]);
+    }
+
+    this.props.saveCourse(semesterId, course);
   }
 
   /**
@@ -244,7 +252,9 @@ class Schedule extends React.Component {
             tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
             tabBarPosition='top'
             tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.primaryWhiteText }}>
-          <Weekly tabLabel={Translations.weekly}>
+          <Weekly
+              lectureFormats={this.state.lectureFormats}
+              tabLabel={Translations.weekly}>
             {this._renderSemesters(Translations)}
           </Weekly>
           <ByCourse tabLabel={Translations.by_course}>
@@ -283,6 +293,7 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    saveSemester: (semester: Semester) => dispatch(actions.addSemester(Object.assign({}, semester))),
     saveCourse: (semester: string, course: Course) => dispatch(actions.addCourse(semester, course)),
     updateConfiguration: (options: ConfigurationOptions) => dispatch(actions.updateConfiguration(options)),
   };

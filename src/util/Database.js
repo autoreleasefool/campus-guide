@@ -48,6 +48,7 @@ const STORE_SCHEDULE = 'schedule';
 export function getSchedule(): Promise < Object > {
   return store.get(STORE_SCHEDULE)
       .then((schedule) => {
+        console.log(`Loading schedule: ${JSON.stringify(schedule)}`);
         return schedule;
       });
 }
@@ -59,6 +60,7 @@ export function getSchedule(): Promise < Object > {
  * @returns {Promise<void>} a promise which resolves when the schedule has been saved
  */
 export function saveSchedule(schedule: Object): Promise < void > {
+  console.log(`Saving schedule: ${JSON.stringify(schedule)}`);
   return store.save(STORE_SCHEDULE, schedule);
 }
 
