@@ -37,7 +37,7 @@ import { UPDATE_CONFIGURATION, ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'a
 import { saveSchedule } from 'Database';
 import * as Preferences from 'Preferences';
 
-export const persist = ({ getState }) => (next: any) => (action: any) => {
+export const persist = ({ getState }: any) => (next: any) => (action: any) => {
   next(action);
   const store = getState();
 

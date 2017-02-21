@@ -293,7 +293,7 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    saveSemester: (semester: Semester) => dispatch(actions.addSemester(Object.assign({}, semester))),
+    saveSemester: (semester: Semester) => dispatch(actions.addSemester(JSON.parse(JSON.stringify(semester)))),
     saveCourse: (semester: string, course: Course) => dispatch(actions.addCourse(semester, course)),
     updateConfiguration: (options: ConfigurationOptions) => dispatch(actions.updateConfiguration(options)),
   };
