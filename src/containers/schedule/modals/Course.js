@@ -136,7 +136,8 @@ class CourseModal extends React.Component {
       semester: props.currentSemester,
       code,
       lectures,
-      rightActionEnabled: this._isCourseCodeValid(props.schedule[props.semesters[props.currentSemester].id], code),
+      rightActionEnabled:
+          this._isCourseCodeValid(props.schedule[props.semesters[props.currentSemester].id], code, lectures),
     };
 
     (this:any)._closeLectureModal = this._closeLectureModal.bind(this);
@@ -158,9 +159,11 @@ class CourseModal extends React.Component {
 
   /**
    * Closes this menu and, if editing, re-saves the provided lecture.
+   *
+   * @param {boolean} save true to save the course, false to discard
    */
-  _close(): void {
-    if (!this.props.addingCourse && this.props.courseToEdit != null) {
+  _close(save: boolean): void {
+    if (save && !this.props.addingCourse && this.props.courseToEdit != null) {
       this._saveCourse(this.props.currentSemester, this.props.courseToEdit);
     } else {
       this.props.onClose();
@@ -236,12 +239,13 @@ class CourseModal extends React.Component {
   /**
    * Checks if a course code is valid and unique in a semester.
    *
-   * @param {Semester} semester   the semester to check
-   * @param {string}   courseCode the code given to the course
+   * @param {Semester}       semester   the semester to check
+   * @param {string}         courseCode the code given to the course
+   * @param {Array<Lecture>} lectures   the lectures added to the course so far
    * @returns {boolean} true if the course code is valid in the semester, false otherwise
    */
-  _isCourseCodeValid(semester: Semester, courseCode: string): boolean {
-    if (courseCode == null || courseCode.length === 0) {
+  _isCourseCodeValid(semester: Semester, courseCode: string, lectures: Array < Lecture >): boolean {
+    if (courseCode == null || courseCode.length === 0 || lectures == null || lectures.length === 0) {
       return false;
     }
 
@@ -259,7 +263,7 @@ class CourseModal extends React.Component {
   _saveCourse(semesterIndex: number, course: Course): void {
     const semesterId = this.props.semesters[semesterIndex].id;
     const semester = this.props.schedule[semesterId];
-    if (!this._isCourseCodeValid(semester, course.code)) {
+    if (!this._isCourseCodeValid(semester, course.code, course.lectures)) {
       return;
     }
 
@@ -377,14 +381,16 @@ class CourseModal extends React.Component {
                 subtitleIcon={{ class: 'material', name: 'chevron-right' }}
                 title={Translations.semester} />
           </TouchableOpacity>
+          <View style={_styles.menuItemSeparator} />
           <Header title={Translations.course_code} />
           <TextInput
               autoCapitalize={'characters'}
               returnKeyType={'done'}
               style={_styles.textInput}
               value={this.state.code}
-              onChangeText={(code) =>
-                this.setState({ code, rightActionEnabled: this._isCourseCodeValid(semester, code) })} />
+              onChangeText={(code) => this.setState({
+                code,
+                rightActionEnabled: this._isCourseCodeValid(semester, code, this.state.lectures) })} />
           <Header
               subtitle={this.state.editingLectures ? Translations.cancel : Translations.edit}
               subtitleCallback={this._toggleLectureEditOptions.bind(this)}
@@ -405,6 +411,11 @@ class CourseModal extends React.Component {
               return null;
             }
           })}
+          <TouchableOpacity onPress={() => this._close(false)}>
+            <View style={_styles.deleteButton}>
+              <Text style={_styles.deleteText}>{Translations.delete_course}</Text>
+            </View>
+          </TouchableOpacity>
           <View style={_styles.padding} />
         </KeyboardAwareScrollView>
         <ActionButton
@@ -513,7 +524,7 @@ class CourseModal extends React.Component {
             rightActionEnabled={this.state.rightActionEnabled}
             rightActionText={Translations[modalRightAction]}
             title={Translations[modalTitle]}
-            onLeftAction={() => this.props.onClose()}
+            onLeftAction={() => this._close(true)}
             onRightAction={() =>
               this._saveCourse(this.state.semester, { code: this.state.code, lectures: this.state.lectures })} />
         <Navigator
@@ -596,6 +607,24 @@ const _styles = StyleSheet.create({
   pickerItem: {
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Subtitle,
+  },
+  menuItemSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.secondaryWhiteText,
+  },
+  deleteButton: {
+    marginTop: Constants.Sizes.Margins.Regular,
+    backgroundColor: Constants.Colors.darkMoreTransparentBackground,
+    borderColor: Constants.Colors.secondaryWhiteText,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  deleteText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Title,
+    textAlign: 'center',
+    paddingTop: Constants.Sizes.Margins.Expanded,
+    paddingBottom: Constants.Sizes.Margins.Expanded,
   },
 });
 
