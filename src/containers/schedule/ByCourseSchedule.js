@@ -17,8 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-01-27
- * @file WeeklyView.js
- * @description Displays the user's schedule by week
+ * @file ByCourseSchedule.js
+ * @description Displays the user's schedule, organized by course
  *
  * @flow
  */
@@ -49,13 +49,13 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  children: any,                  // Components from the parent component
-  currentSemester: number,        // The current semester, selected by the user
-  language: Language,             // The current language, selected by the user
+  children: any,                            // Components from the parent component
+  currentSemester: number,                  // The current semester, selected by the user
+  language: Language,                       // The current language, selected by the user
   lectureFormats: Array < LectureFormat >,  // Array of available lecture types
-  schedule: Object,               // The user's current schedule
-  semesters: Array < Semester >,  // Semesters available at the university
-  timeFormat: TimeFormat,         // The user's preferred time format
+  schedule: Object,                         // The user's current schedule
+  semesters: Array < Semester >,            // Semesters available at the university
+  timeFormat: TimeFormat,                   // The user's preferred time format
 };
 
 // Imports
@@ -70,7 +70,7 @@ const LECTURE_TIME_WIDTH_PCT = 0.2;
 const LECTURE_DAY_WIDTH_PCT = 0.3;
 const LECTURE_ROOM_WIDTH_PCT = 0.3;
 
-class WeeklyView extends React.Component {
+class ByCourseSchedule extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -148,7 +148,7 @@ class WeeklyView extends React.Component {
   }
 
   /**
-   * Renders a list of the user's courses, organized by days.
+   * Renders a list of the user's lectures, organized by course.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
@@ -222,4 +222,4 @@ const mapStateToProps = (store) => {
   };
 };
 
-export default connect(mapStateToProps)(WeeklyView);
+export default connect(mapStateToProps)(ByCourseSchedule);

@@ -81,8 +81,8 @@ import * as DisplayUtils from 'DisplayUtils';
 import * as TranslationUtils from 'TranslationUtils';
 
 // Tabs
-import Weekly from './WeeklyView';
-import ByCourse from './ByCourseView';
+import WeeklySchedule from './WeeklySchedule';
+import ByCourseSchedule from './ByCourseSchedule';
 
 // Icon for representing the current semester
 const semesterIcon = {
@@ -253,14 +253,16 @@ class Schedule extends React.Component {
             tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
             tabBarPosition='top'
             tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.primaryWhiteText }}>
-          <Weekly
+          <WeeklySchedule
               lectureFormats={this.state.lectureFormats}
               tabLabel={Translations.weekly}>
             {this._renderSemesters(Translations)}
-          </Weekly>
-          <ByCourse tabLabel={Translations.by_course}>
+          </WeeklySchedule>
+          <ByCourseSchedule
+              lectureFormats={this.state.lectureFormats}
+              tabLabel={Translations.by_course}>
             {this._renderSemesters(Translations)}
-          </ByCourse>
+          </ByCourseSchedule>
         </ScrollableTabView>
         <ActionButton
             buttonColor={Constants.Colors.primaryBackground}

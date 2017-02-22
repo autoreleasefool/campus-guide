@@ -17,8 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-01-27
- * @file ByCourseView.js
- * @description Displays the user's schedule by course
+ * @file WeeklySchedule.js
+ * @description Displays the user's schedule, organized by day
  *
  * @flow
  */
@@ -31,11 +31,11 @@ import { StyleSheet, View } from 'react-native';
 import * as Constants from 'Constants';
 
 /**
-   * Renders a list of the user's courses, organized by course.
-   *
-   * @param {any} props the props passed
-   * @returns {ReactElement<any>} the hierarchy of views to render
-   */
+ * Renders a list of the user's courses, organized by course.
+ *
+ * @param {any} props the props passed
+ * @returns {ReactElement<any>} the hierarchy of views to render
+ */
 export default function render(props: any): ReactElement < any > {
   return (
     <View style={_styles.container}>
