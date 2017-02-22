@@ -218,6 +218,7 @@ class Schedule extends React.Component {
               })}
             </Picker>
           : null}
+        <View style={_styles.separator} />
       </View>
     );
   }
@@ -279,6 +280,10 @@ const _styles = StyleSheet.create({
   },
   semesterItem: {
     color: Constants.Colors.primaryWhiteText,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth * 2,
+    backgroundColor: Constants.Colors.secondaryWhiteText,
   },
 });
 

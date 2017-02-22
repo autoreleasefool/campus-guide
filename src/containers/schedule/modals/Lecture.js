@@ -368,6 +368,7 @@ class LectureModal extends React.Component {
               subtitleIcon={pickIcon}
               title={Translations.format} />
         </TouchableOpacity>
+        <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_DAY)}>
           <Header
               largeSubtitle={true}
@@ -375,6 +376,7 @@ class LectureModal extends React.Component {
               subtitleIcon={pickIcon}
               title={Translations.day} />
         </TouchableOpacity>
+        <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_STARTS)}>
           <Header
               largeSubtitle={true}
@@ -382,6 +384,7 @@ class LectureModal extends React.Component {
               subtitleIcon={pickIcon}
               title={Translations.starts} />
         </TouchableOpacity>
+        <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_ENDS)}>
           <Header
               largeSubtitle={true}
@@ -389,6 +392,7 @@ class LectureModal extends React.Component {
               subtitleIcon={pickIcon}
               title={Translations.ends} />
         </TouchableOpacity>
+        <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_BUILDING)}>
           <Header
               largeSubtitle={true}
@@ -594,6 +598,10 @@ const _styles = StyleSheet.create({
   pickerItem: {
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Subtitle,
+  },
+  menuItemSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.secondaryWhiteText,
   },
 });
 

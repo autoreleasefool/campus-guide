@@ -158,7 +158,6 @@ class WeeklyView extends React.Component {
 
     const schedule = this.props.schedule[this.props.semesters[this.props.currentSemester].id];
     const courses = schedule ? schedule.courses : [];
-    console.log(`Rendering schedule: ${JSON.stringify(this.props.schedule)}, ${JSON.stringify(this.props.semesters)}`);
     return (
       <View style={_styles.container}>
         {this.props.children}
