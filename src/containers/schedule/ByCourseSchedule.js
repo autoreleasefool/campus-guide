@@ -56,6 +56,7 @@ type Props = {
   schedule: Object,                         // The user's current schedule
   semesters: Array < Semester >,            // Semesters available at the university
   timeFormat: TimeFormat,                   // The user's preferred time format
+  onEditCourse: (course: Course) => void,   // Callback for when user requests to edit a course
 };
 
 // Imports
@@ -83,7 +84,7 @@ class ByCourseSchedule extends React.Component {
    * @param {Course} course the course to edit
    */
   _handleEditCourse(course: Course): void {
-    console.log(`Edit this course: ${JSON.stringify(course)}`);
+    this.props.onEditCourse(course);
   }
 
   /**

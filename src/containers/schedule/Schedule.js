@@ -53,7 +53,8 @@ import type {
 type Props = {
   currentSemester: number,                                // The current semester, selected by the user
   language: Language,                                     // The current language, selected by the user
-  saveCourse: (s: string, course: Course) => void,        // Saves a course to the semester
+  removeCourse: (s: string, c: Course) => void,           // Removes a course from the semester
+  saveCourse: (s: string, c: Course) => void,             // Saves a course to the semester
   saveSemester: (s: Semester) => void,                    // Saves a semester to the schedule
   semesters: Array < Semester >,                          // Semesters available at the university
   timeFormat: TimeFormat,                                 // The user's preferred time format
@@ -124,6 +125,7 @@ class Schedule extends React.Component {
     };
 
     (this:any)._closeModal = this._closeModal.bind(this);
+    (this:any)._onEditCourse = this._onEditCourse.bind(this);
     (this:any)._toggleSwitchSemester = this._toggleSwitchSemester.bind(this);
   }
 
@@ -141,6 +143,15 @@ class Schedule extends React.Component {
    */
   _closeModal(): void {
     this.setState({ courseModalVisible: false });
+  }
+
+  /**
+   * Removes a course from a semester.
+   *
+   * @param {Course} course the course to remove
+   */
+  _deleteCourse(course: Course): void {
+    this.props.removeCourse(this.props.semesters[this.props.currentSemester].id, course);
   }
 
   /**
@@ -163,6 +174,16 @@ class Schedule extends React.Component {
   _toggleSwitchSemester(): void {
     LayoutAnimation.easeInEaseOut();
     this.setState({ showSemesters: !this.state.showSemesters });
+  }
+
+  /**
+   * Preps a course to be edited. Loads the values into the course modal.
+   *
+   * @param {Course} course the course to edit
+   */
+  _onEditCourse(course: Course): void {
+    this._deleteCourse(course);
+    this._showCourseModal(false, course);
   }
 
   /**
@@ -197,7 +218,7 @@ class Schedule extends React.Component {
       <View>
         <Header
             icon={DisplayUtils.getPlatformIcon(Platform.OS, semesterIcon)}
-            subtitle={(this.state.showSemesters ? Translations.cancel : Translations.switch)}
+            subtitle={(this.state.showSemesters ? Translations.done : Translations.switch)}
             subtitleCallback={this._toggleSwitchSemester}
             title={semesterName} />
         {this.state.showSemesters
@@ -260,7 +281,8 @@ class Schedule extends React.Component {
           </WeeklySchedule>
           <ByCourseSchedule
               lectureFormats={this.state.lectureFormats}
-              tabLabel={Translations.by_course}>
+              tabLabel={Translations.by_course}
+              onEditCourse={this._onEditCourse}>
             {this._renderSemesters(Translations)}
           </ByCourseSchedule>
         </ScrollableTabView>
@@ -302,6 +324,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     saveSemester: (semester: Semester) => dispatch(actions.addSemester(JSON.parse(JSON.stringify(semester)))),
     saveCourse: (semester: string, course: Course) => dispatch(actions.addCourse(semester, course)),
+    removeCourse: (semester: string, course: Course) => dispatch(actions.removeCourse(semester, course.code)),
     updateConfiguration: (options: ConfigurationOptions) => dispatch(actions.updateConfiguration(options)),
   };
 };

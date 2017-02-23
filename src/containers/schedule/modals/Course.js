@@ -207,6 +207,25 @@ class CourseModal extends React.Component {
   }
 
   /**
+   * Prompts the user to delete the current course, and deletes it if they respond positively.
+   */
+  _handleDeleteCourse(): void {
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
+    const courseCode = this.state.code.length >= 0 ? this.state.code : Translations.course;
+
+    Alert.alert(
+      `${Translations.delete} ${courseCode}?`,
+      Translations.cannot_be_undone_confirmation,
+      [
+        { text: Translations.cancel, style: 'cancel' },
+        { text: Translations.delete, onPress: () => this._close(false) },
+      ],
+      { cancelable: false }
+    );
+  }
+
+  /**
    * Prompts the user to delete a lecture, and deletes it if they respond positively.
    *
    * @param {Lecture} lecture details of the lecture to delete
@@ -267,6 +286,7 @@ class CourseModal extends React.Component {
       return;
     }
 
+    console.log(`Save course ${JSON.stringify(course)}`);
     this.props.onSaveCourse(semester != null, semesterId, course);
     this.props.onClose();
   }
@@ -411,7 +431,7 @@ class CourseModal extends React.Component {
               return null;
             }
           })}
-          <TouchableOpacity onPress={() => this._close(false)}>
+          <TouchableOpacity onPress={() => this._handleDeleteCourse()}>
             <View style={_styles.deleteButton}>
               <Text style={_styles.deleteText}>{Translations.delete_course}</Text>
             </View>
