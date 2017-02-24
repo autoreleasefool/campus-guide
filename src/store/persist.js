@@ -58,6 +58,9 @@ export const persist = ({ getState }: any) => (next: any) => (action: any) => {
             case 'prefersWheelchair':
               Preferences.setPrefersWheelchair(AsyncStorage, action.options[option]);
               break;
+            case 'scheduleByCourse':
+              Preferences.setPreferScheduleByCourse(AsyncStorage, action.options[option]);
+              break;
             default:
               console.log('Configuration update not saved: ' + option);
           }

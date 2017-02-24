@@ -40,6 +40,7 @@ const initialState = {
     preferredTimeFormat: '12h',
     prefersWheelchair: false,
     semesters: [],
+    scheduleByCourse: false,
   },
   update: {
     currentDownload: null,
@@ -58,6 +59,7 @@ const configurationUpdate = {
   alwaysSearchAll: true,
   transitInfo: { name: 'Transit', link: 'http://example.com' },
   language: 'en',
+  scheduleByCourse: true,
 };
 
 // Expected state when configuration updated
@@ -72,6 +74,7 @@ const updatedConfigOptions = {
     preferredTimeFormat: '12h',
     prefersWheelchair: false,
     semesters: [],
+    scheduleByCourse: true,
   },
 };
 

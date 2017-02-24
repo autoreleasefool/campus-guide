@@ -317,6 +317,7 @@ export type ConfigurationOptions = {
   language?: ?Language,             // User's preferred language
   preferredTimeFormat?: TimeFormat, // Either 12 or 24h time
   prefersWheelchair?: boolean,      // Only provide wheelchair accessible routes
+  preferByCourse?: boolean,         // True to default schedule view by course, false for by week
   semesters?: Array < Semester >,   // List of semesters currently available
 };
 

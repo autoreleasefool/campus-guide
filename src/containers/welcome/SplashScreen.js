@@ -119,13 +119,14 @@ class SplashScreen extends React.Component {
    * Loads the user's saved preferences and updates the redux store.
    */
   _loadPreferences(): void {
-    const SCHEDULE = 4; // Corresponds to index of Database.getSchedule() below
+    const SCHEDULE = 5; // Corresponds to index of Database.getSchedule() below
 
     Promise.all([
       Preferences.getSelectedLanguage(AsyncStorage),
       Preferences.getCurrentSemester(AsyncStorage),
       Preferences.getPrefersWheelchair(AsyncStorage),
       Preferences.getPreferredTimeFormat(AsyncStorage),
+      Preferences.getPreferScheduleByCourse(AsyncStorage),
       Database.getSchedule(),
     ])
         .then((results: Array < any >) => {
@@ -271,6 +272,7 @@ const mapDispatchToProps = (dispatch) => {
         currentSemester: preferences[1],
         prefersWheelchair: preferences[2],
         preferredTimeFormat: preferences[3],
+        scheduleByCourse: preferences[4],
       }));
 
       /* eslint-enable no-magic-numbers */

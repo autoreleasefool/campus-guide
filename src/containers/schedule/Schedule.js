@@ -41,7 +41,6 @@ import * as actions from 'actions';
 
 // Types
 import type {
-  ConfigurationOptions,
   Course,
   Language,
   LectureFormat,
@@ -51,14 +50,16 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  currentSemester: number,                                // The current semester, selected by the user
-  language: Language,                                     // The current language, selected by the user
-  removeCourse: (s: string, c: Course) => void,           // Removes a course from the semester
-  saveCourse: (s: string, c: Course) => void,             // Saves a course to the semester
-  saveSemester: (s: Semester) => void,                    // Saves a semester to the schedule
-  semesters: Array < Semester >,                          // Semesters available at the university
-  timeFormat: TimeFormat,                                 // The user's preferred time format
-  updateConfiguration: (o: ConfigurationOptions) => void, // Update the global configuration state
+  currentSemester: number,                        // The current semester, selected by the user
+  language: Language,                             // The current language, selected by the user
+  removeCourse: (s: string, c: Course) => void,   // Removes a course from the semester
+  saveCourse: (s: string, c: Course) => void,     // Saves a course to the semester
+  saveSemester: (s: Semester) => void,            // Saves a semester to the schedule
+  scheduleByCourse: boolean,                      // Indicates default to view schedule by course or by week
+  semesters: Array < Semester >,                  // Semesters available at the university
+  timeFormat: TimeFormat,                         // The user's preferred time format
+  switchSemester: (semester: number) => void,     // Switches the current semester
+  viewScheduleByCourse: (view: boolean) => void,  // Updates whether the schedule is viewed by course or by week
 };
 
 // Type definition for component state.
@@ -66,6 +67,7 @@ type State = {
   addingCourse: boolean,                    // True to use the course modal to add a course, false to edit
   courseToEdit: ?Course,                    // Course selected by user to edit
   courseModalVisible: boolean,              // True to show the modal to add or edit a course
+  initialPage: number,                      // Initial schedule view to show
   lectureFormats: Array < LectureFormat >,  // Array of available lecture types
   showSemesters: boolean,                   // True to show drop down to swap semesters
 };
@@ -120,6 +122,7 @@ class Schedule extends React.Component {
       addingCourse: true,
       courseToEdit: null,
       courseModalVisible: false,
+      initialPage: props.scheduleByCourse ? 1 : 0,
       lectureFormats: [],
       showSemesters: false,
     };
@@ -227,7 +230,7 @@ class Schedule extends React.Component {
                 itemStyle={_styles.semesterItem}
                 prompt={Translations.semester}
                 selectedValue={this.props.currentSemester}
-                onValueChange={(value) => this.props.updateConfiguration({ currentSemester: value })}>
+                onValueChange={(value) => this.props.switchSemester(value)}>
               {this.props.semesters.map((semester, index) => {
                 const name = TranslationUtils.getTranslatedName(this.props.language, semester);
                 return (
@@ -268,12 +271,14 @@ class Schedule extends React.Component {
               onSaveCourse={this._onSaveCourse.bind(this)} />
         </Modal>
         <ScrollableTabView
+            initialPage={this.state.initialPage}
             style={{ borderBottomWidth: 0 }}
             tabBarActiveTextColor={Constants.Colors.primaryWhiteText}
             tabBarBackgroundColor={Constants.Colors.darkTransparentBackground}
             tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
             tabBarPosition='top'
-            tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.primaryWhiteText }}>
+            tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.primaryWhiteText }}
+            onChangeTab={(newTab: { i: number }) => this.props.viewScheduleByCourse(newTab.i === 1)}>
           <WeeklySchedule
               lectureFormats={this.state.lectureFormats}
               tabLabel={Translations.weekly}>
@@ -315,6 +320,7 @@ const mapStateToProps = (store) => {
   return {
     currentSemester: store.config.options.currentSemester,
     language: store.config.options.language,
+    scheduleByCourse: store.config.options.scheduleByCourse,
     semesters: store.config.options.semesters,
     timeFormat: store.config.options.preferredTimeFormat,
   };
@@ -324,8 +330,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     saveSemester: (semester: Semester) => dispatch(actions.addSemester(JSON.parse(JSON.stringify(semester)))),
     saveCourse: (semester: string, course: Course) => dispatch(actions.addCourse(semester, course)),
+    switchSemester: (semester: number) => dispatch(actions.updateConfiguration({ currentSemester: semester })),
     removeCourse: (semester: string, course: Course) => dispatch(actions.removeCourse(semester, course.code)),
-    updateConfiguration: (options: ConfigurationOptions) => dispatch(actions.updateConfiguration(options)),
+    viewScheduleByCourse: (view: boolean) => dispatch(actions.updateConfiguration({ scheduleByCourse: view })),
   };
 };
 

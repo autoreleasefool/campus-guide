@@ -44,6 +44,7 @@ const initialState: State = {
     preferredTimeFormat: '12h',
     prefersWheelchair: false,
     semesters: [],
+    scheduleByCourse: false,
   },
   update: {
     currentDownload: null,

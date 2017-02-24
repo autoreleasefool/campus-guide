@@ -36,6 +36,8 @@ const CURRENT_SEMESTER: string = 'app_current_semester';
 const PREFER_WHEELCHAIR: string = 'app_pref_wheel';
 // Represents the user's preferred time format, 12 or 24 hour
 const PREFERRED_TIME_FORMAT: string = 'app_time_format';
+// Represents the user's preference to view their schedule by week or by course
+const PREFER_BY_COURSE: string = 'app_by_course';
 
 /**
  * Retrieves the value of a key from AsyncStorage.
@@ -153,5 +155,30 @@ export async function getPreferredTimeFormat(AsyncStorage: any): Promise < strin
 export function setPreferredTimeFormat(AsyncStorage: any, format: any): void {
   if (format === '12h' || format === '24h') {
     AsyncStorage.setItem(PREFERRED_TIME_FORMAT, format);
+  }
+}
+
+/**
+ * Gets whether the user prefers to view their schedule by course or not.
+ *
+ * @param {any} AsyncStorage instance of the React Native AsyncStorage
+ * @returns {boolea} true to view schedule by course, false to view by week
+ */
+export async function getPreferScheduleByCourse(AsyncStorage: any): Promise < boolean > {
+  const value = await retrieveFromAsyncStorage(AsyncStorage, PREFER_BY_COURSE);
+  return (value === null)
+      ? false
+      : (value === 'true');
+}
+
+/**
+ * Updates the user's preference for viewing their schedule.
+ *
+ * @param {any}     AsyncStorage instance of the React Native AsyncStorage
+ * @param {boolean} prefer       true to view by course, false to view by week
+ */
+export function setPreferScheduleByCourse(AsyncStorage: any, prefer: any): void {
+  if (prefer === true || prefer === false) {
+    AsyncStorage.setItem(PREFER_BY_COURSE, prefer.toString());
   }
 }

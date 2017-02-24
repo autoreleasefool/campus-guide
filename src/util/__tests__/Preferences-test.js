@@ -31,6 +31,7 @@ type PreferenceOptions = {
   semester: number,
   wheelchair: boolean,
   timeFormat: string,
+  byCourse: boolean,
 }
 
 // Initial AsyncStorage data store
@@ -65,6 +66,7 @@ async function setPreferences(preferences: PreferenceOptions) {
   Preferences.setCurrentSemester(AsyncStorage, preferences.semester);
   Preferences.setPrefersWheelchair(AsyncStorage, preferences.wheelchair);
   Preferences.setPreferredTimeFormat(AsyncStorage, preferences.timeFormat);
+  Preferences.setPreferScheduleByCourse(AsyncStorage, preferences.byCourse);
 }
 
 describe('Preferences-test', () => {
@@ -93,6 +95,10 @@ describe('Preferences-test', () => {
         })
         .then((format) => {
           expect(format).toEqual('12h');
+          return Preferences.getPreferScheduleByCourse(AsyncStorage);
+        })
+        .then((prefers) => {
+          expect(prefers).toBeFalsy();
         });
   });
 
@@ -102,6 +108,7 @@ describe('Preferences-test', () => {
       semester: 2,
       wheelchair: false,
       timeFormat: '24h',
+      byCourse: true,
     };
 
     return setPreferences(preferences)
@@ -120,6 +127,10 @@ describe('Preferences-test', () => {
         })
         .then((format) => {
           expect(format).toEqual('24h');
+          return Preferences.getPreferScheduleByCourse(AsyncStorage);
+        })
+        .then((prefers) => {
+          expect(prefers).toBeTruthy();
         });
   });
 
@@ -130,6 +141,7 @@ describe('Preferences-test', () => {
       app_current_semester: '0',
       app_pref_wheel: 'true',
       app_time_format: '12h',
+      app_by_course: 'true',
     };
 
     // Set invalid preferences that should not update the dataStore
@@ -138,6 +150,7 @@ describe('Preferences-test', () => {
       semester: -1,
       wheelchair: 'true',
       timeFormat: 'twenty four',
+      byCourse: 'flase',
     };
 
     return setPreferences(preferences)
@@ -156,6 +169,10 @@ describe('Preferences-test', () => {
         })
         .then((format) => {
           expect(format).toEqual('12h');
+          return Preferences.getPreferScheduleByCourse(AsyncStorage);
+        })
+        .then((prefers) => {
+          expect(prefers).toBeTruthy();
         });
   });
 
@@ -166,6 +183,7 @@ describe('Preferences-test', () => {
       app_current_semester: '0',
       app_pref_wheel: 'true',
       app_time_format: '12h',
+      app_by_course: 'true',
     };
 
     return Preferences.getSelectedLanguage(AsyncStorage)
@@ -183,6 +201,10 @@ describe('Preferences-test', () => {
         })
         .then((format) => {
           expect(format).toEqual('12h');
+          return Preferences.getPreferScheduleByCourse(AsyncStorage);
+        })
+        .then((prefers) => {
+          expect(prefers).toBeTruthy();
         });
   });
 
@@ -195,6 +217,7 @@ describe('Preferences-test', () => {
       app_current_semester: '0',
       app_pref_wheel: 'true',
       app_time_format: '12h',
+      app_by_course: 'false',
     };
 
     return Preferences.getSelectedLanguage(AsyncStorage)
@@ -212,6 +235,10 @@ describe('Preferences-test', () => {
         })
         .then((format) => {
           expect(format).toEqual('12h');
+          return Preferences.getPreferScheduleByCourse(AsyncStorage);
+        })
+        .then((prefers) => {
+          expect(prefers).toBeFalsy();
         });
   });
 });
