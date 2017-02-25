@@ -28,7 +28,6 @@
 import React from 'react';
 import {
   Alert,
-  Dimensions,
   Modal,
   Navigator,
   Picker,
@@ -85,7 +84,6 @@ type State = {
 };
 
 // Imports
-import ActionButton from 'react-native-action-button';
 import Header from 'Header';
 import LectureModal from './Lecture';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -99,12 +97,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 // Navigation values
 const MENU = 0;
 const PICKER = 1;
-
-// Screen dimensions
-const screenWidth = Dimensions.get('window').width;
-const LECTURE_TIME_WIDTH_PCT = 0.2;
-const LECTURE_DAY_WIDTH_PCT = 0.3;
-const LECTURE_ROOM_WIDTH_PCT = 0.3;
 
 class CourseModal extends React.Component {
 
@@ -212,7 +204,7 @@ class CourseModal extends React.Component {
   _handleDeleteCourse(): void {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-    const courseCode = this.state.code.length >= 0 ? this.state.code : Translations.course;
+    const courseCode = this.state.code.length > 0 ? this.state.code : Translations.course.toLowerCase();
 
     Alert.alert(
       `${Translations.delete} ${courseCode}?`,
@@ -286,7 +278,6 @@ class CourseModal extends React.Component {
       return;
     }
 
-    console.log(`Save course ${JSON.stringify(course)}`);
     this.props.onSaveCourse(semester != null, semesterId, course);
     this.props.onClose();
   }
@@ -365,16 +356,24 @@ class CourseModal extends React.Component {
     return (
       <View key={`${lecture.day} - ${lecture.startTime}`}>
         <View style={_styles.lectureContainer}>
-          <Text style={[ _styles.lectureText, _styles.lectureTextLeft ]}>
-            {Constants.Days[this.props.language][lecture.day]}
-          </Text>
-          <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
-            {TextUtils.getFormattedTimeSinceMidnight(lecture.startTime, this.props.timeFormat)}
-          </Text>
-          <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
-            {TextUtils.getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
-          </Text>
-          {roomOrOptions}
+          <View style={{ flex: 3 }}>
+            <Text style={[ _styles.lectureText, _styles.lectureTextLeft ]}>
+              {Constants.Days[this.props.language][lecture.day]}
+            </Text>
+          </View>
+          <View style={{ flex: 2 }}>
+            <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
+              {TextUtils.getFormattedTimeSinceMidnight(lecture.startTime, this.props.timeFormat)}
+            </Text>
+          </View>
+          <View style={{ flex: 2 }}>
+            <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
+              {TextUtils.getFormattedTimeSinceMidnight(lecture.endTime, this.props.timeFormat)}
+            </Text>
+          </View>
+          <View style={{ flex: 3 }}>
+            {roomOrOptions}
+          </View>
         </View>
         {isLast ? null : <View style={_styles.lectureSeparator} />}
       </View>
@@ -388,7 +387,8 @@ class CourseModal extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   _renderMenu(Translations: Object): ReactElement < any > {
-    const semester = this.props.semesters[this.state.semester];
+    const semesterId = this.props.semesters[this.state.semester].id;
+    const semester = this.props.schedule[semesterId];
     const semesterName = TranslationUtils.getTranslatedName(this.props.language, semester) || '';
 
     return (
@@ -431,18 +431,17 @@ class CourseModal extends React.Component {
               return null;
             }
           })}
-          <TouchableOpacity onPress={() => this._handleDeleteCourse()}>
-            <View style={_styles.deleteButton}>
-              <Text style={_styles.deleteText}>{Translations.delete_course}</Text>
+          <TouchableOpacity onPress={this._showLectureModal.bind(this, true, null)}>
+            <View style={_styles.button}>
+              <Text style={_styles.buttonText}>{Translations.add_lecture}</Text>
             </View>
           </TouchableOpacity>
-          <View style={_styles.padding} />
+          <TouchableOpacity onPress={this._handleDeleteCourse.bind(this)}>
+            <View style={_styles.button}>
+              <Text style={_styles.buttonText}>{Translations.delete_course}</Text>
+            </View>
+          </TouchableOpacity>
         </KeyboardAwareScrollView>
-        <ActionButton
-            buttonColor={Constants.Colors.primaryBackground}
-            offsetX={Constants.Sizes.Margins.Expanded}
-            offsetY={Constants.Sizes.Margins.Regular}
-            onPress={this._showLectureModal.bind(this, true)} />
       </View>
     );
   }
@@ -564,12 +563,9 @@ const _styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
   },
-  padding: {
-    height: 100,
-  },
   textInput: {
     height: 30,
-    margin: Constants.Sizes.Margins.Regular,
+    margin: Constants.Sizes.Margins.Expanded,
     paddingLeft: Constants.Sizes.Margins.Regular,
     fontSize: Constants.Sizes.Text.Body,
     color: Constants.Colors.primaryWhiteText,
@@ -579,8 +575,9 @@ const _styles = StyleSheet.create({
   },
   lectureContainer: {
     flexDirection: 'row',
-    marginLeft: Constants.Sizes.Margins.Regular,
-    marginRight: Constants.Sizes.Margins.Regular,
+    alignItems: 'center',
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
   },
   lectureText: {
     color: Constants.Colors.primaryWhiteText,
@@ -590,34 +587,26 @@ const _styles = StyleSheet.create({
   },
   lectureTextInner: {
     textAlign: 'left',
-    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_TIME_WIDTH_PCT,
     paddingLeft: Constants.Sizes.Margins.Condensed,
     paddingRight: Constants.Sizes.Margins.Condensed,
   },
   lectureTextLeft: {
     textAlign: 'left',
-    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_DAY_WIDTH_PCT,
-    paddingLeft: Constants.Sizes.Margins.Regular,
     paddingRight: Constants.Sizes.Margins.Condensed,
   },
   lectureTextRight: {
     textAlign: 'right',
-    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_ROOM_WIDTH_PCT,
     paddingLeft: Constants.Sizes.Margins.Condensed,
-    paddingRight: Constants.Sizes.Margins.Regular,
   },
   lectureOptions: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_ROOM_WIDTH_PCT,
     paddingLeft: Constants.Sizes.Margins.Condensed,
-    paddingRight: Constants.Sizes.Margins.Regular,
   },
   lectureSeparator: {
-    width: screenWidth - Constants.Sizes.Margins.Expanded * 2,
     height: StyleSheet.hairlineWidth,
-    marginLeft: Constants.Sizes.Margins.Expanded * 2,
+    marginLeft: Constants.Sizes.Margins.Expanded,
     backgroundColor: Constants.Colors.lightTransparentBackground,
   },
   pickerContainer: {
@@ -632,14 +621,14 @@ const _styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.secondaryWhiteText,
   },
-  deleteButton: {
-    marginTop: Constants.Sizes.Margins.Regular,
+  button: {
+    marginBottom: Constants.Sizes.Margins.Expanded,
     backgroundColor: Constants.Colors.darkMoreTransparentBackground,
     borderColor: Constants.Colors.secondaryWhiteText,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
-  deleteText: {
+  buttonText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Title,
     textAlign: 'center',

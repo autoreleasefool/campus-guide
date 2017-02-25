@@ -143,6 +143,17 @@ class LectureModal extends React.Component {
       rightActionEnabled: this._isLectureStartUnique(props.course, day, starts),
     };
 
+    // const day = props.addingLecture ? DEFAULT_DAY : props.lectureToEdit.day;
+    // const starts = props.addingLecture ? DEFAULT_START_TIME : props.lectureToEdit.startTime;
+    // this.state = {
+    //   format: props.addingLecture ? DEFAULT_FORMAT : props.lectureToEdit.format,
+    //   ends: props.addingLecture ? DEFAULT_END_TIME : props.lectureToEdit.endTime,
+    //   location: props.addingLecture ? DEFAULT_LOCATION : props.lectureToEdit.location,
+    //   day,
+    //   starts,
+    //   rightActionEnabled: this._isLectureStartUnique(props.course, day, starts),
+    // };
+
     (this:any)._isLectureStartUnique = this._isLectureStartUnique.bind(this);
     (this:any)._renderMenu = this._renderMenu.bind(this);
     (this:any)._renderRegularPicker = this._renderRegularPicker.bind(this);

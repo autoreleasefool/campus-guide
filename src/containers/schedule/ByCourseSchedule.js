@@ -27,7 +27,6 @@
 // React imports
 import React from 'react';
 import {
-  Dimensions,
   ScrollView,
   StyleSheet,
   Text,
@@ -65,12 +64,6 @@ import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
 
-// Screen dimensions
-const screenWidth = Dimensions.get('window').width;
-const LECTURE_TIME_WIDTH_PCT = 0.2;
-const LECTURE_DAY_WIDTH_PCT = 0.3;
-const LECTURE_ROOM_WIDTH_PCT = 0.3;
-
 class ByCourseSchedule extends React.Component {
 
   /**
@@ -107,7 +100,9 @@ class ByCourseSchedule extends React.Component {
             const formatName = TranslationUtils.getTranslatedName(this.props.language, format) || '';
             return (
               <View key={formatName}>
-                <Text style={_styles.lectureFormat}>{formatName}</Text>
+                <Header
+                    backgroundColor={Constants.Colors.darkMoreTransparentBackground}
+                    title={formatName} />
                 {lectures.map((lecture, lecIndex) => this._renderLecture(lecture, lecIndex === lectures.length - 1))}
               </View>
             );
@@ -164,6 +159,7 @@ class ByCourseSchedule extends React.Component {
         {this.props.children}
         <ScrollView>
           {courses.map((course) => this._renderCourse(Translations, course))}
+          <View style={_styles.padding} />
         </ScrollView>
       </View>
     );
@@ -176,10 +172,13 @@ const _styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
   },
+  padding: {
+    height: 100,
+  },
   lectureContainer: {
     flexDirection: 'row',
-    marginLeft: Constants.Sizes.Margins.Regular,
-    marginRight: Constants.Sizes.Margins.Regular,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
   },
   lectureText: {
     color: Constants.Colors.primaryWhiteText,
@@ -188,27 +187,24 @@ const _styles = StyleSheet.create({
     paddingBottom: Constants.Sizes.Margins.Expanded,
   },
   lectureTextInner: {
+    flex: 2,
     textAlign: 'left',
-    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_TIME_WIDTH_PCT,
     paddingLeft: Constants.Sizes.Margins.Condensed,
     paddingRight: Constants.Sizes.Margins.Condensed,
   },
   lectureTextLeft: {
+    flex: 3,
     textAlign: 'left',
-    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_DAY_WIDTH_PCT,
-    paddingLeft: Constants.Sizes.Margins.Regular,
     paddingRight: Constants.Sizes.Margins.Condensed,
   },
   lectureTextRight: {
+    flex: 3,
     textAlign: 'right',
-    width: (screenWidth - Constants.Sizes.Margins.Regular * 2) * LECTURE_ROOM_WIDTH_PCT,
     paddingLeft: Constants.Sizes.Margins.Condensed,
-    paddingRight: Constants.Sizes.Margins.Regular,
   },
   lectureSeparator: {
-    width: screenWidth - Constants.Sizes.Margins.Expanded * 2,
     height: StyleSheet.hairlineWidth,
-    marginLeft: Constants.Sizes.Margins.Expanded * 2,
+    marginLeft: Constants.Sizes.Margins.Expanded,
     backgroundColor: Constants.Colors.lightTransparentBackground,
   },
 });
