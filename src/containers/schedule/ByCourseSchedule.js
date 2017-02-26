@@ -149,6 +149,12 @@ class ByCourseSchedule extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
+    if (this.props.lectureFormats == null || this.props.lectureFormats.length === 0) {
+      return (
+        <View style={_styles.container} />
+      );
+    }
+
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
