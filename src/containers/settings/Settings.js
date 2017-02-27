@@ -449,8 +449,6 @@ class Settings extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     return (
       <View style={_styles.container}>
         <Modal
@@ -460,12 +458,6 @@ class Settings extends React.Component {
             onRequestClose={this._closeModal.bind(this)}>
           {this._renderListModal()}
         </Modal>
-
-        <View style={_styles.headerContainer}>
-          <Header
-              icon={{ name: Platform.OS === 'ios' ? 'ios-settings' : 'settings', class: 'ionicon' }}
-              title={Translations.settings} />
-        </View>
         <ListView
             dataSource={this.state.dataSource}
             renderRow={this._renderRow.bind(this)}
@@ -481,9 +473,6 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.polarGrey,
-  },
-  headerContainer: {
-    backgroundColor: Constants.Colors.primaryBackground,
   },
   settingContainer: {
     backgroundColor: Constants.Colors.secondaryBackground,
