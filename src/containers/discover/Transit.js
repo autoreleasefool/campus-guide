@@ -76,8 +76,9 @@ type State = {
 
 // Imports
 import TransitCampusMap from 'TransitCampusMap';
-import FourSquare from 'FourSquareGrid';
 import Header from 'Header';
+import Menu from 'Menu';
+import * as ArrayUtils from 'ArrayUtils';
 import * as Constants from 'Constants';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
@@ -206,9 +207,10 @@ class Transit extends React.Component {
   /**
    * Sets the selected campus to render.
    *
-   * @param {number} index the index of the selected campus in this.state.campuses
+   * @param {string} id id of the selected campus in this.state.campuses
    */
-  _onCampusSelected(index: number): void {
+  _onCampusSelected(id: string): void {
+    const index = ArrayUtils.linearSearchObjectArrayByKeyValue(this.state.campuses, 'id', id);
     this.props.onCampusSelected(this.state.campuses[index]);
   }
 
@@ -252,11 +254,10 @@ class Transit extends React.Component {
 
     return (
       <View style={_styles.container}>
-        <FourSquare
+        <Menu
             language={this.props.language}
-            squares={this.state.campuses}
-            style={_styles.container}
-            onSelect={this._onCampusSelected.bind(this)} />
+            sections={this.state.campuses}
+            onSectionSelected={this._onCampusSelected.bind(this)} />
         <TouchableOpacity onPress={() => this._openLink(Translations || {})}>
           <Header
               backgroundColor={Constants.Colors.primaryBackground}

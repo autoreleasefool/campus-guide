@@ -54,6 +54,7 @@ type State = {
 // Imports
 import Header from 'Header';
 import * as Configuration from 'Configuration';
+import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as TranslationUtils from 'TranslationUtils';
 
@@ -119,12 +120,21 @@ export default class Menu extends React.Component {
     let subtitleIconName: string = 'expand-more';
 
     if (index === this.state.expandedSection && section.image != null) {
-      sectionImage = (
-        <Image
-            resizeMode={'cover'}
-            source={{ uri: Configuration.getImagePath(section.image) }}
-            style={_styles.sectionImage} />
-      );
+      if (typeof (section.image) === 'string') {
+        sectionImage = (
+          <Image
+              resizeMode={'cover'}
+              source={{ uri: Configuration.getImagePath(section.image) }}
+              style={_styles.sectionImage} />
+        );
+      } else {
+        sectionImage = (
+          <Image
+              resizeMode={'cover'}
+              source={section.image}
+              style={_styles.sectionImage} />
+        );
+      }
       touchableStyle = { flexGrow: 1 };
       subtitleIconName = 'chevron-right';
     }
@@ -139,6 +149,7 @@ export default class Menu extends React.Component {
             icon={icon}
             subtitleIcon={{ name: subtitleIconName, class: 'material' }}
             title={TranslationUtils.getTranslatedName(this.props.language, section) || ''} />
+        {index < this.props.sections.length - 1 ? <View style={_styles.separator} /> : null}
       </TouchableOpacity>
     );
   }
@@ -179,5 +190,13 @@ const _styles = StyleSheet.create({
     left: 0,
     width: null,
     height: null,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.primaryWhiteText,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });

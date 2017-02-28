@@ -248,7 +248,7 @@ export default class TransitCampusMap extends React.Component {
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
     let expandIcon = 'expand-less';
-    let routeStyle = {};
+    let routeStyle = { flexShrink: 0 };
     let stopStyle = { height: 0 };
     if (this.state.routesExpanded) {
       expandIcon = 'expand-more';

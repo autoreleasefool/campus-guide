@@ -344,7 +344,8 @@ class Links extends React.Component {
 
     return (
       <View>
-        {categories.map((category: LinkSection, index: number) => {
+        <View style={[ _styles.divider, { backgroundColor: dividerColor }]} />
+        {categories.map((category: LinkSection) => {
           const categoryName = TranslationUtils.getTranslatedName(language, category);
           if (categoryName == null) {
             return null;
@@ -355,12 +356,9 @@ class Links extends React.Component {
                 key={categoryName}
                 onPress={() => this._onCategorySelected(category.id)}>
               <Header
-                  icon={{ name: 'chevron-right', class: 'material' }}
+                  subtitleIcon={{ name: 'chevron-right', class: 'material' }}
                   title={categoryName} />
-              {(index < categories.length - 1)
-                ? <View style={[ _styles.divider, { backgroundColor: dividerColor }]} />
-                : null
-              }
+              <View style={[ _styles.divider, { backgroundColor: dividerColor }]} />
             </TouchableOpacity>
           );
         })}
@@ -426,7 +424,7 @@ class Links extends React.Component {
                 </View>
               </TouchableOpacity>
               {(index < links.length - 1)
-                ? <View style={[ _styles.divider, { backgroundColor: textColor }]} />
+                ? <View style={[ _styles.divider, _styles.inset, { backgroundColor: textColor }]} />
                 : null
               }
             </View>
@@ -586,7 +584,7 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Sizes.Text.Title,
   },
   socialMediaContainer: {
-    backgroundColor: Constants.Colors.lightTransparentBackground,
+    backgroundColor: Constants.Colors.polarGrey,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
@@ -614,6 +612,9 @@ const _styles = StyleSheet.create({
   divider: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
+  },
+  inset: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
 });
 

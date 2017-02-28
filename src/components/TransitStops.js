@@ -63,6 +63,7 @@ type State = {
 };
 
 // Imports
+import Header from 'Header';
 import * as Connector from 'Connector';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
@@ -348,8 +349,8 @@ export default class TransitStops extends React.Component {
           {Connector.renderConnector({
             large: true,
             bottom: true,
-            circleColor: Constants.Colors.lightGrey,
-            lineColor: Constants.Colors.transparentLightGrey,
+            circleColor: Constants.Colors.charcoalGrey,
+            lineColor: Constants.Colors.charcoalGrey,
           })}
           <View style={_styles.stopHeader}>
             <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryBlackText }]}>{stop.name}</Text>
@@ -375,8 +376,8 @@ export default class TransitStops extends React.Component {
           {Connector.renderConnector({
             top: true,
             bottom: needsBottom,
-            circleColor: Constants.Colors.lightGrey,
-            lineColor: Constants.Colors.transparentLightGrey,
+            circleColor: Constants.Colors.polarGrey,
+            lineColor: Constants.Colors.polarGrey,
           })}
           <Text
               key={route.number}
@@ -419,12 +420,22 @@ export default class TransitStops extends React.Component {
    */
   _renderScene(route: Route): ReactElement < any > {
     if (route.id === TIMES) {
+      const stop = this.props.stops[this.state.selectedStopId];
       return (
-        <ListView
-            dataSource={this.state.dataSourceTimes}
-            enableEmptySections={true}
-            renderRow={this._renderTimeRow.bind(this)}
-            style={[ _styles.container, _styles.timeContainer ]} />
+        <View style={_styles.container}>
+          <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
+            <Header
+                backgroundColor={Constants.Colors.polarGrey}
+                icon={{ name: 'chevron-left', class: 'material' }}
+                subtitle={stop.code}
+                title={stop.name} />
+          </TouchableOpacity>
+          <ListView
+              dataSource={this.state.dataSourceTimes}
+              enableEmptySections={true}
+              renderRow={this._renderTimeRow.bind(this)}
+              style={_styles.container} />
+        </View>
       );
     } else {
       return (
@@ -433,7 +444,7 @@ export default class TransitStops extends React.Component {
             enableEmptySections={true}
             renderRow={this._renderStopRow.bind(this)}
             renderSectionHeader={this._renderStopHeader.bind(this)}
-            style={[ _styles.container, _styles.stopContainer ]} />
+            style={_styles.container} />
       );
     }
   }
@@ -459,15 +470,10 @@ export default class TransitStops extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  stopContainer: {
-    backgroundColor: Constants.Colors.secondaryBackground,
-  },
-  timeContainer: {
     backgroundColor: Constants.Colors.secondaryBackground,
   },
   stopHeaderContainer: {
-    height: 40,
+    height: 50,
     justifyContent: 'center',
     backgroundColor: Constants.Colors.polarGrey,
   },
@@ -478,11 +484,11 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
   },
   stopRowContainer: {
-    height: 24,
+    height: 40,
     justifyContent: 'center',
   },
   stopRoute: {
-    marginLeft: Connector.getConnectorWidth() + Constants.Sizes.Margins.Expanded,
+    marginLeft: Connector.getConnectorWidth() + Constants.Sizes.Margins.Regular,
     marginRight: Constants.Sizes.Margins.Regular,
     fontSize: Constants.Sizes.Text.Body,
     color: Constants.Colors.primaryWhiteText,
@@ -516,7 +522,6 @@ const _styles = StyleSheet.create({
     flex: 1,
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
     backgroundColor: Constants.Colors.secondaryWhiteText,
   },
 });

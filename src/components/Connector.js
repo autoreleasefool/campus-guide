@@ -79,7 +79,8 @@ export function renderConnector(options: ConnectorOptions): ReactElement < any >
  * @returns {number} width of the connector
  */
 export function getConnectorWidth(): number {
-  return Constants.Sizes.Margins.Regular * 2 + Constants.Sizes.Margins.Expanded;
+  // Padding * 2 + width
+  return Constants.Sizes.Margins.Expanded * 2 + Constants.Sizes.Margins.Expanded;
 }
 
 /* eslint-disable react-native/no-unused-styles */
