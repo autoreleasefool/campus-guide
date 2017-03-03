@@ -40,6 +40,7 @@ import type { Icon, VoidFunction } from 'types';
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import PaddedIcon from 'PaddedIcon';
 import * as DisplayUtils from 'DisplayUtils';
 import * as Constants from 'Constants';
 
@@ -67,25 +68,12 @@ export default class Header extends React.Component {
    */
   _renderIcon(color: string): ?ReactElement < any > {
     let icon: ?ReactElement < any > = null;
-
     if (this.props.icon != null) {
-      if (this.props.icon.class === 'material') {
-        icon = (
-          <MaterialIcons
-              color={color}
-              name={this.props.icon.name}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.icon} />
-        );
-      } else {
-        icon = (
-          <Ionicons
-              color={color}
-              name={this.props.icon.name}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.icon} />
-        );
-      }
+      icon = (
+        <PaddedIcon
+            color={color}
+            icon={this.props.icon} />
+      );
 
       // Wrap the icon in a TouchableOpacity if there an onClick function
       if (this.props.iconCallback) {
@@ -208,14 +196,17 @@ export default class Header extends React.Component {
       secondaryForeground = Constants.Colors.secondaryWhiteText;
     }
 
+    const icon = this._renderIcon(primaryForeground);
+    const titleStyle = { marginLeft: icon == null ? Constants.Sizes.Margins.Expanded : 0 };
+
     return (
       <View style={[ _styles.header, { backgroundColor: headerBackground }]}>
-        {this._renderIcon(primaryForeground)}
+        {icon}
         <View style={_styles.titleContainer}>
           <Text
               ellipsizeMode={'tail'}
               numberOfLines={1}
-              style={[ _styles.title, { color: primaryForeground }]}>
+              style={[ _styles.title, titleStyle, { color: primaryForeground }]}>
             {this.props.title}
           </Text>
         </View>
@@ -232,11 +223,6 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  icon: {
-    marginBottom: Constants.Sizes.Margins.Regular,
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    marginTop: Constants.Sizes.Margins.Regular,
-  },
   subtitle: {
     flexDirection: 'row',
     marginRight: Constants.Sizes.Margins.Regular,
@@ -251,7 +237,6 @@ const _styles = StyleSheet.create({
     marginRight: Constants.Sizes.Margins.Regular,
   },
   title: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
     fontSize: Constants.Sizes.Text.Title,
   },
   titleContainer: {

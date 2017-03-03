@@ -423,13 +423,12 @@ export default class TransitStops extends React.Component {
       const stop = this.props.stops[this.state.selectedStopId];
       return (
         <View style={_styles.container}>
-          <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
-            <Header
-                backgroundColor={Constants.Colors.polarGrey}
-                icon={{ name: 'chevron-left', class: 'material' }}
-                subtitle={stop.code}
-                title={stop.name} />
-          </TouchableOpacity>
+          <Header
+              backgroundColor={Constants.Colors.polarGrey}
+              icon={{ name: 'chevron-left', class: 'material' }}
+              iconCallback={() => this.refs.Navigator.pop()}
+              subtitle={stop.code}
+              title={stop.name} />
           <ListView
               dataSource={this.state.dataSourceTimes}
               enableEmptySections={true}

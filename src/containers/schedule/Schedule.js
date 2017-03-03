@@ -270,11 +270,12 @@ class Schedule extends React.Component {
               onClose={this._closeModal}
               onSaveCourse={this._onSaveCourse.bind(this)} />
         </Modal>
+        <View style={_styles.headerSeparator} />
         <ScrollableTabView
             initialPage={this.state.initialPage}
-            style={{ borderBottomWidth: 0 }}
+            style={_styles.tabContainer}
             tabBarActiveTextColor={Constants.Colors.primaryWhiteText}
-            tabBarBackgroundColor={Constants.Colors.darkTransparentBackground}
+            tabBarBackgroundColor={Constants.Colors.garnet}
             tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
             tabBarPosition='top'
             tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.primaryWhiteText }}
@@ -307,12 +308,21 @@ const _styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
   },
+  headerSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.primaryWhiteText,
+  },
   semesterItem: {
     color: Constants.Colors.primaryWhiteText,
   },
   separator: {
     height: StyleSheet.hairlineWidth * 2,
     backgroundColor: Constants.Colors.secondaryWhiteText,
+  },
+  tabContainer: {
+    flex: 1,
+    backgroundColor: Constants.Colors.secondaryBackground,
+    borderBottomWidth: 0,
   },
 });
 

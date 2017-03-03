@@ -258,9 +258,9 @@ class Transit extends React.Component {
             language={this.props.language}
             sections={this.state.campuses}
             onSectionSelected={this._onCampusSelected.bind(this)} />
+        <View style={_styles.separator} />
         <TouchableOpacity onPress={() => this._openLink(Translations || {})}>
           <Header
-              backgroundColor={Constants.Colors.primaryBackground}
               icon={{ name: 'md-open', class: 'ionicon' }}
               subtitleIcon={{ name: 'chevron-right', class: 'material' }}
               title={Translations.transit_company} />
@@ -311,6 +311,10 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.primaryWhiteText,
   },
 });
 

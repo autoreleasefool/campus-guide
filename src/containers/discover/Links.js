@@ -77,6 +77,7 @@ type State = {
 import Header from 'Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Menu from 'Menu';
+import PaddedIcon from 'PaddedIcon';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
@@ -209,10 +210,9 @@ class Links extends React.Component {
     }
 
     return (
-      <Ionicons
+      <PaddedIcon
           color={iconColor}
-          name={iconName}
-          size={Constants.Sizes.Icons.Medium}
+          icon={{ class: 'ionicon', name: iconName }}
           style={_styles.linkIcon} />
     );
   }
@@ -416,7 +416,7 @@ class Links extends React.Component {
                   style={{ flexDirection: 'row', alignItems: 'center' }}
                   onPress={() => this._openLink(translatedLink, Translations)}>
                 {this._getLinkIcon(translatedLink, iconColor)}
-                <View>
+                <View style={_styles.linkContainer}>
                   <Text style={[ _styles.link, { color: textColor }]}>
                     {translatedName}
                   </Text>
@@ -594,20 +594,20 @@ const _styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  linkContainer: {
+    marginTop: Constants.Sizes.Margins.Expanded,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+  },
   link: {
-    margin: Constants.Sizes.Margins.Regular,
     fontSize: Constants.Sizes.Text.Body,
     width: screenWidth - TEXT_PADDING,
   },
   linkSubtitle: {
-    marginLeft: Constants.Sizes.Margins.Regular,
-    marginRight: Constants.Sizes.Margins.Regular,
-    marginBottom: Constants.Sizes.Margins.Regular,
     fontSize: Constants.Sizes.Text.Caption,
   },
   linkIcon: {
-    margin: Constants.Sizes.Margins.Regular,
-    marginLeft: Constants.Sizes.Margins.Expanded,
+    margin: Constants.Sizes.Margins.Expanded,
   },
   divider: {
     flex: 1,

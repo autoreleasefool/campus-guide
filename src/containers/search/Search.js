@@ -63,8 +63,7 @@ type State = {
 
 // Imports
 import Header from 'Header';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import PaddedIcon from 'PaddedIcon';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
@@ -251,6 +250,22 @@ class Search extends React.Component {
   }
 
   /**
+   * Renders a view which indicates the user's has not performed a search yet.
+   *
+   * @param {Object} Translations translations for the current language
+   * @returns {ReactElement<any>} a centred text view with text indicating there is no search
+   */
+  _renderEmptySearch(Translations: Object): ReactElement < any > {
+    return (
+      <View style={[ _styles.container, _styles.noSearch ]}>
+        <Text style={_styles.noSearchText}>
+          {`${Translations.no_search}`}
+        </Text>
+      </View>
+    );
+  }
+
+  /**
    * Renders a search result based on its source.
    *
    * @param {SearchResult} result    the result and its source to render
@@ -263,23 +278,11 @@ class Search extends React.Component {
     let iconView: any = null;
 
     if (icon != null) {
-      if (icon.class === 'material') {
-        iconView = (
-          <MaterialIcons
-              color={Constants.Colors.primaryWhiteIcon}
-              name={icon.name}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.icon} />
-        );
-      } else {
-        iconView = (
-          <Ionicons
-              color={Constants.Colors.primaryWhiteIcon}
-              name={icon.name}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.icon} />
-        );
-      }
+      iconView = (
+        <PaddedIcon
+            color={Constants.Colors.primaryWhiteIcon}
+            icon={icon} />
+      );
     }
 
     return (
@@ -307,13 +310,16 @@ class Search extends React.Component {
     // Get current language for translations
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
-    let view = null;
     if (nonExpandable) {
       const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
-      view = (
+      const subtitle = `${this._searchResults[sectionName].length} ${Translations.results.toLowerCase()}`;
+
+      return (
         <TouchableOpacity onPress={this._onSourceSelect.bind(this, null)}>
           <Header
+              backgroundColor={Constants.Colors.polarGrey}
               icon={{ name: `${platformModifier}-arrow-back`, class: 'ionicon' }}
+              subtitle={subtitle}
               title={sectionName} />
         </TouchableOpacity>
       );
@@ -328,9 +334,10 @@ class Search extends React.Component {
         subtitleIcon = { name: 'chevron-right', class: 'material' };
       }
 
-      view = (
+      return (
         <TouchableOpacity onPress={this._onSourceSelect.bind(this, sectionName)}>
           <Header
+              backgroundColor={Constants.Colors.polarGrey}
               icon={icon}
               subtitle={subtitle}
               subtitleIcon={subtitleIcon}
@@ -338,12 +345,6 @@ class Search extends React.Component {
         </TouchableOpacity>
       );
     }
-
-    return (
-      <View style={{ backgroundColor: Constants.Colors.primaryBackground }}>
-        {view}
-      </View>
-    );
   }
 
   /**
@@ -364,6 +365,21 @@ class Search extends React.Component {
   }
 
   /**
+   * Renders a separator line between rows.
+   *
+   * @param {any} sectionID section id
+   * @param {any} rowID     row id
+   * @returns {ReactElement<any>} a separator for the list of settings
+   */
+  _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
+    return (
+      <View
+          key={`Separator,${sectionID},${rowID}`}
+          style={_styles.separator} />
+    );
+  }
+
+  /**
    * Renders the top search results of each category.
    *
    * @returns {ReactElement<any>} a list of results
@@ -373,17 +389,20 @@ class Search extends React.Component {
     const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
     let results = null;
-    if (this.props.filter == null || !this.state.anyResults) {
-      results = this._renderNoResults(Translations);
-    } else {
+    if (this.props.filter == null || this.props.filter.length === 0) {
+      results = this._renderEmptySearch(Translations);
+    } else if (this.state.anyResults) {
       results = (
         <ListView
             dataSource={this.state.filteredResults}
             enableEmptySections={true}
             keyboardShouldPersistTaps={'always'}
             renderRow={this._renderResult.bind(this)}
-            renderSectionHeader={this._renderSource.bind(this)} />
+            renderSectionHeader={this._renderSource.bind(this)}
+            renderSeparator={this._renderSeparator.bind(this)} />
       );
+    } else {
+      results = this._renderNoResults(Translations);
     }
 
     return (
@@ -411,7 +430,8 @@ class Search extends React.Component {
             dataSource={this.state.singleResults}
             enableEmptySections={true}
             keyboardShouldPersistTaps={'always'}
-            renderRow={this._renderResult.bind(this)} />
+            renderRow={this._renderResult.bind(this)}
+            renderSeparator={this._renderSeparator.bind(this)} />
       );
     }
 
@@ -469,11 +489,12 @@ const _styles = StyleSheet.create({
   result: {
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: Constants.Colors.primaryBackground,
+    backgroundColor: Constants.Colors.secondaryBackground,
   },
   resultText: {
-    marginBottom: Constants.Sizes.Margins.Regular,
-    marginTop: Constants.Sizes.Margins.Regular,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
     flexDirection: 'column',
   },
   resultTitle: {
@@ -484,21 +505,33 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
   },
-  icon: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
-  },
   noResults: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   noResultsText: {
     textAlign: 'center',
-    marginLeft: Constants.Sizes.Margins.Regular,
-    marginRight: Constants.Sizes.Margins.Regular,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     fontStyle: 'italic',
+  },
+  noSearch: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noSearchText: {
+    textAlign: 'center',
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.primaryWhiteText,
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
 });
 

@@ -438,7 +438,7 @@ class Settings extends React.Component {
   _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
     return (
       <View
-          key={`${sectionID},${rowID}`}
+          key={`Separator,${sectionID},${rowID}`}
           style={_styles.separator} />
     );
   }

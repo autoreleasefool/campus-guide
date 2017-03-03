@@ -143,10 +143,15 @@ class CourseModal extends React.Component {
    * @param {Lecture} lecture the lecture to add
    */
   _addLecture(lecture: Lecture): void {
+    const semesterId = this.props.semesters[this.state.semester].id;
+    const semester = this.props.schedule[semesterId];
     const lectures = this.state.lectures.slice();
     lectures.push(lecture);
     ArrayUtils.sortObjectArrayByKeyValues(lectures, 'day', 'startTime');
-    this.setState({ lectures });
+    this.setState({
+      lectures,
+      rightActionEnabled: this._isCourseCodeValid(semester, this.state.code, lectures),
+    });
   }
 
   /**

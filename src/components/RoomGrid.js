@@ -65,8 +65,7 @@ type FilteredRoom = {
 };
 
 // Imports
-import Ionicon from 'react-native-vector-icons/Ionicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import PaddedIcon from 'PaddedIcon';
 import Promise from 'promise';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
@@ -232,47 +231,44 @@ export default class RoomGrid extends React.Component {
    * Renders an item describing a single room in the building.
    *
    * @param {FilteredRoom} room a room to display in this row.
-   * @param {string} sectionId  index of the section the room is in.
-   * @param {number} index      index of the row the room is in.
    * @returns {ReactElement<any>} a view describing a set of room.
    */
-  _renderRow(room: FilteredRoom, sectionId: string, index: number): ReactElement < any > {
-    const color: string = (index % 2 === 0)
-        ? Constants.Colors.garnet
-        : Constants.Colors.darkTransparentBackground;
-
+  _renderRow(room: FilteredRoom): ReactElement < any > {
     let icon: ?ReactElement < any > = null;
     if (room.icon != null) {
-      icon = room.icon.class === 'ionicon'
-          ? (
-            <Ionicon
-                color={Constants.Colors.primaryWhiteText}
-                name={room.icon.name}
-                size={Constants.Sizes.Icons.Medium}
-                style={_styles.roomIcon} />
-          )
-          : (
-            <MaterialIcons
-                color={Constants.Colors.primaryWhiteText}
-                name={room.icon.name}
-                size={Constants.Sizes.Icons.Medium}
-                style={_styles.roomIcon} />
-          );
+      icon = (
+        <PaddedIcon
+            color={Constants.Colors.primaryWhiteText}
+            icon={room.icon} />
+      );
     }
 
     return (
       <TouchableOpacity onPress={() => this.props.onSelect(this.props.code, room.name)}>
-        <View style={{ backgroundColor: color }}>
-          <View style={_styles.room}>
-            {icon}
-            <View style={_styles.roomDescription}>
-              {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
-              <Text style={_styles.roomName}>{room.name}</Text>
-              <Text style={_styles.roomType}>{room.type}</Text>
-            </View>
+        <View style={_styles.room}>
+          {icon}
+          <View style={_styles.roomDescription}>
+            {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
+            <Text style={_styles.roomName}>{room.name}</Text>
+            <Text style={_styles.roomType}>{room.type}</Text>
           </View>
         </View>
       </TouchableOpacity>
+    );
+  }
+
+  /**
+   * Renders a separator line between rows.
+   *
+   * @param {any} sectionID section id
+   * @param {any} rowID     row id
+   * @returns {ReactElement<any>} a separator for the list of settings
+   */
+  _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
+    return (
+      <View
+          key={`Separator,${sectionID},${rowID}`}
+          style={_styles.separator} />
     );
   }
 
@@ -283,34 +279,37 @@ export default class RoomGrid extends React.Component {
    */
   render(): ReactElement < any > {
     return (
-      <ListView
-          dataSource={this.state.dataSource}
-          enableEmptySections={true}
-          renderHeader={this._renderHeader.bind(this)}
-          renderRow={this._renderRow.bind(this)}
-          style={_styles.listView} />
+      <View style={_styles.container}>
+        <View style={_styles.headerSeparator} />
+        <ListView
+            dataSource={this.state.dataSource}
+            enableEmptySections={true}
+            renderHeader={this._renderHeader.bind(this)}
+            renderRow={this._renderRow.bind(this)}
+            renderSeparator={this._renderSeparator.bind(this)}
+            style={_styles.container} />
+      </View>
     );
   }
 }
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  listView: {
+  container: {
     flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
   },
   room: {
     flex: 1,
-    margin: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
     alignItems: 'center',
     flexDirection: 'row',
   },
   roomDescription: {
     marginRight: Constants.Sizes.Margins.Regular,
     flex: 1,
-  },
-  roomIcon: {
-    marginRight: Constants.Sizes.Margins.Expanded,
   },
   roomName: {
     color: Constants.Colors.primaryWhiteText,
@@ -321,5 +320,14 @@ const _styles = StyleSheet.create({
   roomType: {
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
+  },
+  headerSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.primaryWhiteText,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    backgroundColor: Constants.Colors.primaryWhiteText,
   },
 });
