@@ -45,10 +45,19 @@ export type Link = {link: string};
 export type TranslatedLink = {link_en: string, link_fr: string};
 
 /** A set of details, valid in English or French. */
-export type Details = {details: Array < string >};
+export type Details = {
+  image: string,
+  icon: PlatformIcon,
+  details: Array < string >,
+} & (Name | TranslatedName);
 
 /** A set of details, translated for English and French. */
-export type TranslatedDetails = {details_en: Array < string >, details_fr: Array < string >};
+export type TranslatedDetails = {
+  image: string,
+  icon: PlatformIcon,
+  details_en: Array < string >,
+  details_fr: Array < string >,
+} & (Name | TranslatedName);
 
 /** A URL and a name to display it with. */
 export type NamedLink = (Name | TranslatedName) & (Link | TranslatedLink);
@@ -169,6 +178,48 @@ export type TransitSystem = {
 
 /** High level information about the city transit system. */
 export type TransitInfo = (Name | TranslatedName) & (Link | TranslatedLink);
+
+//-----------------------------------------------------------------------------
+//  Shuttle
+//-----------------------------------------------------------------------------
+
+/** Information about the university shuttle */
+export type ShuttleInfo = {
+  stops: Array < ShuttleStop >,                             // Stops the shuttle makes
+  schedules: Array < ShuttleSchedule >,                     // Schedules for the shuttle
+  additional_info: Array < (Details | TranslatedDetails) >, // Additional info for taking the shuttle
+};
+
+/** A stop the shuttle makes */
+export type ShuttleStop = {
+  id: string,   // Unique stop id
+  lat: number,  // Latitude of the stop
+  long: number, // Longitude of the stop
+} & (Name | TranslatedName);
+
+/** A shuttle's schedule for a certain time of year */
+export type ShuttleSchedule = {
+  start_date: string,                     // Date which the schedule becomes effective
+  end_date: string,                       // Final date for which the schedule is effective
+  excluded_dates: Array < string>,        // Dates for which the schedule is explicitly not in effect
+  directions: Array < ShuttleDirection >, // Directions and times for the schedule
+} & (Name | TranslatedName);
+
+// Description of the route the shuttle takes, valid in English or French
+type ShuttleRoute = {
+  route: string,  // Description of the route the shuttle takes
+}
+
+// Description of the route the shuttle takes, translated to English and French
+type TranslatedShuttleRoute = {
+  route_en: string, // Description of the route the shuttle takes in English
+  route_fr: string, // Description of the route the shuttle takes in French
+}
+
+// Describes a direction of the shuttle and when it departs in that direction
+export type ShuttleDirection = {
+  day_times: Object,  // Days and times which the shuttle departs
+} & (Name | TranslatedName) & (ShuttleRoute | TranslatedShuttleRoute);
 
 //-----------------------------------------------------------------------------
 //  Courses

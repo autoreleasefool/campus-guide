@@ -52,6 +52,7 @@ import * as Constants from 'Constants';
 // Screen imports
 import Home from './Home';
 import Links from './Links';
+import Shuttle from './Shuttle';
 import Transit from './Transit';
 
 class Discover extends React.Component {
@@ -136,6 +137,10 @@ class Discover extends React.Component {
       case Constants.Views.Discover.Transit:
         return (
           <Transit />
+        );
+      case Constants.Views.Discover.Shuttle:
+        return (
+          <Shuttle />
         );
       default:
         // TODO: generic error view?

@@ -190,6 +190,7 @@ const Discover = {
   Home: 0,    // Home discover view where user can see elements of university they can explore
   Links: 1,   // Displays a list of useful links to the user
   Transit: 2, // Displays information about the transit system in the city
+  Shuttle: 3, // Displays information about the university's campus shuttle
 };
 
 module.exports = {
