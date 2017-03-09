@@ -199,7 +199,8 @@ export default class ShuttleTable extends React.Component {
             renderHeader={this._renderHeader.bind(this)}
             renderRow={this._renderRow.bind(this)}
             renderSectionHeader={this._renderSectionHeader.bind(this)}
-            renderSeparator={this._renderSeparator} />
+            renderSeparator={this._renderSeparator}
+            stickySectionHeadersEnabled={false} />
       </View>
     );
   }
