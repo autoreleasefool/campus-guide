@@ -317,7 +317,7 @@
     "react/no-string-refs": "off",
     "react/no-unknown-property": "off",
     "react/prefer-es6-class": "error",
-    "react/prefer-stateless-function": "error",
+    "react/prefer-stateless-function": "warn",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
     "react/require-extension": "off",

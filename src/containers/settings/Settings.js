@@ -33,6 +33,7 @@ import {
   ListView,
   Modal,
   Platform,
+  SectionList,
   StyleSheet,
   Switch,
   Text,
@@ -45,7 +46,7 @@ import { connect } from 'react-redux';
 import * as actions from 'actions';
 
 // Types
-import type { ConfigurationOptions, Language, Semester, TimeFormat } from 'types';
+import type { ConfigurationOptions, Language, Section, Semester, Setting, TimeFormat } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -59,7 +60,7 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  dataSource: ListView.DataSource,          // List of settings to display
+  loaded: boolean,                          // Indicates if the settings have been loaded
   listModalDataSource: ListView.DataSource, // List of data to display in modal
   listModalTitle: string,                   // Title of the list view modal
   listModalVisible: boolean,                // Indicates if the list modal should be visible
@@ -70,6 +71,7 @@ import DeviceInfo from 'react-native-device-info';
 import Header from 'Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Separator from './components/Separator';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
@@ -103,10 +105,7 @@ class Settings extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1: any) => this._keyChanged === r1.key || this._keyChanged === 'pref_lang',
-        sectionHeaderHasChanged: (s1: any, s2: any) => s1 !== s2 || this._keyChanged === 'pref_lang',
-      }),
+      loaded: false,
       listModalDataSource: new ListView.DataSource({
         rowHasChanged: (r1: any, r2: any) => r1 !== r2,
         sectionHeaderHasChanged: (s1: any, s2: any) => s1 !== s2,
@@ -124,33 +123,21 @@ class Settings extends React.Component {
         .then(() => TranslationUtils.loadTranslations('en'))
         .then(() => TranslationUtils.loadTranslations('fr'))
         .then(() => Configuration.getConfig('/settings.json'))
-        .then((configSettings: Object) => {
-          this._settings = configSettings;
-          for (const section in this._settings) {
-            if (this._settings.hasOwnProperty(section)) {
-              for (const row in this._settings[section]) {
-                if (this._settings[section].hasOwnProperty(row)) {
-                  this._settingsCache[this._settings[section][row].key] =
-                      this._getSetting(this._settings[section][row].key);
-                }
-              }
+        .then((settingSections: Object) => {
+          const totalSections = settingSections.length;
+          for (let i = 0; i < totalSections; i++) {
+            const section = settingSections[i];
+            const totalRows = section.data.length;
+            for (let j = 0; j < totalRows; j++) {
+              const row = section.data[j];
+              this._settingsCache[row.key] = this._getSetting(row.key);
             }
           }
 
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRowsAndSections(this._settings),
-          });
+          this._settingsSections = settingSections;
+          this.setState({ loaded: true });
         })
         .catch((err: any) => console.error('Configuration could not be initialized for settings.', err));
-  }
-
-  /**
-   * Updates the settings.
-   */
-  componentWillReceiveProps(): void {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRowsAndSections(this._settings),
-    });
   }
 
   /**
@@ -160,14 +147,11 @@ class Settings extends React.Component {
     TranslationUtils.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
   }
 
-  /** Set of settings to display. */
-  _settings: Object;
+  /** List of sections of settings to render. */
+  _settingSections: Array < Section < Setting > >;
 
   /** Cache of settings values to retrieve and update them quickly. */
   _settingsCache: Object = {};
-
-  /** Identifies the most recently changed setting, so it can be re-rendered. */
-  _keyChanged: ?string = null;
 
   /**
    * Returns true if the current value of a setting does not match its cached value, and updates the cached value if so.
@@ -225,6 +209,17 @@ class Settings extends React.Component {
   }
 
   /**
+   * Checks if a setting has changed and if the item should update.
+   *
+   * @param {Object} prevProps old item properties
+   * @param {Object} nextProps new item properties
+   * @returns {boolean} true if the setting has changed and the item should be re-rendered
+   */
+  _shouldItemUpdate(prevProps: Object, nextProps: Object): boolean {
+    return this._checkChangedSetting(nextProps.item.key);
+  }
+
+  /**
    * Updates the setting for the row pressed.
    *
    * @param {Object} setting   setting that was pressed
@@ -271,8 +266,6 @@ class Settings extends React.Component {
         listModalVisible: true,
       });
     }
-
-    this._keyChanged = setting.key;
   }
 
   /**
@@ -349,29 +342,29 @@ class Settings extends React.Component {
   }
 
   /**
-   * Displays a single row, representing a setting which can be changed.
+   * Displays a single item, representing a setting which can be changed.
    *
    * @param {Object} setting defines the setting contents to render
    * @returns {ReactElement<any>} views to render the setting in the list
    */
-  _renderRow(setting: Object): ReactElement < any > {
+  _renderItem({ item }: { item: Setting }): ReactElement < any > {
     let content = null;
-    if (setting.type === 'multi' || setting.type === 'text') {
+    if (item.type === 'multi' || item.type === 'text') {
       content = (
         <View style={_styles.settingContent}>
-          <Text style={_styles.settingValue}>{this._getSetting(setting.key)}</Text>
+          <Text style={_styles.settingValue}>{this._getSetting(item.key)}</Text>
         </View>
       );
-    } else if (setting.type === 'boolean') {
+    } else if (item.type === 'boolean') {
       content = (
         <View style={_styles.settingContent}>
           <Switch
-              value={this._getSetting(setting.key)}
-              onValueChange={() => this._onPressRow(setting, false)} />
+              value={this._getSetting(item.key)}
+              onValueChange={() => this._onPressRow(item, false)} />
         </View>
       );
-    } else if (setting.type === 'link') {
-      const icon = DisplayUtils.getPlatformIcon(Platform.OS, setting);
+    } else if (item.type === 'link') {
+      const icon = DisplayUtils.getPlatformIcon(Platform.OS, item);
       if (icon != null) {
         content = (
           <View style={_styles.settingContent}>
@@ -392,10 +385,10 @@ class Settings extends React.Component {
     return (
       <View style={_styles.settingContainer}>
         <TouchableOpacity
-            activeOpacity={setting.type === 'boolean' ? 1 : DEFAULT_OPACITY}
-            onPress={this._onPressRow.bind(this, setting, true)}>
+            activeOpacity={item.type === 'boolean' ? 1 : DEFAULT_OPACITY}
+            onPress={this._onPressRow.bind(this, item, true)}>
           <View style={_styles.setting}>
-            <Text style={_styles.settingText}>{TranslationUtils.getTranslatedName(this.props.language, setting)}</Text>
+            <Text style={_styles.settingText}>{TranslationUtils.getTranslatedName(this.props.language, item)}</Text>
             {content}
           </View>
         </TouchableOpacity>
@@ -410,14 +403,14 @@ class Settings extends React.Component {
    * @param {string} sectionName index of the section
    * @returns {ReactElement<any>} a {SectionHeader} with the name of the section
    */
-  _renderSectionHeader(sectionData: Object, sectionName: string): ReactElement < any > {
-    const colonIndex: number = sectionName.indexOf(':');
-    let sectionNameTranslated = sectionName;
+  _renderSectionHeader({ section }: { section: Section }): ReactElement < any > {
+    const colonIndex: number = section.key.indexOf(':');
+    let sectionNameTranslated = section.key;
     if (colonIndex > -1) {
       if (this.props.language === 'en') {
-        sectionNameTranslated = sectionName.substring(0, colonIndex);
+        sectionNameTranslated = section.key.substring(0, colonIndex);
       } else {
-        sectionNameTranslated = sectionName.substring(colonIndex + 1);
+        sectionNameTranslated = section.key.substring(colonIndex + 1);
       }
     }
 
@@ -425,21 +418,6 @@ class Settings extends React.Component {
       <Header
           backgroundColor={Constants.Colors.lightGrey}
           title={sectionNameTranslated} />
-    );
-  }
-
-  /**
-   * Renders a separator line between rows.
-   *
-   * @param {any} sectionID section id
-   * @param {any} rowID     row id
-   * @returns {ReactElement<any>} a separator for the list of settings
-   */
-  _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
-    return (
-      <View
-          key={`Separator,${sectionID},${rowID}`}
-          style={_styles.separator} />
     );
   }
 
@@ -458,11 +436,11 @@ class Settings extends React.Component {
             onRequestClose={this._closeModal.bind(this)}>
           {this._renderListModal()}
         </Modal>
-        <ListView
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
+        <SectionList
+            SeparatorComponent={Separator}
+            renderItem={this._renderItem.bind(this)}
             renderSectionHeader={this._renderSectionHeader.bind(this)}
-            renderSeparator={this._renderSeparator.bind(this)} />
+            sections={this._settingSections} />
       </View>
     );
   }
@@ -493,11 +471,6 @@ const _styles = StyleSheet.create({
     marginLeft: Constants.Sizes.Margins.Expanded,
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
-  },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.darkTransparentBackground,
-    marginLeft: Constants.Sizes.Margins.Expanded,
   },
   settingValue: {
     color: Constants.Colors.primaryBlackText,
