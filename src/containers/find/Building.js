@@ -84,7 +84,7 @@ class BuildingComponent extends React.Component {
     return (
       <TouchableOpacity onPress={this._onDestinationSelected.bind(this, this.props.building.code)}>
         <Header
-            backgroundColor={Constants.Colors.polarGrey}
+            backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon' }}
             title={navigateToBuilding} />
       </TouchableOpacity>

@@ -349,8 +349,8 @@ export default class TransitStops extends React.Component {
           {Connector.renderConnector({
             large: true,
             bottom: true,
-            circleColor: Constants.Colors.charcoalGrey,
-            lineColor: Constants.Colors.charcoalGrey,
+            circleColor: Constants.Colors.secondaryBackground,
+            lineColor: Constants.Colors.secondaryBackground,
           })}
           <View style={_styles.stopHeader}>
             <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryBlackText }]}>{stop.name}</Text>
@@ -376,8 +376,8 @@ export default class TransitStops extends React.Component {
           {Connector.renderConnector({
             top: true,
             bottom: needsBottom,
-            circleColor: Constants.Colors.polarGrey,
-            lineColor: Constants.Colors.polarGrey,
+            circleColor: Constants.Colors.tertiaryBackground,
+            lineColor: Constants.Colors.tertiaryBackground,
           })}
           <Text
               key={route.number}
@@ -424,7 +424,7 @@ export default class TransitStops extends React.Component {
       return (
         <View style={_styles.container}>
           <Header
-              backgroundColor={Constants.Colors.polarGrey}
+              backgroundColor={Constants.Colors.tertiaryBackground}
               icon={{ name: 'chevron-left', class: 'material' }}
               iconCallback={() => this.refs.Navigator.pop()}
               subtitle={stop.code}
@@ -474,7 +474,7 @@ const _styles = StyleSheet.create({
   stopHeaderContainer: {
     height: 50,
     justifyContent: 'center',
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   stopHeader: {
     marginLeft: Connector.getConnectorWidth() + Constants.Sizes.Margins.Regular,

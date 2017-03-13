@@ -231,11 +231,11 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   languageTitle: {
-    color: 'white',
+    color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Title,
   },
   languageSubtitle: {
-    color: 'white',
+    color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Subtitle,
   },
   languageTextContainer: {

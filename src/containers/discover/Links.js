@@ -584,7 +584,7 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Sizes.Text.Title,
   },
   socialMediaContainer: {
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },

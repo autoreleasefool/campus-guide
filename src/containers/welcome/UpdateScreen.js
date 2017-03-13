@@ -446,7 +446,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   downloadedText: {
-    color: Constants.Colors.polarGrey,
+    color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
   },
   fileText: {

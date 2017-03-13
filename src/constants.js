@@ -31,17 +31,26 @@ import * as CoreTranslations from '../assets/json/CoreTranslations.json';
  * Theme colors.
  */
 const colors = {
-  garnet: '#8F001A', // rgb(143, 0, 26)
-  transparentGarnet: 'rgba(143, 0, 26, 0.8)',
+  garnet: '#8F001A',
+  transparentGarnet: 'rgba(143, 0, 26, 0.7)',
+  veryTransparentGarnet: 'rgba(143, 0, 26, 0.4)',
   invisibleGarnet: 'rgba(143, 0, 26, 0)',
-  darkGrey: '#80746C', // rgb(128, 116, 108)
-  transparentDarkGrey: 'rgba(128, 116, 108, 0.8)',
-  polarGrey: '#F2F2F2', // rgb(242, 242, 242)
-  transparentPolarGrey: 'rgba(242, 242, 242, 0.8)',
-  lightGrey: '#ACA39A', // rgb(172, 164, 154)
-  transparentLightGrey: 'rgba(172, 163, 154, 0.8)',
-  charcoalGrey: '#2D2D2C', // rgb(45, 45, 44)
-  transparentCharcoalGrey: 'rgba(45, 45, 45, 0.8)',
+  darkGrey: '#80746C',
+  transparentDarkGrey: 'rgba(128, 116, 108, 0.7)',
+  veryTransparentDarkGrey: 'rgba(128, 116, 108, 0.4)',
+  invisibleDarkGrey: 'rgba(128, 116, 108, 0)',
+  polarGrey: '#F2F2F2',
+  transparentPolarGrey: 'rgba(242, 242, 242, 0.7)',
+  veryTransparentPolarGrey: 'rgba(242, 242, 242, 0.4)',
+  invisiblePolarGrey: 'rgba(242, 242, 242, 0)',
+  lightGrey: '#ACA39A',
+  transparentLightGrey: 'rgba(172, 163, 154, 0.7)',
+  veryTransparentLightGrey: 'rgba(172, 163, 154, 0.4)',
+  invisibleLightGrey: 'rgba(172, 163, 154, 0)',
+  charcoalGrey: '#2D2D2C',
+  transparentCharcoalGrey: 'rgba(45, 45, 45, 0.7)',
+  veryTransparentCharcoalGrey: 'rgba(45, 45, 45, 0.4)',
+  invisibleCharcoalGrey: 'rgba(45, 45, 45, 0)',
 
   white: 'white',
   transparentWhite: 'rgba(255, 255, 255, 0.7)',
@@ -202,14 +211,18 @@ module.exports = {
     ...colors,                                            // Import basic color definitions
     primaryBackground: colors.garnet,                     // Primary background color for the application
     secondaryBackground: colors.charcoalGrey,             // Secondary background color for the application
-    primaryWhiteText: colors.white,                       // Primary color when white text is needed
-    secondaryWhiteText: colors.transparentWhite,          // Secondary color when white text is needed
+    tertiaryBackground: colors.polarGrey,                 // Tertiary background color for the application
+
+    primaryWhiteText: colors.polarGrey,                   // Primary color when white text is needed
+    secondaryWhiteText: colors.transparentPolarGrey,      // Secondary color when white text is needed
     primaryBlackText: colors.black,                       // Primary color when black text is needed
     secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
-    primaryWhiteIcon: colors.white,                       // Primary color when white text is needed
-    secondaryWhiteIcon: colors.transparentWhite,          // Secondary color when white text is needed
+
+    primaryWhiteIcon: colors.polarGrey,                   // Primary color when white text is needed
+    secondaryWhiteIcon: colors.transparentPolarGrey,      // Secondary color when white text is needed
     primaryBlackIcon: colors.black,                       // Primary color when black text is needed
     secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black text is needed
+
     darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
     darkMoreTransparentBackground: 'rgba(0,0,0,0.2)',     // Dark transparent background color for components
     lightTransparentBackground: 'rgba(255,255,255,0.8)',  // Light transparent background color for components

@@ -280,7 +280,6 @@ export default class RoomGrid extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
-        <View style={_styles.headerSeparator} />
         <ListView
             dataSource={this.state.dataSource}
             enableEmptySections={true}
@@ -320,10 +319,6 @@ const _styles = StyleSheet.create({
   roomType: {
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
-  },
-  headerSeparator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.primaryWhiteText,
   },
   separator: {
     height: StyleSheet.hairlineWidth,

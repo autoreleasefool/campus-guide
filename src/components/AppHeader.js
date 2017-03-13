@@ -213,11 +213,16 @@ class AppHeader extends React.Component {
     return (
       <View style={_styles.container}>
         <View style={[ _styles.titleContainer, titleStyle ]}>
-          <Text style={_styles.title}>{appTitle}</Text>
+          <Text
+              ellipsizeMode={'tail'}
+              numberOfLines={1}
+              style={_styles.title}>
+            {appTitle}
+          </Text>
         </View>
         <View style={[ _styles.searchContainer, searchInputStyle ]}>
           <Ionicons
-              color={'white'}
+              color={Constants.Colors.primaryWhiteIcon}
               name={searchIcon}
               size={Constants.Sizes.Icons.Medium}
               style={_styles.searchIcon}
@@ -225,7 +230,7 @@ class AppHeader extends React.Component {
           <TextInput
               autoCorrect={false}
               placeholder={Translations.search_placeholder}
-              placeholderTextColor={Constants.Colors.lightGrey}
+              placeholderTextColor={Constants.Colors.secondaryWhiteText}
               ref='SearchInput'
               returnKeyType={'done'}
               style={_styles.searchText}
@@ -250,6 +255,7 @@ class AppHeader extends React.Component {
               size={Constants.Sizes.Icons.Medium}
               style={_styles.noBackground} />
         </TouchableOpacity>
+        <View style={_styles.separator} />
       </View>
     );
   }
@@ -281,7 +287,7 @@ const _styles = StyleSheet.create({
   searchText: {
     flex: 1,
     height: 35,
-    color: Constants.Colors.polarGrey,
+    color: Constants.Colors.primaryWhiteText,
   },
   icon: {
     position: 'absolute',
@@ -291,6 +297,8 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
+    paddingLeft: ICON_SIZE,
+    paddingRight: ICON_SIZE,
     textAlign: 'center',
     fontSize: Constants.Sizes.Text.Title,
     color: Constants.Colors.primaryWhiteText,
@@ -301,6 +309,13 @@ const _styles = StyleSheet.create({
   },
   noBackground: {
     backgroundColor: 'rgba(0,0,0,0)',
+  },
+  separator: {
+    position: 'absolute',
+    bottom: 0,
+    width: width,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
 });
 

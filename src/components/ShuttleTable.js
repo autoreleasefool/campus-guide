@@ -210,7 +210,7 @@ export default class ShuttleTable extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   header: {
     marginTop: Constants.Sizes.Margins.Expanded,
@@ -229,12 +229,12 @@ const _styles = StyleSheet.create({
   },
   sectionHeaderContainer: {
     width: width,
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
     paddingTop: Constants.Sizes.Margins.Expanded,
     paddingBottom: Constants.Sizes.Margins.Expanded,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: Constants.Colors.charcoalGrey,
+    borderColor: Constants.Colors.secondaryBackground,
   },
   sectionHeader: {
     width: width,
@@ -245,7 +245,7 @@ const _styles = StyleSheet.create({
   separator: {
     width: width,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.charcoalGrey,
+    backgroundColor: Constants.Colors.secondaryBackground,
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   timeSeparator: {
@@ -275,6 +275,6 @@ const _styles = StyleSheet.create({
     paddingBottom: Constants.Sizes.Margins.Regular,
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderRightWidth: StyleSheet.hairlineWidth,
-    borderColor: Constants.Colors.charcoalGrey,
+    borderColor: Constants.Colors.secondaryBackground,
   },
 });

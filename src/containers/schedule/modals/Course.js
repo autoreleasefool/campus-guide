@@ -616,7 +616,7 @@ const _styles = StyleSheet.create({
   },
   pickerContainer: {
     flex: 1,
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   pickerItem: {
     color: Constants.Colors.primaryBlackText,

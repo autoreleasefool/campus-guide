@@ -183,18 +183,17 @@ class TabBar extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   tabContainer: {
-    // height: 50,
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: 'rgba(0, 0, 0, 0.25)',
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 2,
-    marginBottom: 2,
+    marginTop: Constants.Sizes.Margins.Condensed,
+    marginBottom: Constants.Sizes.Margins.Condensed,
   },
   caption: {
     fontSize: Constants.Sizes.Text.Caption,

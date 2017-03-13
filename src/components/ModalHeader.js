@@ -95,6 +95,7 @@ export default class ModalHeader extends React.Component {
 
     return (
       <View style={[ _styles.container, { backgroundColor: headerBackground }]}>
+        <View style={_styles.separator} />
         <Text style={_styles.title}>{this.props.title}</Text>
         {this.props.leftActionText == null
           ? null
@@ -149,5 +150,12 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     right: Constants.Sizes.Margins.Regular,
     bottom: Constants.Sizes.Margins.Regular,
+  },
+  separator: {
+    position: 'absolute',
+    width: screenWidth,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
 });

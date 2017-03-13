@@ -161,7 +161,7 @@ export default class BuildingHeader extends React.Component {
                 key={facility}
                 onPress={this._openFacilityDescription.bind(this, facility, Translations)}>
               <MaterialIcons
-                  color={'white'}
+                  color={Constants.Colors.primaryWhiteIcon}
                   name={DisplayUtils.getFacilityIconName(facility, Translations)}
                   size={Constants.Sizes.Icons.Medium}
                   style={_styles.facilitiesIcon} />
@@ -222,7 +222,7 @@ const _styles = StyleSheet.create({
   },
   body: {
     fontSize: Constants.Sizes.Text.Body,
-    color: 'white',
+    color: Constants.Colors.primaryWhiteText,
     marginBottom: BANNER_TEXT_SEPARATOR,
     marginLeft: BANNER_TEXT_SEPARATOR,
     marginRight: BANNER_TEXT_SEPARATOR,
@@ -260,7 +260,7 @@ const _styles = StyleSheet.create({
   title: {
     fontSize: Constants.Sizes.Text.Title,
     fontWeight: 'bold',
-    color: 'white',
+    color: Constants.Colors.primaryWhiteText,
     marginBottom: BANNER_TEXT_SEPARATOR,
     marginLeft: BANNER_TEXT_SEPARATOR,
     marginRight: BANNER_TEXT_SEPARATOR,

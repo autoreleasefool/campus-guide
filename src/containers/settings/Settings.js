@@ -472,7 +472,7 @@ class Settings extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   settingContainer: {
     backgroundColor: Constants.Colors.secondaryBackground,
@@ -481,7 +481,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     height: 50,
     alignItems: 'center',
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   settingContent: {
     position: 'absolute',

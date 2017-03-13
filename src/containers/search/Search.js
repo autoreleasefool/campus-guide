@@ -317,7 +317,7 @@ class Search extends React.Component {
       return (
         <TouchableOpacity onPress={this._onSourceSelect.bind(this, null)}>
           <Header
-              backgroundColor={Constants.Colors.polarGrey}
+              backgroundColor={Constants.Colors.tertiaryBackground}
               icon={{ name: `${platformModifier}-arrow-back`, class: 'ionicon' }}
               subtitle={subtitle}
               title={sectionName} />
@@ -337,7 +337,7 @@ class Search extends React.Component {
       return (
         <TouchableOpacity onPress={this._onSourceSelect.bind(this, sectionName)}>
           <Header
-              backgroundColor={Constants.Colors.polarGrey}
+              backgroundColor={Constants.Colors.tertiaryBackground}
               icon={icon}
               subtitle={subtitle}
               subtitleIcon={subtitleIcon}
