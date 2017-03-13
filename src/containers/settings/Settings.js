@@ -70,15 +70,13 @@ import DeviceInfo from 'react-native-device-info';
 import Header from 'Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import ModalHeader from 'ModalHeader';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
 import * as TranslationUtils from 'TranslationUtils';
-
-// Modal padding on iOS
-const HEADER_PADDING_IOS: number = 25;
 
 // Default opacity for tap when setting is not a boolean
 const DEFAULT_OPACITY: number = 0.4;
@@ -276,47 +274,27 @@ class Settings extends React.Component {
   }
 
   /**
-   * Renders a button to close modals.
-   *
-   * @returns {ReactElement<any>} view to close modal
-   */
-  _renderCloseModalButton(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
-    return (
-      <View style={_styles.modalCloseContainer}>
-        <TouchableOpacity onPress={this._closeModal.bind(this)}>
-          <Text style={_styles.modalCloseText}>{Translations.done}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  /**
    * Renders content for the list view modal.
    *
    * @returns {ReactElement<any>} a list view with the rows and sections loaded
    */
   _renderListModal(): ReactElement < any > {
-    let title = null;
-    if (this.state.listModalTitle.length > 0) {
-      title = (
-        <View style={[ _styles.setting, _styles.modalListTitle ]}>
-          <Text style={[ _styles.settingText, _styles.modalListTitleText ]}>{this.state.listModalTitle}</Text>
-        </View>
-      );
-    }
+    // Get current language for translations
+    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
 
     return (
       <View style={[ _styles.container, { backgroundColor: Constants.Colors.primaryBackground }]}>
-        {title}
+        <ModalHeader
+            backgroundColor={Constants.Colors.primaryBackground}
+            rightActionEnabled={true}
+            rightActionText={Translations.done}
+            title={this.state.listModalTitle}
+            onRightAction={this._closeModal.bind(this)} />
         <ListView
             dataSource={this.state.listModalDataSource}
             renderRow={this._renderListModalRow.bind(this)}
             renderSectionHeader={this._renderListModalSectionHeader.bind(this)}
             style={_styles.modalListView} />
-        {this._renderCloseModalButton()}
       </View>
     );
   }
@@ -512,26 +490,7 @@ const _styles = StyleSheet.create({
   modalListViewText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
-    margin: Constants.Sizes.Margins.Regular,
-  },
-  modalListTitle: {
-    marginTop: Platform.OS === 'ios' ? HEADER_PADDING_IOS : 0,
-    backgroundColor: Constants.Colors.primaryBackground,
-  },
-  modalListTitleText: {
-    color: Constants.Colors.primaryWhiteText,
-  },
-  modalCloseContainer: {
-    backgroundColor: Constants.Colors.secondaryBackground,
-    borderTopColor: Constants.Colors.darkTransparentBackground,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    justifyContent: 'flex-end',
-  },
-  modalCloseText: {
     margin: Constants.Sizes.Margins.Expanded,
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
-    textAlign: 'right',
   },
 });
 
