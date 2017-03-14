@@ -84,7 +84,8 @@ export default class StudyFilters extends React.Component {
    * @returns {boolean} returns true if any filters active/inactive property has changed
    */
   shouldComponentUpdate(nextProps: Props): boolean {
-    if (this.props == null || nextProps == null) {
+    // Re-render when filters are first loaded
+    if (this.props.filters.length === 0 && nextProps.filters.length > 0) {
       return true;
     }
 
@@ -94,7 +95,7 @@ export default class StudyFilters extends React.Component {
     }
 
     if (this.props.activeFilters == null || nextProps.activeFilters == null) {
-      return false;
+      return true;
     } else {
       return this.props.activeFilters.length !== nextProps.activeFilters.length;
     }
