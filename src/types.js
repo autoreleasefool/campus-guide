@@ -228,25 +228,26 @@ export type ShuttleDirection = {
 } & (Name | TranslatedName) & (ShuttleRoute | TranslatedShuttleRoute);
 
 //-----------------------------------------------------------------------------
-//  Study rooms
+//  Study spots
 //-----------------------------------------------------------------------------
 
-/** Study room filter descriptions and whether they are active. */
-export type StudyRoomFilter = {
+/** Study spot filter descriptions and whether they are active. */
+export type StudySpotFilter = {
   icon: PlatformIcon, // Icon to represent the filter
 } & (Name | TranslatedName) & (Description | TranslatedDescription);
 
-/** Locations to reserve rooms at the university. */
-export type StudyRoomReservation = (Name | TranslatedName)
+/** Locations to reserve spots at the university. */
+export type StudySpotReservation = (Name | TranslatedName)
   & (Link | TranslatedLink)
   & (Description | TranslatedDescription);
 
-/** Location and properties of a study room. */
-export type StudyRoom = {
+/** Location and properties of a study spot. */
+export type StudySpot = {
+  image: string,              // Name of the image of the study spot
   building: string,           // Building code
   room: string,               // Room number
-  opens: string,              // Time the room opens at
-  closes: string,             // Time the room closes at
+  opens: string,              // Time the spot opens at
+  closes: string,             // Time the spot closes at
   filters: Array < number >,  // List of properties to filter on
 } & ?(Name | TranslatedName) & (Description | TranslatedDescription);
 

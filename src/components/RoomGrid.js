@@ -285,8 +285,7 @@ export default class RoomGrid extends React.Component {
             enableEmptySections={true}
             renderHeader={this._renderHeader.bind(this)}
             renderRow={this._renderRow.bind(this)}
-            renderSeparator={this._renderSeparator.bind(this)}
-            style={_styles.container} />
+            renderSeparator={this._renderSeparator.bind(this)} />
       </View>
     );
   }
@@ -307,7 +306,6 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
   roomDescription: {
-    marginRight: Constants.Sizes.Margins.Regular,
     flex: 1,
   },
   roomName: {

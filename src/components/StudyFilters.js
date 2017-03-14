@@ -36,12 +36,12 @@ import {
 } from 'react-native';
 
 // Types
-import type { Icon, Language, StudyRoomFilter } from 'types';
+import type { Icon, Language, StudySpotFilter } from 'types';
 
 // Type definition for component props.
 type Props = {
   activeFilters?: Array < number >,            // List of filters actively being used
-  filters: Array < StudyRoomFilter >,         // List of available filters
+  filters: Array < StudySpotFilter >,         // List of available filters
   fullSize: boolean,                          // True to make full size, false for shrunken
   language: Language,                         // The current language, selected by the user
   onFilterSelected: (index: number) => void,  // Callback for when a filter is selected
@@ -75,30 +75,6 @@ export default class StudyFilters extends React.Component {
   constructor(props: Props) {
     super(props);
     (this:any)._onSelectFilter = this._onSelectFilter.bind(this);
-  }
-
-  /**
-   * Compares active / inactive filters and re-renders if any have changed.
-   *
-   * @param {Props} nextProps the previous props
-   * @returns {boolean} returns true if any filters active/inactive property has changed
-   */
-  shouldComponentUpdate(nextProps: Props): boolean {
-    // Re-render when filters are first loaded
-    if (this.props.filters.length === 0 && nextProps.filters.length > 0) {
-      return true;
-    }
-
-    // No need to ever re-render the full size screen
-    if (this.props.fullSize) {
-      return false;
-    }
-
-    if (this.props.activeFilters == null || nextProps.activeFilters == null) {
-      return true;
-    } else {
-      return this.props.activeFilters.length !== nextProps.activeFilters.length;
-    }
   }
 
   /**
@@ -141,12 +117,12 @@ export default class StudyFilters extends React.Component {
   /**
    * Draws an icon and name for a filter, at full size.
    *
-   * @param {StudyRoomFilter} filter         the filter to draw
+   * @param {StudySpotFilter} filter         the filter to draw
    * @param {number}          index          the index of the filter in the list
    * @param {boolean}         withBackground true to include a dark background
    * @returns {ReactElement<any>} a name and an icon
    */
-  _renderFullFilter(filter: StudyRoomFilter, index: number, withBackground: boolean): ReactElement < any > {
+  _renderFullFilter(filter: StudySpotFilter, index: number, withBackground: boolean): ReactElement < any > {
     return (
       <TouchableOpacity
           style={_styles.touchableContainer}
@@ -162,12 +138,12 @@ export default class StudyFilters extends React.Component {
   /**
    * Draws an icon and name for a filter, minimized.
    *
-   * @param {StudyRoomFilter} filter         the filter to draw
+   * @param {StudySpotFilter} filter         the filter to draw
    * @param {number}          index          the index of the filter in the list
    * @param {boolean}         withBackground true to include a dark background
    * @returns {ReactElement<any>} a name and an icon
    */
-  _renderMiniFilter(filter: StudyRoomFilter, index: number, withBackground: boolean): ReactElement < any > {
+  _renderMiniFilter(filter: StudySpotFilter, index: number, withBackground: boolean): ReactElement < any > {
     const isActive = this.props.activeFilters != null && this.props.activeFilters.indexOf(index) >= 0;
     return (
       <TouchableOpacity
@@ -246,6 +222,7 @@ export default class StudyFilters extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
+
     if (this.props.fullSize) {
       return this._renderFullSize();
     } else {

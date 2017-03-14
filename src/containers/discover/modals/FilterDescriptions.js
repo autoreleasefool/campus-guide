@@ -35,11 +35,11 @@ import {
 } from 'react-native';
 
 // Types
-import type { Language, StudyRoomFilter } from 'types';
+import type { Language, StudySpotFilter } from 'types';
 
 // Type definition for component props.
 type Props = {
-  filters: Array < StudyRoomFilter >, // List of filters for filtering rooms
+  filters: Array < StudySpotFilter >, // List of filters for filtering spots
   language: Language,                 // The current language, selected by the user
 }
 
@@ -84,10 +84,10 @@ export default class StudySpots extends React.Component {
   /**
    * Renders a description of a filter.
    *
-   * @param {StudyRoomFilter} filter the filter to render
+   * @param {StudySpotFilter} filter the filter to render
    * @returns {ReactElement<any>} the filter icon, name and description
    */
-  _renderRow(filter: StudyRoomFilter): ReactElement < any > {
+  _renderRow(filter: StudySpotFilter): ReactElement < any > {
     const name = TranslationUtils.getTranslatedName(this.props.language, filter) || '';
     const description = TranslationUtils.getTranslatedVariant(this.props.language, 'description', filter) || '';
     const icon = DisplayUtils.getPlatformIcon(Platform.OS, filter);

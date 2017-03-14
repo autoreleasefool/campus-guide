@@ -18,7 +18,7 @@
  * @author Joseph Roque
  * @created 2017-03-09
  * @file StudySpots.js
- * @description List of places to study on campus, along with directions and filtering
+ * @description List of places to study ron campus, along with directions and filtering
  *
  * @flow
  */
@@ -42,9 +42,9 @@ import * as actions from 'actions';
 // Types
 import type {
   Language,
-  StudyRoom,
-  StudyRoomFilter,
-  StudyRoomReservation,
+  StudySpot,
+  StudySpotFilter,
+  StudySpotReservation,
   TimeFormat,
 } from 'types';
 
@@ -54,18 +54,19 @@ type Props = {
   deactivateFilter: (filter: number) => void,       // Deactivates an active study filter
   setFilters: (filters: Array < number >) => void,  // Sets the active filters, removing any other filters
   activeFilters: Array < number >,                  // List of filters actively being used
+  filter: ?string,                                  // Current search terms
   language: Language,                               // The current language, selected by the user
   timeFormat: TimeFormat,                           // Format to display times in
 }
 
 // Type definition for component state.
 type State = {
-  filters: Array < StudyRoomFilter >,           // List of filters for filtering rooms
+  filters: Array < StudySpotFilter >,           // List of filters for filtering spots
   filterDescriptionsVisible: boolean,           // True to show filter descriptions, false to hide
   filterSelected: boolean,                      // Indicates if any filter has been initially selected
   loaded: boolean,                              // Indicates if the data has been loaded for this view
-  rooms: Array < StudyRoom >,                   // List of available study rooms
-  reservations: Array < StudyRoomReservation >, // List of sites to reserve study rooms
+  spots: Array < StudySpot >,                   // List of available study spots
+  reservations: Array < StudySpotReservation >, // List of sites to reserve study spots
 }
 
 // Imports
@@ -73,6 +74,7 @@ import Header from 'Header';
 import FilterDescriptions from './modals/FilterDescriptions';
 import ModalHeader from 'ModalHeader';
 import StudyFilters from 'StudyFilters';
+import StudySpotList from 'StudySpotList';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
@@ -104,13 +106,13 @@ class StudySpots extends React.Component {
       filterDescriptionsVisible: false,
       filterSelected: false,
       loaded: false,
-      rooms: [],
+      spots: [],
       reservations: [],
     };
   }
 
   /**
-   * If the study room info has not been loaded, then load it.
+   * If the study spot info has not been loaded, then load it.
    */
   componentDidMount(): void {
     if (!this.state.loaded) {
@@ -119,7 +121,7 @@ class StudySpots extends React.Component {
           .then((studySpots: Object) => {
             this.setState({
               filters: studySpots.filters,
-              rooms: studySpots.rooms,
+              spots: studySpots.spots,
               reservations: studySpots.reservations,
             });
           })
@@ -153,7 +155,14 @@ class StudySpots extends React.Component {
       } else {
         this.props.activateFilter(index);
       }
+    } else {
+      this.props.setFilters([]);
     }
+  }
+
+  _onSpotSelected(spot: StudySpot): void {
+    // TODO: spot selected
+    console.log(`TODO: ${JSON.stringify(spot)} selected`);
   }
 
   /**
@@ -185,7 +194,16 @@ class StudySpots extends React.Component {
               filters={this.state.filters}
               language={this.props.language} />
         </Modal>
-        <View style={_styles.container} />
+        <View style={_styles.container}>
+          <StudySpotList
+              activeFilters={this.props.activeFilters}
+              filter={this.props.filter}
+              language={this.props.language}
+              spots={this.state.spots}
+              studyFilters={this.state.filters}
+              timeFormat={this.props.timeFormat}
+              onSelect={this._onSpotSelected.bind(this)} />
+        </View>
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: 'filter-list', class: 'material' }}
@@ -246,6 +264,7 @@ const _styles = StyleSheet.create({
 const mapStateToProps = (store) => {
   return {
     activeFilters: store.search.studyFilters,
+    filter: store.search.terms || '',
     language: store.config.options.language,
     timeFormat: store.config.options.preferredTimeFormat,
   };

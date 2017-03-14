@@ -38,7 +38,7 @@ import type { Icon } from 'types';
 // Properties which the parent component should make available to this component.
 type Props = {
   color?: ?string,  // Color of the icon, default is white
-  icon: Icon,      // Large icon to represent the section
+  icon: ?Icon,      // Large icon to represent the section
   size?: ?number,    // Size of the icon, or Constants.Sizes.Icons.Medium
   width?: number,    // Width of parent container, or DEFAULT_WIDTH
 };
@@ -59,7 +59,7 @@ const DEFAULT_WIDTH = 56;
  */
 export default function render(props: Props): ReactElement < any > {
   let icon: ?ReactElement < any > = null;
-  if (props.icon.class === 'material') {
+  if (props.icon && props.icon.class === 'material') {
     icon = (
       <MaterialIcons
           {...props}
@@ -67,7 +67,7 @@ export default function render(props: Props): ReactElement < any > {
           name={props.icon.name}
           size={props.size || Constants.Sizes.Icons.Medium} />
     );
-  } else {
+  } else if (props.icon && props.icon.class === 'ionicon') {
     icon = (
       <Ionicons
           {...props}
