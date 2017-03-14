@@ -108,7 +108,7 @@ export default class RoomGrid extends React.Component {
   componentDidMount(): void {
     if (!this.state.loaded) {
       Configuration.init()
-          .then(() => this._onRoomSearch())
+          .then(() => this._onRoomSearch(this.props))
           .catch((err: any) => console.error('Configuration could not be initialized for room grid.', err));
     }
   }
@@ -120,7 +120,7 @@ export default class RoomGrid extends React.Component {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
-      this._onRoomSearch(nextProps.filter);
+      this._onRoomSearch(nextProps);
     }
   }
 
@@ -133,14 +133,11 @@ export default class RoomGrid extends React.Component {
   /**
    * Filters the rooms in the building and displays them to the user.
    *
-   * @param {?string} searchTerms user input filter terms.
+   * @param {Props} props the props to filter with
    */
-  _filterRooms(searchTerms: ?string): void {
+  _filterRooms({ code, filter, language, rooms, defaultRoomType }: Props): void {
     // Ignore the case of the search terms
-    const adjustedSearchTerms: ?string = (searchTerms == null) ? null : searchTerms.toUpperCase();
-
-    // Get the list of rooms in the building
-    const rooms: Array < BuildingRoom > = this.props.rooms;
+    const adjustedSearchTerms: ?string = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
 
     // Create array for sets of rooms
     const filteredRooms: Array < FilteredRoom > = [];
@@ -148,7 +145,7 @@ export default class RoomGrid extends React.Component {
     // Cache list of room types that match the search terms
     const matchingRoomTypes = [];
     for (let i = 0; i < this._roomTypes.length; i++) {
-      const roomTypeName = TranslationUtils.getTranslatedName(this.props.language, this._roomTypes[i]);
+      const roomTypeName = TranslationUtils.getTranslatedName(language, this._roomTypes[i]);
       if (adjustedSearchTerms == null
           || (roomTypeName != null && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
         matchingRoomTypes.push(i);
@@ -156,11 +153,11 @@ export default class RoomGrid extends React.Component {
     }
 
     for (let i = 0; i < rooms.length; i++) {
-      const roomName: string = `${this.props.code} ${rooms[i].name.toUpperCase()}`;
-      const roomAltName: ?string = TranslationUtils.getTranslatedVariant(this.props.language, 'alt_name', rooms[i]);
+      const roomName: string = `${code} ${rooms[i].name.toUpperCase()}`;
+      const roomAltName: ?string = TranslationUtils.getTranslatedVariant(language, 'alt_name', rooms[i]);
 
       if (!rooms[i].type) {
-        rooms[i].type = this.props.defaultRoomType;
+        rooms[i].type = defaultRoomType;
       }
 
       // If the search terms are empty, or the room contains the terms, add it to the list
@@ -172,7 +169,7 @@ export default class RoomGrid extends React.Component {
           altName: roomAltName,
           icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[rooms[i].type]),
           name: roomName,
-          type: TranslationUtils.getTranslatedName(this.props.language, this._roomTypes[rooms[i].type]) || '',
+          type: TranslationUtils.getTranslatedName(language, this._roomTypes[rooms[i].type]) || '',
         });
       }
     }
@@ -204,17 +201,17 @@ export default class RoomGrid extends React.Component {
   /**
    * Calls _filterRooms with all rooms, and the search terms.
    *
-   * @param {string} searchTerms user input filter terms.
+   * @param {Props} props the props to filter with
    */
-  _onRoomSearch(searchTerms: ?string): void {
+  _onRoomSearch(props: Props): void {
     if (this.roomTypes == null) {
       this._getRoomTypes()
           .then((roomTypes: Array < RoomType >) => {
             this._roomTypes = roomTypes;
-            this._filterRooms(searchTerms);
+            this._filterRooms(props);
           });
     } else {
-      this._filterRooms(searchTerms);
+      this._filterRooms(props);
     }
   }
 
@@ -244,7 +241,9 @@ export default class RoomGrid extends React.Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => this.props.onSelect(this.props.code, room.name)}>
+      <TouchableOpacity
+          key={room.name}
+          onPress={() => this.props.onSelect(this.props.code, room.name)}>
         <View style={_styles.room}>
           {icon}
           <View style={_styles.roomDescription}>
