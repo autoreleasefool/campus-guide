@@ -44,6 +44,12 @@ export type Link = {link: string};
 /** A link, translated for English and French. */
 export type TranslatedLink = {link_en: string, link_fr: string};
 
+/** A description, valid in English or French. */
+export type Description = {description: string};
+
+/** A description, translated for English and French. */
+export type TranslatedDescription = {description_en: string, description_fr: string};
+
 /** A set of details, valid in English or French. */
 export type Details = {
   image: string,
@@ -205,21 +211,44 @@ export type ShuttleSchedule = {
   directions: Array < ShuttleDirection >, // Directions and times for the schedule
 } & (Name | TranslatedName);
 
-// Description of the route the shuttle takes, valid in English or French
+/** Description of the route the shuttle takes, valid in English or French */
 type ShuttleRoute = {
   route: string,  // Description of the route the shuttle takes
 }
 
-// Description of the route the shuttle takes, translated to English and French
+/** Description of the route the shuttle takes, translated to English and French */
 type TranslatedShuttleRoute = {
   route_en: string, // Description of the route the shuttle takes in English
   route_fr: string, // Description of the route the shuttle takes in French
 }
 
-// Describes a direction of the shuttle and when it departs in that direction
+/** Describes a direction of the shuttle and when it departs in that direction */
 export type ShuttleDirection = {
   day_times: Object,  // Days and times which the shuttle departs
 } & (Name | TranslatedName) & (ShuttleRoute | TranslatedShuttleRoute);
+
+//-----------------------------------------------------------------------------
+//  Study rooms
+//-----------------------------------------------------------------------------
+
+/** Study room filter descriptions and whether they are active. */
+export type StudyRoomFilter = {
+  icon: PlatformIcon, // Icon to represent the filter
+} & (Name | TranslatedName) & (Description | TranslatedDescription);
+
+/** Locations to reserve rooms at the university. */
+export type StudyRoomReservation = (Name | TranslatedName)
+  & (Link | TranslatedLink)
+  & (Description | TranslatedDescription);
+
+/** Location and properties of a study room. */
+export type StudyRoom = {
+  building: string,           // Building code
+  room: string,               // Room number
+  opens: string,              // Time the room opens at
+  closes: string,             // Time the room closes at
+  filters: Array < number >,  // List of properties to filter on
+} & ?(Name | TranslatedName) & (Description | TranslatedDescription);
 
 //-----------------------------------------------------------------------------
 //  Courses
@@ -290,14 +319,14 @@ export type Route = {
 //  Menus
 //-----------------------------------------------------------------------------
 
-// Expected format for discover sections.
+/** Expected format for discover sections. */
 export type DiscoverSection = {
   icon: PlatformIcon, // Icon for the section to display
   id: string,         // Unique id to report which section was selected
   image?: string,     // Image to display when section is expanded
 } & (Name | TranslatedName);
 
-// Expected format for link sections.
+/** Expected format for link sections. */
 export type LinkSection = {
   icon: PlatformIcon,                 // Icon for the section to display
   id: string,                         // Unique id to report which section was selected
@@ -379,6 +408,7 @@ export type ConfigFile = {
   version: number,  // Version number
 };
 
+/** Describes the progress of an app update. */
 export type Update = {
   currentDownload?: ?string,           // Name of file being downloaded
   filesDownloaded?: Array < string >,  // Array of filenames downloaded

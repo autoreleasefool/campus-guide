@@ -53,6 +53,7 @@ import * as Constants from 'Constants';
 import Home from './Home';
 import Links from './Links';
 import Shuttle from './Shuttle';
+import StudySpots from './StudySpots';
 import Transit from './Transit';
 
 class Discover extends React.Component {
@@ -141,6 +142,10 @@ class Discover extends React.Component {
       case Constants.Views.Discover.Shuttle:
         return (
           <Shuttle />
+        );
+      case Constants.Views.Discover.StudySpots:
+        return (
+          <StudySpots />
         );
       default:
         // TODO: generic error view?

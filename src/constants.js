@@ -196,10 +196,11 @@ const Find = {
  * Set of views to navigate through within DISCOVER tab
  */
 const Discover = {
-  Home: 0,    // Home discover view where user can see elements of university they can explore
-  Links: 1,   // Displays a list of useful links to the user
-  Transit: 2, // Displays information about the transit system in the city
-  Shuttle: 3, // Displays information about the university's campus shuttle
+  Home: 0,        // Home discover view where user can see elements of university they can explore
+  Links: 1,       // Displays a list of useful links to the user
+  Transit: 2,     // Displays information about the transit system in the city
+  Shuttle: 3,     // Displays information about the university's campus shuttle
+  StudySpots: 4,  // Displays a list of study spots around campus and properties of them
 };
 
 module.exports = {
@@ -218,10 +219,11 @@ module.exports = {
     primaryBlackText: colors.black,                       // Primary color when black text is needed
     secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
 
-    primaryWhiteIcon: colors.polarGrey,                   // Primary color when white text is needed
-    secondaryWhiteIcon: colors.transparentPolarGrey,      // Secondary color when white text is needed
-    primaryBlackIcon: colors.black,                       // Primary color when black text is needed
-    secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black text is needed
+    primaryWhiteIcon: colors.polarGrey,                   // Primary color when white icons are needed
+    secondaryWhiteIcon: colors.transparentPolarGrey,      // Secondary color when white icons are needed
+    tertiaryWhiteIcon: colors.veryTransparentPolarGrey,   // Tertiary color when white icons are needed
+    primaryBlackIcon: colors.black,                       // Primary color when black icons are needed
+    secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black icons are needed
 
     darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
     darkMoreTransparentBackground: 'rgba(0,0,0,0.2)',     // Dark transparent background color for components
