@@ -57,12 +57,12 @@ export default class ModalHeader extends React.Component {
   props: {
     backgroundColor?: string,     // Background color for the view
     title: string,                // Title for the header
-    leftActionEnabled: ?boolean,  // Indicates if the left action should be clickable
-    leftActionText: ?string,      // Left action text
-    rightActionEnabled: ?boolean, // Indicates if the right action should be clickable
-    rightActionText: ?string,     // Right action text
-    onLeftAction: ?VoidFunction,  // Callback for when the left action is pressed
-    onRightAction: ?VoidFunction, // Callback for when the right action is pressed
+    leftActionEnabled?: boolean,  // Indicates if the left action should be clickable
+    leftActionText?: string,      // Left action text
+    rightActionEnabled?: boolean, // Indicates if the right action should be clickable
+    rightActionText?: string,     // Right action text
+    onLeftAction?: VoidFunction,  // Callback for when the left action is pressed
+    onRightAction?: VoidFunction, // Callback for when the right action is pressed
   };
 
   /**

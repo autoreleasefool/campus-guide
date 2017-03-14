@@ -71,8 +71,8 @@ import * as Constants from 'Constants';
 import * as TranslationUtils from 'TranslationUtils';
 
 // Height of the navbar
-const NAVBAR_HEIGHT: number = 50;
-const ICON_SIZE: number = 50;
+const NAVBAR_HEIGHT: number = 45;
+const ICON_SIZE: number = 45;
 
 // Width of the search input
 const { width } = Dimensions.get('window');
