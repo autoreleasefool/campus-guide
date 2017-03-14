@@ -183,6 +183,7 @@ export default class StudySpotList extends React.Component {
       // If the search terms are empty, or the spot properties contains the terms, add it to the list
       if (adjustedSearchTerms == null
           || spot.building.toUpperCase().indexOf(adjustedSearchTerms) >= 0
+          || spot.room.toUpperCase().indexOf(adjustedSearchTerms) >= 0
           || (spot.name && spot.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (spot.name_en && spot.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (spot.name_fr && spot.name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {

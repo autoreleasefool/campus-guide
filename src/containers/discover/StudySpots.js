@@ -57,6 +57,7 @@ type Props = {
   filter: ?string,                                  // Current search terms
   language: Language,                               // The current language, selected by the user
   timeFormat: TimeFormat,                           // Format to display times in
+  showSearch: (show: boolean) => void,              // Shows or hides the search button
 }
 
 // Type definition for component state.
@@ -146,6 +147,7 @@ class StudySpots extends React.Component {
   _onFilterSelected(index: number): void {
     LayoutAnimation.easeInEaseOut();
     this.setState({ filterSelected: true });
+    this.props.showSearch(true);
 
     if (index >= 0) {
       if (this.props.activeFilters == null) {
@@ -275,6 +277,7 @@ const mapDispatchToProps = (dispatch) => {
     activateFilter: (filter: number) => dispatch(actions.activateStudyFilter(filter)),
     deactivateFilter: (filter: number) => dispatch(actions.deactivateStudyFilter(filter)),
     setFilters: (filters: Array < number >) => dispatch(actions.setStudyFilters(filters)),
+    showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
   };
 };
 
