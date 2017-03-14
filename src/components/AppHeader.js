@@ -137,6 +137,7 @@ class AppHeader extends React.Component {
   _toggleSearch(): void {
     if (this.state.shouldShowSearchBar) {
       this.refs.SearchInput.blur();
+      this.props.onSearch(null);
     } else {
       this.refs.SearchInput.focus();
     }
