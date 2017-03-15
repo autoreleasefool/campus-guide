@@ -27,6 +27,7 @@
 // React imports
 import React from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Clipboard,
   Linking,
@@ -57,6 +58,7 @@ type Props = {
 type State = {
   anyResults: boolean,                  // False if no search results were returned
   filteredResults: ListView.DataSource, // Categories and their top results
+  performingSearch: boolean,            // Indicates if a search is in progresss, to display an indicator
   singleResults: ListView.DataSource,   // List of search results for a single category
   singleResultTitle: string,            // Category of search results being displayed
 };
@@ -75,6 +77,9 @@ import * as TranslationUtils from 'TranslationUtils';
 const FILTERED = 0;
 // Render full results for a single category
 const SINGLE = 1;
+
+// Time to delay searches by while user types
+const SEARCH_DELAY_TIME = 800;
 
 class Search extends React.Component {
 
@@ -101,6 +106,7 @@ class Search extends React.Component {
         rowHasChanged: (r1, r2) => r1 !== r2,
         sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
       }),
+      performingSearch: false,
       singleResults: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
       }),
@@ -112,7 +118,7 @@ class Search extends React.Component {
    * Retrieve the search results.
    */
   componentWillMount(): void {
-    this._updateSearch(this.props.filter);
+    // this._delaySearch(this.props, this.props);
   }
 
   /**
@@ -121,7 +127,16 @@ class Search extends React.Component {
    * @param {Props} nextProps updated props
    */
   componentWillReceiveProps(nextProps: Props): void {
-    this._updateSearch(nextProps.filter);
+    this._delaySearch(this.props, nextProps);
+  }
+
+  /**
+   * Clears the search timeout.
+   */
+  componentWillUnmount(): void {
+    if (this._delayTimer != 0) {
+      clearTimeout(this._delayTimer);
+    }
   }
 
   /** Set of complete, unaltered search results */
@@ -136,6 +151,9 @@ class Search extends React.Component {
   /** Set of icons to display for each search result. */
   _searchIcons: Object;
 
+  /** ID of timer to delay search. */
+  _delayTimer: number = 0;
+
   /**
    * Sets the transition between two views in the navigator.
    *
@@ -143,6 +161,29 @@ class Search extends React.Component {
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
+  }
+
+  /**
+   * Delays the current search by a constant each time the search terms update, to allow the user
+   * to stop typing before searching.
+   *
+   * @param {Props} prevProps the props last filtered by
+   * @param {Props} nextProps the props to filter by
+   */
+  _delaySearch(prevProps: Props, nextProps: Props): void {
+    if (!this.state.performingSearch) {
+      this.setState({ performingSearch: true });
+    }
+
+    // Clear any waiting searches
+    if (this._delayTimer != 0) {
+      clearTimeout(this._delayTimer);
+    }
+
+    this._delayTimer = setTimeout(() => {
+      this._delayTimer = 0;
+      this._updateSearch(prevProps, nextProps);
+    }, SEARCH_DELAY_TIME);
   }
 
   /**
@@ -169,15 +210,16 @@ class Search extends React.Component {
   /**
    * Updates the results displayed of the search through the entire app.
    *
-   * @param {?string} searchTerms user search query
+   * @param {Props} prevProps the props last filtered by
+   * @param {Props} nextProps the props to filter by
    */
-  _updateSearch(searchTerms: ?string): void {
-    if (this.props.filter != null && this.props.filter.length > 0
-        && searchTerms != null && searchTerms.length > 0
-        && searchTerms.indexOf(this.props.filter) >= 0
+  _updateSearch(prevProps: Props, nextProps: Props): void {
+    if (prevProps.filter != null && prevProps.filter.length > 0
+        && nextProps.filter != null && nextProps.filter.length > 0
+        && nextProps.filter.indexOf(prevProps.filter) >= 0
         && Object.keys(this._searchResults).length > 0) {
 
-      this._searchResults = Searchable.narrowResults(searchTerms, this._searchResults);
+      this._searchResults = Searchable.narrowResults(nextProps.filter, this._searchResults);
       this._filteredResults = this._filterTopResults(this._searchResults);
 
       if (this.state.singleResultTitle.length > 0) {
@@ -185,12 +227,13 @@ class Search extends React.Component {
       }
 
       this.setState({
+        performingSearch: false,
         anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
         filteredResults: this.state.filteredResults.cloneWithRowsAndSections(this._filteredResults),
         singleResults: this.state.singleResults.cloneWithRows(this._singleResults),
       });
     } else {
-      Searchable.getResults(this.props.language, searchTerms)
+      Searchable.getResults(nextProps.language, nextProps.filter)
           .then((results: Object) => {
             this._searchResults = results.results;
             this._searchIcons = results.icons;
@@ -201,6 +244,7 @@ class Search extends React.Component {
             }
 
             this.setState({
+              performingSearch: false,
               anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
               filteredResults: this.state.filteredResults.cloneWithRowsAndSections(this._filteredResults),
               singleResults: this.state.singleResults.cloneWithRows(this._singleResults),
@@ -247,6 +291,21 @@ class Search extends React.Component {
         this.refs.Navigator.push({ id: SINGLE });
       }
     }
+  }
+
+  /**
+   * Renders an activity indicator when the user's search is being processed.
+   *
+   * @returns {ReactElement<any>} an activity indicator
+   */
+  _renderActivityIndicator(): ReactElement < any > {
+    return (
+      <View style={_styles.activityIndicator}>
+        <ActivityIndicator
+            animating={this.state.performingSearch}
+            color={Constants.Colors.tertiaryBackground} />
+      </View>
+    );
   }
 
   /**
@@ -351,9 +410,14 @@ class Search extends React.Component {
    * Renders a view which indicates the user's search returned no results.
    *
    * @param {Object} Translations translations for the current language
-   * @returns {ReactElement<any>} a centred text view with text indicating no results were found
+   * @returns {?ReactElement<any>} a centred text view with text indicating no results were found
    */
-  _renderNoResults(Translations: Object): ReactElement < any > {
+  _renderNoResults(Translations: Object): ?ReactElement < any > {
+    // If a search is being performed, do not render anything
+    if (this.state.performingSearch) {
+      return null;
+    }
+
     const searchTerms = this.props.filter || '';
     return (
       <View style={[ _styles.container, _styles.noResults ]}>
@@ -476,6 +540,7 @@ class Search extends React.Component {
             ref='Navigator'
             renderScene={this._renderScene.bind(this)}
             style={_styles.container} />
+        {this._renderActivityIndicator()}
       </View>
     );
   }
@@ -485,6 +550,15 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
+  },
+  activityIndicator: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   result: {
     flex: 1,
