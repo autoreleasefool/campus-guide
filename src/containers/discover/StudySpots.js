@@ -58,6 +58,7 @@ type Props = {
   language: Language,                               // The current language, selected by the user
   timeFormat: TimeFormat,                           // Format to display times in
   showSearch: (show: boolean) => void,              // Shows or hides the search button
+  navigateToStudySpot: (spot: StudySpot) => void,   // Opens directions to the study spot
 }
 
 // Type definition for component state.
@@ -162,9 +163,13 @@ class StudySpots extends React.Component {
     }
   }
 
+  /**
+   * Display navigation directions to the spot.
+   *
+   * @param {StudySpot} spot the spot selected by the user
+   */
   _onSpotSelected(spot: StudySpot): void {
-    // TODO: spot selected
-    console.log(`TODO: ${JSON.stringify(spot)} selected`);
+    this.props.navigateToStudySpot(spot);
   }
 
   /**
@@ -278,6 +283,12 @@ const mapDispatchToProps = (dispatch) => {
     deactivateFilter: (filter: number) => dispatch(actions.deactivateStudyFilter(filter)),
     setFilters: (filters: Array < number >) => dispatch(actions.setStudyFilters(filters)),
     showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
+    navigateToStudySpot: (spot: StudySpot) => {
+      dispatch(actions.setHeaderTitle('directions', 'find'));
+      dispatch(actions.setDestination({ code: spot.building, room: spot.room }));
+      dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
+      dispatch(actions.switchTab('find'));
+    },
   };
 };
 
