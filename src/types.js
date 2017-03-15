@@ -251,6 +251,13 @@ export type StudySpot = {
   filters: Array < number >,  // List of properties to filter on
 } & ?(Name | TranslatedName) & (Description | TranslatedDescription);
 
+/** Information about study spots. */
+export type StudySpotInfo = {
+  filters: Array < StudySpotFilter >,
+  reservations: Array < StudySpotReservation >,
+  spots: Array < StudySpot >,
+};
+
 //-----------------------------------------------------------------------------
 //  Courses
 //-----------------------------------------------------------------------------

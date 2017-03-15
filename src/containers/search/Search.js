@@ -487,11 +487,13 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.secondaryBackground,
   },
   result: {
+    flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: Constants.Colors.secondaryBackground,
   },
   resultText: {
+    flex: 1,
     marginBottom: Constants.Sizes.Margins.Expanded,
     marginTop: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
@@ -560,30 +562,29 @@ const mapDispatchToProps = (dispatch) => {
           break;
         }
         case 'Rooms':
-        case 'Chambres': {
-          const name = {
-            name_en: TranslationUtils.getTranslatedName('en', data.building) || '',
-            name_fr: TranslationUtils.getTranslatedName('fr', data.building) || '',
-          };
-
-          dispatch(actions.setHeaderTitle(name, 'find'));
+        case 'Chambres':
+          dispatch(actions.setHeaderTitle('directions', 'find'));
           dispatch(actions.setDestination({ code: data.code, room: data.room }));
           dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
           dispatch(actions.switchTab('find'));
           break;
-        }
         case 'Useful links':
-        case 'Liens utiles': {
+        case 'Liens utiles':
           dispatch(actions.switchLinkCategory(data));
           dispatch(actions.switchDiscoverView(Constants.Views.Discover.Links));
           dispatch(actions.switchTab('discover'));
           break;
-        }
         case 'External links':
-        case 'Liens externes': {
+        case 'Liens externes':
           ExternalUtils.openLink(data.link, data.translations, Linking, Alert, Clipboard, TextUtils);
           break;
-        }
+        case 'Study spots':
+        case 'Taches d\'étude':
+          dispatch(actions.setHeaderTitle('directions', 'find'));
+          dispatch(actions.setDestination({ code: data.code, room: data.room }));
+          dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
+          dispatch(actions.switchTab('find'));
+          break;
         default:
           throw new Error(`Search result type not recognized: ${sectionID}`);
       }

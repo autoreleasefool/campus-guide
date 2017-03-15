@@ -134,7 +134,6 @@ function _getRoomResults(language: Language,
                   || roomName.toUpperCase().indexOf(searchTerms) >= 0
                   || (roomAltName != null && roomAltName.toUpperCase().indexOf(searchTerms) >= 0)) {
                 const description = TranslationUtils.getTranslatedName(language, roomTypes[room.type]) || '';
-                const title = TranslationUtils.getTranslatedName(language, building) || '';
                 const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomTypes[room.type]);
 
                 const matchedTerms = [ roomName.toUpperCase(), description.toUpperCase() ];
@@ -147,7 +146,7 @@ function _getRoomResults(language: Language,
                   data: { building: building, code: building.code, room: room.name },
                   icon: icon || { name: 'search', class: 'material' },
                   matchedTerms: matchedTerms,
-                  title: `${title} > ${room.name}`,
+                  title: `${building.code} ${room.name}`,
                 });
               }
             }
