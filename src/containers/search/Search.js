@@ -300,7 +300,9 @@ class Search extends React.Component {
    */
   _renderActivityIndicator(): ReactElement < any > {
     return (
-      <View style={_styles.activityIndicator}>
+      <View
+          pointerEvents={'none'}
+          style={_styles.activityIndicator}>
         <ActivityIndicator
             animating={this.state.performingSearch}
             color={Constants.Colors.tertiaryBackground} />
