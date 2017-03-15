@@ -50,7 +50,7 @@ function _getBuildingResults(language: Language,
                              searchTerms: string,
                              buildings: Array < any >): Promise < Array < SearchResult > > {
 
-  /* TODO: replace buildings: Array < any > with buildings: Array < Building > */
+  /* FIXME: replace buildings: Array < any > with buildings: Array < Building > */
 
   return new Promise((resolve) => {
     const results: Array < SearchResult > = [];

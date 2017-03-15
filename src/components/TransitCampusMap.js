@@ -99,7 +99,7 @@ export default class TransitCampusMap extends React.Component {
     this.state = {
       campus: null,
 
-      // TODO: figure out better way to define default position
+      // FIXME: figure out better way to define default position
       initialRegion: {
         latitude: 45.4222,
         longitude: -75.6824,
@@ -205,9 +205,6 @@ export default class TransitCampusMap extends React.Component {
         }
       }
     }
-
-    // TODO: onCalloutPress (below) does not currently work for iOS
-    // Follow progress at https://github.com/airbnb/react-native-maps/issues/286
 
     return (
       <MapView

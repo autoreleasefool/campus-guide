@@ -306,7 +306,7 @@ class CourseModal extends React.Component {
    */
   _showSemesterPicker() {
     if (Platform.OS === 'android') {
-      console.log('TODO: setup android picker');
+      // FIXME: setup android picker
       throw new Error('No android picker setup');
     } else {
       this.refs.Navigator.push({ id: PICKER });

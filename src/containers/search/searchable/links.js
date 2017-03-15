@@ -63,7 +63,7 @@ function _getResults(language: Language,
           || ExternalUtils.getDefaultLink();
       links.push({
         description: sectionName,
-        data: { link: translatedLink, translations: Translations }, // TODO: why did i do this
+        data: { link: translatedLink, language: language },
         icon: {
           name: iconName,
           class: 'ionicon',

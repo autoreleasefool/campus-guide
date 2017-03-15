@@ -263,7 +263,7 @@ class LectureModal extends React.Component {
   _showPicker(picking: number): void {
     if (picking === PICKER_STARTS || picking === PICKER_ENDS) {
       if (Platform.OS === 'android') {
-        console.log('TODO: setup android picker');
+        // FIXME: setup android picker
         throw new Error('No android picker setup');
       } else {
         this.refs.Navigator.push({ id: TIME_PICKER, picking });

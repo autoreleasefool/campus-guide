@@ -637,6 +637,12 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(actions.switchTab('find'));
           break;
         }
+        case 'External links':
+        case 'Liens externes': {
+          const Translations: Object = TranslationUtils.getTranslations(data.language);
+          ExternalUtils.openLink(data.link, Translations, Linking, Alert, Clipboard, TextUtils);
+          break;
+        }
         case 'Rooms':
         case 'Chambres':
           dispatch(actions.setHeaderTitle('directions', 'find'));
@@ -649,10 +655,6 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(actions.switchLinkCategory(data));
           dispatch(actions.switchDiscoverView(Constants.Views.Discover.Links));
           dispatch(actions.switchTab('discover'));
-          break;
-        case 'External links':
-        case 'Liens externes':
-          ExternalUtils.openLink(data.link, data.translations, Linking, Alert, Clipboard, TextUtils);
           break;
         case 'Study spots':
         case 'Taches d\'étude':
