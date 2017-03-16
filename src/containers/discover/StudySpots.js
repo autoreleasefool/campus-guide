@@ -75,6 +75,7 @@ type State = {
 import Header from 'Header';
 import FilterDescriptions from './modals/FilterDescriptions';
 import ModalHeader from 'ModalHeader';
+import Snackbar from 'react-native-snackbar';
 import StudyFilters from 'StudyFilters';
 import StudySpotList from 'StudySpotList';
 import * as Configuration from 'Configuration';
@@ -151,11 +152,20 @@ class StudySpots extends React.Component {
     this.props.showSearch(true);
 
     if (index >= 0) {
+      const filterName = Translations.getName(this.props.language, this.state.filters[index]) || '';
       if (this.props.activeFilters == null) {
         this.props.setFilters([ index ]);
       } else if (this.props.activeFilters.indexOf(index) >= 0) {
+        Snackbar.show({
+          title: `${Translations.get(this.props.language, 'filter_removed')}: ${filterName}`,
+          duration: Snackbar.LENGTH_SHORT,
+        });
         this.props.deactivateFilter(index);
       } else {
+        Snackbar.show({
+          title: `${Translations.get(this.props.language, 'filter_added')}: ${filterName}`,
+          duration: Snackbar.LENGTH_SHORT,
+        });
         this.props.activateFilter(index);
       }
     } else {
