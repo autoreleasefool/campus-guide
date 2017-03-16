@@ -39,3 +39,4 @@ react-native link react-native-vector-icons
 react-native link react-native-maps
 react-native link react-native-device-info
 react-native link react-native-fs
+react-native link react-native-snackbar
