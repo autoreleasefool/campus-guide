@@ -71,7 +71,7 @@ import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as Searchable from './Searchable';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Render top filtered results
 const FILTERED = 0;
@@ -313,14 +313,13 @@ class Search extends React.Component {
   /**
    * Renders a view which indicates the user's has not performed a search yet.
    *
-   * @param {Object} Translations translations for the current language
    * @returns {ReactElement<any>} a centred text view with text indicating there is no search
    */
-  _renderEmptySearch(Translations: Object): ReactElement < any > {
+  _renderEmptySearch(): ReactElement < any > {
     return (
       <View style={[ _styles.container, _styles.noSearch ]}>
         <Text style={_styles.noSearchText}>
-          {`${Translations.no_search}`}
+          {`${Translations.get(this.props.language, 'no_search')}`}
         </Text>
       </View>
     );
@@ -368,12 +367,10 @@ class Search extends React.Component {
    * @returns {ReactElement<any>} a {SectionHeader} with the name of the source.
    */
   _renderSource(sectionData: Object, sectionName: string, nonExpandable: ?boolean): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     if (nonExpandable) {
       const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
-      const subtitle = `${this._searchResults[sectionName].length} ${Translations.results.toLowerCase()}`;
+      const numberOfResults = this._searchResults[sectionName].length;
+      const subtitle = `${numberOfResults} ${Translations.get(this.props.language, 'results').toLowerCase()}`;
 
       return (
         <TouchableOpacity onPress={this._onSourceSelect.bind(this, null)}>
@@ -391,7 +388,7 @@ class Search extends React.Component {
       let subtitle = null;
       let subtitleIcon = null;
       if (this._searchResults[sectionName].length > 2) {
-        subtitle = `${this._searchResults[sectionName].length - 2} ${Translations.more}`;
+        subtitle = `${this._searchResults[sectionName].length - 2} ${Translations.get(this.props.language, 'more')}`;
         subtitleIcon = { name: 'chevron-right', class: 'material' };
       }
 
@@ -411,10 +408,9 @@ class Search extends React.Component {
   /**
    * Renders a view which indicates the user's search returned no results.
    *
-   * @param {Object} Translations translations for the current language
    * @returns {?ReactElement<any>} a centred text view with text indicating no results were found
    */
-  _renderNoResults(Translations: Object): ?ReactElement < any > {
+  _renderNoResults(): ?ReactElement < any > {
     // If a search is being performed, do not render anything
     if (this.state.performingSearch) {
       return null;
@@ -424,7 +420,7 @@ class Search extends React.Component {
     return (
       <View style={[ _styles.container, _styles.noResults ]}>
         <Text style={_styles.noResultsText}>
-          {`${Translations.no_results_for} '${searchTerms}'`}
+          {`${Translations.get(this.props.language, 'no_results_for')} '${searchTerms}'`}
         </Text>
       </View>
     );
@@ -451,12 +447,9 @@ class Search extends React.Component {
    * @returns {ReactElement<any>} a list of results
    */
   _renderFilteredResults(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     let results = null;
     if (this.props.filter == null || this.props.filter.length === 0) {
-      results = this._renderEmptySearch(Translations);
+      results = this._renderEmptySearch();
     } else if (this.state.anyResults) {
       results = (
         <ListView
@@ -468,7 +461,7 @@ class Search extends React.Component {
             renderSeparator={this._renderSeparator.bind(this)} />
       );
     } else {
-      results = this._renderNoResults(Translations);
+      results = this._renderNoResults();
     }
 
     return (
@@ -484,12 +477,9 @@ class Search extends React.Component {
    * @returns {ReactElement<any>} a list of results
    */
   _renderSingleResults(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     let results = null;
     if (this.props.filter == null || !this.state.anyResults) {
-      results = this._renderNoResults(Translations);
+      results = this._renderNoResults();
     } else {
       results = (
         <ListView
@@ -627,8 +617,8 @@ const mapDispatchToProps = (dispatch) => {
         case 'Buildings':
         case 'Bâtiments': {
           const name = {
-            name_en: TranslationUtils.getTranslatedName('en', data) || '',
-            name_fr: TranslationUtils.getTranslatedName('fr', data) || '',
+            name_en: Translations.getEnglishName(data) || '',
+            name_fr: Translations.getFrenchName(data) || '',
           };
 
           dispatch(actions.setHeaderTitle(name, 'find'));
@@ -638,11 +628,9 @@ const mapDispatchToProps = (dispatch) => {
           break;
         }
         case 'External links':
-        case 'Liens externes': {
-          const Translations: Object = TranslationUtils.getTranslations(data.language);
-          ExternalUtils.openLink(data.link, Translations, Linking, Alert, Clipboard, TextUtils);
+        case 'Liens externes':
+          ExternalUtils.openLink(data.link, data.language, Linking, Alert, Clipboard, TextUtils);
           break;
-        }
         case 'Rooms':
         case 'Chambres':
           dispatch(actions.setHeaderTitle('directions', 'find'));

@@ -55,7 +55,7 @@ type State = {
 import moment from 'moment';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 const { width } = Dimensions.get('window');
 const TIMES_PER_ROW = 2;
@@ -92,23 +92,20 @@ export default class ShuttleTable extends React.Component {
    * @returns {ReactElement<any>} a set of text views with information
    */
   _renderHeader(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     // Warning to notify users if current date is excluded from schedule
     let dateExcluded = null;
     const currentDate: string = moment().format('YYYY-MM-DD');
     if (this.props.schedule.excluded_dates.indexOf(currentDate) >= 0) {
       dateExcluded = (
-        <Text style={_styles.info}>{Translations.shuttle_not_in_service}</Text>
+        <Text style={_styles.info}>{Translations.get(this.props.language, 'shuttle_not_in_service')}</Text>
       );
     }
 
     return (
       <View style={_styles.header}>
         {dateExcluded}
-        <Text style={_styles.info}>{Translations.shuttle_travel_time}</Text>
-        <Text style={_styles.info}>{Translations.shuttle_id_required}</Text>
+        <Text style={_styles.info}>{Translations.get(this.props.language, 'shuttle_travel_time')}</Text>
+        <Text style={_styles.info}>{Translations.get(this.props.language, 'shuttle_id_required')}</Text>
       </View>
     );
   }
@@ -121,13 +118,10 @@ export default class ShuttleTable extends React.Component {
    * @returns {ReactElement<any>} the header for a certain section
    */
   _renderSectionHeader(sectionData: Object, header: string): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     if (header === 'excluded_dates') {
       return (
         <View style={_styles.sectionHeaderContainer}>
-          <Text style={_styles.sectionHeader}>{Translations.excluded_dates}</Text>
+          <Text style={_styles.sectionHeader}>{Translations.get(this.props.language, 'excluded_dates')}</Text>
         </View>
       );
     } else {

@@ -39,7 +39,7 @@ import type { Building, Language, Name, TranslatedName } from 'types';
 import BuildingGrid from 'BuildingGrid';
 import Header from 'Header';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Number of columns to display in building grid
 const BUILDING_COLUMNS: number = 3;
@@ -63,8 +63,8 @@ class FindHome extends React.Component {
   _onBuildingSelect(building: ?Building): void {
     if (building != null) {
       const name = {
-        name_en: TranslationUtils.getTranslatedName('en', building) || '',
-        name_fr: TranslationUtils.getTranslatedName('fr', building) || '',
+        name_en: Translations.getEnglishName(building) || '',
+        name_fr: Translations.getFrenchName(building) || '',
       };
 
       this.props.onBuildingSelect(building, name);
@@ -77,14 +77,11 @@ class FindHome extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     return (
       <View style={_styles.container}>
         <Header
             icon={{ name: 'store', class: 'material' }}
-            title={Translations.building_directory} />
+            title={Translations.get(this.props.language, 'building_directory')} />
         <View style={_styles.container}>
           <BuildingGrid
               columns={BUILDING_COLUMNS}

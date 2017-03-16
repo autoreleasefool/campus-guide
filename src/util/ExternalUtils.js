@@ -25,19 +25,25 @@
  */
 'use strict';
 
+// Types
+import type { Language } from 'types';
+
+// Imports
+import * as Translations from 'Translations';
+
 /**
  * Opens a URL if the URL is valid.
  *
  * @param {?string} url         URL to open
- * @param {Object} Translations translations in the current language of certain text
- * @param {Object} Linking      an instance of the React Native Linking class
- * @param {Object} Alert        an instance of the React Native Alert class
- * @param {Object} Clipboard    an instance of the React Native Clipboard class
- * @param {Object} TextUtils    an instance of the TextUtils utility class
+ * @param {Language} language  user's selected language
+ * @param {Object}   Linking   an instance of the React Native Linking class
+ * @param {Object}   Alert     an instance of the React Native Alert class
+ * @param {Object}   Clipboard an instance of the React Native Clipboard class
+ * @param {Object}   TextUtils an instance of the TextUtils utility class
  * @returns {Promise<void>} a promise indicating the result of whether the link was opened
  */
 export function openLink(url: ?string,
-                         Translations: Object,
+                         language: Language,
                          Linking: Object,
                          Alert: Object,
                          Clipboard: Object,
@@ -51,11 +57,11 @@ export function openLink(url: ?string,
             Linking.openURL(url);
           } else {
             Alert.alert(
-              Translations.cannot_open_url,
+              Translations.get(language, 'cannot_open_url'),
               formattedUrl,
               [
-                { text: Translations.cancel, style: 'cancel' },
-                { text: Translations.copy_link, onPress: () => Clipboard.setString(formattedUrl) },
+                { text: Translations.get(language, 'cancel'), style: 'cancel' },
+                { text: Translations.get(language, 'copy_link'), onPress: () => Clipboard.setString(formattedUrl) },
               ],
             );
           }

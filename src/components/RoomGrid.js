@@ -70,7 +70,7 @@ import Promise from 'promise';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 export default class RoomGrid extends React.Component {
 
@@ -145,7 +145,7 @@ export default class RoomGrid extends React.Component {
     // Cache list of room types that match the search terms
     const matchingRoomTypes = [];
     for (let i = 0; i < this._roomTypes.length; i++) {
-      const roomTypeName = TranslationUtils.getTranslatedName(language, this._roomTypes[i]);
+      const roomTypeName = Translations.getName(language, this._roomTypes[i]);
       if (adjustedSearchTerms == null
           || (roomTypeName != null && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
         matchingRoomTypes.push(i);
@@ -154,7 +154,7 @@ export default class RoomGrid extends React.Component {
 
     for (let i = 0; i < rooms.length; i++) {
       const roomName: string = `${code} ${rooms[i].name.toUpperCase()}`;
-      const roomAltName: ?string = TranslationUtils.getTranslatedVariant(language, 'alt_name', rooms[i]);
+      const roomAltName: ?string = Translations.getVariant(language, 'alt_name', rooms[i]);
 
       if (!rooms[i].type) {
         rooms[i].type = defaultRoomType;
@@ -169,7 +169,7 @@ export default class RoomGrid extends React.Component {
           altName: roomAltName,
           icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[rooms[i].type]),
           name: roomName,
-          type: TranslationUtils.getTranslatedName(language, this._roomTypes[rooms[i].type]) || '',
+          type: Translations.getName(language, this._roomTypes[rooms[i].type]) || '',
         });
       }
     }

@@ -81,7 +81,7 @@ import ModalHeader from 'ModalHeader';
 import moment from 'moment';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Navigation values
 const MENU = 0;
@@ -295,19 +295,21 @@ class LectureModal extends React.Component {
   /**
    * Renders a view to select a building on campus.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @returns {ReactElement<any>} a building grid to select a building
    */
-  _renderBuildingPicker(Translations: Object): ReactElement < any > {
+  _renderBuildingPicker(): ReactElement < any > {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = `${platformModifier}-arrow-back`;
+
+    const locationTranslation = Translations.get(this.props.language, 'location');
+    const buildingTranslation = Translations.get(this.props.language, 'building');
 
     return (
       <View style={_styles.container}>
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
               icon={{ name: backArrowIcon, class: 'ionicon' }}
-              title={`${Translations.location} - ${Translations.building}`} />
+              title={`${locationTranslation} - ${buildingTranslation}`} />
         </TouchableOpacity>
         <BuildingGrid
             columns={BUILDING_COLUMNS}
@@ -323,19 +325,21 @@ class LectureModal extends React.Component {
   /**
    * Renders a view to select a room in the building.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @returns {ReactElement<any>} a room grid to select a room
    */
-  _renderRoomPicker(Translations: Object): ReactElement < any > {
+  _renderRoomPicker(): ReactElement < any > {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = `${platformModifier}-arrow-back`;
+
+    const locationTranslation = Translations.get(this.props.language, 'location');
+    const roomTranslation = Translations.get(this.props.language, 'room');
 
     return (
       <View style={_styles.container}>
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
               icon={{ name: backArrowIcon, class: 'ionicon' }}
-              title={`${Translations.location} - ${Translations.room}`} />
+              title={`${locationTranslation} - ${roomTranslation}`} />
         </TouchableOpacity>
       </View>
     );
@@ -344,10 +348,9 @@ class LectureModal extends React.Component {
   /**
    * Renders a menu to display the values selected so far, and touchable elements to change these values.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @returns {ReactElement<any>} a set of headers depicting the item and value
    */
-  _renderMenu(Translations: Object): ReactElement < any > {
+  _renderMenu(): ReactElement < any > {
     const pickIcon = {
       class: 'material',
       name: 'chevron-right',
@@ -366,7 +369,7 @@ class LectureModal extends React.Component {
               largeSubtitle={true}
               subtitle={format}
               subtitleIcon={pickIcon}
-              title={Translations.format} />
+              title={Translations.get(this.props.language, 'format')} />
         </TouchableOpacity>
         <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_DAY)}>
@@ -374,7 +377,7 @@ class LectureModal extends React.Component {
               largeSubtitle={true}
               subtitle={day}
               subtitleIcon={pickIcon}
-              title={Translations.day} />
+              title={Translations.get(this.props.language, 'day')} />
         </TouchableOpacity>
         <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_STARTS)}>
@@ -382,7 +385,7 @@ class LectureModal extends React.Component {
               largeSubtitle={true}
               subtitle={startTime}
               subtitleIcon={pickIcon}
-              title={Translations.starts} />
+              title={Translations.get(this.props.language, 'starts')} />
         </TouchableOpacity>
         <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_ENDS)}>
@@ -390,7 +393,7 @@ class LectureModal extends React.Component {
               largeSubtitle={true}
               subtitle={endTime}
               subtitleIcon={pickIcon}
-              title={Translations.ends} />
+              title={Translations.get(this.props.language, 'ends')} />
         </TouchableOpacity>
         <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_BUILDING)}>
@@ -398,7 +401,7 @@ class LectureModal extends React.Component {
               largeSubtitle={true}
               subtitle={location}
               subtitleIcon={pickIcon}
-              title={Translations.location} />
+              title={Translations.get(this.props.language, 'location')} />
         </TouchableOpacity>
       </ScrollView>
     );
@@ -407,11 +410,10 @@ class LectureModal extends React.Component {
   /**
    * Renders a picker with a set of values for the user to choose from.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @param {number} picking      the value being picked
    * @returns {ReactElement<any>} the picker with the options to select between
    */
-  _renderRegularPicker(Translations: Object, picking: number): ReactElement < any > {
+  _renderRegularPicker(picking: number): ReactElement < any > {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = `${platformModifier}-arrow-back`;
 
@@ -426,7 +428,7 @@ class LectureModal extends React.Component {
         options = this.props.lectureFormats;
         selectedValue = this.state.format;
         getName = (format) => {
-          const name = TranslationUtils.getTranslatedName(this.props.language, this.props.lectureFormats[format]) || '';
+          const name = Translations.getName(this.props.language, this.props.lectureFormats[format]) || '';
           return `(${this.props.lectureFormats[format].code}) ${name}`;
         };
         setValue = (value) => this.setState({ format: value });
@@ -448,11 +450,11 @@ class LectureModal extends React.Component {
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
               icon={{ name: backArrowIcon, class: 'ionicon' }}
-              title={Translations[title]} />
+              title={Translations.get(this.props.language, title)} />
         </TouchableOpacity>
         <Picker
             itemStyle={_styles.pickerItem}
-            prompt={Translations[title]}
+            prompt={Translations.get(this.props.language, title)}
             selectedValue={selectedValue}
             style={_styles.pickerContainer}
             onValueChange={setValue}>
@@ -472,11 +474,10 @@ class LectureModal extends React.Component {
   /**
    * Renders a picker with a set of times for the user to choose from.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @param {number} picking      the value being picked
    * @returns {ReactElement<any>} the time picker with the options to select between
    */
-  _renderTimePicker(Translations: Object, picking: number): ReactElement < any > {
+  _renderTimePicker(picking: number): ReactElement < any > {
     let title: string = '';
     let time = '13:00';
     let setValue = () => this.setState({});
@@ -501,7 +502,7 @@ class LectureModal extends React.Component {
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
               icon={{ name: 'ios-arrow-back', class: 'ionicon' }}
-              title={Translations[title]} />
+              title={Translations.get(this.props.language, title)} />
         </TouchableOpacity>
         <DatePickerIOS
             date={time}
@@ -520,20 +521,17 @@ class LectureModal extends React.Component {
    * @returns {ReactElement<any>} the rendering of the scene
    */
   _renderScene(route: {id: number, picking?: number}): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     switch (route.id) {
       case MENU:
-        return this._renderMenu(Translations);
+        return this._renderMenu();
       case REGULAR_PICKER:
-        return this._renderRegularPicker(Translations, route.picking || PICKER_FORMAT);
+        return this._renderRegularPicker(route.picking || PICKER_FORMAT);
       case TIME_PICKER:
-        return this._renderTimePicker(Translations, route.picking || PICKER_STARTS);
+        return this._renderTimePicker(route.picking || PICKER_STARTS);
       case BUILDING_PICKER:
-        return this._renderBuildingPicker(Translations);
+        return this._renderBuildingPicker();
       case ROOM_PICKER:
-        return this._renderRoomPicker(Translations);
+        return this._renderRoomPicker();
       default:
         // TODO: return some error view
         return (
@@ -548,9 +546,6 @@ class LectureModal extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     let modalTitle = 'add_lecture';
     let modalRightAction = 'add';
     if (!this.props.addingLecture) {
@@ -562,10 +557,10 @@ class LectureModal extends React.Component {
       <View style={_styles.container}>
         <ModalHeader
             leftActionEnabled={true}
-            leftActionText={Translations.cancel}
+            leftActionText={Translations.get(this.props.language, 'cancel')}
             rightActionEnabled={this.state.rightActionEnabled}
-            rightActionText={Translations[modalRightAction]}
-            title={Translations[modalTitle]}
+            rightActionText={Translations.get(this.props.language, modalRightAction)}
+            title={Translations.get(this.props.language, modalTitle)}
             onLeftAction={this._close.bind(this)}
             onRightAction={() => this._saveLecture({
               day: this.state.day,

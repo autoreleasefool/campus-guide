@@ -71,7 +71,7 @@ import Header from 'Header';
 import MapView from 'react-native-maps';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Default delta in latitude and longitude to show
 const DEFAULT_LOCATION_DELTA = 0.02;
@@ -241,9 +241,6 @@ export default class TransitCampusMap extends React.Component {
       );
     }
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     let expandIcon = 'expand-less';
     let routeStyle = { flexShrink: 0 };
     let stopStyle = { height: 0 };
@@ -259,7 +256,7 @@ export default class TransitCampusMap extends React.Component {
           <Header
               icon={{ name: 'md-time', class: 'ionicon' }}
               subtitleIcon={{ name: expandIcon, class: 'material' }}
-              title={Translations.routes_and_times} />
+              title={Translations.get(this.props.language, 'routes_and_times')} />
         </TouchableOpacity>
         <TransitStops
             campus={campus}

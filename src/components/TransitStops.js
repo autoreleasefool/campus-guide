@@ -67,7 +67,7 @@ import Header from 'Header';
 import * as Connector from 'Connector';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Identifier for the navigator, indicating the list of stops is being shown.
 const STOPS: number = 0;
@@ -177,9 +177,6 @@ export default class TransitStops extends React.Component {
    * @returns {string} a list of up to 3 times, formatted as a string.
    */
   _retrieveUpcomingTimes(days: Object, language: Language, timeFormat: TimeFormat): string {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(language);
-
     const upcomingTimes = [];
     const now = new Date();
     const currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0') + ':'
@@ -215,7 +212,7 @@ export default class TransitStops extends React.Component {
     if (upcomingTimes.length > 0) {
       return upcomingTimes.join('    ');
     } else {
-      return Translations.no_upcoming_buses;
+      return Translations.get(this.props.language, 'no_upcoming_buses');
     }
   }
 

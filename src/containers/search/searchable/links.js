@@ -33,7 +33,7 @@ import Promise from 'promise';
 import * as Configuration from 'Configuration';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 /**
  * Returns a promise containing a list of external links and categories which match the search terms.
@@ -50,16 +50,13 @@ function _getResults(language: Language,
     const links: Array < SearchResult > = [];
     const categories: Array < SearchResult > = [];
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(language);
-
     // Method to add a link to the results
     const pushLink = (sectionName: string,
                       linkName: string,
                       iconName: string,
                       link: Object,
                       matchedSectionName: boolean) => {
-      const translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
+      const translatedLink: string = Translations.getVariant(language, 'link', link)
           || ExternalUtils.getDefaultLink();
       links.push({
         description: sectionName,
@@ -78,11 +75,11 @@ function _getResults(language: Language,
     let sectionsToSearch = linkSections;
     for (let i = 0; i < sectionsToSearch.length; i++) {
       const section = sectionsToSearch[i];
-      const sectionName: string = TranslationUtils.getTranslatedName(language, section) || '';
+      const sectionName: string = Translations.getName(language, section) || '';
 
       if (sectionName.toUpperCase().indexOf(searchTerms) >= 0) {
         categories.push({
-          description: Translations.see_related_links,
+          description: Translations.get(language, 'see_related_links'),
           data: section.id,
           icon: section.icon,
           matchedTerms: [ sectionName.toUpperCase() ],
@@ -92,7 +89,7 @@ function _getResults(language: Language,
         if (section.links) {
           for (let j = 0; j < section.links.length; j++) {
             const link = section.links[j];
-            const linkName = TranslationUtils.getTranslatedName(language, link) || '';
+            const linkName = Translations.getName(language, link) || '';
             pushLink(sectionName, linkName, 'md-open', link, true);
           }
         }
@@ -100,8 +97,8 @@ function _getResults(language: Language,
         if (section.social) {
           for (let j = 0; j < section.social.length; j++) {
             const link = section.social[j];
-            const linkName = TranslationUtils.getTranslatedName(language, link) || '';
-            const iconName = DisplayUtils.getSocialMediaIconName(TranslationUtils.getEnglishName(link) || '');
+            const linkName = Translations.getName(language, link) || '';
+            const iconName = DisplayUtils.getSocialMediaIconName(Translations.getEnglishName(link) || '');
             pushLink(sectionName, linkName, iconName, link, true);
           }
         }
@@ -109,7 +106,7 @@ function _getResults(language: Language,
         if (section.links) {
           for (let j = 0; j < section.links.length; j++) {
             const link = section.links[j];
-            const linkName = TranslationUtils.getTranslatedName(language, link) || '';
+            const linkName = Translations.getName(language, link) || '';
             if (linkName.toUpperCase().indexOf(searchTerms) >= 0) {
               pushLink(sectionName, linkName, 'md-open', link, false);
             }
@@ -119,9 +116,9 @@ function _getResults(language: Language,
         if (section.social) {
           for (let j = 0; j < section.social.length; j++) {
             const link = section.social[j];
-            const linkName = TranslationUtils.getTranslatedName(language, link) || '';
+            const linkName = Translations.getName(language, link) || '';
             if (linkName.toUpperCase().indexOf(searchTerms) >= 0) {
-              const iconName = DisplayUtils.getSocialMediaIconName(TranslationUtils.getEnglishName(link) || '');
+              const iconName = DisplayUtils.getSocialMediaIconName(Translations.getEnglishName(link) || '');
               pushLink(sectionName, linkName, iconName, link, false);
             }
           }
@@ -138,8 +135,8 @@ function _getResults(language: Language,
     }
 
     const results = {};
-    results[Translations.external_links] = links;
-    results[Translations.useful_links] = categories;
+    results[Translations.get(language, 'external_links')] = links;
+    results[Translations.get(language, 'useful_links')] = categories;
     resolve(results);
   });
 }
@@ -179,17 +176,14 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
  * @returns {Object} section names mapped to icon objects
  */
 export function getResultIcons(language: Language): Object {
-  // Get current language for translations
-  const Translations: Object = TranslationUtils.getTranslations(language);
-
   const icons = {};
-  icons[Translations.useful_links] = {
+  icons[Translations.get(language, 'useful_links')] = {
     icon: {
       class: 'material',
       name: 'link',
     },
   };
-  icons[Translations.external_links] = {
+  icons[Translations.get(language, 'external_links')] = {
     icon: {
       class: 'ionicon',
       name: 'md-open',

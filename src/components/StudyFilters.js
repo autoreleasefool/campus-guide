@@ -52,7 +52,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 /** Size of icons in full size filter view. */
 const FULL_ICON_SIZE = Constants.Sizes.Icons.Medium * 2;
@@ -129,7 +129,7 @@ export default class StudyFilters extends React.Component {
           onPress={() => this._onSelectFilter(index)}>
         <View style={[ _styles.filterContainer, withBackground ? _styles.filterBackground : {} ]}>
           {this._renderIcon(DisplayUtils.getPlatformIcon(Platform.OS, filter), FULL_ICON_SIZE, true)}
-          <Text style={_styles.fullSizeText}>{TranslationUtils.getTranslatedName(this.props.language, filter)}</Text>
+          <Text style={_styles.fullSizeText}>{Translations.getName(this.props.language, filter)}</Text>
         </View>
       </TouchableOpacity>
     );

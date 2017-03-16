@@ -79,7 +79,7 @@ import StudyFilters from 'StudyFilters';
 import StudySpotList from 'StudySpotList';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Height of the screen for animating filters
 const { height } = Dimensions.get('window');
@@ -178,9 +178,6 @@ class StudySpots extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     const filterStyle = this.state.filterSelected
         ? _styles.filterSelected
         : _styles.filterNotSelected;
@@ -194,8 +191,8 @@ class StudySpots extends React.Component {
             onRequestClose={this._setFilterDescriptionsVisible.bind(this, false)}>
           <ModalHeader
               rightActionEnabled={true}
-              rightActionText={Translations.done}
-              title={Translations.filter_descriptions}
+              rightActionText={Translations.get(this.props.language, 'done')}
+              title={Translations.get(this.props.language, 'filter_descriptions')}
               onRightAction={this._setFilterDescriptionsVisible.bind(this, false)} />
           <FilterDescriptions
               filters={this.state.filters}
@@ -216,7 +213,7 @@ class StudySpots extends React.Component {
             icon={{ name: 'filter-list', class: 'material' }}
             subtitleCallback={this._setFilterDescriptionsVisible.bind(this, true)}
             subtitleIcon={{ name: 'info', class: 'material' }}
-            title={Translations.filters} />
+            title={Translations.get(this.props.language, 'filters')} />
         <StudyFilters
             activeFilters={this.props.activeFilters}
             filters={this.state.filters}
@@ -235,7 +232,7 @@ class StudySpots extends React.Component {
                 backgroundColor={Constants.Colors.secondaryBackground}
                 icon={{ class: 'material', name: 'list' }}
                 subtitleIcon={{ class: 'material', name: 'chevron-right' }}
-                title={Translations.view_full_list} />
+                title={Translations.get(this.props.language, 'view_full_list')} />
           </TouchableOpacity>
         </View>
       </View>

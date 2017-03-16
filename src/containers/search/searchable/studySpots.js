@@ -31,7 +31,7 @@ import type { SearchResult } from '../Searchable';
 // Imports
 import Promise from 'promise';
 import * as Configuration from 'Configuration';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 /**
  * Returns a promise containing a list of external links and categories which match the search terms.
@@ -65,13 +65,10 @@ function _getResults(language: Language,
     //   return false;
     // }
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(language);
-
     // Cache list of filters that match the search terms
     // const matchingFilters = [];
     // for (let i = 0; i < studySpots.filters.length; i++) {
-    //   const filterName = TranslationUtils.getTranslatedName(language, studySpots.filters[i]);
+    //   const filterName = Translations.getName(language, studySpots.filters[i]);
     //   if (filterName != null && filterName.toUpperCase().indexOf(searchTerms) >= 0) {
     //     matchingFilters.push(i);
     //   }
@@ -79,13 +76,13 @@ function _getResults(language: Language,
 
     for (let i = 0; i < studySpots.spots.length; i++) {
       const spot = studySpots.spots[i];
-      const spotName = TranslationUtils.getTranslatedName(language, spot) || '';
+      const spotName = Translations.getName(language, spot) || '';
 
       if (spotName.toUpperCase().indexOf(searchTerms) >= 0
           || spot.building.toUpperCase().indexOf(searchTerms) >= 0
           || spot.room.indexOf(searchTerms) >= 0) {
         matchedSpots.push({
-          description: TranslationUtils.getTranslatedVariant(language, 'description', spot) || '',
+          description: Translations.getVariant(language, 'description', spot) || '',
           data: { code: spot.building, room: spot.room },
           icon: { name: 'import-contacts', class: 'material' },
           matchedTerms: [ spotName.toUpperCase(), spot.building.toUpperCase(), spot.room ],
@@ -95,7 +92,7 @@ function _getResults(language: Language,
     }
 
     const results = {};
-    results[Translations.study_spots] = matchedSpots;
+    results[Translations.get(language, 'study_spots')] = matchedSpots;
     resolve(results);
   });
 }
@@ -135,11 +132,8 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
  * @returns {Object} section names mapped to icon objects
  */
 export function getResultIcons(language: Language): Object {
-  // Get current language for translations
-  const Translations: Object = TranslationUtils.getTranslations(language);
-
   const icons = {};
-  icons[Translations.study_spots] = {
+  icons[Translations.get(language, 'study_spots')] = {
     icon: {
       class: 'material',
       name: 'import-contacts',

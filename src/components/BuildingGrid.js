@@ -57,7 +57,7 @@ type State = {
 
 // Imports
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Determining size of building icons based on the screen size.
 const { width } = Dimensions.get('window');
@@ -158,9 +158,6 @@ export default class BuildingGrid extends React.Component {
    * @returns {ReactElement<any>} an image (if enabled) and name for the building
    */
   _renderRow(building: Building): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     const buildingImageSize: number = Math.floor(width / this.props.columns);
 
     let buildingStyle = { height: buildingImageSize, width: buildingImageSize };
@@ -189,7 +186,7 @@ export default class BuildingGrid extends React.Component {
                 source={building.image}
                 style={[ _styles.image, imageStyle ]} />}
           <Text style={[ _styles.buildingCode, textStyle ]}>
-            {building == null ? Translations.none : building.code}
+            {building == null ? Translations.get(this.props.language, 'none') : building.code}
           </Text>
         </View>
       </TouchableOpacity>

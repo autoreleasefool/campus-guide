@@ -62,7 +62,7 @@ import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 export default class StudySpotList extends React.Component {
 
@@ -205,11 +205,11 @@ export default class StudySpotList extends React.Component {
    * @returns {ReactElement<any>} an image and views describing the spot
    */
   _renderRow(spot: StudySpot): ReactElement < any > {
-    const altName = TranslationUtils.getTranslatedName(this.props.language, spot);
+    const altName = Translations.getName(this.props.language, spot);
     const name = `${spot.building} ${spot.room}`;
     const openingTime = TextUtils.convertTimeFormat(this.props.timeFormat, spot.opens);
     const closingTime = TextUtils.convertTimeFormat(this.props.timeFormat, spot.closes);
-    const description = TranslationUtils.getTranslatedVariant(this.props.language, 'description', spot) || '';
+    const description = Translations.getVariant(this.props.language, 'description', spot) || '';
 
     return (
       <TouchableOpacity

@@ -48,7 +48,7 @@ import * as Constants from 'Constants';
 import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
 import * as Database from 'Database';
 import * as Preferences from 'Preferences';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Set to true to force splash screen
 const alwaysShowSplash = false;
@@ -102,7 +102,7 @@ class SplashScreen extends React.Component {
         .then(() => Configuration.getConfig('/university.json'))
         .then((university: Object) => {
           this.props.setUniversity(university);
-          return TranslationUtils.loadTranslations(this.props.language);
+          return Translations.loadTranslations(this.props.language);
         })
         .then(() => Configuration.getConfig('/transit.json'))
         .then((transitInfo: TransitInfo) => {
@@ -256,10 +256,10 @@ const mapDispatchToProps = (dispatch) => {
     setUniversity: (university: Object) => dispatch(actions.updateConfiguration({ semesters: university.semesters })),
     setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
       transitInfo: {
-        name_en: TranslationUtils.getEnglishName(transitInfo) || '',
-        name_fr: TranslationUtils.getFrenchName(transitInfo) || '',
-        link_en: TranslationUtils.getEnglishVariant('link', transitInfo) || '',
-        link_fr: TranslationUtils.getFrenchVariant('link', transitInfo) || '',
+        name_en: Translations.getEnglishName(transitInfo) || '',
+        name_fr: Translations.getFrenchName(transitInfo) || '',
+        link_en: Translations.getEnglishVariant('link', transitInfo) || '',
+        link_fr: Translations.getFrenchVariant('link', transitInfo) || '',
       },
     })),
     updatePreferences: (preferences: Array < any >) => {

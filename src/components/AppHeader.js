@@ -68,7 +68,7 @@ type State = {
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Height of the navbar
 const NAVBAR_HEIGHT: number = 45;
@@ -180,15 +180,12 @@ class AppHeader extends React.Component {
     const searchIcon: string = `${platformModifier}-search`;
     const closeIcon: string = `${platformModifier}-close`;
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     // If title is string, use it as key for translations
     let appTitle: string;
     if (typeof (this.props.appTitle) === 'string') {
-      appTitle = Translations[this.props.appTitle];
+      appTitle = Translations.get(this.props.language, this.props.appTitle);
     } else {
-      appTitle = TranslationUtils.getTranslatedName(this.props.language, this.props.appTitle) || '';
+      appTitle = Translations.getName(this.props.language, this.props.appTitle) || '';
     }
 
     // Hide/show back button
@@ -230,7 +227,7 @@ class AppHeader extends React.Component {
               onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
               autoCorrect={false}
-              placeholder={Translations.search_placeholder}
+              placeholder={Translations.get(this.props.language, 'search_placeholder')}
               placeholderTextColor={Constants.Colors.secondaryWhiteText}
               ref='SearchInput'
               returnKeyType={'done'}

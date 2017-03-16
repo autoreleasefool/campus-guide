@@ -76,7 +76,7 @@ import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Default opacity for tap when setting is not a boolean
 const DEFAULT_OPACITY: number = 0.4;
@@ -119,8 +119,8 @@ class Settings extends React.Component {
    */
   componentDidMount(): void {
     Configuration.init()
-        .then(() => TranslationUtils.loadTranslations('en'))
-        .then(() => TranslationUtils.loadTranslations('fr'))
+        .then(() => Translations.loadTranslations('en'))
+        .then(() => Translations.loadTranslations('fr'))
         .then(() => Configuration.getConfig('/settings.json'))
         .then((configSettings: Object) => {
           this._settings = configSettings;
@@ -155,7 +155,7 @@ class Settings extends React.Component {
    * Unloads the unused language.
    */
   componentWillUnmount(): void {
-    TranslationUtils.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
+    Translations.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
   }
 
   /** Set of settings to display. */
@@ -211,7 +211,7 @@ class Settings extends React.Component {
         return this.props.prefersWheelchair;
       case 'pref_semester': {
         const semester = this.props.semesters[this.props.currentSemester];
-        return TranslationUtils.getTranslatedName(this.props.language, semester);
+        return Translations.getName(this.props.language, semester);
       }
       case 'pref_time_format':
         return this.props.timeFormat;
@@ -233,14 +233,11 @@ class Settings extends React.Component {
       // Ignore boolean settings, they can only be manipulated by switch
       return;
     } else if (setting.type === 'link' && setting.key != 'app_open_source') {
-      // Get current language for translations
-      const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
       // Open the provided link
-      const link = TranslationUtils.getTranslatedVariant(this.props.language, 'link', setting);
+      const link = Translations.getVariant(this.props.language, 'link', setting);
       ExternalUtils.openLink(
         link || ExternalUtils.getDefaultLink(),
-        Translations,
+        this.props.language,
         Linking,
         Alert,
         Clipboard,
@@ -265,7 +262,7 @@ class Settings extends React.Component {
       const licenses = require('../../../assets/json/licenses.json');
       this.setState({
         listModalDataSource: this.state.listModalDataSource.cloneWithRowsAndSections(licenses),
-        listModalTitle: TranslationUtils.getTranslatedName(this.props.language, setting) || '',
+        listModalTitle: Translations.getName(this.props.language, setting) || '',
         listModalVisible: true,
       });
     }
@@ -279,15 +276,12 @@ class Settings extends React.Component {
    * @returns {ReactElement<any>} a list view with the rows and sections loaded
    */
   _renderListModal(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     return (
       <View style={[ _styles.container, { backgroundColor: Constants.Colors.primaryBackground }]}>
         <ModalHeader
             backgroundColor={Constants.Colors.primaryBackground}
             rightActionEnabled={true}
-            rightActionText={Translations.done}
+            rightActionText={Translations.get(this.props.language, 'done')}
             title={this.state.listModalTitle}
             onRightAction={this._closeModal.bind(this)} />
         <ListView
@@ -373,7 +367,7 @@ class Settings extends React.Component {
             activeOpacity={setting.type === 'boolean' ? 1 : DEFAULT_OPACITY}
             onPress={this._onPressRow.bind(this, setting, true)}>
           <View style={_styles.setting}>
-            <Text style={_styles.settingText}>{TranslationUtils.getTranslatedName(this.props.language, setting)}</Text>
+            <Text style={_styles.settingText}>{Translations.getName(this.props.language, setting)}</Text>
             {content}
           </View>
         </TouchableOpacity>

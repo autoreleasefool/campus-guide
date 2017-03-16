@@ -68,7 +68,7 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ShuttleTable from 'ShuttleTable';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Default delta in latitude and longitude to show
 const DEFAULT_LOCATION_DELTA = 0.02;
@@ -150,7 +150,7 @@ class Shuttle extends React.Component {
                 coordinate={{ latitude: stop.lat, longitude: stop.long }}
                 identifier={stop.id}
                 key={stop.id}
-                title={TranslationUtils.getTranslatedName(this.props.language, stop)} />
+                title={Translations.getName(this.props.language, stop)} />
           ))}
         </MapView>
       </View>
@@ -164,7 +164,7 @@ class Shuttle extends React.Component {
    * @returns {ReactElement<any>} the route header and description
    */
   _renderRoute(direction: ShuttleDirection): ReactElement < any > {
-    const route = TranslationUtils.getTranslatedVariant(this.props.language, 'route', direction);
+    const route = Translations.getVariant(this.props.language, 'route', direction);
     return (
       <View style={_styles.dark}>
         <Text style={_styles.routeText}>{route}</Text>
@@ -187,7 +187,7 @@ class Shuttle extends React.Component {
 
     const currentSchedule = shuttle.schedules[this.state.schedule];
     const direction = currentSchedule.directions[this.state.direction % currentSchedule.directions.length];
-    const directionName = TranslationUtils.getTranslatedName(this.props.language, direction) || '';
+    const directionName = Translations.getName(this.props.language, direction) || '';
     const arrow = this.state.direction === 0 ? 'md-arrow-forward' : 'md-arrow-back';
 
     return (
@@ -210,7 +210,7 @@ class Shuttle extends React.Component {
             tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.polarGrey }}
             onChangeTab={(newTab: { i: number }) => this.setState({ schedule: newTab.i })}>
           {(shuttle.schedules.map((schedule) => {
-            const name = TranslationUtils.getTranslatedName(this.props.language, schedule);
+            const name = Translations.getName(this.props.language, schedule);
             return (
               <ShuttleTable
                   direction={this.state.direction}

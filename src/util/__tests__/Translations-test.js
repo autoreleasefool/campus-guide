@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-11-1
- * @file TranslationUtils-test.js
+ * @file Translations-test.js
  * @description Tests retrieving translations from objects.
  *
  */
@@ -26,7 +26,7 @@
 /* async seems to cause an issue with this rule. */
 
 // Require modules for testing
-import * as TranslationUtils from '../TranslationUtils';
+import * as Translations from '../Translations';
 
 jest.setMock('Configuration', {
   init: async function init() {
@@ -83,7 +83,7 @@ let initShouldThrowError: boolean = false;
 // Indicates if Configuration.getConfig should throw an error
 let getConfigShouldThrowError: boolean = false;
 
-describe('TranslationUtils-test', () => {
+describe('Translations-test', () => {
 
   beforeEach(() => {
     initShouldThrowError = false;
@@ -96,7 +96,7 @@ describe('TranslationUtils-test', () => {
 
     // Load the English translation
     try {
-      await TranslationUtils.loadTranslations('en');
+      await Translations.loadTranslations('en');
     } catch (e) {
       errorMessage = e.message;
     }
@@ -111,7 +111,7 @@ describe('TranslationUtils-test', () => {
 
     // Load the English translation
     try {
-      await TranslationUtils.loadTranslations('en');
+      await Translations.loadTranslations('en');
     } catch (e) {
       errorMessage = e.message;
     }
@@ -122,149 +122,158 @@ describe('TranslationUtils-test', () => {
 
   it('tests loading and unloading English translations', async () => {
     // Get unloaded English translation
-    let en = TranslationUtils.getTranslations('en');
+    let en = Translations.getTranslations('en');
     expect(en).toEqual({});
 
     // Load the English translation
-    en = await TranslationUtils.loadTranslations('en');
+    en = await Translations.loadTranslations('en');
     expect(en.language).toBe('English');
-    en = TranslationUtils.getTranslations('en');
+    en = Translations.getTranslations('en');
     expect(en.language).toBe('English');
 
     // Load the already loaded English translation
-    en = await TranslationUtils.loadTranslations('en');
+    en = await Translations.loadTranslations('en');
     expect(en.language).toBe('English');
 
     // Unload the translation, check again
-    TranslationUtils.unloadTranslations('en');
-    en = TranslationUtils.getTranslations('en');
+    Translations.unloadTranslations('en');
+    en = Translations.getTranslations('en');
     expect(en).toEqual({});
   });
 
   it('tests loading and unloading French translations', async () => {
     // Get unloaded French translation
-    let fr = TranslationUtils.getTranslations('fr');
+    let fr = Translations.getTranslations('fr');
     expect(fr).toEqual({});
 
     // Load the French translation
-    fr = await TranslationUtils.loadTranslations('fr');
+    fr = await Translations.loadTranslations('fr');
     expect(fr.language).toBe('French');
-    fr = TranslationUtils.getTranslations('fr');
+    fr = Translations.getTranslations('fr');
     expect(fr.language).toBe('French');
 
     // Load the already loaded French translation
-    fr = await TranslationUtils.loadTranslations('fr');
+    fr = await Translations.loadTranslations('fr');
     expect(fr.language).toBe('French');
 
     // Unload the translation, check again
-    TranslationUtils.unloadTranslations('fr');
-    fr = TranslationUtils.getTranslations('fr');
+    Translations.unloadTranslations('fr');
+    fr = Translations.getTranslations('fr');
     expect(fr).toEqual({});
   });
 
   it('tests loading and unloading invalid translations', async () => {
     // Get unloaded invalid translation
-    let invalid = TranslationUtils.getTranslations('invalid');
+    let invalid = Translations.getTranslations('invalid');
     expect(invalid).toEqual({});
 
     // Load the invalid translation
-    invalid = await TranslationUtils.loadTranslations('invalid');
+    invalid = await Translations.loadTranslations('invalid');
     expect(invalid).toEqual({});
-    invalid = TranslationUtils.getTranslations('invalid');
+    invalid = Translations.getTranslations('invalid');
     expect(invalid).toEqual({});
 
     // Unload the translation, check again
-    TranslationUtils.unloadTranslations('invalid');
-    invalid = TranslationUtils.getTranslations('invalid');
+    Translations.unloadTranslations('invalid');
+    invalid = Translations.getTranslations('invalid');
     expect(invalid).toEqual({});
   });
 
   it('tests loading English translations does not affect French translations', async () => {
     // Get unloaded French translation
-    let fr = TranslationUtils.getTranslations('fr');
+    let fr = Translations.getTranslations('fr');
     expect(fr).toEqual({});
 
     // Get unloaded English translation
-    let en = TranslationUtils.getTranslations('en');
+    let en = Translations.getTranslations('en');
     expect(en).toEqual({});
 
     // Load the English translation
-    en = await TranslationUtils.loadTranslations('en');
+    en = await Translations.loadTranslations('en');
     expect(en.language).toBe('English');
-    en = TranslationUtils.getTranslations('en');
+    en = Translations.getTranslations('en');
     expect(en.language).toBe('English');
 
     // Get unloaded French translation
-    fr = TranslationUtils.getTranslations('fr');
+    fr = Translations.getTranslations('fr');
     expect(fr).toEqual({});
 
     // Load the French translation
-    fr = await TranslationUtils.loadTranslations('fr');
+    fr = await Translations.loadTranslations('fr');
     expect(fr.language).toBe('French');
-    fr = TranslationUtils.getTranslations('fr');
+    fr = Translations.getTranslations('fr');
     expect(fr.language).toBe('French');
 
     // Unload the English translation, check both
-    TranslationUtils.unloadTranslations('en');
-    en = TranslationUtils.getTranslations('en');
+    Translations.unloadTranslations('en');
+    en = Translations.getTranslations('en');
     expect(en).toEqual({});
 
-    fr = TranslationUtils.getTranslations('fr');
+    fr = Translations.getTranslations('fr');
     expect(fr.language).toBe('French');
   });
 
+  it('tests French and English properties', async () => {
+    await Translations.loadTranslations('en');
+    await Translations.loadTranslations('fr');
+    expect(Translations.get('en', 'language')).toEqual('English');
+    expect(Translations.get('fr', 'language')).toEqual('French');
+    expect(Translations.get('invalid_language', 'language')).toEqual('');
+    expect(Translations.get('en', 'invalid_word')).toEqual('');
+  });
+
   it('tests retrieving French and English names.', () => {
-    expect(TranslationUtils.getEnglishName(objectWithDefaultProperties))
+    expect(Translations.getEnglishName(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
-    expect(TranslationUtils.getEnglishName(objectWithTranslatedProperties))
+    expect(Translations.getEnglishName(objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_en);
-    expect(TranslationUtils.getTranslatedName('en', objectWithDefaultProperties))
+    expect(Translations.getName('en', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
-    expect(TranslationUtils.getTranslatedName('en', objectWithTranslatedProperties))
+    expect(Translations.getName('en', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_en);
-    expect(TranslationUtils.getTranslatedName('en', invalidObject))
+    expect(Translations.getName('en', invalidObject))
         .toBeNull();
 
-    expect(TranslationUtils.getFrenchName(objectWithDefaultProperties))
+    expect(Translations.getFrenchName(objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
-    expect(TranslationUtils.getFrenchName(objectWithTranslatedProperties))
+    expect(Translations.getFrenchName(objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_fr);
-    expect(TranslationUtils.getTranslatedName('fr', objectWithDefaultProperties))
+    expect(Translations.getName('fr', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.name);
-    expect(TranslationUtils.getTranslatedName('fr', objectWithTranslatedProperties))
+    expect(Translations.getName('fr', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.name_fr);
-    expect(TranslationUtils.getTranslatedName('fr', invalidObject))
+    expect(Translations.getName('fr', invalidObject))
         .toBeNull();
 
-    expect(TranslationUtils.getTranslatedName('invalid_language', objectWithDefaultProperties))
+    expect(Translations.getName('invalid_language', objectWithDefaultProperties))
         .toBeNull();
   });
 
   it('tests retrieving French and English variants of different properties.', () => {
-    expect(TranslationUtils.getEnglishVariant('details', objectWithDefaultProperties))
+    expect(Translations.getEnglishVariant('details', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.details);
-    expect(TranslationUtils.getEnglishVariant('details', objectWithTranslatedProperties))
+    expect(Translations.getEnglishVariant('details', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.details_en);
-    expect(TranslationUtils.getFrenchVariant('details', invalidObject))
+    expect(Translations.getFrenchVariant('details', invalidObject))
         .toBeNull();
 
-    expect(TranslationUtils.getFrenchVariant('details', objectWithDefaultProperties))
+    expect(Translations.getFrenchVariant('details', objectWithDefaultProperties))
         .toBe(objectWithDefaultProperties.details);
-    expect(TranslationUtils.getFrenchVariant('details', objectWithTranslatedProperties))
+    expect(Translations.getFrenchVariant('details', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.details_fr);
-    expect(TranslationUtils.getFrenchVariant('details', invalidObject))
+    expect(Translations.getFrenchVariant('details', invalidObject))
         .toBeNull();
 
-    expect(TranslationUtils.getTranslatedVariant('en', 'details', objectWithTranslatedProperties))
+    expect(Translations.getVariant('en', 'details', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.details_en);
-    expect(TranslationUtils.getTranslatedVariant('fr', 'details', objectWithTranslatedProperties))
+    expect(Translations.getVariant('fr', 'details', objectWithTranslatedProperties))
         .toBe(objectWithTranslatedProperties.details_fr);
-    expect(TranslationUtils.getTranslatedVariant('invalid_language', 'details', objectWithTranslatedProperties))
+    expect(Translations.getVariant('invalid_language', 'details', objectWithTranslatedProperties))
         .toBeNull();
 
-    expect(TranslationUtils.getEnglishVariant('details', null))
+    expect(Translations.getEnglishVariant('details', null))
         .toBeNull();
-    expect(TranslationUtils.getFrenchVariant('details', null))
+    expect(Translations.getFrenchVariant('details', null))
         .toBeNull();
   });
 });

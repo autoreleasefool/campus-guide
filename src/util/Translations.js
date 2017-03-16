@@ -17,8 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-09
- * @file TranslationUtils.js
- * @providesModule TranslationUtils
+ * @file Translations.js
+ * @providesModule Translations
  * @description Defines a set of methods to easily get translations from objects.
  *
  * @flow
@@ -117,7 +117,7 @@ export function getEnglishVariant(property: string, obj: ?Object): ?string {
  * @param {?Object} obj       the object to get the translation from.
  * @returns {?string} the French or English translation of the property in the object, or null.
  */
-export function getTranslatedVariant(language: Language, property: string, obj: ?Object): ?string {
+export function getVariant(language: Language, property: string, obj: ?Object): ?string {
   if (language === 'en') {
     return getEnglishVariant(property, obj);
   } else if (language === 'fr') {
@@ -154,13 +154,28 @@ export function getEnglishName(obj: ?Object): ?string {
  * @param {?Object} obj       the object to get the name from.
  * @returns {?string} the French or English name of the object, or null.
  */
-export function getTranslatedName(language: Language, obj: ?Object): ?string {
+export function getName(language: Language, obj: ?Object): ?string {
   if (language === 'en') {
     return getEnglishName(obj);
   } else if (language === 'fr') {
     return getFrenchName(obj);
   } else {
     return null;
+  }
+}
+
+/**
+ * Gets the translation of a certain string.
+ *
+ * @param {Language} language the language to get the translation in
+ * @param {string}   property the string to get the translation of
+ * @returns {string} the translated string, or any empty string if the translation is not available
+ */
+export function get(language: Language, property: string): string {
+  if (translations[language] == null) {
+    return '';
+  } else {
+    return translations[language][property] || '';
   }
 }
 
@@ -185,6 +200,7 @@ export function unloadTranslations(language: Language): void {
 
 /**
  * Retrieves a set of translations, or an empty object if the set was not loaded.
+ * Only available in testing.
  *
  * @param {Language} language the set of translations to retrieve
  * @returns {Object} a set of translations, or an empty object

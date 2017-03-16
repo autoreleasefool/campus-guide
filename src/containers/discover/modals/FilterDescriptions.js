@@ -52,7 +52,7 @@ type State = {
 import PaddedIcon from 'PaddedIcon';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 export default class StudySpots extends React.Component {
 
@@ -88,8 +88,8 @@ export default class StudySpots extends React.Component {
    * @returns {ReactElement<any>} the filter icon, name and description
    */
   _renderRow(filter: StudySpotFilter): ReactElement < any > {
-    const name = TranslationUtils.getTranslatedName(this.props.language, filter) || '';
-    const description = TranslationUtils.getTranslatedVariant(this.props.language, 'description', filter) || '';
+    const name = Translations.getName(this.props.language, filter) || '';
+    const description = Translations.getVariant(this.props.language, 'description', filter) || '';
     const icon = DisplayUtils.getPlatformIcon(Platform.OS, filter);
 
     return (

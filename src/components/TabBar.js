@@ -47,7 +47,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Icons for tab items
 const tabIcons: TabSet = {
@@ -134,9 +134,6 @@ class TabBar extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     return (
       <View style={_styles.tabContainer}>
         {this.props.tabs.map((tab, i) => {
@@ -171,7 +168,9 @@ class TabBar extends React.Component {
                 style={_styles.tab}
                 onPress={this._switchTab.bind(this, i)}>
               {iconView}
-              <Text style={[ _styles.caption, { color: color }]}>{Translations[Constants.Tabs[i]]}</Text>
+              <Text style={[ _styles.caption, { color: color }]}>
+                {Translations.get(this.props.language, Constants.Tabs[i])}
+              </Text>
             </TouchableOpacity>
           );
         })}
