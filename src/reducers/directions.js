@@ -26,18 +26,20 @@
 
 // Types
 import type { Building, Destination } from 'types';
-import { SET_DESTINATION, VIEW_BUILDING } from 'actionTypes';
+import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
 
 // Describes the directions state
 type State = {
-  building: ?Building,        // The building selected by the user to navigate to, or view
-  destination: ?Destination,  // The building and room the user is navigating to
+  building: ?Building,          // The building selected by the user to navigate to, or view
+  destination: ?Destination,    // The building and room the user is navigating to
+  startingPoint: ?Destination,  // The building and room the user is starting from
 };
 
 // Initial directions state
 const initialState: State = {
   building: null,
   destination: null,
+  startingPoint: null,
 };
 
 /**
@@ -53,6 +55,11 @@ function directions(state: State = initialState, action: any): State {
       return {
         ...state,
         destination: action.destination,
+      };
+    case SET_STARTING_POINT:
+      return {
+        ...state,
+        startingPoint: action.startingPoint,
       };
     case VIEW_BUILDING:
       return {

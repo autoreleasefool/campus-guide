@@ -79,7 +79,7 @@ class BuildingComponent extends React.Component {
         + (Translations.getName(this.props.language, this.props.building) || '');
 
     return (
-      <TouchableOpacity onPress={this._onDestinationSelected.bind(this, this.props.building.code)}>
+      <TouchableOpacity onPress={() => this._onDestinationSelected(this.props.building.code, null)}>
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon' }}
@@ -155,6 +155,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onDestinationSelected: (code: string, room: ?string) => {
       dispatch(actions.setDestination({ code, room }));
+      dispatch(actions.setHeaderTitle('directions', 'find'));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
     },
   };

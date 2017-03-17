@@ -49,6 +49,7 @@ import * as Constants from 'Constants';
 // Screen imports
 import Building from './Building';
 import Home from './Home';
+import StartingPoint from './StartingPoint';
 
 class Find extends React.Component {
 
@@ -121,8 +122,12 @@ class Find extends React.Component {
         );
       case Constants.Views.Find.StartingPoint:
         return (
+          <StartingPoint />
+        );
+      case Constants.Views.Find.Steps:
+        return (
           <View style={_styles.container}>
-            <Text>{'StartingPoint'}</Text>
+            <Text>{'Steps'}</Text>
           </View>
         );
       default:

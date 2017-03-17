@@ -190,6 +190,7 @@ const Find = {
   Home: 0,          // Home find view where user can select a building
   Building: 1,      // Building details, where user can see details of a single building
   StartingPoint: 2, // User can select their starting point for directions
+  Steps: 3,         // Tells the user steps between starting point and destination
 };
 
 /**

@@ -26,13 +26,18 @@
 
 // Types
 import type { Building, Destination } from 'types';
-import { SET_DESTINATION, VIEW_BUILDING } from 'actionTypes';
+import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
 
 module.exports = {
 
   setDestination: (destination: Destination) => ({
     type: SET_DESTINATION,
     destination,
+  }),
+
+  setStartingPoint: (startingPoint: Destination) => ({
+    type: SET_STARTING_POINT,
+    startingPoint,
   }),
 
   viewBuilding: (building: Building) => ({

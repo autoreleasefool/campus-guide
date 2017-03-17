@@ -152,24 +152,28 @@ export default class RoomGrid extends React.Component {
       }
     }
 
-    for (let i = 0; i < rooms.length; i++) {
-      const roomName: string = `${code} ${rooms[i].name.toUpperCase()}`;
-      const roomAltName: ?string = Translations.getVariant(language, 'alt_name', rooms[i]);
+    // True if the building code matches the search terms
+    const codeMatches = adjustedSearchTerms != null && code.indexOf(adjustedSearchTerms) >= 0;
 
-      if (!rooms[i].type) {
-        rooms[i].type = defaultRoomType;
+    for (let i = 0; i < rooms.length; i++) {
+      const room = rooms[i];
+      const roomAltName: ?string = Translations.getVariant(language, 'alt_name', room);
+
+      if (!room.type) {
+        room.type = defaultRoomType;
       }
 
       // If the search terms are empty, or the room contains the terms, add it to the list
       if (adjustedSearchTerms == null
-          || roomName.indexOf(adjustedSearchTerms) >= 0
-          || matchingRoomTypes.indexOf(rooms[i].type) >= 0
+          || codeMatches
+          || room.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0
+          || matchingRoomTypes.indexOf(room.type) >= 0
           || (roomAltName != null && roomAltName.indexOf(adjustedSearchTerms) >= 0)) {
         filteredRooms.push({
           altName: roomAltName,
-          icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[rooms[i].type]),
-          name: roomName,
-          type: Translations.getName(language, this._roomTypes[rooms[i].type]) || '',
+          icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[room.type]),
+          name: room.name.toUpperCase(),
+          type: Translations.getName(language, this._roomTypes[room.type]) || '',
         });
       }
     }
@@ -248,7 +252,7 @@ export default class RoomGrid extends React.Component {
           {icon}
           <View style={_styles.roomDescription}>
             {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
-            <Text style={_styles.roomName}>{room.name}</Text>
+            <Text style={_styles.roomName}>{`${this.props.code} ${room.name}`}</Text>
             <Text style={_styles.roomType}>{room.type}</Text>
           </View>
         </View>

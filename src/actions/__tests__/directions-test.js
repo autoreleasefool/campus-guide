@@ -24,7 +24,7 @@
 'use strict';
 
 // Types
-import { SET_DESTINATION, VIEW_BUILDING } from 'actionTypes';
+import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
 
 // Imports
 import * as actions from '../directions';
@@ -35,6 +35,12 @@ describe('direction actions', () => {
     const destination = { code: 'code', room: 'room' };
     const expectedAction = { type: SET_DESTINATION, destination };
     expect(actions.setDestination(destination)).toEqual(expectedAction);
+  });
+
+  it('should set a building room to navigate from', () => {
+    const startingPoint = { code: 'code', room: 'room' };
+    const expectedAction = { type: SET_STARTING_POINT, startingPoint };
+    expect(actions.setStartingPoint(startingPoint)).toEqual(expectedAction);
   });
 
   it('should set a building to view details for', () => {

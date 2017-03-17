@@ -54,6 +54,7 @@ export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 //-----------------------------------------------------------------------------
 
 export const SET_DESTINATION = 'SET_DESTINATION';
+export const SET_STARTING_POINT = 'SET_STARTING_POINT';
 export const VIEW_BUILDING = 'VIEW_BUILDING';
 
 //-----------------------------------------------------------------------------
