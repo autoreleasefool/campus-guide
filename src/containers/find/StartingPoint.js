@@ -39,10 +39,11 @@ import { connect } from 'react-redux';
 import * as actions from 'actions';
 
 // Types
-import type { Building, Destination, Language, Route } from 'types';
+import type { Building, Destination, Language, Route, VoidFunction } from 'types';
 
 // Type definition for component props.
 type Props = {
+  clearSearch: VoidFunction,                                      // Clear the current search
   destination: ?Destination,                                      // The user's selected destination
   filter: ?string,                                                // Current search terms
   language: Language,                                             // The current language, selected by the user
@@ -121,6 +122,7 @@ class StartingPoint extends React.Component {
    */
   _onBuildingSelected(building: ?Building): void {
     if (building != null) {
+      this.props.clearSearch();
       this.refs.Navigator.push({ id: SELECT_ROOM, data: building });
     }
   }
@@ -328,6 +330,7 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    clearSearch: () => dispatch(actions.search(null)),
     onStartingPointSelected: (code: string, room: ?string) => {
       dispatch(actions.setStartingPoint({ code, room }));
       dispatch(actions.switchFindView(Constants.Views.Find.Steps));

@@ -115,6 +115,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.setHeaderTitle(buildingName, 'find'));
       dispatch(actions.viewBuilding(building));
       dispatch(actions.switchFindView(Constants.Views.Find.Building));
+      dispatch(actions.search(null));
     },
   };
 };
