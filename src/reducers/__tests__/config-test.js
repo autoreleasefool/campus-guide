@@ -41,6 +41,7 @@ const initialState = {
     prefersWheelchair: false,
     semesters: [],
     scheduleByCourse: false,
+    universityLocation: null,
   },
   update: {
     currentDownload: null,

@@ -204,6 +204,19 @@ const Discover = {
   StudySpots: 4,  // Displays a list of study spots around campus and properties of them
 };
 
+/**
+ * Default map view information
+ */
+const map = {
+  DefaultDelta: 0.02,
+  InitialRegion: {
+    latitude: 45.4222,
+    longitude: -75.6824,
+    latitudeDelta: 0.02,
+    longitudeDelta: 0.02,
+  },
+};
+
 module.exports = {
 
   /**
@@ -281,4 +294,9 @@ module.exports = {
    * Default type to assign to rooms when not defined
    */
   DefaultRoomType: 5,
+
+  /**
+   * Default map information
+   */
+  Map: map,
 };

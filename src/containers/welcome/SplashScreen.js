@@ -253,7 +253,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onLanguageSelect: (language: Language) => dispatch(actions.updateConfiguration({ language, firstTime: true })),
     setSchedule: (schedule: Object) => dispatch(actions.loadSchedule(schedule)),
-    setUniversity: (university: Object) => dispatch(actions.updateConfiguration({ semesters: university.semesters })),
+    setUniversity: (university: Object) => dispatch(actions.updateConfiguration({
+      semesters: university.semesters,
+      universityLocation: { latitude: university.lat, longitude: university.long },
+    })),
     setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
       transitInfo: {
         name_en: Translations.getEnglishName(transitInfo) || '',

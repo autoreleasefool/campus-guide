@@ -407,6 +407,7 @@ export type ConfigurationOptions = {
   prefersWheelchair?: boolean,      // Only provide wheelchair accessible routes
   preferByCourse?: boolean,         // True to default schedule view by course, false for by week
   semesters?: Array < Semester >,   // List of semesters currently available
+  universityLocation?: LatLong,     // Latitude and longitude of the university
 };
 
 /** Describes a configuration file. */

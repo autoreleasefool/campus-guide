@@ -70,9 +70,6 @@ import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
 
-// Default delta in latitude and longitude to show
-const DEFAULT_LOCATION_DELTA = 0.02;
-
 class Shuttle extends React.Component {
 
   /**
@@ -95,12 +92,7 @@ class Shuttle extends React.Component {
     this.state = {
       direction: 0,
       initialPage: 0,
-      region: {
-        latitude: 45.4222669,
-        longitude: -75.6833472,
-        latitudeDelta: DEFAULT_LOCATION_DELTA,
-        longitudeDelta: DEFAULT_LOCATION_DELTA,
-      },
+      region: Constants.Map.InitialRegion,
       schedule: 0,
       shuttle: null,
     };

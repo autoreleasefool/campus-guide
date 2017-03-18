@@ -73,9 +73,6 @@ import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
 
-// Default delta in latitude and longitude to show
-const DEFAULT_LOCATION_DELTA = 0.02;
-
 export default class TransitCampusMap extends React.Component {
 
   /**
@@ -98,15 +95,7 @@ export default class TransitCampusMap extends React.Component {
 
     this.state = {
       campus: null,
-
-      // FIXME: figure out better way to define default position
-      initialRegion: {
-        latitude: 45.4222,
-        longitude: -75.6824,
-        latitudeDelta: DEFAULT_LOCATION_DELTA,
-        longitudeDelta: DEFAULT_LOCATION_DELTA,
-      },
-
+      initialRegion: Constants.Map.InitialRegion,
       region: null,
       routesExpanded: false,
       stops: {},
@@ -131,8 +120,8 @@ export default class TransitCampusMap extends React.Component {
                   initialRegion: {
                     latitude: campuses[i].lat,
                     longitude: campuses[i].long,
-                    latitudeDelta: DEFAULT_LOCATION_DELTA,
-                    longitudeDelta: DEFAULT_LOCATION_DELTA,
+                    latitudeDelta: Constants.Map.DefaultDelta,
+                    longitudeDelta: Constants.Map.DefaultDelta,
                   },
                 });
               }
@@ -173,8 +162,8 @@ export default class TransitCampusMap extends React.Component {
         region: {
           latitude: this.state.stops[stopId].lat,
           longitude: this.state.stops[stopId].long,
-          latitudeDelta: DEFAULT_LOCATION_DELTA,
-          longitudeDelta: DEFAULT_LOCATION_DELTA,
+          latitudeDelta: Constants.Map.DefaultDelta,
+          longitudeDelta: Constants.Map.DefaultDelta,
         },
       });
     }

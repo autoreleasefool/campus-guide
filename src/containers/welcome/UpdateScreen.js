@@ -483,7 +483,10 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setUniversity: (university: Object) => dispatch(actions.updateConfiguration({ semesters: university.semesters })),
+    setUniversity: (university: Object) => dispatch(actions.updateConfiguration({
+      semesters: university.semesters,
+      universityLocation: { latitude: university.lat, longitude: university.long },
+    })),
     setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
       transitInfo: {
         name_en: Translations.getEnglishName(transitInfo) || '',
