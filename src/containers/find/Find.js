@@ -59,6 +59,16 @@ class Find extends React.Component {
   props: Props;
 
   /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    this._buildingList = require('../../../assets/js/Buildings');
+  }
+
+  /**
    * Adds a listener for navigation events.
    */
   componentDidMount(): void {
@@ -84,6 +94,9 @@ class Find extends React.Component {
       this.refs.Navigator.pop();
     }
   }
+
+  /** List of buildings in the app. */
+  _buildingList: Array < Object > = [];
 
   /**
    * Sets the transition between two views in the navigator.
@@ -114,7 +127,7 @@ class Find extends React.Component {
     switch (route.id) {
       case Constants.Views.Find.Home:
         return (
-          <Home />
+          <Home buildingList={this._buildingList} />
         );
       case Constants.Views.Find.Building:
         return (
@@ -122,7 +135,7 @@ class Find extends React.Component {
         );
       case Constants.Views.Find.StartingPoint:
         return (
-          <StartingPoint />
+          <StartingPoint buildingList={this._buildingList} />
         );
       case Constants.Views.Find.Steps:
         return (

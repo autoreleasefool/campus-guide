@@ -42,6 +42,7 @@ import type { Building, Language } from 'types';
 
 // Type definition for component props
 type Props = {
+  buildingList: Array < Object >,   // List of buildings to display
   columns: number,                  // Number of columns to show buildings in
   disableImages?: boolean,          // If true, grid should only show a list of names, with no images
   includeClear?: boolean,           // If true, an empty cell should be available to clear the choice
@@ -106,20 +107,13 @@ export default class BuildingGrid extends React.Component {
     }
   }
 
-  /* List of buildings on the campus. */
-  _buildingsList: Array < Object > = [];
-
   /**
    * Loads the names and images of the buildings from the assets to display them. Only shows buildings which names or
    * codes contain the search terms.
    *
    * @param {Props} props the props to filter with
    */
-  _filterBuildings({ filter, includeClear }: Props): void {
-    if (this._buildingsList == null || this._buildingsList.length === 0) {
-      this._buildingsList = require('../../assets/js/Buildings');
-    }
-
+  _filterBuildings({ buildingList, filter, includeClear }: Props): void {
     // Ignore the case of the search terms
     const adjustedSearchTerms: ?string = (filter == null || filter.length === 0)
         ? null
@@ -132,16 +126,19 @@ export default class BuildingGrid extends React.Component {
       filteredBuildings.push(null);
     }
 
-    for (let i = 0; i < this._buildingsList.length; i++) {
+    const totalBuildings = buildingList.length;
+    for (let i = 0; i < totalBuildings; i++) {
+      const building = buildingList[i];
+
       // If the search terms are empty, or the building name contains the terms, add it to the list
-      const translated: boolean = !('name' in this._buildingsList[i]);
+      const translated: boolean = !('name' in building);
 
       if (adjustedSearchTerms == null
-          || (!translated && this._buildingsList[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (translated && (this._buildingsList[i].name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
-          || this._buildingsList[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
-          || this._buildingsList[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        filteredBuildings.push(this._buildingsList[i]);
+          || (!translated && building.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
+          || (translated && (building.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
+          || building.name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
+          || building.code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+        filteredBuildings.push(building);
       }
     }
 

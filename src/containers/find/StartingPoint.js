@@ -51,7 +51,9 @@ import type {
 
 // Type definition for component props.
 type Props = {
+  buildingList: Array < Object >,                                 // List of buildings to display
   clearSearch: VoidFunction,                                      // Clear the current search
+  showSearch: (show: boolean) => void,                            // Hide or show the search box
   destination: ?Destination,                                      // The user's selected destination
   filter: ?string,                                                // Current search terms
   language: Language,                                             // The current language, selected by the user
@@ -136,6 +138,7 @@ class StartingPoint extends React.Component {
    * Hides or shows the map to select the user's destination.
    */
   _toggleViewingMap(): void {
+    this.props.showSearch(this.state.viewingMap);
     this.setState({ viewingMap: !this.state.viewingMap });
   }
 
@@ -169,6 +172,7 @@ class StartingPoint extends React.Component {
   _renderBuildingGrid(): ReactElement < any > {
     return (
       <BuildingGrid
+          buildingList={this.props.buildingList}
           columns={BUILDING_COLUMNS}
           filter={this.props.filter}
           language={this.props.language}
@@ -399,6 +403,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.setStartingPoint({ code, room }));
       dispatch(actions.switchFindView(Constants.Views.Find.Steps));
     },
+    showSearch: (show: boolean) => dispatch(actions.showSearch(show)),
   };
 };
 

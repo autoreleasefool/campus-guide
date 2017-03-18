@@ -50,6 +50,7 @@ class FindHome extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
+    buildingList: Array < Object >,                                     // List of buildings to display
     filter: ?string,                                                    // The current filter for buildings
     language: Language,                                                 // The current language, selected by the user
     onBuildingSelect: (b: Building, n: Name | TranslatedName) => void,  // Updates the state when a building is selected
@@ -86,6 +87,7 @@ class FindHome extends React.Component {
         </View>
         <View style={_styles.container}>
           <BuildingGrid
+              buildingList={this.props.buildingList}
               columns={BUILDING_COLUMNS}
               filter={this.props.filter}
               language={this.props.language}
