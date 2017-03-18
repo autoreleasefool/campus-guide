@@ -76,6 +76,7 @@ const updatedConfigOptions = {
     prefersWheelchair: false,
     semesters: [],
     scheduleByCourse: true,
+    universityLocation: null,
   },
 };
 

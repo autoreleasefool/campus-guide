@@ -39,7 +39,15 @@ import { connect } from 'react-redux';
 import * as actions from 'actions';
 
 // Types
-import type { Building, Destination, Language, Route, VoidFunction } from 'types';
+import type {
+  Building,
+  Destination,
+  Language,
+  LatLong,
+  LatLongDelta,
+  Route,
+  VoidFunction,
+} from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -47,20 +55,23 @@ type Props = {
   destination: ?Destination,                                      // The user's selected destination
   filter: ?string,                                                // Current search terms
   language: Language,                                             // The current language, selected by the user
+  universityLocation: LatLong,                                    // Location of the university
   onStartingPointSelected: (code: string, room: ?string) => void, // Selects a starting point for navigation
 }
 
 // Type definition for component state.
 type State = {
-  selectedBuilding: ?Building,  // The building the user has selected to navigate from
-  viewingMap: boolean,          // True if the user is viewing the map to select a starting point
+  selectedBuilding: ?Building,    // The building the user has selected to navigate from
+  viewingMap: boolean,            // True if the user is viewing the map to select a starting point
 }
 
 // Imports
 import Header from 'Header';
 import BuildingGrid from 'BuildingGrid';
+import MapView from 'react-native-maps';
 import PaddedIcon from 'PaddedIcon';
 import RoomGrid from 'RoomGrid';
+import Suggestion from 'Suggestion';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
@@ -93,11 +104,24 @@ class StartingPoint extends React.Component {
   constructor(props: Props) {
     super(props);
 
+    if (props.universityLocation) {
+      this._initialRegion = {
+        ...props.universityLocation,
+        latitudeDelta: Constants.Map.DefaultDelta,
+        longitudeDelta: Constants.Map.DefaultDelta,
+      };
+    } else {
+      this._initialRegion = Constants.Map.InitialRegion;
+    }
+
     this.state = {
       selectedBuilding: null,
       viewingMap: false,
     };
   }
+
+  /** Starting region to display on map. */
+  _initialRegion: LatLong & LatLongDelta;
 
   /**
    * Sets the transition between two views in the navigator.
@@ -271,6 +295,44 @@ class StartingPoint extends React.Component {
   }
 
   /**
+   * Renders a navigator to switch between selecting a building or room.
+   *
+   * @returns {ReactElement<any>} a navigator component
+   */
+  _renderStartingPointList(): ReactElement < any > {
+    return (
+      <Navigator
+          configureScene={this._configureScene}
+          initialRoute={{ id: SELECT_BUILDING }}
+          ref='Navigator'
+          renderScene={this._renderScene.bind(this)} />
+    );
+  }
+
+  /**
+   * Renders a map to select a starting location.
+   *
+   * @returns {ReactElement<any>} a map component
+   */
+  _renderStartingPointMap(): ReactElement < any > {
+    return (
+      <View style={_styles.container}>
+        <MapView
+            followsUserLocation={true}
+            initialRegion={this._initialRegion}
+            showsUserLoction={true}
+            style={_styles.map} />
+        <Suggestion
+            backgroundColor={Constants.Colors.secondaryBackground}
+            language={this.props.language}
+            loading={true}
+            suggestion={'Tabaret Hall'} />
+      </View>
+    );
+  }
+
+
+  /**
    * Renders a navigator to switch between selecting a building and a room
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
@@ -280,11 +342,9 @@ class StartingPoint extends React.Component {
       <View style={_styles.container}>
         {this._renderDestination()}
         {this._renderStartingPointHeader()}
-        <Navigator
-            configureScene={this._configureScene}
-            initialRoute={{ id: SELECT_BUILDING }}
-            ref='Navigator'
-            renderScene={this._renderScene.bind(this)} />
+        {this.state.viewingMap
+          ? this._renderStartingPointMap()
+          : this._renderStartingPointList()}
       </View>
     );
   }
@@ -313,6 +373,9 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
   },
+  map: {
+    flex: 1,
+  },
   separator: {
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
@@ -325,6 +388,7 @@ const mapStateToProps = (store) => {
     destination: store.directions.destination,
     filter: store.search.terms,
     language: store.config.options.language,
+    universityLocation: store.config.options.universityLocation,
   };
 };
 

@@ -79,9 +79,11 @@ class FindHome extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
-        <Header
-            icon={{ name: 'store', class: 'material' }}
-            title={Translations.get(this.props.language, 'building_directory')} />
+        <View style={_styles.headerContainer}>
+          <Header
+              icon={{ name: 'store', class: 'material' }}
+              title={Translations.get(this.props.language, 'building_directory')} />
+        </View>
         <View style={_styles.container}>
           <BuildingGrid
               columns={BUILDING_COLUMNS}
@@ -98,6 +100,9 @@ class FindHome extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Constants.Colors.secondaryBackground,
+  },
+  headerContainer: {
     backgroundColor: Constants.Colors.primaryBackground,
   },
 });
