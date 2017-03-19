@@ -398,16 +398,17 @@ export type Facility =
 
 /** Describes configuration state. */
 export type ConfigurationOptions = {
-  alwaysSearchAll?: boolean,        // Always search the entire app, never within a view
-  transitInfo?: ?TransitInfo,       // High level information about the city transit
-  currentSemester?: number,         // Current semester for editing, selected by the user
-  firstTime?: boolean,              // Indicates if it's the user's first time in the app
-  language?: ?Language,             // User's preferred language
-  preferredTimeFormat?: TimeFormat, // Either 12 or 24h time
-  prefersWheelchair?: boolean,      // Only provide wheelchair accessible routes
-  preferByCourse?: boolean,         // True to default schedule view by course, false for by week
-  semesters?: Array < Semester >,   // List of semesters currently available
-  universityLocation?: ?LatLong,    // Latitude and longitude of the university
+  alwaysSearchAll?: boolean,                  // Always search the entire app, never within a view
+  transitInfo?: ?TransitInfo,                 // High level information about the city transit
+  currentSemester?: number,                   // Current semester for editing, selected by the user
+  firstTime?: boolean,                        // Indicates if it's the user's first time in the app
+  language?: ?Language,                       // User's preferred language
+  preferredTimeFormat?: TimeFormat,           // Either 12 or 24h time
+  prefersWheelchair?: boolean,                // Only provide wheelchair accessible routes
+  preferByCourse?: boolean,                   // True to default schedule view by course, false for by week
+  semesters?: Array < Semester >,             // List of semesters currently available
+  universityLocation?: ?LatLong,              // Latitude and longitude of the university
+  universityName?: ?(Name | TranslatedName),  // Name of the univeristy
 };
 
 /** Describes a configuration file. */

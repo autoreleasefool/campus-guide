@@ -46,6 +46,7 @@ const initialState: State = {
     semesters: [],
     scheduleByCourse: false,
     universityLocation: null,
+    universityName: null,
   },
   update: {
     currentDownload: null,

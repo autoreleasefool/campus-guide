@@ -486,6 +486,10 @@ const mapDispatchToProps = (dispatch) => {
     setUniversity: (university: Object) => dispatch(actions.updateConfiguration({
       semesters: university.semesters,
       universityLocation: { latitude: university.lat, longitude: university.long },
+      universityName: {
+        name_en: Translations.getEnglishName(university) || '',
+        name_fr: Translations.getFrenchName(university) || '',
+      },
     })),
     setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
       transitInfo: {

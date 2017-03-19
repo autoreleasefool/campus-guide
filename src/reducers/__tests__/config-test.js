@@ -42,6 +42,7 @@ const initialState = {
     semesters: [],
     scheduleByCourse: false,
     universityLocation: null,
+    universityName: null,
   },
   update: {
     currentDownload: null,
@@ -77,6 +78,7 @@ const updatedConfigOptions = {
     semesters: [],
     scheduleByCourse: true,
     universityLocation: null,
+    universityName: null,
   },
 };
 

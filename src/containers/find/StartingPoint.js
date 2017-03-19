@@ -27,7 +27,10 @@
 // React imports
 import React from 'react';
 import {
+  Alert,
+  Linking,
   Navigator,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -45,6 +48,8 @@ import type {
   Language,
   LatLong,
   LatLongDelta,
+  Name,
+  TranslatedName,
   Route,
   VoidFunction,
 } from 'types';
@@ -58,13 +63,16 @@ type Props = {
   filter: ?string,                                                // Current search terms
   language: Language,                                             // The current language, selected by the user
   universityLocation: LatLong,                                    // Location of the university
+  universityName: (Name | TranslatedName),                        // Name of the university
   onStartingPointSelected: (code: string, room: ?string) => void, // Selects a starting point for navigation
 }
 
 // Type definition for component state.
 type State = {
-  selectedBuilding: ?Building,    // The building the user has selected to navigate from
-  viewingMap: boolean,            // True if the user is viewing the map to select a starting point
+  closestBuilding: ?Building,   // The closest building, or null if no buildings are nearby
+  locating: boolean,            // Indicates if the app is searching for the closest building
+  selectedBuilding: ?Building,  // The building the user has selected to navigate from
+  viewingMap: boolean,          // True if the user is viewing the map to select a starting point
 }
 
 // Imports
@@ -75,6 +83,7 @@ import PaddedIcon from 'PaddedIcon';
 import RoomGrid from 'RoomGrid';
 import Suggestion from 'Suggestion';
 import * as Constants from 'Constants';
+import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
 
@@ -85,6 +94,9 @@ const BUILDING_COLUMNS: number = 3;
 const SELECT_BUILDING: number = 0;
 // ID of route to select a room
 const SELECT_ROOM: number = 1;
+
+// Maximum distance to consider a building 'nearby'
+const MAXIMUM_DISTANCE = 0.1; // 100 metres
 
 class StartingPoint extends React.Component {
 
@@ -106,6 +118,7 @@ class StartingPoint extends React.Component {
   constructor(props: Props) {
     super(props);
 
+    // Set the initial map region
     if (props.universityLocation) {
       this._initialRegion = {
         ...props.universityLocation,
@@ -117,13 +130,35 @@ class StartingPoint extends React.Component {
     }
 
     this.state = {
+      closestBuilding: null,
+      locating: false,
       selectedBuilding: null,
       viewingMap: false,
     };
+
+    // Buttons for viewing directions to the university
+    this._directionsButtons = [
+      { text: 'Google Maps', onPress: this._openMap.bind(this, 'google') },
+      { text: Translations.get(this.props.language, 'cancel'), style: 'cancel' },
+    ];
+
+    if (Platform.OS === 'ios') {
+      this._directionsButtons.splice(1, 0, { text: 'Apple Maps', onPress: this._openMap.bind(this, 'apple') });
+    }
+  }
+
+  /**
+   * Sets up the closest building to the user.
+   */
+  componentDidMount(): void {
+    this._findClosestBuilding();
   }
 
   /** Starting region to display on map. */
   _initialRegion: LatLong & LatLongDelta;
+
+  /** Buttons for viewing directions to the university */
+  _directionsButtons: Array < Object >;
 
   /**
    * Sets the transition between two views in the navigator.
@@ -135,11 +170,83 @@ class StartingPoint extends React.Component {
   }
 
   /**
+   * Finds and displays the closest building.
+   */
+  _findClosestBuilding(): void {
+    this.setState({ locating: true });
+    navigator.geolocation.getCurrentPosition(
+      (position: Object) => {
+        const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
+
+        let closestBuilding = null;
+        let minDistance = -1;
+        const totalBuildings = this.props.buildingList.length;
+        for (let i = 0; i < totalBuildings; i++) {
+          const building = this.props.buildingList[i];
+          const distance = ExternalUtils.getDistanceBetweenCoordinates(
+            building.lat,
+            building.long,
+            location.latitude,
+            location.longitude
+          );
+
+          if (distance < minDistance || minDistance === -1) {
+            minDistance = distance;
+            closestBuilding = building;
+          }
+        }
+
+        // Nearest building must be within a certain distance to be considered
+        if (minDistance > MAXIMUM_DISTANCE) {
+          closestBuilding = null;
+        }
+
+        this.setState({
+          locating: false,
+          closestBuilding,
+        });
+      },
+      (err: any) => console.error('Could not get user location.', err),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  }
+
+  /**
+   * Opens the location of the university in either Google or Apple maps.
+   *
+   * @param {string} provider either 'google' or 'apple'
+   */
+  _openMap(provider: 'google' | 'apple'): void {
+    const lat = this.props.universityLocation.latitude;
+    const long = this.props.universityLocation.longitude;
+    const link = provider === 'google'
+        ? `https://www.google.com/maps/@${lat},${long},16z`
+        : `http://maps.apple.com/?ll=${lat},${long}`;
+    Linking.openURL(link).catch((err: any) => console.error('Could not open Google Maps link', err));
+  }
+
+  /**
    * Hides or shows the map to select the user's destination.
    */
   _toggleViewingMap(): void {
     this.props.showSearch(this.state.viewingMap);
     this.setState({ viewingMap: !this.state.viewingMap });
+  }
+
+  /**
+   * Callback when the user has selected the nearest building.
+   */
+  _onClosestBuildingSelected(): void {
+    if (this.state.closestBuilding) {
+      this.props.onStartingPointSelected(this.state.closestBuilding.code, null);
+    } else {
+      const universityName = Translations.getName(this.props.language, this.props.universityName);
+      Alert.alert(
+        universityName,
+        Translations.get(this.props.language, 'get_directions_to_university'),
+        this._directionsButtons
+      );
+    }
   }
 
   /**
@@ -319,6 +426,11 @@ class StartingPoint extends React.Component {
    * @returns {ReactElement<any>} a map component
    */
   _renderStartingPointMap(): ReactElement < any > {
+    const suggestion = this.state.closestBuilding
+        ? Translations.getName(this.props.language, this.state.closestBuilding)
+        : Translations.get(this.props.language, 'no_buildings_nearby');
+
+    console.log(suggestion);
     return (
       <View style={_styles.container}>
         <MapView
@@ -329,8 +441,10 @@ class StartingPoint extends React.Component {
         <Suggestion
             backgroundColor={Constants.Colors.secondaryBackground}
             language={this.props.language}
-            loading={true}
-            suggestion={'Tabaret Hall'} />
+            loading={this.state.locating}
+            suggestion={suggestion}
+            onRefresh={this._findClosestBuilding.bind(this)}
+            onSelect={this._onClosestBuildingSelected.bind(this)} />
       </View>
     );
   }
@@ -393,6 +507,7 @@ const mapStateToProps = (store) => {
     filter: store.search.terms,
     language: store.config.options.language,
     universityLocation: store.config.options.universityLocation,
+    universityName: store.config.options.universityName,
   };
 };
 

@@ -29,6 +29,7 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -39,6 +40,7 @@ import {
 import type { Language, VoidFunction } from 'types';
 
 // Imports
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
@@ -46,6 +48,9 @@ import * as Translations from 'Translations';
 
 // Default opacity when selecting while a suggestion is available
 const DEFAULT_TOUCH_OPACITY = 0.4;
+
+// Height of the suggestion view
+const SUGGESTION_HEIGHT = 50;
 
 export default class Suggestion extends React.Component {
 
@@ -56,29 +61,42 @@ export default class Suggestion extends React.Component {
     backgroundColor?: string, // Background color for the view
     language: Language,       // The user's currently selected language
     loading: boolean,         // Indicates whether the view is waiting for a suggestion to display or not
-    loadingText?: string,     // Custom text to display while waiting. Default is 'Loading'
-    suggestion?: string,      // Suggestion text
-    onPress?: VoidFunction,    // Callback when the suggestion is pressed
+    loadingText?: ?string,    // Custom text to display while waiting. Default is 'Loading'
+    suggestion?: ?string,     // Suggestion text
+    onRefresh?: VoidFunction, // Callback when the suggestion is refreshed
+    onSelect?: VoidFunction,  // Callback when the suggestion is selected
   };
 
   /**
-   * Returns the default loading text, for when none is provided.
+   * Returns the loading text.
    *
-   * @returns {string} the translation of 'loading'
+   * @returns {string} the loading text prop, or the translation of 'loading'
    */
-  _getDefaultLoadingText(): string {
-    return Translations.get(this.props.language, 'loading');
+  _getLoadingText(): string {
+    return this.props.loadingText || Translations.get(this.props.language, 'loading');
   }
 
+  /**
+   * Gets the suggestion, with formatting.
+   *
+   * @returns {string} 'Suggested: <suggestion>'
+   */
   _getSuggestion(): string {
     return `${Translations.get(this.props.language, 'suggested')}: ${this.props.suggestion || ''}`;
   }
 
   /**
-   * Invokes the onPress callback, if available.
+   * Invokes the onRefresh callback, if available.
    */
-  _onPress(): void {
-    this.props.onPress && this.props.onPress();
+  _onRefresh(): void {
+    this.props.onRefresh && this.props.onRefresh();
+  }
+
+  /**
+   * Invokes the onSelect callback, if available.
+   */
+  _onSelect(): void {
+    !this.props.loading && this.props.onSelect && this.props.onSelect();
   }
 
   /**
@@ -88,16 +106,28 @@ export default class Suggestion extends React.Component {
    * @returns {?ReactElement<any>} an activity indicator component, or null if the suggestion is not loading
    */
   _renderActivityIndicator(color: string): ?ReactElement < any > {
-    if (!this.props.loading) {
+    if (this.props.loading) {
+      return (
+        <ActivityIndicator
+            animating={this.props.loading}
+            color={color}
+            style={_styles.activityIndicator} />
+      );
+    } else if (this.props.onRefresh) {
+      return (
+        <TouchableOpacity
+            style={_styles.refreshContainer}
+            onPress={this._onRefresh.bind(this)}>
+          <Ionicons
+              color={color}
+              name={Platform.OS === 'ios' ? 'ios-refresh' : 'md-refresh'}
+              size={Constants.Sizes.Icons.Medium}
+              style={_styles.refresh} />
+        </TouchableOpacity>
+      );
+    } else {
       return null;
     }
-
-    return (
-      <ActivityIndicator
-          animating={this.props.loading}
-          color={color}
-          style={_styles.activityIndicator} />
-    );
   }
 
   /**
@@ -110,7 +140,7 @@ export default class Suggestion extends React.Component {
     return (
       <View style={_styles.suggestionContainer}>
         <Text style={[ _styles.suggestion, { color }]}>
-          {this.props.loading ? this.props.loadingText || this._getDefaultLoadingText() : this._getSuggestion()}
+          {(this.props.loading ? this._getLoadingText() : this._getSuggestion())}
         </Text>
       </View>
     );
@@ -152,15 +182,16 @@ export default class Suggestion extends React.Component {
     }
 
     return (
-      <TouchableOpacity
-          activeOpacity={this.props.loading ? 1 : DEFAULT_TOUCH_OPACITY}
-          onPress={this._onPress.bind(this)}>
-        <View style={[ _styles.header, { backgroundColor: headerBackground }]}>
-          {this._renderActivityIndicator(primaryForeground)}
+      <View style={[ _styles.header, { backgroundColor: headerBackground }]}>
+        {this._renderActivityIndicator(primaryForeground)}
+        <TouchableOpacity
+            activeOpacity={this.props.loading ? 1 : DEFAULT_TOUCH_OPACITY}
+            style={_styles.touchableSuggestion}
+            onPress={this._onSelect.bind(this)}>
           {this._renderSuggestion(primaryForeground)}
           {this._renderChevron(secondaryForeground)}
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
@@ -168,15 +199,28 @@ export default class Suggestion extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   header: {
-    height: 50,
+    height: SUGGESTION_HEIGHT,
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  refreshContainer: {
+    height: SUGGESTION_HEIGHT,
+    justifyContent: 'center',
+  },
+  refresh: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
   activityIndicator: {
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   chevron: {
-    marginRight: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Expanded,
+  },
+  touchableSuggestion: {
+    height: SUGGESTION_HEIGHT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   suggestion: {
     marginLeft: Constants.Sizes.Margins.Expanded,
@@ -184,6 +228,6 @@ const _styles = StyleSheet.create({
   },
   suggestionContainer: {
     flex: 1,
-    marginRight: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Expanded,
   },
 });

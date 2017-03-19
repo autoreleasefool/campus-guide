@@ -143,11 +143,15 @@ class LectureModal extends React.Component {
       rightActionEnabled: this._isLectureStartUnique(props.course, day, starts),
     };
 
+    this._buildingList = require('../../../assets/js/Buildings');
     (this:any)._isLectureStartUnique = this._isLectureStartUnique.bind(this);
     (this:any)._renderMenu = this._renderMenu.bind(this);
     (this:any)._renderRegularPicker = this._renderRegularPicker.bind(this);
     (this:any)._renderTimePicker = this._renderTimePicker.bind(this);
   }
+
+  /** List of buildings in the app. */
+  _buildingList: Array < Object > = [];
 
   /**
    * Closes this menu and, if editing, re-saves the provided lecture.
@@ -312,6 +316,7 @@ class LectureModal extends React.Component {
               title={`${locationTranslation} - ${buildingTranslation}`} />
         </TouchableOpacity>
         <BuildingGrid
+            buildingList={this._buildingList}
             columns={BUILDING_COLUMNS}
             disableImages={true}
             filter={''}
