@@ -143,7 +143,7 @@ class LectureModal extends React.Component {
       rightActionEnabled: this._isLectureStartUnique(props.course, day, starts),
     };
 
-    this._buildingList = require('../../../assets/js/Buildings');
+    this._buildingList = require('../../../../assets/js/Buildings');
     (this:any)._isLectureStartUnique = this._isLectureStartUnique.bind(this);
     (this:any)._renderMenu = this._renderMenu.bind(this);
     (this:any)._renderRegularPicker = this._renderRegularPicker.bind(this);
