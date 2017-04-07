@@ -12,7 +12,7 @@
     "http-status-codes": "^1.0.6",
     "moment": "^2.18.1",
     "react": "^15.4.1",
-    "react-native": "^0.42.0",
+    "react-native": "^0.43.2",
     "react-native-action-button": "^2.6.3",
     "react-native-device-info": "^0.9.9",
     "react-native-fs": "^2.1.0-rc.1",
