@@ -11,7 +11,7 @@
   "dependencies": {
     "http-status-codes": "^1.0.6",
     "moment": "^2.18.1",
-    "react": "^15.4.1",
+    "react": "16.0.0-alpha.6",
     "react-native": "^0.43.2",
     "react-native-action-button": "^2.6.5",
     "react-native-device-info": "^0.10.2",
@@ -36,7 +36,7 @@
     "eslint": "^3.19.0",
     "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-react-native": "^2.3.1",
-    "flow-bin": "0.38",
+    "flow-bin": "0.40",
     "jest": "^19.0.2",
     "jest-cli": "^19.0.2",
     "jest-react-native": "^18.0.0",
