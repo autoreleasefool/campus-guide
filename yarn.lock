@@ -3458,9 +3458,9 @@ react-native-action-button@^2.6.5:
   version "2.6.5"
   resolved "https://registry.yarnpkg.com/react-native-action-button/-/react-native-action-button-2.6.5.tgz#935c5d63b8a95c00064b4fc224f3168c7ffd033f"
 
-react-native-device-info@^0.9.9:
-  version "0.9.9"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.9.9.tgz#42490719b8be2b8ffe689f3c74d56884ca05c0d7"
+react-native-device-info@^0.10.2:
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.10.2.tgz#350cd68ed43839022ddea0a3a423439f16fa4fba"
 
 react-native-fs@^2.1.0-rc.1:
   version v2.1.0-rc.1
