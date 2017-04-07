@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "http-status-codes": "^1.0.6",
-    "moment": "^2.17.1",
+    "moment": "^2.18.1",
     "react": "^15.4.1",
     "react-native": "^0.42.0",
     "react-native-action-button": "^2.6.3",
@@ -28,13 +28,13 @@
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.1.1",
+    "babel-eslint": "^7.2.1",
     "babel-jest": "^19.0.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-react-native": "^1.9.1",
     "empty": "^0.10.1",
-    "eslint": "^3.17.1",
-    "eslint-plugin-react": "^6.10.0",
+    "eslint": "^3.19.0",
+    "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-react-native": "^2.3.1",
     "flow-bin": "0.38",
     "jest": "^19.0.2",
