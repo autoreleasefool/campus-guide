@@ -18,7 +18,7 @@
     "react-native-fs": "^2.1.0-rc.1",
     "react-native-keyboard-aware-scroll-view": "^0.2.7",
     "react-native-linear-gradient": "^2.0.0",
-    "react-native-maps": "^0.13.0",
+    "react-native-maps": "^0.14.0",
     "react-native-scrollable-tab-view": "^0.7.2",
     "react-native-simple-store": "^1.1.0",
     "react-native-snackbar": "^0.3.1",
