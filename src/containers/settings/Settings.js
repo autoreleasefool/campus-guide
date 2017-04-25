@@ -121,7 +121,7 @@ class Settings extends React.Component {
         .then(() => Translations.loadTranslations('en'))
         .then(() => Translations.loadTranslations('fr'))
         .then(() => Configuration.getConfig('/settings.json'))
-        .then((settingSections: Object) => {
+        .then((settingSections: Array < Section < Setting > >) => {
           const totalSections = settingSections.length;
           for (let i = 0; i < totalSections; i++) {
             const section = settingSections[i];
@@ -132,7 +132,8 @@ class Settings extends React.Component {
             }
           }
 
-          this._settingsSections = settingSections;
+          console.log(settingSections);
+          this._settingSections = settingSections;
           this.setState({ loaded: true });
         })
         .catch((err: any) => console.error('Configuration could not be initialized for settings.', err));
@@ -146,7 +147,7 @@ class Settings extends React.Component {
   }
 
   /** List of sections of settings to render. */
-  _settingSections: Array < Section < Setting > >;
+  _settingSections: Array < Section < Setting > > = [];
 
   /** Cache of settings values to retrieve and update them quickly. */
   _settingsCache: Object = {};
@@ -360,7 +361,7 @@ class Settings extends React.Component {
             activeOpacity={item.type === 'boolean' ? 1 : DEFAULT_OPACITY}
             onPress={this._onPressRow.bind(this, item, true)}>
           <View style={_styles.setting}>
-            <Text style={_styles.settingText}>{TranslationUtils.getName(this.props.language, item)}</Text>
+            <Text style={_styles.settingText}>{Translations.getName(this.props.language, item)}</Text>
             {content}
           </View>
         </TouchableOpacity>
@@ -375,7 +376,7 @@ class Settings extends React.Component {
    * @param {string} sectionName index of the section
    * @returns {ReactElement<any>} a {SectionHeader} with the name of the section
    */
-  _renderSectionHeader({ section }: { section: Section }): ReactElement < any > {
+  _renderSectionHeader({ section }: { section: Section < * > }): ReactElement < any > {
     const colonIndex: number = section.key.indexOf(':');
     let sectionNameTranslated = section.key;
     if (colonIndex > -1) {
