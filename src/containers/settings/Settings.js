@@ -60,10 +60,10 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  loaded: boolean,                          // Indicates if the settings have been loaded
-  listModalDataSource: ListView.DataSource, // List of data to display in modal
-  listModalTitle: string,                   // Title of the list view modal
-  listModalVisible: boolean,                // Indicates if the list modal should be visible
+  loaded: boolean,                        // Indicates if the settings have been loaded
+  listModalSections: ListView.DataSource, // List of data to display in modal
+  listModalTitle: string,                 // Title of the list view modal
+  listModalVisible: boolean,              // Indicates if the list modal should be visible
 };
 
 // Imports
@@ -71,7 +71,6 @@ import DeviceInfo from 'react-native-device-info';
 import Header from 'Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Separator from './components/Separator';
 import ModalHeader from 'ModalHeader';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
@@ -104,10 +103,7 @@ class Settings extends React.Component {
     super(props);
     this.state = {
       loaded: false,
-      listModalDataSource: new ListView.DataSource({
-        rowHasChanged: (r1: any, r2: any) => r1 !== r2,
-        sectionHeaderHasChanged: (s1: any, s2: any) => s1 !== s2,
-      }),
+      listModalSections: [],
       listModalTitle: '',
       listModalVisible: false,
     };
@@ -132,7 +128,6 @@ class Settings extends React.Component {
             }
           }
 
-          console.log(settingSections);
           this._settingSections = settingSections;
           this.setState({ loaded: true });
         })
@@ -174,7 +169,7 @@ class Settings extends React.Component {
    */
   _closeModal(): void {
     this.setState({
-      listModalDataSource: this.state.listModalDataSource.cloneWithRowsAndSections({}),
+      listModalSections: [],
       listModalVisible: false,
     });
   }
@@ -257,7 +252,7 @@ class Settings extends React.Component {
     } else if (setting.key === 'app_open_source') {
       const licenses = require('../../../assets/json/licenses.json');
       this.setState({
-        listModalDataSource: this.state.listModalDataSource.cloneWithRowsAndSections(licenses),
+        listModalSections: licenses,
         listModalTitle: Translations.getName(this.props.language, setting) || '',
         listModalVisible: true,
       });
@@ -278,10 +273,10 @@ class Settings extends React.Component {
             rightActionText={Translations.get(this.props.language, 'done')}
             title={this.state.listModalTitle}
             onRightAction={this._closeModal.bind(this)} />
-        <ListView
-            dataSource={this.state.listModalDataSource}
-            renderRow={this._renderListModalRow.bind(this)}
+        <SectionList
+            renderItem={this._renderListModalRow.bind(this)}
             renderSectionHeader={this._renderListModalSectionHeader.bind(this)}
+            sections={this.state.listModalSections}
             style={_styles.modalListView} />
       </View>
     );
@@ -293,23 +288,24 @@ class Settings extends React.Component {
    * @param {string} item text to be rendered
    * @returns {ReactElement<any>} views to render the setting in the list
    */
-  _renderListModalRow(item: string): ReactElement < any > {
+  _renderListModalRow({ item }: { item: Object }): ReactElement < any > {
+    console.log(item);
     return (
-      <Text style={_styles.modalListViewText}>{item}</Text>
+      <Text style={_styles.modalListViewText}>{item.text}</Text>
     );
   }
 
   /**
-   * Renders a heading for a section in the modal's list view.
+   * Renders a heading for a section in the modal list.
    *
-   * @param {Object} sectionData section contents
-   * @param {string} sectionName index of the section
-   * @returns {ReactElement<any>} a {SectionHeader} with the name of the section
+   * @param {Object} section section contents
+   * @returns {ReactElement<any>} a {Header} with the name of the section
    */
-  _renderListModalSectionHeader(sectionData: Object, sectionName: string): ReactElement < any > {
+  _renderListModalSectionHeader({ section }: { section: Section < * > }): ReactElement < any > {
+    console.log(section);
     return (
       <View style={_styles.modalListViewHeader}>
-        <Header title={sectionName} />
+        <Header title={section.key} />
       </View>
     );
   }
@@ -372,9 +368,8 @@ class Settings extends React.Component {
   /**
    * Renders a heading for a section of settings.
    *
-   * @param {Object} sectionData section contents
-   * @param {string} sectionName index of the section
-   * @returns {ReactElement<any>} a {SectionHeader} with the name of the section
+   * @param {Object} section section contents
+   * @returns {ReactElement<any>} a {Header} with the name of the section
    */
   _renderSectionHeader({ section }: { section: Section < * > }): ReactElement < any > {
     const colonIndex: number = section.key.indexOf(':');
@@ -395,6 +390,15 @@ class Settings extends React.Component {
   }
 
   /**
+   * Renders row separator.
+   *
+   * @returns {ReactElement<any>} a separator styled view
+   */
+  _renderSeparator(): ReactElement < any > {
+    return <View style={_styles.separator} />;
+  }
+
+  /**
    * Displays a list of settings.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render
@@ -410,7 +414,7 @@ class Settings extends React.Component {
           {this._renderListModal()}
         </Modal>
         <SectionList
-            SeparatorComponent={Separator}
+            ItemSeparatorComponent={this._renderSeparator}
             renderItem={this._renderItem.bind(this)}
             renderSectionHeader={this._renderSectionHeader.bind(this)}
             sections={this._settingSections} />
@@ -459,6 +463,11 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
     margin: Constants.Sizes.Margins.Expanded,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.darkTransparentBackground,
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
 });
 
