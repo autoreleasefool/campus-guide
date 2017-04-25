@@ -42,6 +42,7 @@ import type { Building, Language } from 'types';
 
 // Type definition for component props
 type Props = {
+  buildingList: Array < Object >,   // List of buildings to display
   columns: number,                  // Number of columns to show buildings in
   disableImages?: boolean,          // If true, grid should only show a list of names, with no images
   includeClear?: boolean,           // If true, an empty cell should be available to clear the choice
@@ -57,7 +58,7 @@ type State = {
 
 // Imports
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Determining size of building icons based on the screen size.
 const { width } = Dimensions.get('window');
@@ -92,7 +93,7 @@ export default class BuildingGrid extends React.Component {
    * Loads the buildings once the view has been mounted, and registers a search listener.
    */
   componentDidMount(): void {
-    this._filterBuildings(this.props.filter);
+    this._filterBuildings(this.props);
   }
 
   /**
@@ -102,46 +103,42 @@ export default class BuildingGrid extends React.Component {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
-      this._filterBuildings(nextProps.filter);
+      this._filterBuildings(nextProps);
     }
   }
-
-  /* List of buildings on the campus. */
-  _buildingsList: Array < Object > = [];
 
   /**
    * Loads the names and images of the buildings from the assets to display them. Only shows buildings which names or
    * codes contain the search terms.
    *
-   * @param {?string} searchTerms user input search terms.
+   * @param {Props} props the props to filter with
    */
-  _filterBuildings(searchTerms: ?string): void {
-    if (this._buildingsList == null || this._buildingsList.length === 0) {
-      this._buildingsList = require('../../assets/js/Buildings');
-    }
-
+  _filterBuildings({ buildingList, filter, includeClear }: Props): void {
     // Ignore the case of the search terms
-    const adjustedSearchTerms: ?string = (searchTerms == null || searchTerms.length === 0)
+    const adjustedSearchTerms: ?string = (filter == null || filter.length === 0)
         ? null
-        : searchTerms.toUpperCase();
+        : filter.toUpperCase();
 
     // Create array for buildings
     const filteredBuildings: Array < ?Building > = [];
 
-    if (this.props.includeClear) {
+    if (includeClear) {
       filteredBuildings.push(null);
     }
 
-    for (let i = 0; i < this._buildingsList.length; i++) {
+    const totalBuildings = buildingList.length;
+    for (let i = 0; i < totalBuildings; i++) {
+      const building = buildingList[i];
+
       // If the search terms are empty, or the building name contains the terms, add it to the list
-      const translated: boolean = !('name' in this._buildingsList[i]);
+      const translated: boolean = !('name' in building);
 
       if (adjustedSearchTerms == null
-          || (!translated && this._buildingsList[i].name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (translated && (this._buildingsList[i].name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
-          || this._buildingsList[i].name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
-          || this._buildingsList[i].code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        filteredBuildings.push(this._buildingsList[i]);
+          || (!translated && building.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
+          || (translated && (building.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
+          || building.name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
+          || building.code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
+        filteredBuildings.push(building);
       }
     }
 
@@ -154,13 +151,10 @@ export default class BuildingGrid extends React.Component {
   /**
    * Displays a building's name and image.
    *
-   * @param {?Building} building information about the building to display
+   * @param {Building} building information about the building to display
    * @returns {ReactElement<any>} an image (if enabled) and name for the building
    */
-  _renderRow(building: ?Building): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
+  _renderRow(building: Building): ReactElement < any > {
     const buildingImageSize: number = Math.floor(width / this.props.columns);
 
     let buildingStyle = { height: buildingImageSize, width: buildingImageSize };
@@ -179,6 +173,7 @@ export default class BuildingGrid extends React.Component {
       height: width / this.props.columns,
     };
 
+    // TODO: consider adding 'key={building.code}'
     return (
       <TouchableOpacity onPress={() => this.props.onSelect(building)}>
         <View style={[ _styles.building, buildingStyle ]}>
@@ -188,7 +183,7 @@ export default class BuildingGrid extends React.Component {
                 source={building.image}
                 style={[ _styles.image, imageStyle ]} />}
           <Text style={[ _styles.buildingCode, textStyle ]}>
-            {building == null ? Translations.none : building.code}
+            {building == null ? Translations.get(this.props.language, 'none') : building.code}
           </Text>
         </View>
       </TouchableOpacity>

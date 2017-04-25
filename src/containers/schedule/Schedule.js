@@ -81,7 +81,7 @@ import * as ArrayUtils from 'ArrayUtils';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Tabs
 import WeeklySchedule from './WeeklySchedule';
@@ -208,11 +208,10 @@ class Schedule extends React.Component {
   /**
    * Renders the current semester and a drop down to switch semesters.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @returns {ReactElement<any>} the elements to render
    */
-  _renderSemesters(Translations: Object): ReactElement < any > {
-    const semesterName = TranslationUtils.getTranslatedName(
+  _renderSemesters(): ReactElement < any > {
+    const semesterName = Translations.getName(
       this.props.language,
       this.props.semesters[this.props.currentSemester]
     ) || '';
@@ -221,18 +220,20 @@ class Schedule extends React.Component {
       <View>
         <Header
             icon={DisplayUtils.getPlatformIcon(Platform.OS, semesterIcon)}
-            subtitle={(this.state.showSemesters ? Translations.done : Translations.switch)}
+            subtitle={(this.state.showSemesters
+              ? Translations.get(this.props.language, 'done')
+              : Translations.get(this.props.language, 'switch'))}
             subtitleCallback={this._toggleSwitchSemester}
             title={semesterName} />
         {this.state.showSemesters
           ?
             <Picker
                 itemStyle={_styles.semesterItem}
-                prompt={Translations.semester}
+                prompt={Translations.get(this.props.language, 'semester')}
                 selectedValue={this.props.currentSemester}
                 onValueChange={(value) => this.props.switchSemester(value)}>
               {this.props.semesters.map((semester, index) => {
-                const name = TranslationUtils.getTranslatedName(this.props.language, semester);
+                const name = Translations.getName(this.props.language, semester);
                 return (
                   <Picker.Item
                       key={name}
@@ -253,9 +254,6 @@ class Schedule extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     return (
       <View style={_styles.container}>
         <Modal
@@ -270,26 +268,25 @@ class Schedule extends React.Component {
               onClose={this._closeModal}
               onSaveCourse={this._onSaveCourse.bind(this)} />
         </Modal>
-        <View style={_styles.headerSeparator} />
         <ScrollableTabView
             initialPage={this.state.initialPage}
             style={_styles.tabContainer}
             tabBarActiveTextColor={Constants.Colors.primaryWhiteText}
-            tabBarBackgroundColor={Constants.Colors.garnet}
+            tabBarBackgroundColor={Constants.Colors.primaryBackground}
             tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
             tabBarPosition='top'
             tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.primaryWhiteText }}
             onChangeTab={(newTab: { i: number }) => this.props.viewScheduleByCourse(newTab.i === 1)}>
           <WeeklySchedule
               lectureFormats={this.state.lectureFormats}
-              tabLabel={Translations.weekly}>
-            {this._renderSemesters(Translations)}
+              tabLabel={Translations.get(this.props.language, 'weekly')}>
+            {this._renderSemesters()}
           </WeeklySchedule>
           <ByCourseSchedule
               lectureFormats={this.state.lectureFormats}
-              tabLabel={Translations.by_course}
+              tabLabel={Translations.get(this.props.language, 'by_course')}
               onEditCourse={this._onEditCourse}>
-            {this._renderSemesters(Translations)}
+            {this._renderSemesters()}
           </ByCourseSchedule>
         </ScrollableTabView>
         <ActionButton
@@ -307,10 +304,6 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
-  },
-  headerSeparator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.primaryWhiteText,
   },
   semesterItem: {
     color: Constants.Colors.primaryWhiteText,

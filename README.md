@@ -27,17 +27,27 @@ Currently, the Travis CI build will run the following commands:
 - `npm run lint`
 - `npm test`
 
-Additional tests and checks will be run in the future, when the resources for the app have been released. For now, these commands fail due to the missing resources and have been disabled for the time being.
-
-## Screenshots
+## Design
 
 | Splash Screen | Finding a class | Your schedule |
 |:-------------:|:---------------:|:-------------:|
-| <img src='./screenshots/design_splash.png' width='220' alt='Splash design'/> | <img src='./screenshots/design_find_home.png' width='220' alt='Find design'/> | <img src='./screenshots/design_schedule_home.png' width='220' alt='Schedule design'/> |
+| <img src='./screenshots/design_splash.png' width='220' alt='Splash design'/> | <img src='./screenshots/design_find.png' width='220' alt='Find design'/> | <img src='./screenshots/design_schedule.png' width='220' alt='Schedule design'/> |
 
-|   Discover campus   |   Settings  |
-|:-------------------:|:-----------:|
-| <img src='./screenshots/design_discover_home.png' width='220' alt='Discover design'/> | <img src='./screenshots/design_settings_home.png' width='220' alt='Settings design'/> |
+| Discover | Search | Settings |
+|:--------:|:------:|:--------:|
+| <img src='./screenshots/design_discover.png' width='220' alt='Discover design'/> | <img src='./screenshots/design_search.png' width='220' alt='Search design'/> | <img src='./screenshots/design_settings.png' width='220' alt='Settings design'/> |
+
+## Current screenshots
+
+*As of March 21, 2017*
+
+| Splash Screen | Finding a class | Your schedule |
+|:-------------:|:---------------:|:-------------:|
+| <img src='./screenshots/screen_pre_splash.png' width='220' alt='Prerelease splash'/> | <img src='./screenshots/screen_pre_find.png' width='220' alt='Prerelease find'/> | <img src='./screenshots/screen_pre_schedule.png' width='220' alt='Prerelease schedule'/> |
+
+| Discover | Search | Settings |
+|:--------:|:------:|:--------:|
+| <img src='./screenshots/screen_pre_discover.png' width='220' alt='Prerelease discover'/> | <img src='./screenshots/screen_pre_search.png' width='220' alt='Prerelease search'/> | <img src='./screenshots/screen_pre_settings.png' width='220' alt='Prerelease settings'/> |
 
 ## License
 

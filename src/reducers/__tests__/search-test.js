@@ -24,13 +24,14 @@
 'use strict';
 
 // Types
-import { SEARCH } from 'actionTypes';
+import { SEARCH, ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SET_STUDY_FILTERS } from 'actionTypes';
 
 // Imports
 import reducer from '../search';
 
 // Expected initial state
 const initialState = {
+  studyFilters: null,
   terms: null,
 };
 
@@ -54,4 +55,35 @@ describe('search reducer', () => {
         .toEqual({ ...initialState, terms: null });
   });
 
+  it('should set new filters', () => {
+    const filters = [ 0, 1, 2 ];
+    expect(reducer(initialState, { type: SET_STUDY_FILTERS, filters }))
+        .toEqual({ ...initialState, studyFilters: filters });
+  });
+
+  it('should activate new filters', () => {
+    let updatedState = reducer(initialState, { type: ACTIVATE_STUDY_FILTER, filter: 0 });
+    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0 ]});
+
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 2 });
+    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0, 2 ]});
+
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 2 });
+    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0, 2 ]});
+
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 1 });
+    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0, 1, 2 ]});
+  });
+
+  it('should deactivate filters', () => {
+    let updatedState = reducer(initialState, { type: DEACTIVATE_STUDY_FILTER, filter: 0 });
+    expect(updatedState).toEqual({ ...initialState, studyFilters: []});
+
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 0 });
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 1 });
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 2 });
+
+    updatedState = reducer(updatedState, { type: DEACTIVATE_STUDY_FILTER, filter: 1 });
+    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0, 2 ]});
+  });
 });

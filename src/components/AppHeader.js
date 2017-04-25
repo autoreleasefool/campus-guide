@@ -68,11 +68,11 @@ type State = {
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Height of the navbar
-const NAVBAR_HEIGHT: number = 50;
-const ICON_SIZE: number = 50;
+const NAVBAR_HEIGHT: number = 45;
+const ICON_SIZE: number = 45;
 
 // Width of the search input
 const { width } = Dimensions.get('window');
@@ -137,6 +137,7 @@ class AppHeader extends React.Component {
   _toggleSearch(): void {
     if (this.state.shouldShowSearchBar) {
       this.refs.SearchInput.blur();
+      this.props.onSearch(null);
     } else {
       this.refs.SearchInput.focus();
     }
@@ -179,15 +180,12 @@ class AppHeader extends React.Component {
     const searchIcon: string = `${platformModifier}-search`;
     const closeIcon: string = `${platformModifier}-close`;
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     // If title is string, use it as key for translations
     let appTitle: string;
     if (typeof (this.props.appTitle) === 'string') {
-      appTitle = Translations[this.props.appTitle];
+      appTitle = Translations.get(this.props.language, this.props.appTitle);
     } else {
-      appTitle = TranslationUtils.getTranslatedName(this.props.language, this.props.appTitle) || '';
+      appTitle = Translations.getName(this.props.language, this.props.appTitle) || '';
     }
 
     // Hide/show back button
@@ -213,19 +211,24 @@ class AppHeader extends React.Component {
     return (
       <View style={_styles.container}>
         <View style={[ _styles.titleContainer, titleStyle ]}>
-          <Text style={_styles.title}>{appTitle}</Text>
+          <Text
+              ellipsizeMode={'tail'}
+              numberOfLines={1}
+              style={_styles.title}>
+            {appTitle}
+          </Text>
         </View>
         <View style={[ _styles.searchContainer, searchInputStyle ]}>
           <Ionicons
-              color={'white'}
+              color={Constants.Colors.primaryWhiteIcon}
               name={searchIcon}
               size={Constants.Sizes.Icons.Medium}
               style={_styles.searchIcon}
               onPress={() => this.refs.SearchInput.focus()} />
           <TextInput
               autoCorrect={false}
-              placeholder={Translations.search_placeholder}
-              placeholderTextColor={Constants.Colors.lightGrey}
+              placeholder={Translations.get(this.props.language, 'search_placeholder')}
+              placeholderTextColor={Constants.Colors.secondaryWhiteText}
               ref='SearchInput'
               returnKeyType={'done'}
               style={_styles.searchText}
@@ -250,6 +253,7 @@ class AppHeader extends React.Component {
               size={Constants.Sizes.Icons.Medium}
               style={_styles.noBackground} />
         </TouchableOpacity>
+        <View style={_styles.separator} />
       </View>
     );
   }
@@ -281,7 +285,7 @@ const _styles = StyleSheet.create({
   searchText: {
     flex: 1,
     height: 35,
-    color: Constants.Colors.polarGrey,
+    color: Constants.Colors.primaryWhiteText,
   },
   icon: {
     position: 'absolute',
@@ -291,6 +295,8 @@ const _styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
+    paddingLeft: ICON_SIZE,
+    paddingRight: ICON_SIZE,
     textAlign: 'center',
     fontSize: Constants.Sizes.Text.Title,
     color: Constants.Colors.primaryWhiteText,
@@ -301,6 +307,13 @@ const _styles = StyleSheet.create({
   },
   noBackground: {
     backgroundColor: 'rgba(0,0,0,0)',
+  },
+  separator: {
+    position: 'absolute',
+    bottom: 0,
+    width: width,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
 });
 

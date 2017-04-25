@@ -44,6 +44,12 @@ export type Link = {link: string};
 /** A link, translated for English and French. */
 export type TranslatedLink = {link_en: string, link_fr: string};
 
+/** A description, valid in English or French. */
+export type Description = {description: string};
+
+/** A description, translated for English and French. */
+export type TranslatedDescription = {description_en: string, description_fr: string};
+
 /** A set of details, valid in English or French. */
 export type Details = {
   image: string,
@@ -226,21 +232,52 @@ export type ShuttleSchedule = {
   directions: Array < ShuttleDirection >, // Directions and times for the schedule
 } & (Name | TranslatedName);
 
-// Description of the route the shuttle takes, valid in English or French
+/** Description of the route the shuttle takes, valid in English or French */
 type ShuttleRoute = {
   route: string,  // Description of the route the shuttle takes
 }
 
-// Description of the route the shuttle takes, translated to English and French
+/** Description of the route the shuttle takes, translated to English and French */
 type TranslatedShuttleRoute = {
   route_en: string, // Description of the route the shuttle takes in English
   route_fr: string, // Description of the route the shuttle takes in French
 }
 
-// Describes a direction of the shuttle and when it departs in that direction
+/** Describes a direction of the shuttle and when it departs in that direction */
 export type ShuttleDirection = {
   day_times: Object,  // Days and times which the shuttle departs
 } & (Name | TranslatedName) & (ShuttleRoute | TranslatedShuttleRoute);
+
+//-----------------------------------------------------------------------------
+//  Study spots
+//-----------------------------------------------------------------------------
+
+/** Study spot filter descriptions and whether they are active. */
+export type StudySpotFilter = {
+  icon: PlatformIcon, // Icon to represent the filter
+} & (Name | TranslatedName) & (Description | TranslatedDescription);
+
+/** Locations to reserve spots at the university. */
+export type StudySpotReservation = (Name | TranslatedName)
+  & (Link | TranslatedLink)
+  & (Description | TranslatedDescription);
+
+/** Location and properties of a study spot. */
+export type StudySpot = {
+  image: string,              // Name of the image of the study spot
+  building: string,           // Building code
+  room: string,               // Room number
+  opens: string,              // Time the spot opens at
+  closes: string,             // Time the spot closes at
+  filters: Array < number >,  // List of properties to filter on
+} & ?(Name | TranslatedName) & (Description | TranslatedDescription);
+
+/** Information about study spots. */
+export type StudySpotInfo = {
+  filters: Array < StudySpotFilter >,
+  reservations: Array < StudySpotReservation >,
+  spots: Array < StudySpot >,
+};
 
 //-----------------------------------------------------------------------------
 //  Courses
@@ -311,14 +348,14 @@ export type Route = {
 //  Menus
 //-----------------------------------------------------------------------------
 
-// Expected format for discover sections.
+/** Expected format for discover sections. */
 export type DiscoverSection = {
   icon: PlatformIcon, // Icon for the section to display
   id: string,         // Unique id to report which section was selected
   image?: string,     // Image to display when section is expanded
 } & (Name | TranslatedName);
 
-// Expected format for link sections.
+/** Expected format for link sections. */
 export type LinkSection = {
   icon: PlatformIcon,                 // Icon for the section to display
   id: string,                         // Unique id to report which section was selected
@@ -382,15 +419,17 @@ export type Facility =
 
 /** Describes configuration state. */
 export type ConfigurationOptions = {
-  alwaysSearchAll?: boolean,        // Always search the entire app, never within a view
-  transitInfo?: ?TransitInfo,       // High level information about the city transit
-  currentSemester?: number,         // Current semester for editing, selected by the user
-  firstTime?: boolean,              // Indicates if it's the user's first time in the app
-  language?: ?Language,             // User's preferred language
-  preferredTimeFormat?: TimeFormat, // Either 12 or 24h time
-  prefersWheelchair?: boolean,      // Only provide wheelchair accessible routes
-  preferByCourse?: boolean,         // True to default schedule view by course, false for by week
-  semesters?: Array < Semester >,   // List of semesters currently available
+  alwaysSearchAll?: boolean,                  // Always search the entire app, never within a view
+  transitInfo?: ?TransitInfo,                 // High level information about the city transit
+  currentSemester?: number,                   // Current semester for editing, selected by the user
+  firstTime?: boolean,                        // Indicates if it's the user's first time in the app
+  language?: ?Language,                       // User's preferred language
+  preferredTimeFormat?: TimeFormat,           // Either 12 or 24h time
+  prefersWheelchair?: boolean,                // Only provide wheelchair accessible routes
+  preferByCourse?: boolean,                   // True to default schedule view by course, false for by week
+  semesters?: Array < Semester >,             // List of semesters currently available
+  universityLocation?: ?LatLong,              // Latitude and longitude of the university
+  universityName?: ?(Name | TranslatedName),  // Name of the univeristy
 };
 
 /** Describes a configuration file. */
@@ -400,6 +439,7 @@ export type ConfigFile = {
   version: number,  // Version number
 };
 
+/** Describes the progress of an app update. */
 export type Update = {
   currentDownload?: ?string,           // Name of file being downloaded
   filesDownloaded?: Array < string >,  // Array of filenames downloaded

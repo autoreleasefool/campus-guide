@@ -62,7 +62,7 @@ type Props = {
 import Header from 'Header';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 class ByCourseSchedule extends React.Component {
 
@@ -83,21 +83,20 @@ class ByCourseSchedule extends React.Component {
   /**
    * Renders a single course in the current semester.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @param {Course} course       the course as defined by the user
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
-  _renderCourse(Translations: Object, course: Course): ReactElement < any > {
+  _renderCourse(course: Course): ReactElement < any > {
     return (
       <View key={course.code}>
         <Header
-            subtitle={Translations.edit}
+            subtitle={Translations.get(this.props.language, 'edit')}
             subtitleCallback={() => this._handleEditCourse(course)}
             title={course.code} />
         {this.props.lectureFormats.map((format, index) => {
           const lectures = course.lectures.filter((lecture) => lecture.format === index);
           if (lectures.length > 0) {
-            const formatName = TranslationUtils.getTranslatedName(this.props.language, format) || '';
+            const formatName = Translations.getName(this.props.language, format) || '';
             return (
               <View key={formatName}>
                 <Header
@@ -155,16 +154,13 @@ class ByCourseSchedule extends React.Component {
       );
     }
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     const schedule = this.props.schedule[this.props.semesters[this.props.currentSemester].id];
     const courses = schedule ? schedule.courses : [];
     return (
       <View style={_styles.container}>
         {this.props.children}
         <ScrollView>
-          {courses.map((course) => this._renderCourse(Translations, course))}
+          {courses.map((course) => this._renderCourse(course))}
           <View style={_styles.padding} />
         </ScrollView>
       </View>

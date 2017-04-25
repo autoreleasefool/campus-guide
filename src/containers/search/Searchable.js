@@ -49,6 +49,7 @@ function _getSources(): Array < Object > {
 
   sources.push(require('./searchable/buildings'));
   sources.push(require('./searchable/links'));
+  sources.push(require('./searchable/studySpots'));
 
   return sources;
 }

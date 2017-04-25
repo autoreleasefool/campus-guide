@@ -63,7 +63,7 @@ import Header from 'Header';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 const { width } = Dimensions.get('window');
 
@@ -124,12 +124,11 @@ export default class BuildingHeader extends React.Component {
    * Displays a pop-up to the user, describing what a certain facility icon means.
    *
    * @param {Facility} facility   id of the facility
-   * @param {Object} Translations translations in the current language of certain text.
    */
-  _openFacilityDescription(facility: Facility, Translations: Object): void {
+  _openFacilityDescription(facility: Facility): void {
     Alert.alert(
-      Translations.whats_this_icon,
-      Translations[facility],
+      Translations.get(this.props.language, 'whats_this_icon'),
+      Translations.get(this.props.language, facility),
     );
   }
 
@@ -149,19 +148,18 @@ export default class BuildingHeader extends React.Component {
   /**
    * Returns a list of touchable views which describe facilities in the building.
    *
-   * @param {Object} Translations translations in the current language of certain text.
    * @returns {ReactElement<any>} an icon representing each of the facilities in this building
    */
-  _renderFacilityIcons(Translations: Object): ReactElement < any > {
+  _renderFacilityIcons(): ReactElement < any > {
     return (
       <View style={_styles.facilitiesContainer}>
         {this.props.facilities.map((facility: Facility) => {
           return (
             <TouchableOpacity
                 key={facility}
-                onPress={this._openFacilityDescription.bind(this, facility, Translations)}>
+                onPress={this._openFacilityDescription.bind(this, facility)}>
               <MaterialIcons
-                  color={'white'}
+                  color={Constants.Colors.primaryWhiteIcon}
                   name={DisplayUtils.getFacilityIconName(facility, Translations)}
                   size={Constants.Sizes.Icons.Medium}
                   style={_styles.facilitiesIcon} />
@@ -178,9 +176,6 @@ export default class BuildingHeader extends React.Component {
    * @returns {ReactElement<any>} a view describing a building.
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     const imageStyle = (this.state.bannerPosition === 0)
         ? { right: 0 }
         : { right: width * BANNER_TEXT_WIDTH_PCT };
@@ -198,10 +193,10 @@ export default class BuildingHeader extends React.Component {
         </TouchableWithoutFeedback>
         <View style={[ _styles.textContainer, textContainerStyle ]}>
           <ScrollView>
-            {this._renderFacilityIcons(Translations)}
-            <Text style={_styles.title}>{Translations.name}</Text>
+            {this._renderFacilityIcons()}
+            <Text style={_styles.title}>{Translations.get(this.props.language, 'name')}</Text>
             <Text style={_styles.body}>{this.props.name}</Text>
-            <Text style={_styles.title}>{Translations.address}</Text>
+            <Text style={_styles.title}>{Translations.get(this.props.language, 'address')}</Text>
             <Text style={_styles.body}>{this.props.address}</Text>
           </ScrollView>
         </View>
@@ -222,7 +217,7 @@ const _styles = StyleSheet.create({
   },
   body: {
     fontSize: Constants.Sizes.Text.Body,
-    color: 'white',
+    color: Constants.Colors.primaryWhiteText,
     marginBottom: BANNER_TEXT_SEPARATOR,
     marginLeft: BANNER_TEXT_SEPARATOR,
     marginRight: BANNER_TEXT_SEPARATOR,
@@ -260,7 +255,7 @@ const _styles = StyleSheet.create({
   title: {
     fontSize: Constants.Sizes.Text.Title,
     fontWeight: 'bold',
-    color: 'white',
+    color: Constants.Colors.primaryWhiteText,
     marginBottom: BANNER_TEXT_SEPARATOR,
     marginLeft: BANNER_TEXT_SEPARATOR,
     marginRight: BANNER_TEXT_SEPARATOR,

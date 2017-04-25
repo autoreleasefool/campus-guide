@@ -31,17 +31,26 @@ import * as CoreTranslations from '../assets/json/CoreTranslations.json';
  * Theme colors.
  */
 const colors = {
-  garnet: '#8F001A', // rgb(143, 0, 26)
-  transparentGarnet: 'rgba(143, 0, 26, 0.8)',
+  garnet: '#8F001A',
+  transparentGarnet: 'rgba(143, 0, 26, 0.7)',
+  veryTransparentGarnet: 'rgba(143, 0, 26, 0.4)',
   invisibleGarnet: 'rgba(143, 0, 26, 0)',
-  darkGrey: '#80746C', // rgb(128, 116, 108)
-  transparentDarkGrey: 'rgba(128, 116, 108, 0.8)',
-  polarGrey: '#F2F2F2', // rgb(242, 242, 242)
-  transparentPolarGrey: 'rgba(242, 242, 242, 0.8)',
-  lightGrey: '#ACA39A', // rgb(172, 164, 154)
-  transparentLightGrey: 'rgba(172, 163, 154, 0.8)',
-  charcoalGrey: '#2D2D2C', // rgb(45, 45, 44)
-  transparentCharcoalGrey: 'rgba(45, 45, 45, 0.8)',
+  darkGrey: '#80746C',
+  transparentDarkGrey: 'rgba(128, 116, 108, 0.7)',
+  veryTransparentDarkGrey: 'rgba(128, 116, 108, 0.4)',
+  invisibleDarkGrey: 'rgba(128, 116, 108, 0)',
+  polarGrey: '#F2F2F2',
+  transparentPolarGrey: 'rgba(242, 242, 242, 0.7)',
+  veryTransparentPolarGrey: 'rgba(242, 242, 242, 0.4)',
+  invisiblePolarGrey: 'rgba(242, 242, 242, 0)',
+  lightGrey: '#ACA39A',
+  transparentLightGrey: 'rgba(172, 163, 154, 0.7)',
+  veryTransparentLightGrey: 'rgba(172, 163, 154, 0.4)',
+  invisibleLightGrey: 'rgba(172, 163, 154, 0)',
+  charcoalGrey: '#2D2D2C',
+  transparentCharcoalGrey: 'rgba(45, 45, 45, 0.7)',
+  veryTransparentCharcoalGrey: 'rgba(45, 45, 45, 0.4)',
+  invisibleCharcoalGrey: 'rgba(45, 45, 45, 0)',
 
   white: 'white',
   transparentWhite: 'rgba(255, 255, 255, 0.7)',
@@ -181,16 +190,31 @@ const Find = {
   Home: 0,          // Home find view where user can select a building
   Building: 1,      // Building details, where user can see details of a single building
   StartingPoint: 2, // User can select their starting point for directions
+  Steps: 3,         // Tells the user steps between starting point and destination
 };
 
 /**
  * Set of views to navigate through within DISCOVER tab
  */
 const Discover = {
-  Home: 0,    // Home discover view where user can see elements of university they can explore
-  Links: 1,   // Displays a list of useful links to the user
-  Transit: 2, // Displays information about the transit system in the city
-  Shuttle: 3, // Displays information about the university's campus shuttle
+  Home: 0,        // Home discover view where user can see elements of university they can explore
+  Links: 1,       // Displays a list of useful links to the user
+  Transit: 2,     // Displays information about the transit system in the city
+  Shuttle: 3,     // Displays information about the university's campus shuttle
+  StudySpots: 4,  // Displays a list of study spots around campus and properties of them
+};
+
+/**
+ * Default map view information
+ */
+const map = {
+  DefaultDelta: 0.02,
+  InitialRegion: {
+    latitude: 45.4222,
+    longitude: -75.6824,
+    latitudeDelta: 0.02,
+    longitudeDelta: 0.02,
+  },
 };
 
 module.exports = {
@@ -202,14 +226,19 @@ module.exports = {
     ...colors,                                            // Import basic color definitions
     primaryBackground: colors.garnet,                     // Primary background color for the application
     secondaryBackground: colors.charcoalGrey,             // Secondary background color for the application
-    primaryWhiteText: colors.white,                       // Primary color when white text is needed
-    secondaryWhiteText: colors.transparentWhite,          // Secondary color when white text is needed
+    tertiaryBackground: colors.polarGrey,                 // Tertiary background color for the application
+
+    primaryWhiteText: colors.polarGrey,                   // Primary color when white text is needed
+    secondaryWhiteText: colors.transparentPolarGrey,      // Secondary color when white text is needed
     primaryBlackText: colors.black,                       // Primary color when black text is needed
     secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
-    primaryWhiteIcon: colors.white,                       // Primary color when white text is needed
-    secondaryWhiteIcon: colors.transparentWhite,          // Secondary color when white text is needed
-    primaryBlackIcon: colors.black,                       // Primary color when black text is needed
-    secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black text is needed
+
+    primaryWhiteIcon: colors.polarGrey,                   // Primary color when white icons are needed
+    secondaryWhiteIcon: colors.transparentPolarGrey,      // Secondary color when white icons are needed
+    tertiaryWhiteIcon: colors.veryTransparentPolarGrey,   // Tertiary color when white icons are needed
+    primaryBlackIcon: colors.black,                       // Primary color when black icons are needed
+    secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black icons are needed
+
     darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
     darkMoreTransparentBackground: 'rgba(0,0,0,0.2)',     // Dark transparent background color for components
     lightTransparentBackground: 'rgba(255,255,255,0.8)',  // Light transparent background color for components
@@ -265,4 +294,9 @@ module.exports = {
    * Default type to assign to rooms when not defined
    */
   DefaultRoomType: 5,
+
+  /**
+   * Default map information
+   */
+  Map: map,
 };

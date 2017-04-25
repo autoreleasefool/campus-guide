@@ -45,7 +45,7 @@ import BuildingHeader from 'BuildingHeader';
 import Header from 'Header';
 import RoomGrid from 'RoomGrid';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 class BuildingComponent extends React.Component {
 
@@ -75,16 +75,13 @@ class BuildingComponent extends React.Component {
    * @returns {ReactElement<any>} a touchable view
    */
   _renderBuildingDirections(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
-    const navigateToBuilding = `${Translations.navigate_to} `
-        + (TranslationUtils.getTranslatedName(this.props.language, this.props.building) || '');
+    const navigateToBuilding = `${Translations.get(this.props.language, 'navigate_to')} `
+        + (Translations.getName(this.props.language, this.props.building) || '');
 
     return (
-      <TouchableOpacity onPress={this._onDestinationSelected.bind(this, this.props.building.code)}>
+      <TouchableOpacity onPress={() => this._onDestinationSelected(this.props.building.code, null)}>
         <Header
-            backgroundColor={Constants.Colors.polarGrey}
+            backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon' }}
             title={navigateToBuilding} />
       </TouchableOpacity>
@@ -98,8 +95,8 @@ class BuildingComponent extends React.Component {
    */
   _renderHeader(): ReactElement < any > {
     const building: Building = this.props.building;
-    const buildingName = TranslationUtils.getTranslatedName(this.props.language, building) || '';
-    const buildingAddress = TranslationUtils.getTranslatedVariant(this.props.language, 'address', building) || '';
+    const buildingName = Translations.getName(this.props.language, building) || '';
+    const buildingAddress = Translations.getVariant(this.props.language, 'address', building) || '';
 
     return (
       <View>
@@ -158,6 +155,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onDestinationSelected: (code: string, room: ?string) => {
       dispatch(actions.setDestination({ code, room }));
+      dispatch(actions.setHeaderTitle('directions', 'find'));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
     },
   };

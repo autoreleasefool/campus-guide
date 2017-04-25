@@ -241,5 +241,6 @@ const _styles = StyleSheet.create({
   },
   titleContainer: {
     flex: 1,
+    marginRight: Constants.Sizes.Margins.Regular,
   },
 });

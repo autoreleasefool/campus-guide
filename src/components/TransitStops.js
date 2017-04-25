@@ -67,7 +67,7 @@ import Header from 'Header';
 import * as Connector from 'Connector';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Identifier for the navigator, indicating the list of stops is being shown.
 const STOPS: number = 0;
@@ -117,7 +117,7 @@ export default class TransitStops extends React.Component {
    * If the stops have not beed loaded, then loads them.
    */
   componentDidMount(): void {
-    this._onStopSearch(this.props.filter);
+    this._onStopSearch(this.props);
   }
 
   /**
@@ -130,12 +130,12 @@ export default class TransitStops extends React.Component {
     if (routes.length > 0) {
       if (routes[routes.length - 1].id === STOPS
           && (nextProps.filter != this.props.filter || nextProps.language != this.props.language)) {
-        this._onStopSearch(nextProps.filter);
+        this._onStopSearch(nextProps);
       } else if (routes[routes.length - 1].id === TIMES
           && (nextProps.filter != this.props.filter
               || nextProps.language != this.props.language
               || nextProps.timeFormat != this.props.timeFormat)) {
-        this._onTimeSearch(null, nextProps.filter);
+        this._onTimeSearch(null, nextProps);
       }
     }
   }
@@ -164,20 +164,19 @@ export default class TransitStops extends React.Component {
    */
   _pressRow(stopId: string): void {
     this.props.onSelect(stopId);
-    this._onTimeSearch(stopId, null);
+    this._onTimeSearch(stopId, Object.assign({}, this.props, { filter: null }));
     this.refs.Navigator.push({ id: TIMES });
   }
 
   /**
    * Returns a list of times for the current day that will be the next to occur.
    *
-   * @param {Object} days a dictionary of days mapped to times.
+   * @param {Object}     days       a dictionary of days mapped to times
+   * @param {Language}   language   the user's selected language
+   * @param {TimeFormat} timeFormat the user's preferred time format
    * @returns {string} a list of up to 3 times, formatted as a string.
    */
-  _retrieveUpcomingTimes(days: Object): string {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
+  _retrieveUpcomingTimes(days: Object, language: Language, timeFormat: TimeFormat): string {
     const upcomingTimes = [];
     const now = new Date();
     const currentTime = TextUtils.leftPad(now.getHours().toString(), 2, '0') + ':'
@@ -198,7 +197,7 @@ export default class TransitStops extends React.Component {
               let j = 1;
               while (j < MAX_UPCOMING_TIMES && i + j < days[day].length) {
                 let time = TextUtils.get24HourAdjustedTime(days[day][i + j]);
-                time = TextUtils.convertTimeFormat(this.props.timeFormat, time);
+                time = TextUtils.convertTimeFormat(timeFormat, time);
                 upcomingTimes.push(time);
                 j += 1;
               }
@@ -213,7 +212,7 @@ export default class TransitStops extends React.Component {
     if (upcomingTimes.length > 0) {
       return upcomingTimes.join('    ');
     } else {
-      return Translations.no_upcoming_buses;
+      return Translations.get(this.props.language, 'no_upcoming_buses');
     }
   }
 
@@ -233,23 +232,21 @@ export default class TransitStops extends React.Component {
   /**
    * Filters the stops for which routes are displayed, based on the provided search terms.
    *
-   * @param {?string} searchTerms a string of search terms, or null for an empty search (all results should return)
+   * @param {Props} props the props to filter with
    */
-  _onStopSearch(searchTerms: ?string): void {
+  _onStopSearch({ campus, filter, stops }: Props): void {
     // Ignore the case of the search terms
-    const adjustedSearchTerms: ?string = (searchTerms == null || searchTerms.length === 0)
-        ? null
-        : searchTerms.toUpperCase();
+    const adjustedSearchTerms: ?string = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
 
-    const stops: Object = {};
-    for (const stopId in this.props.campus.stops) {
-      if (this.props.campus.stops.hasOwnProperty(stopId)) {
-        const stop = this.props.stops[stopId];
+    const matchedStops: Object = {};
+    for (const stopId in campus.stops) {
+      if (campus.stops.hasOwnProperty(stopId)) {
+        const stop = stops[stopId];
         let matches: boolean = false;
 
         // Sort the list of routes, if they haven't been sorted yet
         if (!stop.sorted) {
-          this._sortByRouteNumber(this.props.campus.stops[stopId]);
+          this._sortByRouteNumber(campus.stops[stopId]);
           stop.sorted = true;
         }
 
@@ -259,46 +256,44 @@ export default class TransitStops extends React.Component {
             || stop.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
 
         // Compare each route number to the search terms until one matches
-        for (let j = 0; j < this.props.campus.stops[stopId].length && !matches; j++) {
+        for (let j = 0; j < campus.stops[stopId].length && !matches; j++) {
           if (adjustedSearchTerms == null
-              || this.props.campus.stops[stopId][j].number.toString().indexOf(adjustedSearchTerms) >= 0
-              || this.props.campus.stops[stopId][j].sign.indexOf(adjustedSearchTerms) >= 0) {
+              || campus.stops[stopId][j].number.toString().indexOf(adjustedSearchTerms) >= 0
+              || campus.stops[stopId][j].sign.indexOf(adjustedSearchTerms) >= 0) {
             matches = true;
             break;
           }
         }
 
         if (matches) {
-          stops[stopId] = this.props.campus.stops[stopId];
+          matchedStops[stopId] = campus.stops[stopId];
         }
       }
     }
 
     this.setState({
-      dataSourceStops: this.state.dataSourceStops.cloneWithRowsAndSections(stops),
+      dataSourceStops: this.state.dataSourceStops.cloneWithRowsAndSections(matchedStops),
     });
   }
 
   /**
    * Filters the routes for which times are displayed, based on the provided search terms.
    *
-   * @param {?string} newStopId   the stop id to search for routes and times, or null to use state
-   * @param {?string} searchTerms a string of search terms, or null for an empty search (all results should return)
+   * @param {?string} newStopId the stop id to search for routes and times, or null to use state
+   * @param {Props}   props     the props to filter with
    */
-  _onTimeSearch(newStopId: ?string, searchTerms: ?string): void {
+  _onTimeSearch(newStopId: ?string, { campus, filter, language }: Props): void {
     const stopId = newStopId || this.state.selectedStopId;
     if (stopId == null) {
       return;
     }
 
     // Ignore the case of the search terms
-    const adjustedSearchTerms: ?string = (searchTerms == null || searchTerms.length === 0)
-        ? null
-        : searchTerms.toUpperCase();
+    const adjustedSearchTerms: ?string = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
 
-    const stopRoutes = this.props.campus.stops[stopId];
+    const stopRoutes = campus.stops[stopId];
     const routesAndTimes: Array < RouteDetails > = [];
-    if (this.props.campus.stops[stopId] != null) {
+    if (campus.stops[stopId] != null) {
       for (let i = 0; i < stopRoutes.length; i++) {
         let matches: boolean = false;
         matches = adjustedSearchTerms == null
@@ -308,7 +303,7 @@ export default class TransitStops extends React.Component {
         for (const day in stopRoutes[i].days) {
           if (!matches && adjustedSearchTerms != null && stopRoutes[i].days.hasOwnProperty(day)) {
             for (let j = 0; j < day.length; j++) {
-              const weekday = Constants.Days[this.props.language][parseInt(day.charAt(j))];
+              const weekday = Constants.Days[language][parseInt(day.charAt(j))];
 
               if (weekday != null && weekday.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
                 matches = true;
@@ -349,8 +344,8 @@ export default class TransitStops extends React.Component {
           {Connector.renderConnector({
             large: true,
             bottom: true,
-            circleColor: Constants.Colors.charcoalGrey,
-            lineColor: Constants.Colors.charcoalGrey,
+            circleColor: Constants.Colors.secondaryBackground,
+            lineColor: Constants.Colors.secondaryBackground,
           })}
           <View style={_styles.stopHeader}>
             <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryBlackText }]}>{stop.name}</Text>
@@ -371,13 +366,15 @@ export default class TransitStops extends React.Component {
   _renderStopRow(route: RouteDetails, stopId: string): ReactElement < any > {
     const needsBottom = route !== this.props.campus.stops[stopId][this.props.campus.stops[stopId].length - 1];
     return (
-      <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
+      <TouchableOpacity
+          key={`${route.number} - ${route.sign}`}
+          onPress={this._pressRow.bind(this, stopId)}>
         <View style={_styles.stopRowContainer}>
           {Connector.renderConnector({
             top: true,
             bottom: needsBottom,
-            circleColor: Constants.Colors.polarGrey,
-            lineColor: Constants.Colors.polarGrey,
+            circleColor: Constants.Colors.tertiaryBackground,
+            lineColor: Constants.Colors.tertiaryBackground,
           })}
           <Text
               key={route.number}
@@ -399,12 +396,14 @@ export default class TransitStops extends React.Component {
    */
   _renderTimeRow(route: RouteDetails, sectionIndex: string, rowIndex: number): ReactElement < any > {
     return (
-      <View>
+      <View key={`${route.number} - ${route.sign}`}>
         <View style={_styles.timeHeader}>
           <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryWhiteText }]}>{route.sign}</Text>
           <Text style={[ _styles.headerSubtitle, { color: Constants.Colors.secondaryWhiteText }]}>{route.number}</Text>
         </View>
-        <Text style={_styles.stopTimes}>{this._retrieveUpcomingTimes(route.days)}</Text>
+        <Text style={_styles.stopTimes}>
+          {this._retrieveUpcomingTimes(route.days, this.props.language, this.props.timeFormat)}
+        </Text>
         {(rowIndex < this.state.dataSourceTimes.getRowCount() - 1)
             ? <View style={_styles.divider} />
             : null}
@@ -424,7 +423,7 @@ export default class TransitStops extends React.Component {
       return (
         <View style={_styles.container}>
           <Header
-              backgroundColor={Constants.Colors.polarGrey}
+              backgroundColor={Constants.Colors.tertiaryBackground}
               icon={{ name: 'chevron-left', class: 'material' }}
               iconCallback={() => this.refs.Navigator.pop()}
               subtitle={stop.code}
@@ -474,7 +473,7 @@ const _styles = StyleSheet.create({
   stopHeaderContainer: {
     height: 50,
     justifyContent: 'center',
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   stopHeader: {
     marginLeft: Connector.getConnectorWidth() + Constants.Sizes.Margins.Regular,

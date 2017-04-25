@@ -25,15 +25,17 @@
 'use strict';
 
 // Types
-import { SEARCH } from 'actionTypes';
+import { SEARCH, ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SET_STUDY_FILTERS } from 'actionTypes';
 
 // Describes a search.
 export type Search = {
-  terms: ?string, // Search terms to filter results by
+  studyFilters: ?Array < number >,  // Filters to search study rooms by
+  terms: ?string,                   // Search terms to filter results by
 };
 
 // Initial search state.
 const initialState: Search = {
+  studyFilters: null,
   terms: null,
 };
 
@@ -50,6 +52,56 @@ function search(state: Search = initialState, action: any): Search {
       return {
         ...state,
         terms: action.terms,
+      };
+    case ACTIVATE_STUDY_FILTER: {
+      // Copy the current list of filters, or create a new one
+      const studyFilters = state.studyFilters == null ? [] : state.studyFilters.slice();
+
+      // Insert the new number in sorted position
+      let inserted = false;
+      for (let i = 0; i < studyFilters.length; i++) {
+        if (studyFilters[i] > action.filter) {
+          studyFilters.splice(i, 0, action.filter);
+          inserted = true;
+          break;
+        } else if (studyFilters[i] === action.filter) {
+          // Ignore duplicates
+          inserted = true;
+          break;
+        }
+      }
+
+      // If the item did not go in the array, push it onto the end
+      if (!inserted) {
+        studyFilters.push(action.filter);
+      }
+
+      return {
+        ...state,
+        studyFilters,
+      };
+    }
+    case DEACTIVATE_STUDY_FILTER: {
+      // Copy the current list of filters, or create a new one
+      const studyFilters = state.studyFilters == null ? [] : state.studyFilters.slice();
+
+      // Remove the value, if found
+      for (let i = 0; i < studyFilters.length; i++) {
+        if (studyFilters[i] === action.filter) {
+          studyFilters.splice(i, 1);
+          break;
+        }
+      }
+
+      return {
+        ...state,
+        studyFilters,
+      };
+    }
+    case SET_STUDY_FILTERS:
+      return {
+        ...state,
+        studyFilters: action.filters,
       };
     default:
       return state;

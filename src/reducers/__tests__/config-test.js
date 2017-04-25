@@ -41,6 +41,8 @@ const initialState = {
     prefersWheelchair: false,
     semesters: [],
     scheduleByCourse: false,
+    universityLocation: null,
+    universityName: null,
   },
   update: {
     currentDownload: null,
@@ -75,6 +77,8 @@ const updatedConfigOptions = {
     prefersWheelchair: false,
     semesters: [],
     scheduleByCourse: true,
+    universityLocation: null,
+    universityName: null,
   },
 };
 

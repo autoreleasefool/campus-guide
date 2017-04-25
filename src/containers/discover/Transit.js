@@ -82,7 +82,7 @@ import * as ArrayUtils from 'ArrayUtils';
 import * as Constants from 'Constants';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Constant for navigation - show the campus selection screen
 const MENU: number = 0;
@@ -174,8 +174,8 @@ class Transit extends React.Component {
       this.props.setHeaderTitle('transit_company');
     } else {
       const title = {
-        name_en: TranslationUtils.getTranslatedName('en', this.props.campus) || '',
-        name_fr: TranslationUtils.getTranslatedName('fr', this.props.campus) || '',
+        name_en: Translations.getEnglishName(this.props.campus) || '',
+        name_fr: Translations.getFrenchName(this.props.campus) || '',
       };
       this.props.setHeaderTitle(title);
     }
@@ -186,17 +186,15 @@ class Transit extends React.Component {
 
   /**
    * Opens the transit company website.
-   *
-   * @param {Object} Translations translations in the current language of certain text.
    */
-  _openLink(Translations: Object): void {
+  _openLink(): void {
     const link = this.props.transitInfo
-        ? TranslationUtils.getTranslatedVariant(this.props.language, 'link', this.props.transitInfo)
+        ? Translations.getVariant(this.props.language, 'link', this.props.transitInfo)
         : ExternalUtils.getDefaultLink();
 
     ExternalUtils.openLink(
         link,
-        Translations,
+        this.props.language,
         Linking,
         Alert,
         Clipboard,
@@ -229,7 +227,7 @@ class Transit extends React.Component {
       );
     }
 
-    const campusId = TranslationUtils.getTranslatedName('en', campus);
+    const campusId = Translations.getEnglishName(campus);
     if (campusId == null) {
       // TODO: return generic error view?
       return (
@@ -249,9 +247,6 @@ class Transit extends React.Component {
   }
 
   _renderGrid(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     return (
       <View style={_styles.container}>
         <Menu
@@ -259,11 +254,11 @@ class Transit extends React.Component {
             sections={this.state.campuses}
             onSectionSelected={this._onCampusSelected.bind(this)} />
         <View style={_styles.separator} />
-        <TouchableOpacity onPress={() => this._openLink(Translations || {})}>
+        <TouchableOpacity onPress={() => this._openLink()}>
           <Header
               icon={{ name: 'md-open', class: 'ionicon' }}
               subtitleIcon={{ name: 'chevron-right', class: 'material' }}
-              title={Translations.transit_company} />
+              title={Translations.get(this.props.language, 'transit_company')} />
         </TouchableOpacity>
       </View>
     );

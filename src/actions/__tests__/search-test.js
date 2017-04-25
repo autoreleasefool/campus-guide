@@ -24,7 +24,7 @@
 'use strict';
 
 // Types
-import { SEARCH } from 'actionTypes';
+import { SEARCH, ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SET_STUDY_FILTERS } from 'actionTypes';
 
 // Imports
 import * as actions from '../search';
@@ -41,6 +41,22 @@ describe('search actions', () => {
     const terms = null;
     const expectedAction = { type: SEARCH, terms };
     expect(actions.search(null)).toEqual(expectedAction);
+  });
+
+  it('creates an action to set the study filters', () => {
+    const filters = [ 0, 1, 2 ];
+    const expectedAction = { type: SET_STUDY_FILTERS, filters };
+    expect(actions.setStudyFilters(filters)).toEqual(expectedAction);
+  });
+
+  it('creates an action to activate a study filter', () => {
+    const expectedAction = { type: ACTIVATE_STUDY_FILTER, filter: 0 };
+    expect(actions.activateStudyFilter(0)).toEqual(expectedAction);
+  });
+
+  it('creates an action to deactivate a study filter', () => {
+    const expectedAction = { type: DEACTIVATE_STUDY_FILTER, filter: 0 };
+    expect(actions.deactivateStudyFilter(0)).toEqual(expectedAction);
   });
 
 });

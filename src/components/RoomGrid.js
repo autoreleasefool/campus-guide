@@ -70,7 +70,7 @@ import Promise from 'promise';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 export default class RoomGrid extends React.Component {
 
@@ -108,7 +108,7 @@ export default class RoomGrid extends React.Component {
   componentDidMount(): void {
     if (!this.state.loaded) {
       Configuration.init()
-          .then(() => this._onRoomSearch())
+          .then(() => this._onRoomSearch(this.props))
           .catch((err: any) => console.error('Configuration could not be initialized for room grid.', err));
     }
   }
@@ -120,7 +120,7 @@ export default class RoomGrid extends React.Component {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
-      this._onRoomSearch(nextProps.filter);
+      this._onRoomSearch(nextProps);
     }
   }
 
@@ -133,14 +133,11 @@ export default class RoomGrid extends React.Component {
   /**
    * Filters the rooms in the building and displays them to the user.
    *
-   * @param {?string} searchTerms user input filter terms.
+   * @param {Props} props the props to filter with
    */
-  _filterRooms(searchTerms: ?string): void {
+  _filterRooms({ code, filter, language, rooms, defaultRoomType }: Props): void {
     // Ignore the case of the search terms
-    const adjustedSearchTerms: ?string = (searchTerms == null) ? null : searchTerms.toUpperCase();
-
-    // Get the list of rooms in the building
-    const rooms: Array < BuildingRoom > = this.props.rooms;
+    const adjustedSearchTerms: ?string = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
 
     // Create array for sets of rooms
     const filteredRooms: Array < FilteredRoom > = [];
@@ -148,31 +145,35 @@ export default class RoomGrid extends React.Component {
     // Cache list of room types that match the search terms
     const matchingRoomTypes = [];
     for (let i = 0; i < this._roomTypes.length; i++) {
-      const roomTypeName = TranslationUtils.getTranslatedName(this.props.language, this._roomTypes[i]);
+      const roomTypeName = Translations.getName(language, this._roomTypes[i]);
       if (adjustedSearchTerms == null
           || (roomTypeName != null && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
         matchingRoomTypes.push(i);
       }
     }
 
-    for (let i = 0; i < rooms.length; i++) {
-      const roomName: string = `${this.props.code} ${rooms[i].name.toUpperCase()}`;
-      const roomAltName: ?string = TranslationUtils.getTranslatedVariant(this.props.language, 'alt_name', rooms[i]);
+    // True if the building code matches the search terms
+    const codeMatches = adjustedSearchTerms != null && code.indexOf(adjustedSearchTerms) >= 0;
 
-      if (!rooms[i].type) {
-        rooms[i].type = this.props.defaultRoomType;
+    for (let i = 0; i < rooms.length; i++) {
+      const room = rooms[i];
+      const roomAltName: ?string = Translations.getVariant(language, 'alt_name', room);
+
+      if (!room.type) {
+        room.type = defaultRoomType;
       }
 
       // If the search terms are empty, or the room contains the terms, add it to the list
       if (adjustedSearchTerms == null
-          || roomName.indexOf(adjustedSearchTerms) >= 0
-          || matchingRoomTypes.indexOf(rooms[i].type) >= 0
+          || codeMatches
+          || room.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0
+          || matchingRoomTypes.indexOf(room.type) >= 0
           || (roomAltName != null && roomAltName.indexOf(adjustedSearchTerms) >= 0)) {
         filteredRooms.push({
           altName: roomAltName,
-          icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[rooms[i].type]),
-          name: roomName,
-          type: TranslationUtils.getTranslatedName(this.props.language, this._roomTypes[rooms[i].type]) || '',
+          icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[room.type]),
+          name: room.name.toUpperCase(),
+          type: Translations.getName(language, this._roomTypes[room.type]) || '',
         });
       }
     }
@@ -204,17 +205,17 @@ export default class RoomGrid extends React.Component {
   /**
    * Calls _filterRooms with all rooms, and the search terms.
    *
-   * @param {string} searchTerms user input filter terms.
+   * @param {Props} props the props to filter with
    */
-  _onRoomSearch(searchTerms: ?string): void {
+  _onRoomSearch(props: Props): void {
     if (this.roomTypes == null) {
       this._getRoomTypes()
           .then((roomTypes: Array < RoomType >) => {
             this._roomTypes = roomTypes;
-            this._filterRooms(searchTerms);
+            this._filterRooms(props);
           });
     } else {
-      this._filterRooms(searchTerms);
+      this._filterRooms(props);
     }
   }
 
@@ -244,12 +245,14 @@ export default class RoomGrid extends React.Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => this.props.onSelect(this.props.code, room.name)}>
+      <TouchableOpacity
+          key={room.name}
+          onPress={() => this.props.onSelect(this.props.code, room.name)}>
         <View style={_styles.room}>
           {icon}
           <View style={_styles.roomDescription}>
             {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
-            <Text style={_styles.roomName}>{room.name}</Text>
+            <Text style={_styles.roomName}>{`${this.props.code} ${room.name}`}</Text>
             <Text style={_styles.roomType}>{room.type}</Text>
           </View>
         </View>
@@ -280,14 +283,12 @@ export default class RoomGrid extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
-        <View style={_styles.headerSeparator} />
         <ListView
             dataSource={this.state.dataSource}
             enableEmptySections={true}
             renderHeader={this._renderHeader.bind(this)}
             renderRow={this._renderRow.bind(this)}
-            renderSeparator={this._renderSeparator.bind(this)}
-            style={_styles.container} />
+            renderSeparator={this._renderSeparator.bind(this)} />
       </View>
     );
   }
@@ -308,7 +309,6 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
   },
   roomDescription: {
-    marginRight: Constants.Sizes.Margins.Regular,
     flex: 1,
   },
   roomName: {
@@ -320,10 +320,6 @@ const _styles = StyleSheet.create({
   roomType: {
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
-  },
-  headerSeparator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.primaryWhiteText,
   },
   separator: {
     height: StyleSheet.hairlineWidth,

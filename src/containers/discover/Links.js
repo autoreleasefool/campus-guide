@@ -83,7 +83,7 @@ import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Used to determine maximum length of link titles
 const TEXT_PADDING = 100;
@@ -264,8 +264,8 @@ class Links extends React.Component {
     if (currentRoutes.length > 1 && this.state.links != null) {
       const section = this._getSection(currentRoutes[currentRoutes.length - 1].id);
       const title = {
-        name_en: TranslationUtils.getTranslatedName('en', section) || '',
-        name_fr: TranslationUtils.getTranslatedName('fr', section) || '',
+        name_en: Translations.getEnglishName(section) || '',
+        name_fr: Translations.getFrenchName(section) || '',
       };
       this.props.setHeaderTitle(title);
       this.props.showCategory(currentRoutes[currentRoutes.length - 1].id);
@@ -283,8 +283,8 @@ class Links extends React.Component {
    * @param {?string} link        the url to open.
    * @param {Object} Translations language translations.
    */
-  _openLink(link: ?string, Translations: Object): void {
-    ExternalUtils.openLink(link, Translations, Linking, Alert, Clipboard, TextUtils);
+  _openLink(link: ?string): void {
+    ExternalUtils.openLink(link, this.props.language, Linking, Alert, Clipboard, TextUtils);
   }
 
   /**
@@ -316,7 +316,7 @@ class Links extends React.Component {
             style={_styles.bannerImage} />
         <View style={_styles.bannerTextContainer}>
           <Text style={_styles.bannerText}>
-            {TranslationUtils.getTranslatedName(this.props.language, section)}
+            {Translations.getName(this.props.language, section)}
           </Text>
         </View>
       </View>
@@ -346,7 +346,7 @@ class Links extends React.Component {
       <View>
         <View style={[ _styles.divider, { backgroundColor: dividerColor }]} />
         {categories.map((category: LinkSection) => {
-          const categoryName = TranslationUtils.getTranslatedName(language, category);
+          const categoryName = Translations.getName(language, category);
           if (categoryName == null) {
             return null;
           }
@@ -389,7 +389,6 @@ class Links extends React.Component {
 
     // Get current language for translations
     const language: Language = this.props.language;
-    const Translations: Object = TranslationUtils.getTranslations(language);
 
     // Search terms to filter links by
     const filter = this.props.filter ? this.props.filter.toUpperCase() : null;
@@ -398,11 +397,11 @@ class Links extends React.Component {
       <View>
         <Header
             icon={{ name: 'insert-link', class: 'material' }}
-            title={Translations.useful_links} />
+            title={Translations.get(language, 'useful_links')} />
         {links.map((link, index) => {
-          const translatedLink: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
+          const translatedLink: string = Translations.getVariant(language, 'link', link)
               || ExternalUtils.getDefaultLink();
-          const translatedName: string = TranslationUtils.getTranslatedName(language, link)
+          const translatedName: string = Translations.getName(language, link)
               || translatedLink;
 
           // Compare name to search terms and do not render if they don't match
@@ -414,7 +413,7 @@ class Links extends React.Component {
             <View key={translatedLink}>
               <TouchableOpacity
                   style={{ flexDirection: 'row', alignItems: 'center' }}
-                  onPress={() => this._openLink(translatedLink, Translations)}>
+                  onPress={() => this._openLink(translatedLink)}>
                 {this._getLinkIcon(translatedLink, iconColor)}
                 <View style={_styles.linkContainer}>
                   <Text style={[ _styles.link, { color: textColor }]}>
@@ -449,14 +448,13 @@ class Links extends React.Component {
 
     // Get current language for translations
     const language: Language = this.props.language;
-    const Translations: Object = TranslationUtils.getTranslations(language);
 
     return (
       <View style={_styles.socialMediaContainer}>
         {links.map((link: NamedLink) => {
-          const url: string = TranslationUtils.getTranslatedVariant(language, 'link', link)
+          const url: string = Translations.getVariant(language, 'link', link)
               || ExternalUtils.getDefaultLink();
-          const name: ?string = TranslationUtils.getTranslatedName(language, link);
+          const name: ?string = Translations.getName(language, link);
 
           if (name == null) {
             return null;
@@ -464,7 +462,7 @@ class Links extends React.Component {
             return (
               <TouchableOpacity
                   key={url}
-                  onPress={() => this._openLink(url, Translations)}>
+                  onPress={() => this._openLink(url)}>
                 <Ionicons
                     color={DisplayUtils.getSocialMediaIconColor(name)}
                     name={DisplayUtils.getSocialMediaIconName(name)}
@@ -584,7 +582,7 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Sizes.Text.Title,
   },
   socialMediaContainer: {
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },

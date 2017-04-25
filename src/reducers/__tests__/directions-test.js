@@ -24,7 +24,7 @@
 'use strict';
 
 // Types
-import { SET_DESTINATION, VIEW_BUILDING } from 'actionTypes';
+import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
 
 // Imports
 import reducer from '../directions';
@@ -33,6 +33,7 @@ import reducer from '../directions';
 const initialState = {
   building: null,
   destination: null,
+  startingPoint: null,
 };
 
 describe('directions reducer', () => {
@@ -45,6 +46,12 @@ describe('directions reducer', () => {
     const destination = { code: 'building_code', room: 'room_number' };
     expect(reducer(initialState, { type: SET_DESTINATION, destination }))
         .toEqual({ ...initialState, destination });
+  });
+
+  it('should set the point to navigate from', () => {
+    const startingPoint = { code: 'building_code', room: 'room_number' };
+    expect(reducer(initialState, { type: SET_STARTING_POINT, startingPoint }))
+        .toEqual({ ...initialState, startingPoint });
   });
 
   it('should set the building to display details for', () => {

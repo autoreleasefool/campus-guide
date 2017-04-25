@@ -40,7 +40,7 @@ import AppHeader from 'AppHeader';
 import TabView from './TabView';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 class MainScreen extends React.Component {
 
@@ -57,14 +57,13 @@ class MainScreen extends React.Component {
    * Displays a pop up when the application opens for the first time.
    */
   componentDidMount(): void {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     if (this.props.shouldShowLanguageMessage) {
+      const language = this.props.language;
+
       Alert.alert(
-        Translations.only_once_title,
-        Translations.only_once_message,
-        [{ text: Translations.ok, onPress: this._checkConfiguration.bind(this) }]
+        Translations.get(language, 'only_once_title'),
+        Translations.get(language, 'only_once_message'),
+        [{ text: Translations.get(language, 'ok'), onPress: this._checkConfiguration.bind(this) }]
       );
     } else {
       this._checkConfiguration();
@@ -82,16 +81,15 @@ class MainScreen extends React.Component {
 
     Configuration.isConfigUpdateAvailable()
         .then((available: boolean) => {
-          // Get current language for translations
-          const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
           if (available) {
+            const language = this.props.language;
+
             Alert.alert(
-              Translations.update_available_title,
-              Translations.update_available_msg,
+              Translations.get(language, 'update_available_title'),
+              Translations.get(language, 'update_available_msg'),
               [
-                { text: Translations.cancel, style: 'cancel' },
-                { text: Translations.update, onPress: this._updateConfiguration.bind(this) },
+                { text: Translations.get(language, 'cancel'), style: 'cancel' },
+                { text: Translations.get(language, 'update'), onPress: this._updateConfiguration.bind(this) },
               ]
             );
           }

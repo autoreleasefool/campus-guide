@@ -56,7 +56,7 @@ import Header from 'Header';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 export default class Menu extends React.Component {
 
@@ -148,7 +148,7 @@ export default class Menu extends React.Component {
         <Header
             icon={icon}
             subtitleIcon={{ name: subtitleIconName, class: 'material' }}
-            title={TranslationUtils.getTranslatedName(this.props.language, section) || ''} />
+            title={Translations.getName(this.props.language, section) || ''} />
         {index < this.props.sections.length - 1 ? <View style={_styles.separator} /> : null}
       </TouchableOpacity>
     );

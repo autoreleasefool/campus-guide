@@ -49,6 +49,7 @@ import * as Constants from 'Constants';
 // Screen imports
 import Building from './Building';
 import Home from './Home';
+import StartingPoint from './StartingPoint';
 
 class Find extends React.Component {
 
@@ -56,6 +57,16 @@ class Find extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: Props;
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    this._buildingList = require('../../../assets/js/Buildings');
+  }
 
   /**
    * Adds a listener for navigation events.
@@ -83,6 +94,9 @@ class Find extends React.Component {
       this.refs.Navigator.pop();
     }
   }
+
+  /** List of buildings in the app. */
+  _buildingList: Array < Object > = [];
 
   /**
    * Sets the transition between two views in the navigator.
@@ -113,7 +127,7 @@ class Find extends React.Component {
     switch (route.id) {
       case Constants.Views.Find.Home:
         return (
-          <Home />
+          <Home buildingList={this._buildingList} />
         );
       case Constants.Views.Find.Building:
         return (
@@ -121,8 +135,12 @@ class Find extends React.Component {
         );
       case Constants.Views.Find.StartingPoint:
         return (
+          <StartingPoint buildingList={this._buildingList} />
+        );
+      case Constants.Views.Find.Steps:
+        return (
           <View style={_styles.container}>
-            <Text>{'StartingPoint'}</Text>
+            <Text>{'Steps'}</Text>
           </View>
         );
       default:

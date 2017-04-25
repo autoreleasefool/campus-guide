@@ -39,7 +39,7 @@ import type { Building, Language, Name, TranslatedName } from 'types';
 import BuildingGrid from 'BuildingGrid';
 import Header from 'Header';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 // Number of columns to display in building grid
 const BUILDING_COLUMNS: number = 3;
@@ -50,6 +50,7 @@ class FindHome extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
+    buildingList: Array < Object >,                                     // List of buildings to display
     filter: ?string,                                                    // The current filter for buildings
     language: Language,                                                 // The current language, selected by the user
     onBuildingSelect: (b: Building, n: Name | TranslatedName) => void,  // Updates the state when a building is selected
@@ -63,8 +64,8 @@ class FindHome extends React.Component {
   _onBuildingSelect(building: ?Building): void {
     if (building != null) {
       const name = {
-        name_en: TranslationUtils.getTranslatedName('en', building) || '',
-        name_fr: TranslationUtils.getTranslatedName('fr', building) || '',
+        name_en: Translations.getEnglishName(building) || '',
+        name_fr: Translations.getFrenchName(building) || '',
       };
 
       this.props.onBuildingSelect(building, name);
@@ -77,16 +78,16 @@ class FindHome extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     return (
       <View style={_styles.container}>
-        <Header
-            icon={{ name: 'store', class: 'material' }}
-            title={Translations.building_directory} />
+        <View style={_styles.headerContainer}>
+          <Header
+              icon={{ name: 'store', class: 'material' }}
+              title={Translations.get(this.props.language, 'building_directory')} />
+        </View>
         <View style={_styles.container}>
           <BuildingGrid
+              buildingList={this.props.buildingList}
               columns={BUILDING_COLUMNS}
               filter={this.props.filter}
               language={this.props.language}
@@ -101,6 +102,9 @@ class FindHome extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Constants.Colors.secondaryBackground,
+  },
+  headerContainer: {
     backgroundColor: Constants.Colors.primaryBackground,
   },
 });
@@ -118,6 +122,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.setHeaderTitle(buildingName, 'find'));
       dispatch(actions.viewBuilding(building));
       dispatch(actions.switchFindView(Constants.Views.Find.Building));
+      dispatch(actions.search(null));
     },
   };
 };

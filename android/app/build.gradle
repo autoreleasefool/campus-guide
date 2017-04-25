@@ -126,6 +126,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-snackbar')
     compile project(':react-native-fs')
     compile project(':react-native-device-info')
     compile project(':react-native-maps')

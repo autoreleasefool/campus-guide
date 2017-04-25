@@ -70,7 +70,6 @@ import Header from 'Header';
 import * as ArrayUtils from 'ArrayUtils';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
 
 class WeeklySchedule extends React.Component {
 
@@ -111,12 +110,11 @@ class WeeklySchedule extends React.Component {
   /**
    * Renders a single day of lectures in the current semester.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @param {string} day          the day of the week
    * @param {number} index        index of the day of the week, where 0 is Monday and 6 is Sunday
    * @returns {?ReactElement<any>} the hierarchy of views to render
    */
-  _renderDay(Translations: Object, day: string, index: number): ?ReactElement < any > {
+  _renderDay(day: string, index: number): ?ReactElement < any > {
     const schedule = this.props.schedule[this.props.semesters[this.props.currentSemester].id];
     const courses = schedule ? schedule.courses : [];
     const lectures = this._getLectures(courses, index);
@@ -174,15 +172,12 @@ class WeeklySchedule extends React.Component {
       );
     }
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
     const days = Constants.Days[this.props.language];
-
     return (
       <View style={_styles.container}>
         {this.props.children}
         <ScrollView>
-          {days.map((day, index) => this._renderDay(Translations, day, index))}
+          {days.map((day, index) => this._renderDay(day, index))}
           <View style={_styles.padding} />
         </ScrollView>
       </View>

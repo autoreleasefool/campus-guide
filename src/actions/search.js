@@ -25,13 +25,28 @@
 'use strict';
 
 // Types
-import { SEARCH } from 'actionTypes';
+import { SEARCH, ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SET_STUDY_FILTERS } from 'actionTypes';
 
 module.exports = {
 
   search: (terms: ?string) => ({
     type: SEARCH,
     terms,
+  }),
+
+  activateStudyFilter: (filter: number) => ({
+    type: ACTIVATE_STUDY_FILTER,
+    filter,
+  }),
+
+  deactivateStudyFilter: (filter: number) => ({
+    type: DEACTIVATE_STUDY_FILTER,
+    filter,
+  }),
+
+  setStudyFilters: (filters: Array < number >) => ({
+    type: SET_STUDY_FILTERS,
+    filters,
   }),
 
 };

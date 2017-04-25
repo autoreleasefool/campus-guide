@@ -72,15 +72,13 @@ import Header from 'Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Separator from './components/Separator';
+import ModalHeader from 'ModalHeader';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
-
-// Modal padding on iOS
-const HEADER_PADDING_IOS: number = 25;
+import * as Translations from 'Translations';
 
 // Default opacity for tap when setting is not a boolean
 const DEFAULT_OPACITY: number = 0.4;
@@ -120,8 +118,8 @@ class Settings extends React.Component {
    */
   componentDidMount(): void {
     Configuration.init()
-        .then(() => TranslationUtils.loadTranslations('en'))
-        .then(() => TranslationUtils.loadTranslations('fr'))
+        .then(() => Translations.loadTranslations('en'))
+        .then(() => Translations.loadTranslations('fr'))
         .then(() => Configuration.getConfig('/settings.json'))
         .then((settingSections: Object) => {
           const totalSections = settingSections.length;
@@ -144,7 +142,7 @@ class Settings extends React.Component {
    * Unloads the unused language.
    */
   componentWillUnmount(): void {
-    TranslationUtils.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
+    Translations.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
   }
 
   /** List of sections of settings to render. */
@@ -197,7 +195,7 @@ class Settings extends React.Component {
         return this.props.prefersWheelchair;
       case 'pref_semester': {
         const semester = this.props.semesters[this.props.currentSemester];
-        return TranslationUtils.getTranslatedName(this.props.language, semester);
+        return Translations.getName(this.props.language, semester);
       }
       case 'pref_time_format':
         return this.props.timeFormat;
@@ -230,14 +228,11 @@ class Settings extends React.Component {
       // Ignore boolean settings, they can only be manipulated by switch
       return;
     } else if (setting.type === 'link' && setting.key != 'app_open_source') {
-      // Get current language for translations
-      const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
       // Open the provided link
-      const link = TranslationUtils.getTranslatedVariant(this.props.language, 'link', setting);
+      const link = Translations.getVariant(this.props.language, 'link', setting);
       ExternalUtils.openLink(
         link || ExternalUtils.getDefaultLink(),
-        Translations,
+        this.props.language,
         Linking,
         Alert,
         Clipboard,
@@ -262,28 +257,10 @@ class Settings extends React.Component {
       const licenses = require('../../../assets/json/licenses.json');
       this.setState({
         listModalDataSource: this.state.listModalDataSource.cloneWithRowsAndSections(licenses),
-        listModalTitle: TranslationUtils.getTranslatedName(this.props.language, setting) || '',
+        listModalTitle: Translations.getName(this.props.language, setting) || '',
         listModalVisible: true,
       });
     }
-  }
-
-  /**
-   * Renders a button to close modals.
-   *
-   * @returns {ReactElement<any>} view to close modal
-   */
-  _renderCloseModalButton(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
-    return (
-      <View style={_styles.modalCloseContainer}>
-        <TouchableOpacity onPress={this._closeModal.bind(this)}>
-          <Text style={_styles.modalCloseText}>{Translations.done}</Text>
-        </TouchableOpacity>
-      </View>
-    );
   }
 
   /**
@@ -292,24 +269,19 @@ class Settings extends React.Component {
    * @returns {ReactElement<any>} a list view with the rows and sections loaded
    */
   _renderListModal(): ReactElement < any > {
-    let title = null;
-    if (this.state.listModalTitle.length > 0) {
-      title = (
-        <View style={[ _styles.setting, _styles.modalListTitle ]}>
-          <Text style={[ _styles.settingText, _styles.modalListTitleText ]}>{this.state.listModalTitle}</Text>
-        </View>
-      );
-    }
-
     return (
       <View style={[ _styles.container, { backgroundColor: Constants.Colors.primaryBackground }]}>
-        {title}
+        <ModalHeader
+            backgroundColor={Constants.Colors.primaryBackground}
+            rightActionEnabled={true}
+            rightActionText={Translations.get(this.props.language, 'done')}
+            title={this.state.listModalTitle}
+            onRightAction={this._closeModal.bind(this)} />
         <ListView
             dataSource={this.state.listModalDataSource}
             renderRow={this._renderListModalRow.bind(this)}
             renderSectionHeader={this._renderListModalSectionHeader.bind(this)}
             style={_styles.modalListView} />
-        {this._renderCloseModalButton()}
       </View>
     );
   }
@@ -388,7 +360,7 @@ class Settings extends React.Component {
             activeOpacity={item.type === 'boolean' ? 1 : DEFAULT_OPACITY}
             onPress={this._onPressRow.bind(this, item, true)}>
           <View style={_styles.setting}>
-            <Text style={_styles.settingText}>{TranslationUtils.getTranslatedName(this.props.language, item)}</Text>
+            <Text style={_styles.settingText}>{TranslationUtils.getName(this.props.language, item)}</Text>
             {content}
           </View>
         </TouchableOpacity>
@@ -450,7 +422,7 @@ class Settings extends React.Component {
 const _styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   settingContainer: {
     backgroundColor: Constants.Colors.secondaryBackground,
@@ -459,7 +431,7 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     height: 50,
     alignItems: 'center',
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   settingContent: {
     position: 'absolute',
@@ -485,26 +457,7 @@ const _styles = StyleSheet.create({
   modalListViewText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
-    margin: Constants.Sizes.Margins.Regular,
-  },
-  modalListTitle: {
-    marginTop: Platform.OS === 'ios' ? HEADER_PADDING_IOS : 0,
-    backgroundColor: Constants.Colors.primaryBackground,
-  },
-  modalListTitleText: {
-    color: Constants.Colors.primaryWhiteText,
-  },
-  modalCloseContainer: {
-    backgroundColor: Constants.Colors.secondaryBackground,
-    borderTopColor: Constants.Colors.darkTransparentBackground,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    justifyContent: 'flex-end',
-  },
-  modalCloseText: {
     margin: Constants.Sizes.Margins.Expanded,
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
-    textAlign: 'right',
   },
 });
 

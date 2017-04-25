@@ -54,6 +54,7 @@ export const UPDATE_PROGRESS = 'UPDATE_PROGRESS';
 //-----------------------------------------------------------------------------
 
 export const SET_DESTINATION = 'SET_DESTINATION';
+export const SET_STARTING_POINT = 'SET_STARTING_POINT';
 export const VIEW_BUILDING = 'VIEW_BUILDING';
 
 //-----------------------------------------------------------------------------
@@ -78,3 +79,6 @@ export const REMOVE_COURSE = 'REMOVE_COURSE';
 //-----------------------------------------------------------------------------
 
 export const SEARCH = 'SEARCH';
+export const ACTIVATE_STUDY_FILTER = 'ACTIVATE_STUDY_FILTER';
+export const DEACTIVATE_STUDY_FILTER = 'DEACTIVATE_STUDY_FILTER';
+export const SET_STUDY_FILTERS = 'SET_STUDY_FILTERS';

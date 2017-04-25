@@ -146,6 +146,9 @@ const mapDispatchToProps = (dispatch) => {
           title = 'shuttle';
           break;
         case 'stu':
+          view = Constants.Views.Discover.StudySpots;
+          title = 'study_spots';
+          break;
         default:
           // Does nothing
           // Return to default view, Views.Home

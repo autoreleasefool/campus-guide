@@ -91,7 +91,7 @@ import ModalHeader from 'ModalHeader';
 import * as ArrayUtils from 'ArrayUtils';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // Navigation values
@@ -207,16 +207,16 @@ class CourseModal extends React.Component {
    * Prompts the user to delete the current course, and deletes it if they respond positively.
    */
   _handleDeleteCourse(): void {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-    const courseCode = this.state.code.length > 0 ? this.state.code : Translations.course.toLowerCase();
+    const courseCode = this.state.code.length > 0
+        ? this.state.code
+        : Translations.get(this.props.language, 'course').toLowerCase();
 
     Alert.alert(
-      `${Translations.delete} ${courseCode}?`,
-      Translations.cannot_be_undone_confirmation,
+      `${Translations.get(this.props.language, 'delete')} ${courseCode}?`,
+      Translations.get(this.props.language, 'cannot_be_undone_confirmation'),
       [
-        { text: Translations.cancel, style: 'cancel' },
-        { text: Translations.delete, onPress: () => this._close(false) },
+        { text: Translations.get(this.props.language, 'cancel'), style: 'cancel' },
+        { text: Translations.get(this.props.language, 'delete'), onPress: () => this._close(false) },
       ],
       { cancelable: false }
     );
@@ -228,15 +228,12 @@ class CourseModal extends React.Component {
    * @param {Lecture} lecture details of the lecture to delete
    */
   _handleDeleteLecture(lecture: Lecture): void {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     Alert.alert(
-      `${Translations.delete} ${this.props.lectureFormats[lecture.format].code}?`,
-      Translations.cannot_be_undone_confirmation,
+      `${Translations.get(this.props.language, 'delete')} ${this.props.lectureFormats[lecture.format].code}?`,
+      Translations.get(this.props.language, 'cannot_be_undone_confirmation'),
       [
-        { text: Translations.cancel, style: 'cancel' },
-        { text: Translations.delete, onPress: () => this._deleteLecture(lecture) },
+        { text: Translations.get(this.props.language, 'cancel'), style: 'cancel' },
+        { text: Translations.get(this.props.language, 'delete'), onPress: () => this._deleteLecture(lecture) },
       ],
       { cancelable: false }
     );
@@ -306,7 +303,7 @@ class CourseModal extends React.Component {
    */
   _showSemesterPicker() {
     if (Platform.OS === 'android') {
-      console.log('TODO: setup android picker');
+      // FIXME: setup android picker
       throw new Error('No android picker setup');
     } else {
       this.refs.Navigator.push({ id: PICKER });
@@ -388,13 +385,13 @@ class CourseModal extends React.Component {
   /**
    * Renders the values defined so far for the new course and elements to change them.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @returns {ReactElement<any>} the hierarchy of views to render
    */
-  _renderMenu(Translations: Object): ReactElement < any > {
+  _renderMenu(): ReactElement < any > {
+    const language = this.props.language;
     const semesterId = this.props.semesters[this.state.semester].id;
     const semester = this.props.schedule[semesterId];
-    const semesterName = TranslationUtils.getTranslatedName(this.props.language, semester) || '';
+    const semesterName = Translations.getName(language, semester) || '';
 
     return (
       <View style={{ flex: 1 }}>
@@ -404,10 +401,10 @@ class CourseModal extends React.Component {
                 largeSubtitle={true}
                 subtitle={semesterName}
                 subtitleIcon={{ class: 'material', name: 'chevron-right' }}
-                title={Translations.semester} />
+                title={Translations.get(language, 'semester')} />
           </TouchableOpacity>
           <View style={_styles.menuItemSeparator} />
-          <Header title={Translations.course_code} />
+          <Header title={Translations.get(language, 'course_code')} />
           <TextInput
               autoCapitalize={'characters'}
               returnKeyType={'done'}
@@ -417,13 +414,15 @@ class CourseModal extends React.Component {
                 code,
                 rightActionEnabled: this._isCourseCodeValid(semester, code, this.state.lectures) })} />
           <Header
-              subtitle={this.state.editingLectures ? Translations.cancel : Translations.edit}
+              subtitle={this.state.editingLectures
+                ? Translations.get(language, 'cancel')
+                : Translations.get(language, 'edit')}
               subtitleCallback={this._toggleLectureEditOptions.bind(this)}
-              title={Translations.sessions} />
+              title={Translations.get(language, 'sessions')} />
           {this.props.lectureFormats.map((format, index) => {
             const lectures = this.state.lectures.filter((lecture) => lecture.format === index);
             if (lectures.length > 0) {
-              const formatName = TranslationUtils.getTranslatedName(this.props.language, format) || '';
+              const formatName = Translations.getName(language, format) || '';
               return (
                 <View key={formatName}>
                   <Header
@@ -438,12 +437,12 @@ class CourseModal extends React.Component {
           })}
           <TouchableOpacity onPress={this._showLectureModal.bind(this, true, null)}>
             <View style={_styles.button}>
-              <Text style={_styles.buttonText}>{Translations.add_lecture}</Text>
+              <Text style={_styles.buttonText}>{Translations.get(language, 'add_lecture')}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._handleDeleteCourse.bind(this)}>
             <View style={_styles.button}>
-              <Text style={_styles.buttonText}>{Translations.delete_course}</Text>
+              <Text style={_styles.buttonText}>{Translations.get(language, 'delete_course')}</Text>
             </View>
           </TouchableOpacity>
         </KeyboardAwareScrollView>
@@ -454,10 +453,9 @@ class CourseModal extends React.Component {
   /**
    * Renders a picker with a set of semesters for the user to choose from.
    *
-   * @param {Object} Translations translations in the current language of certain text
    * @returns {ReactElement<any>} the picker with the options to select between
    */
-  _renderPicker(Translations: Object): ReactElement < any > {
+  _renderPicker(): ReactElement < any > {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon: string = `${platformModifier}-arrow-back`;
 
@@ -466,16 +464,16 @@ class CourseModal extends React.Component {
         <TouchableOpacity onPress={() => this.refs.Navigator.pop()}>
           <Header
               icon={{ name: backArrowIcon, class: 'ionicon' }}
-              title={Translations.semester} />
+              title={Translations.get(this.props.language, 'semester')} />
         </TouchableOpacity>
         <Picker
             itemStyle={_styles.pickerItem}
-            prompt={Translations.semester}
+            prompt={Translations.get(this.props.language, 'semester')}
             selectedValue={this.state.semester}
             style={_styles.pickerContainer}
             onValueChange={(semester) => this.setState({ semester })}>
           {this.props.semesters.map((semester, index) => {
-            const name = TranslationUtils.getTranslatedName(this.props.language, semester);
+            const name = Translations.getName(this.props.language, semester);
             return (
               <Picker.Item
                   key={name}
@@ -495,14 +493,11 @@ class CourseModal extends React.Component {
    * @returns {ReactElement<any>} the rendering of the scene
    */
   _renderScene(route: {id: number}): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     switch (route.id) {
       case MENU:
-        return this._renderMenu(Translations);
+        return this._renderMenu();
       case PICKER:
-        return this._renderPicker(Translations);
+        return this._renderPicker();
       default:
         // TODO: return some error view
         return (
@@ -517,9 +512,6 @@ class CourseModal extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     let modalTitle = 'add_course';
     let modalRightAction = 'add';
     if (!this.props.addingCourse) {
@@ -544,10 +536,10 @@ class CourseModal extends React.Component {
         </Modal>
         <ModalHeader
             leftActionEnabled={true}
-            leftActionText={Translations.cancel}
+            leftActionText={Translations.get(this.props.language, 'cancel')}
             rightActionEnabled={this.state.rightActionEnabled}
-            rightActionText={Translations[modalRightAction]}
-            title={Translations[modalTitle]}
+            rightActionText={Translations.get(this.props.language, modalRightAction)}
+            title={Translations.get(this.props.language, modalTitle)}
             onLeftAction={() => this._close(true)}
             onRightAction={() =>
               this._saveCourse(this.state.semester, { code: this.state.code, lectures: this.state.lectures })} />
@@ -616,7 +608,7 @@ const _styles = StyleSheet.create({
   },
   pickerContainer: {
     flex: 1,
-    backgroundColor: Constants.Colors.polarGrey,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
   pickerItem: {
     color: Constants.Colors.primaryBlackText,

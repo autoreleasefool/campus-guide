@@ -71,10 +71,7 @@ import Header from 'Header';
 import MapView from 'react-native-maps';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
-import * as TranslationUtils from 'TranslationUtils';
-
-// Default delta in latitude and longitude to show
-const DEFAULT_LOCATION_DELTA = 0.02;
+import * as Translations from 'Translations';
 
 export default class TransitCampusMap extends React.Component {
 
@@ -98,15 +95,7 @@ export default class TransitCampusMap extends React.Component {
 
     this.state = {
       campus: null,
-
-      // TODO: figure out better way to define default position
-      initialRegion: {
-        latitude: 45.4222,
-        longitude: -75.6824,
-        latitudeDelta: DEFAULT_LOCATION_DELTA,
-        longitudeDelta: DEFAULT_LOCATION_DELTA,
-      },
-
+      initialRegion: Constants.Map.InitialRegion,
       region: null,
       routesExpanded: false,
       stops: {},
@@ -131,8 +120,8 @@ export default class TransitCampusMap extends React.Component {
                   initialRegion: {
                     latitude: campuses[i].lat,
                     longitude: campuses[i].long,
-                    latitudeDelta: DEFAULT_LOCATION_DELTA,
-                    longitudeDelta: DEFAULT_LOCATION_DELTA,
+                    latitudeDelta: Constants.Map.DefaultDelta,
+                    longitudeDelta: Constants.Map.DefaultDelta,
                   },
                 });
               }
@@ -173,8 +162,8 @@ export default class TransitCampusMap extends React.Component {
         region: {
           latitude: this.state.stops[stopId].lat,
           longitude: this.state.stops[stopId].long,
-          latitudeDelta: DEFAULT_LOCATION_DELTA,
-          longitudeDelta: DEFAULT_LOCATION_DELTA,
+          latitudeDelta: Constants.Map.DefaultDelta,
+          longitudeDelta: Constants.Map.DefaultDelta,
         },
       });
     }
@@ -205,9 +194,6 @@ export default class TransitCampusMap extends React.Component {
         }
       }
     }
-
-    // TODO: onCalloutPress (below) does not currently work for iOS
-    // Follow progress at https://github.com/airbnb/react-native-maps/issues/286
 
     return (
       <MapView
@@ -244,9 +230,6 @@ export default class TransitCampusMap extends React.Component {
       );
     }
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(this.props.language);
-
     let expandIcon = 'expand-less';
     let routeStyle = { flexShrink: 0 };
     let stopStyle = { height: 0 };
@@ -262,7 +245,7 @@ export default class TransitCampusMap extends React.Component {
           <Header
               icon={{ name: 'md-time', class: 'ionicon' }}
               subtitleIcon={{ name: expandIcon, class: 'material' }}
-              title={Translations.routes_and_times} />
+              title={Translations.get(this.props.language, 'routes_and_times')} />
         </TouchableOpacity>
         <TransitStops
             campus={campus}

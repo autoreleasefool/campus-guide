@@ -36,7 +36,7 @@ import Promise from 'promise';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
-import * as TranslationUtils from 'TranslationUtils';
+import * as Translations from 'Translations';
 
 /**
  * Returns a promise containing a list of buildings which match the search terms.
@@ -50,14 +50,14 @@ function _getBuildingResults(language: Language,
                              searchTerms: string,
                              buildings: Array < any >): Promise < Array < SearchResult > > {
 
-  /* TODO: replace buildings: Array < any > with buildings: Array < Building > */
+  /* FIXME: replace buildings: Array < any > with buildings: Array < Building > */
 
   return new Promise((resolve) => {
     const results: Array < SearchResult > = [];
 
     for (let i = 0; i < buildings.length; i++) {
       const translated: boolean = !('name' in buildings[i]);
-      const name: string = TranslationUtils.getTranslatedName(language, buildings[i]) || '';
+      const name: string = Translations.getName(language, buildings[i]) || '';
       const matchedTerms: Array < string > = [];
 
       // Compare building properties to search terms to add to results
@@ -112,7 +112,7 @@ function _getRoomResults(language: Language,
           // Cache list of room types that match the search terms
           const matchingRoomTypes = [];
           for (let i = 0; i < roomTypes.length; i++) {
-            const roomTypeName = TranslationUtils.getTranslatedName(language, roomTypes[i]);
+            const roomTypeName = Translations.getName(language, roomTypes[i]);
             if (roomTypeName != null && roomTypeName.toUpperCase().indexOf(searchTerms) >= 0) {
               matchingRoomTypes.push(i);
             }
@@ -124,7 +124,7 @@ function _getRoomResults(language: Language,
             for (let j = 0; j < building.rooms.length; j++) {
               const room = building.rooms[j];
               const roomName: string = `${building.code} ${room.name.toUpperCase()}`;
-              const roomAltName: ?string = TranslationUtils.getTranslatedVariant(language, 'alt_name', room);
+              const roomAltName: ?string = Translations.getVariant(language, 'alt_name', room);
 
               if (!room.type) {
                 room.type = Constants.DefaultRoomType;
@@ -133,8 +133,7 @@ function _getRoomResults(language: Language,
               if (matchingRoomTypes.indexOf(room.type) >= 0
                   || roomName.toUpperCase().indexOf(searchTerms) >= 0
                   || (roomAltName != null && roomAltName.toUpperCase().indexOf(searchTerms) >= 0)) {
-                const description = TranslationUtils.getTranslatedName(language, roomTypes[room.type]) || '';
-                const title = TranslationUtils.getTranslatedName(language, building) || '';
+                const description = Translations.getName(language, roomTypes[room.type]) || '';
                 const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomTypes[room.type]);
 
                 const matchedTerms = [ roomName.toUpperCase(), description.toUpperCase() ];
@@ -147,7 +146,7 @@ function _getRoomResults(language: Language,
                   data: { building: building, code: building.code, room: room.name },
                   icon: icon || { name: 'search', class: 'material' },
                   matchedTerms: matchedTerms,
-                  title: `${title} > ${room.name}`,
+                  title: `${building.code} ${room.name}`,
                 });
               }
             }
@@ -177,17 +176,14 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
     const buildings: Array < Building > = require('../../../../assets/js/Buildings');
 
-    // Get current language for translations
-    const Translations: Object = TranslationUtils.getTranslations(language);
-
     Promise.all([
       _getBuildingResults(language, adjustedSearchTerms, buildings),
       _getRoomResults(language, adjustedSearchTerms, buildings),
     ])
         .then((results: Array < Object >) => {
           const sections = {};
-          sections[Translations.buildings] = results[0];
-          sections[Translations.rooms] = results[1];
+          sections[Translations.get(language, 'buildings')] = results[0];
+          sections[Translations.get(language, 'rooms')] = results[1];
 
           resolve(sections);
         })
@@ -202,17 +198,14 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
  * @returns {Object} section names mapped to icon objects
  */
 export function getResultIcons(language: Language): Object {
-  // Get current language for translations
-  const Translations: Object = TranslationUtils.getTranslations(language);
-
   const icons = {};
-  icons[Translations.buildings] = {
+  icons[Translations.get(language, 'buildings')] = {
     icon: {
       class: 'material',
       name: 'store',
     },
   };
-  icons[Translations.rooms] = {
+  icons[Translations.get(language, 'rooms')] = {
     icon: {
       class: 'material',
       name: 'room',

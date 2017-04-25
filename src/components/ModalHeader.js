@@ -57,12 +57,12 @@ export default class ModalHeader extends React.Component {
   props: {
     backgroundColor?: string,     // Background color for the view
     title: string,                // Title for the header
-    leftActionEnabled: ?boolean,  // Indicates if the left action should be clickable
-    leftActionText: ?string,      // Left action text
-    rightActionEnabled: ?boolean, // Indicates if the right action should be clickable
-    rightActionText: ?string,     // Right action text
-    onLeftAction: ?VoidFunction,  // Callback for when the left action is pressed
-    onRightAction: ?VoidFunction, // Callback for when the right action is pressed
+    leftActionEnabled?: boolean,  // Indicates if the left action should be clickable
+    leftActionText?: string,      // Left action text
+    rightActionEnabled?: boolean, // Indicates if the right action should be clickable
+    rightActionText?: string,     // Right action text
+    onLeftAction?: VoidFunction,  // Callback for when the left action is pressed
+    onRightAction?: VoidFunction, // Callback for when the right action is pressed
   };
 
   /**
@@ -95,6 +95,7 @@ export default class ModalHeader extends React.Component {
 
     return (
       <View style={[ _styles.container, { backgroundColor: headerBackground }]}>
+        <View style={_styles.separator} />
         <Text style={_styles.title}>{this.props.title}</Text>
         {this.props.leftActionText == null
           ? null
@@ -149,5 +150,12 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     right: Constants.Sizes.Margins.Regular,
     bottom: Constants.Sizes.Margins.Regular,
+  },
+  separator: {
+    position: 'absolute',
+    width: screenWidth,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
 });
