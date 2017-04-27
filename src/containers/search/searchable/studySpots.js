@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Language, StudySpotInfo } from 'types';
+import type { Language, StudySpotInfo, Section } from 'types';
 import type { SearchResult } from '../Searchable';
 
 // Imports
@@ -39,13 +39,16 @@ import * as Translations from 'Translations';
  * @param {Language}      language    the current language
  * @param {string}        searchTerms the search terms for the query.
  * @param {StudySpotInfo} studySpots  study spot informaation
- * @returns {Promise<Object>} promise which resolves with the results of the search, containing study spots
+ * @returns {Promise<Array<SearchResult>>} promise which resolves with the results of the search,
+ *                                         containing study spots
  */
 function _getResults(language: Language,
                      searchTerms: string,
-                     studySpots: StudySpotInfo): Promise < Object > {
+                     studySpots: StudySpotInfo): Promise < Array < Section < SearchResult > > > {
   return new Promise((resolve) => {
     const matchedSpots: Array < SearchResult > = [];
+
+    const studySpotsTranslation = Translations.get(language, 'study_spots');
 
     // Returns true if the two sorted arrays have at least one matching element
     // const hasAnyMatchingElements = (a, b) => {
@@ -82,6 +85,7 @@ function _getResults(language: Language,
           || spot.building.toUpperCase().indexOf(searchTerms) >= 0
           || spot.room.indexOf(searchTerms) >= 0) {
         matchedSpots.push({
+          key: studySpotsTranslation,
           description: Translations.getVariant(language, 'description', spot) || '',
           data: { code: spot.building, room: spot.room },
           icon: { name: 'import-contacts', class: 'material' },
@@ -91,8 +95,11 @@ function _getResults(language: Language,
       }
     }
 
-    const results = {};
-    results[Translations.get(language, 'study_spots')] = matchedSpots;
+    const results = [];
+    results.push({
+      key: studySpotsTranslation,
+      data: matchedSpots,
+    });
     resolve(results);
   });
 }
@@ -102,12 +109,14 @@ function _getResults(language: Language,
  *
  * @param {Language} language    the current language
  * @param {?string}  searchTerms the search terms for the query.
- * @returns {Promise<Object>} promise which resolves with the results of the search, containing study spots
+ * @returns {Promise<Array<Section<SearchResult>>>} promise which resolves with the results of the search,
+ *                                                  containing study spots
  */
-export function getResults(language: Language, searchTerms: ?string): Promise < Object > {
+export function getResults(language: Language, searchTerms: ?string):
+    Promise < Array < Section < SearchResult > > > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      resolve({});
+      resolve([]);
       return;
     }
 
@@ -117,7 +126,7 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
     Configuration.init()
         .then(() => Configuration.getConfig('/study_spots.json'))
         .then((studySpots: StudySpotInfo) => _getResults(language, adjustedSearchTerms, studySpots))
-        .then((results: Array < Object >) => resolve(results))
+        .then((results: Array < Section < SearchResult > >) => resolve(results))
         .catch((err: any) => {
           console.error('Configuration could not be initialized for study spot search.', err);
           reject(err);

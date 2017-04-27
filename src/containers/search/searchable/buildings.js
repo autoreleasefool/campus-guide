@@ -28,7 +28,7 @@
 import { Platform } from 'react-native';
 
 // Types
-import type { Building, Language, RoomType } from 'types';
+import type { Building, Language, RoomType, Section } from 'types';
 import type { SearchResult } from '../Searchable';
 
 // Imports
@@ -41,12 +41,14 @@ import * as Translations from 'Translations';
 /**
  * Returns a promise containing a list of buildings which match the search terms.
  *
+ * @param {string}          key         key for the results
  * @param {Language}        language    the current language
  * @param {string}          searchTerms the search terms for the query
  * @param {Array<Building>} buildings   list of buildings
- * @returns {Promise<Object>} promise which resolves with the results of the search, containing buildings
+ * @returns {Promise<Array<SearchResult>>} promise which resolves with the results of the search, containing buildings
  */
-function _getBuildingResults(language: Language,
+function _getBuildingResults(key: string,
+                             language: Language,
                              searchTerms: string,
                              buildings: Array < any >): Promise < Array < SearchResult > > {
 
@@ -76,6 +78,7 @@ function _getBuildingResults(language: Language,
 
       if (matchedTerms.length > 0) {
         results.push({
+          key,
           description: name,
           data: buildings[i],
           icon: {
@@ -95,12 +98,14 @@ function _getBuildingResults(language: Language,
 /**
  * Returns a promise containing a list of rooms which match the search terms.
  *
+ * @param {string}          key         key for the results
  * @param {Language}        language    the current language
  * @param {string}          searchTerms the search terms for the query.
  * @param {Array<Building>} buildings   list of buildings
- * @returns {Promise<Object>} promise which resolves with the results of the search, containing rooms
+ * @returns {Promise<Array<SearchResult>>} promise which resolves with the results of the search, containing rooms
  */
-function _getRoomResults(language: Language,
+function _getRoomResults(key:string,
+                         language: Language,
                          searchTerms: string,
                          buildings: Array < Building >): Promise < Array < SearchResult > > {
   return new Promise((resolve, reject) => {
@@ -142,6 +147,7 @@ function _getRoomResults(language: Language,
                 }
 
                 results.push({
+                  key,
                   description: description,
                   data: { building: building, code: building.code, room: room.name },
                   icon: icon || { name: 'search', class: 'material' },
@@ -163,12 +169,14 @@ function _getRoomResults(language: Language,
  *
  * @param {Language} language    the current language
  * @param {?string}  searchTerms the search terms for the query.
- * @returns {Promise<Object>} promise which resolves with the results of the search, containing buildings and rooms
+ * @returns {Promise<Array<Section<SearchResult>>>} promise which resolves with the results of the search,
+ *                                                  containing buildings and rooms
  */
-export function getResults(language: Language, searchTerms: ?string): Promise < Object > {
+export function getResults(language: Language, searchTerms: ?string):
+    Promise < Array < Section < SearchResult > > > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      resolve({});
+      resolve([]);
       return;
     }
 
@@ -176,14 +184,23 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
     const buildings: Array < Building > = require('../../../../assets/js/Buildings');
 
+    const buildingTranslation = Translations.get(language, 'buildings');
+    const roomTranslation = Translations.get(language, 'rooms');
+
     Promise.all([
-      _getBuildingResults(language, adjustedSearchTerms, buildings),
-      _getRoomResults(language, adjustedSearchTerms, buildings),
+      _getBuildingResults(buildingTranslation, language, adjustedSearchTerms, buildings),
+      _getRoomResults(roomTranslation, language, adjustedSearchTerms, buildings),
     ])
         .then((results: Array < Object >) => {
-          const sections = {};
-          sections[Translations.get(language, 'buildings')] = results[0];
-          sections[Translations.get(language, 'rooms')] = results[1];
+          const sections = [];
+          sections.push({
+            key: buildingTranslation,
+            data: results[0],
+          });
+          sections.push({
+            key: roomTranslation,
+            data: results[1],
+          });
 
           resolve(sections);
         })

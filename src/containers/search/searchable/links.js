@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Language, LinkSection } from 'types';
+import type { Language, LinkSection, Section } from 'types';
 import type { SearchResult } from '../Searchable';
 
 // Imports
@@ -41,14 +41,18 @@ import * as Translations from 'Translations';
  * @param {Language}           language     the current language
  * @param {string}             searchTerms  the search terms for the query.
  * @param {Array<LinkSection>} linkSections list of link sections
- * @returns {Promise<Object>} promise which resolves with the results of the search, containing links
+ * @returns {Promise<Array <Section<SearchResult>>>} promise which resolves with the results of the search,
+ *                                                   containing links
  */
 function _getResults(language: Language,
                      searchTerms: string,
-                     linkSections: Array < LinkSection >): Promise < Object > {
+                     linkSections: Array < LinkSection >): Promise < Array < Section < SearchResult > > > {
   return new Promise((resolve) => {
     const links: Array < SearchResult > = [];
     const categories: Array < SearchResult > = [];
+
+    const externalLinksTranslation = Translations.get(language, 'external_links');
+    const usefulLinksTranslation = Translations.get(language, 'useful_links');
 
     // Method to add a link to the results
     const pushLink = (sectionName: string,
@@ -59,6 +63,7 @@ function _getResults(language: Language,
       const translatedLink: string = Translations.getVariant(language, 'link', link)
           || ExternalUtils.getDefaultLink();
       links.push({
+        key: externalLinksTranslation,
         description: sectionName,
         data: { link: translatedLink, language: language },
         icon: {
@@ -79,6 +84,7 @@ function _getResults(language: Language,
 
       if (sectionName.toUpperCase().indexOf(searchTerms) >= 0) {
         categories.push({
+          key: usefulLinksTranslation,
           description: Translations.get(language, 'see_related_links'),
           data: section.id,
           icon: section.icon,
@@ -134,9 +140,15 @@ function _getResults(language: Language,
       }
     }
 
-    const results = {};
-    results[Translations.get(language, 'external_links')] = links;
-    results[Translations.get(language, 'useful_links')] = categories;
+    const results = [];
+    results.push({
+      key: externalLinksTranslation,
+      data: links,
+    });
+    results.push({
+      key: usefulLinksTranslation,
+      data: categories,
+    });
     resolve(results);
   });
 }
@@ -146,12 +158,14 @@ function _getResults(language: Language,
  *
  * @param {Language} language    the current language
  * @param {?string}  searchTerms the search terms for the query.
- * @returns {Promise<Object>} promise which resolves with the results of the search, containing links and categories
+ * @returns {Promise<Array<Section<SearchResult>>>} promise which resolves with the results of the search,
+ *                                                  containing links and categories
  */
-export function getResults(language: Language, searchTerms: ?string): Promise < Object > {
+export function getResults(language: Language, searchTerms: ?string):
+    Promise < Array < Section < SearchResult > > > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      resolve({});
+      resolve([]);
       return;
     }
 
@@ -161,7 +175,7 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
     Configuration.init()
         .then(() => Configuration.getConfig('/useful_links.json'))
         .then((linkSections: Array < LinkSection >) => _getResults(language, adjustedSearchTerms, linkSections))
-        .then((results: Array < Object >) => resolve(results))
+        .then((results: Array < Section < SearchResult > >) => resolve(results))
         .catch((err: any) => {
           console.error('Configuration could not be initialized for useful links search.', err);
           reject(err);

@@ -29,8 +29,8 @@
 import React from 'react';
 import {
   Dimensions,
+  FlatList,
   Image,
-  ListView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -53,7 +53,7 @@ type Props = {
 
 // Type definition for component state
 type State = {
-  dataSource: ListView.DataSource,  // List of buildings for the ListView
+  buildings: Array < ?Building >,  // List of buildings
 };
 
 // Imports
@@ -83,9 +83,7 @@ export default class BuildingGrid extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2,
-      }),
+      buildings: [],
     };
   }
 
@@ -105,6 +103,17 @@ export default class BuildingGrid extends React.Component {
     if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
       this._filterBuildings(nextProps);
     }
+  }
+
+  /**
+   * Gets a unique key for the building.
+   *
+   * @param {Building} building the building to get a key for
+   * @param {number}   index    index of the building
+   * @returns {string} the key
+   */
+  _buildingKeyExtractor(building: Building, index: number): string {
+    return building.code || index.toString();
   }
 
   /**
@@ -143,18 +152,16 @@ export default class BuildingGrid extends React.Component {
     }
 
     // Update the state so the app reflects the changes made
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(filteredBuildings),
-    });
+    this.setState({ buildings: filteredBuildings });
   }
 
   /**
    * Displays a building's name and image.
    *
-   * @param {Building} building information about the building to display
+   * @param {Building} item information about the building to display
    * @returns {ReactElement<any>} an image (if enabled) and name for the building
    */
-  _renderRow(building: Building): ReactElement < any > {
+  _renderItem({ item }: { item: Building }): ReactElement < any > {
     const buildingImageSize: number = Math.floor(width / this.props.columns);
 
     let buildingStyle = { height: buildingImageSize, width: buildingImageSize };
@@ -173,17 +180,16 @@ export default class BuildingGrid extends React.Component {
       height: width / this.props.columns,
     };
 
-    // TODO: consider adding 'key={building.code}'
     return (
-      <TouchableOpacity onPress={() => this.props.onSelect(building)}>
+      <TouchableOpacity onPress={() => this.props.onSelect(item)}>
         <View style={[ _styles.building, buildingStyle ]}>
-          {this.props.disableImages || building == null
+          {this.props.disableImages || item == null
             ? null
             : <Image
-                source={building.image}
+                source={item.image}
                 style={[ _styles.image, imageStyle ]} />}
           <Text style={[ _styles.buildingCode, textStyle ]}>
-            {building == null ? Translations.get(this.props.language, 'none') : building.code}
+            {item == null ? Translations.get(this.props.language, 'none') : item.code}
           </Text>
         </View>
       </TouchableOpacity>
@@ -205,12 +211,11 @@ export default class BuildingGrid extends React.Component {
     }
 
     return (
-      <ListView
-          contentContainerStyle={_styles.listView}
-          dataSource={this.state.dataSource}
-          enableEmptySections={true}
-          pageSize={this.props.columns}
-          renderRow={this._renderRow.bind(this)}
+      <FlatList
+          data={this.state.buildings}
+          keyExtractor={this._buildingKeyExtractor.bind(this)}
+          numColumns={this.props.columns}
+          renderItem={this._renderItem.bind(this)}
           style={style} />
     );
   }
@@ -234,10 +239,5 @@ const _styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-  },
-  listView: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
   },
 });

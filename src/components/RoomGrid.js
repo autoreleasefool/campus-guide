@@ -28,7 +28,7 @@
 // React imports
 import React from 'react';
 import {
-  ListView,
+  FlatList,
   Platform,
   StyleSheet,
   Text,
@@ -52,15 +52,15 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  dataSource: ListView.DataSource,  // List of rooms for the ListView
-  loaded: boolean,                  // Indicates if the room data has been loaded
+  loaded: boolean,                // Indicates if the room data has been loaded
+  rooms: Array < FilteredRoom >,  // List of rooms
 };
 
 // Data required for rendering the list of filtered rooms.
 type FilteredRoom = {
   altName: ?string, // Alternate display name for the room
   icon: ?Icon,      // Icon to identify the room's type
-  name: string,     // Unique name/number of the room
+  key: string,      // Unique name/number of the room
   type: string,     // Type of room
 };
 
@@ -92,10 +92,8 @@ export default class RoomGrid extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2,
-      }),
       loaded: false,
+      rooms: [],
     };
 
     // Explicitly bind 'this' to methods that require it
@@ -172,7 +170,7 @@ export default class RoomGrid extends React.Component {
         filteredRooms.push({
           altName: roomAltName,
           icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[room.type]),
-          name: room.name.toUpperCase(),
+          key: room.name.toUpperCase(),
           type: Translations.getName(language, this._roomTypes[room.type]) || '',
         });
       }
@@ -180,7 +178,7 @@ export default class RoomGrid extends React.Component {
 
     // Update the state so the app reflects the changes made
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(filteredRooms),
+      rooms: filteredRooms,
       loaded: true,
     });
   }
@@ -231,10 +229,11 @@ export default class RoomGrid extends React.Component {
   /**
    * Renders an item describing a single room in the building.
    *
-   * @param {FilteredRoom} room a room to display in this row.
-   * @returns {ReactElement<any>} a view describing a set of room.
+   * @param {FilteredRoom} room a room to display in this row
+   * @returns {ReactElement<any>} a view describing a set of room
    */
-  _renderRow(room: FilteredRoom): ReactElement < any > {
+  _renderRow({ item }: { item: FilteredRoom }): ReactElement < any > {
+    const room = item;
     let icon: ?ReactElement < any > = null;
     if (room.icon != null) {
       icon = (
@@ -245,14 +244,12 @@ export default class RoomGrid extends React.Component {
     }
 
     return (
-      <TouchableOpacity
-          key={room.name}
-          onPress={() => this.props.onSelect(this.props.code, room.name)}>
+      <TouchableOpacity onPress={() => this.props.onSelect(this.props.code, room.key)}>
         <View style={_styles.room}>
           {icon}
           <View style={_styles.roomDescription}>
             {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
-            <Text style={_styles.roomName}>{`${this.props.code} ${room.name}`}</Text>
+            <Text style={_styles.roomName}>{`${this.props.code} ${room.key}`}</Text>
             <Text style={_styles.roomType}>{room.type}</Text>
           </View>
         </View>
@@ -263,16 +260,10 @@ export default class RoomGrid extends React.Component {
   /**
    * Renders a separator line between rows.
    *
-   * @param {any} sectionID section id
-   * @param {any} rowID     row id
-   * @returns {ReactElement<any>} a separator for the list of settings
+   * @returns {ReactElement<any>} a separator for the list of rooms
    */
-  _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
-    return (
-      <View
-          key={`Separator,${sectionID},${rowID}`}
-          style={_styles.separator} />
-    );
+  _renderSeparator(): ReactElement < any > {
+    return <View style={_styles.separator} />;
   }
 
   /**
@@ -283,12 +274,11 @@ export default class RoomGrid extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
-        <ListView
-            dataSource={this.state.dataSource}
-            enableEmptySections={true}
-            renderHeader={this._renderHeader.bind(this)}
-            renderRow={this._renderRow.bind(this)}
-            renderSeparator={this._renderSeparator.bind(this)} />
+        <FlatList
+            ItemSeparatorComponent={this._renderSeparator}
+            ListHeaderComponent={this._renderHeader.bind(this)}
+            data={this.state.rooms}
+            renderItem={this._renderRow.bind(this)} />
       </View>
     );
   }

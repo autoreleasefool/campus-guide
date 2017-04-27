@@ -30,10 +30,11 @@ import {
   ActivityIndicator,
   Alert,
   Clipboard,
+  FlatList,
   Linking,
-  ListView,
   Navigator,
   Platform,
+  SectionList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -45,33 +46,34 @@ import { connect } from 'react-redux';
 import * as actions from 'actions';
 
 // Types
-import type { Icon, Language, Route } from 'types';
-
-// Type definition for component props
-type Props = {
-  filter: ?string,                                        // Search terms
-  language: Language,                                     // The current language, selected by the user
-  onResultSelect: (sectionID: string, data: any) => void, // Callback for when result is selected
-};
-
-// Type definition for component state
-type State = {
-  anyResults: boolean,                  // False if no search results were returned
-  filteredResults: ListView.DataSource, // Categories and their top results
-  performingSearch: boolean,            // Indicates if a search is in progresss, to display an indicator
-  singleResults: ListView.DataSource,   // List of search results for a single category
-  singleResultTitle: string,            // Category of search results being displayed
-};
+import type { Icon, Language, Route, Section } from 'types';
 
 // Imports
 import Header from 'Header';
 import PaddedIcon from 'PaddedIcon';
+import * as ArrayUtils from 'ArrayUtils';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as Searchable from './Searchable';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
+
+// Type definition for component props
+type Props = {
+  filter: ?string,                                          // Search terms
+  language: Language,                                       // The current language, selected by the user
+  onResultSelect: (sectionKey: ?string, data: any) => void, // Callback for when result is selected
+};
+
+// Type definition for component state
+type State = {
+  anyResults: boolean,                                            // False if no search results were returned
+  filteredResults: Array < Section < Searchable.SearchResult > >, // Categories and their top results
+  performingSearch: boolean,                                      // Indicates if a search is in progresss
+  singleResults: Array < Searchable.SearchResult >,               // List of search results for a single category
+  singleResultTitle: ?string,                                     // Category of search results being displayed
+};
 
 // Render top filtered results
 const FILTERED = 0;
@@ -102,15 +104,10 @@ class Search extends React.Component {
     super(props);
     this.state = {
       anyResults: false,
-      filteredResults: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2,
-        sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
-      }),
+      filteredResults: [],
       performingSearch: false,
-      singleResults: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2,
-      }),
-      singleResultTitle: '',
+      singleResults: [],
+      singleResultTitle: null,
     };
   }
 
@@ -140,10 +137,10 @@ class Search extends React.Component {
   }
 
   /** Set of complete, unaltered search results */
-  _searchResults: Object = {};
+  _searchResults: Array < Section < Searchable.SearchResult > > = [];
 
   /** Set of search result categories with their top results. */
-  _filteredResults: Object = {};
+  _filteredResults: Array < Section < Searchable.SearchResult > > = [];
 
   /** Set of specific search results to be displayed. */
   _singleResults: Array < Searchable.SearchResult > = [];
@@ -189,18 +186,23 @@ class Search extends React.Component {
   /**
    * Gets the top results from each of the categories of results returned.
    *
-   * @param {Object} searchResults the results to get the top results from
-   * @returns {Object} the top results for each section
+   * @param {Array<Section<SearchResult>>} searchResults the results to get the top results from
+   * @returns {Array<Section<SearchResult>>} the top results for each section
    */
-  _filterTopResults(searchResults: Object): Object {
-    const filtered = {};
-    for (const source in searchResults) {
-      if (searchResults.hasOwnProperty(source)) {
-        if (searchResults[source].length == 1) {
-          filtered[source] = [ searchResults[source][0] ];
-        } else if (searchResults[source].length > 1) {
-          filtered[source] = [ searchResults[source][0], searchResults[source][1] ];
-        }
+  _filterTopResults(searchResults: Array < Section < Searchable.SearchResult > >):
+      Array < Section < Searchable.SearchResult > > {
+    const filtered = [];
+    for (let i = 0; i < searchResults.length; i++) {
+      if (searchResults[i].data.length === 1) {
+        filtered.push({
+          key: searchResults[i].key,
+          data: [ searchResults[i].data[0] ],
+        });
+      } else if (searchResults[i].data.length > 1) {
+        filtered.push({
+          key: searchResults[i].key,
+          data: [ searchResults[i].data[0], searchResults[i].data[1] ],
+        });
       }
     }
 
@@ -217,37 +219,33 @@ class Search extends React.Component {
     if (prevProps.filter != null && prevProps.filter.length > 0
         && nextProps.filter != null && nextProps.filter.length > 0
         && nextProps.filter.indexOf(prevProps.filter) >= 0
-        && Object.keys(this._searchResults).length > 0) {
+        && this._searchResults.length > 0) {
 
       this._searchResults = Searchable.narrowResults(nextProps.filter, this._searchResults);
       this._filteredResults = this._filterTopResults(this._searchResults);
 
-      if (this.state.singleResultTitle.length > 0) {
-        this._singleResults = this._searchResults[this.state.singleResultTitle] || [];
-      }
+      this._updateSingleResults(this.state.singleResultTitle);
 
       this.setState({
         performingSearch: false,
-        anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
-        filteredResults: this.state.filteredResults.cloneWithRowsAndSections(this._filteredResults),
-        singleResults: this.state.singleResults.cloneWithRows(this._singleResults),
+        anyResults: this._searchResults != null && this._searchResults.length > 0,
+        filteredResults: this._filteredResults,
+        singleResults: this._singleResults,
       });
     } else {
       Searchable.getResults(nextProps.language, nextProps.filter)
-          .then((results: Object) => {
+          .then((results: Searchable.ResultData) => {
             this._searchResults = results.results;
             this._searchIcons = results.icons;
             this._filteredResults = this._filterTopResults(this._searchResults);
 
-            if (this.state.singleResultTitle.length > 0) {
-              this._singleResults = this._searchResults[this.state.singleResultTitle];
-            }
+            this._updateSingleResults(this.state.singleResultTitle);
 
             this.setState({
               performingSearch: false,
-              anyResults: this._searchResults != null && Object.keys(this._searchResults).length > 0,
-              filteredResults: this.state.filteredResults.cloneWithRowsAndSections(this._filteredResults),
-              singleResults: this.state.singleResults.cloneWithRows(this._singleResults),
+              anyResults: this._searchResults != null && this._searchResults.length > 0,
+              filteredResults: this._filteredResults,
+              singleResults: this._singleResults,
             });
           })
           .catch((err: any) => console.error('Could not get search results.', err));
@@ -255,17 +253,32 @@ class Search extends React.Component {
   }
 
   /**
+   * Updates the set of single results.
+   *
+   * @param {?string} source the source for the single results. Can be null
+   */
+  _updateSingleResults(source: ?string): void {
+    if (source != null) {
+      const singleResultIndex = ArrayUtils.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', source);
+      if (singleResultIndex >= 0) {
+        this._singleResults = this._searchResults[singleResultIndex].data;
+      } else {
+        this._singleResults = [];
+      }
+    }
+  }
+
+  /**
    * Callback for when a result is tapped by the user.
    *
-   * @param {Searchable.SearchResult} result    the result selected
-   * @param {string}                  sectionID id of the section the result belongs to
+   * @param {Searchable.SearchResult} result the result selected
    */
-  _onResultSelect(result: Searchable.SearchResult, sectionID: string): void {
+  _onResultSelect(result: Searchable.SearchResult): void {
     const routes = this.refs.Navigator.getCurrentRoutes();
     if (routes != null && routes[routes.length - 1].id === SINGLE) {
       this.props.onResultSelect(this.state.singleResultTitle, result.data);
     } else {
-      this.props.onResultSelect(sectionID, result.data);
+      this.props.onResultSelect(result.key, result.data);
     }
     this.refs.Navigator.pop();
   }
@@ -277,16 +290,15 @@ class Search extends React.Component {
    */
   _onSourceSelect(source: ?string): void {
     if (source == null) {
-      this.setState({
-        singleResultTitle: '',
-      });
+      this.setState({ singleResultTitle: null });
       this.refs.Navigator.pop();
     } else {
-      this._singleResults = this._searchResults[source];
+      console.log('here: ' + source);
+      this._updateSingleResults(source);
       if (this._singleResults.length > 2) {
         this.setState({
           singleResultTitle: source,
-          singleResults: this.state.singleResults.cloneWithRows(this._singleResults),
+          singleResults: this._singleResults,
         });
         this.refs.Navigator.push({ id: SINGLE });
       }
@@ -328,13 +340,12 @@ class Search extends React.Component {
   /**
    * Renders a search result based on its source.
    *
-   * @param {SearchResult} result    the result and its source to render
-   * @param {string}       sectionID id of the section
+   * @param {SearchResult} result the result and its source to render
    * @returns {?ReactElement<any>} a view describing the result, or null
    */
-  _renderResult(result: Searchable.SearchResult, sectionID: string): ?ReactElement < any > {
+  _renderResult({ item }: { item: Searchable.SearchResult }): ?ReactElement < any > {
     // Construct the icon view for the result
-    const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, result);
+    const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, item);
     let iconView: any = null;
 
     if (icon != null) {
@@ -346,12 +357,12 @@ class Search extends React.Component {
     }
 
     return (
-      <TouchableOpacity onPress={this._onResultSelect.bind(this, result, sectionID)}>
+      <TouchableOpacity onPress={this._onResultSelect.bind(this, item)}>
         <View style={_styles.result}>
           {iconView}
           <View style={_styles.resultText}>
-            <Text style={_styles.resultTitle}>{result.title}</Text>
-            <Text style={_styles.resultBody}>{result.description}</Text>
+            <Text style={_styles.resultTitle}>{item.title}</Text>
+            <Text style={_styles.resultBody}>{item.description}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -361,15 +372,15 @@ class Search extends React.Component {
   /**
    * Renders a heading for a set of search results from a source.
    *
-   * @param {Object}   sectionData   section contents
-   * @param {string}   sectionName   name of the source
+   * @param {Section}  section       section contents
    * @param {?boolean} nonExpandable indicates if an "expand" icon should be shown
-   * @returns {ReactElement<any>} a {SectionHeader} with the name of the source.
+   * @returns {ReactElement<any>} a {Header} with the name of the source.
    */
-  _renderSource(sectionData: Object, sectionName: string, nonExpandable: ?boolean): ReactElement < any > {
+  _renderSource({ section }: { section: Section < * > }, nonExpandable: ?boolean): ReactElement < any > {
+    const resultPosition = ArrayUtils.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', section.key);
+    const numberOfResults = this._searchResults[resultPosition].data.length;
     if (nonExpandable) {
       const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
-      const numberOfResults = this._searchResults[sectionName].length;
       const subtitle = `${numberOfResults} ${Translations.get(this.props.language, 'results').toLowerCase()}`;
 
       return (
@@ -378,28 +389,28 @@ class Search extends React.Component {
               backgroundColor={Constants.Colors.tertiaryBackground}
               icon={{ name: `${platformModifier}-arrow-back`, class: 'ionicon' }}
               subtitle={subtitle}
-              title={sectionName} />
+              title={section.key} />
         </TouchableOpacity>
       );
     } else {
-      const icon = DisplayUtils.getPlatformIcon(Platform.OS, this._searchIcons[sectionName])
+      const icon = DisplayUtils.getPlatformIcon(Platform.OS, this._searchIcons[section.key])
           || { name: 'search', class: 'material' };
 
       let subtitle = null;
       let subtitleIcon = null;
-      if (this._searchResults[sectionName].length > 2) {
-        subtitle = `${this._searchResults[sectionName].length - 2} ${Translations.get(this.props.language, 'more')}`;
+      if (numberOfResults > 2) {
+        subtitle = `${numberOfResults - 2} ${Translations.get(this.props.language, 'more')}`;
         subtitleIcon = { name: 'chevron-right', class: 'material' };
       }
 
       return (
-        <TouchableOpacity onPress={this._onSourceSelect.bind(this, sectionName)}>
+        <TouchableOpacity onPress={this._onSourceSelect.bind(this, section.key)}>
           <Header
               backgroundColor={Constants.Colors.tertiaryBackground}
               icon={icon}
               subtitle={subtitle}
               subtitleIcon={subtitleIcon}
-              title={sectionName} />
+              title={section.key} />
         </TouchableOpacity>
       );
     }
@@ -429,16 +440,10 @@ class Search extends React.Component {
   /**
    * Renders a separator line between rows.
    *
-   * @param {any} sectionID section id
-   * @param {any} rowID     row id
-   * @returns {ReactElement<any>} a separator for the list of settings
+   * @returns {ReactElement<any>} a separator for the list of search results
    */
-  _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
-    return (
-      <View
-          key={`Separator,${sectionID},${rowID}`}
-          style={_styles.separator} />
-    );
+  _renderSeparator(): ReactElement < any > {
+    return <View style={_styles.separator} />;
   }
 
   /**
@@ -452,13 +457,12 @@ class Search extends React.Component {
       results = this._renderEmptySearch();
     } else if (this.state.anyResults) {
       results = (
-        <ListView
-            dataSource={this.state.filteredResults}
-            enableEmptySections={true}
-            keyboardShouldPersistTaps={'always'}
-            renderRow={this._renderResult.bind(this)}
+        <SectionList
+            ItemSeparatorComponent={this._renderSeparator}
+            keyExtractor={(result) => `${result.key}.${result.title}`}
+            renderItem={this._renderResult.bind(this)}
             renderSectionHeader={this._renderSource.bind(this)}
-            renderSeparator={this._renderSeparator.bind(this)} />
+            sections={this.state.filteredResults} />
       );
     } else {
       results = this._renderNoResults();
@@ -482,18 +486,17 @@ class Search extends React.Component {
       results = this._renderNoResults();
     } else {
       results = (
-        <ListView
-            dataSource={this.state.singleResults}
-            enableEmptySections={true}
-            keyboardShouldPersistTaps={'always'}
-            renderRow={this._renderResult.bind(this)}
-            renderSeparator={this._renderSeparator.bind(this)} />
+        <FlatList
+            ItemSeparatorComponent={this._renderSeparator}
+            data={this.state.singleResults}
+            keyExtractor={(result) => `${result.key}.${result.title}`}
+            renderItem={this._renderResult.bind(this)} />
       );
     }
 
     return (
       <View style={_styles.container}>
-        {this._renderSource({}, this.state.singleResultTitle, true)}
+        {this._renderSource({ section: { key: this.state.singleResultTitle || '', data: []}}, true)}
         {results}
       </View>
     );
@@ -612,8 +615,12 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onResultSelect: (sectionID: string, data: any) => {
-      switch (sectionID) {
+    onResultSelect: (sectionKey: ?string, data: any) => {
+      if (sectionKey == null) {
+        return;
+      }
+
+      switch (sectionKey) {
         case 'Buildings':
         case 'Bâtiments': {
           const name = {
@@ -652,7 +659,7 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(actions.switchTab('find'));
           break;
         default:
-          throw new Error(`Search result type not recognized: ${sectionID}`);
+          throw new Error(`Search result type not recognized: ${sectionKey}`);
       }
     },
   };

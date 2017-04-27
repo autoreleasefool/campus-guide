@@ -28,8 +28,8 @@
 // React imports
 import React from 'react';
 import {
+  FlatList,
   Image,
-  ListView,
   Platform,
   StyleSheet,
   Text,
@@ -53,7 +53,7 @@ type Props = {
 
 // Type definition for component state
 type State = {
-  dataSource: ListView.DataSource,  // List of spots for the ListView
+  studySpots: Array < StudySpot >,  // List of study spots
 };
 
 // Imports
@@ -83,11 +83,7 @@ export default class StudySpotList extends React.Component {
    */
   constructor(props: Props) {
     super(props);
-    this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2,
-      }),
-    };
+    this.state = { studySpots: []};
   }
 
   /**
@@ -192,33 +188,30 @@ export default class StudySpotList extends React.Component {
       }
     }
 
-    // Update the state so the app reflects the changes made
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(filteredSpots),
-    });
+    this.setState({ studySpots: filteredSpots });
   }
 
   /**
    * Displays a spots's name, image and description.
    *
-   * @param {?StudySpot} spot information about the study spot to display
+   * @param {StudySpot} spot information about the study spot to display
    * @returns {ReactElement<any>} an image and views describing the spot
    */
-  _renderRow(spot: StudySpot): ReactElement < any > {
-    const altName = Translations.getName(this.props.language, spot);
-    const name = `${spot.building} ${spot.room}`;
-    const openingTime = TextUtils.convertTimeFormat(this.props.timeFormat, spot.opens);
-    const closingTime = TextUtils.convertTimeFormat(this.props.timeFormat, spot.closes);
-    const description = Translations.getVariant(this.props.language, 'description', spot) || '';
+  _renderItem({ item }: { item: StudySpot }): ReactElement < any > {
+    const altName = Translations.getName(this.props.language, item);
+    const name = `${item.building} ${item.room}`;
+    const openingTime = TextUtils.convertTimeFormat(this.props.timeFormat, item.opens);
+    const closingTime = TextUtils.convertTimeFormat(this.props.timeFormat, item.closes);
+    const description = Translations.getVariant(this.props.language, 'description', item) || '';
 
     return (
       <TouchableOpacity
           key={name}
-          onPress={() => this.props.onSelect(spot)}>
+          onPress={() => this.props.onSelect(item)}>
         <View style={_styles.spot}>
           <Image
               resizeMode={'cover'}
-              source={{ uri: Configuration.getImagePath(spot.image) }}
+              source={{ uri: Configuration.getImagePath(item.image) }}
               style={_styles.spotImage} />
           <View style={_styles.spotProperties}>
             <Text style={_styles.spotName}>{name}</Text>
@@ -226,7 +219,7 @@ export default class StudySpotList extends React.Component {
             <Text style={_styles.spotSubtitle}>{`${openingTime} - ${closingTime}`}</Text>
             <Text style={_styles.spotDescription}>{description}</Text>
             <View style={_styles.spotFilters}>
-              {spot.filters.map((filter) => (
+              {item.filters.map((filter) => (
                 <PaddedIcon
                     color={Constants.Colors.primaryWhiteIcon}
                     icon={DisplayUtils.getPlatformIcon(Platform.OS, this.props.studyFilters[filter])}
@@ -244,16 +237,10 @@ export default class StudySpotList extends React.Component {
   /**
    * Renders a separator line between rows.
    *
-   * @param {any} sectionID section id
-   * @param {any} rowID     row id
-   * @returns {ReactElement<any>} a separator for the list of settings
+   * @returns {ReactElement<any>} a separator for the list of study spots
    */
-  _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
-    return (
-      <View
-          key={`Separator,${sectionID},${rowID}`}
-          style={_styles.separator} />
-    );
+  _renderSeparator(): ReactElement < any > {
+    return <View style={_styles.separator} />;
   }
 
   /**
@@ -264,11 +251,11 @@ export default class StudySpotList extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
-        <ListView
-            dataSource={this.state.dataSource}
-            enableEmptySections={true}
-            renderRow={this._renderRow.bind(this)}
-            renderSeparator={this._renderSeparator} />
+        <FlatList
+            ItemSeparatorComponent={this._renderSeparator}
+            data={this.state.studySpots}
+            keyExtractor={(studySpot) => `${studySpot.building}.${studySpot.room}`}
+            renderItem={this._renderItem.bind(this)} />
       </View>
     );
   }

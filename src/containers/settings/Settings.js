@@ -30,7 +30,6 @@ import {
   Alert,
   Clipboard,
   Linking,
-  ListView,
   Modal,
   Platform,
   SectionList,
@@ -60,10 +59,10 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  loaded: boolean,                        // Indicates if the settings have been loaded
-  listModalSections: ListView.DataSource, // List of data to display in modal
-  listModalTitle: string,                 // Title of the list view modal
-  listModalVisible: boolean,              // Indicates if the list modal should be visible
+  loaded: boolean,                  // Indicates if the settings have been loaded
+  listModalSections: Array < any >, // List of data to display in modal
+  listModalTitle: string,           // Title of the list view modal
+  listModalVisible: boolean,        // Indicates if the list modal should be visible
 };
 
 // Imports
@@ -277,7 +276,7 @@ class Settings extends React.Component {
             renderItem={this._renderListModalRow.bind(this)}
             renderSectionHeader={this._renderListModalSectionHeader.bind(this)}
             sections={this.state.listModalSections}
-            style={_styles.modalListView} />
+            style={_styles.modalList} />
       </View>
     );
   }
@@ -289,9 +288,8 @@ class Settings extends React.Component {
    * @returns {ReactElement<any>} views to render the setting in the list
    */
   _renderListModalRow({ item }: { item: Object }): ReactElement < any > {
-    console.log(item);
     return (
-      <Text style={_styles.modalListViewText}>{item.text}</Text>
+      <Text style={_styles.modalListText}>{item.text}</Text>
     );
   }
 
@@ -302,9 +300,8 @@ class Settings extends React.Component {
    * @returns {ReactElement<any>} a {Header} with the name of the section
    */
   _renderListModalSectionHeader({ section }: { section: Section < * > }): ReactElement < any > {
-    console.log(section);
     return (
-      <View style={_styles.modalListViewHeader}>
+      <View style={_styles.modalListHeader}>
         <Header title={section.key} />
       </View>
     );
@@ -453,13 +450,13 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
   },
-  modalListView: {
+  modalList: {
     backgroundColor: Constants.Colors.secondaryBackground,
   },
-  modalListViewHeader: {
+  modalListHeader: {
     backgroundColor: Constants.Colors.secondaryBackground,
   },
-  modalListViewText: {
+  modalListText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
     margin: Constants.Sizes.Margins.Expanded,

@@ -27,7 +27,7 @@
 // React imports
 import React from 'react';
 import {
-  ListView,
+  FlatList,
   Platform,
   StyleSheet,
   Text,
@@ -43,11 +43,6 @@ type Props = {
   language: Language,                 // The current language, selected by the user
 }
 
-// Type definition for component state.
-type State = {
-  dataSource: ListView.DataSource,  // ListView source of the filters
-};
-
 // Imports
 import PaddedIcon from 'PaddedIcon';
 import * as Constants from 'Constants';
@@ -62,35 +57,15 @@ export default class StudySpots extends React.Component {
   props: Props;
 
   /**
-   * Current state of the component.
-   */
-  state: State;
-
-  /**
-   * Constructor.
-   *
-   * @param {props} props component props
-   */
-  constructor(props: Props) {
-    super(props);
-
-    const dataSource = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-    });
-
-    this.state = { dataSource: dataSource.cloneWithRows(props.filters) };
-  }
-
-  /**
    * Renders a description of a filter.
    *
    * @param {StudySpotFilter} filter the filter to render
    * @returns {ReactElement<any>} the filter icon, name and description
    */
-  _renderRow(filter: StudySpotFilter): ReactElement < any > {
-    const name = Translations.getName(this.props.language, filter) || '';
-    const description = Translations.getVariant(this.props.language, 'description', filter) || '';
-    const icon = DisplayUtils.getPlatformIcon(Platform.OS, filter);
+  _renderItem({ item }: { item: StudySpotFilter }): ReactElement < any > {
+    const name = Translations.getName(this.props.language, item) || '';
+    const description = Translations.getVariant(this.props.language, 'description', item) || '';
+    const icon = DisplayUtils.getPlatformIcon(Platform.OS, item);
 
     return (
       <View style={_styles.filter}>
@@ -110,16 +85,10 @@ export default class StudySpots extends React.Component {
   /**
    * Renders a separator line between rows.
    *
-   * @param {any} sectionID section id
-   * @param {any} rowID     row id
-   * @returns {ReactElement<any>} a separator for the list of settings
+   * @returns {ReactElement<any>} a separator for the list of filters
    */
-  _renderSeparator(sectionID: any, rowID: any): ReactElement < any > {
-    return (
-      <View
-          key={`Separator,${sectionID},${rowID}`}
-          style={_styles.separator} />
-    );
+  _renderSeparator(): ReactElement < any > {
+    return <View style={_styles.separator} />;
   }
 
   /**
@@ -130,10 +99,11 @@ export default class StudySpots extends React.Component {
   render(): ReactElement < any > {
     return (
       <View style={_styles.container}>
-        <ListView
-            dataSource={this.state.dataSource}
-            renderRow={this._renderRow.bind(this)}
-            renderSeparator={this._renderSeparator} />
+        <FlatList
+            ItemSeparatorComponent={this._renderSeparator}
+            data={this.props.filters}
+            keyExtractor={(filter) => Translations.getEnglishName(filter) || ''}
+            renderItem={this._renderItem.bind(this)} />
       </View>
     );
   }
@@ -146,7 +116,6 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.secondaryBackground,
   },
   filter: {
-    flex: 1,
     marginTop: Constants.Sizes.Margins.Expanded,
     marginBottom: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,

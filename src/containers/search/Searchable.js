@@ -25,19 +25,27 @@
 'use strict';
 
 // Types
-import type { Language, PlatformIcon } from 'types';
+import type { Language, PlatformIcon, Section } from 'types';
 
 /** Defines the information provided by a search result. */
 export type SearchResult = {
   description: string,            // Description of the result
   data: any,                      // Additional data for displaying the result if selected
+  key: string,                    // Key for the section the result belongs to
   icon: PlatformIcon,             // Icon describing the result type
   matchedTerms: Array < string >, // Terms that should be used to narrow the result further
   title: string,                  // Title of the result
 };
 
+/** The object returned with the search results, and the icons for those results/ */
+export type ResultData = {
+  results: Array < Section < SearchResult > >,
+  icons: Object,
+}
+
 // Imports
 import Promise from 'promise';
+import * as ArrayUtils from 'ArrayUtils';
 
 /**
  * Gets the list of sources which specify what the app will search and how they will be searched.
@@ -65,7 +73,7 @@ function _getSources(): Array < Object > {
 export function getResults(language: Language, searchTerms: ?string): Promise < Object > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
-      resolve({ results: {}, icons: {}});
+      resolve({ results: [], icons: {}});
     }
 
     const sources: Array < Object > = _getSources();
@@ -83,18 +91,20 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
 
     Promise.all(sourcePromises)
         .then((sourceResults: Array < Object >) => {
-          const results: Object = {};
+          const results: Array < Section < SearchResult > > = [];
           for (let i = 0; i < sourceResults.length; i++) {
-            for (const source in sourceResults[i]) {
-              if (sourceResults[i][source].length === 0) {
+            for (let j = 0; j < sourceResults[i].length; j++) {
+              if (sourceResults[i][j].data.length === 0) {
                 continue;
               }
 
-              if (!(source in results)) {
-                results[source] = [];
+              const position = ArrayUtils.linearSearchObjectArrayByKeyValue(results, 'key', sourceResults[i][j].key);
+              if (position < 0) {
+                results.push(sourceResults[i][j]);
+              } else {
+                results[position].data.concat(sourceResults[i][j].data);
               }
 
-              results[source] = results[source].concat(sourceResults[i][source]);
             }
           }
 
@@ -107,32 +117,36 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
 /**
  * Takes a set of results and narrows them based on new search terms.
  *
- * @param {?string} searchTerms     the search terms for the query.
- * @param {Object}  existingResults results to narrow.
- * @returns {Object} the narrowed results
+ * @param {?string}                      searchTerms     the search terms for the query.
+ * @param {Array<Section<SearchResult>>} existingResults results to narrow
+ * @returns {Array<Section<SearchResult>>} the narrowed results
  */
-export function narrowResults(searchTerms: ?string, existingResults: Object): Object {
+export function narrowResults(searchTerms: ?string, existingResults: Array < Section < SearchResult > >):
+      Array < Section < SearchResult > > {
   if (existingResults == null || searchTerms == null || searchTerms.length === 0) {
-    return {};
+    return [];
   }
 
   // Get case-insensitive results
   const adjustedSearchTerms: string = searchTerms.toUpperCase();
-  const narrowedResults: Object = {};
+  const narrowedResults: Array < Section < SearchResult > > = [];
 
-  for (const source in existingResults) {
-    if (existingResults.hasOwnProperty(source)) {
-      for (let i = 0; i < existingResults[source].length; i++) {
-        const totalTerms = existingResults[source][i].matchedTerms.length;
-        for (let j = 0; j < totalTerms; j++) {
-          if (existingResults[source][i].matchedTerms[j].indexOf(adjustedSearchTerms) >= 0) {
-            if (!(source in narrowedResults)) {
-              narrowedResults[source] = [];
-            }
-
-            narrowedResults[source].push(existingResults[source][i]);
-            break;
+  for (let i = 0; i < existingResults.length; i++) {
+    let position = ArrayUtils.linearSearchObjectArrayByKeyValue(narrowedResults, 'key', existingResults[i].key);
+    for (let j = 0; j < existingResults[i].data.length; j++) {
+      const terms = existingResults[i].data[j].matchedTerms;
+      for (let k = 0; k < terms.length; k++) {
+        if (terms[k].indexOf(adjustedSearchTerms) >= 0) {
+          if (position <= 0) {
+            narrowedResults.push({
+              key: existingResults[i].key,
+              data: [],
+            });
+            position = narrowedResults.length - 1;
           }
+
+          narrowedResults[position].data.push(existingResults[i].data[j]);
+          break;
         }
       }
     }
