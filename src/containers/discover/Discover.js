@@ -26,7 +26,8 @@
 
 // React imports
 import React from 'react';
-import { Navigator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';

@@ -30,11 +30,11 @@ import {
   Alert,
   Clipboard,
   Linking,
-  Navigator,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';

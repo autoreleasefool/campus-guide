@@ -24,6 +24,14 @@ sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/build.
 sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/src/main/AndroidManifest.xml
 sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/BUCK
 
+# Fix broken library
+sed -i '' 's/domain = require/\/\/domain = require/g' ./node_modules/asap/raw.js
+
+# Fixing react-native-maps (check https://github.com/airbnb/react-native-maps/issues/1193)
+sed -ie 's/RCTConvert\+MapKit\.m/RCTConvert\+AirMap\.m/g' node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj/project.pbxproj
+sed -ie 's/RCTConvert\+MapKit\.h/RCTConvert\+AirMap\.h/g' node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj/project.pbxproj
+rm -f node_modules/react-native-maps/.babelrc
+
 # Update .flowconfig to map filenames
 sed -i '' 's/[[]options[]]/[options]\'$'\n''module.name_mapper='"'"'env'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/csv\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/js\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/json\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''/g' ./.flowconfig
 

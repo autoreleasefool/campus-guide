@@ -28,7 +28,6 @@
 import React from 'react';
 import {
   DatePickerIOS,
-  Navigator,
   Picker,
   Platform,
   ScrollView,
@@ -36,6 +35,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';

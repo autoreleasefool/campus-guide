@@ -14,8 +14,7 @@
 .*/Libraries/react-native/React.js
 .*/Libraries/react-native/ReactNative.js
 
-; Ignore bad library
-.*/react-native-keyboard-aware-scroll-view/.*
+; Ignore bad libraries
 .*/node_modules/react-static-container/.*
 .*/node_modules/react-native-fs/.*
 
@@ -28,7 +27,6 @@ flow/
 
 [options]
 module.name_mapper='react-native-linear-gradient' -> 'empty/object'
-module.name_mapper='react-native-keyboard-aware-scroll-view' -> 'empty/object'
 module.name_mapper='react-native-fs' -> 'empty/object'
 module.name_mapper='env' -> 'empty/object'
 module.name_mapper='.*/assets/csv/.*' -> 'empty/object'

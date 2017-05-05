@@ -29,15 +29,16 @@ import React from 'react';
 import {
   Alert,
   Modal,
-  Navigator,
   Picker,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';
@@ -92,7 +93,6 @@ import * as ArrayUtils from 'ArrayUtils';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // Navigation values
 const MENU = 0;
@@ -395,7 +395,7 @@ class CourseModal extends React.Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <KeyboardAwareScrollView>
+        <ScrollView>
           <TouchableOpacity onPress={this._showSemesterPicker.bind(this)}>
             <Header
                 largeSubtitle={true}
@@ -445,7 +445,7 @@ class CourseModal extends React.Component {
               <Text style={_styles.buttonText}>{Translations.get(language, 'delete_course')}</Text>
             </View>
           </TouchableOpacity>
-        </KeyboardAwareScrollView>
+        </ScrollView>
       </View>
     );
   }

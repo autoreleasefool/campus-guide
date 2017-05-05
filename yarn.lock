@@ -3469,6 +3469,15 @@ react-native-action-button@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/react-native-action-button/-/react-native-action-button-2.6.9.tgz#f9609d65ac40aac0ae1c2bd05dc7a8811395d62b"
 
+react-native-deprecated-custom-components@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-deprecated-custom-components/-/react-native-deprecated-custom-components-0.1.0.tgz#f716d431ef2dc4f91b7a686af091ee3656538086"
+  dependencies:
+    fbjs "~0.8.9"
+    immutable "~3.7.6"
+    react-timer-mixin "^0.13.2"
+    rebound "^0.0.13"
+
 react-native-device-info@^0.10.2:
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.10.2.tgz#350cd68ed43839022ddea0a3a423439f16fa4fba"
@@ -3479,12 +3488,6 @@ react-native-fs@^2.3.2:
   dependencies:
     base-64 "^0.1.0"
     utf8 "^2.1.1"
-
-react-native-keyboard-aware-scroll-view@^0.2.7:
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/react-native-keyboard-aware-scroll-view/-/react-native-keyboard-aware-scroll-view-0.2.8.tgz#e9843c0d7467a2e6a2a737883bd9c2b7c7e38e35"
-  dependencies:
-    react-timer-mixin "^0.13.3"
 
 react-native-linear-gradient@^2.0.0:
   version "2.0.0"

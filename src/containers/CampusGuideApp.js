@@ -27,7 +27,8 @@
 
 // React imports
 import React from 'react';
-import { Navigator, View } from 'react-native';
+import { View } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Types
 import type { WelcomeTab } from 'types';
