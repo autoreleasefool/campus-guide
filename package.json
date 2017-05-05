@@ -36,7 +36,7 @@
     "eslint": "^3.19.0",
     "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-react-native": "^2.3.2",
-    "flow-bin": "0.40",
+    "flow-bin": "0.42",
     "jest": "^19.0.2",
     "jest-cli": "^19.0.2",
     "jest-react-native": "^18.0.0",
