@@ -23,7 +23,7 @@
     "react-native-simple-store": "^1.1.0",
     "react-native-snackbar": "^0.3.1",
     "react-native-vector-icons": "^4.0.0",
-    "react-redux": "^5.0.3",
+    "react-redux": "^5.0.4",
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0"
   },
@@ -41,7 +41,7 @@
     "jest-cli": "^19.0.2",
     "jest-react-native": "^18.0.0",
     "pre-commit": "^1.2.2",
-    "react-test-renderer": "^15.4.0-rc.4"
+    "react-test-renderer": "^15.5.4"
   },
   "jest": {
     "coverageThreshold": {
