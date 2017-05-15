@@ -59,8 +59,10 @@ describe('directions reducer', () => {
       code: 'code',
       facilities: [ 'atm', 'gym' ],
       image: 'image.png',
-      lat: 100,
-      long: 200,
+      location: {
+        lat: 100,
+        long: 200,
+      },
       rooms: [{ name: 'room_1', type: 0 }, { name: 'name_2', type: 1 }],
     };
 

@@ -388,12 +388,11 @@ export type RoomType = {
 
 /** A building on campus, with details describing it, its location, and its rooms. */
 export type Building = {
-  code: string,                   // Shorthand building code
-  facilities: Array < Facility >, // List of facilities in the building
-  image: ReactClass < any >,      // Image to display for the building
-  lat: number,                    // Latitude of the building
-  long: number,                   // Longitude of the building
-  rooms: Array < BuildingRoom >,  // List of rooms in the building
+  code: string,                       // Shorthand building code
+  facilities: Array < Facility >,     // List of facilities in the building
+  image: string | ReactClass < any >, // Image to display for the building
+  location: LatLong,                  // Location of the building
+  rooms: Array < BuildingRoom >,      // List of rooms in the building
 } & (Name | TranslatedName);
 
 /** Types of facilities that a certain building on campus may offer. */

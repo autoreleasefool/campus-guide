@@ -184,8 +184,8 @@ class StartingPoint extends React.Component {
         for (let i = 0; i < totalBuildings; i++) {
           const building = this.props.buildingList[i];
           const distance = ExternalUtils.getDistanceBetweenCoordinates(
-            building.lat,
-            building.long,
+            building.location.lat,
+            building.location.long,
             location.latitude,
             location.longitude
           );
