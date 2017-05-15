@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file SplashScreen.js
+ * @file Splash.js
  * @description Initial entry view for the application. Allows the user to select their preferred language on first run.
  *
  * @flow
@@ -53,7 +53,7 @@ import * as Translations from 'Translations';
 // Set to true to force splash screen
 const alwaysShowSplash = false;
 
-class SplashScreen extends React.Component {
+class Splash extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -287,4 +287,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SplashScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(Splash);

@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-10-19
- * @file FindHome.js
+ * @file Home.js
  * @description Provides the user with details on navigating the campus.
  *
  * @flow

@@ -39,9 +39,9 @@ type AppRoute = {
 };
 
 // Imports
-import Main from './MainScreen';
-import Splash from './welcome/SplashScreen';
-import Update from './welcome/UpdateScreen';
+import Main from './Main';
+import Splash from './welcome/Splash';
+import Update from './welcome/Update';
 import * as Constants from 'Constants';
 
 export default class CampusGuideApp extends React.Component {

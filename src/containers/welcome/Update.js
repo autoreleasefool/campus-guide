@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-10-09
- * @file UpdateScreen.common.js
+ * @file Update.js
  * @description Provides progress for app updates
  *
  * @flow

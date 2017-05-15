@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-10-29
- * @file Home.js
+ * @file Links.js
  * @description Root view for info which help users become acquainted with the school.
  *
  * @flow
