@@ -364,9 +364,11 @@ class UpdateScreen extends React.Component {
     // Get background color for screen, and color for progress bar
     let backgroundColor = Constants.Colors.primaryBackground;
     let foregroundColor = Constants.Colors.secondaryBackground;
+    let gradient = [ Constants.Colors.invisibleGarnet, Constants.Colors.garnet ];
     if (language === 'fr') {
       backgroundColor = Constants.Colors.secondaryBackground;
       foregroundColor = Constants.Colors.primaryBackground;
+      gradient = [ Constants.Colors.invisibleCharcoalGrey, Constants.Colors.charcoalGrey ];
     }
 
     if (this.props.showRetry) {
@@ -404,7 +406,7 @@ class UpdateScreen extends React.Component {
           </View>
           {this._renderStatusMessages()}
           <LinearGradient
-              colors={[ Constants.Colors.invisibleGarnet, Constants.Colors.garnet ]}
+              colors={gradient}
               style={_styles.linearGradient} />
         </View>
       );
