@@ -50,26 +50,25 @@ import * as Translations from 'Translations';
 function _getBuildingResults(key: string,
                              language: Language,
                              searchTerms: string,
-                             buildings: Array < any >): Promise < Array < SearchResult > > {
-
-  /* FIXME: replace buildings: Array < any > with buildings: Array < Building > */
+                             buildings: Array < Building >): Promise < Array < SearchResult > > {
 
   return new Promise((resolve) => {
     const results: Array < SearchResult > = [];
 
     for (let i = 0; i < buildings.length; i++) {
-      const translated: boolean = !('name' in buildings[i]);
       const name: string = Translations.getName(language, buildings[i]) || '';
       const matchedTerms: Array < string > = [];
 
       // Compare building properties to search terms to add to results
-      if (!translated && buildings[i].name.toUpperCase().indexOf(searchTerms) >= 0) {
+      if (buildings[i].name && buildings[i].name.toUpperCase().indexOf(searchTerms) >= 0) {
         matchedTerms.push(buildings[i].name.toUpperCase());
-      } else if (translated &&
-          (buildings[i].name_en.toUpperCase().indexOf(searchTerms) >= 0
-          || buildings[i].name_fr.toUpperCase().indexOf(searchTerms) >= 0)) {
-        matchedTerms.push(buildings[i].name_fr.toUpperCase());
-        matchedTerms.push(buildings[i].name_en.toUpperCase());
+      } else {
+        if (buildings[i].name_en && buildings[i].name_en.toUpperCase().indexOf(searchTerms) >= 0) {
+          matchedTerms.push(buildings[i].name_en.toUpperCase());
+        }
+        if (buildings[i].name_fr && buildings[i].name_fr.toUpperCase().indexOf(searchTerms) >= 0) {
+          matchedTerms.push(buildings[i].name_fr.toUpperCase());
+        }
       }
 
       if (buildings[i].shorthand.toUpperCase().indexOf(searchTerms) >= 0) {

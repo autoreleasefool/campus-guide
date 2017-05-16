@@ -32,41 +32,38 @@
 /** A function with no parameters and no return type. */
 export type VoidFunction = () => void;
 
-/** A name, valid in English or French. */
-export type Name = {name: string};
+/** A name, optionally translated to French and English. */
+export type Name = {
+  name?: string,
+  name_en?: string,
+  name_fr?: string,
+};
 
-/** A name, translated for English and French. */
-export type TranslatedName = {name_en: string, name_fr: string};
+/** An external link, optionally translated to French and English. */
+export type Link = {
+  link?: string,
+  link_en?: string,
+  link_fr?: string,
+}
 
-/** A link, valid in English or French. */
-export type Link = {link: string};
+/** A description, optionally translated to French and English. */
+export type Description = {
+  description?: string,
+  description_en?: string,
+  description_fr?: string,
+}
 
-/** A link, translated for English and French. */
-export type TranslatedLink = {link_en: string, link_fr: string};
-
-/** A description, valid in English or French. */
-export type Description = {description: string};
-
-/** A description, translated for English and French. */
-export type TranslatedDescription = {description_en: string, description_fr: string};
-
-/** A set of details, valid in English or French. */
+/** A set of details, optionally translated to English or French. */
 export type Details = {
-  image: string,
-  icon: PlatformIcon,
-  details: Array < string >,
-} & (Name | TranslatedName);
-
-/** A set of details, translated for English and French. */
-export type TranslatedDetails = {
-  image: string,
-  icon: PlatformIcon,
-  details_en: Array < string >,
-  details_fr: Array < string >,
-} & (Name | TranslatedName);
+  details?: Array < string >,     // The written details
+  details_en?: Array < string >,  // The written details, in English
+  details_fr?: Array < string >,  // The written details, in French
+  image: string,                  // Image for the details
+  icon: PlatformIcon,             // Icon representing the details
+} & Name;
 
 /** A URL and a name to display it with. */
-export type NamedLink = (Name | TranslatedName) & (Link | TranslatedLink);
+export type NamedLink = Name & Link;
 
 //-----------------------------------------------------------------------------
 //  Icons
@@ -74,7 +71,7 @@ export type NamedLink = (Name | TranslatedName) & (Link | TranslatedLink);
 
 /** Available classes for icons to be from. */
 export type IconClass =
-    'material'
+  | 'material'
   | 'ionicon'
   ;
 
@@ -99,7 +96,7 @@ export type PlatformIcon =
 
 /** Shorthand for languages available in the application. English or French. */
 export type Language =
-    'en'
+  | 'en'
   | 'fr'
   ;
 
@@ -109,7 +106,7 @@ export type Language =
 
 /** Either 12 or 24 hour time formats. */
 export type TimeFormat =
-    '12h'
+  | '12h'
   | '24h'
   ;
 
@@ -119,8 +116,9 @@ export type TimeFormat =
 
 /** Platform types. Android or iOS. */
 export type PlatformString =
-    | 'ios'
-    | 'android';
+  | 'ios'
+  | 'android'
+  ;
 
 //-----------------------------------------------------------------------------
 //  Sections
@@ -128,8 +126,8 @@ export type PlatformString =
 
 /** Section for a SectionList */
 export type Section < T > = {
-  key: string,
-  data: Array < T >,
+  key: string,        // Key of the section
+  data: Array < T >,  // Data in the section
 };
 
 //-----------------------------------------------------------------------------
@@ -138,10 +136,10 @@ export type Section < T > = {
 
 /** Setting for the app */
 export type Setting = {
-  key: string,
-  type: string,
-  icon?: PlatformIcon,
-} & (Name | TranslatedName) & ?(Link | TranslatedLink);
+  key: string,          // Unique key to identify the setting
+  type: string,         // Type of setting
+  icon?: PlatformIcon,  // Icon for the setting
+} & Name & Link;
 
 //-----------------------------------------------------------------------------
 //  Location
@@ -149,14 +147,14 @@ export type Setting = {
 
 /** Latitude and longitude of a location. */
 export type LatLong = {
- latitude: number,
- longitude: number,
+  latitude: number,   // Latitude of the location
+  longitude: number,  // Longitude of the location
 };
 
 /** Difference in latitude and longitude on a map. */
 export type LatLongDelta = {
- latitudeDelta: number,
- longitudeDelta: number,
+  latitudeDelta: number,  // Change in latitude
+  longitudeDelta: number, // Change in longitude
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +165,7 @@ export type LatLongDelta = {
 export type Campus = {
   background: string, // Background color for the campus
   image: any,         // Image of the campus
-} & (Name | TranslatedName);
+} & Name;
 
 //-----------------------------------------------------------------------------
 //  Transit
@@ -191,11 +189,11 @@ export type TransitStop = {
 
 /** Information about a transit campus. */
 export type TransitCampus = {
-  id: string,                   // Campus id
-  lat: number,                  // Central latitude for the campus to display on a map
-  long: number,                 // Central longitude for the campus to display on a map
-  stops: Object,                // List of stops near the campus
-} & (Name | TranslatedName);
+  id: string,       // Campus id
+  lat: number,      // Central latitude for the campus to display on a map
+  long: number,     // Central longitude for the campus to display on a map
+  stops: Object,    // List of stops near the campus
+} & Name;
 
 /** Details of the city transit system. */
 export type TransitSystem = {
@@ -204,7 +202,7 @@ export type TransitSystem = {
 };
 
 /** High level information about the city transit system. */
-export type TransitInfo = (Name | TranslatedName) & (Link | TranslatedLink);
+export type TransitInfo = NamedLink;
 
 //-----------------------------------------------------------------------------
 //  Shuttle
@@ -212,9 +210,9 @@ export type TransitInfo = (Name | TranslatedName) & (Link | TranslatedLink);
 
 /** Information about the university shuttle */
 export type ShuttleInfo = {
-  stops: Array < ShuttleStop >,                             // Stops the shuttle makes
-  schedules: Array < ShuttleSchedule >,                     // Schedules for the shuttle
-  additional_info: Array < (Details | TranslatedDetails) >, // Additional info for taking the shuttle
+  stops: Array < ShuttleStop >,         // Stops the shuttle makes
+  schedules: Array < ShuttleSchedule >, // Schedules for the shuttle
+  additional_info: Array < Details >,   // Additional info for taking the shuttle
 };
 
 /** A stop the shuttle makes */
@@ -222,7 +220,7 @@ export type ShuttleStop = {
   id: string,   // Unique stop id
   lat: number,  // Latitude of the stop
   long: number, // Longitude of the stop
-} & (Name | TranslatedName);
+} & Name;
 
 /** A shuttle's schedule for a certain time of year */
 export type ShuttleSchedule = {
@@ -230,23 +228,15 @@ export type ShuttleSchedule = {
   end_date: string,                       // Final date for which the schedule is effective
   excluded_dates: Array < string>,        // Dates for which the schedule is explicitly not in effect
   directions: Array < ShuttleDirection >, // Directions and times for the schedule
-} & (Name | TranslatedName);
-
-/** Description of the route the shuttle takes, valid in English or French */
-type ShuttleRoute = {
-  route: string,  // Description of the route the shuttle takes
-}
-
-/** Description of the route the shuttle takes, translated to English and French */
-type TranslatedShuttleRoute = {
-  route_en: string, // Description of the route the shuttle takes in English
-  route_fr: string, // Description of the route the shuttle takes in French
-}
+} & Name;
 
 /** Describes a direction of the shuttle and when it departs in that direction */
 export type ShuttleDirection = {
+  route?: string,     // Description of the route the shuttle takes
+  route_en?: string,  // Description of the route the shuttle takes, in English
+  route_fr?: string,  // Description of the route the shuttle takes, in French
   day_times: Object,  // Days and times which the shuttle departs
-} & (Name | TranslatedName) & (ShuttleRoute | TranslatedShuttleRoute);
+} & Name;
 
 //-----------------------------------------------------------------------------
 //  Study spots
@@ -255,12 +245,10 @@ export type ShuttleDirection = {
 /** Study spot filter descriptions and whether they are active. */
 export type StudySpotFilter = {
   icon: PlatformIcon, // Icon to represent the filter
-} & (Name | TranslatedName) & (Description | TranslatedDescription);
+} & Name & Description;
 
 /** Locations to reserve spots at the university. */
-export type StudySpotReservation = (Name | TranslatedName)
-  & (Link | TranslatedLink)
-  & (Description | TranslatedDescription);
+export type StudySpotReservation = Name & Link & Description;
 
 /** Location and properties of a study spot. */
 export type StudySpot = {
@@ -270,7 +258,7 @@ export type StudySpot = {
   opens: string,              // Time the spot opens at
   closes: string,             // Time the spot closes at
   filters: Array < number >,  // List of properties to filter on
-} & ?(Name | TranslatedName) & (Description | TranslatedDescription);
+} & Name & Description;
 
 /** Information about study spots. */
 export type StudySpotInfo = {
@@ -287,7 +275,7 @@ export type StudySpotInfo = {
 export type Semester = {
   id: string,                 // Unique identifier for the semester
   courses?: Array < Course >  // Courses the user has defined in the semester
-} & (Name | TranslatedName);
+} & Name;
 
 /** A set of lectures. */
 export type Course = {
@@ -307,7 +295,7 @@ export type Lecture = {
 /** The format of a single lecture in a course. */
 export type LectureFormat = {
   code: string, // Unique code for the lecture format
-} & (Name | TranslatedName);
+} & Name;
 
 //-----------------------------------------------------------------------------
 //  Tabs
@@ -315,14 +303,14 @@ export type LectureFormat = {
 
 /** Describes the tabs available in the app initial state. */
 export type WelcomeTab =
-    'splash'
+  | 'splash'
   | 'update'
   | 'main'
   ;
 
 /** Describes the tabs available in the app. */
 export type Tab =
-    'find'
+  | 'find'
   | 'schedule'
   | 'discover'
   | 'search'
@@ -353,7 +341,7 @@ export type DiscoverSection = {
   icon: PlatformIcon, // Icon for the section to display
   id: string,         // Unique id to report which section was selected
   image?: string,     // Image to display when section is expanded
-} & (Name | TranslatedName);
+} & Name;
 
 /** Expected format for link sections. */
 export type LinkSection = {
@@ -363,7 +351,7 @@ export type LinkSection = {
   links?: Array < NamedLink >,        // List of links in the category
   social?: Array < NamedLink >,       // List of social media links in the platform
   categories?: Array < LinkSection >, // List of subcategories
-} & (Name | TranslatedName);
+} & Name;
 
 //-----------------------------------------------------------------------------
 //  Buildings
@@ -432,17 +420,17 @@ export type Facility =
 
 /** Describes configuration state. */
 export type ConfigurationOptions = {
-  alwaysSearchAll?: boolean,                  // Always search the entire app, never within a view
-  transitInfo?: ?TransitInfo,                 // High level information about the city transit
-  currentSemester?: number,                   // Current semester for editing, selected by the user
-  firstTime?: boolean,                        // Indicates if it's the user's first time in the app
-  language?: ?Language,                       // User's preferred language
-  preferredTimeFormat?: TimeFormat,           // Either 12 or 24h time
-  prefersWheelchair?: boolean,                // Only provide wheelchair accessible routes
-  preferByCourse?: boolean,                   // True to default schedule view by course, false for by week
-  semesters?: Array < Semester >,             // List of semesters currently available
-  universityLocation?: ?LatLong,              // Latitude and longitude of the university
-  universityName?: ?(Name | TranslatedName),  // Name of the univeristy
+  alwaysSearchAll?: boolean,        // Always search the entire app, never within a view
+  transitInfo?: ?TransitInfo,       // High level information about the city transit
+  currentSemester?: number,         // Current semester for editing, selected by the user
+  firstTime?: boolean,              // Indicates if it's the user's first time in the app
+  language?: ?Language,             // User's preferred language
+  preferredTimeFormat?: TimeFormat, // Either 12 or 24h time
+  prefersWheelchair?: boolean,      // Only provide wheelchair accessible routes
+  preferByCourse?: boolean,         // True to default schedule view by course, false for by week
+  semesters?: Array < Semester >,   // List of semesters currently available
+  universityLocation?: ?LatLong,    // Latitude and longitude of the university
+  universityName?: ?Name,           // Name of the univeristy
 };
 
 /** Describes a configuration file. */

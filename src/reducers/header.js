@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Name, TranslatedName, TabSet } from 'types';
+import type { Name, TabSet } from 'types';
 import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH, SWITCH_TAB } from 'actionTypes';
 
 // Import default translations
@@ -33,12 +33,12 @@ const CoreTranslations = require('../../assets/json/CoreTranslations');
 
 // Describes the header state.
 type State = {
-  title: Name | TranslatedName | string,  // Title for the current screen
-  tabTitles: TabSet,                      // Title last set in the tab
-  showBack: boolean,                      // True to show a back button in the header, false to hide
-  tabShowBack: TabSet,                    // Whether the tab should show a back button
-  showSearch: boolean,                    // True to show a search field in the header, false to hide
-  tabShowSearch: TabSet,                  // Whether the tab should show a search button
+  title: Name | string,   // Title for the current screen
+  tabTitles: TabSet,      // Title last set in the tab
+  showBack: boolean,      // True to show a back button in the header, false to hide
+  tabShowBack: TabSet,    // Whether the tab should show a back button
+  showSearch: boolean,    // True to show a search field in the header, false to hide
+  tabShowSearch: TabSet,  // Whether the tab should show a search button
 };
 
 // Default title to use for the header

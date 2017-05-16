@@ -52,20 +52,19 @@ import type {
   NamedLink,
   Route,
   Tab,
-  TranslatedName,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  appTab: Tab,                                                    // The current tab the app is showing
-  backCount: number,                                              // Number of times user has requested back navigation
-  canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
-  filter: ?string,                                                // Keywords to filter links by
-  language: Language,                                             // The current language, selected by the user
-  linkId: ?string,                                                // The selected link category
-  setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
-  showCategory: (id: ?string | number) => void,                   // Shows a link category
-  showSearch: (show: boolean) => void,                            // Shows or hides the search button
+  appTab: Tab,                                  // The current tab the app is showing
+  backCount: number,                            // Number of times user has requested back navigation
+  canNavigateBack: (can: boolean) => void,      // Indicate whether the app can navigate back
+  filter: ?string,                              // Keywords to filter links by
+  language: Language,                           // The current language, selected by the user
+  linkId: ?string,                              // The selected link category
+  setHeaderTitle: (t: (Name | string)) => void, // Sets the title in the app header
+  showCategory: (id: ?string | number) => void, // Shows a link category
+  showSearch: (show: boolean) => void,          // Shows or hides the search button
 }
 
 // Type definition for component state.
@@ -629,7 +628,7 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('links', can)),
-    setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
+    setHeaderTitle: (title: (Name | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
     showCategory: (id: ?string | number) => dispatch(actions.switchLinkCategory(id)),
     showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
   };

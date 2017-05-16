@@ -49,22 +49,21 @@ import type {
   LatLong,
   LatLongDelta,
   Name,
-  TranslatedName,
   Route,
   VoidFunction,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  buildingList: Array < Object >,                                 // List of buildings to display
-  clearSearch: VoidFunction,                                      // Clear the current search
-  showSearch: (show: boolean) => void,                            // Hide or show the search box
-  destination: ?Destination,                                      // The user's selected destination
-  filter: ?string,                                                // Current search terms
-  language: Language,                                             // The current language, selected by the user
-  universityLocation: LatLong,                                    // Location of the university
-  universityName: (Name | TranslatedName),                        // Name of the university
-  onStartingPointSelected: (code: string, room: ?string) => void, // Selects a starting point for navigation
+  buildingList: Array < Object >,                                       // List of buildings to display
+  clearSearch: VoidFunction,                                            // Clear the current search
+  showSearch: (show: boolean) => void,                                  // Hide or show the search box
+  destination: ?Destination,                                            // The user's selected destination
+  filter: ?string,                                                      // Current search terms
+  language: Language,                                                   // The current language, selected by the user
+  universityLocation: LatLong,                                          // Location of the university
+  universityName: (Name),                                               // Name of the university
+  onStartingPointSelected: (shorthand: string, room: ?string) => void,  // Selects a starting point for navigation
 }
 
 // Type definition for component state.

@@ -49,24 +49,23 @@ import type {
   Tab,
   TimeFormat,
   TransitInfo,
-  TranslatedName,
   VoidFunction,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  appTab: Tab,                                                    // The current tab the app is showing
-  backCount: number,                                              // Number of times user has requested back navigation
-  transitInfo: ?TransitInfo,                                      // Information about the city transit system
-  campus: ?Campus,                                                // The current transit campus to display info for
-  canNavigateBack: (can: boolean) => void,                        // Indicate whether the app can navigate back
-  filter: ?string,                                                // The current filter for transit routes
-  language: Language,                                             // The current language, selected by the user
-  onCampusSelected: (campus: ?Campus) => void,                    // Displays details about a transit campus
-  resetFilter: VoidFunction,                                      // Clears the current search terms
-  setHeaderTitle: (t: (Name | TranslatedName | string)) => void,  // Sets the title in the app header
-  showSearch: (show: boolean) => void,                            // Shows or hides the search button
-  timeFormat: TimeFormat,                                         // Format to display times in
+  appTab: Tab,                                  // The current tab the app is showing
+  backCount: number,                            // Number of times user has requested back navigation
+  transitInfo: ?TransitInfo,                    // Information about the city transit system
+  campus: ?Campus,                              // The current transit campus to display info for
+  canNavigateBack: (can: boolean) => void,      // Indicate whether the app can navigate back
+  filter: ?string,                              // The current filter for transit routes
+  language: Language,                           // The current language, selected by the user
+  onCampusSelected: (campus: ?Campus) => void,  // Displays details about a transit campus
+  resetFilter: VoidFunction,                    // Clears the current search terms
+  setHeaderTitle: (t: (Name | string)) => void, // Sets the title in the app header
+  showSearch: (show: boolean) => void,          // Shows or hides the search button
+  timeFormat: TimeFormat,                       // Format to display times in
 }
 
 // Type definition for component state.
@@ -330,7 +329,7 @@ const mapDispatchToProps = (dispatch) => {
     canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('transit', can)),
     onCampusSelected: (campus: ?Campus) => dispatch(actions.switchTransitCampus(campus)),
     resetFilter: () => dispatch(actions.search(null)),
-    setHeaderTitle: (title: (Name | TranslatedName | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
+    setHeaderTitle: (title: (Name | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
     showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
   };
 };

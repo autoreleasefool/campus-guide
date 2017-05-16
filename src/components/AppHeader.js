@@ -44,11 +44,11 @@ import { connect } from 'react-redux';
 import * as actions from 'actions';
 
 // Types
-import type { Language, Name, TranslatedName, Tab } from 'types';
+import type { Language, Name, Tab } from 'types';
 
 // Type definition for component props.
 type Props = {
-  appTitle: Name | TranslatedName,  // Title for the header
+  appTitle: Name,                   // Title for the header
   filter: ?string,                  // The current search terms
   language: Language,               // The user's currently selected language
   onBack: () => void,               // Tells the app to navigate one screen backwards
