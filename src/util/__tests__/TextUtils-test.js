@@ -176,7 +176,7 @@ describe('TextUtils-test', () => {
   });
 
   it('converts a destination to a string', () => {
-    expect(TextUtils.destinationToString({ code: 'STE' })).toEqual('STE');
-    expect(TextUtils.destinationToString({ code: 'STE', room: 'F0126' })).toEqual('STE F0126');
+    expect(TextUtils.destinationToString({ shorthand: 'STE' })).toEqual('STE');
+    expect(TextUtils.destinationToString({ shorthand: 'STE', room: 'F0126' })).toEqual('STE F0126');
   });
 });

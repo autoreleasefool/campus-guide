@@ -641,7 +641,7 @@ const mapDispatchToProps = (dispatch) => {
         case 'Rooms':
         case 'Chambres':
           dispatch(actions.setHeaderTitle('directions', 'find'));
-          dispatch(actions.setDestination({ code: data.code, room: data.room }));
+          dispatch(actions.setDestination({ shorthand: data.shorthand, room: data.room }));
           dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
           dispatch(actions.switchTab('find'));
           break;
@@ -654,7 +654,7 @@ const mapDispatchToProps = (dispatch) => {
         case 'Study spots':
         case 'Taches d\'étude':
           dispatch(actions.setHeaderTitle('directions', 'find'));
-          dispatch(actions.setDestination({ code: data.code, room: data.room }));
+          dispatch(actions.setDestination({ shorthand: data.shorthand, room: data.room }));
           dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
           dispatch(actions.switchTab('find'));
           break;

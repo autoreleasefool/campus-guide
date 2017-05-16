@@ -371,8 +371,8 @@ export type LinkSection = {
 
 /** A destination for navigation on campus. */
 export type Destination = {
-  code: string,   // Shorthand building code
-  room: ?string,  // Room number in the building
+  shorthand: string,  // Shorthand building code
+  room: ?string,      // Room number in the building
 };
 
 /** A room on campus, with a name and the facilities it offers represented by an ID. */
@@ -384,16 +384,30 @@ export type BuildingRoom = {
 /** A predefined type of room and how it should be represented visually. */
 export type RoomType = {
   icon: PlatformIcon, // Icon to display for the room type
-} & (Name | TranslatedName);
+} & Name;
+
+/** Street address for a location, optionally translated to French or English. */
+type Address = {
+  address?: string,
+  address_en?: string,
+  address_fr?: string,
+};
 
 /** A building on campus, with details describing it, its location, and its rooms. */
 export type Building = {
-  code: string,                       // Shorthand building code
+  shorthand: string,                  // Shorthand building code
   facilities: Array < Facility >,     // List of facilities in the building
   image: string | ReactClass < any >, // Image to display for the building
   location: LatLong,                  // Location of the building
   rooms: Array < BuildingRoom >,      // List of rooms in the building
-} & (Name | TranslatedName);
+} & Name & Address;
+
+/** A university residence and specific information about its services and facilities. */
+export type Residence = {
+  shorthand: string,  // Shorthand code for the residence
+  image: string,      // Image of the residence
+  properties: Object, // Indicates which services and facilities are available in the residence
+} & Name & Address & Description;
 
 /** Types of facilities that a certain building on campus may offer. */
 export type Facility =

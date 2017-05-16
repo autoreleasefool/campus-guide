@@ -75,7 +75,7 @@ type State = {
 };
 
 // Imports
-import BuildingGrid from 'BuildingGrid';
+import ImageGrid from 'ImageGrid';
 import Header from 'Header';
 import ModalHeader from 'ModalHeader';
 import moment from 'moment';
@@ -291,7 +291,7 @@ class LectureModal extends React.Component {
       this.setState({ location: null });
       this.refs.Navigator.pop();
     } else {
-      this.setState({ location: { code: building.code, room: null }});
+      this.setState({ location: { shorthand: building.shorthand, room: null }});
       this._showPicker(PICKER_ROOM);
     }
   }
@@ -299,7 +299,7 @@ class LectureModal extends React.Component {
   /**
    * Renders a view to select a building on campus.
    *
-   * @returns {ReactElement<any>} a building grid to select a building
+   * @returns {ReactElement<any>} an image grid to select a building
    */
   _renderBuildingPicker(): ReactElement < any > {
     const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
@@ -315,11 +315,11 @@ class LectureModal extends React.Component {
               icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={`${locationTranslation} - ${buildingTranslation}`} />
         </TouchableOpacity>
-        <BuildingGrid
-            buildingList={this._buildingList}
+        <ImageGrid
             columns={BUILDING_COLUMNS}
             disableImages={true}
             filter={''}
+            images={this._buildingList}
             includeClear={true}
             language={this.props.language}
             onSelect={this._onBuildingSelect.bind(this)} />

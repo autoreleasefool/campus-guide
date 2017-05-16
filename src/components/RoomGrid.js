@@ -41,13 +41,13 @@ import type { BuildingRoom, Icon, Language, RoomType } from 'types';
 
 // Type definition for component props.
 type Props = {
-  code: string,                                     // Unique shorthand identifier for the building
-  defaultRoomType: number,                          // Default type that rooms should be recognized as
-  filter: ?string,                                  // Filter the list of rooms
-  language: Language,                               // Language to display building names in
-  onSelect: (code: string, room: ?string) => void,  // Callback function for when a room is selected
-  renderHeader: ?() => ReactElement < any >,        // Render a custom header at the top of the list
-  rooms: Array < BuildingRoom >,                    // The list of rooms in the building
+  shorthand: string,                                    // Unique shorthand identifier for the building
+  defaultRoomType: number,                              // Default type that rooms should be recognized as
+  filter: ?string,                                      // Filter the list of rooms
+  language: Language,                                   // Language to display building names in
+  onSelect: (shorthand: string, room: ?string) => void, // Callback function for when a room is selected
+  renderHeader: ?() => ReactElement < any >,            // Render a custom header at the top of the list
+  rooms: Array < BuildingRoom >,                        // The list of rooms in the building
 };
 
 // Type definition for component state.
@@ -133,7 +133,7 @@ export default class RoomGrid extends React.Component {
    *
    * @param {Props} props the props to filter with
    */
-  _filterRooms({ code, filter, language, rooms, defaultRoomType }: Props): void {
+  _filterRooms({ shorthand, filter, language, rooms, defaultRoomType }: Props): void {
     // Ignore the case of the search terms
     const adjustedSearchTerms: ?string = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
 
@@ -151,7 +151,7 @@ export default class RoomGrid extends React.Component {
     }
 
     // True if the building code matches the search terms
-    const codeMatches = adjustedSearchTerms != null && code.indexOf(adjustedSearchTerms) >= 0;
+    const codeMatches = adjustedSearchTerms != null && shorthand.indexOf(adjustedSearchTerms) >= 0;
 
     for (let i = 0; i < rooms.length; i++) {
       const room = rooms[i];
@@ -244,12 +244,12 @@ export default class RoomGrid extends React.Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => this.props.onSelect(this.props.code, room.key)}>
+      <TouchableOpacity onPress={() => this.props.onSelect(this.props.shorthand, room.key)}>
         <View style={_styles.room}>
           {icon}
           <View style={_styles.roomDescription}>
             {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
-            <Text style={_styles.roomName}>{`${this.props.code} ${room.key}`}</Text>
+            <Text style={_styles.roomName}>{`${this.props.shorthand} ${room.key}`}</Text>
             <Text style={_styles.roomType}>{room.type}</Text>
           </View>
         </View>

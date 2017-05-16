@@ -292,7 +292,7 @@ const mapDispatchToProps = (dispatch) => {
     showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
     navigateToStudySpot: (spot: StudySpot) => {
       dispatch(actions.setHeaderTitle('directions', 'find'));
-      dispatch(actions.setDestination({ code: spot.building, room: spot.room }));
+      dispatch(actions.setDestination({ shorthand: spot.building, room: spot.room }));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
       dispatch(actions.switchTab('find'));
     },

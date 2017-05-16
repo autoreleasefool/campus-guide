@@ -75,9 +75,9 @@ export function convertTimeFormat(format: TimeFormat, time: string): string {
  */
 export function destinationToString(destination: Destination): string {
   if (destination.room == null) {
-    return `${destination.code}`;
+    return `${destination.shorthand}`;
   } else {
-    return `${destination.code} ${destination.room}`;
+    return `${destination.shorthand} ${destination.room}`;
   }
 }
 

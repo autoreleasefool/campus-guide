@@ -53,20 +53,20 @@ class BuildingComponent extends React.Component {
    * Properties this component expects to be provided by its parent.
    */
   props: {
-    building: Building,                                           // Building to display details for
-    filter: ?string,                                              // The current filter for rooms
-    language: Language,                                           // The current language, selected by the user
-    onDestinationSelected: (code: string, room: ?string) => void, // Callback for when a room is selected
+    building: Building,                                                 // Building to display details for
+    filter: ?string,                                                    // The current filter for rooms
+    language: Language,                                                 // The current language, selected by the user
+    onDestinationSelected: (shorthand: string, room: ?string) => void,  // Callback for when a room is selected
   }
 
   /**
    * Informs parent that the user has selected a destination.
    *
-   * @param {string} buildingCode code of the building that has been selected
-   * @param {?string} roomName    name of the room selected, or null if a building was selected
+   * @param {string} shorthand shorthand code of the building that has been selected
+   * @param {?string} roomName name of the room selected, or null if a building was selected
    */
-  _onDestinationSelected(buildingCode: string, roomName: ?string): void {
-    this.props.onDestinationSelected(buildingCode, roomName);
+  _onDestinationSelected(shorthand: string, roomName: ?string): void {
+    this.props.onDestinationSelected(shorthand, roomName);
   }
 
   /**
@@ -79,7 +79,7 @@ class BuildingComponent extends React.Component {
         + (Translations.getName(this.props.language, this.props.building) || '');
 
     return (
-      <TouchableOpacity onPress={() => this._onDestinationSelected(this.props.building.code, null)}>
+      <TouchableOpacity onPress={() => this._onDestinationSelected(this.props.building.shorthand, null)}>
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon' }}
@@ -102,11 +102,11 @@ class BuildingComponent extends React.Component {
       <View>
         <BuildingHeader
             address={buildingAddress}
-            code={building.code}
             facilities={building.facilities}
             image={building.image}
             language={this.props.language}
-            name={buildingName} />
+            name={buildingName}
+            shorthand={building.shorthand} />
         {this._renderBuildingDirections()}
       </View>
     );
@@ -123,12 +123,12 @@ class BuildingComponent extends React.Component {
     return (
       <View style={_styles.container}>
         <RoomGrid
-            code={building.code}
             defaultRoomType={Constants.DefaultRoomType}
             filter={this.props.filter}
             language={this.props.language}
             renderHeader={this._renderHeader.bind(this)}
             rooms={building.rooms}
+            shorthand={building.shorthand}
             onSelect={this._onDestinationSelected.bind(this)} />
       </View>
     );
@@ -153,8 +153,8 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDestinationSelected: (code: string, room: ?string) => {
-      dispatch(actions.setDestination({ code, room }));
+    onDestinationSelected: (shorthand: string, room: ?string) => {
+      dispatch(actions.setDestination({ shorthand, room }));
       dispatch(actions.setHeaderTitle('directions', 'find'));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
     },

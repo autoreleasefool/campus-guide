@@ -36,7 +36,7 @@ import * as actions from 'actions';
 import type { Building, Language, Name, TranslatedName } from 'types';
 
 // Imports
-import BuildingGrid from 'BuildingGrid';
+import ImageGrid from 'ImageGrid';
 import Header from 'Header';
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
@@ -86,10 +86,10 @@ class FindHome extends React.Component {
               title={Translations.get(this.props.language, 'building_directory')} />
         </View>
         <View style={_styles.container}>
-          <BuildingGrid
-              buildingList={this.props.buildingList}
+          <ImageGrid
               columns={BUILDING_COLUMNS}
               filter={this.props.filter}
+              images={this.props.buildingList}
               language={this.props.language}
               onSelect={this._onBuildingSelect.bind(this)} />
         </View>

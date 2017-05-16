@@ -32,20 +32,20 @@ import * as actions from '../directions';
 describe('direction actions', () => {
 
   it('should set a building room to navigate to', () => {
-    const destination = { code: 'code', room: 'room' };
+    const destination = { shorthand: 'code', room: 'room' };
     const expectedAction = { type: SET_DESTINATION, destination };
     expect(actions.setDestination(destination)).toEqual(expectedAction);
   });
 
   it('should set a building room to navigate from', () => {
-    const startingPoint = { code: 'code', room: 'room' };
+    const startingPoint = { shorthand: 'code', room: 'room' };
     const expectedAction = { type: SET_STARTING_POINT, startingPoint };
     expect(actions.setStartingPoint(startingPoint)).toEqual(expectedAction);
   });
 
   it('should set a building to view details for', () => {
     const building = {
-      code: 'code',
+      shorthand: 'code',
       facilities: [ 'atm', 'gym' ],
       image: 'image.png',
       location: {

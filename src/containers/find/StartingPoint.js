@@ -77,7 +77,7 @@ type State = {
 
 // Imports
 import Header from 'Header';
-import BuildingGrid from 'BuildingGrid';
+import ImageGrid from 'ImageGrid';
 import MapView from 'react-native-maps';
 import PaddedIcon from 'PaddedIcon';
 import RoomGrid from 'RoomGrid';
@@ -238,7 +238,7 @@ class StartingPoint extends React.Component {
    */
   _onClosestBuildingSelected(): void {
     if (this.state.closestBuilding) {
-      this.props.onStartingPointSelected(this.state.closestBuilding.code, null);
+      this.props.onStartingPointSelected(this.state.closestBuilding.shorthand, null);
     } else {
       const universityName = Translations.getName(this.props.language, this.props.universityName);
       Alert.alert(
@@ -264,24 +264,24 @@ class StartingPoint extends React.Component {
   /**
    * Sets the user's starting point for navigation
    *
-   * @param {string}  code code of the building that has been selected
+   * @param {string}  shorthand shorthand code of the building that has been selected
    * @param {?string} room name of the room selected, or null if a building was selected
    */
-  _onRoomSelected(code: string, room: ?string): void {
-    this.props.onStartingPointSelected(code, room);
+  _onRoomSelected(shorthand: string, room: ?string): void {
+    this.props.onStartingPointSelected(shorthand, room);
   }
 
   /**
    * Renders the list of buildings for the user to select as their starting point.
    *
-   * @returns {ReactElement<any>} a building grid
+   * @returns {ReactElement<any>} a grid of images
    */
-  _renderBuildingGrid(): ReactElement < any > {
+  _renderImageGrid(): ReactElement < any > {
     return (
-      <BuildingGrid
-          buildingList={this.props.buildingList}
+      <ImageGrid
           columns={BUILDING_COLUMNS}
           filter={this.props.filter}
+          images={this.props.buildingList}
           language={this.props.language}
           onSelect={this._onBuildingSelected.bind(this)} />
     );
@@ -290,19 +290,19 @@ class StartingPoint extends React.Component {
   /**
    * Renders an option to navigate to a building's lobby
    *
-   * @param {string} code the building code
+   * @param {string} shorthand the building shorthand code
    * @returns {ReactElement<any>} a text view displaying the building's code
    */
-  _renderBuildingLobby(code: string): ReactElement < any > {
+  _renderBuildingLobby(shorthand: string): ReactElement < any > {
     return (
       <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={() => this._onRoomSelected(code, null)}>
+        <TouchableOpacity onPress={() => this._onRoomSelected(shorthand, null)}>
           <View style={_styles.buildingLobby}>
             <PaddedIcon
                 color={Constants.Colors.primaryWhiteIcon}
                 icon={{ name: 'store', class: 'material' }} />
             <Text style={_styles.lobbyText}>
-              {`${code} ${Translations.get(this.props.language, 'lobby').toLowerCase()}`}
+              {`${shorthand} ${Translations.get(this.props.language, 'lobby').toLowerCase()}`}
             </Text>
           </View>
         </TouchableOpacity>
@@ -374,12 +374,12 @@ class StartingPoint extends React.Component {
             iconCallback={() => this.refs.Navigator.pop()}
             title={Translations.getName(this.props.language, building) || ''} />
         <RoomGrid
-            code={building.code}
             defaultRoomType={Constants.DefaultRoomType}
             filter={this.props.filter}
             language={this.props.language}
-            renderHeader={this._renderBuildingLobby.bind(this, building.code)}
+            renderHeader={this._renderBuildingLobby.bind(this, building.shorthand)}
             rooms={building.rooms}
+            shorthand={building.shorthand}
             onSelect={this._onRoomSelected.bind(this)} />
       </View>
     );
@@ -394,7 +394,7 @@ class StartingPoint extends React.Component {
   _renderScene(route: Route): ReactElement < any > {
     switch (route.id) {
       case SELECT_BUILDING:
-        return this._renderBuildingGrid();
+        return this._renderImageGrid();
       case SELECT_ROOM:
         return this._renderRoomGrid(route.data);
       default:
@@ -514,8 +514,8 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     clearSearch: () => dispatch(actions.search(null)),
-    onStartingPointSelected: (code: string, room: ?string) => {
-      dispatch(actions.setStartingPoint({ code, room }));
+    onStartingPointSelected: (shorthand: string, room: ?string) => {
+      dispatch(actions.setStartingPoint({ shorthand, room }));
       dispatch(actions.switchFindView(Constants.Views.Find.Steps));
     },
     showSearch: (show: boolean) => dispatch(actions.showSearch(show)),

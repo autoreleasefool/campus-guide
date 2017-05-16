@@ -17,9 +17,9 @@
  *
  * @author Joseph Roque
  * @created 2016-10-19
- * @file BuildingGrid.js
- * @providesModule BuildingGrid
- * @description Displays the list of buildings in a grid, with the building's name and an image.
+ * @file ImageGrid.js
+ * @providesModule ImageGrid
+ * @description Displays the list of images in a grid, with a name if available.
  *
  * @flow
  */
@@ -38,22 +38,28 @@ import {
 } from 'react-native';
 
 // Types
-import type { Building, Language } from 'types';
+import type { Language, Name } from 'types';
+
+// Describes an image displayed in the grid.
+export type GridImage = {
+  shorthand?: string,                 // Optional short version of name
+  image: string | ReactClass < any >, // Image for the grid
+} & Name;
 
 // Type definition for component props
 type Props = {
-  buildingList: Array < Object >,   // List of buildings to display
-  columns: number,                  // Number of columns to show buildings in
-  disableImages?: boolean,          // If true, grid should only show a list of names, with no images
-  includeClear?: boolean,           // If true, an empty cell should be available to clear the choice
-  filter: ?string,                  // Filter the list of buildings
-  language: Language,               // Language to display building names in
-  onSelect: (b: ?Building) => void, // Callback for when a building is selected
+  images: Array < GridImage >, // List of images to display
+  columns: number,                // Number of columns to show images in
+  disableImages?: boolean,        // If true, grid should only show a list of names, with no images
+  includeClear?: boolean,         // If true, an empty cell should be available to clear the choice
+  filter: ?string,                // Filter the list of images
+  language: Language,             // Language to display image names in
+  onSelect: (i: any) => void,     // Callback for when an image is selected
 }
 
 // Type definition for component state
 type State = {
-  buildings: Array < ?Building >,  // List of buildings
+  images: Array < ?GridImage >, // List of images
 };
 
 // Imports
@@ -63,7 +69,7 @@ import * as Translations from 'Translations';
 // Determining size of building icons based on the screen size.
 const { width } = Dimensions.get('window');
 
-export default class BuildingGrid extends React.Component {
+export default class ImageGrid extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -83,91 +89,89 @@ export default class BuildingGrid extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      buildings: [],
+      images: [],
     };
   }
 
   /**
-   * Loads the buildings once the view has been mounted, and registers a search listener.
+   * Loads the images once the view has been mounted.
    */
   componentDidMount(): void {
-    this._filterBuildings(this.props);
+    this._filterImages(this.props);
   }
 
   /**
-   * If a new filter is provided, update the list of buildings.
+   * If a new filter is provided, update the list of images.
    *
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
-      this._filterBuildings(nextProps);
+      this._filterImages(nextProps);
     }
   }
 
   /**
-   * Gets a unique key for the building.
+   * Gets a unique key for the image.
    *
-   * @param {Building} building the building to get a key for
-   * @param {number}   index    index of the building
+   * @param {GridImage} image the image to get a key for
+   * @param {number}    index index of the image
    * @returns {string} the key
    */
-  _buildingKeyExtractor(building: Building, index: number): string {
-    return building.code || index.toString();
+  _imageNameExtractor(image: GridImage, index: number): string {
+    return image.shorthand || Translations.getName(this.props.language, image) || index.toString();
   }
 
   /**
-   * Loads the names and images of the buildings from the assets to display them. Only shows buildings which names or
-   * codes contain the search terms.
+   * Filter to only show images which names or shorthand contain the search terms.
    *
    * @param {Props} props the props to filter with
    */
-  _filterBuildings({ buildingList, filter, includeClear }: Props): void {
+  _filterImages({ images, filter, includeClear }: Props): void {
     // Ignore the case of the search terms
     const adjustedSearchTerms: ?string = (filter == null || filter.length === 0)
         ? null
         : filter.toUpperCase();
 
     // Create array for buildings
-    const filteredBuildings: Array < ?Building > = [];
+    const filteredImages: Array < ?GridImage > = [];
 
     if (includeClear) {
-      filteredBuildings.push(null);
+      filteredImages.push(null);
     }
 
-    const totalBuildings = buildingList.length;
-    for (let i = 0; i < totalBuildings; i++) {
-      const building = buildingList[i];
+    const totalImages = images.length;
+    for (let i = 0; i < totalImages; i++) {
+      const image = images[i];
 
-      // If the search terms are empty, or the building name contains the terms, add it to the list
-      const translated: boolean = !('name' in building);
-
+      // If the search terms are empty, or the image name contains the terms, add it to the list
       if (adjustedSearchTerms == null
-          || (!translated && building.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (translated && (building.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0
-          || building.name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0))
-          || building.code.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
-        filteredBuildings.push(building);
+          || (image.shorthand && image.shorthand.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
+          || (image.name && image.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
+          || (image.name_en && image.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
+          || (image.name_fr && image.name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
+        filteredImages.push(image);
       }
     }
 
     // Update the state so the app reflects the changes made
-    this.setState({ buildings: filteredBuildings });
+    this.setState({ images: filteredImages });
   }
 
   /**
-   * Displays a building's name and image.
+   * Displays an image and its name.
    *
-   * @param {Building} item information about the building to display
-   * @returns {ReactElement<any>} an image (if enabled) and name for the building
+   * @param {GridImage} item  information about the image
+   * @param {number}    index index of the image in the list
+   * @returns {ReactElement<any>} an image (if enabled) and name for the image
    */
-  _renderItem({ item }: { item: Building }): ReactElement < any > {
-    const buildingImageSize: number = Math.floor(width / this.props.columns);
+  _renderItem({ item, index }: { item: GridImage, index: number }): ReactElement < any > {
+    const gridImageSize: number = Math.floor(width / this.props.columns);
 
-    let buildingStyle = { height: buildingImageSize, width: buildingImageSize };
+    let gridImageStyle = { height: gridImageSize, width: gridImageSize };
     let textStyle = { backgroundColor: Constants.Colors.darkTransparentBackground };
     if (this.props.disableImages) {
-      buildingStyle = { margin: 1, width: buildingImageSize - 2 };
+      gridImageStyle = { margin: 1, width: gridImageSize - 2 };
       textStyle = {
         backgroundColor: Constants.Colors.darkMoreTransparentBackground,
         paddingTop: Constants.Sizes.Margins.Expanded,
@@ -182,14 +186,17 @@ export default class BuildingGrid extends React.Component {
 
     return (
       <TouchableOpacity onPress={() => this.props.onSelect(item)}>
-        <View style={[ _styles.building, buildingStyle ]}>
+        <View style={[ _styles.gridImage, gridImageStyle ]}>
           {this.props.disableImages || item == null
             ? null
             : <Image
                 source={item.image}
                 style={[ _styles.image, imageStyle ]} />}
-          <Text style={[ _styles.buildingCode, textStyle ]}>
-            {item == null ? Translations.get(this.props.language, 'none') : item.code}
+          <Text
+              ellipsizeMode={'tail'}
+              numberOfLines={1}
+              style={[ _styles.shorthand, textStyle ]}>
+            {this._imageNameExtractor(item, index)}
           </Text>
         </View>
       </TouchableOpacity>
@@ -197,7 +204,7 @@ export default class BuildingGrid extends React.Component {
   }
 
   /**
-   * Renders a list of the building names and icons once they have.
+   * Renders a list of the images and names.
    *
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
@@ -212,8 +219,8 @@ export default class BuildingGrid extends React.Component {
 
     return (
       <FlatList
-          data={this.state.buildings}
-          keyExtractor={this._buildingKeyExtractor.bind(this)}
+          data={this.state.images}
+          keyExtractor={this._imageNameExtractor.bind(this)}
           numColumns={this.props.columns}
           renderItem={this._renderItem.bind(this)}
           style={style} />
@@ -223,10 +230,10 @@ export default class BuildingGrid extends React.Component {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  building: {
+  gridImage: {
     justifyContent: 'flex-end',
   },
-  buildingCode: {
+  shorthand: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     textAlign: 'center',

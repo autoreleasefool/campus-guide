@@ -46,7 +46,7 @@ import type { Facility, Language } from 'types';
 // Type definition for component props.
 type Props = {
   address: string,                // Address which the building is located at
-  code: string,                   // Unique shorthand identifier for the building
+  shorthand: string,              // Unique shorthand identifier for the building
   facilities: Array < Facility >, // List of facilities the building offers
   image: any,                     // An image of the building
   language: Language,             // The user's currently selected language
@@ -202,7 +202,7 @@ export default class BuildingHeader extends React.Component {
         </View>
         <Header
             style={_styles.header}
-            subtitle={this.props.code}
+            subtitle={this.props.shorthand}
             title={this.props.name} />
       </View>
     );

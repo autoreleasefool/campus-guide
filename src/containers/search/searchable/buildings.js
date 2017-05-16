@@ -72,8 +72,8 @@ function _getBuildingResults(key: string,
         matchedTerms.push(buildings[i].name_en.toUpperCase());
       }
 
-      if (buildings[i].code.toUpperCase().indexOf(searchTerms) >= 0) {
-        matchedTerms.push(buildings[i].code.toUpperCase());
+      if (buildings[i].shorthand.toUpperCase().indexOf(searchTerms) >= 0) {
+        matchedTerms.push(buildings[i].shorthand.toUpperCase());
       }
 
       if (matchedTerms.length > 0) {
@@ -86,7 +86,7 @@ function _getBuildingResults(key: string,
             class: 'material',
           },
           matchedTerms: matchedTerms,
-          title: buildings[i].code,
+          title: buildings[i].shorthand,
         });
       }
     }
@@ -128,7 +128,7 @@ function _getRoomResults(key:string,
 
             for (let j = 0; j < building.rooms.length; j++) {
               const room = building.rooms[j];
-              const roomName: string = `${building.code} ${room.name.toUpperCase()}`;
+              const roomName: string = `${building.shorthand} ${room.name.toUpperCase()}`;
               const roomAltName: ?string = Translations.getVariant(language, 'alt_name', room);
 
               if (!room.type) {
@@ -149,10 +149,10 @@ function _getRoomResults(key:string,
                 results.push({
                   key,
                   description: description,
-                  data: { building: building, code: building.code, room: room.name },
+                  data: { building: building, shorthand: building.shorthand, room: room.name },
                   icon: icon || { name: 'search', class: 'material' },
                   matchedTerms: matchedTerms,
-                  title: `${building.code} ${room.name}`,
+                  title: `${building.shorthand} ${room.name}`,
                 });
               }
             }

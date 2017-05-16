@@ -43,20 +43,20 @@ describe('directions reducer', () => {
   });
 
   it('should set the destination to navigate to', () => {
-    const destination = { code: 'building_code', room: 'room_number' };
+    const destination = { shorthand: 'building_sh', room: 'room_number' };
     expect(reducer(initialState, { type: SET_DESTINATION, destination }))
         .toEqual({ ...initialState, destination });
   });
 
   it('should set the point to navigate from', () => {
-    const startingPoint = { code: 'building_code', room: 'room_number' };
+    const startingPoint = { shorthand: 'building_sh', room: 'room_number' };
     expect(reducer(initialState, { type: SET_STARTING_POINT, startingPoint }))
         .toEqual({ ...initialState, startingPoint });
   });
 
   it('should set the building to display details for', () => {
     const building = {
-      code: 'code',
+      shorthand: 'sh',
       facilities: [ 'atm', 'gym' ],
       image: 'image.png',
       location: {

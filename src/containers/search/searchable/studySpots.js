@@ -87,7 +87,7 @@ function _getResults(language: Language,
         matchedSpots.push({
           key: studySpotsTranslation,
           description: Translations.getVariant(language, 'description', spot) || '',
-          data: { code: spot.building, room: spot.room },
+          data: { shorthand: spot.building, room: spot.room },
           icon: { name: 'import-contacts', class: 'material' },
           matchedTerms: [ spotName.toUpperCase(), spot.building.toUpperCase(), spot.room ],
           title: `${spot.building} ${spot.room}`,
