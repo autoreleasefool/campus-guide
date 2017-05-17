@@ -42,8 +42,8 @@ import * as actions from 'actions';
 
 // Types
 import type {
-  Campus,
   Language,
+  MenuSection,
   Name,
   Route,
   Tab,
@@ -54,23 +54,23 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  appTab: Tab,                                  // The current tab the app is showing
-  backCount: number,                            // Number of times user has requested back navigation
-  transitInfo: ?TransitInfo,                    // Information about the city transit system
-  campus: ?Campus,                              // The current transit campus to display info for
-  canNavigateBack: (can: boolean) => void,      // Indicate whether the app can navigate back
-  filter: ?string,                              // The current filter for transit routes
-  language: Language,                           // The current language, selected by the user
-  onCampusSelected: (campus: ?Campus) => void,  // Displays details about a transit campus
-  resetFilter: VoidFunction,                    // Clears the current search terms
-  setHeaderTitle: (t: (Name | string)) => void, // Sets the title in the app header
-  showSearch: (show: boolean) => void,          // Shows or hides the search button
-  timeFormat: TimeFormat,                       // Format to display times in
+  appTab: Tab,                                      // The current tab the app is showing
+  backCount: number,                                // Number of times user has requested back navigation
+  transitInfo: ?TransitInfo,                        // Information about the city transit system
+  campus: ?MenuSection,                             // The current transit campus to display info for
+  canNavigateBack: (can: boolean) => void,          // Indicate whether the app can navigate back
+  filter: ?string,                                  // The current filter for transit routes
+  language: Language,                               // The current language, selected by the user
+  onCampusSelected: (campus: ?MenuSection) => void, // Displays details about a transit campus
+  resetFilter: VoidFunction,                        // Clears the current search terms
+  setHeaderTitle: (t: (Name | string)) => void,     // Sets the title in the app header
+  showSearch: (show: boolean) => void,              // Shows or hides the search button
+  timeFormat: TimeFormat,                           // Format to display times in
 }
 
 // Type definition for component state.
 type State = {
-  campuses: Array < Campus >,  // Array of transit campuses to display info for
+  campuses: Array < MenuSection >,  // Array of transit campuses to display info for
 }
 
 // Imports
@@ -78,6 +78,7 @@ import TransitCampusMap from 'TransitCampusMap';
 import Header from 'Header';
 import Menu from 'Menu';
 import * as ArrayUtils from 'ArrayUtils';
+import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
@@ -113,21 +114,17 @@ class Transit extends React.Component {
   }
 
   /**
-   * If the transit campus info has not been loaded, then load it.
-   */
-  componentWillMount(): void {
-    if (this.state.campuses.length === 0) {
-      this.setState({
-        campuses: require('../../../assets/js/TransitCampuses'),
-      });
-    }
-  }
-
-  /**
    * Adds a listener for navigation events.
    */
   componentDidMount(): void {
     this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+
+    if (this.state.campuses.length === 0) {
+      Configuration.init()
+          .then(() => Configuration.getConfig('/transit_campuses.json'))
+          .then((campuses: Array < MenuSection >) => this.setState({ campuses }))
+          .catch((err: any) => console.error('Configuration could not be initialized for transit.', err));
+    }
   }
 
   /**
@@ -214,35 +211,26 @@ class Transit extends React.Component {
   /**
    * Returns a map and list of stops near a transit campus.
    *
-   * @param {?Campus} campusInfo details of the campus to display
+   * @param {?MenuSection} campusInfo details of the campus to display
    * @returns {ReactElement<any>} a map and list of stops/routes
    */
-  _renderCampus(campusInfo: ?Campus): ReactElement < any > {
+  _renderCampus(campusInfo: ?MenuSection): ReactElement < any > {
     const campus = campusInfo;
-    if (campus == null) {
+    if (campus) {
+      return (
+        <TransitCampusMap
+            campusId={campus.id}
+            filter={this.props.filter}
+            language={this.props.language}
+            resetFilter={this.props.resetFilter}
+            timeFormat={this.props.timeFormat} />
+      );
+    } else {
       // TODO: return generic error view?
       return (
         <View />
       );
     }
-
-    const campusId = Translations.getEnglishName(campus);
-    if (campusId == null) {
-      // TODO: return generic error view?
-      return (
-        <View />
-      );
-    }
-
-    return (
-      <TransitCampusMap
-          backgroundColor={campus.background}
-          campusId={campusId}
-          filter={this.props.filter}
-          language={this.props.language}
-          resetFilter={this.props.resetFilter}
-          timeFormat={this.props.timeFormat} />
-    );
   }
 
   _renderGrid(): ReactElement < any > {
@@ -327,7 +315,7 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('transit', can)),
-    onCampusSelected: (campus: ?Campus) => dispatch(actions.switchTransitCampus(campus)),
+    onCampusSelected: (campus: ?MenuSection) => dispatch(actions.switchTransitCampus(campus)),
     resetFilter: () => dispatch(actions.search(null)),
     setHeaderTitle: (title: (Name | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
     showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),

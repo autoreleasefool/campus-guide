@@ -69,7 +69,7 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  links: ?Array < LinkSection >,  // Sections of links
+  links: Array < LinkSection >,  // Sections of links
 };
 
 // Imports
@@ -108,7 +108,7 @@ class Links extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      links: null,
+      links: [],
     };
   }
 
@@ -118,7 +118,7 @@ class Links extends React.Component {
   componentDidMount(): void {
     this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
-    if (this.state.links == null) {
+    if (this.state.links.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/useful_links.json'))
           .then((links: Array < LinkSection >) => this.setState({ links }))
@@ -224,13 +224,13 @@ class Links extends React.Component {
    */
   _getSection(id: string): ?LinkSection {
     const ids: Array < string > = id.split('-');
-    let categoryList: Array < LinkSection > = this.state.links || [];
+    let categoryList: Array < LinkSection > = this.state.links;
     let depth: number = 0;
 
     let currentSection: ?LinkSection = null;
     let sectionImage: ?string = null;
 
-    while (currentSection == null && categoryList != null && depth < ids.length) {
+    while (currentSection == null && categoryList && categoryList.length > 0 && depth < ids.length) {
       for (let i = 0; i < categoryList.length; i++) {
         if (categoryList[i].id == ids[depth]) {
           if (depth == 0) {
@@ -260,7 +260,7 @@ class Links extends React.Component {
    */
   _handleNavigationEvent(): void {
     const currentRoutes = this.refs.Navigator.getCurrentRoutes();
-    if (currentRoutes.length > 1 && this.state.links != null) {
+    if (currentRoutes.length > 1 && this.state.links.length > 0) {
       const section = this._getSection(currentRoutes[currentRoutes.length - 1].id);
       const title = {
         name_en: Translations.getEnglishName(section) || '',
@@ -516,9 +516,9 @@ class Links extends React.Component {
    * @returns {ReactElement<any>} the view to render, based on {route}.
    */
   _renderScene(route: Route): ReactElement < any > {
-    if (typeof (route.id) == 'string' && this.state.links != null) {
+    if (typeof (route.id) == 'string' && this.state.links.length > 0) {
       return this._renderSection(route.id);
-    } else if (this.state.links == null) {
+    } else if (this.state.links === 0) {
       return (
         <View style={_styles.container} />
       );

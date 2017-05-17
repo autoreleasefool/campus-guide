@@ -48,7 +48,6 @@ import type {
 
 // Type definition for component props.
 type Props = {
-  backgroundColor: string,    // Background color for the view
   campusId: string,           // Identifier for the transit campus info to display
   filter: ?string,            // The current filter for transit routes
   language: Language,         // The current language, selected by the user

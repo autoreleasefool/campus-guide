@@ -46,6 +46,8 @@ type Props = {
   sections: Array < Object >,                   // List of sections to display
 };
 
+/* FIXME: Replace sections: Array < Object > with Array < MenuSection> */
+
 // Type definition for component state.
 type State = {
   expandedSection: number,
@@ -85,17 +87,15 @@ export default class Menu extends React.Component {
   /**
    * Focuses a new section for the user, hides the old section's image and shows the new section's image.
    *
-   * @param {number} section new section to focus.
+   * @param {number} sectionIdx index of new section to focus.
    */
-  _focusSection(section: number): void {
-    if (this.state.expandedSection === section || section < 0 || section >= this.props.sections.length) {
+  _focusSection(sectionIdx: number): void {
+    if (this.state.expandedSection === sectionIdx || sectionIdx < 0 || sectionIdx >= this.props.sections.length) {
       return;
     }
 
     LayoutAnimation.easeInEaseOut();
-    this.setState({
-      expandedSection: section,
-    });
+    this.setState({ expandedSection: sectionIdx });
   }
 
   /**
@@ -119,7 +119,7 @@ export default class Menu extends React.Component {
     let touchableStyle: Object = { flexShrink: 1 };
     let subtitleIconName: string = 'expand-more';
 
-    if (index === this.state.expandedSection && section.image != null) {
+    if (index === this.state.expandedSection && section.image) {
       if (typeof (section.image) === 'string') {
         sectionImage = (
           <Image
@@ -160,19 +160,13 @@ export default class Menu extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    if (this.props.sections == null) {
-      return (
-        <View style={_styles.container} />
-      );
-    } else {
-      return (
-        <View style={_styles.container}>
-          {this.props.sections.map((section: Object, index: number) => (
-            this._getSectionView(index, section)
-          ))}
-        </View>
-      );
-    }
+    return (
+      <View style={_styles.container}>
+        {this.props.sections.map((section: Object, index: number) => (
+          this._getSectionView(index, section)
+        ))}
+      </View>
+    );
   }
 }
 

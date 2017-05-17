@@ -33,18 +33,18 @@ import { connect } from 'react-redux';
 import * as actions from 'actions';
 
 // Types
-import type { DiscoverSection, Language } from 'types';
+import type { MenuSection, Language } from 'types';
 
 // Type definition for component props.
 type Props = {
-  language: Language,                                               // The current language, selected by the user
-  onSectionSelected: (section: string) => void,                     // Display contents of the section in new view
-  onSectionsLoaded: (sections: Array < DiscoverSection >) => void,  // Sets the sections in the view
+  language: Language,                                           // The current language, selected by the user
+  onSectionSelected: (section: string) => void,                 // Display contents of the section in new view
+  onSectionsLoaded: (sections: Array < MenuSection >) => void,  // Sets the sections in the view
 }
 
 // Type definition for component state.
 type State = {
-  sections: ?Array < DiscoverSection >,  // Sections in the discover section
+  sections: ?Array < MenuSection >,  // Sections in the discover section
 };
 
 // Imports
@@ -83,7 +83,7 @@ class DiscoverHome extends React.Component {
     if (this.state.sections == null) {
       Configuration.init()
           .then(() => Configuration.getConfig('/discover.json'))
-          .then((sections: Array < DiscoverSection >) => this.setState({ sections }))
+          .then((sections: Array < MenuSection >) => this.setState({ sections }))
           .catch((err: any) => console.error('Configuration could not be initialized for discovery.', err));
     }
   }

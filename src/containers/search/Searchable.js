@@ -32,7 +32,7 @@ export type SearchResult = {
   description: string,            // Description of the result
   data: any,                      // Additional data for displaying the result if selected
   key: string,                    // Key for the section the result belongs to
-  icon: PlatformIcon,             // Icon describing the result type
+  icon: ?PlatformIcon,            // Icon describing the result type
   matchedTerms: Array < string >, // Terms that should be used to narrow the result further
   title: string,                  // Title of the result
 };

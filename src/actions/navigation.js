@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Campus, Tab } from 'types';
+import type { MenuSection, Tab } from 'types';
 import {
   NAVIGATE_BACK,
   SET_CAN_BACK,
@@ -68,7 +68,7 @@ module.exports = {
     linkId,
   }),
 
-  switchTransitCampus: (campus: ?Campus) => ({
+  switchTransitCampus: (campus: ?MenuSection) => ({
     type: SWITCH_DISCOVER_TRANSIT_CAMPUS,
     campus,
   }),

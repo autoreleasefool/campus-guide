@@ -158,16 +158,6 @@ export type LatLongDelta = {
 }
 
 //-----------------------------------------------------------------------------
-//  University
-//-----------------------------------------------------------------------------
-
-/** Information describing a campus of the university. */
-export type Campus = {
-  background: string, // Background color for the campus
-  image: any,         // Image of the campus
-} & Name;
-
-//-----------------------------------------------------------------------------
 //  Transit
 //-----------------------------------------------------------------------------
 
@@ -189,10 +179,10 @@ export type TransitStop = {
 
 /** Information about a transit campus. */
 export type TransitCampus = {
-  id: string,       // Campus id
-  lat: number,      // Central latitude for the campus to display on a map
-  long: number,     // Central longitude for the campus to display on a map
-  stops: Object,    // List of stops near the campus
+  id: string,     // Campus id
+  lat: number,    // Central latitude for the campus to display on a map
+  long: number,   // Central longitude for the campus to display on a map
+  stops: Object,  // List of stops near the campus
 } & Name;
 
 /** Details of the city transit system. */
@@ -336,22 +326,19 @@ export type Route = {
 //  Menus
 //-----------------------------------------------------------------------------
 
-/** Expected format for discover sections. */
-export type DiscoverSection = {
-  icon: PlatformIcon, // Icon for the section to display
-  id: string,         // Unique id to report which section was selected
-  image?: string,     // Image to display when section is expanded
+/** Expected format for menu sections. */
+export type MenuSection = {
+  icon?: PlatformIcon,  // Icon for the section to display
+  id: string,           // Unique id to report which section was selected
+  image?: string,       // Image to display when section is expanded
 } & Name;
 
 /** Expected format for link sections. */
 export type LinkSection = {
-  icon: PlatformIcon,                 // Icon for the section to display
-  id: string,                         // Unique id to report which section was selected
-  image?: string,                     // Image to display when section is expanded
   links?: Array < NamedLink >,        // List of links in the category
   social?: Array < NamedLink >,       // List of social media links in the platform
   categories?: Array < LinkSection >, // List of subcategories
-} & Name;
+} & MenuSection;
 
 //-----------------------------------------------------------------------------
 //  Buildings

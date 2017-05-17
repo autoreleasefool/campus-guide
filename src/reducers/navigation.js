@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Campus, Tab } from 'types';
+import type { MenuSection, Tab } from 'types';
 import {
   NAVIGATE_BACK,
   SET_CAN_BACK,
@@ -46,7 +46,7 @@ type State = {
 
   discoverView: number,     // The current view to display in the discover tab
   linkId: ?string | number, // Currently selected link category id
-  campus: ?Campus,          // Selected transit campus to display info for
+  campus: ?MenuSection,     // Selected transit campus to display info for
 };
 
 // Initial navigation state.
