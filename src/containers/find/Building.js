@@ -95,17 +95,24 @@ class BuildingComponent extends React.Component {
    */
   _renderHeader(): ReactElement < any > {
     const building: Building = this.props.building;
-    const buildingName = Translations.getName(this.props.language, building) || '';
-    const buildingAddress = Translations.getVariant(this.props.language, 'address', building) || '';
+    const properties = [
+      {
+        name: Translations.get(this.props.language, 'name'),
+        description: Translations.getName(this.props.language, building) || '',
+      },
+      {
+        name: Translations.get(this.props.language, 'address'),
+        description: Translations.getVariant(this.props.language, 'address', building) || '',
+      },
+    ];
 
     return (
       <View>
         <BuildingHeader
-            address={buildingAddress}
             facilities={building.facilities}
             image={building.image}
             language={this.props.language}
-            name={buildingName}
+            properties={properties}
             shorthand={building.shorthand} />
         {this._renderBuildingDirections()}
       </View>

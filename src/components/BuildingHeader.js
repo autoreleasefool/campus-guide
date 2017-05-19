@@ -43,14 +43,20 @@ import {
 // Types
 import type { Facility, Language } from 'types';
 
+// Properties which describe the building
+type Property = {
+  name: string,         // Name of the property
+  description: string,  // Description of the building property
+};
+
 // Type definition for component props.
 type Props = {
-  address: string,                // Address which the building is located at
-  shorthand: string,              // Unique shorthand identifier for the building
-  facilities: Array < Facility >, // List of facilities the building offers
-  image: any,                     // An image of the building
-  language: Language,             // The user's currently selected language
-  name: string,                   // The name of the building
+  shorthand?: string,               // Unique shorthand identifier for the building
+  facilities?: Array < Facility >,  // List of facilities the building offers
+  hideTitle?: boolean,              // True to hide the title
+  image: any,                       // An image of the building
+  language: Language,               // The user's currently selected language
+  properties: ?Array < Property >,  // List of properties to display about the building
 };
 
 // Type definition for component state.
@@ -61,6 +67,7 @@ type State = {
 // Imports
 import Header from 'Header';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as Translations from 'Translations';
@@ -148,12 +155,17 @@ export default class BuildingHeader extends React.Component {
   /**
    * Returns a list of touchable views which describe facilities in the building.
    *
-   * @returns {ReactElement<any>} an icon representing each of the facilities in this building
+   * @returns {?ReactElement<any>} an icon representing each of the facilities in this building
    */
-  _renderFacilityIcons(): ReactElement < any > {
+  _renderFacilityIcons(): ?ReactElement < any > {
+    const facilities = this.props.facilities;
+    if (facilities == null) {
+      return null;
+    }
+
     return (
       <View style={_styles.facilitiesContainer}>
-        {this.props.facilities.map((facility: Facility) => {
+        {facilities.map((facility: Facility) => {
           return (
             <TouchableOpacity
                 key={facility}
@@ -182,28 +194,65 @@ export default class BuildingHeader extends React.Component {
     const textContainerStyle = (this.state.bannerPosition === 1)
         ? { left: width * (1 - BANNER_TEXT_WIDTH_PCT) }
         : { left: width };
+    textContainerStyle.marginTop = (this.props.hideTitle) ? 0 : Header.HEIGHT;
+
+    const properties = this.props.properties;
+    let propertiesView = null;
+    if (properties != null) {
+      propertiesView = (
+        <View>
+          {properties.map((property, i) => (
+            <View key={`prop.${Translations.getEnglishName(property)}`}>
+              <Text
+                  key={`prop.title.${i}`}
+                  style={_styles.title}>
+                {Translations.getName(this.props.language, property)}
+              </Text>
+              <Text
+                  key={`prop.desc.${i}`}
+                  style={_styles.body}>
+                {Translations.getVariant(this.props.language, 'description', property)}
+              </Text>
+            </View>
+          ))}
+        </View>
+      );
+    }
+
+    let image = null;
+    if (typeof (this.props.image) === 'string') {
+      image = (
+        <Image
+            resizeMode={'cover'}
+            source={{ uri: Configuration.getImagePath(this.props.image) }}
+            style={[ _styles.image, imageStyle ]} />
+      );
+    } else {
+      image = (
+        <Image
+            resizeMode={'cover'}
+            source={this.props.image}
+            style={[ _styles.image, imageStyle ]} />
+      );
+    }
 
     return (
       <View style={_styles.banner}>
         <TouchableWithoutFeedback onPress={this._swapBanner}>
-          <Image
-              resizeMode={'cover'}
-              source={this.props.image}
-              style={[ _styles.image, imageStyle ]} />
+          {image}
         </TouchableWithoutFeedback>
         <View style={[ _styles.textContainer, textContainerStyle ]}>
           <ScrollView>
             {this._renderFacilityIcons()}
-            <Text style={_styles.title}>{Translations.get(this.props.language, 'name')}</Text>
-            <Text style={_styles.body}>{this.props.name}</Text>
-            <Text style={_styles.title}>{Translations.get(this.props.language, 'address')}</Text>
-            <Text style={_styles.body}>{this.props.address}</Text>
+            {propertiesView}
           </ScrollView>
         </View>
-        <Header
-            style={_styles.header}
-            subtitle={this.props.shorthand}
-            title={this.props.name} />
+        {this.props.hideTitle
+          ? null
+          : <Header
+              style={_styles.header}
+              subtitle={this.props.shorthand}
+              title={this.props.name} />}
       </View>
     );
   }
@@ -246,11 +295,11 @@ const _styles = StyleSheet.create({
     height: null,
   },
   textContainer: {
-    marginTop: 50,
     position: 'absolute',
     top: 0,
     bottom: 0,
     right: 0,
+    padding: Constants.Sizes.Margins.Regular,
   },
   title: {
     fontSize: Constants.Sizes.Text.Title,

@@ -44,6 +44,9 @@ import PaddedIcon from 'PaddedIcon';
 import * as DisplayUtils from 'DisplayUtils';
 import * as Constants from 'Constants';
 
+// Height of the view
+export const HEIGHT = 50;
+
 export default class Header extends React.Component {
 
   /**
@@ -219,7 +222,7 @@ export default class Header extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   header: {
-    height: 50,
+    height: HEIGHT,
     alignItems: 'center',
     flexDirection: 'row',
   },
