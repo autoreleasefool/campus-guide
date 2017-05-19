@@ -33,6 +33,7 @@ import {
   SWITCH_FIND_VIEW,
   SWITCH_DISCOVER_VIEW,
   SWITCH_HOUSING_VIEW,
+  SWITCH_HOUSING_RESIDENCE,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
 } from 'actionTypes';
@@ -49,6 +50,7 @@ type State = {
   housingView: number,      // The current view to display in the housing menu
   linkId: ?string | number, // Currently selected link category id
   campus: ?MenuSection,     // Selected transit campus to display info for
+  residence: ?Residence,    // Selected residence to display info for
 };
 
 // Initial navigation state.
@@ -63,6 +65,7 @@ const initialState: State = {
   housingView: 0,
   linkId: 0,
   campus: null,
+  residence: null,
 };
 
 /**
@@ -118,6 +121,11 @@ function navigation(state: State = initialState, action: any): State {
       return {
         ...state,
         campus: action.campus,
+      };
+    case SWITCH_HOUSING_RESIDENCE:
+      return {
+        ...state,
+        residence: action.residence,
       };
     default:
       return state;

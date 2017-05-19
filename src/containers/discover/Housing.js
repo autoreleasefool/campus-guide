@@ -50,7 +50,10 @@ type Props = {
   filter: ?string,                              // Keywords to filter links by
   language: Language,                           // The current language, selected by the user
   onSectionSelected: (section: string) => void, // Display contents of the section in new view
+  residence: ?Residence,                        // The currently selected residence
+  selectResidence: (r: ?Residence) => void,     // Selects a residence
   showSearch: (show: boolean) => void,          // Shows or hides the search button
+  switchView: (view: number) => void,           // Set the current housing view
   view: number,                                 // Current view to display
 }
 
@@ -60,6 +63,7 @@ type State = {
 };
 
 // Imports
+import BuildingHeader from 'BuildingHeader';
 import ImageGrid from 'ImageGrid';
 import Menu from 'Menu';
 import * as Configuration from 'Configuration';
@@ -119,8 +123,7 @@ class Housing extends React.Component {
     if (nextProps.appTab === 'discover'
         && nextProps.backCount != this.props.backCount
         && currentRoutes.length > 1) {
-      this.props.onSectionSelected(currentRoutes[currentRoutes.length - 2].id);
-      this.refs.Navigator.pop();
+      this.props.switchView(currentRoutes[currentRoutes.length - 2].id);
     } else if (nextProps.view != this.props.view) {
       let popped = false;
       for (let i = 0; i < currentRoutes.length; i++) {
@@ -159,6 +162,7 @@ class Housing extends React.Component {
           this.props.showSearch(true);
           break;
         default:
+          this.props.selectResidence(null);
           this.props.showSearch(false);
           break;
       }
@@ -171,7 +175,7 @@ class Housing extends React.Component {
    * @param {Residence} residence residence which was selected
    */
   _onSingleResidenceSelect(residence: ?Residence): void {
-    console.log('Residence selected: ' + residence);
+    this.props.selectResidence(residence);
   }
 
   /**
@@ -193,6 +197,63 @@ class Housing extends React.Component {
   }
 
   /**
+   * Renders a menu to navigate between housing info sections.
+   *
+   * @returns {ReactElement<any>} a menu
+   */
+  _renderHousingMenu(): ReactElement < any > {
+    return (
+      <Menu
+          language={this.props.language}
+          sections={this.state.housingInfo.sections}
+          onSectionSelected={this._onSectionSelected.bind(this)} />
+    );
+  }
+
+  /**
+   * Renders a grid of residences.
+   *
+   * @returns {ReactElement<any>} an image grid for residences
+   */
+  _renderResidenceGrid(): ReactElement < any > {
+    return (
+      <ImageGrid
+          columns={RESIDENCE_COLUMNS}
+          filter={this.props.filter}
+          images={this.state.housingInfo.residences}
+          language={this.props.language}
+          onSelect={this._onSingleResidenceSelect.bind(this)} />
+    );
+  }
+
+  /**
+   * Renders a set of details and image for a single residence.
+   *
+   * @param {Residence} residence the residence to render details for
+   * @returns {ReactElement<any>} a building header and list of properties of the residence
+   */
+  _renderResidenceDetails(residence: Residence): ReactElement < any > {
+    const headerProperties = [
+      {
+        name: Translations.get(this.props.language, 'address'),
+        description: Translations.getVariant(this.props.language, 'address', residence),
+      },
+      {
+        name: Translations.get(this.props.language, 'description'),
+        description: Translations.getVariant(this.props.language, 'description', residence),
+      },
+    ];
+
+    return (
+      <BuildingHeader
+          hideTitle={true}
+          image={residence.image}
+          language={this.props.language}
+          properties={headerProperties} />
+    );
+  }
+
+  /**
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display.
@@ -204,24 +265,16 @@ class Housing extends React.Component {
     if (this.state.housingInfo) {
       switch (route.id) {
         case Constants.Views.Housing.Menu:
-          scene = (
-            <Menu
-                language={this.props.language}
-                sections={this.state.housingInfo.sections}
-                onSectionSelected={this._onSectionSelected.bind(this)} />
-          );
+          scene = this._renderHousingMenu();
           break;
         case Constants.Views.Housing.Residences:
-          scene = (
-            <ImageGrid
-                columns={RESIDENCE_COLUMNS}
-                filter={this.props.filter}
-                images={this.state.housingInfo.residences}
-                language={this.props.language}
-                onSelect={this._onSingleResidenceSelect.bind(this)} />
-          );
+          scene = this._renderResidenceGrid();
           break;
         case Constants.Views.Housing.ResidenceDetails:
+          if (this.props.residence) {
+            scene = this._renderResidenceDetails(this.props.residence);
+          }
+          break;
         case Constants.Views.Housing.ResidenceSelect:
         case Constants.Views.Housing.ResidenceCompare:
         case Constants.Views.Housing.Resources:
@@ -273,6 +326,7 @@ const mapStateToProps = (store) => {
     backCount: store.navigation.backNavigations,
     filter: store.search.terms,
     language: store.config.options.language,
+    residence: store.navigation.residence,
     view: store.navigation.housingView,
   };
 };
@@ -280,6 +334,21 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('housing', can)),
+    switchView: (view: number) => {
+      let title: string = 'housing';
+      switch (view) {
+        case Constants.Views.Housing.Residences:
+          title = 'university_residences';
+          break;
+        default:
+          // Does nothing
+          // Return to default
+          break;
+      }
+
+      dispatch(actions.setHeaderTitle(title, 'discover'));
+      dispatch(actions.switchHousingView(view));
+    },
     onSectionSelected: (section: ?string) => {
       let view: number = Constants.Views.Housing.Menu;
       let title: string = 'housing';
@@ -300,6 +369,20 @@ const mapDispatchToProps = (dispatch) => {
 
       dispatch(actions.setHeaderTitle(title, 'discover'));
       dispatch(actions.switchHousingView(view));
+    },
+    selectResidence: (residence: ?Residence) => {
+      dispatch(actions.switchResidence(residence));
+
+      if (residence != null) {
+        const title = {
+          name: residence.name,
+          name_en: residence.name_en,
+          name_fr: residence.name_fr,
+        };
+
+        dispatch(actions.setHeaderTitle(title, 'discover'));
+        dispatch(actions.switchHousingView(Constants.Views.Housing.ResidenceDetails));
+      }
     },
     showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
   };

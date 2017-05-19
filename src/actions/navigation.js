@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { MenuSection, Tab } from 'types';
+import type { MenuSection, Residence, Tab } from 'types';
 import {
   NAVIGATE_BACK,
   SET_CAN_BACK,
@@ -33,6 +33,7 @@ import {
   SWITCH_FIND_VIEW,
   SWITCH_DISCOVER_VIEW,
   SWITCH_HOUSING_VIEW,
+  SWITCH_HOUSING_RESIDENCE,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
 } from 'actionTypes';
@@ -77,6 +78,11 @@ module.exports = {
   switchTransitCampus: (campus: ?MenuSection) => ({
     type: SWITCH_DISCOVER_TRANSIT_CAMPUS,
     campus,
+  }),
+
+  switchResidence: (residence: ?Residence) => ({
+    type: SWITCH_HOUSING_RESIDENCE,
+    residence,
   }),
 
 };

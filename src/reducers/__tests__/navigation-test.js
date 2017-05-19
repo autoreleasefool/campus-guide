@@ -31,6 +31,7 @@ import {
   SWITCH_FIND_VIEW,
   SWITCH_DISCOVER_VIEW,
   SWITCH_HOUSING_VIEW,
+  SWITCH_HOUSING_RESIDENCE,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
 } from 'actionTypes';
@@ -50,6 +51,7 @@ const initialState = {
   housingView: 0,
   linkId: 0,
   campus: null,
+  residence: null,
 };
 
 describe('navigation reducer', () => {
@@ -95,9 +97,15 @@ describe('navigation reducer', () => {
   });
 
   it('switches the campus', () => {
-    const campus = { background: 'background', image: 'image', name: 'name' };
+    const campus = { image: 'image', name: 'name' };
     expect(reducer(initialState, { type: SWITCH_DISCOVER_TRANSIT_CAMPUS, campus }))
         .toEqual({ ...initialState, campus });
+  });
+
+  it('switches the residence', () => {
+    const residence = { image: 'image', name: 'name' };
+    expect(reducer(initialState, { type: SWITCH_HOUSING_RESIDENCE, residence }))
+        .toEqual({ ...initialState, residence });
   });
 
 });

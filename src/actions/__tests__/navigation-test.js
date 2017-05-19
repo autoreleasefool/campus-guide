@@ -32,6 +32,7 @@ import {
   SWITCH_FIND_VIEW,
   SWITCH_DISCOVER_VIEW,
   SWITCH_HOUSING_VIEW,
+  SWITCH_HOUSING_RESIDENCE,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
 } from 'actionTypes';
@@ -85,12 +86,20 @@ describe('navigation actions', () => {
 
   it('should show a transit campus', () => {
     const campus = {
-      background: 'background_color',
       image: 'image.jpg',
       name: 'campus_name',
     };
     const expectedAction = { type: SWITCH_DISCOVER_TRANSIT_CAMPUS, campus };
     expect(actions.switchTransitCampus(campus)).toEqual(expectedAction);
+  });
+
+  it('should show a residence', () => {
+    const residence = {
+      image: 'image.jpg',
+      name: 'residence_name',
+    };
+    const expectedAction = { type: SWITCH_HOUSING_RESIDENCE, residence };
+    expect(actions.switchResidence(residence)).toEqual(expectedAction);
   });
 
 });
