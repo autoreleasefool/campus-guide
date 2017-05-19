@@ -51,12 +51,13 @@ type Property = {
 
 // Type definition for component props.
 type Props = {
-  shorthand?: string,               // Unique shorthand identifier for the building
   facilities?: Array < Facility >,  // List of facilities the building offers
   hideTitle?: boolean,              // True to hide the title
   image: any,                       // An image of the building
   language: Language,               // The user's currently selected language
+  name?: string,                    // Name of the building
   properties: ?Array < Property >,  // List of properties to display about the building
+  shorthand?: string,               // Unique shorthand identifier for the building
 };
 
 // Type definition for component state.
@@ -65,8 +66,8 @@ type State = {
 };
 
 // Imports
-import Header from 'Header';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { default as Header, HeaderHeight } from 'Header';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
@@ -192,9 +193,11 @@ export default class BuildingHeader extends React.Component {
         ? { right: 0 }
         : { right: width * BANNER_TEXT_WIDTH_PCT };
     const textContainerStyle = (this.state.bannerPosition === 1)
-        ? { left: width * (1 - BANNER_TEXT_WIDTH_PCT) }
-        : { left: width };
-    textContainerStyle.marginTop = (this.props.hideTitle) ? 0 : Header.HEIGHT;
+        ? { left: width * (1 - BANNER_TEXT_WIDTH_PCT), marginTop: HeaderHeight }
+        : { left: width, marginTop: HeaderHeight };
+    if (this.props.hideTitle) {
+      textContainerStyle.marginTop = 0;
+    }
 
     const properties = this.props.properties;
     let propertiesView = null;
@@ -202,7 +205,7 @@ export default class BuildingHeader extends React.Component {
       propertiesView = (
         <View>
           {properties.map((property, i) => (
-            <View key={`prop.${Translations.getEnglishName(property)}`}>
+            <View key={`prop.${Translations.getEnglishName(property) || ''}`}>
               <Text
                   key={`prop.title.${i}`}
                   style={_styles.title}>
@@ -247,7 +250,7 @@ export default class BuildingHeader extends React.Component {
             {propertiesView}
           </ScrollView>
         </View>
-        {this.props.hideTitle
+        {this.props.hideTitle || !this.props.name
           ? null
           : <Header
               style={_styles.header}

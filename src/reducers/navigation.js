@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { MenuSection, Tab } from 'types';
+import type { MenuSection, Residence, Tab } from 'types';
 import {
   NAVIGATE_BACK,
   SET_CAN_BACK,

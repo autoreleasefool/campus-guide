@@ -45,7 +45,7 @@ import * as DisplayUtils from 'DisplayUtils';
 import * as Constants from 'Constants';
 
 // Height of the view
-export const HEIGHT = 50;
+export const HeaderHeight = 50;
 
 export default class Header extends React.Component {
 
@@ -222,7 +222,7 @@ export default class Header extends React.Component {
 // Private styles for component
 const _styles = StyleSheet.create({
   header: {
-    height: HEIGHT,
+    height: HeaderHeight,
     alignItems: 'center',
     flexDirection: 'row',
   },
