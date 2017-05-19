@@ -377,13 +377,6 @@ export type Building = {
   rooms: Array < BuildingRoom >,      // List of rooms in the building
 } & Name & Address;
 
-/** A university residence and specific information about its services and facilities. */
-export type Residence = {
-  shorthand: string,  // Shorthand code for the residence
-  image: string,      // Image of the residence
-  properties: Object, // Indicates which services and facilities are available in the residence
-} & Name & Address & Description;
-
 /** Types of facilities that a certain building on campus may offer. */
 export type Facility =
   | 'atm'
@@ -400,6 +393,37 @@ export type Facility =
   | 'gym'
   | 'pool'
   ;
+
+//-----------------------------------------------------------------------------
+//  Housing
+//-----------------------------------------------------------------------------
+
+/** Properties which describe each residence. */
+export type ResidenceProperty = {
+  key: string,  // Key to identify the property
+} & Name;
+
+/** Organized categories of similar properties which describe each residence. */
+export type ResidenceCategory = {
+  key: string,                        // Key to identify the category
+  props: Array < ResidenceProperty >, // List of properties in the category
+} & Name;
+
+/** A university residence and specific information about its services and facilities. */
+export type Residence = {
+  image: string,       // Image of the residence
+  location: LatLong,  // Location of the residence
+  props: Object,      // Indicates which services and facilities are available in the residence
+} & Name & Address & Description;
+
+/** Information on housing at the university. */
+export type HousingInfo = {
+  offCampusHousing: Link,                       // Link to info about off campus housing
+  categories: Array < ResidenceCategory >,      // List of categories which residences can be described by
+  residences: Array < Residence >,              // List of residences at the university
+  resources: Array < NamedLink & Description >, // List of other resources for finding housing at the university
+  sections: Array < MenuSection >,              // List of sections of housing info
+};
 
 //-----------------------------------------------------------------------------
 //  Configuration

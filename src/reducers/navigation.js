@@ -32,6 +32,7 @@ import {
   SWITCH_TAB,
   SWITCH_FIND_VIEW,
   SWITCH_DISCOVER_VIEW,
+  SWITCH_HOUSING_VIEW,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
 } from 'actionTypes';
@@ -45,6 +46,7 @@ type State = {
   findView: number,         // The current view to display in the find tab
 
   discoverView: number,     // The current view to display in the discover tab
+  housingView: number,      // The current view to display in the housing menu
   linkId: ?string | number, // Currently selected link category id
   campus: ?MenuSection,     // Selected transit campus to display info for
 };
@@ -58,6 +60,7 @@ const initialState: State = {
   findView: 0,
 
   discoverView: 0,
+  housingView: 0,
   linkId: 0,
   campus: null,
 };
@@ -100,6 +103,11 @@ function navigation(state: State = initialState, action: any): State {
       return {
         ...state,
         discoverView: action.view,
+      };
+    case SWITCH_HOUSING_VIEW:
+      return {
+        ...state,
+        housingView: action.view,
       };
     case SWITCH_DISCOVER_LINK:
       return {

@@ -30,6 +30,7 @@ import {
   SWITCH_TAB,
   SWITCH_FIND_VIEW,
   SWITCH_DISCOVER_VIEW,
+  SWITCH_HOUSING_VIEW,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
 } from 'actionTypes';
@@ -46,6 +47,7 @@ const initialState = {
   findView: 0,
 
   discoverView: 0,
+  housingView: 0,
   linkId: 0,
   campus: null,
 };
@@ -80,6 +82,11 @@ describe('navigation reducer', () => {
   it('switches the discover view', () => {
     expect(reducer(initialState, { type: SWITCH_DISCOVER_VIEW, view: 1 }))
         .toEqual({ ...initialState, discoverView: 1 });
+  });
+
+  it('switches the housing view', () => {
+    expect(reducer(initialState, { type: SWITCH_HOUSING_VIEW, view: 1 }))
+        .toEqual({ ...initialState, housingView: 1 });
   });
 
   it('switches the link id', () => {

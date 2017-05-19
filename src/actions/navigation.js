@@ -32,6 +32,7 @@ import {
   SWITCH_TAB,
   SWITCH_FIND_VIEW,
   SWITCH_DISCOVER_VIEW,
+  SWITCH_HOUSING_VIEW,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
 } from 'actionTypes';
@@ -60,6 +61,11 @@ module.exports = {
 
   switchDiscoverView: (view: number) => ({
     type: SWITCH_DISCOVER_VIEW,
+    view,
+  }),
+
+  switchHousingView: (view: number) => ({
+    type: SWITCH_HOUSING_VIEW,
     view,
   }),
 

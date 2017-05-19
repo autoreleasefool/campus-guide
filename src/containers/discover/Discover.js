@@ -41,8 +41,9 @@ type Props = {
   appTab: Tab,                              // The current tab the app is showing
   backCount: number,                        // Number of times the user has requested back navigation
   canNavigateBack: VoidFunction,            // Indicates back navigation is possible
-  transitCanNavigate: boolean,              // Indicates if the transit subview can navigate backwards
+  housingCanNavigate: boolean,              // Indicates if the housing subview can navigate backwards
   linksCanNavigate: boolean,                // Indicates if the link subview can navigate backwards
+  transitCanNavigate: boolean,              // Indicates if the transit subview can navigate backwards
   onNavigation: (view: number) => void,     // Callback when user navigates in the discover view
   view: number,                             // The current view
 };
@@ -52,6 +53,7 @@ import * as Constants from 'Constants';
 
 // Screen imports
 import Home from './Home';
+import Housing from './Housing';
 import Links from './Links';
 import Shuttle from './Shuttle';
 import StudySpots from './StudySpots';
@@ -96,7 +98,8 @@ class Discover extends React.Component {
     } else if (nextProps.appTab === 'discover'
         && nextProps.backCount != this.props.backCount
         && !(nextProps.view === Constants.Views.Discover.Links && this.props.linksCanNavigate)
-        && !(nextProps.view === Constants.Views.Discover.Transit && this.props.transitCanNavigate)) {
+        && !(nextProps.view === Constants.Views.Discover.Transit && this.props.transitCanNavigate)
+        && !(nextProps.view === Constants.Views.Discover.Housing && this.props.housingCanNavigate)) {
       this.refs.Navigator.pop();
     }
   }
@@ -131,6 +134,10 @@ class Discover extends React.Component {
       case Constants.Views.Discover.Home:
         return (
           <Home />
+        );
+      case Constants.Views.Discover.Housing:
+        return (
+          <Housing />
         );
       case Constants.Views.Discover.Links:
         return (
@@ -189,8 +196,9 @@ const mapStateToProps = (store) => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    transitCanNavigate: store.navigation.canBack.transit || false,
+    housingCanNavigate: store.navigation.canBack.housing || false,
     linksCanNavigate: store.navigation.canBack.links || false,
+    transitCanNavigate: store.navigation.canBack.transit || false,
     view: store.navigation.discoverView,
   };
 };

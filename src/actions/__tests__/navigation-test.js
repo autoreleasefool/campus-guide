@@ -31,6 +31,7 @@ import {
   SWITCH_TAB,
   SWITCH_FIND_VIEW,
   SWITCH_DISCOVER_VIEW,
+  SWITCH_HOUSING_VIEW,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
 } from 'actionTypes';
@@ -68,6 +69,12 @@ describe('navigation actions', () => {
     const view = 1;
     const expectedAction = { type: SWITCH_DISCOVER_VIEW, view };
     expect(actions.switchDiscoverView(view)).toEqual(expectedAction);
+  });
+
+  it('should create an action to switch the housing view', () => {
+    const view = 1;
+    const expectedAction = { type: SWITCH_HOUSING_VIEW, view };
+    expect(actions.switchHousingView(view)).toEqual(expectedAction);
   });
 
   it('should show a link category', () => {

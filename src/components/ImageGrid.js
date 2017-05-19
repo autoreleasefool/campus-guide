@@ -63,6 +63,7 @@ type State = {
 };
 
 // Imports
+import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
 
@@ -184,14 +185,29 @@ export default class ImageGrid extends React.Component {
       height: width / this.props.columns,
     };
 
+    let image = null;
+    if (!this.props.disableImages && item != null) {
+      if (typeof (item.image) === 'string') {
+        image = (
+          <Image
+              resizeMode={'cover'}
+              source={{ uri: Configuration.getImagePath(item.image) }}
+              style={[ _styles.image, imageStyle ]} />
+        );
+      } else {
+        image = (
+          <Image
+              resizeMode={'cover'}
+              source={item.image}
+              style={[ _styles.image, imageStyle ]} />
+        );
+      }
+    }
+
     return (
       <TouchableOpacity onPress={() => this.props.onSelect(item)}>
         <View style={[ _styles.gridImage, gridImageStyle ]}>
-          {this.props.disableImages || item == null
-            ? null
-            : <Image
-                source={item.image}
-                style={[ _styles.image, imageStyle ]} />}
+          {image}
           <Text
               ellipsizeMode={'tail'}
               numberOfLines={1}

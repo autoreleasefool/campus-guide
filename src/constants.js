@@ -202,6 +202,19 @@ const Discover = {
   Transit: 2,     // Displays information about the transit system in the city
   Shuttle: 3,     // Displays information about the university's campus shuttle
   StudySpots: 4,  // Displays a list of study spots around campus and properties of them
+  Housing: 5,     // Displays information about housing at the university
+};
+
+/**
+ * Set of views to navigate through within Housing screen
+ */
+const Housing = {
+  Menu: 0,              // Main housing view, to select other screens
+  Residences: 1,        // List of residences
+  ResidenceDetails: 2,  // Details about a single residence
+  ResidenceSelect: 3,   // List of residences, with multiple selectable
+  ResidenceCompare: 4,  // Comparison between residences
+  Resources: 5,         // Resources for housing information
 };
 
 /**
@@ -283,6 +296,7 @@ module.exports = {
   Views: {
     Find,
     Discover,
+    Housing,
   },
 
   /**

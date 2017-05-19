@@ -147,7 +147,7 @@ function _getRoomResults(key:string,
 
                 results.push({
                   key,
-                  description: description,
+                  description,
                   data: { building: building, shorthand: building.shorthand, room: room.name },
                   icon: icon || { name: 'search', class: 'material' },
                   matchedTerms: matchedTerms,

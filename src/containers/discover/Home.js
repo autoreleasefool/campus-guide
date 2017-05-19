@@ -37,14 +37,13 @@ import type { MenuSection, Language } from 'types';
 
 // Type definition for component props.
 type Props = {
-  language: Language,                                           // The current language, selected by the user
-  onSectionSelected: (section: string) => void,                 // Display contents of the section in new view
-  onSectionsLoaded: (sections: Array < MenuSection >) => void,  // Sets the sections in the view
+  language: Language,                           // The current language, selected by the user
+  onSectionSelected: (section: string) => void, // Display contents of the section in new view
 }
 
 // Type definition for component state.
 type State = {
-  sections: ?Array < MenuSection >,  // Sections in the discover section
+  sections: Array < MenuSection >,  // Sections in the discover section
 };
 
 // Imports
@@ -72,7 +71,7 @@ class DiscoverHome extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      sections: null,
+      sections: [],
     };
   }
 
@@ -80,7 +79,7 @@ class DiscoverHome extends React.Component {
    * If the sections have not been loaded, then load them.
    */
   componentDidMount(): void {
-    if (this.state.sections == null) {
+    if (this.state.sections.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/discover.json'))
           .then((sections: Array < MenuSection >) => this.setState({ sections }))
@@ -94,20 +93,14 @@ class DiscoverHome extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-    if (this.state.sections == null) {
-      return (
-        <View style={_styles.container} />
-      );
-    } else {
-      return (
-        <View style={_styles.container}>
-          <Menu
-              language={this.props.language}
-              sections={this.state.sections}
-              onSectionSelected={this.props.onSectionSelected} />
-        </View>
-      );
-    }
+    return (
+      <View style={_styles.container}>
+        <Menu
+            language={this.props.language}
+            sections={this.state.sections}
+            onSectionSelected={this.props.onSectionSelected} />
+      </View>
+    );
   }
 }
 
@@ -132,6 +125,10 @@ const mapDispatchToProps = (dispatch) => {
       let title: ?string = null;
 
       switch (section) {
+        case 'hou':
+          view = Constants.Views.Discover.Housing;
+          title = 'housing';
+          break;
         case 'use':
           view = Constants.Views.Discover.Links;
           title = 'useful_links';
