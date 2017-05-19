@@ -67,6 +67,26 @@ const objectWithTranslatedProperties = {
   name_fr: 'french_name',
 };
 
+// An object with undefined properties in French and English.
+const objectWithUndefinedProperties = {
+  details: 'test',
+  details_en: undefined,
+  details_fr: undefined,
+  name: undefined,
+  name_en: undefined,
+  name_fr: undefined,
+};
+
+// An object with null properties in French and English.
+const objectWithNullProperties = {
+  details: 'test',
+  details_en: null,
+  details_fr: null,
+  name: null,
+  name_en: null,
+  name_fr: null,
+};
+
 // An object with invalid details, and name values.
 const invalidObject = {
   no_details: 'invalid',
@@ -275,5 +295,23 @@ describe('Translations-test', () => {
         .toBeNull();
     expect(Translations.getFrenchVariant('details', null))
         .toBeNull();
+  });
+
+  it('tests ignoring undefined and null properties', () => {
+    expect(Translations.getEnglishVariant('name', objectWithUndefinedProperties)).toBeNull();
+    expect(Translations.getEnglishVariant('details', objectWithUndefinedProperties))
+        .toBe(objectWithUndefinedProperties.details);
+
+    expect(Translations.getEnglishVariant('name', objectWithNullProperties)).toBeNull();
+    expect(Translations.getEnglishVariant('details', objectWithNullProperties))
+        .toBe(objectWithUndefinedProperties.details);
+
+    expect(Translations.getFrenchVariant('name', objectWithUndefinedProperties)).toBeNull();
+    expect(Translations.getFrenchVariant('details', objectWithUndefinedProperties))
+        .toBe(objectWithUndefinedProperties.details);
+
+    expect(Translations.getFrenchVariant('name', objectWithNullProperties)).toBeNull();
+    expect(Translations.getFrenchVariant('details', objectWithNullProperties))
+        .toBe(objectWithUndefinedProperties.details);
   });
 });

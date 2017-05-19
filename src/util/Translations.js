@@ -77,9 +77,9 @@ export function getFrenchVariant(property: string, obj: ?Object): ?string {
   }
 
   const frenchProperty = property + '_fr';
-  if (frenchProperty in obj) {
+  if (frenchProperty in obj && obj[frenchProperty]) {
     return obj[frenchProperty];
-  } else if (property in obj) {
+  } else if (property in obj && obj[property]) {
     return obj[property];
   } else {
     return null;
@@ -100,9 +100,9 @@ export function getEnglishVariant(property: string, obj: ?Object): ?string {
   }
 
   const englishProperty = property + '_en';
-  if (englishProperty in obj) {
+  if (englishProperty in obj && obj[englishProperty]) {
     return obj[englishProperty];
-  } else if (property in obj) {
+  } else if (property in obj && obj[property]) {
     return obj[property];
   } else {
     return null;
