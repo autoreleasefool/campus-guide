@@ -41,23 +41,17 @@ import {
 } from 'react-native';
 
 // Types
-import type { Facility, Language } from 'types';
-
-// Properties which describe the building
-type Property = {
-  name: string,         // Name of the property
-  description: string,  // Description of the building property
-};
+import type { BuildingProperty, Facility, Language } from 'types';
 
 // Type definition for component props.
 type Props = {
-  facilities?: Array < Facility >,  // List of facilities the building offers
-  hideTitle?: boolean,              // True to hide the title
-  image: any,                       // An image of the building
-  language: Language,               // The user's currently selected language
-  name?: string,                    // Name of the building
-  properties: ?Array < Property >,  // List of properties to display about the building
-  shorthand?: string,               // Unique shorthand identifier for the building
+  facilities?: Array < Facility >,          // List of facilities the building offers
+  hideTitle?: boolean,                      // True to hide the title
+  image: any,                               // An image of the building
+  language: Language,                       // The user's currently selected language
+  name?: string,                            // Name of the building
+  properties: ?Array < BuildingProperty >,  // List of properties to display about the building
+  shorthand?: string,                       // Unique shorthand identifier for the building
 };
 
 // Type definition for component state.

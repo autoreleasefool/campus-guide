@@ -128,7 +128,7 @@ export type PlatformString =
 export type Section < T > = {
   key: string,        // Key of the section
   data: Array < T >,  // Data in the section
-};
+} & Name;
 
 //-----------------------------------------------------------------------------
 //  Settings
@@ -377,6 +377,12 @@ export type Building = {
   rooms: Array < BuildingRoom >,      // List of rooms in the building
 } & Name & Address;
 
+/** Properties which describe a building, */
+export type BuildingProperty = {
+  name: string,         // Name of the property
+  description: string,  // Description of the building property
+};
+
 /** Types of facilities that a certain building on campus may offer. */
 export type Facility =
   | 'atm'
@@ -400,7 +406,8 @@ export type Facility =
 
 /** Properties which describe each residence. */
 export type ResidenceProperty = {
-  key: string,  // Key to identify the property
+  key: string,      // Key to identify the property
+  value?: boolean,  // Value of the property as it pertains to the residence
 } & Name;
 
 /** Organized categories of similar properties which describe each residence. */

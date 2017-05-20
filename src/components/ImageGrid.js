@@ -186,9 +186,8 @@ export default class ImageGrid extends React.Component {
     };
 
     if (index % this.props.columns === this.props.columns - 1) {
-      const leftover = width - ((width / this.props.columns) * (this.props.columns - 1));
+      const leftover = width - (Math.floor(width / this.props.columns) * this.props.columns);
       imageStyle.width += leftover;
-      imageStyle.height += leftover;
     }
 
     let image = null;

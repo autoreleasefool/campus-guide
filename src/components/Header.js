@@ -54,13 +54,13 @@ export default class Header extends React.Component {
    */
   props: {
     backgroundColor?: string,         // Background color for the view
-    title: string,                    // Title for the header
     icon?: ?Icon,                     // Large icon to represent the section
     iconCallback?: VoidFunction,      // Callback function for icon on press
+    largeSubtitle?: boolean,         // Request a larger font size for subtitles
     subtitle?: ?string,               // Subtitle text
     subtitleIcon?: ?Icon,             // Small icon for the subtitle
     subtitleCallback?: VoidFunction,  // Callback function for subtitle on press
-    largeSubtitle?: boolean,         // Request a larger font size for subtitles
+    title: string,                    // Title for the header
   };
 
   /**
