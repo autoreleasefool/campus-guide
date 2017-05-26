@@ -48,21 +48,27 @@ export type GridImage = {
 
 // Type definition for component props
 type Props = {
-  images: Array < GridImage >, // List of images to display
-  columns: number,                // Number of columns to show images in
-  disableImages?: boolean,        // If true, grid should only show a list of names, with no images
-  includeClear?: boolean,         // If true, an empty cell should be available to clear the choice
-  filter: ?string,                // Filter the list of images
-  language: Language,             // Language to display image names in
-  onSelect: (i: any) => void,     // Callback for when an image is selected
+  images: Array < GridImage >,                      // List of images to display
+  columns: number,                                  // Number of columns to show images in
+  disableImages?: boolean,                          // If true, grid should only show a list of names, with no images
+  includeClear?: boolean,                           // If true, an empty cell should be available to clear the choice
+  filter: ?string,                                  // Filter the list of images
+  language: Language,                               // Language to display image names in
+  multiSelect?: boolean,                            // Enable selecting two or more images in the grid
+  multiSelectText?: string,                         // Text to display on button for confirming multi select
+  onSelect: (i: GridImage) => void,                 // Callback for when an image is selected
+  onMultiSelect: (i: Array < GridImage >) => void,  // Callback for when multiple images are selected
 }
 
 // Type definition for component state
 type State = {
   images: Array < ?GridImage >, // List of images
+  selected: Set < ?GridImage >, // Indicates which images are selected, for multi select
 };
 
 // Imports
+import Header from 'Header';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
@@ -89,8 +95,15 @@ export default class ImageGrid extends React.Component {
    */
   constructor(props: Props) {
     super(props);
+
+    // FIXME: Better way to throw this error?
+    if (props.multiSelect && !props.multiSelectText) {
+      throw new Error('props.multiSelectText must be provided for multiSelect mode');
+    }
+
     this.state = {
       images: [],
+      selected: new Set(),
     };
   }
 
@@ -115,12 +128,14 @@ export default class ImageGrid extends React.Component {
   /**
    * Gets a unique key for the image.
    *
-   * @param {GridImage} image the image to get a key for
+   * @param {?GridImage} image the image to get a key for
    * @param {number}    index index of the image
    * @returns {string} the key
    */
-  _imageNameExtractor(image: GridImage, index: number): string {
-    return image.shorthand || Translations.getName(this.props.language, image) || index.toString();
+  _imageNameExtractor(image: ?GridImage, index: number): string {
+    return image
+        ? image.shorthand || Translations.getName(this.props.language, image) || index.toString()
+        : index.toString();
   }
 
   /**
@@ -147,6 +162,7 @@ export default class ImageGrid extends React.Component {
 
       // If the search terms are empty, or the image name contains the terms, add it to the list
       if (adjustedSearchTerms == null
+          || (this.state.selected.has(images[i])
           || (image.shorthand && image.shorthand.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (image.name && image.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (image.name_en && image.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
@@ -157,6 +173,48 @@ export default class ImageGrid extends React.Component {
 
     // Update the state so the app reflects the changes made
     this.setState({ images: filteredImages });
+  }
+
+  /**
+   * Handles event when an image in the grid is selected.
+   *
+   * @param {?GridImage} image the selected image
+   */
+  _onImageSelected(image: ?GridImage): void {
+    if (this.props.multiSelect) {
+      const selected = new Set();
+      let found = false;
+
+      this.state.selected.forEach((selectedImage) => {
+        if (selectedImage === image) {
+          found = true;
+        } else {
+          selected.add(selectedImage);
+        }
+      });
+
+      if (!found) {
+        selected.add(image);
+      }
+
+      this.setState({ selected });
+    } else {
+      this.props.onSelect(image);
+    }
+  }
+
+  /**
+   * Handles event when user confirms multi select choices.
+   */
+  _onMultiSelectConfirm(): void {
+    const selected = [];
+    this.props.images.forEach((image) => {
+      if (this.state.selected.has(image)) {
+        selected.push(image);
+      }
+    });
+
+    this.props.onMultiSelect(selected);
   }
 
   /**
@@ -190,6 +248,18 @@ export default class ImageGrid extends React.Component {
       imageStyle.width += leftover;
     }
 
+    let check = null;
+    if (this.props.multiSelect) {
+      if (this.state.selected.has(item)) {
+        check = (
+          <MaterialIcons
+              color={Constants.Colors.tertiaryBackground}
+              name={'check-box'}
+              size={Constants.Sizes.Icons.Medium} />
+        );
+      }
+    }
+
     let image = null;
     if (!this.props.disableImages && item != null) {
       if (typeof (item.image) === 'string') {
@@ -197,21 +267,22 @@ export default class ImageGrid extends React.Component {
           <Image
               resizeMode={'cover'}
               source={{ uri: Configuration.getImagePath(item.image) }}
-              style={[ _styles.image, imageStyle ]} />
+              style={[ _styles.absolute, imageStyle ]} />
         );
       } else {
         image = (
           <Image
               resizeMode={'cover'}
               source={item.image}
-              style={[ _styles.image, imageStyle ]} />
+              style={[ _styles.absolute, imageStyle ]} />
         );
       }
     }
 
     return (
-      <TouchableOpacity onPress={() => this.props.onSelect(item)}>
+      <TouchableOpacity onPress={() => this._onImageSelect(item)}>
         <View style={[ _styles.gridImage, gridImageStyle ]}>
+          {check}
           {image}
           <Text
               ellipsizeMode={'tail'}
@@ -239,12 +310,25 @@ export default class ImageGrid extends React.Component {
     }
 
     return (
-      <FlatList
-          data={this.state.images}
-          keyExtractor={this._imageNameExtractor.bind(this)}
-          numColumns={this.props.columns}
-          renderItem={this._renderItem.bind(this)}
-          style={style} />
+      <View>
+        <FlatList
+            data={this.state.images}
+            keyExtractor={this._imageNameExtractor.bind(this)}
+            numColumns={this.props.columns}
+            renderItem={this._renderItem.bind(this)}
+            style={style} />
+        {this.props.multiSelect && this.props.multiSelectText
+            ? (
+              <TouchableOpacity onPress={this._onMultiSelectConfirm.bind(this)}>
+                <Header
+                    backgroundColor={Constants.Colors.secondaryBackground}
+                    subtitleIcon={{ class: 'material', name: 'chevron-right' }}
+                    title={this.props.multiSelectText} />
+              </TouchableOpacity>
+            )
+            : null}
+
+      </View>
     );
   }
 }
@@ -261,11 +345,11 @@ const _styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
   },
-  image: {
+  absolute: {
     position: 'absolute',
+    bottom: 0,
     top: 0,
     right: 0,
-    bottom: 0,
     left: 0,
   },
 });
