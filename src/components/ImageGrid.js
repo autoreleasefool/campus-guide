@@ -156,20 +156,17 @@ export default class ImageGrid extends React.Component {
       filteredImages.push(null);
     }
 
-    const totalImages = images.length;
-    for (let i = 0; i < totalImages; i++) {
-      const image = images[i];
-
+    images.forEach((image: GridImage) => {
       // If the search terms are empty, or the image name contains the terms, add it to the list
       if (adjustedSearchTerms == null
-          || this.state.selected.has(images[i])
+          || this.state.selected.has(image)
           || (image.shorthand && image.shorthand.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (image.name && image.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (image.name_en && image.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (image.name_fr && image.name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
         filteredImages.push(image);
       }
-    }
+    });
 
     // Update the state so the app reflects the changes made
     this.setState({ images: filteredImages });
@@ -182,18 +179,10 @@ export default class ImageGrid extends React.Component {
    */
   _onImageSelected(image: ?GridImage): void {
     if (this.props.multiSelect) {
-      const selected = new Set();
-      let found = false;
-
-      this.state.selected.forEach((selectedImage) => {
-        if (selectedImage === image) {
-          found = true;
-        } else {
-          selected.add(selectedImage);
-        }
-      });
-
-      if (!found) {
+      const selected = new Set(this.state.selected);
+      if (selected.has(image)) {
+        selected.delete(image);
+      } else {
         selected.add(image);
       }
 
