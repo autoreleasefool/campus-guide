@@ -49,6 +49,7 @@ export type GridImage = {
 // Type definition for component props
 type Props = {
   images: Array < GridImage >,                // List of images to display
+  initialSelection?: Array < GridImage >,     // Images which are selected when the view is initially rendered
   columns: number,                            // Number of columns to show images in
   disableImages?: boolean,                    // If true, grid should only show a list of names, with no images
   includeClear?: boolean,                     // If true, an empty cell should be available to clear the choice
@@ -101,9 +102,16 @@ export default class ImageGrid extends React.Component {
       throw new Error('props.multiSelectText must be provided for multiSelect mode');
     }
 
+    const selected = new Set();
+    if (props.multiSelect && props.initialSelection) {
+      props.initialSelection.forEach((selection) => {
+        selected.add(selection);
+      });
+    }
+
     this.state = {
       images: [],
-      selected: new Set(),
+      selected,
     };
   }
 
@@ -241,10 +249,15 @@ export default class ImageGrid extends React.Component {
     if (this.props.multiSelect) {
       if (this.state.selected.has(item)) {
         check = (
-          <MaterialIcons
-              color={Constants.Colors.tertiaryBackground}
-              name={'check-box'}
-              size={Constants.Sizes.Icons.Medium} />
+          <View style={_styles.checkContainer}>
+            <View style={_styles.container} />
+            <MaterialIcons
+                color={Constants.Colors.tertiaryBackground}
+                name={'check-box'}
+                size={Constants.Sizes.Icons.Jumbo}
+                style={_styles.check} />
+            <View style={_styles.container} />
+          </View>
         );
       }
     }
@@ -256,14 +269,14 @@ export default class ImageGrid extends React.Component {
           <Image
               resizeMode={'cover'}
               source={{ uri: Configuration.getImagePath(item.image) }}
-              style={[ _styles.absolute, imageStyle ]} />
+              style={[ _styles.image, imageStyle ]} />
         );
       } else {
         image = (
           <Image
               resizeMode={'cover'}
               source={item.image}
-              style={[ _styles.absolute, imageStyle ]} />
+              style={[ _styles.image, imageStyle ]} />
         );
       }
     }
@@ -271,8 +284,8 @@ export default class ImageGrid extends React.Component {
     return (
       <TouchableOpacity onPress={() => this._onImageSelected(item)}>
         <View style={[ _styles.gridImage, gridImageStyle ]}>
-          {check}
           {image}
+          {check}
           <Text
               ellipsizeMode={'tail'}
               numberOfLines={1}
@@ -299,7 +312,7 @@ export default class ImageGrid extends React.Component {
     }
 
     return (
-      <View>
+      <View style={_styles.container}>
         <FlatList
             data={this.state.images}
             keyExtractor={this._imageNameExtractor.bind(this)}
@@ -324,6 +337,13 @@ export default class ImageGrid extends React.Component {
 
 // Private styles for component
 const _styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  checkContainer: {
+    flex: 1,
+    backgroundColor: Constants.Colors.transparentCharcoalGrey,
+  },
   gridImage: {
     justifyContent: 'flex-end',
   },
@@ -334,7 +354,11 @@ const _styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
   },
-  absolute: {
+  check: {
+    alignSelf: 'center',
+    backgroundColor: 'transparent',
+  },
+  image: {
     position: 'absolute',
     bottom: 0,
     top: 0,

@@ -85,6 +85,7 @@ import Header from 'Header';
 import ImageGrid from 'ImageGrid';
 import Menu from 'Menu';
 import PaddedIcon from 'PaddedIcon';
+import Snackbar from 'react-native-snackbar';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as ExternalUtils from 'ExternalUtils';
@@ -185,6 +186,9 @@ class Housing extends React.Component {
     }
   }
 
+  /** Residences to be compared. */
+  _residencesToCompare: Array < ?Residence > = [];
+
   /**
    * Builds arrays of properties when a new residence is selected.
    *
@@ -252,12 +256,12 @@ class Housing extends React.Component {
           this.props.selectResidence(null);
           this.props.showSearch(true);
           break;
-        case Constants.Views.Housing.ResidenceDetails:
         case Constants.Views.Housing.ResidenceCompare:
+        case Constants.Views.Housing.ResidenceDetails:
+        case Constants.Views.Housing.ResidenceSelect:
           this.props.showSearch(true);
           break;
         case Constants.Views.Housing.Resources:
-        case Constants.Views.Housing.ResidenceSelect:
           this.props.showSearch(false);
           break;
         default:
@@ -270,6 +274,24 @@ class Housing extends React.Component {
    * Opens view to select residences to compare.
    */
   _onBeginCompare(): void {
+    this.props.switchView(Constants.Views.Housing.ResidenceSelect);
+  }
+
+  /**
+   * Handler for when user selects a set of residences to compare.
+   *
+   * @param {Array<?Residence>} residences residences which were selected
+   */
+  _onMultiResidenceSelect(residences: Array < ?Residence >): void {
+    if (residences.length < 2) {
+      Snackbar.show({
+        title: Translations.get(this.props.language, 'select_at_least_two'),
+        duration: Snackbar.LENGTH_LONG,
+      });
+      return;
+    }
+
+    this._residencesToCompare = residences;
     this.props.switchView(Constants.Views.Housing.ResidenceCompare);
   }
 
@@ -389,7 +411,11 @@ class Housing extends React.Component {
           columns={RESIDENCE_COLUMNS}
           filter={this.props.filter}
           images={this.state.housingInfo.residences}
+          initialSelection={[ this.props.residence ]}
           language={this.props.language}
+          multiSelect={this.props.view === Constants.Views.Housing.ResidenceSelect}
+          multiSelectText={Translations.get(this.props.language, 'compare_residences')}
+          onMultiSelect={this._onMultiResidenceSelect.bind(this)}
           onSelect={this._onSingleResidenceSelect.bind(this)} />
     );
   }
@@ -480,6 +506,18 @@ class Housing extends React.Component {
   }
 
   /**
+   * Renders a set of details about multiple residences, for simple comparison.
+   *
+   * @returns {ReactElement<any>} a list of properties and columns indicating which residences
+   *                              they pertain to
+   */
+  _renderResidenceCompare(): ReactElement < any > {
+    return (
+      <View />
+    );
+  }
+
+  /**
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display.
@@ -494,6 +532,7 @@ class Housing extends React.Component {
           scene = this._renderHousingMenu();
           break;
         case Constants.Views.Housing.Residences:
+        case Constants.Views.Housing.ResidenceSelect:
           scene = this._renderResidenceGrid();
           break;
         case Constants.Views.Housing.ResidenceDetails:
@@ -501,8 +540,9 @@ class Housing extends React.Component {
             scene = this._renderResidenceDetails(this.props.residence);
           }
           break;
-        case Constants.Views.Housing.ResidenceSelect:
         case Constants.Views.Housing.ResidenceCompare:
+          scene = this._renderResidenceCompare();
+          break;
         case Constants.Views.Housing.Resources:
         default:
           // TODO: generic error view?
@@ -596,6 +636,7 @@ const mapDispatchToProps = (dispatch) => {
       switch (view) {
         case Constants.Views.Housing.Residences:
         case Constants.Views.Housing.ResidenceCompare:
+        case Constants.Views.Housing.ResidenceSelect:
           title = 'university_residences';
           break;
         default:
