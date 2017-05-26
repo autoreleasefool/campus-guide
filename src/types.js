@@ -353,13 +353,19 @@ export type Destination = {
 /** A room on campus, with a name and the facilities it offers represented by an ID. */
 export type BuildingRoom = {
   name: string, // Name of the room
-  type: number, // Type of the room, corresponding to a RoomType
+  type: string, // Type of the room, corresponding to a RoomType
 };
 
 /** A predefined type of room and how it should be represented visually. */
 export type RoomType = {
   icon: PlatformIcon, // Icon to display for the room type
 } & Name;
+
+/** Information available on room types. */
+export type RoomTypeInfo = {
+  ids: Array < string >,  // List of IDs of room types
+  types: Object,          // IDs mapped to their descriptions
+}
 
 /** Street address for a location, optionally translated to French or English. */
 type Address = {

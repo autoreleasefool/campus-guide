@@ -48,16 +48,16 @@ export type GridImage = {
 
 // Type definition for component props
 type Props = {
-  images: Array < GridImage >,                      // List of images to display
-  columns: number,                                  // Number of columns to show images in
-  disableImages?: boolean,                          // If true, grid should only show a list of names, with no images
-  includeClear?: boolean,                           // If true, an empty cell should be available to clear the choice
-  filter: ?string,                                  // Filter the list of images
-  language: Language,                               // Language to display image names in
-  multiSelect?: boolean,                            // Enable selecting two or more images in the grid
-  multiSelectText?: string,                         // Text to display on button for confirming multi select
-  onSelect: (i: GridImage) => void,                 // Callback for when an image is selected
-  onMultiSelect: (i: Array < GridImage >) => void,  // Callback for when multiple images are selected
+  images: Array < GridImage >,                // List of images to display
+  columns: number,                            // Number of columns to show images in
+  disableImages?: boolean,                    // If true, grid should only show a list of names, with no images
+  includeClear?: boolean,                     // If true, an empty cell should be available to clear the choice
+  filter: ?string,                            // Filter the list of images
+  language: Language,                         // Language to display image names in
+  multiSelect?: boolean,                      // Enable selecting two or more images in the grid
+  multiSelectText?: string,                   // Text to display on button for confirming multi select
+  onSelect?: (i: any) => void,                // Callback for when an image is selected
+  onMultiSelect?: (i: Array < any >) => void, // Callback for when multiple images are selected
 }
 
 // Type definition for component state
@@ -162,7 +162,7 @@ export default class ImageGrid extends React.Component {
 
       // If the search terms are empty, or the image name contains the terms, add it to the list
       if (adjustedSearchTerms == null
-          || (this.state.selected.has(images[i])
+          || this.state.selected.has(images[i])
           || (image.shorthand && image.shorthand.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (image.name && image.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
           || (image.name_en && image.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
@@ -199,7 +199,7 @@ export default class ImageGrid extends React.Component {
 
       this.setState({ selected });
     } else {
-      this.props.onSelect(image);
+      this.props.onSelect && this.props.onSelect(image);
     }
   }
 
@@ -214,7 +214,7 @@ export default class ImageGrid extends React.Component {
       }
     });
 
-    this.props.onMultiSelect(selected);
+    this.props.onMultiSelect && this.props.onMultiSelect(selected);
   }
 
   /**
@@ -280,7 +280,7 @@ export default class ImageGrid extends React.Component {
     }
 
     return (
-      <TouchableOpacity onPress={() => this._onImageSelect(item)}>
+      <TouchableOpacity onPress={() => this._onImageSelected(item)}>
         <View style={[ _styles.gridImage, gridImageStyle ]}>
           {check}
           {image}

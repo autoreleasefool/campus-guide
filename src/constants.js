@@ -307,7 +307,7 @@ module.exports = {
   /**
    * Default type to assign to rooms when not defined
    */
-  DefaultRoomType: 5,
+  DefaultRoomType: 'office',
 
   /**
    * Default map information

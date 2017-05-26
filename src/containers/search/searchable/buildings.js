@@ -28,7 +28,7 @@
 import { Platform } from 'react-native';
 
 // Types
-import type { Building, Language, RoomType, Section } from 'types';
+import type { Building, Language, RoomTypeInfo, Section } from 'types';
 import type { SearchResult } from '../Searchable';
 
 // Imports
@@ -110,15 +110,16 @@ function _getRoomResults(key:string,
   return new Promise((resolve, reject) => {
     Configuration.init()
         .then(() => Configuration.getConfig('/room_types.json'))
-        .then((roomTypes: Array < RoomType >) => {
+        .then((roomTypeInfo: RoomTypeInfo) => {
           const results: Array < SearchResult > = [];
 
           // Cache list of room types that match the search terms
-          const matchingRoomTypes = [];
-          for (let i = 0; i < roomTypes.length; i++) {
-            const roomTypeName = Translations.getName(language, roomTypes[i]);
-            if (roomTypeName != null && roomTypeName.toUpperCase().indexOf(searchTerms) >= 0) {
-              matchingRoomTypes.push(i);
+          const matchingRoomTypes = new Set();
+          for (let i = 0; i < roomTypeInfo.ids.length; i++) {
+            const id = roomTypeInfo.ids[i];
+            const roomTypeName = Translations.getName(language, roomTypeInfo.types[id]);
+            if (roomTypeName && roomTypeName.toUpperCase().indexOf(searchTerms) >= 0) {
+              matchingRoomTypes.add(id);
             }
           }
 
@@ -134,11 +135,12 @@ function _getRoomResults(key:string,
                 room.type = Constants.DefaultRoomType;
               }
 
-              if (matchingRoomTypes.indexOf(room.type) >= 0
+              if (matchingRoomTypes.has(room.type)
                   || roomName.toUpperCase().indexOf(searchTerms) >= 0
                   || (roomAltName != null && roomAltName.toUpperCase().indexOf(searchTerms) >= 0)) {
-                const description = Translations.getName(language, roomTypes[room.type]) || '';
-                const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomTypes[room.type]);
+                const roomType = roomTypeInfo.types[room.type];
+                const description = Translations.getName(language, roomType) || '';
+                const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomType);
 
                 const matchedTerms = [ roomName.toUpperCase(), description.toUpperCase() ];
                 if (roomAltName != null) {

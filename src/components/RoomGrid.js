@@ -37,12 +37,12 @@ import {
 } from 'react-native';
 
 // Types
-import type { BuildingRoom, Icon, Language, RoomType } from 'types';
+import type { BuildingRoom, Language, RoomTypeInfo } from 'types';
 
 // Type definition for component props.
 type Props = {
   shorthand: string,                                    // Unique shorthand identifier for the building
-  defaultRoomType: number,                              // Default type that rooms should be recognized as
+  defaultRoomType: string,                              // Default type that rooms should be recognized as
   filter: ?string,                                      // Filter the list of rooms
   language: Language,                                   // Language to display building names in
   onSelect: (shorthand: string, room: ?string) => void, // Callback function for when a room is selected
@@ -59,14 +59,12 @@ type State = {
 // Data required for rendering the list of filtered rooms.
 type FilteredRoom = {
   altName: ?string, // Alternate display name for the room
-  icon: ?Icon,      // Icon to identify the room's type
   key: string,      // Unique name/number of the room
-  type: string,     // Type of room
+  typeId: string,   // Type of room
 };
 
 // Imports
 import PaddedIcon from 'PaddedIcon';
-import Promise from 'promise';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
@@ -106,7 +104,12 @@ export default class RoomGrid extends React.Component {
   componentDidMount(): void {
     if (!this.state.loaded) {
       Configuration.init()
-          .then(() => this._onRoomSearch(this.props))
+          .then(() => Configuration.getConfig('/room_types.json'))
+          .then((roomTypeInfo: RoomTypeInfo) => {
+            this._roomTypes = roomTypeInfo.types;
+            this._roomTypeIds = roomTypeInfo.ids;
+            this._filterRooms(this.props);
+          })
           .catch((err: any) => console.error('Configuration could not be initialized for room grid.', err));
     }
   }
@@ -118,15 +121,15 @@ export default class RoomGrid extends React.Component {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
-      this._onRoomSearch(nextProps);
+      this._filterRooms(nextProps);
     }
   }
 
-  /** Promise which resolves when the room types have been loaded. */
-  _roomTypesPromise: ?Promise < Array < RoomType > > = null;
+  /** Room type descriptions. */
+  _roomTypes: Object;
 
-  /** List of room types and details about them. */
-  _roomTypes: Array < RoomType >;
+  /** List of available room type IDs. */
+  _roomTypeIds: Array < string >;
 
   /**
    * Filters the rooms in the building and displays them to the user.
@@ -141,22 +144,19 @@ export default class RoomGrid extends React.Component {
     const filteredRooms: Array < FilteredRoom > = [];
 
     // Cache list of room types that match the search terms
-    const matchingRoomTypes = [];
-    for (let i = 0; i < this._roomTypes.length; i++) {
-      const roomTypeName = Translations.getName(language, this._roomTypes[i]);
-      if (adjustedSearchTerms == null
-          || (roomTypeName != null && roomTypeName.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
-        matchingRoomTypes.push(i);
+    const matchingRoomTypes = new Set();
+    this._roomTypeIds.forEach((id: string) => {
+      const name = Translations.getName(language, this._roomTypes[id]);
+      if (adjustedSearchTerms == null || (name && name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
+        matchingRoomTypes.add(id);
       }
-    }
+    });
 
     // True if the building code matches the search terms
     const codeMatches = adjustedSearchTerms != null && shorthand.indexOf(adjustedSearchTerms) >= 0;
 
-    for (let i = 0; i < rooms.length; i++) {
-      const room = rooms[i];
-      const roomAltName: ?string = Translations.getVariant(language, 'alt_name', room);
-
+    rooms.forEach((room: BuildingRoom) => {
+      const altName = Translations.getVariant(language, 'alt_name', room);
       if (!room.type) {
         room.type = defaultRoomType;
       }
@@ -164,57 +164,22 @@ export default class RoomGrid extends React.Component {
       // If the search terms are empty, or the room contains the terms, add it to the list
       if (adjustedSearchTerms == null
           || codeMatches
+          || matchingRoomTypes.has(room.type)
           || room.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0
-          || matchingRoomTypes.indexOf(room.type) >= 0
-          || (roomAltName != null && roomAltName.indexOf(adjustedSearchTerms) >= 0)) {
+          || (altName && altName.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
         filteredRooms.push({
-          altName: roomAltName,
-          icon: DisplayUtils.getPlatformIcon(Platform.OS, this._roomTypes[room.type]),
+          altName,
+          typeId: room.type,
           key: room.name.toUpperCase(),
-          type: Translations.getName(language, this._roomTypes[room.type]) || '',
         });
       }
-    }
+    });
 
     // Update the state so the app reflects the changes made
     this.setState({
       rooms: filteredRooms,
       loaded: true,
     });
-  }
-
-  /**
-   * Returns a promise which resolves when the room types have been loaded
-   *
-   * @returns {Promise<Array<RoomType>>} promise which resolves with room types
-   */
-  _getRoomTypes(): Promise < Array < RoomType > > {
-    if (this._roomTypesPromise == null) {
-      this._roomTypesPromise = new Promise((resolve: any) => {
-        Configuration.getConfig('/room_types.json')
-            .then((roomTypes: Array < RoomType >) => resolve(roomTypes))
-            .catch((err: any) => console.error('Could not get /room_types.json.', err));
-      });
-    }
-
-    return this._roomTypesPromise;
-  }
-
-  /**
-   * Calls _filterRooms with all rooms, and the search terms.
-   *
-   * @param {Props} props the props to filter with
-   */
-  _onRoomSearch(props: Props): void {
-    if (this.roomTypes == null) {
-      this._getRoomTypes()
-          .then((roomTypes: Array < RoomType >) => {
-            this._roomTypes = roomTypes;
-            this._filterRooms(props);
-          });
-    } else {
-      this._filterRooms(props);
-    }
   }
 
   /**
@@ -233,24 +198,27 @@ export default class RoomGrid extends React.Component {
    * @returns {ReactElement<any>} a view describing a set of room
    */
   _renderRow({ item }: { item: FilteredRoom }): ReactElement < any > {
-    const room = item;
-    let icon: ?ReactElement < any > = null;
-    if (room.icon != null) {
-      icon = (
+    const roomType = this._roomTypes[item.typeId];
+    const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomType);
+    let rowIcon: ?ReactElement < any > = null;
+    if (icon) {
+      rowIcon = (
         <PaddedIcon
             color={Constants.Colors.primaryWhiteText}
-            icon={room.icon} />
+            icon={icon} />
       );
     }
 
     return (
-      <TouchableOpacity onPress={() => this.props.onSelect(this.props.shorthand, room.key)}>
+      <TouchableOpacity onPress={() => this.props.onSelect(this.props.shorthand, item.key)}>
         <View style={_styles.room}>
-          {icon}
+          {rowIcon}
           <View style={_styles.roomDescription}>
-            {room.altName == null ? null : <Text style={_styles.roomType}>{room.altName}</Text>}
-            <Text style={_styles.roomName}>{`${this.props.shorthand} ${room.key}`}</Text>
-            <Text style={_styles.roomType}>{room.type}</Text>
+            {item.altName ? null : <Text style={_styles.roomType}>{item.altName}</Text>}
+            <Text style={_styles.roomName}>{`${this.props.shorthand} ${item.key}`}</Text>
+            <Text style={_styles.roomType}>
+              {Translations.getName(this.props.language, roomType)}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
