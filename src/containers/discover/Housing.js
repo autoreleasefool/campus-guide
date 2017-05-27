@@ -29,7 +29,9 @@ import React from 'react';
 import {
   Alert,
   Clipboard,
+  Dimensions,
   Linking,
+  ScrollView,
   SectionList,
   StyleSheet,
   Text,
@@ -54,11 +56,6 @@ import type {
   Tab,
 } from 'types';
 
-type ResidenceDisplayProperties = {
-  header: Array < BuildingProperty >,                 // Header details about the residence
-  residence: Array < Section < ResidenceProperty > >, // List of specific properties of the residence
-}
-
 // Type definition for component props.
 type Props = {
   appTab: Tab,                                  // The current tab the app is showing
@@ -76,21 +73,27 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  housingInfo: ?HousingInfo,  // Housing information about the university
-} & ResidenceDisplayProperties;
+  header: Array < BuildingProperty >,                         // Header details about the residence
+  housingInfo: ?HousingInfo,                                  // Housing information about the university
+  residenceDetails: Array < Section < ResidenceProperty > >,  // List of specific properties of the residence
+};
 
 // Imports
 import BuildingHeader from 'BuildingHeader';
 import Header from 'Header';
 import ImageGrid from 'ImageGrid';
 import Menu from 'Menu';
-import PaddedIcon from 'PaddedIcon';
 import Snackbar from 'react-native-snackbar';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
+import { default as PaddedIcon, DefaultWidth as PaddedIconWidth } from 'PaddedIcon';
+
+// Width of screen for consistent property alignment when comparing
+const { width } = Dimensions.get('window');
+const RESIDENCE_PROPERTY_WIDTH_RATIO = 0.4;
 
 // Number of columns to show residences in
 const RESIDENCE_COLUMNS = 2;
@@ -116,8 +119,8 @@ class Housing extends React.Component {
     super(props);
     this.state = {
       housingInfo: null,
-      headerProperties: [],
-      residenceProperties: [],
+      header: [],
+      residence: [],
     };
   }
 
@@ -126,6 +129,8 @@ class Housing extends React.Component {
    */
   componentDidMount(): void {
     this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+
+    this._multiPropertyWidth.width = width * RESIDENCE_PROPERTY_WIDTH_RATIO;
 
     if (!this.state.housingInfo) {
       Configuration.init()
@@ -164,17 +169,10 @@ class Housing extends React.Component {
     if (nextProps.residence != this.props.residence) {
       if (nextProps.residence) {
         const properties = this._buildResidenceProperties(nextProps.residence);
-        if (properties) {
-          this.setState({
-            headerProperties: properties.header,
-            residenceProperties: properties.residence,
-          });
-        }
+        this.setState({ header: properties });
+        this._onSearch(nextProps, false);
       } else {
-        this.setState({
-          headerProperties: [],
-          residenceProperties: [],
-        });
+        this.setState({ header: [], residenceDetails: []});
       }
     }
 
@@ -189,19 +187,17 @@ class Housing extends React.Component {
   /** Residences to be compared. */
   _residencesToCompare: Array < ?Residence > = [];
 
+  /** Width of properties for comparison screen. */
+  _multiPropertyWidth: Object = { width: 0 };
+
   /**
    * Builds arrays of properties when a new residence is selected.
    *
    * @param {Residence} residence residence to setup properties for
    * @returns {ResidenceDisplayProperties} properties to display a residence
    */
-  _buildResidenceProperties(residence: Residence): ?ResidenceDisplayProperties {
-    const housingInfo = this.state.housingInfo;
-    if (housingInfo == null) {
-      return null;
-    }
-
-    const headerProperties = [
+  _buildResidenceProperties(residence: Residence): Array < BuildingProperty > {
+    return [
       {
         name: Translations.get(this.props.language, 'address'),
         description: Translations.getVariant(this.props.language, 'address', residence),
@@ -211,24 +207,6 @@ class Housing extends React.Component {
         description: Translations.getVariant(this.props.language, 'description', residence),
       },
     ];
-
-    const residenceProperties = [];
-    for (let i = 0; i < housingInfo.categories.length; i++) {
-      const category: Object = Object.assign({}, housingInfo.categories[i]);
-      category.data = [];
-      category.props = null;
-      for (let j = 0; j < housingInfo.categories[i].props.length; j++) {
-        const property = Object.assign({}, housingInfo.categories[i].props[j]);
-        property.value = residence.props[property.key];
-        category.data.push(property);
-      }
-      residenceProperties.push(category);
-    }
-
-    return {
-      header: headerProperties,
-      residence: residenceProperties,
-    };
   }
 
   /**
@@ -302,19 +280,17 @@ class Housing extends React.Component {
    * @param {boolean} narrowResults true to narrow current results, false to filter full results
    */
   _onSearch(props: Props, narrowResults: boolean): void {
-    const filter = props.filter;
+    const adjustedFilter = props.filter ? props.filter.toUpperCase() : null;
     switch (props.view) {
+      case Constants.Views.Housing.ResidenceCompare:
       case Constants.Views.Housing.ResidenceDetails: {
         // Start with either all of the properties for fresh searches,
         // or narrow down existing results for continued searches
         let unfilteredProperties = null;
         if (narrowResults) {
-          unfilteredProperties = this.state.residenceProperties;
+          unfilteredProperties = this.state.residenceDetails;
         } else if (props.residence) {
-          const properties = this._buildResidenceProperties(props.residence);
-          if (properties) {
-            unfilteredProperties = properties.residence;
-          }
+          unfilteredProperties = this.state.housingInfo.categories;
         }
 
         if (unfilteredProperties == null) {
@@ -326,13 +302,11 @@ class Housing extends React.Component {
           let categoryAdded = false;
 
           // Add categories and all properties if their name matches the filter
-          if (i === 0) {
-            const category = unfilteredProperties[i];
-            const categoryName = Translations.getName(props.language, category) || '';
-            if (filter == null || categoryName.indexOf(filter) >= 0) {
-              filteredProperties.push(category);
-              continue;
-            }
+          const category = unfilteredProperties[i];
+          const categoryName = Translations.getName(props.language, category) || '';
+          if (adjustedFilter == null || categoryName.toUpperCase().indexOf(adjustedFilter) >= 0) {
+            filteredProperties.push(category);
+            continue;
           }
 
           // Check each property in the category and add the category if any match
@@ -340,7 +314,7 @@ class Housing extends React.Component {
           for (let j = 0; j < unfilteredProperties[i].data.length; j++) {
             const property = unfilteredProperties[i].data[j];
             const propertyName = Translations.getName(props.language, property) || '';
-            if (filter == null || propertyName.indexOf(filter) >= 0) {
+            if (adjustedFilter == null || propertyName.toUpperCase().indexOf(adjustedFilter) >= 0) {
               if (!categoryAdded) {
                 filteredProperties.push(Object.assign({}, unfilteredProperties[i]));
                 filteredProperties[filteredProperties.length - 1].data = [];
@@ -351,7 +325,7 @@ class Housing extends React.Component {
           }
         }
 
-        this.setState({ residenceProperties: filteredProperties });
+        this.setState({ residenceDetails: filteredProperties });
         break;
       }
       default:
@@ -432,16 +406,21 @@ class Housing extends React.Component {
   /**
    * Displays a single item, representing a property and value.
    *
-   * @param {ResidenceProperty} item property and value for the residence
-   * @returns {ReactElement<any>} a checked or unchecked box depending on the property value,
-   *                              and the property name
+   * @param {ResidenceProperty} item property for the residence
+   * @returns {?ReactElement<any>} a checked or unchecked box depending on the property value,
+   *                               and the property name
    */
-  _renderSingleResidenceProperty({ item }: { item: ResidenceProperty }): ReactElement < any > {
+  _renderSingleResidenceProperty({ item }: { item: ResidenceProperty }): ?ReactElement < any > {
+    if (item.key === 'none') {
+      return null;
+    }
+
+    const value = this.props.residence.props[item.key];
     return (
       <View style={_styles.propertyContainer}>
         <PaddedIcon
             color={Constants.Colors.tertiaryBackground}
-            icon={{ class: 'material', name: item.value ? 'check-box' : 'check-box-outline-blank' }}
+            icon={{ class: 'material', name: value ? 'check-box' : 'check-box-outline-blank' }}
             size={Constants.Sizes.Icons.Medium} />
         <Text
             ellipsizeMode={'tail'}
@@ -449,6 +428,34 @@ class Housing extends React.Component {
             style={_styles.propertyText}>
           {Translations.getName(this.props.language, item)}
         </Text>
+      </View>
+    );
+  }
+
+  /**
+   * Displays a single item, representing a property and values for multiple residences.
+   *
+   * @param {ResidenceProperty} item property for the residence
+   * @returns {?ReactElement<any>} the property name and checked or unchecked boxes for each residence
+   *                               being compared, depending on if the property pertains to it
+   */
+  _renderMultiResidenceProperty({ item }: { item: ResidenceProperty }): ?ReactElement < any > {
+    if (item.key === 'none') {
+      return null;
+    }
+
+    return (
+      <View style={_styles.propertyContainer}>
+        <Text style={[ _styles.propertyText, _styles.multiPropertyText, this._multiPropertyWidth ]}>
+          {Translations.getName(this.props.language, item)}
+        </Text>
+        {this._residencesToCompare.map((residence) => (
+          <PaddedIcon
+              color={Constants.Colors.tertiaryBackground}
+              icon={{ class: 'material', name: residence.props[item.key] ? 'check-box' : 'check-box-outline-blank' }}
+              key={`${item.key}.${Translations.getName(this.props.language, residence)}`}
+              size={Constants.Sizes.Icons.Medium} />
+        ))}
       </View>
     );
   }
@@ -488,7 +495,7 @@ class Housing extends React.Component {
             hideTitle={true}
             image={residence.image}
             language={this.props.language}
-            properties={this.state.headerProperties} />
+            properties={this.state.header} />
         <TouchableOpacity onPress={this._onBeginCompare.bind(this)}>
           <Header
               backgroundColor={Constants.Colors.tertiaryBackground}
@@ -499,8 +506,40 @@ class Housing extends React.Component {
             ItemSeparatorComponent={this._renderSeparator}
             renderItem={this._renderSingleResidenceProperty.bind(this)}
             renderSectionHeader={this._renderResidencePropertyCategory.bind(this)}
-            sections={this.state.residenceProperties}
+            sections={this.state.residenceDetails}
             stickySectionHeadersEnabled={false} />
+      </View>
+    );
+  }
+
+  /**
+   * Renders the set of residences being compared.
+   *
+   * @returns {ReactElement<any>} residence names
+   */
+  _renderResidenceCompareHeader(): ReactElement < any > {
+    return (
+      <View>
+        <Header
+            icon={{ class: 'material', name: 'hotel' }}
+            title={Translations.get(this.props.language, 'residences')} />
+        {this._residencesToCompare.map((residence, index) => (
+          <Text
+              key={`name.${Translations.getName(this.props.language, residence)}`}
+              style={_styles.multiResidenceName}>
+            {`${(index + 1)}: ${Translations.getName(this.props.language, residence)}`}
+          </Text>
+        ))}
+        <View style={_styles.multiResidenceContainer}>
+          <View style={[ this._multiPropertyWidth, _styles.multiResidenceColumnPadding ]} />
+          {this._residencesToCompare.map((residence, index) => (
+            <Text
+                key={`residenceIndex.${index}`}
+                style={_styles.multiResidenceColumn}>
+              {`${(index + 1)}`}
+            </Text>
+          ))}
+        </View>
       </View>
     );
   }
@@ -513,7 +552,21 @@ class Housing extends React.Component {
    */
   _renderResidenceCompare(): ReactElement < any > {
     return (
-      <View />
+      <ScrollView
+          bounces={false}
+          horizontal={true}
+          style={_styles.container}>
+        <View>
+          {this._renderResidenceCompareHeader()}
+          <View style={_styles.compareHeaderSeparator} />
+          <SectionList
+              ItemSeparatorComponent={this._renderSeparator}
+              renderItem={this._renderMultiResidenceProperty.bind(this)}
+              renderSectionHeader={this._renderResidencePropertyCategory.bind(this)}
+              sections={this.state.residenceDetails}
+              stickySectionHeadersEnabled={false} />
+        </View>
+      </ScrollView>
     );
   }
 
@@ -603,6 +656,7 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     textAlign: 'center',
+    maxWidth: width - Constants.Sizes.Margins.Expanded * 2,
   },
   propertyContainer: {
     flexDirection: 'row',
@@ -614,6 +668,36 @@ const _styles = StyleSheet.create({
     marginRight: Constants.Sizes.Margins.Expanded,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
+  },
+  multiPropertyText: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    textAlign: 'right',
+  },
+  multiResidenceContainer: {
+    flexDirection: 'row',
+  },
+  multiResidenceName: {
+    marginTop: Constants.Sizes.Margins.Regular,
+    marginBottom: 0,
+    marginLeft: Constants.Sizes.Margins.Regular,
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
+  },
+  multiResidenceColumn: {
+    marginTop: Constants.Sizes.Margins.Expanded,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    width: PaddedIconWidth,
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  multiResidenceColumnPadding: {
+    marginRight: Constants.Sizes.Margins.Expanded * 2,
+  },
+  compareHeaderSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.tertiaryBackground,
   },
 });
 

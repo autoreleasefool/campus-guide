@@ -412,8 +412,7 @@ export type Facility =
 
 /** Properties which describe each residence. */
 export type ResidenceProperty = {
-  key: string,      // Key to identify the property
-  value?: boolean,  // Value of the property as it pertains to the residence
+  key: string,  // Key to identify the property
 } & Name;
 
 /** Organized categories of similar properties which describe each residence. */

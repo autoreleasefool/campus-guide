@@ -49,7 +49,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from 'Constants';
 
 // 16 left padding + 16 right padding + 24 icon size
-const DEFAULT_WIDTH = 56;
+export const DefaultWidth = 56;
 
 /**
  * Renders the icon, centered in the parent view
@@ -78,7 +78,7 @@ export default function render(props: Props): ReactElement < any > {
   }
 
   return (
-    <View style={[ _styles.iconContainer, { width: props.width || DEFAULT_WIDTH }]}>
+    <View style={[ _styles.iconContainer, { width: props.width || DefaultWidth }]}>
       {icon}
     </View>
   );
