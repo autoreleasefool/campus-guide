@@ -82,6 +82,7 @@ type State = {
 import BuildingHeader from 'BuildingHeader';
 import Header from 'Header';
 import ImageGrid from 'ImageGrid';
+import LinkCategoryView from 'LinkCategoryView';
 import Menu from 'Menu';
 import Snackbar from 'react-native-snackbar';
 import * as Configuration from 'Configuration';
@@ -237,10 +238,8 @@ class Housing extends React.Component {
         case Constants.Views.Housing.ResidenceCompare:
         case Constants.Views.Housing.ResidenceDetails:
         case Constants.Views.Housing.ResidenceSelect:
-          this.props.showSearch(true);
-          break;
         case Constants.Views.Housing.Resources:
-          this.props.showSearch(false);
+          this.props.showSearch(true);
           break;
         default:
           // Does nothing
@@ -371,6 +370,24 @@ class Housing extends React.Component {
           language={this.props.language}
           sections={this.state.housingInfo.sections}
           onSectionSelected={this._onSectionSelected.bind(this)} />
+    );
+  }
+
+  /**
+   * Renders a set of resources for more information on housing at the university.
+   *
+   * @returns {?ReactElement<any>} A LinkCategoryView
+   */
+  _renderOtherResources(): ?ReactElement < any > {
+    if (this.state.housingInfo == null) {
+      return null;
+    }
+
+    return (
+      <LinkCategoryView
+          filter={this.props.filter}
+          language={this.props.language}
+          section={this.state.housingInfo.resources} />
     );
   }
 
@@ -597,6 +614,8 @@ class Housing extends React.Component {
           scene = this._renderResidenceCompare();
           break;
         case Constants.Views.Housing.Resources:
+          scene = this._renderOtherResources();
+          break;
         default:
           // TODO: generic error view?
       }

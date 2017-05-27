@@ -430,11 +430,11 @@ export type Residence = {
 
 /** Information on housing at the university. */
 export type HousingInfo = {
-  offCampusHousing: Link,                       // Link to info about off campus housing
-  categories: Array < ResidenceCategory >,      // List of categories which residences can be described by
-  residences: Array < Residence >,              // List of residences at the university
-  resources: Array < NamedLink & Description >, // List of other resources for finding housing at the university
-  sections: Array < MenuSection >,              // List of sections of housing info
+  offCampusHousing: Link,                   // Link to info about off campus housing
+  categories: Array < ResidenceCategory >,  // List of categories which residences can be described by
+  residences: Array < Residence >,          // List of residences at the university
+  resources: LinkSection,                   // List of other resources for finding housing at the university
+  sections: Array < MenuSection >,          // List of sections of housing info
 };
 
 //-----------------------------------------------------------------------------
