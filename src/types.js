@@ -252,10 +252,10 @@ export type StudySpot = {
 
 /** Information about study spots. */
 export type StudySpotInfo = {
-  filters: Array < string >,                    // List of filter IDs
-  filterDescriptions: Object,                   // Filter IDs mapped to their descriptions
-  reservations: Array < StudySpotReservation >, // Links for making reservations of study spots
-  spots: Array < StudySpot >,                   // Study spots available on campus
+  filters: Array < string >,  // List of filter IDs
+  filterDescriptions: Object, // Filter IDs mapped to their descriptions
+  reservations: LinkSection,  // Links for making reservations of study spots
+  spots: Array < StudySpot >, // Study spots available on campus
 };
 
 //-----------------------------------------------------------------------------

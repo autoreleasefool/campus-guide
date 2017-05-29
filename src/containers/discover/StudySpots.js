@@ -43,7 +43,7 @@ import * as actions from 'actions';
 import type {
   Language,
   StudySpot,
-  StudySpotReservation,
+  StudySpotInfo,
   TimeFormat,
 } from 'types';
 
@@ -62,18 +62,17 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  filters: Array < string >,                    // List of filters IDs
-  filterDescriptions: Object,                   // Filter IDs mapped to their descriptions
-  filterDescriptionsVisible: boolean,           // True to show filter descriptions, false to hide
-  filterSelected: boolean,                      // Indicates if any filter has been initially selected
-  loaded: boolean,                              // Indicates if the data has been loaded for this view
-  spots: Array < StudySpot >,                   // List of available study spots
-  reservations: Array < StudySpotReservation >, // List of sites to reserve study spots
+  filterDescriptionsVisible: boolean, // True to show filter descriptions, false to hide
+  filterSelected: boolean,            // Indicates if any filter has been initially selected
+  loaded: boolean,                    // Indicates if the data has been loaded for this view
+  reservationsVisible: boolean,       // True to show reservation info, false to hide
+  studySpots: ?StudySpotInfo,         // Information to display about study spots
 }
 
 // Imports
 import Header from 'Header';
 import FilterDescriptions from './modals/FilterDescriptions';
+import LinkCategoryView from 'LinkCategoryView';
 import ModalHeader from 'ModalHeader';
 import Snackbar from 'react-native-snackbar';
 import StudyFilters from 'StudyFilters';
@@ -105,13 +104,11 @@ class StudySpots extends React.Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      filters: [],
-      filterDescriptions: {},
       filterDescriptionsVisible: false,
       filterSelected: false,
       loaded: false,
-      spots: [],
-      reservations: [],
+      reservationsVisible: false,
+      studySpots: null,
     };
   }
 
@@ -123,12 +120,7 @@ class StudySpots extends React.Component {
       Configuration.init()
           .then(() => Configuration.getConfig('/study_spots.json'))
           .then((studySpots: Object) => {
-            this.setState({
-              filters: studySpots.filters,
-              filterDescriptions: studySpots.filterDescriptions,
-              spots: studySpots.spots,
-              reservations: studySpots.reservations,
-            });
+            this.setState({ studySpots });
           })
           .catch((err: any) => console.error('Configuration could not be initialized for study spots.', err));
     }
@@ -144,18 +136,34 @@ class StudySpots extends React.Component {
   }
 
   /**
+   * Hide or show the info for reserving a study spot.
+   *
+   * @param {boolean} visible true to show, false to hide
+   */
+  _setReservationsVisible(visible: boolean): void {
+    this.setState({ reservationsVisible: visible });
+  }
+
+  /**
    * Updates the active filters.
    *
    * @param {?string} id identifier of the selected filter
    */
   _onFilterSelected(id: ?string): void {
+    const studySpotInfo = this.state.studySpots;
+    if (studySpotInfo == null) {
+      return;
+    }
+
     LayoutAnimation.easeInEaseOut();
     this.setState({ filterSelected: true });
     this.props.showSearch(true);
 
     const filterId = id;
     if (filterId) {
-      const filterName = Translations.getName(this.props.language, this.state.filterDescriptions[filterId]) || '';
+      const filterName = Translations.getName(
+        this.props.language,
+        studySpotInfo.filterDescriptions[filterId]) || '';
       if (this.props.activeFilters == null) {
         this.props.setFilters([ filterId ]);
       } else if (this.props.activeFilters.has(filterId)) {
@@ -191,6 +199,13 @@ class StudySpots extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
+    const studySpotInfo = this.state.studySpots;
+    if (studySpotInfo == null) {
+      return (
+        <View style={_styles.container} />
+      );
+    }
+
     const filterStyle = this.state.filterSelected
         ? _styles.filterSelected
         : _styles.filterNotSelected;
@@ -208,20 +223,42 @@ class StudySpots extends React.Component {
               title={Translations.get(this.props.language, 'filter_descriptions')}
               onRightAction={this._setFilterDescriptionsVisible.bind(this, false)} />
           <FilterDescriptions
-              descriptions={this.state.filterDescriptions}
-              filters={this.state.filters}
+              descriptions={studySpotInfo.filterDescriptions}
+              filters={studySpotInfo.filters}
               language={this.props.language} />
+        </Modal>
+        <Modal
+            animationType={'slide'}
+            transparent={false}
+            visible={this.state.reservationsVisible}
+            onRequestClose={this._setReservationsVisible.bind(this, false)}>
+          <ModalHeader
+              rightActionEnabled={true}
+              rightActionText={Translations.get(this.props.language, 'done')}
+              title={Translations.get(this.props.language, 'study_spots')}
+              onRightAction={this._setReservationsVisible.bind(this, false)} />
+          <LinkCategoryView
+              filter={this.props.filter}
+              language={this.props.language}
+              section={studySpotInfo.reservations} />
         </Modal>
         <View style={_styles.container}>
           <StudySpotList
               activeFilters={this.props.activeFilters}
               filter={this.props.filter}
               language={this.props.language}
-              spots={this.state.spots}
-              studyFilters={this.state.filterDescriptions}
+              spots={studySpotInfo.spots}
+              studyFilters={studySpotInfo.filterDescriptions}
               timeFormat={this.props.timeFormat}
               onSelect={this._onSpotSelected.bind(this)} />
         </View>
+        <TouchableOpacity onPress={this._setReservationsVisible.bind(this, true)}>
+          <Header
+              backgroundColor={Constants.Colors.secondaryBackground}
+              icon={{ name: 'book', class: 'material' }}
+              subtitleIcon={{ name: 'chevron-right', class: 'material' }}
+              title={Translations.get(this.props.language, 'reserve_study_spot')} />
+        </TouchableOpacity>
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: 'filter-list', class: 'material' }}
@@ -230,15 +267,15 @@ class StudySpots extends React.Component {
             title={Translations.get(this.props.language, 'filters')} />
         <StudyFilters
             activeFilters={this.props.activeFilters}
-            filterDescriptions={this.state.filterDescriptions}
-            filters={this.state.filters}
+            filterDescriptions={studySpotInfo.filterDescriptions}
+            filters={studySpotInfo.filters}
             fullSize={false}
             language={this.props.language}
             onFilterSelected={this._onFilterSelected.bind(this)} />
         <View style={[ _styles.filterSelection, filterStyle ]}>
           <StudyFilters
-              filterDescriptions={this.state.filterDescriptions}
-              filters={this.state.filters}
+              filterDescriptions={studySpotInfo.filterDescriptions}
+              filters={studySpotInfo.filters}
               fullSize={true}
               language={this.props.language}
               onFilterSelected={this._onFilterSelected.bind(this)} />
