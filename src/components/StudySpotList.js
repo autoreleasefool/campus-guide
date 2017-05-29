@@ -57,6 +57,7 @@ type State = {
 };
 
 // Imports
+import moment from 'moment';
 import PaddedIcon from 'PaddedIcon';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
@@ -117,21 +118,30 @@ export default class StudySpotList extends React.Component {
   /**
    * Check if the spot contains all of the active filters.
    *
-   * @param {Set<string>}   activeFilters currently active filters
-   * @param {Array<string>} spotFilters   filters applied to the spot
+   * @param {Set<string>} activeFilters currently active filters
+   * @param {StudySpot}   spot          details about the study spot
    * @returns {boolean} true iff the spot contains all the active filters, false otherwise
    */
-  _spotMatchesAllFilters(activeFilters: Set < string >, spotFilters: Array < string >): boolean {
+  _spotMatchesAllFilters(activeFilters: Set < string >, spot: StudySpot): boolean {
     if (activeFilters.size === 0) {
       return true;
     }
 
     let matches = 0;
-    spotFilters.forEach((filter) => {
+    spot.filters.forEach((filter) => {
       if (activeFilters.has(filter)) {
-        matches += 1;
+        matches++;
       }
     });
+
+    if (activeFilters.has('open')) {
+      const openTime = moment(spot.opens, 'HH:mm');
+      const closeTime = moment(spot.closes, 'HH:mm');
+      const currentTime = moment();
+      if (openTime.diff(currentTime) < 0 && closeTime.diff(currentTime, 'hours') >= 1) {
+        matches++;
+      }
+    }
 
     return matches === activeFilters.size;
   }
@@ -154,7 +164,7 @@ export default class StudySpotList extends React.Component {
       const spot: Object = spots[i];
 
       // Don't add the spot if it doesn't match all the filters
-      if (!this._spotMatchesAllFilters(activeFilters, spot.filters)) {
+      if (!this._spotMatchesAllFilters(activeFilters, spot)) {
         continue;
       }
 
