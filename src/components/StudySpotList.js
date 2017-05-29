@@ -38,17 +38,17 @@ import {
 } from 'react-native';
 
 // Types
-import type { Language, StudySpot, StudySpotFilter, TimeFormat } from 'types';
+import type { Language, StudySpot, TimeFormat } from 'types';
 
 // Type definition for component props.
 type Props = {
-  activeFilters: Array < number >,          // List of active study spot filters
-  filter: ?string,                          // Filter the list of buildings
-  studyFilters: Array < StudySpotFilter >,  // Set of available study room filters
-  language: Language,                       // Language to display building names in
-  onSelect: (s: StudySpot) => void,         // Callback for when a spot is selected
-  spots: Array < StudySpot >,               // Study spot properties to display
-  timeFormat: TimeFormat,                   // Format to display times in
+  activeFilters: Set < string >,    // Set of active study spot filters
+  filter: ?string,                  // Filter the list of buildings
+  studyFilters: Object,             // Descriptions of study room filters
+  language: Language,               // Language to display building names in
+  onSelect: (s: StudySpot) => void, // Callback for when a spot is selected
+  spots: Array < StudySpot >,       // Study spot properties to display
+  timeFormat: TimeFormat,           // Format to display times in
 }
 
 // Type definition for component state
@@ -108,50 +108,32 @@ export default class StudySpotList extends React.Component {
     }
 
     // Compare filters to see if re-filtering needs to occur
-    if (!this.props.activeFilters || nextProps.activeFilters.length !== this.props.activeFilters.length) {
+    if (this.props.activeFilters != nextProps.activeFilters) {
       this._filterStudySpots(nextProps);
       return;
-    }
-
-    for (let i = 0; i < nextProps.activeFilters.length; i++) {
-      if (nextProps.activeFilters[i] !== this.props.activeFilters[i]) {
-        this._filterStudySpots(nextProps);
-        return;
-      }
     }
   }
 
   /**
    * Check if the spot contains all of the active filters.
    *
-   * @param {Array<number>} activeFilters currently active filters
-   * @param {Array<number>} spotFilters   filters applied to the spot
+   * @param {Set<string>}   activeFilters currently active filters
+   * @param {Array<string>} spotFilters   filters applied to the spot
    * @returns {boolean} true iff the spot contains all the active filters, false otherwise
    */
-  _spotMatchesAllFilters(activeFilters: Array < number >, spotFilters: Array < number >): boolean {
-    if (!activeFilters || activeFilters.length === 0) {
+  _spotMatchesAllFilters(activeFilters: Set < string >, spotFilters: Array < string >): boolean {
+    if (activeFilters.size === 0) {
       return true;
     }
 
-    const totalActiveFilters = activeFilters.length;
-    const totalSpotFilters = spotFilters.length;
-    let activeIdx = 0;
-    let spotIdx = 0;
     let matches = 0;
-
-    while (activeIdx < totalActiveFilters && spotIdx < totalSpotFilters) {
-      if (activeFilters[activeIdx] === spotFilters[spotIdx]) {
+    spotFilters.forEach((filter) => {
+      if (activeFilters.has(filter)) {
         matches += 1;
-        activeIdx += 1;
-        spotIdx += 1;
-      } else if (activeFilters[activeIdx] < spotFilters[spotIdx]) {
-        activeIdx += 1;
-      } else {
-        spotIdx += 1;
       }
-    }
+    });
 
-    return matches === totalActiveFilters;
+    return matches === activeFilters.size;
   }
 
   /**

@@ -34,17 +34,17 @@ module.exports = {
     terms,
   }),
 
-  activateStudyFilter: (filter: number) => ({
+  activateStudyFilter: (filter: string) => ({
     type: ACTIVATE_STUDY_FILTER,
     filter,
   }),
 
-  deactivateStudyFilter: (filter: number) => ({
+  deactivateStudyFilter: (filter: string) => ({
     type: DEACTIVATE_STUDY_FILTER,
     filter,
   }),
 
-  setStudyFilters: (filters: Array < number >) => ({
+  setStudyFilters: (filters: Array < string >) => ({
     type: SET_STUDY_FILTERS,
     filters,
   }),

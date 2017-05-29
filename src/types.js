@@ -247,14 +247,15 @@ export type StudySpot = {
   room: string,               // Room number
   opens: string,              // Time the spot opens at
   closes: string,             // Time the spot closes at
-  filters: Array < number >,  // List of properties to filter on
+  filters: Array < string >,  // List of properties to filter on
 } & Name & Description;
 
 /** Information about study spots. */
 export type StudySpotInfo = {
-  filters: Array < StudySpotFilter >,
-  reservations: Array < StudySpotReservation >,
-  spots: Array < StudySpot >,
+  filters: Array < string >,                    // List of filter IDs
+  filterDescriptions: Object,                   // Filter IDs mapped to their descriptions
+  reservations: Array < StudySpotReservation >, // Links for making reservations of study spots
+  spots: Array < StudySpot >,                   // Study spots available on campus
 };
 
 //-----------------------------------------------------------------------------

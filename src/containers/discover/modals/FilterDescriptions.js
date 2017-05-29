@@ -35,12 +35,13 @@ import {
 } from 'react-native';
 
 // Types
-import type { Language, StudySpotFilter } from 'types';
+import type { Language } from 'types';
 
 // Type definition for component props.
 type Props = {
-  filters: Array < StudySpotFilter >, // List of filters for filtering spots
-  language: Language,                 // The current language, selected by the user
+  filters: Array < string >,  // List of filter IDs
+  descriptions: Object,       // Mapping of filter IDs to their descriptions
+  language: Language,         // The current language, selected by the user
 }
 
 // Imports
@@ -59,13 +60,14 @@ export default class StudySpots extends React.Component {
   /**
    * Renders a description of a filter.
    *
-   * @param {StudySpotFilter} filter the filter to render
+   * @param {string} filter the filter to render
    * @returns {ReactElement<any>} the filter icon, name and description
    */
-  _renderItem({ item }: { item: StudySpotFilter }): ReactElement < any > {
-    const name = Translations.getName(this.props.language, item) || '';
-    const description = Translations.getVariant(this.props.language, 'description', item) || '';
-    const icon = DisplayUtils.getPlatformIcon(Platform.OS, item);
+  _renderItem({ item }: { item: string }): ReactElement < any > {
+    const filter = this.props.descriptions[item];
+    const name = Translations.getName(this.props.language, filter) || '';
+    const description = Translations.getVariant(this.props.language, 'description', filter) || '';
+    const icon = DisplayUtils.getPlatformIcon(Platform.OS, filter);
 
     return (
       <View style={_styles.filter}>
@@ -102,7 +104,7 @@ export default class StudySpots extends React.Component {
         <FlatList
             ItemSeparatorComponent={this._renderSeparator}
             data={this.props.filters}
-            keyExtractor={(filter) => Translations.getEnglishName(filter) || ''}
+            keyExtractor={(filterId) => filterId}
             renderItem={this._renderItem.bind(this)} />
       </View>
     );

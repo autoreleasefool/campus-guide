@@ -36,15 +36,16 @@ import {
 } from 'react-native';
 
 // Types
-import type { Icon, Language, StudySpotFilter } from 'types';
+import type { Icon, Language } from 'types';
 
 // Type definition for component props.
 type Props = {
-  activeFilters?: Array < number >,            // List of filters actively being used
-  filters: Array < StudySpotFilter >,         // List of available filters
-  fullSize: boolean,                          // True to make full size, false for shrunken
-  language: Language,                         // The current language, selected by the user
-  onFilterSelected: (index: number) => void,  // Callback for when a filter is selected
+  activeFilters?: Set < string >,           // Set of filters actively being used
+  filters: Array < string >,                // List of available filter IDs
+  filterDescriptions: Object,               // Mapping from filter IDs to their descriptions
+  fullSize: boolean,                        // True to make full size, false for shrunken
+  language: Language,                       // The current language, selected by the user
+  onFilterSelected: (id: ?string) => void,  // Callback for when a filter is selected
 }
 
 // Imports
@@ -68,22 +69,12 @@ export default class StudyFilters extends React.Component {
   props: Props;
 
   /**
-   * Constructor.
-   *
-   * @param {props} props component props
-   */
-  constructor(props: Props) {
-    super(props);
-    (this:any)._onSelectFilter = this._onSelectFilter.bind(this);
-  }
-
-  /**
    * Callback for when a filter is selected
    *
-   * @param {number} index the index of the filter selected
+   * @param {?string} id the identifier of the filter selected
    */
-  _onSelectFilter(index: number): void {
-    this.props.onFilterSelected && this.props.onFilterSelected(index);
+  _onSelectFilter(id: ?string): void {
+    this.props.onFilterSelected && this.props.onFilterSelected(id);
   }
 
   /**
@@ -117,16 +108,16 @@ export default class StudyFilters extends React.Component {
   /**
    * Draws an icon and name for a filter, at full size.
    *
-   * @param {StudySpotFilter} filter         the filter to draw
-   * @param {number}          index          the index of the filter in the list
-   * @param {boolean}         withBackground true to include a dark background
+   * @param {string}  filterId       the ID of the filter to draw
+   * @param {boolean} withBackground true to include a dark background
    * @returns {ReactElement<any>} a name and an icon
    */
-  _renderFullFilter(filter: StudySpotFilter, index: number, withBackground: boolean): ReactElement < any > {
+  _renderFullFilter(filterId: string, withBackground: boolean): ReactElement < any > {
+    const filter = this.props.filterDescriptions[filterId];
     return (
       <TouchableOpacity
           style={_styles.touchableContainer}
-          onPress={() => this._onSelectFilter(index)}>
+          onPress={() => this._onSelectFilter(filterId)}>
         <View style={[ _styles.filterContainer, withBackground ? _styles.filterBackground : {} ]}>
           {this._renderIcon(DisplayUtils.getPlatformIcon(Platform.OS, filter), FULL_ICON_SIZE, true)}
           <Text style={_styles.fullSizeText}>{Translations.getName(this.props.language, filter)}</Text>
@@ -138,17 +129,17 @@ export default class StudyFilters extends React.Component {
   /**
    * Draws an icon and name for a filter, minimized.
    *
-   * @param {StudySpotFilter} filter         the filter to draw
-   * @param {number}          index          the index of the filter in the list
-   * @param {boolean}         withBackground true to include a dark background
+   * @param {string}  filterId       the ID of the filter to draw
+   * @param {boolean} withBackground true to include a dark background
    * @returns {ReactElement<any>} a name and an icon
    */
-  _renderMiniFilter(filter: StudySpotFilter, index: number, withBackground: boolean): ReactElement < any > {
-    const isActive = this.props.activeFilters != null && this.props.activeFilters.indexOf(index) >= 0;
+  _renderMiniFilter(filterId: string, withBackground: boolean): ReactElement < any > {
+    const isActive = this.props.activeFilters != null && this.props.activeFilters.has(filterId);
+    const filter = this.props.filterDescriptions[filterId];
     return (
       <TouchableOpacity
           style={_styles.touchableContainer}
-          onPress={() => this._onSelectFilter(index)}>
+          onPress={() => this._onSelectFilter(filterId)}>
         <View style={[ _styles.filterContainer, withBackground ? _styles.filterBackground : {} ]}>
           {this._renderIcon(DisplayUtils.getPlatformIcon(Platform.OS, filter), MINI_ICON_SIZE, isActive)}
         </View>
@@ -170,8 +161,8 @@ export default class StudyFilters extends React.Component {
         <View
             key={`fullPair-${Math.floor(i / 2)}`}
             style={_styles.filterSet}>
-          {this._renderFullFilter(this.props.filters[i], i, evenBackground)}
-          {i + 1 < numberOfFilters ? this._renderFullFilter(this.props.filters[i + 1], i + 1, !evenBackground) : null}
+          {this._renderFullFilter(this.props.filters[i], evenBackground)}
+          {i + 1 < numberOfFilters ? this._renderFullFilter(this.props.filters[i + 1], !evenBackground) : null}
         </View>
       );
     }
@@ -199,10 +190,10 @@ export default class StudyFilters extends React.Component {
         <View
             key={`miniQuad-${Math.floor(i / 4)}`}
             style={_styles.filterSet}>
-          {this._renderMiniFilter(this.props.filters[i], i, false)}
-          {i + 1 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 1], i + 1, false) : null}
-          {i + 2 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 2], i + 2, false) : null}
-          {i + 3 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 3], i + 3, false) : null}
+          {this._renderMiniFilter(this.props.filters[i], false)}
+          {i + 1 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 1], false) : null}
+          {i + 2 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 2], false) : null}
+          {i + 3 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 3], false) : null}
         </View>
       );
     }
@@ -222,7 +213,6 @@ export default class StudyFilters extends React.Component {
    * @returns {ReactElement<any>} the hierarchy of views to render.
    */
   render(): ReactElement < any > {
-
     if (this.props.fullSize) {
       return this._renderFullSize();
     } else {

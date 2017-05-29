@@ -29,13 +29,13 @@ import { SEARCH, ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SET_STUDY_FILTE
 
 // Describes a search.
 export type Search = {
-  studyFilters: ?Array < number >,  // Filters to search study rooms by
-  terms: ?string,                   // Search terms to filter results by
+  studyFilters: Set < string >,  // Filters to search study rooms by
+  terms: ?string,                 // Search terms to filter results by
 };
 
 // Initial search state.
 const initialState: Search = {
-  studyFilters: null,
+  studyFilters: new Set(),
   terms: null,
 };
 
@@ -55,26 +55,8 @@ function search(state: Search = initialState, action: any): Search {
       };
     case ACTIVATE_STUDY_FILTER: {
       // Copy the current list of filters, or create a new one
-      const studyFilters = state.studyFilters == null ? [] : state.studyFilters.slice();
-
-      // Insert the new number in sorted position
-      let inserted = false;
-      for (let i = 0; i < studyFilters.length; i++) {
-        if (studyFilters[i] > action.filter) {
-          studyFilters.splice(i, 0, action.filter);
-          inserted = true;
-          break;
-        } else if (studyFilters[i] === action.filter) {
-          // Ignore duplicates
-          inserted = true;
-          break;
-        }
-      }
-
-      // If the item did not go in the array, push it onto the end
-      if (!inserted) {
-        studyFilters.push(action.filter);
-      }
+      const studyFilters = new Set(state.studyFilters);
+      studyFilters.add(action.filter);
 
       return {
         ...state,
@@ -83,26 +65,25 @@ function search(state: Search = initialState, action: any): Search {
     }
     case DEACTIVATE_STUDY_FILTER: {
       // Copy the current list of filters, or create a new one
-      const studyFilters = state.studyFilters == null ? [] : state.studyFilters.slice();
-
-      // Remove the value, if found
-      for (let i = 0; i < studyFilters.length; i++) {
-        if (studyFilters[i] === action.filter) {
-          studyFilters.splice(i, 1);
-          break;
-        }
-      }
+      const studyFilters = new Set(state.studyFilters);
+      studyFilters.delete(action.filter);
 
       return {
         ...state,
         studyFilters,
       };
     }
-    case SET_STUDY_FILTERS:
+    case SET_STUDY_FILTERS: {
+      const studyFilters = new Set();
+      action.filters.forEach((filter) => {
+        studyFilters.add(filter);
+      });
+
       return {
         ...state,
-        studyFilters: action.filters,
+        studyFilters,
       };
+    }
     default:
       return state;
   }

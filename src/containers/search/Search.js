@@ -293,7 +293,6 @@ class Search extends React.Component {
       this.setState({ singleResultTitle: null });
       this.refs.Navigator.pop();
     } else {
-      console.log('here: ' + source);
       this._updateSingleResults(source);
       if (this._singleResults.length > 2) {
         this.setState({

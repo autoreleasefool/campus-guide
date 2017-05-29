@@ -31,7 +31,7 @@ import reducer from '../search';
 
 // Expected initial state
 const initialState = {
-  studyFilters: null,
+  studyFilters: new Set(),
   terms: null,
 };
 
@@ -56,34 +56,44 @@ describe('search reducer', () => {
   });
 
   it('should set new filters', () => {
-    const filters = [ 0, 1, 2 ];
-    expect(reducer(initialState, { type: SET_STUDY_FILTERS, filters }))
-        .toEqual({ ...initialState, studyFilters: filters });
+    const filters = new Set();
+    filters.add('filter1');
+    filters.add('filter2');
+
+    const updatedState = reducer(initialState, { type: SET_STUDY_FILTERS, filters: [ 'filter1', 'filter2' ]});
+    expect(updatedState.studyFilters).not.toBeNull();
+    expect(updatedState.studyFilters.size).toBe(2);
+    expect(updatedState.studyFilters.has('filter1')).toBeTruthy();
+    expect(updatedState.studyFilters.has('filter2')).toBeTruthy();
   });
 
   it('should activate new filters', () => {
-    let updatedState = reducer(initialState, { type: ACTIVATE_STUDY_FILTER, filter: 0 });
-    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0 ]});
+    let updatedState = reducer(initialState, { type: ACTIVATE_STUDY_FILTER, filter: 'filter1' });
+    expect(updatedState.studyFilters).not.toBeNull();
+    expect(updatedState.studyFilters.size).toBe(1);
+    expect(updatedState.studyFilters.has('filter1')).toBeTruthy();
 
-    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 2 });
-    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0, 2 ]});
-
-    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 2 });
-    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0, 2 ]});
-
-    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 1 });
-    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0, 1, 2 ]});
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 'filter2' });
+    expect(updatedState.studyFilters).not.toBeNull();
+    expect(updatedState.studyFilters.size).toBe(2);
+    expect(updatedState.studyFilters.has('filter1')).toBeTruthy();
+    expect(updatedState.studyFilters.has('filter2')).toBeTruthy();
   });
 
   it('should deactivate filters', () => {
-    let updatedState = reducer(initialState, { type: DEACTIVATE_STUDY_FILTER, filter: 0 });
-    expect(updatedState).toEqual({ ...initialState, studyFilters: []});
+    let updatedState = reducer(initialState, { type: ACTIVATE_STUDY_FILTER, filter: 'filter1' });
+    expect(updatedState.studyFilters).not.toBeNull();
+    expect(updatedState.studyFilters.size).toBe(1);
+    expect(updatedState.studyFilters.has('filter1')).toBeTruthy();
 
-    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 0 });
-    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 1 });
-    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 2 });
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 'filter2' });
+    updatedState = reducer(updatedState, { type: ACTIVATE_STUDY_FILTER, filter: 'filter3' });
 
-    updatedState = reducer(updatedState, { type: DEACTIVATE_STUDY_FILTER, filter: 1 });
-    expect(updatedState).toEqual({ ...initialState, studyFilters: [ 0, 2 ]});
+    updatedState = reducer(updatedState, { type: DEACTIVATE_STUDY_FILTER, filter: 'filter2' });
+    expect(updatedState.studyFilters).not.toBeNull();
+    expect(updatedState.studyFilters.size).toBe(2);
+    expect(updatedState.studyFilters.has('filter1')).toBeTruthy();
+    expect(updatedState.studyFilters.has('filter2')).toBeFalsy();
+    expect(updatedState.studyFilters.has('filter3')).toBeTruthy();
   });
 });

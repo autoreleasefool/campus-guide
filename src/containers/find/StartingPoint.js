@@ -429,7 +429,6 @@ class StartingPoint extends React.Component {
         ? Translations.getName(this.props.language, this.state.closestBuilding)
         : Translations.get(this.props.language, 'no_buildings_nearby');
 
-    console.log(suggestion);
     return (
       <View style={_styles.container}>
         <MapView

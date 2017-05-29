@@ -44,19 +44,19 @@ describe('search actions', () => {
   });
 
   it('creates an action to set the study filters', () => {
-    const filters = [ 0, 1, 2 ];
+    const filters = [ 'filter1', 'filter2' ];
     const expectedAction = { type: SET_STUDY_FILTERS, filters };
     expect(actions.setStudyFilters(filters)).toEqual(expectedAction);
   });
 
   it('creates an action to activate a study filter', () => {
-    const expectedAction = { type: ACTIVATE_STUDY_FILTER, filter: 0 };
-    expect(actions.activateStudyFilter(0)).toEqual(expectedAction);
+    const expectedAction = { type: ACTIVATE_STUDY_FILTER, filter: 'filter1' };
+    expect(actions.activateStudyFilter('filter1')).toEqual(expectedAction);
   });
 
   it('creates an action to deactivate a study filter', () => {
-    const expectedAction = { type: DEACTIVATE_STUDY_FILTER, filter: 0 };
-    expect(actions.deactivateStudyFilter(0)).toEqual(expectedAction);
+    const expectedAction = { type: DEACTIVATE_STUDY_FILTER, filter: 'filter1' };
+    expect(actions.deactivateStudyFilter('filter1')).toEqual(expectedAction);
   });
 
 });

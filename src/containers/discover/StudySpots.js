@@ -43,17 +43,16 @@ import * as actions from 'actions';
 import type {
   Language,
   StudySpot,
-  StudySpotFilter,
   StudySpotReservation,
   TimeFormat,
 } from 'types';
 
 // Type definition for component props.
 type Props = {
-  activateFilter: (filter: number) => void,         // Activates an inactive study filter
-  deactivateFilter: (filter: number) => void,       // Deactivates an active study filter
-  setFilters: (filters: Array < number >) => void,  // Sets the active filters, removing any other filters
-  activeFilters: Array < number >,                  // List of filters actively being used
+  activateFilter: (filter: string) => void,         // Activates an inactive study filter
+  deactivateFilter: (filter: string) => void,       // Deactivates an active study filter
+  setFilters: (filters: Array < string >) => void,  // Sets the active filters, removing any other filters
+  activeFilters: Set < string >,                    // List of filters actively being used
   filter: ?string,                                  // Current search terms
   language: Language,                               // The current language, selected by the user
   timeFormat: TimeFormat,                           // Format to display times in
@@ -63,7 +62,8 @@ type Props = {
 
 // Type definition for component state.
 type State = {
-  filters: Array < StudySpotFilter >,           // List of filters for filtering spots
+  filters: Array < string >,                    // List of filters IDs
+  filterDescriptions: Object,                   // Filter IDs mapped to their descriptions
   filterDescriptionsVisible: boolean,           // True to show filter descriptions, false to hide
   filterSelected: boolean,                      // Indicates if any filter has been initially selected
   loaded: boolean,                              // Indicates if the data has been loaded for this view
@@ -106,6 +106,7 @@ class StudySpots extends React.Component {
     super(props);
     this.state = {
       filters: [],
+      filterDescriptions: {},
       filterDescriptionsVisible: false,
       filterSelected: false,
       loaded: false,
@@ -124,6 +125,7 @@ class StudySpots extends React.Component {
           .then((studySpots: Object) => {
             this.setState({
               filters: studySpots.filters,
+              filterDescriptions: studySpots.filterDescriptions,
               spots: studySpots.spots,
               reservations: studySpots.reservations,
             });
@@ -144,29 +146,30 @@ class StudySpots extends React.Component {
   /**
    * Updates the active filters.
    *
-   * @param {number} index index of the selected filter
+   * @param {?string} id identifier of the selected filter
    */
-  _onFilterSelected(index: number): void {
+  _onFilterSelected(id: ?string): void {
     LayoutAnimation.easeInEaseOut();
     this.setState({ filterSelected: true });
     this.props.showSearch(true);
 
-    if (index >= 0) {
-      const filterName = Translations.getName(this.props.language, this.state.filters[index]) || '';
+    const filterId = id;
+    if (filterId) {
+      const filterName = Translations.getName(this.props.language, this.state.filterDescriptions[filterId]) || '';
       if (this.props.activeFilters == null) {
-        this.props.setFilters([ index ]);
-      } else if (this.props.activeFilters.indexOf(index) >= 0) {
+        this.props.setFilters([ filterId ]);
+      } else if (this.props.activeFilters.has(filterId)) {
         Snackbar.show({
           title: `${Translations.get(this.props.language, 'filter_removed')}: ${filterName}`,
           duration: Snackbar.LENGTH_SHORT,
         });
-        this.props.deactivateFilter(index);
+        this.props.deactivateFilter(filterId);
       } else {
         Snackbar.show({
           title: `${Translations.get(this.props.language, 'filter_added')}: ${filterName}`,
           duration: Snackbar.LENGTH_SHORT,
         });
-        this.props.activateFilter(index);
+        this.props.activateFilter(filterId);
       }
     } else {
       this.props.setFilters([]);
@@ -205,6 +208,7 @@ class StudySpots extends React.Component {
               title={Translations.get(this.props.language, 'filter_descriptions')}
               onRightAction={this._setFilterDescriptionsVisible.bind(this, false)} />
           <FilterDescriptions
+              descriptions={this.state.filterDescriptions}
               filters={this.state.filters}
               language={this.props.language} />
         </Modal>
@@ -214,7 +218,7 @@ class StudySpots extends React.Component {
               filter={this.props.filter}
               language={this.props.language}
               spots={this.state.spots}
-              studyFilters={this.state.filters}
+              studyFilters={this.state.filterDescriptions}
               timeFormat={this.props.timeFormat}
               onSelect={this._onSpotSelected.bind(this)} />
         </View>
@@ -226,18 +230,20 @@ class StudySpots extends React.Component {
             title={Translations.get(this.props.language, 'filters')} />
         <StudyFilters
             activeFilters={this.props.activeFilters}
+            filterDescriptions={this.state.filterDescriptions}
             filters={this.state.filters}
             fullSize={false}
             language={this.props.language}
             onFilterSelected={this._onFilterSelected.bind(this)} />
         <View style={[ _styles.filterSelection, filterStyle ]}>
           <StudyFilters
+              filterDescriptions={this.state.filterDescriptions}
               filters={this.state.filters}
               fullSize={true}
               language={this.props.language}
               onFilterSelected={this._onFilterSelected.bind(this)} />
           <View style={_styles.separator} />
-          <TouchableOpacity onPress={() => this._onFilterSelected(-1)}>
+          <TouchableOpacity onPress={() => this._onFilterSelected(null)}>
             <Header
                 backgroundColor={Constants.Colors.secondaryBackground}
                 icon={{ class: 'material', name: 'list' }}
@@ -286,9 +292,9 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    activateFilter: (filter: number) => dispatch(actions.activateStudyFilter(filter)),
-    deactivateFilter: (filter: number) => dispatch(actions.deactivateStudyFilter(filter)),
-    setFilters: (filters: Array < number >) => dispatch(actions.setStudyFilters(filters)),
+    activateFilter: (filter: string) => dispatch(actions.activateStudyFilter(filter)),
+    deactivateFilter: (filter: string) => dispatch(actions.deactivateStudyFilter(filter)),
+    setFilters: (filters: Array < string >) => dispatch(actions.setStudyFilters(filters)),
     showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
     navigateToStudySpot: (spot: StudySpot) => {
       dispatch(actions.setHeaderTitle('directions', 'find'));
