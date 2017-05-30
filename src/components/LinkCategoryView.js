@@ -30,7 +30,6 @@ import React from 'react';
 import {
   Alert,
   Clipboard,
-  Dimensions,
   Image,
   Linking,
   ScrollView,
@@ -62,10 +61,6 @@ import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
-
-// Used to determine maximum length of link titles
-const TEXT_PADDING = 100;
-const screenWidth = Dimensions.get('window').width;
 
 export default class LinkCategoryView extends React.Component {
 
@@ -187,6 +182,7 @@ export default class LinkCategoryView extends React.Component {
               || ExternalUtils.getDefaultLink();
           const translatedName: string = Translations.getName(language, link)
               || translatedLink;
+          const translatedDescription: ?string = Translations.getVariant(language, 'description', link);
 
           // Compare name to search terms and do not render if they don't match
           if (filter != null && translatedName.toUpperCase().indexOf(filter) < 0) {
@@ -204,6 +200,13 @@ export default class LinkCategoryView extends React.Component {
                     {translatedName}
                   </Text>
                   {this._renderFormattedLink(translatedLink, textColor)}
+                  {translatedDescription == null
+                    ? null
+                    : (
+                      <Text style={[ _styles.linkDescription, { color: textColor }]}>
+                        {translatedDescription}
+                      </Text>
+                    )}
                 </View>
               </TouchableOpacity>
               {(index < links.length - 1)
@@ -371,16 +374,21 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   linkContainer: {
+    flex: 1,
     marginTop: Constants.Sizes.Margins.Expanded,
     marginBottom: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
   },
   link: {
     fontSize: Constants.Sizes.Text.Body,
-    width: screenWidth - TEXT_PADDING,
   },
   linkSubtitle: {
     fontSize: Constants.Sizes.Text.Caption,
+  },
+  linkDescription: {
+    flex: 1,
+    marginTop: Constants.Sizes.Margins.Condensed,
+    fontSize: Constants.Sizes.Text.Body,
   },
   linkIcon: {
     margin: Constants.Sizes.Margins.Expanded,

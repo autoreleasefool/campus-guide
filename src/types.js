@@ -63,7 +63,7 @@ export type Details = {
 } & Name;
 
 /** A URL and a name to display it with. */
-export type NamedLink = Name & Link;
+export type NamedLink = Name & Link & Description;
 
 //-----------------------------------------------------------------------------
 //  Icons
