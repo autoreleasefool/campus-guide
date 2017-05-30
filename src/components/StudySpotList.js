@@ -65,6 +65,8 @@ import * as DisplayUtils from 'DisplayUtils';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
 
+const TIME_UNAVAILABLE_REGEX = /[Nn]\/[Aa]/;
+
 export default class StudySpotList extends React.Component {
 
   /**
@@ -135,11 +137,15 @@ export default class StudySpotList extends React.Component {
     });
 
     if (activeFilters.has('open')) {
-      const openTime = moment(spot.opens, 'HH:mm');
-      const closeTime = moment(spot.closes, 'HH:mm');
-      const currentTime = moment();
-      if (openTime.diff(currentTime) < 0 && closeTime.diff(currentTime, 'hours') >= 1) {
+      if (TIME_UNAVAILABLE_REGEX.test(spot.opens)) {
         matches++;
+      } else {
+        const openTime = moment(spot.opens, 'HH:mm');
+        const closeTime = moment(spot.closes, 'HH:mm');
+        const currentTime = moment();
+        if (openTime.diff(currentTime) < 0 && closeTime.diff(currentTime, 'hours') >= 1) {
+          matches++;
+        }
       }
     }
 
@@ -191,10 +197,24 @@ export default class StudySpotList extends React.Component {
    */
   _renderItem({ item }: { item: StudySpot }): ReactElement < any > {
     const altName = Translations.getName(this.props.language, item);
-    const name = `${item.building} ${item.room}`;
-    const openingTime = TextUtils.convertTimeFormat(this.props.timeFormat, item.opens);
-    const closingTime = TextUtils.convertTimeFormat(this.props.timeFormat, item.closes);
+    const name = `${item.building} ${item.room ? item.room : ''}`;
     const description = Translations.getVariant(this.props.language, 'description', item) || '';
+
+    let openingTime = '';
+    if (TIME_UNAVAILABLE_REGEX.test(item.opens)) {
+      openingTime = item.opens;
+    } else {
+      openingTime = TextUtils.convertTimeFormat(this.props.timeFormat, item.opens);
+    }
+
+    let closingTime = '';
+    if (TIME_UNAVAILABLE_REGEX.test(item.closes)) {
+      if (!TIME_UNAVAILABLE_REGEX.test(item.opens)) {
+        closingTime = ` - ${item.closes}`;
+      }
+    } else {
+      closingTime = ` - ${TextUtils.convertTimeFormat(this.props.timeFormat, item.closes)}`;
+    }
 
     return (
       <TouchableOpacity
@@ -208,7 +228,7 @@ export default class StudySpotList extends React.Component {
           <View style={_styles.spotProperties}>
             <Text style={_styles.spotName}>{name}</Text>
             {altName == null ? null : <Text style={_styles.spotSubtitle}>{altName}</Text>}
-            <Text style={_styles.spotSubtitle}>{`${openingTime} - ${closingTime}`}</Text>
+            <Text style={_styles.spotSubtitle}>{`${openingTime}${closingTime}`}</Text>
             <Text style={_styles.spotDescription}>{description}</Text>
             <View style={_styles.spotFilters}>
               {item.filters.map((filter) => (
