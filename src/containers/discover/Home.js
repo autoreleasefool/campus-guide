@@ -131,7 +131,7 @@ const mapDispatchToProps = (dispatch) => {
           break;
         case 'use':
           view = Constants.Views.Discover.Links;
-          title = 'useful_links';
+          title = 'uo_info';
           dispatch(actions.switchLinkCategory(0));
           break;
         case 'trn':

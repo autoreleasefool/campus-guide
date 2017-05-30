@@ -176,7 +176,7 @@ export default class LinkCategoryView extends React.Component {
       <View>
         <Header
             icon={{ name: 'insert-link', class: 'material' }}
-            title={Translations.get(language, 'useful_links')} />
+            title={Translations.get(language, 'uo_info')} />
         {links.map((link, index) => {
           const translatedLink: string = Translations.getVariant(language, 'link', link)
               || ExternalUtils.getDefaultLink();

@@ -52,7 +52,7 @@ function _getResults(language: Language,
     const categories: Array < SearchResult > = [];
 
     const externalLinksTranslation = Translations.get(language, 'external_links');
-    const usefulLinksTranslation = Translations.get(language, 'useful_links');
+    const usefulLinksTranslation = Translations.get(language, 'uo_info');
 
     // Method to add a link to the results
     const pushLink = (sectionName: string,
@@ -191,7 +191,7 @@ export function getResults(language: Language, searchTerms: ?string):
  */
 export function getResultIcons(language: Language): Object {
   const icons = {};
-  icons[Translations.get(language, 'useful_links')] = {
+  icons[Translations.get(language, 'uo_info')] = {
     icon: {
       class: 'material',
       name: 'link',

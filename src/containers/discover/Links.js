@@ -202,7 +202,7 @@ class Links extends React.Component {
       this.props.setHeaderTitle(title);
       this.props.showCategory(currentRoutes[currentRoutes.length - 1].id);
     } else {
-      this.props.setHeaderTitle('useful_links');
+      this.props.setHeaderTitle('uo_info');
     }
 
     this.props.canNavigateBack(currentRoutes.length > 1);
