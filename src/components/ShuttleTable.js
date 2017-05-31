@@ -87,6 +87,19 @@ export default class ShuttleTable extends React.Component {
   }
 
   /**
+   * Update schedule times when requested schedule changes.
+   *
+   * @param {Props} nextProps the new props being received
+   */
+  componentWillReceiveProps(nextProps: Props): void {
+    if (this.props.direction != nextProps.direction || this.props.schedule != nextProps.schedule) {
+      const data = Object.assign({}, nextProps.schedule.directions[nextProps.direction].day_times);
+      data.excluded_dates = nextProps.schedule.excluded_dates;
+      this.setState({ dataSource: this.state.dataSource.cloneWithRowsAndSections(data) });
+    }
+  }
+
+  /**
    * Renders the header of the list, with important information about the shuttle.
    *
    * @returns {ReactElement<any>} a set of text views with information
