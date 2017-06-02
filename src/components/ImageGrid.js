@@ -260,18 +260,20 @@ export default class ImageGrid extends React.Component {
 
     let image = null;
     if (!this.props.disableImages && item != null) {
-      if (typeof (item.image) === 'string') {
+      const displayImage = item.thumbnail ? item.thumbnail : item.image;
+
+      if (typeof (displayImage) === 'string') {
         image = (
           <Image
               resizeMode={'cover'}
-              source={{ uri: Configuration.getImagePath(item.image) }}
+              source={{ uri: Configuration.getImagePath(displayImage) }}
               style={[ _styles.image, imageStyle ]} />
         );
       } else {
         image = (
           <Image
               resizeMode={'cover'}
-              source={item.image}
+              source={displayImage}
               style={[ _styles.image, imageStyle ]} />
         );
       }

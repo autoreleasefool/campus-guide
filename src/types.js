@@ -64,8 +64,9 @@ export type Details = {
 
 /** Describes an image displayed in ImageGrid. **/
 export type GridImage = {
-  shorthand?: string,                 // Optional short version of name
-  image: string | ReactClass < any >, // Image for the grid
+  shorthand?: string,                       // Optional short version of name
+  image: string | ReactClass < any >,       // Image for the grid
+  thumbnail?: string | ReactClass < any >,  // Optional thumbnail image for the grid
 } & Name;
 
 /** A URL and a name to display it with. */
@@ -386,11 +387,12 @@ type Address = {
 
 /** A building on campus, with details describing it, its location, and its rooms. */
 export type Building = {
-  shorthand: string,                  // Shorthand building code
-  facilities: Array < Facility >,     // List of facilities in the building
-  image: string | ReactClass < any >, // Image to display for the building
-  location: LatLong,                  // Location of the building
-  rooms: Array < BuildingRoom >,      // List of rooms in the building
+  shorthand: string,                      // Shorthand building code
+  facilities: Array < Facility >,         // List of facilities in the building
+  image: string | ReactClass < any >,     // Image to display for the building
+  thumbnail: string | ReactClass < any >, // Smaller size image to display as preview
+  location: LatLong,                      // Location of the building
+  rooms: Array < BuildingRoom >,          // List of rooms in the building
 } & Name & Address;
 
 /** Properties which describe a building, */
