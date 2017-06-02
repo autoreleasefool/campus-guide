@@ -25,13 +25,13 @@
 'use strict';
 
 // Types
-import type { Language, StudySpotInfo, Section } from 'types';
+import type { Language, SearchSupport, Section, StudySpot, StudySpotInfo } from 'types';
 import type { SearchResult } from '../Searchable';
 
 // Imports
 import Promise from 'promise';
-import * as Configuration from 'Configuration';
 import * as Translations from 'Translations';
+import { filterStudySpot } from 'Search';
 
 /**
  * Returns a promise containing a list of external links and categories which match the search terms.
@@ -77,42 +77,37 @@ function _getResults(language: Language,
     //   }
     // }
 
-    for (let i = 0; i < studySpots.spots.length; i++) {
-      const spot = studySpots.spots[i];
-      const spotName = Translations.getName(language, spot) || '';
-
-      if (spotName.toUpperCase().indexOf(searchTerms) >= 0
-          || spot.building.toUpperCase().indexOf(searchTerms) >= 0
-          || spot.room.indexOf(searchTerms) >= 0) {
+    studySpots.spots.forEach((studySpot: StudySpot) => {
+      const result = filterStudySpot(language, searchTerms, studySpot);
+      if (result.success) {
         matchedSpots.push({
           key: studySpotsTranslation,
-          description: Translations.getVariant(language, 'description', spot) || '',
-          data: { shorthand: spot.building, room: spot.room },
+          description: Translations.getVariant(language, 'description', studySpot) || '',
+          data: { shorthand: studySpot.building, room: studySpot.room },
           icon: { name: 'import-contacts', class: 'material' },
-          matchedTerms: [ spotName.toUpperCase(), spot.building.toUpperCase(), spot.room ],
-          title: `${spot.building} ${spot.room}`,
+          matchedTerms: result.matches,
+          title: `${studySpot.building} ${studySpot.room || ''}`,
         });
       }
-    }
+    });
 
-    const results = [];
-    results.push({
+    resolve([{
       key: studySpotsTranslation,
       data: matchedSpots,
-    });
-    resolve(results);
+    }]);
   });
 }
 
 /**
  * Returns a promise containing a list of study spots which match the search terms.
  *
- * @param {Language} language    the current language
- * @param {?string}  searchTerms the search terms for the query.
+ * @param {Language}       language    the current language
+ * @param {?string}        searchTerms the search terms for the query
+ * @param {?SearchSupport} data        supporting data for the query
  * @returns {Promise<Array<Section<SearchResult>>>} promise which resolves with the results of the search,
  *                                                  containing study spots
  */
-export function getResults(language: Language, searchTerms: ?string):
+export function getResults(language: Language, searchTerms: ?string, data: ?SearchSupport):
     Promise < Array < Section < SearchResult > > > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
@@ -120,15 +115,20 @@ export function getResults(language: Language, searchTerms: ?string):
       return;
     }
 
+    // Ensure proper supporting data is provided
+    const studySpots = (data && data.studySpots) ? data.studySpots : null;
+    if (!studySpots) {
+      reject(new Error('Must provide study spots search with data.studySpots'));
+      return;
+    }
+
     // Ignore the case of the search terms
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
 
-    Configuration.init()
-        .then(() => Configuration.getConfig('/study_spots.json'))
-        .then((studySpots: StudySpotInfo) => _getResults(language, adjustedSearchTerms, studySpots))
+    _getResults(language, adjustedSearchTerms, studySpots)
         .then((results: Array < Section < SearchResult > >) => resolve(results))
         .catch((err: any) => {
-          console.error('Configuration could not be initialized for study spot search.', err);
+          console.error('Could not complete study spot search.', err);
           reject(err);
         });
   });

@@ -64,7 +64,9 @@ import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
+import { filterStudySpot } from 'Search';
 
+/** Regular expression for recognizing an unavailable time. */
 const TIME_UNAVAILABLE_REGEX = /[Nn]\/[Aa]/;
 
 export default class StudySpotList extends React.Component {
@@ -157,34 +159,22 @@ export default class StudySpotList extends React.Component {
    *
    * @param {Props} props the props to use to filter
    */
-  _filterStudySpots({ filter, activeFilters, spots }: Props): void {
+  _filterStudySpots({ activeFilters, filter, language, spots }: Props): void {
     // Ignore the case of the search terms
-    const adjustedSearchTerms: ?string = (filter == null || filter.length === 0)
-        ? null
-        : filter.toUpperCase();
+    const adjustedFilter: ?string = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
 
     // Create array for spots
     const filteredSpots: Array < StudySpot > = [];
 
-    for (let i = 0; spots && i < spots.length; i++) {
-      const spot: Object = spots[i];
-
-      // Don't add the spot if it doesn't match all the filters
-      if (!this._spotMatchesAllFilters(activeFilters, spot)) {
-        continue;
+    spots.forEach((studySpot: StudySpot) => {
+      if (!this._spotMatchesAllFilters(activeFilters, studySpot)) {
+        return;
       }
 
-      // If the search terms are empty, or the spot properties contains the terms, add it to the list
-      if (adjustedSearchTerms == null
-          || spot.building.toUpperCase().indexOf(adjustedSearchTerms) >= 0
-          || spot.room.toUpperCase().indexOf(adjustedSearchTerms) >= 0
-          || (spot.name && spot.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (spot.name_en && spot.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (spot.name_fr && spot.name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
-        filteredSpots.push(spot);
-        continue;
+      if (!adjustedFilter || filterStudySpot(language, adjustedFilter, studySpot).success) {
+        filteredSpots.push(studySpot);
       }
-    }
+    });
 
     this.setState({ studySpots: filteredSpots });
   }

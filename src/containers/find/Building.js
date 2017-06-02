@@ -130,7 +130,6 @@ class BuildingComponent extends React.Component {
     return (
       <View style={_styles.container}>
         <RoomGrid
-            defaultRoomType={Constants.DefaultRoomType}
             filter={this.props.filter}
             language={this.props.language}
             renderHeader={this._renderHeader.bind(this)}

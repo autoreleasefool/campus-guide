@@ -46,7 +46,7 @@ import * as Constants from 'Constants';
 import Discover from './discover/Discover';
 import Find from './find/Find';
 import Schedule from './schedule/Schedule';
-import Search from './search/Search';
+import Search from './search/SearchView';
 import Settings from './settings/Settings';
 
 class TabView extends React.Component {

@@ -38,13 +38,7 @@ import {
 } from 'react-native';
 
 // Types
-import type { Language, Name } from 'types';
-
-// Describes an image displayed in the grid.
-export type GridImage = {
-  shorthand?: string,                 // Optional short version of name
-  image: string | ReactClass < any >, // Image for the grid
-} & Name;
+import type { GridImage, Language } from 'types';
 
 // Type definition for component props
 type Props = {
@@ -73,6 +67,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
+import { filterGridImage } from 'Search';
 
 // Determining size of building icons based on the screen size.
 const { width } = Dimensions.get('window');
@@ -151,11 +146,9 @@ export default class ImageGrid extends React.Component {
    *
    * @param {Props} props the props to filter with
    */
-  _filterImages({ images, filter, includeClear }: Props): void {
+  _filterImages({ language, images, filter, includeClear }: Props): void {
     // Ignore the case of the search terms
-    const adjustedSearchTerms: ?string = (filter == null || filter.length === 0)
-        ? null
-        : filter.toUpperCase();
+    const adjustedFilter = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
 
     // Create array for buildings
     const filteredImages: Array < ?GridImage > = [];
@@ -164,14 +157,17 @@ export default class ImageGrid extends React.Component {
       filteredImages.push(null);
     }
 
+    // If the search terms are empty, or the image name contains the terms, add it to the list
     images.forEach((image: GridImage) => {
-      // If the search terms are empty, or the image name contains the terms, add it to the list
-      if (adjustedSearchTerms == null
-          || this.state.selected.has(image)
-          || (image.shorthand && image.shorthand.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (image.name && image.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (image.name_en && image.name_en.toUpperCase().indexOf(adjustedSearchTerms) >= 0)
-          || (image.name_fr && image.name_fr.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
+      let matches = false;
+      if (!adjustedFilter || this.state.selected.has(image)) {
+        matches = true;
+      } else {
+        const result = filterGridImage(language, adjustedFilter, image);
+        matches = result.success;
+      }
+
+      if (matches) {
         filteredImages.push(image);
       }
     });

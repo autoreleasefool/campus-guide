@@ -25,7 +25,7 @@
 'use strict';
 
 // Types
-import type { Language, PlatformIcon, Section } from 'types';
+import type { Language, PlatformIcon, SearchSupport, Section } from 'types';
 
 /** Defines the information provided by a search result. */
 export type SearchResult = {
@@ -65,12 +65,16 @@ function _getSources(): Array < Object > {
 /**
  * Gets the results of a search by querying all search result sources.
  *
- * @param {Language} language    the current language
- * @param {?string}  searchTerms the search terms for the query.
+ * @param {Language}       language    the current language
+ * @param {?string}        searchTerms the search terms for the query.
+ * @param {?SearchSupport} supportData data to support searches
  * @returns {Promise<Object>} a promise which resolves with the results of the search,
  *                            with each result naming its source.
  */
-export function getResults(language: Language, searchTerms: ?string): Promise < Object > {
+export function getResults(
+    language: Language,
+    searchTerms: ?string,
+    supportData: ?SearchSupport): Promise < Object > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
       resolve({ results: [], icons: {}});
@@ -86,7 +90,7 @@ export function getResults(language: Language, searchTerms: ?string): Promise < 
         ...sources[i].getResultIcons(language),
       };
 
-      sourcePromises.push(sources[i].getResults(language, searchTerms));
+      sourcePromises.push(sources[i].getResults(language, searchTerms, supportData));
     }
 
     Promise.all(sourcePromises)

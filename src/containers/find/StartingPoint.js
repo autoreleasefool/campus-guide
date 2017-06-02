@@ -373,7 +373,6 @@ class StartingPoint extends React.Component {
             iconCallback={() => this.refs.Navigator.pop()}
             title={Translations.getName(this.props.language, building) || ''} />
         <RoomGrid
-            defaultRoomType={Constants.DefaultRoomType}
             filter={this.props.filter}
             language={this.props.language}
             renderHeader={this._renderBuildingLobby.bind(this, building.shorthand)}

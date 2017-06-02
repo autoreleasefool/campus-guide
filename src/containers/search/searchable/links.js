@@ -25,12 +25,11 @@
 'use strict';
 
 // Types
-import type { Language, LinkSection, Section } from 'types';
+import type { Language, LinkSection, SearchSupport, Section } from 'types';
 import type { SearchResult } from '../Searchable';
 
 // Imports
 import Promise from 'promise';
-import * as Configuration from 'Configuration';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
 import * as Translations from 'Translations';
@@ -156,12 +155,13 @@ function _getResults(language: Language,
 /**
  * Returns a promise containing a list of links and link categories which match the search terms.
  *
- * @param {Language} language    the current language
- * @param {?string}  searchTerms the search terms for the query.
+ * @param {Language}       language    the current language
+ * @param {?string}        searchTerms the search terms for the query
+ * @param {?SearchSupport} data        supporting data for the query
  * @returns {Promise<Array<Section<SearchResult>>>} promise which resolves with the results of the search,
  *                                                  containing links and categories
  */
-export function getResults(language: Language, searchTerms: ?string):
+export function getResults(language: Language, searchTerms: ?string, data: ?SearchSupport):
     Promise < Array < Section < SearchResult > > > {
   return new Promise((resolve, reject) => {
     if (searchTerms == null || searchTerms.length === 0) {
@@ -169,15 +169,20 @@ export function getResults(language: Language, searchTerms: ?string):
       return;
     }
 
+    // Ensure proper supporting data is provided
+    const linkSections = (data && data.linkSections) ? data.linkSections : null;
+    if (!linkSections) {
+      reject(new Error('Must provide links search with data.linkSections'));
+      return;
+    }
+
     // Ignore the case of the search terms
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
 
-    Configuration.init()
-        .then(() => Configuration.getConfig('/useful_links.json'))
-        .then((linkSections: Array < LinkSection >) => _getResults(language, adjustedSearchTerms, linkSections))
+    _getResults(language, adjustedSearchTerms, linkSections)
         .then((results: Array < Section < SearchResult > >) => resolve(results))
         .catch((err: any) => {
-          console.error('Configuration could not be initialized for useful links search.', err);
+          console.error('Could not complete useful links search.', err);
           reject(err);
         });
   });

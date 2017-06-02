@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-11-6
- * @file Search.js
+ * @file SearchView.js
  * @description Presents search results to the user.
  *
  * @flow
@@ -46,12 +46,20 @@ import { connect } from 'react-redux';
 import * as actions from 'actions';
 
 // Types
-import type { Icon, Language, Route, Section } from 'types';
+import type {
+  Icon,
+  Language,
+  Route,
+  SearchSupport,
+  Section,
+} from 'types';
 
 // Imports
 import Header from 'Header';
 import PaddedIcon from 'PaddedIcon';
+import Promise from 'promise';
 import * as ArrayUtils from 'ArrayUtils';
+import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as ExternalUtils from 'ExternalUtils';
@@ -73,6 +81,7 @@ type State = {
   performingSearch: boolean,                                      // Indicates if a search is in progresss
   singleResults: Array < Searchable.SearchResult >,               // List of search results for a single category
   singleResultTitle: ?string,                                     // Category of search results being displayed
+  supportData: ?SearchSupport,                                    // Support data for searches
 };
 
 // Render top filtered results
@@ -83,7 +92,7 @@ const SINGLE = 1;
 // Time to delay searches by while user types
 const SEARCH_DELAY_TIME = 800;
 
-class Search extends React.Component {
+class SearchView extends React.Component {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -108,6 +117,7 @@ class Search extends React.Component {
       performingSearch: false,
       singleResults: [],
       singleResultTitle: null,
+      supportData: null,
     };
   }
 
@@ -116,6 +126,30 @@ class Search extends React.Component {
    */
   componentWillMount(): void {
     // this._delaySearch(this.props, this.props);
+  }
+
+  /**
+   * Load supporting data for searches.
+   */
+  componentDidMount(): void {
+    if (!this.state.supportData) {
+      Configuration.init()
+          .then(() => Promise.all([
+            Configuration.getConfig('/room_types.json'),
+            Configuration.getConfig('/study_spots.json'),
+            Configuration.getConfig('/useful_links.json'),
+          ]))
+          .then((configs) => {
+            this.setState({
+              supportData: {
+                roomTypeInfo: configs[0],
+                studySpots: configs[1],
+                linkSections: configs[2],
+              },
+            });
+          })
+          .catch((err: any) => console.error('Configuration could not be initialized for search view.', err));
+    }
   }
 
   /**
@@ -233,7 +267,7 @@ class Search extends React.Component {
         singleResults: this._singleResults,
       });
     } else {
-      Searchable.getResults(nextProps.language, nextProps.filter)
+      Searchable.getResults(nextProps.language, nextProps.filter, this.state.supportData)
           .then((results: Searchable.ResultData) => {
             this._searchResults = results.results;
             this._searchIcons = results.icons;
@@ -526,6 +560,10 @@ class Search extends React.Component {
    * @returns {ReactElement<any>} a navigator between types of results
    */
   render(): ReactElement < any > {
+    if (!this.state.supportData) {
+      return this._renderEmptySearch();
+    }
+
     return (
       <View style={_styles.container}>
         <Navigator
@@ -664,4 +702,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchView);

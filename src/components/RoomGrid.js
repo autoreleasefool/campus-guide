@@ -42,7 +42,6 @@ import type { BuildingRoom, Language, RoomTypeInfo } from 'types';
 // Type definition for component props.
 type Props = {
   shorthand: string,                                    // Unique shorthand identifier for the building
-  defaultRoomType: string,                              // Default type that rooms should be recognized as
   filter: ?string,                                      // Filter the list of rooms
   language: Language,                                   // Language to display building names in
   onSelect: (shorthand: string, room: ?string) => void, // Callback function for when a room is selected
@@ -69,6 +68,7 @@ import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as Translations from 'Translations';
+import { filterRoom } from 'Search';
 
 export default class RoomGrid extends React.Component {
 
@@ -136,9 +136,9 @@ export default class RoomGrid extends React.Component {
    *
    * @param {Props} props the props to filter with
    */
-  _filterRooms({ shorthand, filter, language, rooms, defaultRoomType }: Props): void {
+  _filterRooms({ shorthand, filter, language, rooms }: Props): void {
     // Ignore the case of the search terms
-    const adjustedSearchTerms: ?string = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
+    const adjustedFilter = (filter == null || filter.length === 0) ? '' : filter.toUpperCase();
 
     // Create array for sets of rooms
     const filteredRooms: Array < FilteredRoom > = [];
@@ -147,29 +147,30 @@ export default class RoomGrid extends React.Component {
     const matchingRoomTypes = new Set();
     this._roomTypeIds.forEach((id: string) => {
       const name = Translations.getName(language, this._roomTypes[id]);
-      if (adjustedSearchTerms == null || (name && name.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
+      if (adjustedFilter.length === 0 || (name && name.toUpperCase().indexOf(adjustedFilter) >= 0)) {
         matchingRoomTypes.add(id);
       }
     });
 
     // True if the building code matches the search terms
-    const codeMatches = adjustedSearchTerms != null && shorthand.indexOf(adjustedSearchTerms) >= 0;
+    const codeMatches = adjustedFilter.length === 0 || shorthand.indexOf(adjustedFilter) >= 0;
 
     rooms.forEach((room: BuildingRoom) => {
-      const altName = Translations.getVariant(language, 'alt_name', room);
-      if (!room.type) {
-        room.type = defaultRoomType;
+      let matches = false;
+      if (codeMatches) {
+        matches = true;
       }
 
-      // If the search terms are empty, or the room contains the terms, add it to the list
-      if (adjustedSearchTerms == null
-          || codeMatches
-          || matchingRoomTypes.has(room.type)
-          || room.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0
-          || (altName && altName.toUpperCase().indexOf(adjustedSearchTerms) >= 0)) {
+      if (!matches) {
+        const result = filterRoom(language, adjustedFilter, matchingRoomTypes, shorthand, room);
+        matches = result.success;
+      }
+
+      if (matches) {
+        const altName = Translations.getVariant(language, 'alt_name', room);
         filteredRooms.push({
           altName,
-          typeId: room.type,
+          typeId: room.type || Constants.DefaultRoomType,
           key: room.name.toUpperCase(),
         });
       }

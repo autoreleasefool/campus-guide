@@ -62,6 +62,12 @@ export type Details = {
   icon: PlatformIcon,             // Icon representing the details
 } & Name;
 
+/** Describes an image displayed in ImageGrid. **/
+export type GridImage = {
+  shorthand?: string,                 // Optional short version of name
+  image: string | ReactClass < any >, // Image for the grid
+} & Name;
+
 /** A URL and a name to display it with. */
 export type NamedLink = Name & Link & Description;
 
@@ -244,7 +250,7 @@ export type StudySpotReservation = Name & Link & Description;
 export type StudySpot = {
   image: string,              // Name of the image of the study spot
   building: string,           // Building code
-  room: string,               // Room number
+  room: ?string,              // Room number
   opens: string,              // Time the spot opens at
   closes: string,             // Time the spot closes at
   filters: Array < string >,  // List of properties to filter on
@@ -353,8 +359,11 @@ export type Destination = {
 
 /** A room on campus, with a name and the facilities it offers represented by an ID. */
 export type BuildingRoom = {
-  name: string, // Name of the room
-  type: string, // Type of the room, corresponding to a RoomType
+  name: string,         // Name of the room
+  type: string,         // Type of the room, corresponding to a RoomType
+  alt_name?: string,    // Alternative name of the room, suitable for English or French
+  alt_name_en?: string, // Alternative name of the room, translated to English
+  alt_name_fr?: string, // Alternative name of the room, translated to French
 };
 
 /** A predefined type of room and how it should be represented visually. */
@@ -436,6 +445,17 @@ export type HousingInfo = {
   residences: Array < Residence >,          // List of residences at the university
   resources: LinkSection,                   // List of other resources for finding housing at the university
   sections: Array < MenuSection >,          // List of sections of housing info
+};
+
+//-----------------------------------------------------------------------------
+//  Search
+//-----------------------------------------------------------------------------
+
+/** Support data required for searches. */
+export type SearchSupport = {
+  linkSections: Array < LinkSection >,  // Link sections to search
+  roomTypeInfo: RoomTypeInfo,           // Room type info for room searches
+  studySpots: StudySpotInfo,            // Study spots to search
 };
 
 //-----------------------------------------------------------------------------
