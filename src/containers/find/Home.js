@@ -44,7 +44,7 @@ import * as Translations from 'Translations';
 // Number of columns to display in building grid
 const BUILDING_COLUMNS: number = 3;
 
-class FindHome extends React.Component {
+class FindHome extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

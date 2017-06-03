@@ -49,7 +49,7 @@ const screenWidth = Dimensions.get('window').width;
 // Default opacity when touching a left or right action
 const DEFAULT_TOUCH_OPACITY = 0.4;
 
-export default class ModalHeader extends React.Component {
+export default class ModalHeader extends React.PureComponent {
 
   /**
    * Properties which the parent component should make available to this component.

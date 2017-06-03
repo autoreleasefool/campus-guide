@@ -53,7 +53,7 @@ import * as Translations from 'Translations';
 // Set to true to force splash screen
 const alwaysShowSplash = false;
 
-class Splash extends React.Component {
+class Splash extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

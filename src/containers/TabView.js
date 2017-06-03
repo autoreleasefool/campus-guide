@@ -49,7 +49,7 @@ import Schedule from './schedule/Schedule';
 import Search from './search/SearchView';
 import Settings from './settings/Settings';
 
-class TabView extends React.Component {
+class TabView extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

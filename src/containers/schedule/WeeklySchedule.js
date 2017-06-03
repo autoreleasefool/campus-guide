@@ -71,7 +71,7 @@ import * as ArrayUtils from 'ArrayUtils';
 import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
 
-class WeeklySchedule extends React.Component {
+class WeeklySchedule extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

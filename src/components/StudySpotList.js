@@ -69,7 +69,7 @@ import { filterStudySpot } from 'Search';
 /** Regular expression for recognizing an unavailable time. */
 const TIME_UNAVAILABLE_REGEX = /[Nn]\/[Aa]/;
 
-export default class StudySpotList extends React.Component {
+export default class StudySpotList extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

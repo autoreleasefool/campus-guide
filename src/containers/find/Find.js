@@ -52,7 +52,7 @@ import Building from './Building';
 import Home from './Home';
 import StartingPoint from './StartingPoint';
 
-class Find extends React.Component {
+class Find extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

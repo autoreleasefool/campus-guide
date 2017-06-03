@@ -70,7 +70,7 @@ import * as DisplayUtils from 'DisplayUtils';
 import * as Translations from 'Translations';
 import { filterRoom } from 'Search';
 
-export default class RoomGrid extends React.Component {
+export default class RoomGrid extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.
@@ -215,7 +215,7 @@ export default class RoomGrid extends React.Component {
         <View style={_styles.room}>
           {rowIcon}
           <View style={_styles.roomDescription}>
-            {item.altName ? null : <Text style={_styles.roomType}>{item.altName}</Text>}
+            {item.altName ? <Text style={_styles.roomType}>{item.altName}</Text> : null}
             <Text style={_styles.roomName}>{`${this.props.shorthand} ${item.key}`}</Text>
             <Text style={_styles.roomType}>
               {Translations.getName(this.props.language, roomType)}

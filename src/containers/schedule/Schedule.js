@@ -99,7 +99,7 @@ const semesterIcon = {
   },
 };
 
-class Schedule extends React.Component {
+class Schedule extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

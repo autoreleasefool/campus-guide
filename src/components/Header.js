@@ -47,7 +47,7 @@ import * as Constants from 'Constants';
 // Height of the view
 export const HeaderHeight = 50;
 
-export default class Header extends React.Component {
+export default class Header extends React.PureComponent {
 
   /**
    * Properties which the parent component should make available to this component.

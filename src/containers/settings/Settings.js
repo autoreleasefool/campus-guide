@@ -81,7 +81,7 @@ import * as Translations from 'Translations';
 // Default opacity for tap when setting is not a boolean
 const DEFAULT_OPACITY: number = 0.4;
 
-class Settings extends React.Component {
+class Settings extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

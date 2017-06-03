@@ -99,7 +99,7 @@ const RESIDENCE_PROPERTY_WIDTH_RATIO = 0.4;
 // Number of columns to show residences in
 const RESIDENCE_COLUMNS = 2;
 
-class Housing extends React.Component {
+class Housing extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

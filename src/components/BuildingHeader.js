@@ -76,7 +76,7 @@ const BANNER_SWAP_TIME: number = 2000;
 // Amount of whitespace between items in the building details banner
 const BANNER_TEXT_SEPARATOR: number = 5;
 
-export default class BuildingHeader extends React.Component {
+export default class BuildingHeader extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

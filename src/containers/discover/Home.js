@@ -51,7 +51,7 @@ import Menu from 'Menu';
 import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 
-class DiscoverHome extends React.Component {
+class DiscoverHome extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

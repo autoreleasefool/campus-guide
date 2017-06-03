@@ -97,7 +97,7 @@ const SELECT_ROOM: number = 1;
 // Maximum distance to consider a building 'nearby'
 const MAXIMUM_DISTANCE = 0.1; // 100 metres
 
-class StartingPoint extends React.Component {
+class StartingPoint extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

@@ -84,7 +84,7 @@ import * as Translations from 'Translations';
 // Height of the screen for animating filters
 const { height } = Dimensions.get('window');
 
-class StudySpots extends React.Component {
+class StudySpots extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

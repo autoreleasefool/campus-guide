@@ -112,7 +112,7 @@ const DEFAULT_LOCATION = null;  // null
 // Number of columns to display buildings in
 const BUILDING_COLUMNS = 3;
 
-class LectureModal extends React.Component {
+class LectureModal extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

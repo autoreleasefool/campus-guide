@@ -61,7 +61,7 @@ const FULL_ICON_SIZE = Constants.Sizes.Icons.Medium * 2;
 /** Size of icons in mini filter view. */
 const MINI_ICON_SIZE = Constants.Sizes.Icons.Medium;
 
-export default class StudyFilters extends React.Component {
+export default class StudyFilters extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

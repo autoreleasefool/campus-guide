@@ -47,7 +47,7 @@ import RoomGrid from 'RoomGrid';
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
 
-class BuildingComponent extends React.Component {
+class BuildingComponent extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

@@ -92,7 +92,7 @@ const SINGLE = 1;
 // Time to delay searches by while user types
 const SEARCH_DELAY_TIME = 800;
 
-class SearchView extends React.Component {
+class SearchView extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

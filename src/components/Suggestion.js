@@ -52,7 +52,7 @@ const DEFAULT_TOUCH_OPACITY = 0.4;
 // Height of the suggestion view
 const SUGGESTION_HEIGHT = 50;
 
-export default class Suggestion extends React.Component {
+export default class Suggestion extends React.PureComponent {
 
   /**
    * Properties which the parent component should make available to this component.

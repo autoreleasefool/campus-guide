@@ -89,7 +89,7 @@ const MENU: number = 0;
 // Constant for navigation - show a specific campus
 const CAMPUS: number = 1;
 
-class Transit extends React.Component {
+class Transit extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

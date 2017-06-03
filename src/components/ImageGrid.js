@@ -72,7 +72,7 @@ import { filterGridImage } from 'Search';
 // Determining size of building icons based on the screen size.
 const { width } = Dimensions.get('window');
 
-export default class ImageGrid extends React.Component {
+export default class ImageGrid extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

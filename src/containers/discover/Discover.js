@@ -59,7 +59,7 @@ import Shuttle from './Shuttle';
 import StudySpots from './StudySpots';
 import Transit from './Transit';
 
-class Discover extends React.Component {
+class Discover extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

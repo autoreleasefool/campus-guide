@@ -62,7 +62,7 @@ import * as ExternalUtils from 'ExternalUtils';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
 
-export default class LinkCategoryView extends React.Component {
+export default class LinkCategoryView extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

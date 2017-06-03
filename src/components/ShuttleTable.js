@@ -60,7 +60,7 @@ import * as Translations from 'Translations';
 const { width } = Dimensions.get('window');
 const TIMES_PER_ROW = 2;
 
-export default class ShuttleTable extends React.Component {
+export default class ShuttleTable extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

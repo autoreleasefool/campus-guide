@@ -44,7 +44,7 @@ import Splash from './welcome/Splash';
 import Update from './welcome/Update';
 import * as Constants from 'Constants';
 
-export default class CampusGuideApp extends React.Component {
+export default class CampusGuideApp extends React.PureComponent {
 
   /**
    * Defines the transition between views.

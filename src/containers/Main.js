@@ -42,7 +42,7 @@ import * as Configuration from 'Configuration';
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
 
-class Main extends React.Component {
+class Main extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

@@ -81,7 +81,7 @@ const DAYS_IN_WEEK: number = 7;
 // Time that transit schedules roll over
 const TRANSIT_SCHEDULE_ROLLOVER: number = 4;
 
-export default class TransitStops extends React.Component {
+export default class TransitStops extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

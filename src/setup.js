@@ -60,7 +60,7 @@ export default function setup(): ReactClass < any > {
   // Create the redux store
   const store = configureStore();
 
-  class Root extends React.Component {
+  class Root extends React.PureComponent {
 
     /**
      * Renders the base component.

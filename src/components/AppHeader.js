@@ -78,7 +78,7 @@ const ICON_SIZE: number = 45;
 const { width } = Dimensions.get('window');
 const SEARCH_INPUT_WIDTH = width - ICON_SIZE * 2;
 
-class AppHeader extends React.Component {
+class AppHeader extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

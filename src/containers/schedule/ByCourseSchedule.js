@@ -64,7 +64,7 @@ import * as Constants from 'Constants';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
 
-class ByCourseSchedule extends React.Component {
+class ByCourseSchedule extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

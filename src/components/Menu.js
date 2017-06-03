@@ -60,7 +60,7 @@ import * as Constants from 'Constants';
 import * as DisplayUtils from 'DisplayUtils';
 import * as Translations from 'Translations';
 
-export default class Menu extends React.Component {
+export default class Menu extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.

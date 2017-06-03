@@ -64,7 +64,7 @@ const ProgressBar = (Platform.OS === 'android')
     ? require('ProgressBarAndroid')
     : require('ProgressViewIOS');
 
-class UpdateScreen extends React.Component {
+class UpdateScreen extends React.PureComponent {
 
   /**
    * Properties this component expects to be provided by its parent.
