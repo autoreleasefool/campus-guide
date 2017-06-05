@@ -26,7 +26,7 @@
 
 // React imports
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
@@ -51,6 +51,7 @@ import * as Constants from 'Constants';
 import Building from './Building';
 import Home from './Home';
 import StartingPoint from './StartingPoint';
+import Steps from './Steps';
 
 class Find extends React.PureComponent {
 
@@ -140,9 +141,7 @@ class Find extends React.PureComponent {
         );
       case Constants.Views.Find.Steps:
         return (
-          <View style={_styles.container}>
-            <Text>{'Steps'}</Text>
-          </View>
+          <Steps />
         );
       default:
         // TODO: generic error view?
