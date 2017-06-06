@@ -160,7 +160,7 @@ class AppHeader extends React.PureComponent {
   /**
    * Prompts the app to search.
    *
-   * @param {?string} text params to search for.
+   * @param {?string} text params to search for
    */
   _onSearch(text: ?string): void {
     if (text === this.props.filter) {

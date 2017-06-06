@@ -49,7 +49,7 @@ export default class CampusGuideApp extends React.PureComponent {
   /**
    * Defines the transition between views.
    *
-   * @returns {Object} a configuration for scene transitions in the navigator.
+   * @returns {Object} a configuration for scene transitions in the navigator
    */
   _configureScene(): Object {
     return {
@@ -63,7 +63,7 @@ export default class CampusGuideApp extends React.PureComponent {
    *
    * @param {AppRoute}        route     object with properties to identify the route being displayed
    * @param {ReactClass<any>} navigator navigator object to pass to children
-   * @returns {ReactElement<any>} the view to render, based on {route}.
+   * @returns {ReactElement<any>} the view to render, based on {route}
    */
   _renderScene(route: AppRoute, navigator: ReactClass < any >): ReactElement < any > {
     switch (route.id) {
@@ -89,7 +89,7 @@ export default class CampusGuideApp extends React.PureComponent {
   /**
    * Renders the root navigator of the app to switch between the splash screen and main screen.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     return (

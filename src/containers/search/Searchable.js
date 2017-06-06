@@ -66,7 +66,7 @@ function _getSources(): Array < Object > {
  * Gets the results of a search by querying all search result sources.
  *
  * @param {Language}       language    the current language
- * @param {?string}        searchTerms the search terms for the query.
+ * @param {?string}        searchTerms the search terms for the query
  * @param {?SearchSupport} supportData data to support searches
  * @returns {Promise<Object>} a promise which resolves with the results of the search,
  *                            with each result naming its source.
@@ -121,7 +121,7 @@ export function getResults(
 /**
  * Takes a set of results and narrows them based on new search terms.
  *
- * @param {?string}                      searchTerms     the search terms for the query.
+ * @param {?string}                      searchTerms     the search terms for the query
  * @param {Array<Section<SearchResult>>} existingResults results to narrow
  * @returns {Array<Section<SearchResult>>} the narrowed results
  */

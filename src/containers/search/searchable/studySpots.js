@@ -37,7 +37,7 @@ import { filterStudySpot } from 'Search';
  * Returns a promise containing a list of external links and categories which match the search terms.
  *
  * @param {Language}      language    the current language
- * @param {string}        searchTerms the search terms for the query.
+ * @param {string}        searchTerms the search terms for the query
  * @param {StudySpotInfo} studySpots  study spot informaation
  * @returns {Promise<Array<SearchResult>>} promise which resolves with the results of the search,
  *                                         containing study spots

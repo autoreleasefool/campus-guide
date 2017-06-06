@@ -96,7 +96,7 @@ export default class StudySpots extends React.PureComponent {
   /**
    * Renders a list of descriptions for the filters.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     return (

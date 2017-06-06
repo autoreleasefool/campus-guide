@@ -38,7 +38,7 @@ const translations: Object = {
  * Loads and parses a set of translations from the downloaded configuration.
  *
  * @param {Language} language the set of translations to load
- * @returns {Promise<Object>} a promise that resolves with the translations when they have been loaded.
+ * @returns {Promise<Object>} a promise that resolves with the translations when they have been loaded
  */
 async function _loadTranslations(language: Language): Promise < Object > {
   // If the language is already loaded,
@@ -67,9 +67,9 @@ async function _loadTranslations(language: Language): Promise < Object > {
  * Gets the French variant of a property from an object, or returns the default of the variant. If neither is
  * available, returns null.
  *
- * @param {string} property the prefix of the property to look for.
- * @param {?Object} obj     the object to look in for the property.
- * @returns {?string} the French property in obj, the default property in obj, or null.
+ * @param {string} property the prefix of the property to look for
+ * @param {?Object} obj     the object to look in for the property
+ * @returns {?string} the French property in obj, the default property in obj, or null
  */
 export function getFrenchVariant(property: string, obj: ?Object): ?string {
   if (obj == null) {
@@ -90,9 +90,9 @@ export function getFrenchVariant(property: string, obj: ?Object): ?string {
  * Gets the English variant of a property from an object, or returns the default of the variant. If neither is
  * available, returns null.
  *
- * @param {string} property the prefix of the property to look for.
- * @param {?Object} obj     the object to look in for the property.
- * @returns {?string} the English property in obj, the default property in obj, or null.
+ * @param {string} property the prefix of the property to look for
+ * @param {?Object} obj     the object to look in for the property
+ * @returns {?string} the English property in obj, the default property in obj, or null
  */
 export function getEnglishVariant(property: string, obj: ?Object): ?string {
   if (obj == null) {
@@ -114,8 +114,8 @@ export function getEnglishVariant(property: string, obj: ?Object): ?string {
  *
  * @param {Language} language either 'en' or 'fr'
  * @param {string} property   the property to retrieve appropriate translation of
- * @param {?Object} obj       the object to get the translation from.
- * @returns {?string} the French or English translation of the property in the object, or null.
+ * @param {?Object} obj       the object to get the translation from
+ * @returns {?string} the French or English translation of the property in the object, or null
  */
 export function getVariant(language: Language, property: string, obj: ?Object): ?string {
   if (language === 'en') {
@@ -130,8 +130,8 @@ export function getVariant(language: Language, property: string, obj: ?Object): 
 /**
  * Gets the French name of an object, or returns the default name. If neither is available, returns null.
  *
- * @param {?Object} obj the object to look in for the name.
- * @returns {?string} the French name, the default name, or null.
+ * @param {?Object} obj the object to look in for the name
+ * @returns {?string} the French name, the default name, or null
  */
 export function getFrenchName(obj: ?Object): ?string {
   return getFrenchVariant('name', obj);
@@ -140,8 +140,8 @@ export function getFrenchName(obj: ?Object): ?string {
 /**
  * Gets the English name of an object, or returns the default name. If neither is available, returns null.
  *
- * @param {?Object} obj the object to look in for the name.
- * @returns {?string} the English name, the default name, or null.
+ * @param {?Object} obj the object to look in for the name
+ * @returns {?string} the English name, the default name, or null
  */
 export function getEnglishName(obj: ?Object): ?string {
   return getEnglishVariant('name', obj);
@@ -151,8 +151,8 @@ export function getEnglishName(obj: ?Object): ?string {
  * Gets either the French or English translation name from an object, or null.
  *
  * @param {Language} language either 'en' or 'fr'
- * @param {?Object} obj       the object to get the name from.
- * @returns {?string} the French or English name of the object, or null.
+ * @param {?Object} obj       the object to get the name from
+ * @returns {?string} the French or English name of the object, or null
  */
 export function getName(language: Language, obj: ?Object): ?string {
   if (language === 'en') {
@@ -183,7 +183,7 @@ export function get(language: Language, property: string): string {
  * Loads and parses a set of translations from the downloaded configuration.
  *
  * @param {Language} language the set of translations to load
- * @returns {Promise<Object>} a promise that resolves with the translations when they have been loaded.
+ * @returns {Promise<Object>} a promise that resolves with the translations when they have been loaded
  */
 export function loadTranslations(language: Language): Promise < Object > {
   return _loadTranslations(language);

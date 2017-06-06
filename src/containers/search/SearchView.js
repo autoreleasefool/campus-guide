@@ -107,7 +107,7 @@ class SearchView extends React.PureComponent {
   /**
    * Pass props and declares initial state.
    *
-   * @param {Props} props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component
    */
   constructor(props: Props) {
     super(props);
@@ -188,7 +188,7 @@ class SearchView extends React.PureComponent {
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes.
+   * @returns {Object} a configuration for the transition between scenes
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
@@ -407,7 +407,7 @@ class SearchView extends React.PureComponent {
    *
    * @param {Section}  section       section contents
    * @param {?boolean} nonExpandable indicates if an "expand" icon should be shown
-   * @returns {ReactElement<any>} a {Header} with the name of the source.
+   * @returns {ReactElement<any>} a {Header} with the name of the source
    */
   _renderSource({ section }: { section: Section < * > }, nonExpandable: ?boolean): ReactElement < any > {
     const resultPosition = ArrayUtils.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', section.key);
@@ -538,8 +538,8 @@ class SearchView extends React.PureComponent {
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {Route} route object with properties to identify the route to display.
-   * @returns {?ReactElement<any>} the view to render, based on {route}.
+   * @param {Route} route object with properties to identify the route to display
+   * @returns {?ReactElement<any>} the view to render, based on {route}
    */
   _renderScene(route: Route): ?ReactElement < any > {
     switch (route.id) {

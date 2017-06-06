@@ -95,7 +95,7 @@ const initialState: State = {
  *
  * @param {State} state  the current state
  * @param {any}   action the action being taken
- * @returns {State} an updated state based on the previous state and the action taken.
+ * @returns {State} an updated state based on the previous state and the action taken
  */
 function header(state: State = initialState, action: any): State {
   switch (action.type) {

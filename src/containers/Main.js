@@ -107,7 +107,7 @@ class Main extends React.PureComponent {
   /**
    * Renders the main view of the application.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     return (

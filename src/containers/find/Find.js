@@ -103,7 +103,7 @@ class Find extends React.PureComponent {
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes.
+   * @returns {Object} a configuration for the transition between scenes
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
@@ -122,8 +122,8 @@ class Find extends React.PureComponent {
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {Route} route object with properties to identify the route to display.
-   * @returns {ReactElement<any>} the view to render, based on {route}.
+   * @param {Route} route object with properties to identify the route to display
+   * @returns {ReactElement<any>} the view to render, based on {route}
    */
   _renderScene(route: Route): ReactElement < any > {
     switch (route.id) {

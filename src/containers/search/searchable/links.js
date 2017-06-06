@@ -38,7 +38,7 @@ import * as Translations from 'Translations';
  * Returns a promise containing a list of external links and categories which match the search terms.
  *
  * @param {Language}           language     the current language
- * @param {string}             searchTerms  the search terms for the query.
+ * @param {string}             searchTerms  the search terms for the query
  * @param {Array<LinkSection>} linkSections list of link sections
  * @returns {Promise<Array <Section<SearchResult>>>} promise which resolves with the results of the search,
  *                                                   containing links

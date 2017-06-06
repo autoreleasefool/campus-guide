@@ -167,7 +167,7 @@ class LectureModal extends React.PureComponent {
   /**
    * Defines the transition between views.
    *
-   * @returns {Object} a configuration for scene transitions in the navigator.
+   * @returns {Object} a configuration for scene transitions in the navigator
    */
   _configureScene(): Object {
     return {
@@ -548,7 +548,7 @@ class LectureModal extends React.PureComponent {
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     let modalTitle = 'add_lecture';

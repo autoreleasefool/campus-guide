@@ -44,7 +44,7 @@ const initialState: Search = {
  *
  * @param {State} state  the current state
  * @param {any}   action the action being taken
- * @returns {Search} an updated state based on the previous state and the action taken.
+ * @returns {Search} an updated state based on the previous state and the action taken
  */
 function search(state: Search = initialState, action: any): Search {
   switch (action.type) {

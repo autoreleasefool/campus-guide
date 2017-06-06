@@ -74,7 +74,7 @@ export function openLink(url: ?string,
 /**
  * Gets a link to use in place of a missing link.
  *
- * @returns {string} a default link.
+ * @returns {string} a default link
  */
 export function getDefaultLink(): string {
   return 'https://google.ca';

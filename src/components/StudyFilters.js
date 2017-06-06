@@ -210,7 +210,7 @@ export default class StudyFilters extends React.PureComponent {
   /**
    * Renders each of the filters, in a large or small view.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     if (this.props.fullSize) {

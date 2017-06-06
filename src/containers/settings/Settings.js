@@ -150,7 +150,7 @@ class Settings extends React.PureComponent {
    * Returns true if the current value of a setting does not match its cached value, and updates the cached value if so.
    *
    * @param {string} key identifier for the setting to check
-   * @returns {boolean} true if the value in the cache was updated.
+   * @returns {boolean} true if the value in the cache was updated
    */
   _checkChangedSetting(key: string): boolean {
     const settingValue = this._getSetting(key);
@@ -177,8 +177,8 @@ class Settings extends React.PureComponent {
    * Returns the value of a setting based on the provided key. The returned value may be a string, boolean, integer,
    * or object, and should correspond to the type of the setting.
    *
-   * @param {string} key the setting value to return.
-   * @returns {any} the value of the setting corresponding to {key}, or null.
+   * @param {string} key the setting value to return
+   * @returns {any} the value of the setting corresponding to {key}, or null
    */
   _getSetting(key: string): any {
     switch (key) {

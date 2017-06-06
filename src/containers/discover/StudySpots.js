@@ -196,7 +196,7 @@ class StudySpots extends React.PureComponent {
   /**
    * Renders the filtered study spots and views to filter them.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     const studySpotInfo = this.state.studySpots;

@@ -261,7 +261,7 @@ export default class TransitCampusMap extends React.PureComponent {
   /**
    * Renders a map and list of routes and stop times at the various stops.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     return (

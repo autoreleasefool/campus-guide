@@ -356,7 +356,7 @@ class UpdateScreen extends React.PureComponent {
   /**
    * Renders a progress bar to indicate app updating
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     const language = this.props.language;

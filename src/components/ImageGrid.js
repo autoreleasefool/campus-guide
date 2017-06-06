@@ -298,7 +298,7 @@ export default class ImageGrid extends React.PureComponent {
   /**
    * Renders a list of the images and names.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     let style = {};

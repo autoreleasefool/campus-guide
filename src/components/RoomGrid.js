@@ -186,7 +186,7 @@ export default class RoomGrid extends React.PureComponent {
   /**
    * Renders a header for the list of rooms.
    *
-   * @returns {?ReactElement<any>} the header, if this.props.renderHeader is provided
+   * @returns {?ReactElement<any>} the header, if this.propsrenderHeader is provided
    */
   _renderHeader(): ?ReactElement < any > {
     return this.props.renderHeader == null ? null : this.props.renderHeader();
@@ -238,7 +238,7 @@ export default class RoomGrid extends React.PureComponent {
   /**
    * Returns a list of touchable views listing the room names.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     return (

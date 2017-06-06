@@ -158,7 +158,7 @@ class Splash extends React.PureComponent {
   /**
    * Displays two buttons to allow the user to select French or English.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     if (this.state.loading) {

@@ -84,8 +84,8 @@ export function destinationToString(destination: Destination): string {
 /**
  * Formats certain link formats to display.
  *
- * @param {string} link link to format. Accepted formats are 'tel:\d+', 'mailto:.*'.
- * @returns {string} a link which is better for display, or the original.
+ * @param {string} link link to format. Accepted formats are 'tel:\d+', 'mailto:.*'
+ * @returns {string} a link which is better for display, or the original
  */
 export function formatLink(link: ?string): string {
   if (link == null) {
@@ -113,8 +113,8 @@ export function formatLink(link: ?string): string {
 /**
  * If a time has an hour greater than 23, it is adjusted to be within 24 hours.
  *
- * @param {string} time time to convert, in '00:00' format.
- * @returns {string} a time between 00:00 and 23:59.
+ * @param {string} time time to convert, in '00:00' format
+ * @returns {string} a time between 00:00 and 23:59
  */
 export function get24HourAdjustedTime(time: string): string {
   const minutes = time.substring(3, 5);
@@ -148,9 +148,9 @@ export function getFormattedTimeSinceMidnight(
  * If text length is greater than {maxLength}, the text is shortened to maxLength - 2 and 2 periods are added to the
  * end of the text.
  *
- * @param {string} text      string to shorten if too long.
- * @param {number} maxLength maximum length string to return.
- * @returns {string} a string with a max length of {maxLength}.
+ * @param {string} text      string to shorten if too long
+ * @param {number} maxLength maximum length string to return
+ * @returns {string} a string with a max length of {maxLength}
  */
 export function getTextWithEllipses(text: string, maxLength: number): string {
   if (text.length > maxLength) {
@@ -164,10 +164,10 @@ export function getTextWithEllipses(text: string, maxLength: number): string {
  * Pads the beginning of a string with a character until it is of {desiredLength}. If no character is provided,
  * pads with spaces.
  *
- * @param {string} text          string to pad.
- * @param {number} desiredLength length of string to return.
- * @param {?string} char         optional argument. Character to pad with. Uses ' ' by default.
- * @returns {string} a string with at least a length of {desiredLength}.
+ * @param {string} text          string to pad
+ * @param {number} desiredLength length of string to return
+ * @param {?string} char         optional argument. Character to pad with. Uses ' ' by default
+ * @returns {string} a string with at least a length of {desiredLength}
  */
 export function leftPad(text: string, desiredLength: number, char: ?string): string {
   const replacementChar = char || ' ';

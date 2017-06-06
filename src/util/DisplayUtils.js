@@ -33,7 +33,7 @@ import type { Icon, Facility, PlatformString } from 'types';
  *
  * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class' properties, or
  *                     'icon.name' and 'icon.class' properties.
- * @returns {?Icon} an object with 'name' and 'class' properties, or null.
+ * @returns {?Icon} an object with 'name' and 'class' properties, or null
  */
 export function getAndroidIcon(obj: Object): ?Icon {
   if ('icon' in obj) {
@@ -51,8 +51,8 @@ export function getAndroidIcon(obj: Object): ?Icon {
 /**
  * Returns the icon class to represent a provided facility.
  *
- * @param {Facility} facility the identifier of the facility.
- * @returns {?string} a string with the class of the icon, or null.
+ * @param {Facility} facility the identifier of the facility
+ * @returns {?string} a string with the class of the icon, or null
  */
 export function getFacilityIconClass(facility: Facility): ?string {
   switch (facility) {
@@ -78,8 +78,8 @@ export function getFacilityIconClass(facility: Facility): ?string {
 /**
  * Returns the icon name to represent a provided facility.
  *
- * @param {Facility} facility the identifier of the facility.
- * @returns {?string} a string with the name of the icon, or null.
+ * @param {Facility} facility the identifier of the facility
+ * @returns {?string} a string with the name of the icon, or null
  */
 export function getFacilityIconName(facility: Facility): ?string {
   switch (facility) {
@@ -120,7 +120,7 @@ export function getFacilityIconName(facility: Facility): ?string {
  *
  * @param {Object} obj the object with either 'icon.ios.name' and 'icon.ios.class' properties, or 'icon.name' and
  *                     'icon.class' properties.
- * @returns {?Icon} an object with 'name' and 'class' properties, or null.
+ * @returns {?Icon} an object with 'name' and 'class' properties, or null
  */
 export function getIOSIcon(obj: Object): ?Icon {
   if ('icon' in obj) {
@@ -142,7 +142,7 @@ export function getIOSIcon(obj: Object): ?Icon {
  * @param {PlatformString} platform either 'ios' or 'android'.
  * @param {Object} obj              the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
  *                                  properties, or 'icon.name' and 'icon.class' properties.
- * @returns {?Icon} an object with 'name' and 'class' properties, or null.
+ * @returns {?Icon} an object with 'name' and 'class' properties, or null
  */
 export function getPlatformIcon(platform: PlatformString, obj: Object): ?Icon {
   if (platform === 'ios') {
@@ -157,8 +157,8 @@ export function getPlatformIcon(platform: PlatformString, obj: Object): ?Icon {
 /**
  * Returns a color for the icon for certain social media platforms.
  *
- * @param {string} socialMedia a string containing the name of a social media platform.
- * @returns {string} the color for the icon of the provided social media platform, or a generic color.
+ * @param {string} socialMedia a string containing the name of a social media platform
+ * @returns {string} the color for the icon of the provided social media platform, or a generic color
  */
 export function getSocialMediaIconColor(socialMedia: string): string {
   switch (socialMedia.toLowerCase()) {
@@ -182,8 +182,8 @@ export function getSocialMediaIconColor(socialMedia: string): string {
 /**
  * Returns the icon name for certain social media platforms.
  *
- * @param {string} socialMedia a string containing the name of a social media platform.
- * @returns {string} the icon of the provided social media platform, or a generic icon.
+ * @param {string} socialMedia a string containing the name of a social media platform
+ * @returns {string} the icon of the provided social media platform, or a generic icon
  */
 export function getSocialMediaIconName(socialMedia: string): string {
   switch (socialMedia.toLowerCase()) {
@@ -208,7 +208,7 @@ export function getSocialMediaIconName(socialMedia: string): string {
  * Returns true if a hexadecimal color is 'dark', false otherwise.
  *
  * @param {string} color a hexadecimal string
- * @returns {boolean} true if the color is dark, false otherwise.
+ * @returns {boolean} true if the color is dark, false otherwise
  */
 export function isColorDark(color: string): boolean {
   // Base value for hexadecimal

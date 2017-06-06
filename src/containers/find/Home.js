@@ -75,7 +75,7 @@ class FindHome extends React.PureComponent {
   /**
    * Renders the user's upcoming classes for the day and a list of buildings on campus.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     return (

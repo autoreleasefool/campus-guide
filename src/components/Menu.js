@@ -87,7 +87,7 @@ export default class Menu extends React.PureComponent {
   /**
    * Focuses a new section for the user, hides the old section's image and shows the new section's image.
    *
-   * @param {number} sectionIdx index of new section to focus.
+   * @param {number} sectionIdx index of new section to focus
    */
   _focusSection(sectionIdx: number): void {
     if (this.state.expandedSection === sectionIdx || sectionIdx < 0 || sectionIdx >= this.props.sections.length) {
@@ -157,7 +157,7 @@ export default class Menu extends React.PureComponent {
   /**
    * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     return (

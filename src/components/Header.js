@@ -95,7 +95,7 @@ export default class Header extends React.PureComponent {
    * Builds a view containing the Header's subtitle text and icon, as long as one of them is defined.
    *
    * @param {string} color color of the subtitle
-   * @returns {?ReactElement<any>} a view with the subtitle text and icon, or null if neither exists.
+   * @returns {?ReactElement<any>} a view with the subtitle text and icon, or null if neither exists
    */
   _renderSubtitle(color: string): ?ReactElement < any > {
     let subtitle: ?ReactElement < any > = null;
@@ -187,7 +187,7 @@ export default class Header extends React.PureComponent {
   /**
    * Builds the components of the section header, including the title, icon, subtitle, and subtitle icon.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     // Set the background color of the header to a default value if not provided

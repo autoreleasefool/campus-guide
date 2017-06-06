@@ -180,7 +180,7 @@ export default class BuildingHeader extends React.PureComponent {
   /**
    * Renders a view containing an image of the building, it's name, and a list of its rooms and facilities.
    *
-   * @returns {ReactElement<any>} a view describing a building.
+   * @returns {ReactElement<any>} a view describing a building
    */
   render(): ReactElement < any > {
     const imageStyle = (this.state.bannerPosition === 0)

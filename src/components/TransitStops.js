@@ -96,7 +96,7 @@ export default class TransitStops extends React.PureComponent {
   /**
    * Pass props and declares initial state.
    *
-   * @param {Props} props properties passed from container to this component.
+   * @param {Props} props properties passed from container to this component
    */
   constructor(props: Props) {
     super(props);
@@ -151,7 +151,7 @@ export default class TransitStops extends React.PureComponent {
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for transitions between scenes.
+   * @returns {Object} a configuration for transitions between scenes
    */
   _configureScene(): Object {
     return Navigator.SceneConfigs.PushFromRight;
@@ -174,7 +174,7 @@ export default class TransitStops extends React.PureComponent {
    * @param {Object}     days       a dictionary of days mapped to times
    * @param {Language}   language   the user's selected language
    * @param {TimeFormat} timeFormat the user's preferred time format
-   * @returns {string} a list of up to 3 times, formatted as a string.
+   * @returns {string} a list of up to 3 times, formatted as a string
    */
   _retrieveUpcomingTimes(days: Object, language: Language, timeFormat: TimeFormat): string {
     const upcomingTimes = [];
@@ -414,8 +414,8 @@ export default class TransitStops extends React.PureComponent {
   /**
    * Renders a view according to the current route of the navigator.
    *
-   * @param {Route} route object with properties to identify the route to display.
-   * @returns {ReactElement<any>} the view to render, based on {route}.
+   * @param {Route} route object with properties to identify the route to display
+   * @returns {ReactElement<any>} the view to render, based on {route}
    */
   _renderScene(route: Route): ReactElement < any > {
     if (route.id === TIMES) {

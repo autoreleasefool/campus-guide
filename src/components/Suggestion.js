@@ -169,7 +169,7 @@ export default class Suggestion extends React.PureComponent {
   /**
    * Builds the components of the section header, including the title, icon, subtitle, and subtitle icon.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     // Set the background color of the header to a default value if not provided

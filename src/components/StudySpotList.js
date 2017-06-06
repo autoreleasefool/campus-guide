@@ -248,7 +248,7 @@ export default class StudySpotList extends React.PureComponent {
   /**
    * Returns a list of touchable views listing the study spot descriptions.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render.
+   * @returns {ReactElement<any>} the hierarchy of views to render
    */
   render(): ReactElement < any > {
     return (

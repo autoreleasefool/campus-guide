@@ -72,8 +72,8 @@ export default class LinkCategoryView extends React.PureComponent {
   /**
    * Attempts to open a URL.
    *
-   * @param {?string} link        the url to open.
-   * @param {Object} Translations language translations.
+   * @param {?string} link        the url to open
+   * @param {Object} Translations language translations
    */
   _openLink(link: ?string): void {
     ExternalUtils.openLink(link, this.props.language, Linking, Alert, Clipboard, TextUtils);
@@ -104,8 +104,8 @@ export default class LinkCategoryView extends React.PureComponent {
    * Constructs a view to display a formatted link, if the link does not begin with "http".
    *
    * @param {string} link      the link to format
-   * @param {string} textColor color of the text to display link in.
-   * @returns {?ReactElement<any>} a formatted link in a text view.
+   * @param {string} textColor color of the text to display link in
+   * @returns {?ReactElement<any>} a formatted link in a text view
    */
   _renderFormattedLink(link: string, textColor: string): ?ReactElement < any > {
     if (link.indexOf('http') === 0) {
@@ -120,9 +120,9 @@ export default class LinkCategoryView extends React.PureComponent {
   /**
    * Renders an icon based on the link type.
    *
-   * @param {?string} link     the link to represent with an icon.
-   * @param {string} iconColor color for the icon.
-   * @returns {?ReactElement<any>} an icon for the link.
+   * @param {?string} link     the link to represent with an icon
+   * @param {string} iconColor color for the icon
+   * @returns {?ReactElement<any>} an icon for the link
    */
   _renderLinkIcon(link: ?string, iconColor: string): ?ReactElement < any > {
     if (link == null) {
@@ -149,7 +149,7 @@ export default class LinkCategoryView extends React.PureComponent {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @param {boolean}           isBackgroundDark indicates if the background color of the category is dark.
+   * @param {boolean}           isBackgroundDark indicates if the background color of the category is dark
    * @returns {?ReactElement<any>} for each index in {links}, a {TouchableOpacity} with the name of the link
    *                               or null if there are no links
    */
