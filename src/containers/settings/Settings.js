@@ -224,7 +224,7 @@ class Settings extends React.PureComponent {
       return;
     } else if (setting.type === 'link' && setting.key != 'app_open_source') {
       // Open the provided link
-      const link = Translations.getVariant(this.props.language, 'link', setting);
+      const link = Translations.getLink(this.props.language, setting);
       ExternalUtils.openLink(
         link || ExternalUtils.getDefaultLink(),
         this.props.language,

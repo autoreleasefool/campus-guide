@@ -205,7 +205,7 @@ class Housing extends React.PureComponent {
       },
       {
         name: Translations.get(this.props.language, 'description'),
-        description: Translations.getVariant(this.props.language, 'description', residence),
+        description: Translations.getDescription(this.props.language, residence),
       },
     ];
   }
@@ -348,10 +348,8 @@ class Housing extends React.PureComponent {
    */
   _onSectionSelected(section: string): void {
     if (section === 'off') {
-      const translatedLink = Translations.getVariant(
-        this.props.language,
-        'link',
-        this.state.housingInfo.offCampusHousing) || ExternalUtils.getDefaultLink();
+      const translatedLink = Translations.getLink(this.props.language, this.state.housingInfo.offCampusHousing)
+          || ExternalUtils.getDefaultLink();
       ExternalUtils.openLink(translatedLink, this.props.language, Linking, Alert, Clipboard, TextUtils);
       return;
     }
@@ -484,7 +482,7 @@ class Housing extends React.PureComponent {
    * @returns {ReactElement<any>} a {Header} with the name of the section
    */
   _renderResidencePropertyCategory({ section }: { section: Section < * > }): ReactElement < any > {
-    const description = Translations.getVariant(this.props.language, 'description', section);
+    const description = Translations.getDescription(this.props.language, section);
 
     return (
       <View style={_styles.category}>

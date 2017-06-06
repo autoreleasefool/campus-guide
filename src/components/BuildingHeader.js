@@ -208,7 +208,7 @@ export default class BuildingHeader extends React.PureComponent {
               <Text
                   key={`prop.desc.${i}`}
                   style={_styles.body}>
-                {Translations.getVariant(this.props.language, 'description', property)}
+                {Translations.getDescription(this.props.language, property)}
               </Text>
             </View>
           ))}

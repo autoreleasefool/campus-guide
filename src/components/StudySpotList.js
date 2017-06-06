@@ -188,7 +188,7 @@ export default class StudySpotList extends React.PureComponent {
   _renderItem({ item }: { item: StudySpot }): ReactElement < any > {
     const altName = Translations.getName(this.props.language, item);
     const name = `${item.building} ${item.room ? item.room : ''}`;
-    const description = Translations.getVariant(this.props.language, 'description', item) || '';
+    const description = Translations.getDescription(this.props.language, item) || '';
 
     let openingTime = '';
     if (TIME_UNAVAILABLE_REGEX.test(item.opens)) {

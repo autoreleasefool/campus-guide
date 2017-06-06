@@ -185,7 +185,7 @@ class Transit extends React.PureComponent {
    */
   _openLink(): void {
     const link = this.props.transitInfo
-        ? Translations.getVariant(this.props.language, 'link', this.props.transitInfo)
+        ? Translations.getLink(this.props.language, this.props.transitInfo)
         : ExternalUtils.getDefaultLink();
 
     ExternalUtils.openLink(

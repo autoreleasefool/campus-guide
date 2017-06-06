@@ -497,8 +497,8 @@ const mapDispatchToProps = (dispatch) => {
       transitInfo: {
         name_en: Translations.getEnglishName(transitInfo) || '',
         name_fr: Translations.getFrenchName(transitInfo) || '',
-        link_en: Translations.getEnglishVariant('link', transitInfo) || '',
-        link_fr: Translations.getFrenchVariant('link', transitInfo) || '',
+        link_en: Translations.getEnglishLink(transitInfo) || '',
+        link_fr: Translations.getFrenchLink(transitInfo) || '',
       },
     })),
     updateFailed: () => dispatch(actions.updateProgress({ showUpdateProgress: false, showRetry: true })),

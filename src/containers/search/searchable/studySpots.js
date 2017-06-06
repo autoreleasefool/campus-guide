@@ -82,7 +82,7 @@ function _getResults(language: Language,
       if (result.success) {
         matchedSpots.push({
           key: studySpotsTranslation,
-          description: Translations.getVariant(language, 'description', studySpot) || '',
+          description: Translations.getDescription(language, studySpot) || '',
           data: { shorthand: studySpot.building, room: studySpot.room },
           icon: { name: 'import-contacts', class: 'material' },
           matchedTerms: result.matches,

@@ -59,7 +59,7 @@ function _getResults(language: Language,
                       iconName: string,
                       link: Object,
                       matchedSectionName: boolean) => {
-      const translatedLink: string = Translations.getVariant(language, 'link', link)
+      const translatedLink: string = Translations.getLink(language, link)
           || ExternalUtils.getDefaultLink();
       links.push({
         key: externalLinksTranslation,

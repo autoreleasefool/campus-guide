@@ -128,6 +128,84 @@ export function getVariant(language: Language, property: string, obj: ?Object): 
 }
 
 /**
+ * Gets the French description of an object, or returns the default description. If neither is available,
+ * returns null.
+ *
+ * @param {?Object} obj the object to look in for the description
+ * @returns {?string} the French description, the default description, or null
+ */
+export function getFrenchDescription(obj: ?Object): ?string {
+  return getFrenchVariant('description', obj);
+}
+
+/**
+ * Gets the English description of an object, or returns the default description. If neither is available,
+ * returns null.
+ *
+ * @param {?Object} obj the object to look in for the description
+ * @returns {?string} the English description, the default description, or null
+ */
+export function getEnglishDescription(obj: ?Object): ?string {
+  return getEnglishVariant('description', obj);
+}
+
+/**
+ * Gets either the French or English description from an object, or null.
+ *
+ * @param {Language} language either 'en' or 'fr'
+ * @param {?Object} obj       the object to get the description from
+ * @returns {?string} the French or English description of the object, or null
+ */
+export function getDescription(language: Language, obj: ?Object): ?string {
+  if (language === 'en') {
+    return getEnglishDescription(obj);
+  } else if (language === 'fr') {
+    return getFrenchDescription(obj);
+  } else {
+    return null;
+  }
+}
+
+/**
+ * Gets the French link of an object, or returns the default link. If neither is available,
+ * returns null.
+ *
+ * @param {?Object} obj the object to look in for the link
+ * @returns {?string} the French link, the default link, or null
+ */
+export function getFrenchLink(obj: ?Object): ?string {
+  return getFrenchVariant('link', obj);
+}
+
+/**
+ * Gets the English link of an object, or returns the default link. If neither is available,
+ * returns null.
+ *
+ * @param {?Object} obj the object to look in for the link
+ * @returns {?string} the English link, the default link, or null
+ */
+export function getEnglishLink(obj: ?Object): ?string {
+  return getEnglishVariant('link', obj);
+}
+
+/**
+ * Gets either the French or English link from an object, or null.
+ *
+ * @param {Language} language either 'en' or 'fr'
+ * @param {?Object} obj       the object to get the link from
+ * @returns {?string} the French or English link of the object, or null
+ */
+export function getLink(language: Language, obj: ?Object): ?string {
+  if (language === 'en') {
+    return getEnglishLink(obj);
+  } else if (language === 'fr') {
+    return getFrenchLink(obj);
+  } else {
+    return null;
+  }
+}
+
+/**
  * Gets the French name of an object, or returns the default name. If neither is available, returns null.
  *
  * @param {?Object} obj the object to look in for the name
@@ -148,7 +226,7 @@ export function getEnglishName(obj: ?Object): ?string {
 }
 
 /**
- * Gets either the French or English translation name from an object, or null.
+ * Gets either the French or English name from an object, or null.
  *
  * @param {Language} language either 'en' or 'fr'
  * @param {?Object} obj       the object to get the name from

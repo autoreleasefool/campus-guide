@@ -178,11 +178,9 @@ export default class LinkCategoryView extends React.PureComponent {
             icon={{ name: 'insert-link', class: 'material' }}
             title={Translations.get(language, 'uo_info')} />
         {links.map((link, index) => {
-          const translatedLink: string = Translations.getVariant(language, 'link', link)
-              || ExternalUtils.getDefaultLink();
-          const translatedName: string = Translations.getName(language, link)
-              || translatedLink;
-          const translatedDescription: ?string = Translations.getVariant(language, 'description', link);
+          const translatedLink: string = Translations.getLink(language, link) || ExternalUtils.getDefaultLink();
+          const translatedName: string = Translations.getName(language, link) || translatedLink;
+          const translatedDescription: ?string = Translations.getDescription(language, link);
 
           // Compare name to search terms and do not render if they don't match
           if (filter != null && translatedName.toUpperCase().indexOf(filter) < 0) {
@@ -238,7 +236,7 @@ export default class LinkCategoryView extends React.PureComponent {
     return (
       <View style={_styles.socialMediaContainer}>
         {links.map((link: NamedLink) => {
-          const url: string = Translations.getVariant(language, 'link', link)
+          const url: string = Translations.getLink(language, link)
               || ExternalUtils.getDefaultLink();
           const name: ?string = Translations.getName(language, link);
 
