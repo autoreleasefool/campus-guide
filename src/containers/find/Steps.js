@@ -28,7 +28,7 @@
 import React from 'react';
 import {
   FlatList,
-  Step,
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -39,7 +39,7 @@ import { connect } from 'react-redux';
 // import * as actions from 'actions';
 
 // Types
-import type { Destination, Language } from 'types';
+import type { Destination, Language, Step } from 'types';
 
 // Type definition for component props.
 type Props = {
@@ -56,7 +56,9 @@ type State = {
 import ActionButton from 'react-native-action-button';
 import AdView from 'AdView';
 import Header from 'Header';
+import PaddedIcon from 'PaddedIcon';
 import * as Constants from 'Constants';
+import * as DisplayUtils from 'DisplayUtils';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
 
@@ -112,14 +114,40 @@ class Steps extends React.PureComponent {
   }
 
   /**
+   * Renders a separator line between rows.
+   *
+   * @returns {ReactElement<any>} a separator for the list of steps
+   */
+  _renderSeparator(): ReactElement < any > {
+    // TODO: remove 'indentSeparator' for first and last items
+    return <View style={[ _styles.separator, _styles.indentSeparator ]} />;
+  }
+
+  /**
    * Renders a single navigation step.
    *
    * @param {Step} item the navigation step
    * @returns {ReactElement<any>} the text and icon of the navigation step
    */
   _renderStep({ item }: { item: Step }): ReactElement < any > {
-    console.log(item);
-    return <View />;
+    const icon = DisplayUtils.getPlatformIcon(Platform.OS, item);
+    let iconView = null;
+    if (icon != null) {
+      iconView = (
+        <PaddedIcon
+            color={Constants.Colors.primaryWhiteText}
+            icon={icon} />
+      );
+    }
+
+    return (
+      <View>
+        {iconView}
+        <Text style={[ _styles.step, icon == null ? _styles.stepPadding : {} ]}>
+          {Translations.getDescription(this.props.language, item)}
+        </Text>
+      </View>
+    );
   }
 
   /**
@@ -135,6 +163,7 @@ class Steps extends React.PureComponent {
             icon={{ name: 'list', class: 'material' }}
             title={Translations.get(this.props.language, 'steps')} />
         <FlatList
+            ItemSeparatorComponent={this._renderSeparator}
             data={this.state.steps}
             renderItem={this._renderStep.bind(this)} />
       </View>
@@ -173,6 +202,23 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Subtitle,
     margin: Constants.Sizes.Margins.Expanded,
+  },
+  step: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    marginTop: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+  },
+  stepPadding: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Constants.Colors.primaryWhiteText,
+  },
+  indentSeparator: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
 });
 
