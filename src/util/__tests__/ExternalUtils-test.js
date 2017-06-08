@@ -23,9 +23,6 @@
  */
 'use strict';
 
-/* async seems to cause an issue with this rule. */
-/* eslint-disable arrow-parens */
-
 // Require modules used in testing
 import * as ExternalUtils from '../ExternalUtils';
 const Translations = {};
@@ -64,7 +61,7 @@ const Linking = {
 };
 
 const TextUtils = {
-  formatLink: jest.fn(url => {
+  formatLink: jest.fn((url) => {
     return url;
   }),
 };
@@ -128,20 +125,6 @@ describe('ExternalUtils-test', () => {
           expect(Clipboard.setString).not.toHaveBeenCalled();
           expect(Linking.openURL).not.toHaveBeenCalled();
         });
-  });
-
-  it('tests that comparing the distance between coordinates works', () => {
-
-    /* eslint-disable no-magic-numbers */
-    /* Test: http://andrew.hedges.name/experiments/haversine/ */
-
-    expect(ExternalUtils.getDistanceBetweenCoordinates(0, 0, 0, 0)).toBe(0);
-    expect(ExternalUtils.getDistanceBetweenCoordinates(0, 0, 45, 75)).toBeCloseTo(8835, 1);
-    expect(ExternalUtils.getDistanceBetweenCoordinates(38.898556, -77.037852, 38.897147, -77.043934))
-        .toBeCloseTo(0.549, 1);
-
-    /* eslint-enable no-magic-numbers */
-
   });
 
 });

@@ -82,7 +82,7 @@ import PaddedIcon from 'PaddedIcon';
 import RoomGrid from 'RoomGrid';
 import Suggestion from 'Suggestion';
 import * as Constants from 'Constants';
-import * as ExternalUtils from 'ExternalUtils';
+import * as NavigationUtils from 'NavigationUtils';
 import * as TextUtils from 'TextUtils';
 import * as Translations from 'Translations';
 
@@ -173,38 +173,13 @@ class StartingPoint extends React.PureComponent {
    */
   _findClosestBuilding(): void {
     this.setState({ locating: true });
-    navigator.geolocation.getCurrentPosition(
-      (position: Object) => {
-        const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
-
-        let closestBuilding = null;
-        let minDistance = -1;
-        const totalBuildings = this.props.buildingList.length;
-        for (let i = 0; i < totalBuildings; i++) {
-          const building = this.props.buildingList[i];
-          const distance = ExternalUtils.getDistanceBetweenCoordinates(
-            building.location.lat,
-            building.location.long,
-            location.latitude,
-            location.longitude
-          );
-
-          if (distance < minDistance || minDistance === -1) {
-            minDistance = distance;
-            closestBuilding = building;
-          }
-        }
-
-        // Nearest building must be within a certain distance to be considered
-        if (minDistance > MAXIMUM_DISTANCE) {
-          closestBuilding = null;
-        }
-
-        this.setState({
-          locating: false,
-          closestBuilding,
-        });
-      },
+    navigator.geolocation.getCurrentPosition((position: Object) => {
+      const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
+      this.setState({
+        locating: false,
+        closestBuilding: NavigationUtils.findClosestBuilding(location, this.props.buildingList, MAXIMUM_DISTANCE),
+      });
+    },
       (err: any) => console.error('Could not get user location.', err),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
