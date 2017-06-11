@@ -15,7 +15,6 @@ A mobile app, developed with React Native, to help students of the University of
 1. Clone the repository: `git clone https://github.com/josephroque/campus-guide`
 2. Make your changes.
 3. Ensure the following requirements for a contribution are met when running these commands:
-    - `npm run flow`: There should be no issues within the project.
     - `npm run lint`: There should be no errors (warnings are OK).
     - `npm test`: All tests should pass.
 
@@ -23,7 +22,6 @@ A mobile app, developed with React Native, to help students of the University of
 
 Currently, the Travis CI build will run the following commands:
 
-- `npm run flow`
 - `npm run lint`
 - `npm test`
 

@@ -3,10 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "build": "npm run clean && npm run tsc --",
+    "clean": "rimraf artifacts",
     "flow": "flow check",
-    "lint": "eslint .",
+    "lint": "tslint src/**/*.ts",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "tsc": "tsc"
   },
   "dependencies": {
     "http-status-codes": "^1.0.6",
@@ -28,20 +31,23 @@
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
+    "@types/jest": "^19.2.4",
+    "@types/react": "^15.0.27",
+    "@types/react-native": "^0.44.9",
     "babel-jest": "^19.0.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-react-native": "^1.9.1",
+    "concurrently": "^3.4.0",
     "empty": "^0.10.1",
-    "eslint": "^3.19.0",
-    "eslint-plugin-react": "^6.10.3",
-    "eslint-plugin-react-native": "^2.3.2",
-    "flow-bin": "0.42",
     "jest": "^19.0.2",
     "jest-cli": "^19.0.2",
     "jest-react-native": "^18.0.0",
     "pre-commit": "^1.2.2",
-    "react-test-renderer": "^15.5.4"
+    "react-test-renderer": "^15.5.4",
+    "rimraf": "^2.6.1",
+    "tslint": "^5.4.3",
+    "tslint-eslint-rules": "^4.1.1",
+    "typescript": "^2.3.4"
   },
   "jest": {
     "coverageThreshold": {
@@ -58,7 +64,6 @@
     "preset": "react-native"
   },
   "pre-commit": [
-    "flow",
     "lint",
     "test"
   ]
