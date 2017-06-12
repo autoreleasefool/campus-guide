@@ -50,7 +50,7 @@
     "import-blacklist": false,
     "label-position": true,
     "no-arg": true,
-    "no-bitwise": true,
+    "no-bitwise": false,
     "no-conditional-assignment": true,
     "no-console": [
       true,

@@ -17,16 +17,11 @@
  *
  * @author Joseph Roque
  * @created 2016-10-30
- * @file ExternalUtils.js
+ * @file ExternalUtils.ts
  * @providesModule ExternalUtils
  * @description Defines a set of methods for interacting with elements outside of the application.
- *
- * @flow
  */
 'use strict';
-
-// Types
-import type { Language } from 'types';
 
 // Imports
 import * as Translations from 'Translations';
@@ -34,35 +29,37 @@ import * as Translations from 'Translations';
 /**
  * Opens a URL if the URL is valid.
  *
- * @param {?string} url         URL to open
- * @param {Language} language  user's selected language
- * @param {Object}   Linking   an instance of the React Native Linking class
- * @param {Object}   Alert     an instance of the React Native Alert class
- * @param {Object}   Clipboard an instance of the React Native Clipboard class
- * @param {Object}   TextUtils an instance of the TextUtils utility class
+ * @param {string|undefined} url       URL to open
+ * @param {Language}         language  user's selected language
+ * @param {Object}           Linking   an instance of the React Native Linking class
+ * @param {Object}           Alert     an instance of the React Native Alert class
+ * @param {Object}           Clipboard an instance of the React Native Clipboard class
+ * @param {Object}           TextUtils an instance of the TextUtils utility class
  * @returns {Promise<void>} a promise indicating the result of whether the link was opened
  */
-export function openLink(url: ?string,
+export function openLink(url: string | undefined,
                          language: Language,
-                         Linking: Object,
-                         Alert: Object,
-                         Clipboard: Object,
-                         TextUtils: Object): Promise < void > {
-  const formattedUrl = TextUtils.formatLink(url);
+                         linking: object,
+                         alert: object,
+                         clipboard: object,
+                         textUtils: object): Promise < void > {
+  const formattedUrl = textUtils.formatLink(url);
 
-  return new Promise((resolve, reject) => {
-    Linking.canOpenURL(url)
+  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
+    linking.canOpenURL(url)
         .then((supported: boolean) => {
           if (supported) {
-            Linking.openURL(url);
+            linking.openURL(url);
           } else {
-            Alert.alert(
+            alert.alert(
               Translations.get(language, 'cannot_open_url'),
               formattedUrl,
               [
                 { text: Translations.get(language, 'cancel'), style: 'cancel' },
-                { text: Translations.get(language, 'copy_link'), onPress: () => Clipboard.setString(formattedUrl) },
-              ],
+                {
+                  onPress: (): void => clipboard.setString(formattedUrl) },
+                  text: Translations.get(language, 'copy_link'),
+              ]
             );
           }
           resolve();

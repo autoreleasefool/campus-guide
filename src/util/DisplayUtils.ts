@@ -17,25 +17,20 @@
  *
  * @author Joseph Roque
  * @created 2016-10-17
- * @file DisplayUtils.js
+ * @file DisplayUtils.ts
  * @providesModule DisplayUtils
  * @description Defines a set of methods to manipulate the display and related values.
- *
- * @flow
  */
 'use strict';
-
-// Types
-import type { Icon, Facility, PlatformString } from 'types';
 
 /**
  * Returns the icon and class for an icon to use for the Android platform, defined in the object.
  *
  * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class' properties, or
  *                     'icon.name' and 'icon.class' properties.
- * @returns {?Icon} an object with 'name' and 'class' properties, or null
+ * @returns {Icon|undefined} an object with 'name' and 'class' properties, or undefined
  */
-export function getAndroidIcon(obj: Object): ?Icon {
+export function getAndroidIcon(obj: object): BasicIcon | undefined {
   if ('icon' in obj) {
     const icon = obj.icon;
     if (('android' in icon) && ('name' in icon.android) && ('class' in icon.android)) {
@@ -45,16 +40,16 @@ export function getAndroidIcon(obj: Object): ?Icon {
     }
   }
 
-  return null;
+  return undefined;
 }
 
 /**
  * Returns the icon class to represent a provided facility.
  *
  * @param {Facility} facility the identifier of the facility
- * @returns {?string} a string with the class of the icon, or null
+ * @returns {string|undefined} a string with the class of the icon, or null
  */
-export function getFacilityIconClass(facility: Facility): ?string {
+export function getFacilityIconClass(facility: Facility): string | undefined {
   switch (facility) {
     case 'atm':
     case 'food':
@@ -71,7 +66,7 @@ export function getFacilityIconClass(facility: Facility): ?string {
     case 'pool':
       return 'material';
     default:
-      return null;
+      return undefined;
   }
 }
 
@@ -79,9 +74,9 @@ export function getFacilityIconClass(facility: Facility): ?string {
  * Returns the icon name to represent a provided facility.
  *
  * @param {Facility} facility the identifier of the facility
- * @returns {?string} a string with the name of the icon, or null
+ * @returns {string|undefined} a string with the name of the icon, or null
  */
-export function getFacilityIconName(facility: Facility): ?string {
+export function getFacilityIconName(facility: Facility): string | undefined {
   switch (facility) {
     case 'atm':
       return 'local-atm';
@@ -110,7 +105,7 @@ export function getFacilityIconName(facility: Facility): ?string {
     case 'pool':
       return 'pool';
     default:
-      return null;
+      return undefined;
   }
 }
 
@@ -118,11 +113,11 @@ export function getFacilityIconName(facility: Facility): ?string {
  * Returns the icon and class for an icon to use for the iOS platform,
  * defined in the object.
  *
- * @param {Object} obj the object with either 'icon.ios.name' and 'icon.ios.class' properties, or 'icon.name' and
+ * @param {object} obj the object with either 'icon.ios.name' and 'icon.ios.class' properties, or 'icon.name' and
  *                     'icon.class' properties.
- * @returns {?Icon} an object with 'name' and 'class' properties, or null
+ * @returns {Icon|undefined} an object with 'name' and 'class' properties, or null
  */
-export function getIOSIcon(obj: Object): ?Icon {
+export function getIOSIcon(obj: object): BasicIcon | undefined {
   if ('icon' in obj) {
     const icon = obj.icon;
     if (('ios' in icon) && ('name' in icon.ios) && ('class' in icon.ios)) {
@@ -132,7 +127,7 @@ export function getIOSIcon(obj: Object): ?Icon {
     }
   }
 
-  return null;
+  return undefined;
 }
 
 /**
@@ -140,17 +135,17 @@ export function getIOSIcon(obj: Object): ?Icon {
  * 'android'.
  *
  * @param {PlatformString} platform either 'ios' or 'android'.
- * @param {Object} obj              the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
+ * @param {object} obj              the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
  *                                  properties, or 'icon.name' and 'icon.class' properties.
- * @returns {?Icon} an object with 'name' and 'class' properties, or null
+ * @returns {?Icon} an object with 'name' and 'class' properties, or undefined
  */
-export function getPlatformIcon(platform: PlatformString, obj: Object): ?Icon {
+export function getPlatformIcon(platform: PlatformString, obj: object): BasicIcon | undefined {
   if (platform === 'ios') {
     return getIOSIcon(obj);
   } else if (platform === 'android') {
     return getAndroidIcon(obj);
   } else {
-    return null;
+    return undefined;
   }
 }
 
@@ -212,34 +207,31 @@ export function getSocialMediaIconName(socialMedia: string): string {
  */
 export function isColorDark(color: string): boolean {
   // Base value for hexadecimal
-  const HEX_BASE: number = 16;
+  const HEX_BASE = 16;
 
   // Bit shift values for color parts
-  const RED_BIT_SHIFT: number = 16;
-  const GREEN_BIT_SHIFT: number = 8;
+  const RED_BIT_SHIFT = 16;
+  const GREEN_BIT_SHIFT = 8;
 
   // Hexadecimal value to extract bits pertaining to certain colors
-  const RED_HEX: number = 0xff0000;
-  const GREEN_HEX: number = 0xff00;
-  const BLUE_HEX: number = 0xff;
+  const RED_HEX = 0xFF0000;
+  const GREEN_HEX = 0xFF00;
+  const BLUE_HEX = 0xFF;
 
   // Threshold values for what is light and dark in a color
-  const RED_THRESHOLD: number = 0.299;
-  const GREEN_THRESHOLD: number = 0.587;
-  const BLUE_THRESHOLD: number = 0.114;
+  const RED_THRESHOLD = 0.299;
+  const GREEN_THRESHOLD = 0.587;
+  const BLUE_THRESHOLD = 0.114;
 
   // Possible value range for colors
-  const COLOR_RANGE: number = 256;
+  const COLOR_RANGE = 256;
 
   // Light vs dark range
-  const LIGHT_DARK_SPLIT: number = 0.5;
+  const LIGHT_DARK_SPLIT = 0.5;
 
-  let hexColor: number = 0;
-  if (color.indexOf('#') == 0) {
-    hexColor = parseInt(color.substring(1, color.length), HEX_BASE);
-  } else {
-    hexColor = parseInt(color, HEX_BASE);
-  }
+  const hexColor = color.indexOf('#') === 0
+      ? parseInt(color.substring(1, color.length), HEX_BASE)
+      : parseInt(color, HEX_BASE);
 
   const r: number = (hexColor & RED_HEX) >> RED_BIT_SHIFT;
   const g: number = (hexColor & GREEN_HEX) >> GREEN_BIT_SHIFT;

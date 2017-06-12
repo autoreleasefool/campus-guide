@@ -17,20 +17,15 @@
  *
  * @author Joseph Roque
  * @created 2016-10-09
- * @file Database.js
+ * @file Database.ts
  * @providesModule Database
  * @description Provides interactions with the application database.
- *
- * @flow
  */
 'use strict';
 
-// Type imports
-import type { ConfigFile } from 'types';
-
 // Imports
-import Promise from 'promise';
 import * as ArrayUtils from 'ArrayUtils';
+import Promise from 'promise';
 import * as store from 'react-native-simple-store';
 
 /** Identifier for storing Configuration file versions.  */
@@ -42,31 +37,31 @@ const STORE_SCHEDULE = 'schedule';
 /**
  * Returns the user's full schedule.
  *
- * @returns {Promise<Object>} a promise which resolves with a set of semesters mapped to their
+ * @returns {Promise<object>} a promise which resolves with a set of semesters mapped to their
  *                            respective courses and schedules, as designated by the user
  */
-export function getSchedule(): Promise < Object > {
+export function getSchedule(): Promise < object > {
   return store.get(STORE_SCHEDULE);
 }
 
 /**
  * Overrides the user's schedule, saving it.
  *
- * @param {Object} schedule the schedule to save
+ * @param {object} schedule the schedule to save
  * @returns {Promise<void>} a promise which resolves when the schedule has been saved
  */
-export function saveSchedule(schedule: Object): Promise < void > {
+export function saveSchedule(schedule: object): Promise < void > {
   return store.save(STORE_SCHEDULE, schedule);
 }
 
 /**
  * Gets a list of config files and their versions from the database.
  *
- * @returns {Promise<Array<ConfigFile>>} a promise which resolves with a list of config file names and versions, or null
+ * @returns {Promise<ConfigFile[]>} a promise which resolves with a list of config file names and versions, or null
  */
-export function getConfigVersions(): Promise < Array < ConfigFile > > {
+export function getConfigVersions(): Promise < ConfigFile[] > {
   return store.get(STORE_CONFIG_VERSIONS)
-      .then((configVersions) => {
+      .then((configVersions: ConfigFile[]) => {
         return ArrayUtils.sortObjectArrayByKeyValues(configVersions, 'name');
       });
 }
@@ -74,20 +69,20 @@ export function getConfigVersions(): Promise < Array < ConfigFile > > {
 /**
  * Update versions in the database for config files provided.
  *
- * @param {ConfigFile} update set of config files and versions
+ * @param {ConfigFile[]} updates set of config files and versions
  * @returns {Promise<void>} promise which resolves when all updates have finished
  */
-export function updateConfigVersions(update: Array < ConfigFile >): Promise < void > {
+export function updateConfigVersions(updates: ConfigFile[]): Promise < void > {
   return store.get(STORE_CONFIG_VERSIONS)
-      .then((original: Array < ConfigFile >) => {
-        let final = update;
+      .then((original: ConfigFile[]) => {
+        let final = updates;
 
-        if (original != null) {
+        if (original != undefined) {
           const sorted = ArrayUtils.sortObjectArrayByKeyValues(original, 'name');
 
           // Replace any config versions that should be updated
-          for (let i = 0; i < update.length; i++) {
-            const index = ArrayUtils.binarySearchObjectArrayByKeyValue(sorted, 'name', update[i].name);
+          for (const update of updates) {
+            const index = ArrayUtils.binarySearchObjectArrayByKeyValue(sorted, 'name', update.name);
             if (index >= 0) {
               sorted.splice(index, 1);
             }
