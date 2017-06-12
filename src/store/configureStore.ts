@@ -17,23 +17,18 @@
  *
  * @author Joseph Roque
  * @created 2016-10-05
- * @file configureStore.js
+ * @file configureStore.ts
  * @description Create the Redux store
- *
- * @flow
  */
 'use strict';
 
 // Redux imports
-import thunk from 'redux-thunk';
 import { applyMiddleware, createStore } from 'redux';
-
-// Types
-import type { VoidFunction } from 'types';
+import thunk from 'redux-thunk';
 
 // Imports
-import { persist } from './persist';
 import reducers from '../reducers';
+import { persist } from './persist';
 
 /**
  * Creates a redux store from the reducers and returns it.
@@ -41,8 +36,11 @@ import reducers from '../reducers';
  * @param {?VoidFunction} onComplete called when the store has been created
  * @returns {any} redux store
  */
-export default function configureStore(onComplete: ?VoidFunction): any {
+export default function configureStore(onComplete: () => void | undefined): any {
   const store = createStore(reducers, applyMiddleware(thunk, persist));
-  onComplete && onComplete();
+  if (onComplete != undefined) {
+    onComplete();
+  }
+
   return store;
 }

@@ -19,25 +19,20 @@
  * @created 2016-10-09
  * @file persistence.js
  * @description Redux middleware to persist data when updated
- *
- * @flow
  */
 'use strict';
-
-/* eslint-disable callback-return */
-// Call the next() middleware then perform persistance based on new state
 
 // React imports
 import { AsyncStorage } from 'react-native';
 
 // Types
-import { UPDATE_CONFIGURATION, ADD_SEMESTER, ADD_COURSE, REMOVE_COURSE } from 'actionTypes';
+import { ADD_COURSE, ADD_SEMESTER, REMOVE_COURSE, UPDATE_CONFIGURATION } from 'actionTypes';
 
 // Imports
 import { saveSchedule } from 'Database';
 import * as Preferences from 'Preferences';
 
-export const persist = ({ getState }: any) => (next: any) => (action: any) => {
+export const persist = ({ getState }: any): void => (next: any): void => (action: any): void => {
   next(action);
   const store = getState();
 
@@ -62,7 +57,7 @@ export const persist = ({ getState }: any) => (next: any) => (action: any) => {
               Preferences.setPreferScheduleByCourse(AsyncStorage, action.options[option]);
               break;
             default:
-              console.log('Configuration update not saved: ' + option);
+              console.log(`Configuration update not saved: ${option}`);
           }
         }
       }
