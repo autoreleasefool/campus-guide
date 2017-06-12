@@ -1,7 +1,7 @@
 /**
  *
  * @license
- * Copyright (C) 2016-2017 Joseph Roque
+ * Copyright (C) 2016 Joseph Roque
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,18 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file index.ios.js
- * @description Initial entry point for the iOS app.
- * @flow
- *
+ * @created 2016-10-07
+ * @file env.ts
+ * @providesModule env
+ * @description Provides environment variables
  */
 'use strict';
 
-// React imports
-import {
-  AppRegistry,
-} from 'react-native';
+// Server to retrieve updates from
+export const configUpdatesServerUrl = 'http://localhost:8080';
 
-// Imports
-import setup from './src/setup';
-
-AppRegistry.registerComponent('CampusGuide', setup);
+// Keys for displaying Admob ads
+export const admobUnitIds = {
+  navigation: 'ca-app-pub-1657352071541985/4868238755',
+  search: 'ca-app-pub-1657352071541985/2752377159',
+};

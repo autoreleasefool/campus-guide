@@ -16,17 +16,13 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @file index.android.js
+ * @file index.android.tsx
  * @description Initial entry point for the Android app.
- * @flow
- *
  */
 'use strict';
 
 // React imports
-import {
-  AppRegistry,
-} from 'react-native';
+import { AppRegistry } from 'react-native';
 
 // Imports
 import setup from './src/setup';

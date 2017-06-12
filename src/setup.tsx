@@ -17,22 +17,14 @@
  *
  * @author Joseph Roque
  * @created 2016-10-03
- * @file setup.js
+ * @file setup.tsx
  * @description Setup environment for the application.
- *
- * @flow
  */
 'use strict';
 
-/* eslint-disable react/prefer-stateless-function */
-/* Future-proofing the root setup component. */
-
 // React imports
 import React from 'react';
-import {
-  Platform,
-  UIManager,
-} from 'react-native';
+import { Platform, UIManager } from 'react-native';
 
 // Redux imports
 import { Provider } from 'react-redux';
@@ -41,16 +33,20 @@ import configureStore from './store/configureStore';
 // Imports
 import CampusGuideApp from 'CampusGuideApp';
 
+// Types
+interface Props {}
+interface State {}
+
 /**
  * Applies global settings to the app and returns the root view.
  *
  * @returns {ReactClass<any>} Returns the root component for the app
  */
-export default function setup(): ReactClass < any > {
+export default function setup(): React.PureComponent<Props, State> {
 
   // Fix function not found error
   // http://stackoverflow.com/a/35305611/4896787
-  (process:any).nextTick = setImmediate;
+  process.nextTick = setImmediate;
 
   // Enable animations on Android
   if (Platform.OS === 'android') {
@@ -67,7 +63,7 @@ export default function setup(): ReactClass < any > {
      *
      * @returns {ReactElement<any>} the base component for the app to render
      */
-    render(): ReactElement < any > {
+    render(): JSX.Element {
       return (
         <Provider store={store}>
           <CampusGuideApp />

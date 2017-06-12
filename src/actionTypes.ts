@@ -17,11 +17,9 @@
  *
  * @author Joseph Roque
  * @created 2017-02-10
- * @file actionTypes.js
+ * @file actionTypes.ts
  * @providesModule actionTypes
  * @description Type definitions for available actions in the application
- *
- * @flow
  */
 'use strict';
 

@@ -17,13 +17,14 @@
  *
  * @author Joseph Roque
  * @created 2016-10-07
- * @file constants.js
+ * @file constants.ts
  * @providesModule Constants
  * @description Constant values for the application
- *
- * @flow
  */
 'use strict';
+
+/* tslint:disable object-literal-sort-keys */
+/* Keys out of order to preserver importance, different groupings, etc. */
 
 import * as CoreTranslations from '../assets/json/CoreTranslations.json';
 
@@ -35,18 +36,22 @@ const colors = {
   transparentGarnet: 'rgba(143, 0, 26, 0.7)',
   veryTransparentGarnet: 'rgba(143, 0, 26, 0.4)',
   invisibleGarnet: 'rgba(143, 0, 26, 0)',
+
   darkGrey: '#80746C',
   transparentDarkGrey: 'rgba(128, 116, 108, 0.7)',
   veryTransparentDarkGrey: 'rgba(128, 116, 108, 0.4)',
   invisibleDarkGrey: 'rgba(128, 116, 108, 0)',
+
   polarGrey: '#F2F2F2',
   transparentPolarGrey: 'rgba(242, 242, 242, 0.7)',
   veryTransparentPolarGrey: 'rgba(242, 242, 242, 0.4)',
   invisiblePolarGrey: 'rgba(242, 242, 242, 0)',
+
   lightGrey: '#ACA39A',
   transparentLightGrey: 'rgba(172, 163, 154, 0.7)',
   veryTransparentLightGrey: 'rgba(172, 163, 154, 0.4)',
   invisibleLightGrey: 'rgba(172, 163, 154, 0)',
+
   charcoalGrey: '#2D2D2C',
   transparentCharcoalGrey: 'rgba(45, 45, 45, 0.7)',
   veryTransparentCharcoalGrey: 'rgba(45, 45, 45, 0.4)',
@@ -187,7 +192,7 @@ const days = {
 /**
  * Set of views to navigate through within FIND tab
  */
-const Find = {
+const find = {
   Home: 0,          // Home find view where user can select a building
   Building: 1,      // Building details, where user can see details of a single building
   StartingPoint: 2, // User can select their starting point for directions
@@ -197,7 +202,7 @@ const Find = {
 /**
  * Set of views to navigate through within DISCOVER tab
  */
-const Discover = {
+const discover = {
   Home: 0,        // Home discover view where user can see elements of university they can explore
   Links: 1,       // Displays a list of useful links to the user
   Transit: 2,     // Displays information about the transit system in the city
@@ -209,7 +214,7 @@ const Discover = {
 /**
  * Set of views to navigate through within Housing screen
  */
-const Housing = {
+const housing = {
   Menu: 0,              // Main housing view, to select other screens
   Residences: 1,        // List of residences
   ResidenceDetails: 2,  // Details about a single residence
@@ -295,9 +300,9 @@ module.exports = {
    * Views for navigation
    */
   Views: {
-    Find,
-    Discover,
-    Housing,
+    Discover: discover,
+    Find: find,
+    Housing: housing,
   },
 
   /**
