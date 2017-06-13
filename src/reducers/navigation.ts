@@ -17,55 +17,50 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file navigation.js
+ * @file navigation.ts
  * @description Reducers for navigation actions
- *
- * @flow
  */
 'use strict';
 
 // Types
-import type { MenuSection, Residence, Tab } from 'types';
 import {
   NAVIGATE_BACK,
   SET_CAN_BACK,
-  SWITCH_TAB,
-  SWITCH_FIND_VIEW,
-  SWITCH_DISCOVER_VIEW,
-  SWITCH_HOUSING_VIEW,
-  SWITCH_HOUSING_RESIDENCE,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
+  SWITCH_DISCOVER_VIEW,
+  SWITCH_FIND_VIEW,
+  SWITCH_HOUSING_RESIDENCE,
+  SWITCH_HOUSING_VIEW,
+  SWITCH_TAB,
 } from 'actionTypes';
 
 // Describes the navigation state.
-type State = {
-  backNavigations: number,  // Count of the times the user has navigated back in the app
-  canBack: Object,          // Indicates which subsections of the app can navigate backwards
-  tab: Tab,                 // Current tab in the root navigation of the app
+interface State {
+  backNavigations: number;              // Count of the times the user has navigated back in the app
+  canBack: object;                      // Indicates which subsections of the app can navigate backwards
+  tab: Tab;                             // Current tab in the root navigation of the app
 
-  findView: number,         // The current view to display in the find tab
+  findView: number;                     // The current view to display in the find tab
 
-  discoverView: number,     // The current view to display in the discover tab
-  housingView: number,      // The current view to display in the housing menu
-  linkId: ?string | number, // Currently selected link category id
-  campus: ?MenuSection,     // Selected transit campus to display info for
-  residence: ?Residence,    // Selected residence to display info for
-};
+  discoverView: number;                 // The current view to display in the discover tab
+  housingView: number;                  // The current view to display in the housing menu
+  linkId: string | number | undefined;  // Currently selected link category id
+  campus: MenuSection;                  // Selected transit campus to display info for
+  residence: Residence | undefined;     // Selected residence to display info for
+}
 
 // Initial navigation state.
 const initialState: State = {
   backNavigations: 0,
+  campus: undefined,
   canBack: {},
-  tab: 'find',
-
-  findView: 0,
-
   discoverView: 0,
+  findView: 0,
   housingView: 0,
   linkId: 0,
-  campus: null,
-  residence: null,
+  residence: undefined,
+  tab: 'find',
 };
 
 /**
@@ -87,6 +82,7 @@ function navigation(state: State = initialState, action: any): State {
         ...state.canBack,
       };
       can[action.key] = action.can;
+
       return {
         ...state,
         canBack: can,

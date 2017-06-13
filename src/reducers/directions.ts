@@ -19,27 +19,24 @@
  * @created 2017-02-12
  * @file directions.js
  * @description Reducers for direction actions
- *
- * @flow
  */
 'use strict';
 
 // Types
-import type { Building, Destination } from 'types';
 import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
 
 // Describes the directions state
-type State = {
-  building: ?Building,          // The building selected by the user to navigate to, or view
-  destination: ?Destination,    // The building and room the user is navigating to
-  startingPoint: ?Destination,  // The building and room the user is starting from
-};
+interface State {
+  building: Building | undefined;         // The building selected by the user to navigate to, or view
+  destination: Destination | undefined;   // The building and room the user is navigating to
+  startingPoint: Destination | undefined; // The building and room the user is starting from
+}
 
 // Initial directions state
 const initialState: State = {
-  building: null,
-  destination: null,
-  startingPoint: null,
+  building: undefined,
+  destination: undefined,
+  startingPoint: undefined,
 };
 
 /**

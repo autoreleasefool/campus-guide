@@ -17,26 +17,24 @@
  *
  * @author Joseph Roque
  * @created 2016-10-07
- * @file search.js
+ * @file search.ts
  * @description Reducers for search actions
- *
- * @flow
  */
 'use strict';
 
 // Types
-import { SEARCH, ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SET_STUDY_FILTERS } from 'actionTypes';
+import { ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SEARCH, SET_STUDY_FILTERS } from 'actionTypes';
 
 // Describes a search.
-export type Search = {
-  studyFilters: Set < string >,  // Filters to search study rooms by
-  terms: ?string,                 // Search terms to filter results by
-};
+interface Search {
+  studyFilters: Set < string >;  // Filters to search study rooms by
+  terms: string | undefined;                 // Search terms to filter results by
+}
 
 // Initial search state.
 const initialState: Search = {
   studyFilters: new Set(),
-  terms: null,
+  terms: undefined,
 };
 
 /**
@@ -75,7 +73,7 @@ function search(state: Search = initialState, action: any): Search {
     }
     case SET_STUDY_FILTERS: {
       const studyFilters = new Set();
-      action.filters.forEach((filter) => {
+      action.filters.forEach((filter: string) => {
         studyFilters.add(filter);
       });
 

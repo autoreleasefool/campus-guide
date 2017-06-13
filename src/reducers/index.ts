@@ -17,15 +17,13 @@
  *
  * @author Joseph Roque
  * @created 2016-10-07
- * @file index.js
+ * @file index.ts
  * @description Collects available reducers
- *
- * @flow
  */
 'use strict';
 
 // Redux imports
-const { combineReducers } = require('redux');
+import { combineReducers } from 'redux';
 
 // Combine and export reducers
 module.exports = combineReducers({

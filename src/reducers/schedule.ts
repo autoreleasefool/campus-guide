@@ -17,23 +17,21 @@
  *
  * @author Joseph Roque
  * @created 2016-10-27
- * @file schedule.js
+ * @file schedule.ts
  * @description Reducers for schedule actions
- *
- * @flow
  */
 'use strict';
 
 // Types
-import { ADD_SEMESTER, ADD_COURSE, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
+import { ADD_COURSE, ADD_SEMESTER, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
 
 // Imports
 import * as ArrayUtils from 'ArrayUtils';
 
 // Describes the schedule state.
-type State = {
-  semesters: Object, // The user's defined schedule
-};
+interface State {
+  semesters: object; // The user's defined schedule
+}
 
 // Initial schedule state.
 const initialState: State = {

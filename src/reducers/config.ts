@@ -17,43 +17,40 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file config.js
+ * @file config.ts
  * @description Reducers for config actions
- *
- * @flow
  */
 'use strict';
 
 // Types
-import type { ConfigurationOptions, Update } from 'types';
 import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
 
-type State = {
-  options: ConfigurationOptions,
-  update: Update,
+interface State {
+  options: ConfigurationOptions;
+  update: Update;
 }
 
 // Initial update state.
 const initialState: State = {
   options: {
     alwaysSearchAll: false,
-    transitInfo: null,
     currentSemester: 0,
     firstTime: false,
-    language: null,
+    language: undefined,
     preferredTimeFormat: '12h',
     prefersWheelchair: false,
-    semesters: [],
     scheduleByCourse: false,
-    universityLocation: null,
-    universityName: null,
+    semesters: [],
+    transitInfo: undefined,
+    universityLocation: undefined,
+    universityName: undefined,
   },
   update: {
-    currentDownload: null,
+    currentDownload: undefined,
     filesDownloaded: [],
     intermediateProgress: 0,
-    showUpdateProgress: false,
     showRetry: false,
+    showUpdateProgress: false,
     totalFiles: 0,
     totalProgress: 0,
     totalSize: 0,
@@ -71,13 +68,13 @@ function config(state: State = initialState, action: any): State {
   switch (action.type) {
     case UPDATE_CONFIGURATION:
       return {
-        options: Object.assign({}, state.options, action.options),
-        update: Object.assign({}, state.update),
+        options: { ...state.options, ...action.options },
+        update: { ...state.update },
       };
     case UPDATE_PROGRESS:
       return {
-        options: Object.assign({}, state.options),
-        update: Object.assign({}, state.update, action.update),
+        options: { ...state.options },
+        update: { ...state.update, ...action.update },
       };
     default:
       return state;

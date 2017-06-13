@@ -17,29 +17,26 @@
  *
  * @author Joseph Roque
  * @created 2016-10-18
- * @file header.js
+ * @file header.ts
  * @description Reducers for header actions
- *
- * @flow
  */
 'use strict';
 
 // Types
-import type { Name, TabSet } from 'types';
 import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH, SWITCH_TAB } from 'actionTypes';
 
 // Import default translations
 const CoreTranslations = require('../../assets/json/CoreTranslations');
 
 // Describes the header state.
-type State = {
-  title: Name | string,   // Title for the current screen
-  tabTitles: TabSet,      // Title last set in the tab
-  showBack: boolean,      // True to show a back button in the header, false to hide
-  tabShowBack: TabSet,    // Whether the tab should show a back button
-  showSearch: boolean,    // True to show a search field in the header, false to hide
-  tabShowSearch: TabSet,  // Whether the tab should show a search button
-};
+interface State {
+  title: Name | string;   // Title for the current screen
+  tabTitles: TabSet;      // Title last set in the tab
+  showBack: boolean;      // True to show a back button in the header, false to hide
+  tabShowBack: TabSet;    // Whether the tab should show a back button
+  showSearch: boolean;    // True to show a search field in the header, false to hide
+  tabShowSearch: TabSet;  // Whether the tab should show a search button
+}
 
 // Default title to use for the header
 const defaultTitle = {
@@ -49,8 +46,27 @@ const defaultTitle = {
 
 // Initial header state.
 const initialState: State = {
-  title: defaultTitle,
+  showBack: false,
+  showSearch: true,
+  tabShowBack: {
+    discover: false,
+    find: false,
+    schedule: false,
+    search: false,
+    settings: false,
+  },
+  tabShowSearch: {
+    discover: false,
+    find: true,
+    schedule: false,
+    search: true,
+    settings: false,
+  },
   tabTitles: {
+    discover: {
+      name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.discover : 'Campus Guide',
+      name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.discover : 'Guide de campus',
+    },
     find: {
       name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.find : 'Campus Guide',
       name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.find : 'Guide de campus',
@@ -58,10 +74,6 @@ const initialState: State = {
     schedule: {
       name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.schedule : 'Campus Guide',
       name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.schedule : 'Guide de campus',
-    },
-    discover: {
-      name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.discover : 'Campus Guide',
-      name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.discover : 'Guide de campus',
     },
     search: {
       name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.search : 'Campus Guide',
@@ -72,22 +84,7 @@ const initialState: State = {
       name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.settings : 'Guide de campus',
     },
   },
-  showBack: false,
-  tabShowBack: {
-    find: false,
-    schedule: false,
-    discover: false,
-    search: false,
-    settings: false,
-  },
-  showSearch: true,
-  tabShowSearch: {
-    find: true,
-    schedule: false,
-    discover: false,
-    search: true,
-    settings: false,
-  },
+  title: defaultTitle,
 };
 
 /**
@@ -102,27 +99,27 @@ function header(state: State = initialState, action: any): State {
     case SWITCH_TAB:
       return {
         ...state,
-        title: state.tabTitles[action.tab],
         showBack: state.tabShowBack[action.tab],
         showSearch: state.tabShowSearch[action.tab],
+        title: state.tabTitles[action.tab],
       };
     case SET_HEADER_TITLE: {
       const tabTitles = { ...state.tabTitles };
 
-      if (action.tab != null) {
+      if (action.tab != undefined) {
         tabTitles[action.tab] = action.title || initialState.tabTitles[action.tab];
       }
 
       return {
         ...state,
-        title: (action.tab && !action.title) ? tabTitles[action.tab] : action.title || initialState.title,
         tabTitles,
+        title: (action.tab && !action.title) ? tabTitles[action.tab] : action.title || initialState.title,
       };
     }
     case SHOW_BACK: {
       const tabShowBack = { ...state.tabShowBack };
 
-      if (action.tab != null) {
+      if (action.tab != undefined) {
         tabShowBack[action.tab] = action.show;
       }
 
@@ -135,7 +132,7 @@ function header(state: State = initialState, action: any): State {
     case SHOW_SEARCH: {
       const tabShowSearch = { ...state.tabShowSearch };
 
-      if (action.tab != null) {
+      if (action.tab != undefined) {
         tabShowSearch[action.tab] = action.show;
       }
 
