@@ -17,25 +17,22 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file config.js
+ * @file config.ts
  * @description Provides configuration actions.
- *
- * @flow
  */
 'use strict';
 
 // Types
-import type { ConfigurationOptions, Update } from 'types';
 import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
 
 module.exports = {
 
-  updateConfiguration: (options: ConfigurationOptions) => ({
-    type: UPDATE_CONFIGURATION,
+  updateConfiguration: (options: ConfigurationOptions): Action => ({
     options,
+    type: UPDATE_CONFIGURATION,
   }),
 
-  updateProgress: (update: Update) => ({
+  updateProgress: (update: Update): Action => ({
     type: UPDATE_PROGRESS,
     update,
   }),

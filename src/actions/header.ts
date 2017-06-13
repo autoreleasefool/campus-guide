@@ -16,37 +16,33 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-11-12
- * @file search.js
- * @description Provides search actions.
- *
- * @flow
+ * @created 2016-10-18
+ * @file header.js
+ * @description Provides header actions.
  */
 'use strict';
 
 // Types
-import { SEARCH, ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SET_STUDY_FILTERS } from 'actionTypes';
+import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH } from 'actionTypes';
 
 module.exports = {
 
-  search: (terms: ?string) => ({
-    type: SEARCH,
-    terms,
+  setHeaderTitle: (title: Name | string | undefined, tab?: Tab): Action => ({
+    tab,
+    title,
+    type: SET_HEADER_TITLE,
   }),
 
-  activateStudyFilter: (filter: string) => ({
-    type: ACTIVATE_STUDY_FILTER,
-    filter,
+  showBack: (show: boolean, tab?: Tab): Action => ({
+    show,
+    tab,
+    type: SHOW_BACK,
   }),
 
-  deactivateStudyFilter: (filter: string) => ({
-    type: DEACTIVATE_STUDY_FILTER,
-    filter,
-  }),
-
-  setStudyFilters: (filters: Array < string >) => ({
-    type: SET_STUDY_FILTERS,
-    filters,
+  showSearch: (show: boolean, tab?: Tab): Action => ({
+    show,
+    tab,
+    type: SHOW_SEARCH,
   }),
 
 };

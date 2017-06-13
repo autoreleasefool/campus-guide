@@ -16,36 +16,30 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-18
- * @file header.js
- * @description Provides header actions.
- *
- * @flow
+ * @created 2017-02-11
+ * @file directions.ts
+ * @description Provides direction actions.
  */
 'use strict';
 
 // Types
-import type { Name, Tab } from 'types';
-import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH } from 'actionTypes';
+import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
 
 module.exports = {
 
-  setHeaderTitle: (title: ?(Name | string), tab?: Tab) => ({
-    type: SET_HEADER_TITLE,
-    title,
-    tab,
+  setDestination: (destination: Destination): Action => ({
+    destination,
+    type: SET_DESTINATION,
   }),
 
-  showBack: (show: boolean, tab?: Tab) => ({
-    type: SHOW_BACK,
-    show,
-    tab,
+  setStartingPoint: (startingPoint: Destination): Action => ({
+    startingPoint,
+    type: SET_STARTING_POINT,
   }),
 
-  showSearch: (show: boolean, tab?: Tab) => ({
-    type: SHOW_SEARCH,
-    show,
-    tab,
+  viewBuilding: (building: Building): Action => ({
+    building,
+    type: VIEW_BUILDING,
   }),
 
 };

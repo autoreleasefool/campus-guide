@@ -16,29 +16,35 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-08
- * @file index.js
- * @providesModule actions
- * @description Combines all actions
- *
- * @flow
+ * @created 2016-11-12
+ * @file search.ts
+ * @description Provides search actions.
  */
 'use strict';
 
-// Imports
-import * as configActions from './config';
-import * as directionsActions from './directions';
-import * as headerActions from './header';
-import * as navigationActions from './navigation';
-import * as scheduleActions from './schedule';
-import * as searchActions from './search';
+// Types
+import { ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SEARCH, SET_STUDY_FILTERS } from 'actionTypes';
 
-// Combine and export actions
 module.exports = {
-  ...configActions,
-  ...directionsActions,
-  ...headerActions,
-  ...navigationActions,
-  ...searchActions,
-  ...scheduleActions,
+
+  activateStudyFilter: (filter: string): Action => ({
+    filter,
+    type: ACTIVATE_STUDY_FILTER,
+  }),
+
+  deactivateStudyFilter: (filter: string): Action => ({
+    filter,
+    type: DEACTIVATE_STUDY_FILTER,
+  }),
+
+  search: (terms: string | undefined): Action => ({
+    terms,
+    type: SEARCH,
+  }),
+
+  setStudyFilters: (filters: ReadonlyArray < string >): Action => ({
+    filters,
+    type: SET_STUDY_FILTERS,
+  }),
+
 };

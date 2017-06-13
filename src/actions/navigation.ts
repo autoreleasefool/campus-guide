@@ -17,72 +17,69 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file navigation.js
+ * @file navigation.ts
  * @description Provides navigation actions.
- *
- * @flow
  */
 'use strict';
 
 // Types
-import type { MenuSection, Residence, Tab } from 'types';
 import {
   NAVIGATE_BACK,
   SET_CAN_BACK,
-  SWITCH_TAB,
-  SWITCH_FIND_VIEW,
-  SWITCH_DISCOVER_VIEW,
-  SWITCH_HOUSING_VIEW,
-  SWITCH_HOUSING_RESIDENCE,
   SWITCH_DISCOVER_LINK,
   SWITCH_DISCOVER_TRANSIT_CAMPUS,
+  SWITCH_DISCOVER_VIEW,
+  SWITCH_FIND_VIEW,
+  SWITCH_HOUSING_RESIDENCE,
+  SWITCH_HOUSING_VIEW,
+  SWITCH_TAB,
 } from 'actionTypes';
 
 module.exports = {
 
-  canNavigateBack: (key: string, can: boolean) => ({
-    type: SET_CAN_BACK,
-    key,
+  canNavigateBack: (key: string, can: boolean): Action => ({
     can,
+    key,
+    type: SET_CAN_BACK,
   }),
 
-  navigateBack: () => ({
+  navigateBack: (): Action => ({
     type: NAVIGATE_BACK,
   }),
 
-  switchTab: (tab: Tab) => ({
-    type: SWITCH_TAB,
-    tab,
-  }),
-
-  switchFindView: (view: number) => ({
-    type: SWITCH_FIND_VIEW,
-    view,
-  }),
-
-  switchDiscoverView: (view: number) => ({
+  switchDiscoverView: (view: number): Action => ({
     type: SWITCH_DISCOVER_VIEW,
     view,
   }),
 
-  switchHousingView: (view: number) => ({
+  switchFindView: (view: number): Action => ({
+    type: SWITCH_FIND_VIEW,
+    view,
+  }),
+
+  switchHousingView: (view: number): Action => ({
     type: SWITCH_HOUSING_VIEW,
     view,
   }),
 
-  switchLinkCategory: (linkId: ?string | number) => ({
-    type: SWITCH_DISCOVER_LINK,
+  switchLinkCategory: (linkId: string | number | undefined): Action => ({
     linkId,
+    type: SWITCH_DISCOVER_LINK,
   }),
 
-  switchTransitCampus: (campus: ?MenuSection) => ({
-    type: SWITCH_DISCOVER_TRANSIT_CAMPUS,
-    campus,
-  }),
-
-  switchResidence: (residence: ?Residence) => ({
-    type: SWITCH_HOUSING_RESIDENCE,
+  switchResidence: (residence: Residence | undefined): Action => ({
     residence,
+    type: SWITCH_HOUSING_RESIDENCE,
+  }),
+
+  switchTab: (tab: Tab): Action => ({
+    tab,
+    type: SWITCH_TAB,
+  }),
+
+  switchTransitCampus: (campus: MenuSection | undefined): Action => ({
+    campus,
+    type: SWITCH_DISCOVER_TRANSIT_CAMPUS,
   }),
 
 };

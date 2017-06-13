@@ -16,40 +16,27 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2016-10-27
- * @file schedule.js
- * @description Provides schedule actions.
- *
- * @flow
+ * @created 2016-10-08
+ * @file index.ts
+ * @providesModule actions
+ * @description Combines all actions
  */
 'use strict';
 
-// Types
-import type { Course, Semester } from 'types';
-import { ADD_SEMESTER, ADD_COURSE, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
+// Imports
+import * as configActions from './config';
+import * as directionsActions from './directions';
+import * as headerActions from './header';
+import * as navigationActions from './navigation';
+import * as scheduleActions from './schedule';
+import * as searchActions from './search';
 
+// Combine and export actions
 module.exports = {
-
-  loadSchedule: (schedule: Object) => ({
-    type: LOAD_SCHEDULE,
-    schedule,
-  }),
-
-  addSemester: (semester: Semester) => ({
-    type: ADD_SEMESTER,
-    semester,
-  }),
-
-  addCourse: (semester: string, course: Course) => ({
-    type: ADD_COURSE,
-    semester,
-    course,
-  }),
-
-  removeCourse: (semester: string, courseCode: string) => ({
-    type: REMOVE_COURSE,
-    semester,
-    courseCode,
-  }),
-
+  ...configActions,
+  ...directionsActions,
+  ...headerActions,
+  ...navigationActions,
+  ...searchActions,
+  ...scheduleActions,
 };

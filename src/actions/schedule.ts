@@ -16,33 +16,37 @@
  * limitations under the License.
  *
  * @author Joseph Roque
- * @created 2017-02-11
- * @file directions.js
- * @description Provides direction actions.
- *
- * @flow
+ * @created 2016-10-27
+ * @file schedule.ts
+ * @description Provides schedule actions.
  */
 'use strict';
 
 // Types
-import type { Building, Destination } from 'types';
-import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
+import { ADD_COURSE, ADD_SEMESTER, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
 
 module.exports = {
 
-  setDestination: (destination: Destination) => ({
-    type: SET_DESTINATION,
-    destination,
+  addCourse: (semester: string, course: Course): Action => ({
+    course,
+    semester,
+    type: ADD_COURSE,
   }),
 
-  setStartingPoint: (startingPoint: Destination) => ({
-    type: SET_STARTING_POINT,
-    startingPoint,
+  addSemester: (semester: Semester): Action => ({
+    semester,
+    type: ADD_SEMESTER,
   }),
 
-  viewBuilding: (building: Building) => ({
-    type: VIEW_BUILDING,
-    building,
+  loadSchedule: (schedule: object): Action => ({
+    schedule,
+    type: LOAD_SCHEDULE,
+  }),
+
+  removeCourse: (semester: string, courseCode: string): Action => ({
+    courseCode,
+    semester,
+    type: REMOVE_COURSE,
   }),
 
 };
