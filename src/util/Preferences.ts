@@ -17,44 +17,40 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file Preferences.js
+ * @file Preferences.ts
  * @providesModule Preferences
  * @description Loads and saves the user's preferences.
- *
- * @flow
  */
 'use strict';
 
-// Types
-import type { Language } from 'types';
-
 // Represents the language selected by the user to use the app in
-const SELECTED_LANGUAGE: string = 'app_selected_language';
+const SELECTED_LANGUAGE = 'app_selected_language';
 // Represents the current study semester selected by the user
-const CURRENT_SEMESTER: string = 'app_current_semester';
+const CURRENT_SEMESTER = 'app_current_semester';
 // Represents if the user prefers routes with wheelchair access
-const PREFER_WHEELCHAIR: string = 'app_pref_wheel';
+const PREFER_WHEELCHAIR = 'app_pref_wheel';
 // Represents the user's preferred time format, 12 or 24 hour
-const PREFERRED_TIME_FORMAT: string = 'app_time_format';
+const PREFERRED_TIME_FORMAT = 'app_time_format';
 // Represents the user's preference to view their schedule by week or by course
-const PREFER_BY_COURSE: string = 'app_by_course';
+const PREFER_BY_COURSE = 'app_by_course';
 
 /**
  * Retrieves the value of a key from AsyncStorage.
  *
- * @param {any}    AsyncStorage instance of the React Native AsyncStorage
+ * @param {any}    asyncStorage instance of the React Native AsyncStorage
  * @param {string} key          key to retrieve value for
  * @returns {any} the value, if found, or null
  */
-async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise < any > {
+async function retrieveFromAsyncStorage(asyncStorage: any, key: string): Promise < any > {
   try {
     const value = await AsyncStorage.getItem(key);
+
     return value;
   } catch (e) {
-    console.error('Caught error retrieving pref from async: ' + key, e);
+    console.error(`Caught error retrieving pref from async: ${key}`, e);
   }
 
-  return null;
+  return undefined;
 }
 
 /**
@@ -63,11 +59,10 @@ async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise
  * @param {any} AsyncStorage instance of the React Native AsyncStorage
  * @returns {string} 'en', 'fr' or null
  */
-export async function getSelectedLanguage(AsyncStorage: any): Promise < ?Language > {
-  const value = await retrieveFromAsyncStorage(AsyncStorage, SELECTED_LANGUAGE);
-  return (value === null)
-      ? null
-      : value;
+export async function getSelectedLanguage(asyncStorage: any): Promise < Language | undefined > {
+  const value = await retrieveFromAsyncStorage(asyncStorage, SELECTED_LANGUAGE);
+
+  return value;
 }
 
 /**
@@ -82,7 +77,6 @@ export function setSelectedLanguage(AsyncStorage: any, language: any): void {
   }
 }
 
-
 /**
  * Gets the user's current selected semester.
  *
@@ -91,7 +85,8 @@ export function setSelectedLanguage(AsyncStorage: any, language: any): void {
  */
 export async function getCurrentSemester(AsyncStorage: any): Promise < number > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, CURRENT_SEMESTER);
-  return (value === null)
+
+  return (value == undefined)
       ? 0
       : parseInt(value);
 }
@@ -116,7 +111,8 @@ export function setCurrentSemester(AsyncStorage: any, semester: any): void {
  */
 export async function getPrefersWheelchair(AsyncStorage: any): Promise < boolean > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, PREFER_WHEELCHAIR);
-  return (value === null)
+
+  return (value == undefined)
       ? false
       : (value === 'true');
 }
@@ -141,7 +137,8 @@ export function setPrefersWheelchair(AsyncStorage: any, prefer: any): void {
  */
 export async function getPreferredTimeFormat(AsyncStorage: any): Promise < string > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, PREFERRED_TIME_FORMAT);
-  return (value === null)
+
+  return (value == undefined)
       ? '12h'
       : value;
 }
@@ -166,7 +163,8 @@ export function setPreferredTimeFormat(AsyncStorage: any, format: any): void {
  */
 export async function getPreferScheduleByCourse(AsyncStorage: any): Promise < boolean > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, PREFER_BY_COURSE);
-  return (value === null)
+
+  return (value == undefined)
       ? false
       : (value === 'true');
 }

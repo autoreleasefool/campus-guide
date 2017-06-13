@@ -17,30 +17,19 @@
  *
  * @author Joseph Roque
  * @created 2017-05-31
- * @file Search.js
+ * @file Search.ts
  * @providesModule Search
  * @description Provides methods for searching various structures in the application.
- *
- * @flow
  */
-
-// Types
-import type {
-  Building,
-  BuildingRoom,
-  // TODO: use type GridImage,
-  Language,
-  StudySpot,
-} from 'types';
 
 // Imports
 import * as Constants from 'Constants';
 import * as Translations from 'Translations';
 
 /** Results for a search. */
-export type SearchResult = {
-  success: boolean,           // True indicates a successful result, false otherwise
-  matches: Array < string >,  // List of terms that matched the filter for further narrowing of results
+interface SearchResult {
+  success: boolean;                   // True indicates a successful result, false otherwise
+  matches: ReadonlyArray < string >;  // List of terms that matched the filter for further narrowing of results
 }
 
 /**
@@ -51,7 +40,7 @@ export type SearchResult = {
  * @param {GridImage} gridImage the building to compare
  * @returns {SearchResult} success true if the GridImage matches the filter, false otherwise, and all matching terms
  */
-export function filterGridImage(language: Language, filter: string, gridImage: any): SearchResult {
+export function filterGridImage(language: Language, filter: string, gridImage: GridImage): SearchResult {
   // FIXME: Using type `any` for gridImage is a workaround for Building not extending GridImage type
   const matches = [];
 
@@ -67,8 +56,8 @@ export function filterGridImage(language: Language, filter: string, gridImage: a
   }
 
   return {
-    success: matches.length > 0,
     matches,
+    success: matches.length > 0,
   };
 }
 
@@ -110,8 +99,8 @@ export function filterStudySpot(language: Language, filter: string, studySpot: S
   }
 
   return {
-    success: matches.length > 0,
     matches,
+    success: matches.length > 0,
   };
 }
 
@@ -148,7 +137,7 @@ export function filterRoom(
   }
 
   return {
-    success: matches.length > 0,
     matches,
+    success: matches.length > 0,
   };
 }

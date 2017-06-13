@@ -17,15 +17,13 @@
  *
  * @author Joseph Roque
  * @created 2017-06-06
- * @file NavigationUtils.js
+ * @file NavigationUtils.ts
  * @providesModule NavigationUtils
  * @description Utility methods for navigation on the university campus.
- *
- * @flow
  */
 
-// Types
-import type { Building, LatLong } from 'types';
+// Ratio of degrees to radians
+const RAD_RATIO = 180;
 
 /**
  * Converts a number in degrees to radians.
@@ -34,20 +32,22 @@ import type { Building, LatLong } from 'types';
  * @returns {number} degrees in radians
  */
 function deg2rad(deg: number): number {
-  const RAD_RATIO = 180;
   return deg * (Math.PI / RAD_RATIO);
 }
 
 /**
  * Finds the nearest building in a list, or returns null if all buildings are too far.
  *
- * @param {LatLong}         location  location to get closest building to
- * @param {Array<Building>} buildings list of buildings
- * @param {?number}         maxDist   maximum distance in kilometres for the nearest building. Optional
- * @returns {?Building} the nearest building, or null if none are withing the max distance
+ * @param {LatLong}                 location  location to get closest building to
+ * @param {ReadonlyArray<Building>} buildings list of buildings
+ * @param {number|undefined}        maxDist   maximum distance in kilometres for the nearest building. Optional
+ * @returns {Building|undefined} the nearest building, or null if none are withing the max distance
  */
-export function findClosestBuilding(location: LatLong, buildings: Array < Building >, maxDist: ?number): ?Building {
-  let closestBuilding = null;
+export function findClosestBuilding(
+    location: LatLong,
+    buildings: ReadonlyArray < Building >,
+    maxDist: number | undefined): Building | undefined {
+  let closestBuilding;
   let minDistance = -1;
 
   // Find closest building by comparing distance between coordinates
@@ -56,7 +56,7 @@ export function findClosestBuilding(location: LatLong, buildings: Array < Buildi
       building.location.latitude,
       building.location.longitude,
       location.latitude,
-      location.longitude,
+      location.longitude
     );
 
     if (distance < minDistance || minDistance === -1) {
@@ -66,8 +66,8 @@ export function findClosestBuilding(location: LatLong, buildings: Array < Buildi
   });
 
   // If nearest building is not within limit, return no closest building
-  if (maxDist != null && minDistance > maxDist) {
-    closestBuilding = null;
+  if (maxDist != undefined && minDistance > maxDist) {
+    closestBuilding = undefined;
   }
 
   return closestBuilding;
@@ -90,6 +90,7 @@ export function getDistanceBetweenCoordinates(lat1: number, lon1: number, lat2: 
   const a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
       + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
       * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const c = Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 2;
+
   return R * c;
 }

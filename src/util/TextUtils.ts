@@ -17,22 +17,17 @@
  *
  * @author Joseph Roque
  * @created 2016-10-30
- * @file TextUtils.js
+ * @file TextUtils.ts
  * @providesModule TextUtils
  * @description Defines a set of methods to manipulate strings.
- *
- * @flow
  */
 'use strict';
 
-/* eslint-disable no-magic-numbers */
-
-// Types
-import type { Destination, TimeFormat } from 'types';
+/* tslint:disable no-magic-numbers */
 
 // Imports
-import moment from 'moment';
 import * as Constants from 'Constants';
+import moment from 'moment';
 
 /**
  * Converts a time to either a 12h or 24h format. If the time is already in the format specified,
@@ -74,7 +69,7 @@ export function convertTimeFormat(format: TimeFormat, time: string): string {
  * @returns {string} the string representation
  */
 export function destinationToString(destination: Destination): string {
-  if (destination.room == null) {
+  if (destination.room == undefined) {
     return `${destination.shorthand}`;
   } else {
     return `${destination.shorthand} ${destination.room}`;
@@ -84,17 +79,17 @@ export function destinationToString(destination: Destination): string {
 /**
  * Formats certain link formats to display.
  *
- * @param {string} link link to format. Accepted formats are 'tel:\d+', 'mailto:.*'
+ * @param {string | undefined} link link to format. Accepted formats are 'tel:\d+', 'mailto:.*'
  * @returns {string} a link which is better for display, or the original
  */
-export function formatLink(link: ?string): string {
-  if (link == null) {
+export function formatLink(link: string | undefined): string {
+  if (link == undefined) {
     return '';
   }
 
   if (link.indexOf('tel:') === 0) {
     if (link.length === 14) {
-      return '(' + link.substr(4, 3) + ') ' + link.substr(7, 3) + '-' + link.substr(10, 4);
+      return `(${link.substr(4, 3)}) ${link.substr(7, 3)}-${link.substr(10, 4)}`;
     } else {
       return link.substring(4);
     }
@@ -123,7 +118,7 @@ export function get24HourAdjustedTime(time: string): string {
     hours -= 24;
   }
 
-  return leftPad(hours.toString(), 2, '0') + ':' + minutes;
+  return `${leftPad(hours.toString(), 2, 0)}:minutes`;
 }
 
 /**
@@ -141,6 +136,7 @@ export function getFormattedTimeSinceMidnight(
   const minutes = minutesSinceMidnight - (hours * Constants.Time.MINUTES_IN_HOUR);
   const timeString = `${hours >= Constants.Time.HOURS_UNDER_PREFIXED ? '' : '0'}${hours}:`
       + `${minutes >= Constants.Time.MINUTES_UNDER_PREFIXED ? '' : '0'}${minutes}`;
+
   return convertTimeFormat(format, timeString);
 }
 
@@ -154,7 +150,7 @@ export function getFormattedTimeSinceMidnight(
  */
 export function getTextWithEllipses(text: string, maxLength: number): string {
   if (text.length > maxLength) {
-    return text.substr(0, Math.max(maxLength - 2, 0)) + '..';
+    return `${text.substr(0, Math.max(maxLength - 2, 0))}..`;
   } else {
     return text;
   }
@@ -164,12 +160,12 @@ export function getTextWithEllipses(text: string, maxLength: number): string {
  * Pads the beginning of a string with a character until it is of {desiredLength}. If no character is provided,
  * pads with spaces.
  *
- * @param {string} text          string to pad
- * @param {number} desiredLength length of string to return
- * @param {?string} char         optional argument. Character to pad with. Uses ' ' by default
+ * @param {string}           text          string to pad
+ * @param {number}           desiredLength length of string to return
+ * @param {string|undefined} char          optional argument. Character to pad with. Uses ' ' by default
  * @returns {string} a string with at least a length of {desiredLength}
  */
-export function leftPad(text: string, desiredLength: number, char: ?string): string {
+export function leftPad(text: string, desiredLength: number, char: string | undefined): string {
   const replacementChar = char || ' ';
   let replacedString = text;
   let replacedStringLength = replacedString.length;

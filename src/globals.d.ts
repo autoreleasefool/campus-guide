@@ -36,7 +36,7 @@ declare global {
   }
 
   /** An external link, optionally translated to French and English. */
-  interface type Link {
+  interface Link {
     link?: string;    // Default translation of the link
     link_en?: string; // Link translated for English
     link_fr?: string; // Link translated for French
@@ -472,7 +472,7 @@ declare global {
     transitInfo?: TransitInfo | undefined;    // High level information about the city transit
     currentSemester?: number;                 // Current semester for editing, selected by the user
     firstTime?: boolean;                      // Indicates if it's the user's first time in the app
-    language?: ?Language;                     // User's preferred language
+    language?: Language | undefined;          // User's preferred language
     preferredTimeFormat?: TimeFormat;         // Either 12 or 24h time
     prefersWheelchair?: boolean;              // Only provide wheelchair accessible routes
     preferByCourse?: boolean;                 // True to default schedule view by course, false for by week

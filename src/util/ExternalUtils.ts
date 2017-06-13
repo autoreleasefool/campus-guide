@@ -31,34 +31,35 @@ import * as Translations from 'Translations';
  *
  * @param {string|undefined} url       URL to open
  * @param {Language}         language  user's selected language
- * @param {Object}           Linking   an instance of the React Native Linking class
- * @param {Object}           Alert     an instance of the React Native Alert class
- * @param {Object}           Clipboard an instance of the React Native Clipboard class
- * @param {Object}           TextUtils an instance of the TextUtils utility class
+ * @param {object}           Linking   an instance of the React Native Linking class
+ * @param {object}           Alert     an instance of the React Native Alert class
+ * @param {object}           Clipboard an instance of the React Native Clipboard class
+ * @param {object}           TextUtils an instance of the TextUtils utility class
  * @returns {Promise<void>} a promise indicating the result of whether the link was opened
  */
 export function openLink(url: string | undefined,
                          language: Language,
-                         linking: object,
-                         alert: object,
-                         clipboard: object,
-                         textUtils: object): Promise < void > {
-  const formattedUrl = textUtils.formatLink(url);
+                         Linking: object,
+                         Alert: object,
+                         Clipboard: object,
+                         TextUtils: object): Promise < void > {
+  const formattedUrl = TextUtils.formatLink(url);
 
   return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
-    linking.canOpenURL(url)
+    Linking.canOpenURL(url)
         .then((supported: boolean) => {
           if (supported) {
-            linking.openURL(url);
+            Linking.openURL(url);
           } else {
-            alert.alert(
+            Alert.alert(
               Translations.get(language, 'cannot_open_url'),
               formattedUrl,
               [
                 { text: Translations.get(language, 'cancel'), style: 'cancel' },
                 {
-                  onPress: (): void => clipboard.setString(formattedUrl) },
+                  onPress: (): void => Clipboard.setString(formattedUrl),
                   text: Translations.get(language, 'copy_link'),
+                },
               ]
             );
           }
