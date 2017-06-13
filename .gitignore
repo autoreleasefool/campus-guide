@@ -70,4 +70,4 @@ ios/main.jsbundle
 */env.js
 
 # Typescript output
-/artifacts/
+artifacts/

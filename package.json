@@ -5,7 +5,6 @@
   "scripts": {
     "build": "npm run clean && npm run tsc --",
     "clean": "rimraf artifacts",
-    "flow": "flow check",
     "lint": "tslint src/**/*.ts",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest --coverage",
@@ -34,9 +33,6 @@
     "@types/jest": "^19.2.4",
     "@types/react": "^15.0.28",
     "@types/react-native": "^0.44.10",
-    "babel-jest": "^19.0.0",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-react-native": "^1.9.1",
     "concurrently": "^3.4.0",
     "empty": "^0.10.1",
     "jest": "^19.0.2",
