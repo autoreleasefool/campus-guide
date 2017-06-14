@@ -17,11 +17,9 @@
  *
  * @author Joseph Roque
  * @created 2016-10-03
- * @file CampusGuideApp.js
+ * @file CampusGuideApp.tsx
  * @providesModule CampusGuideApp
  * @description Base component for the application.
- *
- * @flow
  */
 'use strict';
 
@@ -30,28 +28,31 @@ import React from 'react';
 import { View } from 'react-native';
 import { Navigator } from 'react-native-deprecated-custom-components';
 
-// Types
-import type { WelcomeTab } from 'types';
-
-// Route to describe which view the Navigator should display.
-type AppRoute = {
-  id: WelcomeTab,  // The expected tab
-};
-
 // Imports
+import * as Constants from '../constants';
 import Main from './Main';
 import Splash from './welcome/Splash';
 import Update from './welcome/Update';
-import * as Constants from 'Constants';
 
-export default class CampusGuideApp extends React.PureComponent {
+// Types
+import { WelcomeTab } from '../../typings/global';
+
+interface Props {}
+interface State {}
+
+// Route to describe which view the Navigator should display.
+interface AppRoute {
+  id: WelcomeTab;  // The expected tab
+}
+
+export default class CampusGuideApp extends React.PureComponent<Props, State> {
 
   /**
    * Defines the transition between views.
    *
-   * @returns {Object} a configuration for scene transitions in the navigator
+   * @returns {object} a configuration for scene transitions in the navigator
    */
-  _configureScene(): Object {
+  _configureScene(): object {
     return {
       ...Navigator.SceneConfigs.PushFromRight,
       gestures: false,
@@ -61,11 +62,11 @@ export default class CampusGuideApp extends React.PureComponent {
   /**
    * Renders a different view based on the current navigator route.
    *
-   * @param {AppRoute}        route     object with properties to identify the route being displayed
-   * @param {ReactClass<any>} navigator navigator object to pass to children
-   * @returns {ReactElement<any>} the view to render, based on {route}
+   * @param {AppRoute} route     object with properties to identify the route being displayed
+   * @param {any}      navigator navigator object to pass to children
+   * @returns {JSX.Element} the view to render, based on {route}
    */
-  _renderScene(route: AppRoute, navigator: ReactClass < any >): ReactElement < any > {
+  _renderScene(route: AppRoute, navigator: any): JSX.Element {
     switch (route.id) {
       case 'splash':
         return (
@@ -89,9 +90,9 @@ export default class CampusGuideApp extends React.PureComponent {
   /**
    * Renders the root navigator of the app to switch between the splash screen and main screen.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <Navigator
           configureScene={this._configureScene}

@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file Main.js
+ * @file Main.tsx
  * @description Container for the main application.
- *
- * @flow
  */
 'use strict';
 
@@ -29,29 +27,28 @@ import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 // Redux imports
+import * as actions from '../actions';
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Language } from 'types';
 
 // Imports
-import AppHeader from 'AppHeader';
+import AppHeader from '../components/AppHeader';
 import TabView from './TabView';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import * as Configuration from '../util/Configuration';
+import * as Constants from '../constants';
+import * as Translations from '../util/Translations';
 
-class Main extends React.PureComponent {
+// Types
+import { Language } from '../util/Translations';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: {
-    language: Language,                 // The current language, selected by the user
-    navigator: ReactClass < any >,      // Parent navigator
-    shouldShowLanguageMessage: boolean, // True to show message reminding user they can switch languages
-  };
+interface Props {
+  language: Language;                 // The current language, selected by the user
+  navigator: any;                     // Parent navigator
+  shouldShowLanguageMessage: boolean; // True to show message reminding user they can switch languages
+}
+
+interface State {}
+
+class Main extends React.PureComponent<Props, State> {
 
   /**
    * Displays a pop up when the application opens for the first time.
@@ -107,9 +104,9 @@ class Main extends React.PureComponent {
   /**
    * Renders the main view of the application.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <AppHeader />
@@ -122,22 +119,22 @@ class Main extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): object => {
   return {
     language: store.config.options.language,
     shouldShowLanguageMessage: store.config.options.firstTime,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): object => {
   return {
-    acknowledgedLanguageMessage: () => dispatch(actions.updateConfiguration({ firstTime: false })),
+    acknowledgedLanguageMessage: (): void => dispatch(actions.updateConfiguration({ firstTime: false })),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Main) as any;

@@ -17,30 +17,22 @@
  *
  * @author Joseph Roque
  * @created 2016-10-12
- * @file TabView.js
+ * @file TabView.tsx
  * @description Manages the application's tabs and the user's navigation.
- *
- * @flow
  */
 'use strict';
 
-/* eslint-disable react/prefer-stateless-function */
-/* Better to keep this as a class for consistency. */
-
 // React imports
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 // Redux imports
 import { connect } from 'react-redux';
 
-// Types
-import type { Tab } from 'types';
-
 // Imports
+import * as Constants from '../constants';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import TabBar from 'TabBar';
-import * as Constants from 'Constants';
+import TabBar from '../components/TabBar';
 
 // Tabs
 import Discover from './discover/Discover';
@@ -49,22 +41,23 @@ import Schedule from './schedule/Schedule';
 import Search from './search/SearchView';
 import Settings from './settings/Settings';
 
-class TabView extends React.PureComponent {
+// Types
+import { Tab } from '../../typings/global';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: {
-    tab: Tab, // The current tab
-  };
+interface Props {
+  tab: Tab; // The current tab
+}
+
+interface State {}
+
+class TabView extends React.PureComponent<Props, State> {
 
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
-
+  render(): JSX.Element {
     const numberOfTabs: number = Constants.Tabs.length;
     const tabs = [];
     for (let i = 0; i < numberOfTabs; i++) {
@@ -105,14 +98,7 @@ class TabView extends React.PureComponent {
           );
           break;
         default:
-          tabs.push(
-            <View
-                key={Constants.Tabs[i]}
-                tabLabel={Constants.Tabs[i]}>
-              <Text>{Constants.Tabs[i]}</Text>
-            </View>
-          );
-          // throw new Error('Unimplemented tab type: ' + Constants.Tabs[i]);
+          throw new Error(`Unimplemented tab type: ${Constants.Tabs[i]}`);
       }
     }
 
@@ -121,10 +107,10 @@ class TabView extends React.PureComponent {
         <ScrollableTabView
             locked={true}
             page={Constants.Tabs.indexOf(this.props.tab)}
-            renderTabBar={() => <TabBar />}
+            renderTabBar={(): JSX.Element => <TabBar />}
             scrollWithoutAnimation={true}
             tabBarPosition='bottom'>
-          {tabs.map((tab: ReactElement < any >) => tab)}
+          {tabs.map((tab: JSX.Element) => tab)}
         </ScrollableTabView>
       </View>
     );
@@ -135,15 +121,15 @@ class TabView extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): object => {
   return {
     tab: store.navigation.tab,
   };
 };
 
-export default connect(mapStateToProps)(TabView);
+export default connect(mapStateToProps, undefined)(TabView) as any;
