@@ -26,7 +26,7 @@
 /* tslint:disable object-literal-sort-keys */
 /* Keys out of order to preserver importance, different groupings, etc. */
 
-import * as CoreTranslations from '../assets/json/CoreTranslations.json';
+const CoreTranslations = require('../../assets/json/CoreTranslations');
 
 /**
  * Theme colors.
