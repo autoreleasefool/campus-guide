@@ -17,32 +17,35 @@
  *
  * @author Joseph Roque
  * @created 2016-10-18
- * @file header.js
+ * @file header.ts
  * @description Provides header actions.
  */
 'use strict';
 
 // Types
-import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH } from 'actionTypes';
+import * as Actions from '../../typings/actions';
+import { Name, Tab } from '../../typings/global';
 
-module.exports = {
-
-  setHeaderTitle: (title: Name | string | undefined, tab?: Tab): Action => ({
+export function setHeaderTitle(title: Name | string | undefined, tab?: Tab): any {
+  return {
     tab,
     title,
-    type: SET_HEADER_TITLE,
-  }),
+    type: Actions.Header.SetTitle,
+  };
+}
 
-  showBack: (show: boolean, tab?: Tab): Action => ({
+export function showBack(show: boolean, tab?: Tab): any {
+  return {
     show,
     tab,
-    type: SHOW_BACK,
-  }),
+    type: Actions.Header.ShowBack,
+  };
+}
 
-  showSearch: (show: boolean, tab?: Tab): Action => ({
+export function showSearch(show: boolean, tab?: Tab): any {
+  return {
     show,
     tab,
-    type: SHOW_SEARCH,
-  }),
-
-};
+    type: Actions.Header.ShowSearch,
+  };
+}

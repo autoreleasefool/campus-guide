@@ -23,30 +23,35 @@
 'use strict';
 
 // Types
-import { ADD_COURSE, ADD_SEMESTER, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
+import * as Actions from '../../typings/actions';
+import { Course, Semester } from '../../typings/university';
 
-module.exports = {
-
-  addCourse: (semester: string, course: Course): Action => ({
+export function addCourse(semester: string, course: Course): any {
+  return {
     course,
     semester,
-    type: ADD_COURSE,
-  }),
+    type: Actions.Schedule.AddCourse,
+  };
+}
 
-  addSemester: (semester: Semester): Action => ({
+export function addSemester(semester: Semester): any {
+  return {
     semester,
-    type: ADD_SEMESTER,
-  }),
+    type: Actions.Schedule.AddSemester,
+  };
+}
 
-  loadSchedule: (schedule: object): Action => ({
+export function loadSchedule(schedule: object): any {
+  return {
     schedule,
-    type: LOAD_SCHEDULE,
-  }),
+    type: Actions.Schedule.Load,
+  };
+}
 
-  removeCourse: (semester: string, courseCode: string): Action => ({
+export function removeCourse(semester: string, courseCode: string): any {
+  return {
     courseCode,
     semester,
-    type: REMOVE_COURSE,
-  }),
-
-};
+    type: Actions.Schedule.RemoveCourse,
+  };
+}

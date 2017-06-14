@@ -23,28 +23,32 @@
 'use strict';
 
 // Types
-import { ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SEARCH, SET_STUDY_FILTERS } from 'actionTypes';
+import * as Actions from '../../typings/actions';
 
-module.exports = {
-
-  activateStudyFilter: (filter: string): Action => ({
+export function activateStudyFilter(filter: string): any {
+  return {
     filter,
-    type: ACTIVATE_STUDY_FILTER,
-  }),
+    type: Actions.Search.ActivateStudyFilter,
+  };
+}
 
-  deactivateStudyFilter: (filter: string): Action => ({
+export function deactivateStudyFilter(filter: string): any {
+  return {
     filter,
-    type: DEACTIVATE_STUDY_FILTER,
-  }),
+    type: Actions.Search.DeactivateStudyFilter,
+  };
+}
 
-  search: (terms: string | undefined): Action => ({
+export function search(terms: string | undefined): any {
+  return {
     terms,
-    type: SEARCH,
-  }),
+    type: Actions.Search.Search,
+  };
+}
 
-  setStudyFilters: (filters: ReadonlyArray < string >): Action => ({
+export function setStudyFilters(filters: ReadonlyArray<string>): any {
+  return {
     filters,
-    type: SET_STUDY_FILTERS,
-  }),
-
-};
+    type: Actions.Search.SetStudyFilters,
+  };
+}

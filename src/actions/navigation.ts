@@ -23,63 +23,69 @@
 'use strict';
 
 // Types
-import {
-  NAVIGATE_BACK,
-  SET_CAN_BACK,
-  SWITCH_DISCOVER_LINK,
-  SWITCH_DISCOVER_TRANSIT_CAMPUS,
-  SWITCH_DISCOVER_VIEW,
-  SWITCH_FIND_VIEW,
-  SWITCH_HOUSING_RESIDENCE,
-  SWITCH_HOUSING_VIEW,
-  SWITCH_TAB,
-} from 'actionTypes';
+import * as Actions from '../../typings/actions';
+import { MenuSection, Tab } from '../../typings/global';
+import { Residence } from '../../typings/university';
 
-module.exports = {
-
-  canNavigateBack: (key: string, can: boolean): Action => ({
+export function canNavigateBack(key: string, can: boolean): any {
+  return {
     can,
     key,
-    type: SET_CAN_BACK,
-  }),
+    type: Actions.Navigation.CanBack,
+  };
+}
 
-  navigateBack: (): Action => ({
-    type: NAVIGATE_BACK,
-  }),
+export function navigateBack(): any {
+  return {
+    type: Actions.Navigation.NavigateBack,
+  };
+}
 
-  switchDiscoverView: (view: number): Action => ({
-    type: SWITCH_DISCOVER_VIEW,
+export function switchDiscoverView(view: number): any {
+  return {
+    type: Actions.App.SwitchDiscoverView,
     view,
-  }),
+  };
+}
 
-  switchFindView: (view: number): Action => ({
-    type: SWITCH_FIND_VIEW,
+export function switchFindView(view: number): any {
+  return {
+    type: Actions.App.SwitchFindView,
     view,
-  }),
+  };
+}
 
-  switchHousingView: (view: number): Action => ({
-    type: SWITCH_HOUSING_VIEW,
+export function switchHousingView(view: number): any {
+  return {
+    type: Actions.App.SwitchHousingView,
     view,
-  }),
+  };
+}
 
-  switchLinkCategory: (linkId: string | number | undefined): Action => ({
+export function switchLinkCategory(linkId: string | number | undefined): any {
+  return {
     linkId,
-    type: SWITCH_DISCOVER_LINK,
-  }),
+    type: Actions.App.SwitchDiscoverLink,
+  };
+}
 
-  switchResidence: (residence: Residence | undefined): Action => ({
+export function switchResidence(residence: Residence | undefined): any {
+  return {
     residence,
-    type: SWITCH_HOUSING_RESIDENCE,
-  }),
+    type: Actions.App.SwitchHousingResidence,
+  };
+}
 
-  switchTab: (tab: Tab): Action => ({
+export function switchTab(tab: Tab): any {
+  return {
     tab,
-    type: SWITCH_TAB,
-  }),
+    type: Actions.App.SwitchTab,
+  };
+}
 
-  switchTransitCampus: (campus: MenuSection | undefined): Action => ({
+export function switchTransitCampus(campus: MenuSection | undefined): any {
+  return {
     campus,
-    type: SWITCH_DISCOVER_TRANSIT_CAMPUS,
-  }),
-
-};
+    type: Actions.App.SwitchDiscoverTransitCampus,
+  };
+}

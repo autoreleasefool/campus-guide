@@ -23,23 +23,26 @@
 'use strict';
 
 // Types
-import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
+import * as Actions from '../../typings/actions';
+import { Building, Destination } from '../../typings/university';
 
-module.exports = {
-
-  setDestination: (destination: Destination): Action => ({
+export function setDestination(destination: Destination): any {
+  return {
     destination,
-    type: SET_DESTINATION,
-  }),
+    type: Actions.Directions.SetDestination,
+  };
+}
 
-  setStartingPoint: (startingPoint: Destination): Action => ({
+export function setStartingPoint(startingPoint: Destination): any {
+  return {
     startingPoint,
-    type: SET_STARTING_POINT,
-  }),
+    type: Actions.Directions.SetStartingPoint,
+  };
+}
 
-  viewBuilding: (building: Building): Action => ({
+export function viewBuilding(building: Building): any {
+  return {
     building,
-    type: VIEW_BUILDING,
-  }),
-
-};
+    type: Actions.Directions.ViewBuilding,
+  };
+}

@@ -18,25 +18,14 @@
  * @author Joseph Roque
  * @created 2016-10-08
  * @file index.ts
- * @providesModule actions
  * @description Combines all actions
  */
 'use strict';
 
 // Imports
-import * as configActions from './config';
-import * as directionsActions from './directions';
-import * as headerActions from './header';
-import * as navigationActions from './navigation';
-import * as scheduleActions from './schedule';
-import * as searchActions from './search';
-
-// Combine and export actions
-module.exports = {
-  ...configActions,
-  ...directionsActions,
-  ...headerActions,
-  ...navigationActions,
-  ...searchActions,
-  ...scheduleActions,
-};
+export * from './config';
+export * from './directions';
+export * from './header';
+export * from './navigation';
+export * from './schedule';
+export * from './search';
