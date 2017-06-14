@@ -31,7 +31,7 @@ import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
 
 // Imports
-import CampusGuideApp from 'CampusGuideApp';
+import CampusGuideApp from './containers/CampusGuideApp';
 
 // Types
 interface Props {}
@@ -40,9 +40,9 @@ interface State {}
 /**
  * Applies global settings to the app and returns the root view.
  *
- * @returns {ReactClass<any>} Returns the root component for the app
+ * @returns {JSX.Element} the root component for the app
  */
-export default function setup(): React.PureComponent<Props, State> {
+export default function setup(): React.ComponentClass<Props> {
 
   // Fix function not found error
   // http://stackoverflow.com/a/35305611/4896787
@@ -56,12 +56,12 @@ export default function setup(): React.PureComponent<Props, State> {
   // Create the redux store
   const store = configureStore();
 
-  class Root extends React.PureComponent {
+  class Root extends React.PureComponent<Props, State> {
 
     /**
      * Renders the base component.
      *
-     * @returns {ReactElement<any>} the base component for the app to render
+     * @returns {JSX.Element} the base component for the app to render
      */
     render(): JSX.Element {
       return (

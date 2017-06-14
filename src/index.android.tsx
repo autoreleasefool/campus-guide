@@ -25,6 +25,6 @@
 import { AppRegistry } from 'react-native';
 
 // Imports
-import setup from './src/setup';
+import setup from './setup';
 
 AppRegistry.registerComponent('CampusGuide', setup);

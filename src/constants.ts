@@ -83,24 +83,24 @@ const baseColors = {
  */
 export const Colors = {
   ...baseColors,
-  primaryBackground: colors.garnet,                     // Primary background color for the application
-  secondaryBackground: colors.charcoalGrey,             // Secondary background color for the application
-  tertiaryBackground: colors.polarGrey,                 // Tertiary background color for the application
+  primaryBackground: baseColors.garnet,                   // Primary background color for the application
+  secondaryBackground: baseColors.charcoalGrey,           // Secondary background color for the application
+  tertiaryBackground: baseColors.polarGrey,               // Tertiary background color for the application
 
-  primaryWhiteText: colors.polarGrey,                   // Primary color when white text is needed
-  secondaryWhiteText: colors.transparentPolarGrey,      // Secondary color when white text is needed
-  primaryBlackText: colors.black,                       // Primary color when black text is needed
-  secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
+  primaryWhiteText: baseColors.polarGrey,                 // Primary color when white text is needed
+  secondaryWhiteText: baseColors.transparentPolarGrey,    // Secondary color when white text is needed
+  primaryBlackText: baseColors.black,                     // Primary color when black text is needed
+  secondaryBlackText: baseColors.transparentBlack,        // Secondary color when black text is needed
 
-  primaryWhiteIcon: colors.polarGrey,                   // Primary color when white icons are needed
-  secondaryWhiteIcon: colors.transparentPolarGrey,      // Secondary color when white icons are needed
-  tertiaryWhiteIcon: colors.veryTransparentPolarGrey,   // Tertiary color when white icons are needed
-  primaryBlackIcon: colors.black,                       // Primary color when black icons are needed
-  secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black icons are needed
+  primaryWhiteIcon: baseColors.polarGrey,                 // Primary color when white icons are needed
+  secondaryWhiteIcon: baseColors.transparentPolarGrey,    // Secondary color when white icons are needed
+  tertiaryWhiteIcon: baseColors.veryTransparentPolarGrey, // Tertiary color when white icons are needed
+  primaryBlackIcon: baseColors.black,                     // Primary color when black icons are needed
+  secondaryBlackIcon: baseColors.transparentBlack,        // Secondary color when black icons are needed
 
-  darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
-  darkMoreTransparentBackground: 'rgba(0,0,0,0.2)',     // Dark transparent background color for components
-  lightTransparentBackground: 'rgba(255,255,255,0.8)',  // Light transparent background color for components
+  darkTransparentBackground: 'rgba(0,0,0,0.4)',           // Dark transparent background color for components
+  darkMoreTransparentBackground: 'rgba(0,0,0,0.2)',       // Dark transparent background color for components
+  lightTransparentBackground: 'rgba(255,255,255,0.8)',    // Light transparent background color for components
 };
 
 /**
@@ -283,4 +283,4 @@ export const Map = {
 /**
  * Default type to assign to rooms when not defined
  */
-export const DefaultRoomType: 'office';
+export const DefaultRoomType = 'office';
