@@ -31,7 +31,7 @@ import * as Preferences from '../util/Preferences';
 
 import * as Actions from '../../typings/actions';
 
-export const persist = ({ getState }: any): any => (next: any): any => (action: any): any => {
+export const persist = ({ getState }: any) => (next: any) => (action: any) => {
   next(action);
   const store = getState();
 

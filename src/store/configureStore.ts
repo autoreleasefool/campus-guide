@@ -36,7 +36,7 @@ import { persist } from './persist';
  * @param {?VoidFunction} onComplete called when the store has been created
  * @returns {any} redux store
  */
-export default function configureStore(onComplete: () => void | undefined): any {
+export default function configureStore(onComplete?: () => void | undefined): any {
   const store = createStore(reducers as Reducer<any>, applyMiddleware(thunk, persist as Middleware));
   if (onComplete != undefined) {
     onComplete();
