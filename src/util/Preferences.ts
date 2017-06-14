@@ -18,10 +18,11 @@
  * @author Joseph Roque
  * @created 2016-10-08
  * @file Preferences.ts
- * @providesModule Preferences
  * @description Loads and saves the user's preferences.
  */
 'use strict';
+
+import { Language } from './Translations';
 
 // Represents the language selected by the user to use the app in
 const SELECTED_LANGUAGE = 'app_selected_language';
@@ -37,11 +38,11 @@ const PREFER_BY_COURSE = 'app_by_course';
 /**
  * Retrieves the value of a key from AsyncStorage.
  *
- * @param {any}    asyncStorage instance of the React Native AsyncStorage
+ * @param {any}    AsyncStorage instance of the React Native AsyncStorage
  * @param {string} key          key to retrieve value for
  * @returns {any} the value, if found, or null
  */
-async function retrieveFromAsyncStorage(asyncStorage: any, key: string): Promise < any > {
+async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise < any > {
   try {
     const value = await AsyncStorage.getItem(key);
 
@@ -59,8 +60,8 @@ async function retrieveFromAsyncStorage(asyncStorage: any, key: string): Promise
  * @param {any} AsyncStorage instance of the React Native AsyncStorage
  * @returns {string} 'en', 'fr' or null
  */
-export async function getSelectedLanguage(asyncStorage: any): Promise < Language | undefined > {
-  const value = await retrieveFromAsyncStorage(asyncStorage, SELECTED_LANGUAGE);
+export async function getSelectedLanguage(AsyncStorage: any): Promise < Language | undefined > {
+  const value = await retrieveFromAsyncStorage(AsyncStorage, SELECTED_LANGUAGE);
 
   return value;
 }

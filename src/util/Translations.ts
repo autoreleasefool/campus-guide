@@ -23,6 +23,12 @@
  */
 'use strict';
 
+/** Shorthand for languages available in the application. English or French. */
+export type Language =
+  | 'en'
+  | 'fr'
+  ;
+
 // Cache of the translations
 const translations = {
   en: undefined,

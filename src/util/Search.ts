@@ -23,11 +23,22 @@
  */
 
 // Imports
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import * as Constants from '../constants';
+import * as Translations from './Translations';
+
+import { Language } from './Translations';
+import { GridImage, LinkSection } from '../../typings/global';
+import { Building, BuildingRoom, RoomTypeInfo, StudySpot, StudySpotInfo } from '../../typings/university';
+
+/** Support data required for searches. */
+export interface SearchSupport {
+  linkSections: ReadonlyArray < LinkSection >;  // Link sections to search
+  roomTypeInfo: RoomTypeInfo;                   // Room type info for room searches
+  studySpots: StudySpotInfo;                    // Study spots to search
+}
 
 /** Results for a search. */
-interface SearchResult {
+export interface SearchResult {
   success: boolean;                   // True indicates a successful result, false otherwise
   matches: ReadonlyArray < string >;  // List of terms that matched the filter for further narrowing of results
 }

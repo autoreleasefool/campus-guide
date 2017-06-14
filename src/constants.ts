@@ -31,7 +31,7 @@ const CoreTranslations = require('../../assets/json/CoreTranslations');
 /**
  * Theme colors.
  */
-const colors = {
+const baseColors = {
   garnet: '#8F001A',
   transparentGarnet: 'rgba(143, 0, 26, 0.7)',
   veryTransparentGarnet: 'rgba(143, 0, 26, 0.4)',
@@ -79,6 +79,31 @@ const colors = {
 };
 
 /**
+ * Basic color definitions for components.
+ */
+export const Colors = {
+  ...baseColors,
+  primaryBackground: colors.garnet,                     // Primary background color for the application
+  secondaryBackground: colors.charcoalGrey,             // Secondary background color for the application
+  tertiaryBackground: colors.polarGrey,                 // Tertiary background color for the application
+
+  primaryWhiteText: colors.polarGrey,                   // Primary color when white text is needed
+  secondaryWhiteText: colors.transparentPolarGrey,      // Secondary color when white text is needed
+  primaryBlackText: colors.black,                       // Primary color when black text is needed
+  secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
+
+  primaryWhiteIcon: colors.polarGrey,                   // Primary color when white icons are needed
+  secondaryWhiteIcon: colors.transparentPolarGrey,      // Secondary color when white icons are needed
+  tertiaryWhiteIcon: colors.veryTransparentPolarGrey,   // Tertiary color when white icons are needed
+  primaryBlackIcon: colors.black,                       // Primary color when black icons are needed
+  secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black icons are needed
+
+  darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
+  darkMoreTransparentBackground: 'rgba(0,0,0,0.2)',     // Dark transparent background color for components
+  lightTransparentBackground: 'rgba(255,255,255,0.8)',  // Light transparent background color for components
+};
+
+/**
  * Base icon sizes.
  */
 const iconSizes = {
@@ -109,9 +134,22 @@ const textSizes = {
 };
 
 /**
+ * Common element sizes to use throughout the application.
+ */
+export const Sizes = {
+  Icons: iconSizes,
+  Margins: marginSizes,
+  Text: textSizes,
+  HeaderPadding: {
+    android: 0,
+    ios: 20,
+  },
+};
+
+/**
  * Defines the order of tabs in the app.
  */
-const tabs = [
+export const Tabs = [
   'find',
   'schedule',
   'discover',
@@ -122,7 +160,7 @@ const tabs = [
 /**
  * List of available building facilities
  */
-const facilities = [
+export const Facilities = [
   'atm',
   'food',
   'printer',
@@ -142,7 +180,7 @@ const facilities = [
 /**
  * List of common social media platforms
  */
-const socialMediaPlatforms = [
+export const SocialMediaPlatforms = [
   'linkedin',
   'twitter',
   'facebook',
@@ -154,7 +192,7 @@ const socialMediaPlatforms = [
 /**
  * Time constants
  */
-const time = {
+export const Time = {
   MILLISECONDS_IN_SECOND: 1000,
   SECONDS_IN_MINUTE: 60,
   MINUTES_IN_HOUR: 60,
@@ -168,7 +206,7 @@ const time = {
 /**
  * Day translations, in order.
  */
-const days = {
+export const Days = {
   en: [
     CoreTranslations.en.monday,
     CoreTranslations.en.tuesday,
@@ -190,43 +228,49 @@ const days = {
 };
 
 /**
- * Set of views to navigate through within FIND tab
+ * Views for navigation
  */
-const find = {
-  Home: 0,          // Home find view where user can select a building
-  Building: 1,      // Building details, where user can see details of a single building
-  StartingPoint: 2, // User can select their starting point for directions
-  Steps: 3,         // Tells the user steps between starting point and destination
-};
+export const Views = {
 
-/**
- * Set of views to navigate through within DISCOVER tab
- */
-const discover = {
-  Home: 0,        // Home discover view where user can see elements of university they can explore
-  Links: 1,       // Displays a list of useful links to the user
-  Transit: 2,     // Displays information about the transit system in the city
-  Shuttle: 3,     // Displays information about the university's campus shuttle
-  StudySpots: 4,  // Displays a list of study spots around campus and properties of them
-  Housing: 5,     // Displays information about housing at the university
-};
+  /**
+   * Set of views to navigate through within FIND tab
+   */
+  Find: {
+    Home: 0,          // Home find view where user can select a building
+    Building: 1,      // Building details, where user can see details of a single building
+    StartingPoint: 2, // User can select their starting point for directions
+    Steps: 3,         // Tells the user steps between starting point and destination
+  },
 
-/**
- * Set of views to navigate through within Housing screen
- */
-const housing = {
-  Menu: 0,              // Main housing view, to select other screens
-  Residences: 1,        // List of residences
-  ResidenceDetails: 2,  // Details about a single residence
-  ResidenceSelect: 3,   // List of residences, with multiple selectable
-  ResidenceCompare: 4,  // Comparison between residences
-  Resources: 5,         // Resources for housing information
+  /**
+   * Set of views to navigate through within DISCOVER tab
+   */
+  Discover: {
+    Home: 0,        // Home discover view where user can see elements of university they can explore
+    Links: 1,       // Displays a list of useful links to the user
+    Transit: 2,     // Displays information about the transit system in the city
+    Shuttle: 3,     // Displays information about the university's campus shuttle
+    StudySpots: 4,  // Displays a list of study spots around campus and properties of them
+    Housing: 5,     // Displays information about housing at the university
+  },
+
+  /**
+   * Set of views to navigate through within Housing screen
+   */
+  Housing: {
+    Menu: 0,              // Main housing view, to select other screens
+    Residences: 1,        // List of residences
+    ResidenceDetails: 2,  // Details about a single residence
+    ResidenceSelect: 3,   // List of residences, with multiple selectable
+    ResidenceCompare: 4,  // Comparison between residences
+    Resources: 5,         // Resources for housing information
+  },
 };
 
 /**
  * Default map view information
  */
-const map = {
+export const Map = {
   DefaultDelta: 0.02,
   InitialRegion: {
     latitude: 45.4222,
@@ -236,87 +280,7 @@ const map = {
   },
 };
 
-module.exports = {
-
-  /**
-   * Basic color definitions for components.
-   */
-  Colors: {
-    ...colors,                                            // Import basic color definitions
-    primaryBackground: colors.garnet,                     // Primary background color for the application
-    secondaryBackground: colors.charcoalGrey,             // Secondary background color for the application
-    tertiaryBackground: colors.polarGrey,                 // Tertiary background color for the application
-
-    primaryWhiteText: colors.polarGrey,                   // Primary color when white text is needed
-    secondaryWhiteText: colors.transparentPolarGrey,      // Secondary color when white text is needed
-    primaryBlackText: colors.black,                       // Primary color when black text is needed
-    secondaryBlackText: colors.transparentBlack,          // Secondary color when black text is needed
-
-    primaryWhiteIcon: colors.polarGrey,                   // Primary color when white icons are needed
-    secondaryWhiteIcon: colors.transparentPolarGrey,      // Secondary color when white icons are needed
-    tertiaryWhiteIcon: colors.veryTransparentPolarGrey,   // Tertiary color when white icons are needed
-    primaryBlackIcon: colors.black,                       // Primary color when black icons are needed
-    secondaryBlackIcon: colors.transparentBlack,          // Secondary color when black icons are needed
-
-    darkTransparentBackground: 'rgba(0,0,0,0.4)',         // Dark transparent background color for components
-    darkMoreTransparentBackground: 'rgba(0,0,0,0.2)',     // Dark transparent background color for components
-    lightTransparentBackground: 'rgba(255,255,255,0.8)',  // Light transparent background color for components
-  },
-
-  /**
-   * Day translations
-   */
-  Days: days,
-
-  /**
-   * Common element sizes to use throughout the application.
-   */
-  Sizes: {
-    Icons: iconSizes,
-    Margins: marginSizes,
-    Text: textSizes,
-    HeaderPadding: {
-      android: 0,
-      ios: 20,
-    },
-  },
-
-  /**
-   * Tabs within the app
-   */
-  Tabs: tabs,
-
-  /**
-   * Building facilities
-   */
-  Facilities: facilities,
-
-  /**
-   * Social media platforms
-   */
-  SocialMediaPlatforms: socialMediaPlatforms,
-
-  /**
-   * Views for navigation
-   */
-  Views: {
-    Discover: discover,
-    Find: find,
-    Housing: housing,
-  },
-
-  /**
-   * Time constants
-   */
-  Time: time,
-
-  /**
-   * Default type to assign to rooms when not defined
-   */
-  DefaultRoomType: 'office',
-
-  /**
-   * Default map information
-   */
-  Map: map,
-};
+/**
+ * Default type to assign to rooms when not defined
+ */
+export const DefaultRoomType: 'office';

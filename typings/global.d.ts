@@ -84,6 +84,50 @@ export interface Section < T > extends Name {
 }
 
 //-----------------------------------------------------------------------------
+//  Maps
+//-----------------------------------------------------------------------------
+
+/** Latitude and longitude of a location. */
+export interface LatLong {
+  latitude: number;   // Latitude of the location
+  longitude: number;  // Longitude of the location
+}
+
+/** Difference in latitude and longitude on a map. */
+export interface LatLongDelta {
+  latitudeDelta: number;  // Change in latitude
+  longitudeDelta: number; // Change in longitude
+}
+
+//-----------------------------------------------------------------------------
+//  Icons
+//-----------------------------------------------------------------------------
+
+/** Available classes for icons to be from. */
+export type IconClass =
+  | 'material'
+  | 'ionicon'
+  ;
+
+/** A cross-platform icon object. */
+export interface BasicIcon {
+  class: IconClass; // Class of the icon
+  name: string;     // Name of the icon in the class
+}
+
+/** An icon object with separate icon definitions for Android and iOS. */
+export interface PlatformIcon {
+  android: BasicIcon; // Icon to use on Android
+  ios: BasicIcon;     // Icon to use on iOS
+}
+
+/** A universal Icon definition. */
+export type Icon =
+  | BasicIcon
+  | PlatformIcon
+  ;
+
+//-----------------------------------------------------------------------------
 //  Menus
 //-----------------------------------------------------------------------------
 
@@ -155,99 +199,4 @@ export interface Route {
 //   icon?: Icon;  // Icon for the setting
 //   key: string;  // Unique key to identify the setting
 //   type: string; // Type of setting
-// }
-
-// //-----------------------------------------------------------------------------
-// //  Transit
-// //-----------------------------------------------------------------------------
-
-// /** Information about a transit route. */
-// interface RouteDetails {
-//   days: object;   // Days that the route runs
-//   number: number; // Transit bus number
-//   sign: string;   // Display sign
-// }
-
-// /** Information about a transit stop. */
-// interface TransitStop extends LatLong {
-//   code: string;     // Short code identifying the stop (not necessarily unique)
-//   name: string;     // Name of the stop
-//   sorted?: boolean; // True to indicate the routes have been sorted, false or null otherwise
-// }
-
-// /** Information about a transit campus. */
-// interface TransitCampus extends LatLong, Name {
-//   id: string;     // Campus id
-//   stops: object;  // List of stops near the campus
-// }
-
-// /** Details of the city transit system. */
-// interface TransitSystem {
-//   campuses: ReadonlyArray < TransitCampus >;  // List of campuses that will be served by the city transit
-//   stopDetails: object;                        // Set of stops identified by their ID
-// }
-
-// /** High level information about the city transit system. */
-// type TransitInfo = NamedLink;
-
-// //-----------------------------------------------------------------------------
-// //  Shuttle
-// //-----------------------------------------------------------------------------
-
-// /** A stop the shuttle makes */
-// interface ShuttleStop extends LatLong, Name {
-//   id: string; // Unique stop id
-// }
-
-// /** A shuttle's schedule for a certain time of year */
-// interface ShuttleSchedule extends Name {
-//   start_date: string;                             // Date which the schedule becomes effective
-//   end_date: string;                               // Final date for which the schedule is effective
-//   excluded_dates: ReadonlyArray < string>;        // Dates for which the schedule is explicitly not in effect
-//   directions: ReadonlyArray < ShuttleDirection >; // Directions and times for the schedule
-// }
-
-// /** Describes a direction of the shuttle and when it departs in that direction */
-// interface ShuttleDirection extends Name {
-//   route?: string;     // Description of the route the shuttle takes
-//   route_en?: string;  // Description of the route the shuttle takes, in English
-//   route_fr?: string;  // Description of the route the shuttle takes, in French
-//   day_times: Object;  // Days and times which the shuttle departs
-// }
-
-// /** Information about the university shuttle */
-// interface ShuttleInfo {
-//   stops: ReadonlyArray < ShuttleStop >;         // Stops the shuttle makes
-//   schedules: ReadonlyArray < ShuttleSchedule >; // Schedules for the shuttle
-//   additional_info: ReadonlyArray < Details >;   // Additional info for taking the shuttle
-// }
-
-// //-----------------------------------------------------------------------------
-// //  Study spots
-// //-----------------------------------------------------------------------------
-
-// /** Study spot filter descriptions and whether they are active. */
-// interface StudySpotFilter extends Description, Name {
-//   icon: Icon; // Icon to represent the filter
-// }
-
-// /** Locations to reserve spots at the university. */
-// type StudySpotReservation = Description & Link & Name;
-
-// /** Location and properties of a study spot. */
-// interface StudySpot extends Description, Name {
-//   image: string;                      // Name of the image of the study spot
-//   building: string;                   // Building code
-//   room: string | undefined;           // Room number
-//   opens: string;                      // Time the spot opens at
-//   closes: string;                     // Time the spot closes at
-//   filters: ReadonlyArray < string >;  // List of properties to filter on
-// }
-
-// /** Information about study spots. */
-// interface StudySpotInfo {
-//   filters: ReadonlyArray < string >;  // List of filter IDs
-//   filterDescriptions: object;         // Filter IDs mapped to their descriptions
-//   reservations: LinkSection;          // Links for making reservations of study spots
-//   spots: ReadonlyArray < StudySpot >; // Study spots available on campus
 // }

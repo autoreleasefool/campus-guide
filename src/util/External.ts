@@ -17,32 +17,33 @@
  *
  * @author Joseph Roque
  * @created 2016-10-30
- * @file ExternalUtils.ts
- * @providesModule ExternalUtils
+ * @file External.ts
  * @description Defines a set of methods for interacting with elements outside of the application.
  */
 'use strict';
 
 // Imports
-import * as Translations from 'Translations';
+import * as Translations from './Translations';
+
+import { Language } from './Translations';
 
 /**
  * Opens a URL if the URL is valid.
  *
  * @param {string|undefined} url       URL to open
  * @param {Language}         language  user's selected language
- * @param {object}           Linking   an instance of the React Native Linking class
- * @param {object}           Alert     an instance of the React Native Alert class
- * @param {object}           Clipboard an instance of the React Native Clipboard class
- * @param {object}           TextUtils an instance of the TextUtils utility class
+ * @param {any}              Linking   an instance of the React Native Linking class
+ * @param {any}              Alert     an instance of the React Native Alert class
+ * @param {any}              Clipboard an instance of the React Native Clipboard class
+ * @param {any}              TextUtils an instance of the TextUtils utility class
  * @returns {Promise<void>} a promise indicating the result of whether the link was opened
  */
 export function openLink(url: string | undefined,
                          language: Language,
-                         Linking: object,
-                         Alert: object,
-                         Clipboard: object,
-                         TextUtils: object): Promise < void > {
+                         Linking: any,
+                         Alert: any,
+                         Clipboard: any,
+                         TextUtils: any): Promise < void > {
   const formattedUrl = TextUtils.formatLink(url);
 
   return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
@@ -63,9 +64,9 @@ export function openLink(url: string | undefined,
               ]
             );
           }
-          resolve();
+          resolve({});
         })
-        .catch((err: any) => reject('An error occurred opening the link.', err));
+        .catch(reject);
   });
 }
 

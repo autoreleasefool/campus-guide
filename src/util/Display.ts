@@ -17,20 +17,22 @@
  *
  * @author Joseph Roque
  * @created 2016-10-17
- * @file DisplayUtils.ts
- * @providesModule DisplayUtils
+ * @file Display.ts
  * @description Defines a set of methods to manipulate the display and related values.
  */
 'use strict';
 
+import { BasicIcon, PlatformString } from '../../typings/global';
+import { Facility } from '../../typings/university';
+
 /**
  * Returns the icon and class for an icon to use for the Android platform, defined in the object.
  *
- * @param {Object} obj the object with either 'icon.android.name' and 'icon.android.class' properties, or
+ * @param {any} obj the object with either 'icon.android.name' and 'icon.android.class' properties, or
  *                     'icon.name' and 'icon.class' properties.
  * @returns {Icon|undefined} an object with 'name' and 'class' properties, or undefined
  */
-export function getAndroidIcon(obj: object): BasicIcon | undefined {
+export function getAndroidIcon(obj: any): BasicIcon | undefined {
   if ('icon' in obj) {
     const icon = obj.icon;
     if (('android' in icon) && ('name' in icon.android) && ('class' in icon.android)) {
@@ -113,11 +115,11 @@ export function getFacilityIconName(facility: Facility): string | undefined {
  * Returns the icon and class for an icon to use for the iOS platform,
  * defined in the object.
  *
- * @param {object} obj the object with either 'icon.ios.name' and 'icon.ios.class' properties, or 'icon.name' and
+ * @param {any} obj the object with either 'icon.ios.name' and 'icon.ios.class' properties, or 'icon.name' and
  *                     'icon.class' properties.
  * @returns {Icon|undefined} an object with 'name' and 'class' properties, or null
  */
-export function getIOSIcon(obj: object): BasicIcon | undefined {
+export function getIOSIcon(obj: any): BasicIcon | undefined {
   if ('icon' in obj) {
     const icon = obj.icon;
     if (('ios' in icon) && ('name' in icon.ios) && ('class' in icon.ios)) {
@@ -135,11 +137,11 @@ export function getIOSIcon(obj: object): BasicIcon | undefined {
  * 'android'.
  *
  * @param {PlatformString} platform either 'ios' or 'android'.
- * @param {object} obj              the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
+ * @param {any}            obj      the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
  *                                  properties, or 'icon.name' and 'icon.class' properties.
  * @returns {?Icon} an object with 'name' and 'class' properties, or undefined
  */
-export function getPlatformIcon(platform: PlatformString, obj: object): BasicIcon | undefined {
+export function getPlatformIcon(platform: PlatformString, obj: any): BasicIcon | undefined {
   if (platform === 'ios') {
     return getIOSIcon(obj);
   } else if (platform === 'android') {

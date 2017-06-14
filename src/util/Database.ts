@@ -18,15 +18,15 @@
  * @author Joseph Roque
  * @created 2016-10-09
  * @file Database.ts
- * @providesModule Database
  * @description Provides interactions with the application database.
  */
 'use strict';
 
 // Imports
-import * as ArrayUtils from 'ArrayUtils';
-import Promise from 'promise';
+import * as Arrays from './Arrays';
 import * as store from 'react-native-simple-store';
+
+import { ConfigFile } from './Configuration';
 
 /** Identifier for storing Configuration file versions.  */
 const STORE_CONFIG_VERSIONS = 'configFiles';
@@ -62,7 +62,7 @@ export function saveSchedule(schedule: object): Promise < void > {
 export function getConfigVersions(): Promise < ConfigFile[] > {
   return store.get(STORE_CONFIG_VERSIONS)
       .then((configVersions: ConfigFile[]) => {
-        return ArrayUtils.sortObjectArrayByKeyValues(configVersions, 'name');
+        return Arrays.sortObjectArrayByKeyValues(configVersions, 'name');
       });
 }
 
@@ -75,14 +75,14 @@ export function getConfigVersions(): Promise < ConfigFile[] > {
 export function updateConfigVersions(updates: ConfigFile[]): Promise < void > {
   return store.get(STORE_CONFIG_VERSIONS)
       .then((original: ConfigFile[]) => {
-        let final = updates;
+        let final: object[] = updates;
 
         if (original != undefined) {
-          const sorted = ArrayUtils.sortObjectArrayByKeyValues(original, 'name');
+          const sorted = Arrays.sortObjectArrayByKeyValues(original, 'name');
 
           // Replace any config versions that should be updated
           for (const update of updates) {
-            const index = ArrayUtils.binarySearchObjectArrayByKeyValue(sorted, 'name', update.name);
+            const index = Arrays.binarySearchObjectArrayByKeyValue(sorted, 'name', update.name);
             if (index >= 0) {
               sorted.splice(index, 1);
             }

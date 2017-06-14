@@ -17,8 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-10-09
- * @file ArrayUtils.ts
- * @providesModule ArrayUtils
+ * @file Arrays.ts
  * @description Defines a set of methods to manipulate arrays.
  */
 

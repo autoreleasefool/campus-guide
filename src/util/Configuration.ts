@@ -18,18 +18,57 @@
  * @author Joseph Roque
  * @created 2016-10-08
  * @file Configuration.ts
- * @providesModule Configuration
  * @description Manages the configuration of the application.
  */
 'use strict';
 
 // Imports
-import * as Database from 'Database';
-import * as env from 'env';
-import * as HttpStatus from 'http-status-codes';
-import Promise from 'promise';
+import * as Database from './Database';
 import * as DeviceInfo from 'react-native-device-info';
+import * as env from '../env';
+import * as HttpStatus from 'http-status-codes';
 import * as RNFS from 'react-native-fs';
+
+// Types
+import { Language } from './Translations';
+import { LatLong, Name, TimeFormat } from '../../typings/global';
+import { TransitInfo } from '../../typings/transit';
+import { Semester } from '../../typings/university';
+
+/** Describes configuration state. */
+export interface Options {
+  alwaysSearchAll?: boolean;                // Always search the entire app, never within a view
+  transitInfo?: TransitInfo | undefined;    // High level information about the city transit
+  currentSemester?: number;                 // Current semester for editing, selected by the user
+  firstTime?: boolean;                      // Indicates if it's the user's first time in the app
+  language?: Language | undefined;          // User's preferred language
+  preferredTimeFormat?: TimeFormat;         // Either 12 or 24h time
+  prefersWheelchair?: boolean;              // Only provide wheelchair accessible routes
+  preferByCourse?: boolean;                 // True to default schedule view by course, false for by week
+  scheduleByCourse?: boolean;               // True to sort classes by course, false to sort by week
+  semesters?: ReadonlyArray < Semester >;   // List of semesters currently available
+  universityLocation?: LatLong | undefined; // Latitude and longitude of the university
+  universityName?: Name | undefined;        // Name of the univeristy
+}
+
+/** Describes the progress of an app update. */
+export interface Update {
+  currentDownload?: string | undefined;       // Name of file being downloaded
+  filesDownloaded?: ReadonlyArray < string >; // Array of filenames downloaded
+  intermediateProgress?: number;              // Updated progress of current download
+  showRetry?: boolean;                        // True to show retry button, false to hide
+  showUpdateProgress?: boolean;               // True to show progress bar, false to hide
+  totalFiles?: number;                        // Total number of files to download
+  totalProgress?: number;                     // Total bytes downloaded
+  totalSize?: number;                         // Total number of bytes across all files
+}
+
+/** Describes a configuration file. */
+export interface ConfigFile {
+  name: string;     // Name of the file
+  type: string;     // Type of file: image, json, csv, etc.
+  version: number;  // Version number
+}
 
 /** Description of a file which is being updated. */
 interface FileUpdate {
@@ -134,7 +173,7 @@ async function _requestConfig(): Promise < void > {
 function _initSuccess(): void {
   configInitializing = false;
   for (const promise of availablePromises) {
-    promise.resolve();
+    promise.resolve({});
   }
 }
 
@@ -147,7 +186,7 @@ function _initError(err: any): void {
   console.log('Error while getting configuration', err);
   configInitializing = false;
   for (const promise of availablePromises) {
-    promise.reject();
+    promise.reject(err);
   }
 }
 
@@ -241,7 +280,7 @@ async function _updateConfig(callbacks: UpdateCallbacks): Promise < void > {
   }
 
   // Add filename to download info and invoke start callback
-  const onStart = (filename: string, download: object): void => {
+  const onStart = (filename: string, download: any): void => {
     if (callbacks.onDownloadStart) {
       download.filename = filename;
       callbacks.onDownloadStart(download);
@@ -301,7 +340,7 @@ async function _updateConfig(callbacks: UpdateCallbacks): Promise < void > {
     await Database.updateConfigVersions(configRowUpdates);
 
     configurationInitialized = false;
-    await module.exports.init();
+    await init();
   } catch (e) {
     throw e;
   }
@@ -377,7 +416,7 @@ async function _deleteConfiguration(): Promise < void > {
 export function init(): Promise < void > {
   return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
     if (configurationInitialized) {
-      resolve();
+      resolve({});
     } else {
       availablePromises.push({ resolve, reject });
 

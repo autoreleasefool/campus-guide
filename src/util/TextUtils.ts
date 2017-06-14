@@ -18,7 +18,6 @@
  * @author Joseph Roque
  * @created 2016-10-30
  * @file TextUtils.ts
- * @providesModule TextUtils
  * @description Defines a set of methods to manipulate strings.
  */
 'use strict';
@@ -26,8 +25,11 @@
 /* tslint:disable no-magic-numbers */
 
 // Imports
-import * as Constants from 'Constants';
 import moment from 'moment';
+import * as Constants from '../constants';
+
+import { TimeFormat } from '../../typings/global';
+import { Destination } from '../../typings/university';
 
 /**
  * Converts a time to either a 12h or 24h format. If the time is already in the format specified,
@@ -118,7 +120,7 @@ export function get24HourAdjustedTime(time: string): string {
     hours -= 24;
   }
 
-  return `${leftPad(hours.toString(), 2, 0)}:minutes`;
+  return `${leftPad(hours.toString(), 2, '0')}:${minutes}`;
 }
 
 /**

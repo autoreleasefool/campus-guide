@@ -17,10 +17,18 @@
  *
  * @author Joseph Roque
  * @created 2017-06-06
- * @file NavigationUtils.ts
- * @providesModule NavigationUtils
+ * @file Navigation.ts
  * @description Utility methods for navigation on the university campus.
  */
+
+import { Description, Icon, LatLong } from '../../typings/global';
+import { Building } from '../../typings/university';
+
+/** Information on step by step navigation. */
+export interface Step extends Description {
+  key: string;  // Unique key to identify each step
+  icon?: Icon;  // Icon to represent the step
+}
 
 // Ratio of degrees to radians
 const RAD_RATIO = 180;

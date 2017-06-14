@@ -21,39 +21,17 @@
  * @description Global type definitions for university related data
  */
 
-//-----------------------------------------------------------------------------
-//  Courses
-//-----------------------------------------------------------------------------
-
-/** A semester at the school, with its name, identifier, and other info. */
-interface Semester extends Name {
-  id: string;                         // Unique identifier for the semester
-  courses?: ReadonlyArray < Course >; // Courses the user has defined in the semester
-}
-
-/** A set of lectures. */
-interface Course {
-  code: string;                         // Course code
-  lectures: ReadonlyArray < Lecture >;  // List of lectures that are a part of the course
-}
-
-/** A single lecture of a course. */
-interface Lecture {
-  day: number;                        // Day of the week the course occurs. 0 is Monday
-  endTime: number;                    // Time the course ends at
-  format: number;                     // Index of the course format
-  location: Destination | undefined;  // Location of the lecture
-  startTime: number;                  // Time the course starts at
-}
-
-/** The format of a single lecture in a course. */
-interface LectureFormat extends Name {
-  code: string; // Unique code for the lecture format
-}
+import { Description, Icon, LatLong, Link, LinkSection, MenuSection, Name } from './global';
 
 //-----------------------------------------------------------------------------
 //  Buildings
 //-----------------------------------------------------------------------------
+
+/** A destination for navigation on campus. */
+export interface Destination {
+  shorthand: string;        // Shorthand building code
+  room: string | undefined; // Room number in the building
+}
 
 /** A room on campus, with a name and the facilities it offers represented by an ID. */
 export interface BuildingRoom {
@@ -116,6 +94,36 @@ export type Facility =
   ;
 
 //-----------------------------------------------------------------------------
+//  Courses
+//-----------------------------------------------------------------------------
+
+/** A semester at the school, with its name, identifier, and other info. */
+interface Semester extends Name {
+  id: string;                         // Unique identifier for the semester
+  courses?: ReadonlyArray < Course >; // Courses the user has defined in the semester
+}
+
+/** A set of lectures. */
+interface Course {
+  code: string;                         // Course code
+  lectures: ReadonlyArray < Lecture >;  // List of lectures that are a part of the course
+}
+
+/** A single lecture of a course. */
+interface Lecture {
+  day: number;                        // Day of the week the course occurs. 0 is Monday
+  endTime: number;                    // Time the course ends at
+  format: number;                     // Index of the course format
+  location: Destination | undefined;  // Location of the lecture
+  startTime: number;                  // Time the course starts at
+}
+
+/** The format of a single lecture in a course. */
+interface LectureFormat extends Name {
+  code: string; // Unique code for the lecture format
+}
+
+//-----------------------------------------------------------------------------
 //  Housing
 //-----------------------------------------------------------------------------
 
@@ -144,4 +152,34 @@ interface HousingInfo {
   residences: ReadonlyArray < Residence >;          // List of residences at the university
   resources: LinkSection;                           // List of other resources for finding housing at the university
   sections: ReadonlyArray < MenuSection >;          // List of sections of housing info
+}
+
+//-----------------------------------------------------------------------------
+//  Study spots
+//-----------------------------------------------------------------------------
+
+/** Study spot filter descriptions and whether they are active. */
+export interface StudySpotFilter extends Description, Name {
+  icon: Icon; // Icon to represent the filter
+}
+
+/** Locations to reserve spots at the university. */
+export type StudySpotReservation = Description & Link & Name;
+
+/** Location and properties of a study spot. */
+export interface StudySpot extends Description, Name {
+  image: string;                      // Name of the image of the study spot
+  building: string;                   // Building code
+  room: string | undefined;           // Room number
+  opens: string;                      // Time the spot opens at
+  closes: string;                     // Time the spot closes at
+  filters: ReadonlyArray < string >;  // List of properties to filter on
+}
+
+/** Information about study spots. */
+export interface StudySpotInfo {
+  filters: ReadonlyArray < string >;  // List of filter IDs
+  filterDescriptions: object;         // Filter IDs mapped to their descriptions
+  reservations: LinkSection;          // Links for making reservations of study spots
+  spots: ReadonlyArray < StudySpot >; // Study spots available on campus
 }
