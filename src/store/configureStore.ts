@@ -23,7 +23,7 @@
 'use strict';
 
 // Redux imports
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, Middleware, Reducer } from 'redux';
 import thunk from 'redux-thunk';
 
 // Imports
@@ -37,7 +37,7 @@ import { persist } from './persist';
  * @returns {any} redux store
  */
 export default function configureStore(onComplete: () => void | undefined): any {
-  const store = createStore(reducers, applyMiddleware(thunk, persist));
+  const store = createStore(reducers as Reducer<any>, applyMiddleware(thunk, persist as Middleware));
   if (onComplete != undefined) {
     onComplete();
   }

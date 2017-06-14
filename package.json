@@ -33,6 +33,7 @@
     "@types/jest": "^19.2.4",
     "@types/react": "^15.0.28",
     "@types/react-native": "^0.44.10",
+    "@types/react-redux": "^4.4.43",
     "concurrently": "^3.4.0",
     "empty": "^0.10.1",
     "jest": "^19.0.2",

@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-10-09
- * @file persistence.js
+ * @file persist.ts
  * @description Redux middleware to persist data when updated
  */
 'use strict';
@@ -25,19 +25,18 @@
 // React imports
 import { AsyncStorage } from 'react-native';
 
-// Types
-import { ADD_COURSE, ADD_SEMESTER, REMOVE_COURSE, UPDATE_CONFIGURATION } from 'actionTypes';
-
 // Imports
-import { saveSchedule } from 'Database';
-import * as Preferences from 'Preferences';
+import { saveSchedule } from '../util/Database';
+import * as Preferences from '../util/Preferences';
 
-export const persist = ({ getState }: any): void => (next: any): void => (action: any): void => {
+import * as Actions from '../../typings/actions';
+
+export const persist = ({ getState }: any): any => (next: any): any => (action: any): any => {
   next(action);
   const store = getState();
 
   switch (action.type) {
-    case UPDATE_CONFIGURATION:
+    case Actions.Configuration.ConfigUpdate:
       for (const option in action.options) {
         if (action.options.hasOwnProperty(option)) {
           switch (option) {
@@ -62,9 +61,9 @@ export const persist = ({ getState }: any): void => (next: any): void => (action
         }
       }
       break;
-    case ADD_SEMESTER:
-    case ADD_COURSE:
-    case REMOVE_COURSE:
+    case Actions.Schedule.AddCourse:
+    case Actions.Schedule.AddSemester:
+    case Actions.Schedule.RemoveCourse:
       saveSchedule(store.schedule.semesters);
       break;
     default:
