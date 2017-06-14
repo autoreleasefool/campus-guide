@@ -22,13 +22,12 @@
  */
 'use strict';
 
-// Types
-import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH, SWITCH_TAB } from 'actionTypes';
-
-// Import default translations
+// Imports
+import * as Actions from '../../typings/actions';
+import { Name, TabSet } from '../../typings/global';
 const CoreTranslations = require('../../assets/json/CoreTranslations');
 
-// Describes the header state.
+/** Header reducer state. */
 interface State {
   title: Name | string;   // Title for the current screen
   tabTitles: TabSet;      // Title last set in the tab
@@ -38,13 +37,13 @@ interface State {
   tabShowSearch: TabSet;  // Whether the tab should show a search button
 }
 
-// Default title to use for the header
+/** Default title to use for the header. */
 const defaultTitle = {
   name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.app_name : 'Campus Guide',
   name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.app_name : 'Guide de campus',
 };
 
-// Initial header state.
+/** Initial header state. */
 const initialState: State = {
   showBack: false,
   showSearch: true,
@@ -94,16 +93,16 @@ const initialState: State = {
  * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken
  */
-function header(state: State = initialState, action: any): State {
+export function header(state: State = initialState, action: any): State {
   switch (action.type) {
-    case SWITCH_TAB:
+    case Actions.App.SwitchTab:
       return {
         ...state,
         showBack: state.tabShowBack[action.tab],
         showSearch: state.tabShowSearch[action.tab],
         title: state.tabTitles[action.tab],
       };
-    case SET_HEADER_TITLE: {
+    case Actions.Header.SetTitle: {
       const tabTitles = { ...state.tabTitles };
 
       if (action.tab != undefined) {
@@ -116,7 +115,7 @@ function header(state: State = initialState, action: any): State {
         title: (action.tab && !action.title) ? tabTitles[action.tab] : action.title || initialState.title,
       };
     }
-    case SHOW_BACK: {
+    case Actions.Header.ShowBack: {
       const tabShowBack = { ...state.tabShowBack };
 
       if (action.tab != undefined) {
@@ -129,7 +128,7 @@ function header(state: State = initialState, action: any): State {
         tabShowBack,
       };
     }
-    case SHOW_SEARCH: {
+    case Actions.Header.ShowSearch: {
       const tabShowSearch = { ...state.tabShowSearch };
 
       if (action.tab != undefined) {
@@ -146,5 +145,3 @@ function header(state: State = initialState, action: any): State {
       return state;
   }
 }
-
-module.exports = header;

@@ -23,15 +23,15 @@
 'use strict';
 
 // Types
-import { ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SEARCH, SET_STUDY_FILTERS } from 'actionTypes';
+import * as Actions from '../../typings/actions';
 
-// Describes a search.
+/** Describes a search. */
 interface Search {
-  studyFilters: Set < string >;  // Filters to search study rooms by
-  terms: string | undefined;                 // Search terms to filter results by
+  studyFilters: Set < string >; // Filters to search study rooms by
+  terms: string | undefined;    // Search terms to filter results by
 }
 
-// Initial search state.
+/** Initial search state. */
 const initialState: Search = {
   studyFilters: new Set(),
   terms: undefined,
@@ -44,14 +44,14 @@ const initialState: Search = {
  * @param {any}   action the action being taken
  * @returns {Search} an updated state based on the previous state and the action taken
  */
-function search(state: Search = initialState, action: any): Search {
+export default function search(state: Search = initialState, action: any): Search {
   switch (action.type) {
-    case SEARCH:
+    case Actions.Search.Search:
       return {
         ...state,
         terms: action.terms,
       };
-    case ACTIVATE_STUDY_FILTER: {
+    case Actions.Search.ActivateStudyFilter: {
       // Copy the current list of filters, or create a new one
       const studyFilters = new Set(state.studyFilters);
       studyFilters.add(action.filter);
@@ -61,7 +61,7 @@ function search(state: Search = initialState, action: any): Search {
         studyFilters,
       };
     }
-    case DEACTIVATE_STUDY_FILTER: {
+    case Actions.Search.DeactivateStudyFilter: {
       // Copy the current list of filters, or create a new one
       const studyFilters = new Set(state.studyFilters);
       studyFilters.delete(action.filter);
@@ -71,7 +71,7 @@ function search(state: Search = initialState, action: any): Search {
         studyFilters,
       };
     }
-    case SET_STUDY_FILTERS: {
+    case Actions.Search.SetStudyFilters: {
       const studyFilters = new Set();
       action.filters.forEach((filter: string) => {
         studyFilters.add(filter);
@@ -86,5 +86,3 @@ function search(state: Search = initialState, action: any): Search {
       return state;
   }
 }
-
-module.exports = search;

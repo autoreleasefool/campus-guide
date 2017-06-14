@@ -22,17 +22,18 @@
  */
 'use strict';
 
-// Types
-import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
+// Imports
+import * as Actions from '../../typings/actions';
+import { Building, Destination } from '../../typings/university';
 
-// Describes the directions state
+/** Directions reducer state. */
 interface State {
   building: Building | undefined;         // The building selected by the user to navigate to, or view
   destination: Destination | undefined;   // The building and room the user is navigating to
   startingPoint: Destination | undefined; // The building and room the user is starting from
 }
 
-// Initial directions state
+/** Initial directions state. */
 const initialState: State = {
   building: undefined,
   destination: undefined,
@@ -46,19 +47,19 @@ const initialState: State = {
  * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken
  */
-function directions(state: State = initialState, action: any): State {
+export default function directions(state: State = initialState, action: any): State {
   switch (action.type) {
-    case SET_DESTINATION:
+    case Actions.Directions.SetDestination:
       return {
         ...state,
         destination: action.destination,
       };
-    case SET_STARTING_POINT:
+    case Actions.Directions.SetStartingPoint:
       return {
         ...state,
         startingPoint: action.startingPoint,
       };
-    case VIEW_BUILDING:
+    case Actions.Directions.ViewBuilding:
       return {
         ...state,
         building: action.building,
@@ -67,5 +68,3 @@ function directions(state: State = initialState, action: any): State {
       return state;
   }
 }
-
-module.exports = directions;

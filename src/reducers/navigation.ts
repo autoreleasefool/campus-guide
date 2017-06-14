@@ -22,20 +22,12 @@
  */
 'use strict';
 
-// Types
-import {
-  NAVIGATE_BACK,
-  SET_CAN_BACK,
-  SWITCH_DISCOVER_LINK,
-  SWITCH_DISCOVER_TRANSIT_CAMPUS,
-  SWITCH_DISCOVER_VIEW,
-  SWITCH_FIND_VIEW,
-  SWITCH_HOUSING_RESIDENCE,
-  SWITCH_HOUSING_VIEW,
-  SWITCH_TAB,
-} from 'actionTypes';
+// Imports
+import * as Actions from '../../typings/actions';
+import { MenuSection, Tab } from '../../typings/global';
+import { Residence } from '../../typings/university';
 
-// Describes the navigation state.
+/** Navigation reducer state. */
 interface State {
   backNavigations: number;              // Count of the times the user has navigated back in the app
   canBack: object;                      // Indicates which subsections of the app can navigate backwards
@@ -50,7 +42,7 @@ interface State {
   residence: Residence | undefined;     // Selected residence to display info for
 }
 
-// Initial navigation state.
+/** Initial navigation state. */
 const initialState: State = {
   backNavigations: 0,
   campus: undefined,
@@ -70,14 +62,14 @@ const initialState: State = {
  * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken
  */
-function navigation(state: State = initialState, action: any): State {
+export default function navigation(state: State = initialState, action: any): State {
   switch (action.type) {
-    case NAVIGATE_BACK:
+    case Actions.Navigation.NavigateBack:
       return {
         ...state,
         backNavigations: state.backNavigations + 1,
       };
-    case SET_CAN_BACK: {
+    case Actions.Navigation.CanBack: {
       const can = {
         ...state.canBack,
       };
@@ -88,37 +80,37 @@ function navigation(state: State = initialState, action: any): State {
         canBack: can,
       };
     }
-    case SWITCH_TAB:
+    case Actions.App.SwitchTab:
       return {
         ...state,
         tab: action.tab,
       };
-    case SWITCH_FIND_VIEW:
+    case Actions.App.SwitchFindView:
       return {
         ...state,
         findView: action.view,
       };
-    case SWITCH_DISCOVER_VIEW:
+    case Actions.App.SwitchDiscoverView:
       return {
         ...state,
         discoverView: action.view,
       };
-    case SWITCH_HOUSING_VIEW:
+    case Actions.App.SwitchHousingView:
       return {
         ...state,
         housingView: action.view,
       };
-    case SWITCH_DISCOVER_LINK:
+    case Actions.App.SwitchDiscoverLink:
       return {
         ...state,
         linkId: action.linkId,
       };
-    case SWITCH_DISCOVER_TRANSIT_CAMPUS:
+    case Actions.App.SwitchDiscoverTransitCampus:
       return {
         ...state,
         campus: action.campus,
       };
-    case SWITCH_HOUSING_RESIDENCE:
+    case Actions.App.SwitchHousingResidence:
       return {
         ...state,
         residence: action.residence,
@@ -127,5 +119,3 @@ function navigation(state: State = initialState, action: any): State {
       return state;
   }
 }
-
-module.exports = navigation;

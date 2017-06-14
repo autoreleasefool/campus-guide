@@ -22,18 +22,16 @@
  */
 'use strict';
 
-// Types
-import { ADD_COURSE, ADD_SEMESTER, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
-
 // Imports
-import * as ArrayUtils from 'ArrayUtils';
+import * as Actions from '../../typings/actions';
+import * as Arrays from '../util/Arrays';
 
-// Describes the schedule state.
+/** Schedule reducer state. */
 interface State {
   semesters: object; // The user's defined schedule
 }
 
-// Initial schedule state.
+/** Initial schedule state. */
 const initialState: State = {
   semesters: {},
 };
@@ -45,14 +43,14 @@ const initialState: State = {
  * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken
  */
-function schedule(state: State = initialState, action: any): State {
+export default function schedule(state: State = initialState, action: any): State {
   switch (action.type) {
-    case LOAD_SCHEDULE:
+    case Actions.Schedule.Load:
       return {
         ...state,
         semesters: action.schedule,
       };
-    case ADD_SEMESTER: {
+    case Actions.Schedule.AddSemester: {
       const semesters = JSON.parse(JSON.stringify(state.semesters));
       semesters[action.semester.id] = action.semester;
       semesters[action.semester.id].courses = [];
@@ -62,7 +60,7 @@ function schedule(state: State = initialState, action: any): State {
         semesters,
       };
     }
-    case ADD_COURSE: {
+    case Actions.Schedule.AddCourse: {
       if (!(action.semester in state.semesters)) {
         return state;
       }
@@ -71,7 +69,7 @@ function schedule(state: State = initialState, action: any): State {
       const courses = semesters[action.semester].courses;
 
       // Find the course if it already exists
-      const position = ArrayUtils.binarySearchObjectArrayByKeyValue(courses, 'code', action.course.code);
+      const position = Arrays.binarySearchObjectArrayByKeyValue(courses, 'code', action.course.code);
 
       if (position >= 0) {
         // Overwrite the course if it exists
@@ -79,7 +77,7 @@ function schedule(state: State = initialState, action: any): State {
       } else {
         // Add the course to the list and sort if it does not exist
         courses.push(action.course);
-        ArrayUtils.sortObjectArrayByKeyValues(courses, 'code');
+        Arrays.sortObjectArrayByKeyValues(courses, 'code');
       }
 
       return {
@@ -87,7 +85,7 @@ function schedule(state: State = initialState, action: any): State {
         semesters,
       };
     }
-    case REMOVE_COURSE: {
+    case Actions.Schedule.RemoveCourse: {
       if (!(action.semester in state.semesters)) {
         return state;
       }
@@ -96,7 +94,7 @@ function schedule(state: State = initialState, action: any): State {
       const courses = semesters[action.semester].courses;
 
       // Find the course if it exists and delete it
-      const position = ArrayUtils.binarySearchObjectArrayByKeyValue(courses, 'code', action.courseCode);
+      const position = Arrays.binarySearchObjectArrayByKeyValue(courses, 'code', action.courseCode);
       if (position >= 0) {
         courses.splice(position, 1);
       }
@@ -110,5 +108,3 @@ function schedule(state: State = initialState, action: any): State {
       return state;
   }
 }
-
-module.exports = schedule;

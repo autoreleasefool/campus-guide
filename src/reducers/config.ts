@@ -22,15 +22,17 @@
  */
 'use strict';
 
-// Types
-import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
+// Imports
+import * as Actions from '../../typings/actions';
+import { Options, ProgressUpdate } from '../util/Configuration';
 
+/** Config reducer state. */
 interface State {
-  options: ConfigurationOptions;
-  update: Update;
+  options: Options;
+  update: ProgressUpdate;
 }
 
-// Initial update state.
+/** Initial update state. */
 const initialState: State = {
   options: {
     alwaysSearchAll: false,
@@ -64,14 +66,14 @@ const initialState: State = {
  * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken
  */
-function config(state: State = initialState, action: any): State {
+export default function config(state: State = initialState, action: any): State {
   switch (action.type) {
-    case UPDATE_CONFIGURATION:
+    case Actions.Configuration.ConfigUpdate:
       return {
         options: { ...state.options, ...action.options },
         update: { ...state.update },
       };
-    case UPDATE_PROGRESS:
+    case Actions.Configuration.ProgressUpdate:
       return {
         options: { ...state.options },
         update: { ...state.update, ...action.update },
@@ -80,5 +82,3 @@ function config(state: State = initialState, action: any): State {
       return state;
   }
 }
-
-module.exports = config;

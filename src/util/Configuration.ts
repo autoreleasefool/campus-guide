@@ -52,7 +52,7 @@ export interface Options {
 }
 
 /** Describes the progress of an app update. */
-export interface Update {
+export interface ProgressUpdate {
   currentDownload?: string | undefined;       // Name of file being downloaded
   filesDownloaded?: ReadonlyArray < string >; // Array of filenames downloaded
   intermediateProgress?: number;              // Updated progress of current download
