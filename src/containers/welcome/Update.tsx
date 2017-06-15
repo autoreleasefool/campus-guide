@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-09
- * @file Update.js
+ * @file Update.tsx
  * @description Provides progress for app updates
- *
- * @flow
  */
 'use strict';
 
@@ -40,18 +38,35 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Language, TransitInfo, Update } from 'types';
+import * as actions from '../../actions';
 
 // Imports
 import emptyFunction from 'empty/function';
 import LinearGradient from 'react-native-linear-gradient';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
-import * as Translations from 'Translations';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as Translations from '../../util/Translations';
+const CoreTranslations = require('../../../assets/json/CoreTranslations');
+
+// Types
+import { Language } from '../../util/Translations';
+import { TransitInfo } from '../../../typings/transit';
+
+interface Props extends Configuration.ProgressUpdate {
+  language: Language;                             // The current language, selected by the user
+  navigator: any;                                 // Parent navigator
+  onDownloadComplete(filesDownloaded: string[], totalProgress: number, fileSize: number): void;
+                                                  // Updates state when a download is finished
+  onDownloadProgress(bytesWritten: number): void; // Updates state when a download reports intermediate progress
+  onDownloadStart(fileName: string): void;        // Updates state when a download begins
+  onUpdateStart(totalFiles: number, totalSize: number): void;
+                                                  // Updates state when the app update begins
+  setTransit(transitInfo: TransitInfo): void;     // Updates the transit info object in the config
+  setUniversity(university: object): void;        // Updates the university object in the config
+  updateFailed(): void;                           // Hides the progress bar to show a retry button
+}
+
+interface State {}
 
 // Height of te screen
 const screenHeight = Dimensions.get('window').height;
@@ -64,39 +79,7 @@ const ProgressBar = (Platform.OS === 'android')
     ? require('ProgressBarAndroid')
     : require('ProgressViewIOS');
 
-class UpdateScreen extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Update & {
-    language: Language,                                 // The current language, selected by the user
-    navigator: ReactClass < any >,                      // Parent navigator
-    onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => void,
-                                                        // Updates state when a download is finished
-    onDownloadProgress: (bytesWritten: number) => void, // Updates state when a download reports intermediate progress
-    onDownloadStart: (fileName: string) => void,        // Updates state when a download begins
-    onUpdateStart: (totalFiles: number, totalSize: number) => void,
-                                                        // Updates state when the app update begins
-    setTransit: (transitInfo: TransitInfo) => void,     // Updates the transit info object in the config
-    setUniversity: (university: Object) => void,        // Updates the university object in the config
-    updateFailed: () => void,                           // Hides the progress bar to show a retry button
-  };
-
-  /**
-   * Constructor.
-   *
-   * @param {props} props component props
-   */
-  constructor(props) {
-    super(props);
-
-    // Explicitly binding 'this' to all methods that need it
-    (this:any)._beginUpdate = this._beginUpdate.bind(this);
-    (this:any)._checkConnection = this._checkConnection.bind(this);
-    (this:any)._notifyConnectionFailed = this._notifyConnectionFailed.bind(this);
-    (this:any)._returnToMain = this._returnToMain.bind(this);
-  }
+class UpdateScreen extends React.PureComponent<Props, State> {
 
   /**
    * Registers a listener for network connectivity.
@@ -119,30 +102,29 @@ class UpdateScreen extends React.PureComponent {
    * Checks to see if a new configuration update is available and, if so, begins downloading.
    */
   _beginUpdate(): void {
-    const self: UpdateScreen = this;
     const callbacks = {
-      onUpdateStart: this._onUpdateStart.bind(this),
-      onDownloadStart: this._onDownloadStart.bind(this),
-      onDownloadProgress: this._onDownloadProgress.bind(this),
-      onDownloadComplete: this._onDownloadComplete.bind(this),
+      onDownloadComplete: (download: object): void => this._onDownloadComplete(download),
+      onDownloadProgress: (progress: object): void => this._onDownloadProgress(progress),
+      onDownloadStart: (download: object): void => this._onDownloadStart(download),
+      onUpdateStart: (totalSize: number, totalFiles: number): void => this._onUpdateStart(totalSize, totalFiles),
     };
 
     Configuration.isConfigUpdateAvailable()
         .then((available: boolean) => {
           if (available) {
             Configuration.updateConfig(callbacks)
-                .then(self._returnToMain)
+                .then(() => this._returnToMain())
                 .catch((err: any) => {
                   console.error('Failed to update configuration.', err);
-                  self._returnToMain();
+                  this._returnToMain();
                 });
           } else {
-            self._returnToMain();
+            this._returnToMain();
           }
         })
         .catch((err: any) => {
           console.log('Failed configuration update check.', err);
-          self._notifyServerFailed();
+          this._notifyServerFailed();
         });
   }
 
@@ -150,17 +132,17 @@ class UpdateScreen extends React.PureComponent {
    * Checks for an Internet connection and, if one is available, starts the update.
    */
   _checkConnection(): void {
-    const self: UpdateScreen = this;
-    setTimeout(() => {
-      NetInfo.isConnected.fetch()
-          .then((isConnected: boolean) => {
-            if (isConnected || __DEV__) {
-              self._beginUpdate();
-            } else {
-              self._notifyConnectionFailed();
-            }
-          })
-          .catch(self._notifyConnectionFailed);
+    setTimeout(async() => {
+      try {
+        const isConnected = await NetInfo.isConnected.fetch();
+        if (isConnected || __DEV__) {
+          this._beginUpdate();
+        } else {
+          this._notifyConnectionFailed(undefined);
+        }
+      } catch (err) {
+        this._notifyConnectionFailed(err);
+      }
     }, CONNECTION_CHECK_TIMEOUT);
   }
 
@@ -170,7 +152,7 @@ class UpdateScreen extends React.PureComponent {
    * @returns {number} a value from 0 to 1
    */
   _getProgress(): number {
-    if (this.props.totalSize != null && this.props.totalSize > 0) {
+    if (this.props.totalSize != undefined && this.props.totalSize > 0) {
       return (this.props.totalProgress + this.props.intermediateProgress) / this.props.totalSize;
     }
 
@@ -190,14 +172,14 @@ class UpdateScreen extends React.PureComponent {
             CoreTranslations[language].server_unavailable_config_available,
             [
               {
+                onPress: (): void => this._checkConnection(),
                 text: CoreTranslations[language].retry,
-                onPress: this._checkConnection,
               },
               {
+                onPress: (): void => this.props.navigator.push({ id: 'main' }),
                 text: CoreTranslations[language].later,
-                onPress: () => this.props.navigator.push({ id: 'main' }),
               },
-            ],
+            ]
           );
         })
         .catch(() => {
@@ -206,15 +188,15 @@ class UpdateScreen extends React.PureComponent {
             CoreTranslations[language].server_unavailable_config_unavailable,
             [
               {
+                onPress: (): void => this._checkConnection(),
                 text: CoreTranslations[language].retry,
-                onPress: this._checkConnection,
               },
               {
-                text: CoreTranslations[language].cancel,
-                onPress: this.props.updateFailed,
+                onPress: (): void => this.props.updateFailed(),
                 style: 'cancel',
+                text: CoreTranslations[language].cancel,
               },
-            ],
+            ]
           );
         });
   }
@@ -222,7 +204,12 @@ class UpdateScreen extends React.PureComponent {
   /**
    * Displays a prompt to user indicating an internet connection could not be reached and their options.
    */
-  _notifyConnectionFailed(): void {
+  _notifyConnectionFailed(err?: any): void {
+    // TODO: use error and act according to the actual issue
+    if (err != undefined) {
+      console.log(err);
+    }
+
     const language = this.props.language;
 
     Configuration.init()
@@ -232,14 +219,14 @@ class UpdateScreen extends React.PureComponent {
             CoreTranslations[language].no_internet_config_available,
             [
               {
+                onPress: (): void => this._checkConnection(),
                 text: CoreTranslations[language].retry,
-                onPress: this._checkConnection,
               },
               {
+                onPress: (): void => this.props.navigator.push({ id: 'main' }),
                 text: CoreTranslations[language].later,
-                onPress: () => this.props.navigator.push({ id: 'main' }),
               },
-            ],
+            ]
           );
         })
         .catch(() => {
@@ -248,15 +235,15 @@ class UpdateScreen extends React.PureComponent {
             CoreTranslations[language].no_internet_config_unavailable,
             [
               {
+                onPress: (): void => this._checkConnection(),
                 text: CoreTranslations[language].retry,
-                onPress: this._checkConnection,
               },
               {
-                text: CoreTranslations[language].cancel,
-                onPress: this.props.updateFailed,
+                onPress: (): void => this.props.updateFailed(),
                 style: 'cancel',
+                text: CoreTranslations[language].cancel,
               },
-            ],
+            ]
           );
         });
   }
@@ -267,8 +254,9 @@ class UpdateScreen extends React.PureComponent {
   _returnToMain(): void {
     Configuration.init()
         .then(() => Configuration.getConfig('/university.json'))
-        .then((university: Object) => {
+        .then((university: object) => {
           this.props.setUniversity(university);
+
           return Translations.loadTranslations(this.props.language);
         })
         .then(() => Configuration.getConfig('/transit.json'))
@@ -279,12 +267,12 @@ class UpdateScreen extends React.PureComponent {
   /**
    * Handles the results of a successful download.
    *
-   * @param {Object} download results of the download
+   * @param {any} download results of the download
    */
-  _onDownloadComplete(download: Object): void {
+  _onDownloadComplete(download: any): void {
     const totalProgress = this.props.totalProgress;
-    if (this.props.filesDownloaded != null && totalProgress != null) {
-      const filesDownloaded: Array < string > = this.props.filesDownloaded.slice(0);
+    if (this.props.filesDownloaded != undefined && totalProgress != undefined) {
+      const filesDownloaded = this.props.filesDownloaded.slice(0);
       filesDownloaded.splice(0, 0, download.filename);
       this.props.onDownloadComplete(filesDownloaded, totalProgress, download.bytesWritten);
     } else {
@@ -295,18 +283,18 @@ class UpdateScreen extends React.PureComponent {
   /**
    * Handles event for when progress update is received.
    *
-   * @param {Object} progress details about the progress of the download currently taking place
+   * @param {any} progress details about the progress of the download currently taking place
    */
-  _onDownloadProgress(progress: Object): void {
+  _onDownloadProgress(progress: any): void {
     this.props.onDownloadProgress(progress.bytesWritten);
   }
 
   /**
    * Provides details about each file being downloaded.
    *
-   * @param {Object} download details about the download
+   * @param {any} download details about the download
    */
-  _onDownloadStart(download: Object): void {
+  _onDownloadStart(download: any): void {
     this.props.onDownloadStart(download.filename);
   }
 
@@ -323,15 +311,15 @@ class UpdateScreen extends React.PureComponent {
   /**
    * Renders a set of messages regarding update progress so far.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element|undefined} the hierarchy of views to render
    */
-  _renderStatusMessages(): ReactElement < any > {
+  _renderStatusMessages(): JSX.Element | undefined {
     const language = this.props.language;
-    const filesDownloaded = (this.props.filesDownloaded == null)
-      ? null
+    const filesDownloaded = (this.props.filesDownloaded == undefined)
+      ? undefined
       : (
         <View>
-          {this.props.filesDownloaded.map((filename, index) => (
+          {this.props.filesDownloaded.map((filename: string, index: number) => (
             <View
                 key={index}
                 style={_styles.downloadingContainer}>
@@ -356,9 +344,9 @@ class UpdateScreen extends React.PureComponent {
   /**
    * Renders a progress bar to indicate app updating
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     const language = this.props.language;
 
     // Get background color for screen, and color for progress bar
@@ -373,8 +361,8 @@ class UpdateScreen extends React.PureComponent {
 
     if (this.props.showRetry) {
       return (
-        <View style={[ _styles.buttonContainer, { backgroundColor: backgroundColor }]}>
-          <TouchableOpacity onPress={this._checkConnection}>
+        <View style={[ _styles.buttonContainer, { backgroundColor }]}>
+          <TouchableOpacity onPress={(): void => this._checkConnection()}>
             <View style={_styles.retryContainer}>
               <Text style={_styles.retryText}>{CoreTranslations[language].retry_update}</Text>
             </View>
@@ -399,7 +387,7 @@ class UpdateScreen extends React.PureComponent {
           );
 
       return (
-        <View style={[ _styles.container, { backgroundColor: backgroundColor }]}>
+        <View style={[ _styles.container, { backgroundColor }]}>
           <View style={_styles.container}>
             <View style={_styles.container} />
             {progress}
@@ -427,51 +415,51 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  retryText: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
-    marginTop: Constants.Sizes.Margins.Regular,
-    marginBottom: Constants.Sizes.Margins.Regular,
-    fontSize: Constants.Sizes.Text.Body,
+  downloadedText: {
     color: Constants.Colors.primaryWhiteText,
-  },
-  retryContainer: {
-    alignSelf: 'center',
-    backgroundColor: Constants.Colors.darkTransparentBackground,
-  },
-  progress: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
+    fontSize: Constants.Sizes.Text.Caption,
   },
   downloadingContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  downloadedText: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Caption,
-  },
   fileText: {
     color: Constants.Colors.lightGrey,
   },
-  scrollView: {
-    alignItems: 'center',
-    marginTop: Constants.Sizes.Margins.Regular,
-    flex: 3,
-  },
   linearGradient: {
-    position: 'absolute',
     left: 0,
+    position: 'absolute',
     right: 0,
 
-    /* eslint-disable no-magic-numbers */
+    /* tslint:disable no-magic-numbers object-literal-sort-keys */
     top: screenHeight / 4 * 3 - 30,
     bottom: screenHeight / 4 - 10,
-    /* eslint-enable no-magic-numbers */
+    /* tslint:enable no-magic-numbers object-literal-sort-keys */
+  },
+  progress: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+  },
+  retryContainer: {
+    alignSelf: 'center',
+    backgroundColor: Constants.Colors.darkTransparentBackground,
+  },
+  retryText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    marginBottom: Constants.Sizes.Margins.Regular,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Regular,
+  },
+  scrollView: {
+    alignItems: 'center',
+    flex: 3,
+    marginTop: Constants.Sizes.Margins.Regular,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     filesDownloaded: store.config.update.filesDownloaded,
     intermediateProgress: store.config.update.intermediateProgress,
@@ -483,9 +471,37 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    setUniversity: (university: Object) => dispatch(actions.updateConfiguration({
+    onDownloadComplete: (filesDownloaded: string[], totalProgress: number, fileSize: number): void => {
+      dispatch(actions.updateProgress({
+        currentDownload: undefined,
+        filesDownloaded,
+        intermediateProgress: 0,
+        totalProgress: totalProgress + fileSize,
+      }));
+    },
+    onDownloadProgress: (bytesWritten: number): void => {
+      dispatch(actions.updateProgress({ intermediateProgress: bytesWritten }));
+    },
+    onDownloadStart: (fileName: string): void => dispatch(actions.updateProgress({ currentDownload: fileName })),
+    onUpdateStart: (totalFiles: number, totalSize: number): void => {
+      dispatch(actions.updateProgress({
+        showUpdateProgress: true,
+        totalFiles,
+        totalProgress: 0,
+        totalSize,
+      }));
+    },
+    setTransit: (transitInfo: TransitInfo): void => dispatch(actions.updateConfiguration({
+      transitInfo: {
+        link_en: Translations.getEnglishLink(transitInfo) || '',
+        link_fr: Translations.getFrenchLink(transitInfo) || '',
+        name_en: Translations.getEnglishName(transitInfo) || '',
+        name_fr: Translations.getFrenchName(transitInfo) || '',
+      },
+    })),
+    setUniversity: (university: any): void => dispatch(actions.updateConfiguration({
       semesters: university.semesters,
       universityLocation: { latitude: university.lat, longitude: university.long },
       universityName: {
@@ -493,36 +509,8 @@ const mapDispatchToProps = (dispatch) => {
         name_fr: Translations.getFrenchName(university) || '',
       },
     })),
-    setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
-      transitInfo: {
-        name_en: Translations.getEnglishName(transitInfo) || '',
-        name_fr: Translations.getFrenchName(transitInfo) || '',
-        link_en: Translations.getEnglishLink(transitInfo) || '',
-        link_fr: Translations.getFrenchLink(transitInfo) || '',
-      },
-    })),
-    updateFailed: () => dispatch(actions.updateProgress({ showUpdateProgress: false, showRetry: true })),
-    onDownloadComplete: (filesDownloaded: Array < string >, totalProgress: number, fileSize: number) => {
-      dispatch(actions.updateProgress({
-        currentDownload: null,
-        filesDownloaded: filesDownloaded,
-        intermediateProgress: 0,
-        totalProgress: totalProgress + fileSize,
-      }));
-    },
-    onDownloadProgress: (bytesWritten: number) => {
-      dispatch(actions.updateProgress({ intermediateProgress: bytesWritten }));
-    },
-    onDownloadStart: (fileName: string) => dispatch(actions.updateProgress({ currentDownload: fileName })),
-    onUpdateStart: (totalFiles: number, totalSize: number) => {
-      dispatch(actions.updateProgress({
-        showUpdateProgress: true,
-        totalProgress: 0,
-        totalFiles,
-        totalSize,
-      }));
-    },
+    updateFailed: (): void => dispatch(actions.updateProgress({ showUpdateProgress: false, showRetry: true })),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateScreen) as any;

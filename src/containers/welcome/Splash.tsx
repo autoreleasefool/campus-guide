@@ -17,10 +17,9 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file Splash.js
- * @description Initial entry view for the application. Allows the user to select their preferred language on first run.
- *
- * @flow
+ * @file Splash.tsx
+ * @description Initial entry view for the application. Allows the user to select their
+ *              preferred language on first run.
  */
 'use strict';
 
@@ -36,51 +35,45 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Language, TransitInfo } from 'types';
+import * as actions from '../../actions';
 
 // Imports
-import Promise from 'promise';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as CoreTranslations from '../../../assets/json/CoreTranslations.json';
-import * as Database from 'Database';
-import * as Preferences from 'Preferences';
-import * as Translations from 'Translations';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as Database from '../../util/Database';
+import * as Preferences from '../../util/Preferences';
+import * as Translations from '../../util/Translations';
+const CoreTranslations = require('../../../assets/json/CoreTranslations');
+
+// Types
+import { Language } from '../../util/Translations';
+import { TransitInfo } from '../../../typings/transit';
+
+interface Props {
+  language: Language;                           // Language currently selected by user
+  navigator: any;                               // Parent navigator
+  onLanguageSelect(language: Language): void;   // Changes the user's selected language
+  setSchedule(schedule: object): void;          // Updates the user's schedule
+  setTransit(transitInfo: TransitInfo): void;   // Updates the transit info object in the config
+  setUniversity(university: object): void;      // Updates the university object in the config
+  updatePreferences(preferences: any[]): void;  // Updates the user's preferences
+}
+
+interface State {
+  loading: boolean; // Indicates if the view is still loading
+}
 
 // Set to true to force splash screen
 const alwaysShowSplash = false;
 
-class Splash extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: {
-    language: Language,                                       // Language currently selected by user
-    navigator: ReactClass < any >,                            // Parent navigator
-    onLanguageSelect: (language: Language) => void,           // Changes the user's selected language
-    setSchedule: (schedule: Object) => void,                  // Updates the user's schedule
-    setTransit: (transitInfo: TransitInfo) => void,           // Updates the transit info object in the config
-    setUniversity: (university: Object) => void,              // Updates the university object in the config
-    updatePreferences: (preferences: Array < any >) => void,  // Updates the user's preferences
-  };
-
-  /**
-   * Current state of the component.
-   */
-  state: {
-    loading: boolean, // Indicates if the view is still loading
-  };
+class Splash extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
    *
-   * @param {props} props component props
+   * @param {Props} props component props
    */
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       loading: true,
@@ -100,18 +93,19 @@ class Splash extends React.PureComponent {
   _checkConfiguration(): void {
     Configuration.init()
         .then(() => Configuration.getConfig('/university.json'))
-        .then((university: Object) => {
+        .then((university: object) => {
           this.props.setUniversity(university);
+
           return Translations.loadTranslations(this.props.language);
         })
         .then(() => Configuration.getConfig('/transit.json'))
         .then((transitInfo: TransitInfo) => {
           this.props.setTransit(transitInfo);
-          this.refs.Navigator.push({ id: 'main' });
+          (this.refs.Navigator as any).push({ id: 'main' });
         })
         .catch((err: any) => {
           console.log('Assuming configuration is not available.', err);
-          this.props.navigator.push({ id: 'update' });
+          (this.refs.Navigator as any).push({ id: 'update' });
         });
   }
 
@@ -129,10 +123,10 @@ class Splash extends React.PureComponent {
       Preferences.getPreferScheduleByCourse(AsyncStorage),
       Database.getSchedule(),
     ])
-        .then((results: Array < any >) => {
+        .then((results: any[]) => {
           this.props.setSchedule(results[SCHEDULE] || {});
           this.props.updatePreferences(results);
-          if (results[0] == null || (__DEV__ && alwaysShowSplash)) {
+          if (results[0] == undefined || (__DEV__ && alwaysShowSplash)) {
             // Language has not been selected
             this.setState({
               loading: false,
@@ -158,9 +152,9 @@ class Splash extends React.PureComponent {
   /**
    * Displays two buttons to allow the user to select French or English.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     if (this.state.loading) {
       return (
         <View style={_styles.container} />
@@ -209,30 +203,26 @@ class Splash extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
+    backgroundColor: Constants.Colors.primaryBackground,
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: Constants.Colors.primaryBackground,
   },
   englishContainer: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   frenchContainer: {
-    flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
+    flex: 1,
   },
   languageContainer: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
     alignItems: 'center',
+    bottom: 0,
     justifyContent: 'center',
-  },
-  languageTitle: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Title,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   languageSubtitle: {
     color: Constants.Colors.primaryWhiteText,
@@ -241,44 +231,49 @@ const _styles = StyleSheet.create({
   languageTextContainer: {
     padding: 5,
   },
+  languageTitle: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Title,
+  },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     language: store.config.options.language,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onLanguageSelect: (language: Language) => dispatch(actions.updateConfiguration({ language, firstTime: true })),
-    setSchedule: (schedule: Object) => dispatch(actions.loadSchedule(schedule)),
-    setUniversity: (university: Object) => dispatch(actions.updateConfiguration({
+    onLanguageSelect:
+        (language: Language): void => dispatch(actions.updateConfiguration({ language, firstTime: true })),
+    setSchedule: (schedule: object): void => dispatch(actions.loadSchedule(schedule)),
+    setTransit: (transitInfo: TransitInfo): void => dispatch(actions.updateConfiguration({
+      transitInfo: {
+        link_en: Translations.getEnglishLink(transitInfo) || '',
+        link_fr: Translations.getFrenchLink(transitInfo) || '',
+        name_en: Translations.getEnglishName(transitInfo) || '',
+        name_fr: Translations.getFrenchName(transitInfo) || '',
+      },
+    })),
+    setUniversity: (university: any): void => dispatch(actions.updateConfiguration({
       semesters: university.semesters,
-      universityLocation: { latitude: university.lat, longitude: university.long },
+      universityLocation: { latitude: university.latitude, longitude: university.longitude },
       universityName: {
         name_en: Translations.getEnglishName(university) || '',
         name_fr: Translations.getFrenchName(university) || '',
       },
     })),
-    setTransit: (transitInfo: TransitInfo) => dispatch(actions.updateConfiguration({
-      transitInfo: {
-        name_en: Translations.getEnglishName(transitInfo) || '',
-        name_fr: Translations.getFrenchName(transitInfo) || '',
-        link_en: Translations.getEnglishLink(transitInfo) || '',
-        link_fr: Translations.getFrenchLink(transitInfo) || '',
-      },
-    })),
-    updatePreferences: (preferences: Array < any >) => {
+    updatePreferences: (preferences: any[]): void => {
 
-      /* eslint-disable no-magic-numbers */
+      /* tslint:disable no-magic-numbers */
       /* Order of these preferences determined by loadPreferences() order */
 
       dispatch(actions.updateConfiguration({
-        language: preferences[0],
         currentSemester: preferences[1],
-        prefersWheelchair: preferences[2],
+        language: preferences[0],
         preferredTimeFormat: preferences[3],
+        prefersWheelchair: preferences[2],
         scheduleByCourse: preferences[4],
       }));
 
@@ -287,4 +282,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Splash);
+export default connect(mapStateToProps, mapDispatchToProps)(Splash) as any;
