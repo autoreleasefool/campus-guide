@@ -22,7 +22,8 @@
  */
 'use strict';
 
-import { BasicIcon, PlatformString } from '../../typings/global';
+import { PlatformOSType } from 'react-native';
+import { BasicIcon } from '../../typings/global';
 import { Facility } from '../../typings/university';
 
 /**
@@ -136,18 +137,19 @@ export function getIOSIcon(obj: any): BasicIcon | undefined {
  * Returns the icon and class defined for an object, for the platform specified. Platform should be 'ios' or
  * 'android'.
  *
- * @param {PlatformString} platform either 'ios' or 'android'.
- * @param {any}            obj      the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
- *                                  properties, or 'icon.name' and 'icon.class' properties.
+ * @param {PlatformOSType} platform either 'ios' or 'android'.
+ * @param {any}              obj      the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
+ *                                    properties, or 'icon.name' and 'icon.class' properties.
  * @returns {?Icon} an object with 'name' and 'class' properties, or undefined
  */
-export function getPlatformIcon(platform: PlatformString, obj: any): BasicIcon | undefined {
-  if (platform === 'ios') {
-    return getIOSIcon(obj);
-  } else if (platform === 'android') {
-    return getAndroidIcon(obj);
-  } else {
-    return undefined;
+export function getPlatformIcon(platform: PlatformOSType, obj: any): BasicIcon | undefined {
+  switch (platform) {
+    case 'ios':
+      return getIOSIcon(obj);
+    case 'android':
+      return getAndroidIcon(obj);
+    default:
+      return undefined;
   }
 }
 

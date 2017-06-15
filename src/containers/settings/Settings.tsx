@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-11-6
- * @file Settings.js
+ * @file Settings.tsx
  * @description View to allow the user to see and update their settings and preferences.
- *
- * @flow
  */
 'use strict';
 
@@ -42,56 +40,59 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { ConfigurationOptions, Language, Section, Semester, Setting, TimeFormat } from 'types';
-
-// Type definition for component props.
-type Props = {
-  currentSemester: number,                                // The current semester, selected by the user
-  language: Language,                                     // The current language, selected by the user
-  prefersWheelchair: boolean,                             // Whether the user prefers wheelchair accessible routes
-  semesters: Array < Semester >,                          // Semesters available at the university
-  timeFormat: TimeFormat,                                 // The user's preferred time format
-  updateConfiguration: (o: ConfigurationOptions) => void, // Update the global configuration state
-};
-
-// Type definition for component state.
-type State = {
-  loaded: boolean,                  // Indicates if the settings have been loaded
-  listModalSections: Array < any >, // List of data to display in modal
-  listModalTitle: string,           // Title of the list view modal
-  listModalVisible: boolean,        // Indicates if the list modal should be visible
-};
+import * as actions from '../../actions';
 
 // Imports
 import DeviceInfo from 'react-native-device-info';
-import Header from 'Header';
+import Header from '../../components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import ModalHeader from 'ModalHeader';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as ExternalUtils from 'ExternalUtils';
-import * as TextUtils from 'TextUtils';
-import * as Translations from 'Translations';
+import ModalHeader from '../../components/ModalHeader';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as Display from '../../util/Display';
+import * as External from '../../util/External';
+import * as TextUtils from '../../util/TextUtils';
+import * as Translations from '../../util/Translations';
+
+// Types
+import { Language } from '../../util/Translations';
+import { Icon, Link, Name, Section, TimeFormat } from '../../../typings/global';
+import { Semester } from '../../../typings/university';
+
+interface Props {
+  currentSemester: number;                              // The current semester, selected by the user
+  language: Language;                                   // The current language, selected by the user
+  prefersWheelchair: boolean;                           // Whether the user prefers wheelchair accessible routes
+  semesters: ReadonlyArray < Semester >;                // Semesters available at the university
+  timeFormat: TimeFormat;                               // The user's preferred time format
+  updateConfiguration(o: Configuration.Options): void;  // Update the global configuration state
+}
+
+interface State {
+  loaded: boolean;            // Indicates if the settings have been loaded
+  listModalSections: any[];   // List of data to display in modal
+  listModalTitle: string;     // Title of the list view modal
+  listModalVisible: boolean;  // Indicates if the list modal should be visible
+}
+
+/** Setting for the app */
+interface Setting extends Link, Name {
+  icon?: Icon;  // Icon for the setting
+  key: string;  // Unique key to identify the setting
+  type: string; // Type of setting
+}
 
 // Default opacity for tap when setting is not a boolean
-const DEFAULT_OPACITY: number = 0.4;
+const DEFAULT_OPACITY = 0.4;
 
-class Settings extends React.PureComponent {
+class Settings extends React.PureComponent<Props, State> {
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+  /** List of sections of settings to render. */
+  _settingSections: Section < Setting >[] = [];
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+  /** Cache of settings values to retrieve and update them quickly. */
+  _settingsCache: any = {};
 
   /**
    * Constructor.
@@ -101,10 +102,10 @@ class Settings extends React.PureComponent {
   constructor(props: Props) {
     super(props);
     this.state = {
-      loaded: false,
       listModalSections: [],
       listModalTitle: '',
       listModalVisible: false,
+      loaded: false,
     };
   }
 
@@ -116,7 +117,7 @@ class Settings extends React.PureComponent {
         .then(() => Translations.loadTranslations('en'))
         .then(() => Translations.loadTranslations('fr'))
         .then(() => Configuration.getConfig('/settings.json'))
-        .then((settingSections: Array < Section < Setting > >) => {
+        .then((settingSections: Section < Setting >[]) => {
           const totalSections = settingSections.length;
           for (let i = 0; i < totalSections; i++) {
             const section = settingSections[i];
@@ -139,12 +140,6 @@ class Settings extends React.PureComponent {
   componentWillUnmount(): void {
     Translations.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
   }
-
-  /** List of sections of settings to render. */
-  _settingSections: Array < Section < Setting > > = [];
-
-  /** Cache of settings values to retrieve and update them quickly. */
-  _settingsCache: Object = {};
 
   /**
    * Returns true if the current value of a setting does not match its cached value, and updates the cached value if so.
@@ -190,6 +185,7 @@ class Settings extends React.PureComponent {
         return this.props.prefersWheelchair;
       case 'pref_semester': {
         const semester = this.props.semesters[this.props.currentSemester];
+
         return Translations.getName(this.props.language, semester);
       }
       case 'pref_time_format':
@@ -197,73 +193,71 @@ class Settings extends React.PureComponent {
       case 'app_version':
         return DeviceInfo.getVersion();
       default:
-        return null;
+        return undefined;
     }
-  }
-
-  /**
-   * Checks if a setting has changed and if the item should update.
-   *
-   * @param {Object} prevProps old item properties
-   * @param {Object} nextProps new item properties
-   * @returns {boolean} true if the setting has changed and the item should be re-rendered
-   */
-  _shouldItemUpdate(prevProps: Object, nextProps: Object): boolean {
-    return this._checkChangedSetting(nextProps.item.key);
   }
 
   /**
    * Updates the setting for the row pressed.
    *
-   * @param {Object} setting   setting that was pressed
-   * @param {Object} tappedRow indicates if the row was tapped, or another area
+   * @param {any}  setting   setting that was pressed
+   * @param {boolean} tappedRow indicates if the row was tapped, or another area
    */
-  _onPressRow(setting: Object, tappedRow: boolean): void {
+  _onPressRow(setting: any, tappedRow: boolean): void {
     if (setting.type === 'boolean' && tappedRow) {
       // Ignore boolean settings, they can only be manipulated by switch
       return;
-    } else if (setting.type === 'link' && setting.key != 'app_open_source') {
+    } else if (setting.type === 'link' && setting.key !== 'app_open_source') {
       // Open the provided link
       const link = Translations.getLink(this.props.language, setting);
-      ExternalUtils.openLink(
-        link || ExternalUtils.getDefaultLink(),
+      External.openLink(
+        link || External.getDefaultLink(),
         this.props.language,
         Linking,
         Alert,
         Clipboard,
-        TextUtils,
+        TextUtils
       );
+
       return;
     }
 
-    if (setting.key === 'pref_lang') {
-      this.props.updateConfiguration({ language: this.props.language === 'en' ? 'fr' : 'en' });
-    } else if (setting.key === 'pref_wheel') {
-      this.props.updateConfiguration({ prefersWheelchair: !this.props.prefersWheelchair });
-    } else if (setting.key === 'pref_semester') {
-      let nextSemester = this.props.currentSemester + 1;
-      if (nextSemester >= this.props.semesters.length) {
-        nextSemester = 0;
-      }
-      this.props.updateConfiguration({ currentSemester: nextSemester });
-    } else if (setting.key === 'pref_time_format') {
-      this.props.updateConfiguration({ preferredTimeFormat: this.props.timeFormat === '12h' ? '24h' : '12h' });
-    } else if (setting.key === 'app_open_source') {
-      const licenses = require('../../../assets/json/licenses.json');
-      this.setState({
-        listModalSections: licenses,
-        listModalTitle: Translations.getName(this.props.language, setting) || '',
-        listModalVisible: true,
-      });
+    switch (setting.key) {
+      case 'pref_lang':
+        this.props.updateConfiguration({ language: this.props.language === 'en' ? 'fr' : 'en' });
+        break;
+      case 'pref_wheel':
+        this.props.updateConfiguration({ prefersWheelchair: !this.props.prefersWheelchair });
+        break;
+      case 'pref_semester':
+        let nextSemester = this.props.currentSemester + 1;
+        if (nextSemester >= this.props.semesters.length) {
+          nextSemester = 0;
+        }
+        this.props.updateConfiguration({ currentSemester: nextSemester });
+        break;
+      case 'pref_time_format':
+        this.props.updateConfiguration({ preferredTimeFormat: this.props.timeFormat === '12h' ? '24h' : '12h' });
+        break;
+      case 'app_open_source':
+        const licenses = require('../../../assets/json/licenses.json');
+        this.setState({
+          listModalSections: licenses,
+          listModalTitle: Translations.getName(this.props.language, setting) || '',
+          listModalVisible: true,
+        });
+        break;
+      default:
+        // Does nothing
     }
   }
 
   /**
    * Renders content for the list view modal.
    *
-   * @returns {ReactElement<any>} a list view with the rows and sections loaded
+   * @returns {JSX.Element} a list view with the rows and sections loaded
    */
-  _renderListModal(): ReactElement < any > {
+  _renderListModal(): JSX.Element {
     return (
       <View style={[ _styles.container, { backgroundColor: Constants.Colors.primaryBackground }]}>
         <ModalHeader
@@ -284,10 +278,10 @@ class Settings extends React.PureComponent {
   /**
    * Displays a single row, representing an item in the list view.
    *
-   * @param {string} item text to be rendered
-   * @returns {ReactElement<any>} views to render the setting in the list
+   * @param {any} item item text to be rendered
+   * @returns {JSX.Element} views to render the setting in the list
    */
-  _renderListModalRow({ item }: { item: Object }): ReactElement < any > {
+  _renderListModalRow({ item }: { item: any }): JSX.Element {
     return (
       <Text style={_styles.modalListText}>{item.text}</Text>
     );
@@ -296,10 +290,10 @@ class Settings extends React.PureComponent {
   /**
    * Renders a heading for a section in the modal list.
    *
-   * @param {Object} section section contents
-   * @returns {ReactElement<any>} a {Header} with the name of the section
+   * @param {Section<any>} section section contents
+   * @returns {JSX.Element} a {Header} with the name of the section
    */
-  _renderListModalSectionHeader({ section }: { section: Section < * > }): ReactElement < any > {
+  _renderListModalSectionHeader({ section }: { section: Section<any> }): JSX.Element {
     return (
       <View style={_styles.modalListHeader}>
         <Header title={section.key} />
@@ -310,42 +304,49 @@ class Settings extends React.PureComponent {
   /**
    * Displays a single item, representing a setting which can be changed.
    *
-   * @param {Object} setting defines the setting contents to render
-   * @returns {ReactElement<any>} views to render the setting in the list
+   * @param {Setting} setting defines the setting contents to render
+   * @returns {JSX.Element} views to render the setting in the list
    */
-  _renderItem({ item }: { item: Setting }): ReactElement < any > {
-    let content = null;
-    if (item.type === 'multi' || item.type === 'text') {
-      content = (
-        <View style={_styles.settingContent}>
-          <Text style={_styles.settingValue}>{this._getSetting(item.key)}</Text>
-        </View>
-      );
-    } else if (item.type === 'boolean') {
-      content = (
-        <View style={_styles.settingContent}>
-          <Switch
-              value={this._getSetting(item.key)}
-              onValueChange={() => this._onPressRow(item, false)} />
-        </View>
-      );
-    } else if (item.type === 'link') {
-      const icon = DisplayUtils.getPlatformIcon(Platform.OS, item);
-      if (icon != null) {
+  _renderItem({ item }: { item: Setting }): JSX.Element {
+    let content;
+    switch (item.type) {
+      case 'multi':
+      case 'text':
         content = (
           <View style={_styles.settingContent}>
-            {icon.class === 'ionicon'
-              ? <Ionicons
-                  color={Constants.Colors.primaryBlackIcon}
-                  name={icon.name}
-                  size={Constants.Sizes.Icons.Medium} />
-              : <MaterialIcons
-                  color={Constants.Colors.primaryBlackIcon}
-                  name={icon.name}
-                  size={Constants.Sizes.Icons.Medium} />}
+            <Text style={_styles.settingValue}>{this._getSetting(item.key)}</Text>
           </View>
         );
-      }
+        break;
+      case 'boolean':
+        content = (
+          <View style={_styles.settingContent}>
+            <Switch
+                value={this._getSetting(item.key)}
+                onValueChange={(): void => this._onPressRow(item, false)} />
+          </View>
+        );
+        break;
+      case 'link':
+        const icon = Display.getPlatformIcon(Platform.OS, item);
+        if (icon != undefined) {
+          content = (
+            <View style={_styles.settingContent}>
+              {icon.class === 'ionicon'
+                ? <Ionicons
+                    color={Constants.Colors.primaryBlackIcon}
+                    name={icon.name}
+                    size={Constants.Sizes.Icons.Medium} />
+                : <MaterialIcons
+                    color={Constants.Colors.primaryBlackIcon}
+                    name={icon.name}
+                    size={Constants.Sizes.Icons.Medium} />}
+            </View>
+          );
+        }
+        break;
+      default:
+        // Does nothing
     }
 
     return (
@@ -365,18 +366,16 @@ class Settings extends React.PureComponent {
   /**
    * Renders a heading for a section of settings.
    *
-   * @param {Object} section section contents
-   * @returns {ReactElement<any>} a {Header} with the name of the section
+   * @param {Section<any>} section section contents
+   * @returns {JSX.Element} a {Header} with the name of the section
    */
-  _renderSectionHeader({ section }: { section: Section < * > }): ReactElement < any > {
+  _renderSectionHeader({ section }: { section: Section <any> }): JSX.Element {
     const colonIndex: number = section.key.indexOf(':');
     let sectionNameTranslated = section.key;
     if (colonIndex > -1) {
-      if (this.props.language === 'en') {
-        sectionNameTranslated = section.key.substring(0, colonIndex);
-      } else {
-        sectionNameTranslated = section.key.substring(colonIndex + 1);
-      }
+      sectionNameTranslated = (this.props.language === 'en')
+          ? section.key.substring(0, colonIndex)
+          : section.key.substring(colonIndex + 1);
     }
 
     return (
@@ -389,18 +388,18 @@ class Settings extends React.PureComponent {
   /**
    * Renders row separator.
    *
-   * @returns {ReactElement<any>} a separator styled view
+   * @returns {JSX.Element} a separator styled view
    */
-  _renderSeparator(): ReactElement < any > {
+  _renderSeparator(): JSX.Element {
     return <View style={_styles.separator} />;
   }
 
   /**
    * Displays a list of settings.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <Modal
@@ -423,32 +422,8 @@ class Settings extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
     flex: 1,
-    backgroundColor: Constants.Colors.tertiaryBackground,
-  },
-  settingContainer: {
-    backgroundColor: Constants.Colors.secondaryBackground,
-  },
-  setting: {
-    flexDirection: 'row',
-    height: 50,
-    alignItems: 'center',
-    backgroundColor: Constants.Colors.tertiaryBackground,
-  },
-  settingContent: {
-    position: 'absolute',
-    right: 20,
-    height: 50,
-    justifyContent: 'center',
-  },
-  settingText: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    color: Constants.Colors.primaryBlackText,
-    fontSize: Constants.Sizes.Text.Body,
-  },
-  settingValue: {
-    color: Constants.Colors.primaryBlackText,
-    fontSize: Constants.Sizes.Text.Body,
   },
   modalList: {
     backgroundColor: Constants.Colors.secondaryBackground,
@@ -462,13 +437,37 @@ const _styles = StyleSheet.create({
     margin: Constants.Sizes.Margins.Expanded,
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.darkTransparentBackground,
+    height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
+  },
+  setting: {
+    alignItems: 'center',
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    flexDirection: 'row',
+    height: 50,
+  },
+  settingContainer: {
+    backgroundColor: Constants.Colors.secondaryBackground,
+  },
+  settingContent: {
+    height: 50,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 20,
+  },
+  settingText: {
+    color: Constants.Colors.primaryBlackText,
+    fontSize: Constants.Sizes.Text.Body,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+  },
+  settingValue: {
+    color: Constants.Colors.primaryBlackText,
+    fontSize: Constants.Sizes.Text.Body,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     currentSemester: store.config.options.currentSemester,
     language: store.config.options.language,
@@ -478,10 +477,10 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    updateConfiguration: (options: ConfigurationOptions) => dispatch(actions.updateConfiguration(options)),
+    updateConfiguration: (options: Configuration.Options): any => dispatch(actions.updateConfiguration(options)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Settings) as any;

@@ -21,6 +21,8 @@
  * @description Type definitions for use throughout the application
  */
 
+import { SectionListData } from 'react-native';
+
 //-----------------------------------------------------------------------------
 //  General
 //-----------------------------------------------------------------------------
@@ -65,23 +67,14 @@ export interface GridImage extends Name {
 /** A URL and a name to display it with. */
 export type NamedLink = Description & Link & Name;
 
-/** Platform types. Android or iOS. */
-export type PlatformString =
-  | 'ios'
-  | 'android'
-  ;
-
 /** Either 12 or 24 hour time formats. */
 export type TimeFormat =
   | '12h'
   | '24h'
   ;
 
-  /** Section for a SectionList. */
-export interface Section < T > extends Name {
-  data: ReadonlyArray<T>; // Data in the section
-  key: string;            // Key of the section
-}
+/** Section for a SectionList. */
+export interface Section<T> extends Name, SectionListData<T> {}
 
 //-----------------------------------------------------------------------------
 //  Maps
@@ -179,24 +172,3 @@ export interface Route {
   id: number | string; // Unique ID for the route
   data: any;           // Any data to pass along to be used to render the view
 }
-
-
-// declare module "*.json" {
-//   const value: any;
-//   [propName: string]: any;
-//   export default value;
-// }
-
-// declare global {
-
-
-// //-----------------------------------------------------------------------------
-// //  Settings
-// //-----------------------------------------------------------------------------
-
-// /** Setting for the app */
-// interface Setting extends Link, Name {
-//   icon?: Icon;  // Icon for the setting
-//   key: string;  // Unique key to identify the setting
-//   type: string; // Type of setting
-// }
