@@ -17,56 +17,56 @@
  *
  * @author Joseph Roque
  * @created 2016-11-6
- * @file buildings.js
+ * @file buildings.ts
  * @description Describes how buildings in the app should be searched.
- *
- * @flow
  */
 'use strict';
 
 // React imports
 import { Platform } from 'react-native';
 
-// Types
-import type { Building, BuildingRoom, Language, RoomTypeInfo, SearchSupport, Section } from 'types';
-import type { SearchResult } from '../Searchable';
-
 // Imports
-import Promise from 'promise';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
-import { filterBuilding, filterRoom } from 'Search';
+import * as Constants from '../../../constants';
+import * as Display from '../../../util/Display';
+import * as Translations from '../../../util/Translations';
+import { filterBuilding, filterRoom } from '../../../util/Search';
+
+// Types
+import { SearchResult } from '../Searchable';
+import { SearchSupport } from '../../../util/Search';
+import { Language } from '../../../util/Translations';
+import { Section } from '../../../../typings/global';
+import { Building, BuildingRoom, RoomTypeInfo } from '../../../typings/university';
 
 /**
  * Returns a promise containing a list of buildings which match the search terms.
  *
- * @param {string}          key         key for the results
- * @param {Language}        language    the current language
- * @param {string}          searchTerms the search terms for the query
- * @param {Array<Building>} buildings   list of buildings
- * @returns {Promise<Array<SearchResult>>} promise which resolves with the results of the search, containing buildings
+ * @param {string}     key         key for the results
+ * @param {Language}   language    the current language
+ * @param {string}     searchTerms the search terms for the query
+ * @param {Building[]} buildings   list of buildings
+ * @returns {Promise<SearchResult[]>} promise which resolves with the results of the search, containing buildings
  */
 function _getBuildingResults(key: string,
                              language: Language,
                              searchTerms: string,
-                             buildings: Array < Building >): Promise < Array < SearchResult > > {
-  return new Promise((resolve) => {
-    const results: Array < SearchResult > = [];
+                             buildings: Building[]): Promise <SearchResult[]> {
+  return new Promise((resolve: (r: any) => void): void => {
+    const results: SearchResult[] = [];
 
-    for (let i = 0; i < buildings.length; i++) {
-      const result = filterBuilding(language, searchTerms, buildings[i]);
+    for (const building of buildings) {
+      const result = filterBuilding(language, searchTerms, building);
       if (result.success) {
         results.push({
-          key,
-          description: Translations.getName(language, buildings[i]) || '',
-          data: buildings[i],
+          data: building,
+          description: Translations.getName(language, building) || '',
           icon: {
-            name: 'store',
             class: 'material',
+            name: 'store',
           },
+          key,
           matchedTerms: result.matches,
-          title: buildings[i].shorthand,
+          title: building.shorthand,
         });
       }
     }
@@ -78,28 +78,27 @@ function _getBuildingResults(key: string,
 /**
  * Returns a promise containing a list of rooms which match the search terms.
  *
- * @param {string}          key          key for the results
- * @param {Language}        language     the current language
- * @param {string}          searchTerms  the search terms for the query
- * @param {RoomTypeInfo}    roomTypeInfo info on available room types
- * @param {Array<Building>} buildings    list of buildings
- * @returns {Promise<Array<SearchResult>>} promise which resolves with the results of the search, containing rooms
+ * @param {string}       key          key for the results
+ * @param {Language}     language     the current language
+ * @param {string}       searchTerms  the search terms for the query
+ * @param {RoomTypeInfo} roomTypeInfo info on available room types
+ * @param {Building[]}   buildings    list of buildings
+ * @returns {Promise<SearchResult[]>} promise which resolves with the results of the search, containing rooms
  */
-function _getRoomResults(key:string,
+function _getRoomResults(key: string,
                          language: Language,
                          searchTerms: string,
                          roomTypeInfo: RoomTypeInfo,
-                         buildings: Array < Building >): Promise < Array < SearchResult > > {
-  return new Promise((resolve) => {
-    const results: Array < SearchResult > = [];
+                         buildings: Building[]): Promise <SearchResult[]> {
+  return new Promise((resolve: (r: any) => void): void => {
+    const results: SearchResult[] = [];
 
     // Cache list of room types that match the search terms
     const matchingRoomTypes = new Set();
-    for (let i = 0; i < roomTypeInfo.ids.length; i++) {
-      const id = roomTypeInfo.ids[i];
-      const roomTypeName = Translations.getName(language, roomTypeInfo.types[id]);
+    for (const roomTypeId of roomTypeInfo.ids) {
+      const roomTypeName = Translations.getName(language, roomTypeInfo.types[roomTypeId]);
       if (roomTypeName && roomTypeName.toUpperCase().indexOf(searchTerms) >= 0) {
-        matchingRoomTypes.add(id);
+        matchingRoomTypes.add(roomTypeId);
       }
     }
 
@@ -108,13 +107,13 @@ function _getRoomResults(key:string,
         const result = filterRoom(language, searchTerms, matchingRoomTypes, building.shorthand, room);
         if (result.success) {
           const roomType = roomTypeInfo.types[room.type || Constants.DefaultRoomType];
-          const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomType);
+          const icon = Display.getPlatformIcon(Platform.OS, roomType);
           const description = Translations.getName(language, roomType) || '';
           results.push({
-            key,
+            data: { building, shorthand: building.shorthand, room: room.name },
             description,
-            data: { building: building, shorthand: building.shorthand, room: room.name },
             icon: icon || { name: 'search', class: 'material' },
+            key,
             matchedTerms: result.matches,
             title: `${building.shorthand} ${room.name}`,
           });
@@ -129,31 +128,35 @@ function _getRoomResults(key:string,
 /**
  * Returns a promise containing a list of buildings and rooms which match the search terms.
  *
- * @param {Language}       language    the current language
- * @param {?string}        searchTerms the search terms for the query
- * @param {?SearchSupport} data        supporting data for the query
- * @returns {Promise<Array<Section<SearchResult>>>} promise which resolves with the results of the search,
+ * @param {Language}                language    the current language
+ * @param {string|undefined}        searchTerms the search terms for the query
+ * @param {SearchSupport|undefined} data        supporting data for the query
+ * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                                  containing buildings and rooms
  */
-export function getResults(language: Language, searchTerms: ?string, data: ?SearchSupport):
-    Promise < Array < Section < SearchResult > > > {
-  return new Promise((resolve, reject) => {
-    if (searchTerms == null || searchTerms.length === 0) {
+export function getResults(
+    language: Language,
+    searchTerms: string | undefined,
+    data: SearchSupport | undefined): Promise<Section<SearchResult>[]> {
+  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
+    if (searchTerms == undefined || searchTerms.length === 0) {
       resolve([]);
+
       return;
     }
 
+    const adjustedSearchTerms = searchTerms.toUpperCase();
+
     // Ensure proper supporting data is provided
-    const roomTypeInfo = (data && data.roomTypeInfo) ? data.roomTypeInfo : null;
+    const roomTypeInfo = (data && data.roomTypeInfo) ? data.roomTypeInfo : undefined;
     if (!roomTypeInfo) {
       reject(new Error('Must provide building search with data.roomTypeInfo'));
+
       return;
     }
 
     // Ignore the case of the search terms
-    const adjustedSearchTerms: string = searchTerms.toUpperCase();
-    const buildings: Array < Building > = require('../../../../assets/js/Buildings');
-
+    const buildings: Building[] = require('../../../../assets/js/Buildings');
     const buildingTranslation = Translations.get(language, 'buildings');
     const roomTranslation = Translations.get(language, 'rooms');
 
@@ -161,15 +164,15 @@ export function getResults(language: Language, searchTerms: ?string, data: ?Sear
       _getBuildingResults(buildingTranslation, language, adjustedSearchTerms, buildings),
       _getRoomResults(roomTranslation, language, adjustedSearchTerms, roomTypeInfo, buildings),
     ])
-        .then((results: Array < Object >) => {
+        .then((results: any[]) => {
           const sections = [];
           sections.push({
-            key: buildingTranslation,
             data: results[0],
+            key: buildingTranslation,
           });
           sections.push({
-            key: roomTranslation,
             data: results[1],
+            key: roomTranslation,
           });
 
           resolve(sections);
@@ -185,9 +188,9 @@ export function getResults(language: Language, searchTerms: ?string, data: ?Sear
  * Returns an object which maps the section names to an icon which represents it.
  *
  * @param {Language} language the current language
- * @returns {Object} section names mapped to icon objects
+ * @returns {any} section names mapped to icon objects
  */
-export function getResultIcons(language: Language): Object {
+export function getResultIcons(language: Language): any {
   const icons = {};
   icons[Translations.get(language, 'buildings')] = {
     icon: {

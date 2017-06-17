@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-11-6
- * @file SearchView.js
+ * @file SearchView.tsx
  * @description Presents search results to the user.
- *
- * @flow
  */
 'use strict';
 
@@ -43,46 +41,39 @@ import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type {
-  Icon,
-  Language,
-  Route,
-  SearchSupport,
-  Section,
-} from 'types';
+import * as actions from '../../actions';
 
 // Imports
-import Header from 'Header';
-import PaddedIcon from 'PaddedIcon';
-import Promise from 'promise';
-import * as ArrayUtils from 'ArrayUtils';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as ExternalUtils from 'ExternalUtils';
+import Header from '../../components/Header';
+import PaddedIcon from '../../components/PaddedIcon';
+import * as Arrays from '../../util/Arrays';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as Display from '../../util/Display';
+import * as External from '../../util/External';
 import * as Searchable from './Searchable';
-import * as TextUtils from 'TextUtils';
-import * as Translations from 'Translations';
+import * as TextUtils from '../../util/TextUtils';
+import * as Translations from '../../util/Translations';
 
-// Type definition for component props
-type Props = {
-  filter: ?string,                                          // Search terms
-  language: Language,                                       // The current language, selected by the user
-  onResultSelect: (sectionKey: ?string, data: any) => void, // Callback for when result is selected
-};
+// Types
+import { SearchSupport } from '../../util/Search';
+import { Language } from '../../util/Translations';
+import { Icon, Route, Section } from '../../../typings/global';
 
-// Type definition for component state
-type State = {
-  anyResults: boolean,                                            // False if no search results were returned
-  filteredResults: Array < Section < Searchable.SearchResult > >, // Categories and their top results
-  performingSearch: boolean,                                      // Indicates if a search is in progresss
-  singleResults: Array < Searchable.SearchResult >,               // List of search results for a single category
-  singleResultTitle: ?string,                                     // Category of search results being displayed
-  supportData: ?SearchSupport,                                    // Support data for searches
-};
+interface Props {
+  filter: string | undefined;                                       // Search terms
+  language: Language;                                               // The current language, selected by the user
+  onResultSelect(sectionKey: string | undefined, data: any): void;  // Callback for when result is selected
+}
+
+interface State {
+  anyResults: boolean;                                  // False if no search results were returned
+  filteredResults: Section<Searchable.SearchResult>[];  // Categories and their top results
+  performingSearch: boolean;                            // Indicates if a search is in progresss
+  singleResults: Searchable.SearchResult[];             // List of search results for a single category
+  singleResultTitle: string | undefined;                // Category of search results being displayed
+  supportData: SearchSupport | undefined;               // Support data for searches
+}
 
 // Render top filtered results
 const FILTERED = 0;
@@ -92,17 +83,22 @@ const SINGLE = 1;
 // Time to delay searches by while user types
 const SEARCH_DELAY_TIME = 800;
 
-class SearchView extends React.PureComponent {
+class SearchView extends React.PureComponent<Props, State> {
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+  /** Set of complete, unaltered search results */
+  _searchResults: Section<Searchable.SearchResult>[] = [];
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+  /** Set of search result categories with their top results. */
+  _filteredResults: Section<Searchable.SearchResult>[] = [];
+
+  /** Set of specific search results to be displayed. */
+  _singleResults: Searchable.SearchResult[] = [];
+
+  /** Set of icons to display for each search result. */
+  _searchIcons: any;
+
+  /** ID of timer to delay search. */
+  _delayTimer: Timer;
 
   /**
    * Pass props and declares initial state.
@@ -111,21 +107,15 @@ class SearchView extends React.PureComponent {
    */
   constructor(props: Props) {
     super(props);
+    this._delayTimer = 0;
     this.state = {
       anyResults: false,
       filteredResults: [],
       performingSearch: false,
+      singleResultTitle: undefined,
       singleResults: [],
-      singleResultTitle: null,
-      supportData: null,
+      supportData: undefined,
     };
-  }
-
-  /**
-   * Retrieve the search results.
-   */
-  componentWillMount(): void {
-    // this._delaySearch(this.props, this.props);
   }
 
   /**
@@ -139,12 +129,12 @@ class SearchView extends React.PureComponent {
             Configuration.getConfig('/study_spots.json'),
             Configuration.getConfig('/useful_links.json'),
           ]))
-          .then((configs) => {
+          .then((configs: any[]) => {
             this.setState({
               supportData: {
+                linkSections: configs[2],
                 roomTypeInfo: configs[0],
                 studySpots: configs[1],
-                linkSections: configs[2],
               },
             });
           })
@@ -165,32 +155,17 @@ class SearchView extends React.PureComponent {
    * Clears the search timeout.
    */
   componentWillUnmount(): void {
-    if (this._delayTimer != 0) {
+    if (this._delayTimer !== 0) {
       clearTimeout(this._delayTimer);
     }
   }
 
-  /** Set of complete, unaltered search results */
-  _searchResults: Array < Section < Searchable.SearchResult > > = [];
-
-  /** Set of search result categories with their top results. */
-  _filteredResults: Array < Section < Searchable.SearchResult > > = [];
-
-  /** Set of specific search results to be displayed. */
-  _singleResults: Array < Searchable.SearchResult > = [];
-
-  /** Set of icons to display for each search result. */
-  _searchIcons: Object;
-
-  /** ID of timer to delay search. */
-  _delayTimer: number = 0;
-
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes
+   * @returns {object} a configuration for the transition between scenes
    */
-  _configureScene(): Object {
+  _configureScene(): object {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
@@ -207,7 +182,7 @@ class SearchView extends React.PureComponent {
     }
 
     // Clear any waiting searches
-    if (this._delayTimer != 0) {
+    if (this._delayTimer !== 0) {
       clearTimeout(this._delayTimer);
     }
 
@@ -220,22 +195,22 @@ class SearchView extends React.PureComponent {
   /**
    * Gets the top results from each of the categories of results returned.
    *
-   * @param {Array<Section<SearchResult>>} searchResults the results to get the top results from
-   * @returns {Array<Section<SearchResult>>} the top results for each section
+   * @param {Section<Searchable.SearchResult>[]} searchResults the results to get the top results from
+   * @returns {Section<Searchable.SearchResult>[]} the top results for each section
    */
-  _filterTopResults(searchResults: Array < Section < Searchable.SearchResult > >):
-      Array < Section < Searchable.SearchResult > > {
-    const filtered = [];
-    for (let i = 0; i < searchResults.length; i++) {
-      if (searchResults[i].data.length === 1) {
+  _filterTopResults(searchResults: Section<Searchable.SearchResult>[]):
+      Section<Searchable.SearchResult>[] {
+    const filtered: Section<Searchable.SearchResult>[] = [];
+    for (const searchResult of searchResults) {
+      if (searchResult.data.length === 1) {
         filtered.push({
-          key: searchResults[i].key,
-          data: [ searchResults[i].data[0] ],
+          data: [ searchResult.data[0] ],
+          key: searchResult.key,
         });
-      } else if (searchResults[i].data.length > 1) {
+      } else if (searchResults.data.length > 1) {
         filtered.push({
-          key: searchResults[i].key,
-          data: [ searchResults[i].data[0], searchResults[i].data[1] ],
+          data: [ searchResult.data[0], searchResult.data[1] ],
+          key: searchResult.key,
         });
       }
     }
@@ -250,8 +225,8 @@ class SearchView extends React.PureComponent {
    * @param {Props} nextProps the props to filter by
    */
   _updateSearch(prevProps: Props, nextProps: Props): void {
-    if (prevProps.filter != null && prevProps.filter.length > 0
-        && nextProps.filter != null && nextProps.filter.length > 0
+    if (prevProps.filter != undefined && prevProps.filter.length > 0
+        && nextProps.filter != undefined && nextProps.filter.length > 0
         && nextProps.filter.indexOf(prevProps.filter) >= 0
         && this._searchResults.length > 0) {
 
@@ -261,9 +236,9 @@ class SearchView extends React.PureComponent {
       this._updateSingleResults(this.state.singleResultTitle);
 
       this.setState({
-        performingSearch: false,
-        anyResults: this._searchResults != null && this._searchResults.length > 0,
+        anyResults: this._searchResults != undefined && this._searchResults.length > 0,
         filteredResults: this._filteredResults,
+        performingSearch: false,
         singleResults: this._singleResults,
       });
     } else {
@@ -276,9 +251,9 @@ class SearchView extends React.PureComponent {
             this._updateSingleResults(this.state.singleResultTitle);
 
             this.setState({
-              performingSearch: false,
-              anyResults: this._searchResults != null && this._searchResults.length > 0,
+              anyResults: this._searchResults != undefined && this._searchResults.length > 0,
               filteredResults: this._filteredResults,
+              performingSearch: false,
               singleResults: this._singleResults,
             });
           })
@@ -289,16 +264,12 @@ class SearchView extends React.PureComponent {
   /**
    * Updates the set of single results.
    *
-   * @param {?string} source the source for the single results. Can be null
+   * @param {string|undefined} source the source for the single results. Can be null
    */
-  _updateSingleResults(source: ?string): void {
-    if (source != null) {
-      const singleResultIndex = ArrayUtils.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', source);
-      if (singleResultIndex >= 0) {
-        this._singleResults = this._searchResults[singleResultIndex].data;
-      } else {
-        this._singleResults = [];
-      }
+  _updateSingleResults(source: string | undefined): void {
+    if (source != undefined) {
+      const singleResultIndex = Arrays.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', source);
+      this._singleResults = (singleResultIndex >= 0) ? this._searchResults[singleResultIndex].data : [];
     }
   }
 
@@ -309,7 +280,7 @@ class SearchView extends React.PureComponent {
    */
   _onResultSelect(result: Searchable.SearchResult): void {
     const routes = this.refs.Navigator.getCurrentRoutes();
-    if (routes != null && routes[routes.length - 1].id === SINGLE) {
+    if (routes != undefined && routes[routes.length - 1].id === SINGLE) {
       this.props.onResultSelect(this.state.singleResultTitle, result.data);
     } else {
       this.props.onResultSelect(result.key, result.data);
@@ -320,11 +291,11 @@ class SearchView extends React.PureComponent {
   /**
    * Callback for when a source is tapped by the user.
    *
-   * @param {?string} source name of the section selected
+   * @param {string|undefined} source name of the section selected
    */
-  _onSourceSelect(source: ?string): void {
-    if (source == null) {
-      this.setState({ singleResultTitle: null });
+  _onSourceSelect(source: string | undefined): void {
+    if (source == undefined) {
+      this.setState({ singleResultTitle: undefined });
       this.refs.Navigator.pop();
     } else {
       this._updateSingleResults(source);
@@ -341,9 +312,9 @@ class SearchView extends React.PureComponent {
   /**
    * Renders an activity indicator when the user's search is being processed.
    *
-   * @returns {ReactElement<any>} an activity indicator
+   * @returns {JSX.Element} an activity indicator
    */
-  _renderActivityIndicator(): ReactElement < any > {
+  _renderActivityIndicator(): JSX.Element {
     return (
       <View
           pointerEvents={'none'}
@@ -358,9 +329,9 @@ class SearchView extends React.PureComponent {
   /**
    * Renders a view which indicates the user's has not performed a search yet.
    *
-   * @returns {ReactElement<any>} a centred text view with text indicating there is no search
+   * @returns {JSX.Element} a centred text view with text indicating there is no search
    */
-  _renderEmptySearch(): ReactElement < any > {
+  _renderEmptySearch(): JSX.Element {
     return (
       <View style={[ _styles.container, _styles.noSearch ]}>
         <Text style={_styles.noSearchText}>
@@ -374,14 +345,14 @@ class SearchView extends React.PureComponent {
    * Renders a search result based on its source.
    *
    * @param {SearchResult} result the result and its source to render
-   * @returns {?ReactElement<any>} a view describing the result, or null
+   * @returns {JSX.Element|undefined} a view describing the result, or null
    */
-  _renderResult({ item }: { item: Searchable.SearchResult }): ?ReactElement < any > {
+  _renderResult({ item }: { item: Searchable.SearchResult }): JSX.Element | undefined {
     // Construct the icon view for the result
-    const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, item);
-    let iconView: any = null;
+    const icon = Display.getPlatformIcon(Platform.OS, item);
+    let iconView: any;
 
-    if (icon != null) {
+    if (icon != undefined) {
       iconView = (
         <PaddedIcon
             color={Constants.Colors.primaryWhiteIcon}
@@ -406,18 +377,18 @@ class SearchView extends React.PureComponent {
    * Renders a heading for a set of search results from a source.
    *
    * @param {Section}  section       section contents
-   * @param {?boolean} nonExpandable indicates if an "expand" icon should be shown
-   * @returns {ReactElement<any>} a {Header} with the name of the source
+   * @param {boolean|undefined} nonExpandable indicates if an "expand" icon should be shown
+   * @returns {JSX.Element} a {Header} with the name of the source
    */
-  _renderSource({ section }: { section: Section < * > }, nonExpandable: ?boolean): ReactElement < any > {
-    const resultPosition = ArrayUtils.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', section.key);
+  _renderSource({ section }: { section: Section < any > }, nonExpandable: boolean | undefined): JSX.Element {
+    const resultPosition = Arrays.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', section.key);
     const numberOfResults = this._searchResults[resultPosition].data.length;
     if (nonExpandable) {
       const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
       const subtitle = `${numberOfResults} ${Translations.get(this.props.language, 'results').toLowerCase()}`;
 
       return (
-        <TouchableOpacity onPress={this._onSourceSelect.bind(this, null)}>
+        <TouchableOpacity onPress={this._onSourceSelect.bind(this, undefined)}>
           <Header
               backgroundColor={Constants.Colors.tertiaryBackground}
               icon={{ name: `${platformModifier}-arrow-back`, class: 'ionicon' }}
@@ -426,11 +397,11 @@ class SearchView extends React.PureComponent {
         </TouchableOpacity>
       );
     } else {
-      const icon = DisplayUtils.getPlatformIcon(Platform.OS, this._searchIcons[section.key])
+      const icon = Display.getPlatformIcon(Platform.OS, this._searchIcons[section.key])
           || { name: 'search', class: 'material' };
 
-      let subtitle = null;
-      let subtitleIcon = null;
+      let subtitle: string | undefined;
+      let subtitleIcon: Icon | undefined;
       if (numberOfResults > 2) {
         subtitle = `${numberOfResults - 2} ${Translations.get(this.props.language, 'more')}`;
         subtitleIcon = { name: 'chevron-right', class: 'material' };
@@ -452,15 +423,16 @@ class SearchView extends React.PureComponent {
   /**
    * Renders a view which indicates the user's search returned no results.
    *
-   * @returns {?ReactElement<any>} a centred text view with text indicating no results were found
+   * @returns {JSX.Element|undefined} a centred text view with text indicating no results were found
    */
-  _renderNoResults(): ?ReactElement < any > {
+  _renderNoResults(): JSX.Element | undefined {
     // If a search is being performed, do not render anything
     if (this.state.performingSearch) {
-      return null;
+      return undefined;
     }
 
     const searchTerms = this.props.filter || '';
+
     return (
       <View style={[ _styles.container, _styles.noResults ]}>
         <Text style={_styles.noResultsText}>
@@ -473,26 +445,26 @@ class SearchView extends React.PureComponent {
   /**
    * Renders a separator line between rows.
    *
-   * @returns {ReactElement<any>} a separator for the list of search results
+   * @returns {JSX.Element} a separator for the list of search results
    */
-  _renderSeparator(): ReactElement < any > {
+  _renderSeparator(): JSX.Element {
     return <View style={_styles.separator} />;
   }
 
   /**
    * Renders the top search results of each category.
    *
-   * @returns {ReactElement<any>} a list of results
+   * @returns {JSX.Element} a list of results
    */
-  _renderFilteredResults(): ReactElement < any > {
-    let results = null;
-    if (this.props.filter == null || this.props.filter.length === 0) {
+  _renderFilteredResults(): JSX.Element {
+    let results: JSX.Element | undefined;
+    if (this.props.filter == undefined || this.props.filter.length === 0) {
       results = this._renderEmptySearch();
     } else if (this.state.anyResults) {
       results = (
         <SectionList
             ItemSeparatorComponent={this._renderSeparator}
-            keyExtractor={(result) => `${result.key}.${result.title}`}
+            keyExtractor={(result: Searchable.SearchResult): string => `${result.key}.${result.title}`}
             renderItem={this._renderResult.bind(this)}
             renderSectionHeader={this._renderSource.bind(this)}
             sections={this.state.filteredResults} />
@@ -511,25 +483,25 @@ class SearchView extends React.PureComponent {
   /**
    * Renders the results for a single category.
    *
-   * @returns {ReactElement<any>} a list of results
+   * @returns {JSX.Element|undefined} a list of results
    */
-  _renderSingleResults(): ReactElement < any > {
-    let results = null;
-    if (this.props.filter == null || !this.state.anyResults) {
+  _renderSingleResults(): JSX.Element | undefined {
+    let results: JSX.Element | undefined;
+    if (this.props.filter == undefined || !this.state.anyResults) {
       results = this._renderNoResults();
     } else {
       results = (
         <FlatList
             ItemSeparatorComponent={this._renderSeparator}
             data={this.state.singleResults}
-            keyExtractor={(result) => `${result.key}.${result.title}`}
+            keyExtractor={(result: Searchable.SearchResult): string => `${result.key}.${result.title}`}
             renderItem={this._renderResult.bind(this)} />
       );
     }
 
     return (
       <View style={_styles.container}>
-        {this._renderSource({ section: { key: this.state.singleResultTitle || '', data: []}}, true)}
+        {this._renderSource({ section: { key: this.state.singleResultTitle || '', data: [] } }, true)}
         {results}
       </View>
     );
@@ -539,9 +511,9 @@ class SearchView extends React.PureComponent {
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display
-   * @returns {?ReactElement<any>} the view to render, based on {route}
+   * @returns {JSX.Element|undefined} the view to render, based on {route}
    */
-  _renderScene(route: Route): ?ReactElement < any > {
+  _renderScene(route: Route): JSX.Element | undefined {
     switch (route.id) {
       case FILTERED:
         return this._renderFilteredResults();
@@ -550,16 +522,17 @@ class SearchView extends React.PureComponent {
       default:
         // TODO: render generic error screen?
         console.error(`Invalid navigator route: ${route.id}.`);
-        return null;
     }
+
+    return undefined;
   }
 
   /**
    * Renders search results.
    *
-   * @returns {ReactElement<any>} a navigator between types of results
+   * @returns {JSX.Element} a navigator between types of results
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     if (!this.state.supportData) {
       return this._renderEmptySearch();
     }
@@ -579,81 +552,81 @@ class SearchView extends React.PureComponent {
 }
 
 const _styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Constants.Colors.secondaryBackground,
-  },
   activityIndicator: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
+    alignItems: 'center',
     bottom: 0,
-    left: 0,
-    alignItems: 'center',
     justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
-  result: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
+  container: {
     backgroundColor: Constants.Colors.secondaryBackground,
-  },
-  resultText: {
     flex: 1,
-    marginBottom: Constants.Sizes.Margins.Expanded,
-    marginTop: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
-    flexDirection: 'column',
-  },
-  resultTitle: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Subtitle,
-  },
-  resultBody: {
-    color: Constants.Colors.secondaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
   },
   noResults: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   noResultsText: {
-    textAlign: 'center',
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     fontStyle: 'italic',
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    textAlign: 'center',
   },
   noSearch: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   noSearchText: {
-    textAlign: 'center',
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    textAlign: 'center',
+  },
+  result: {
+    alignItems: 'center',
+    backgroundColor: Constants.Colors.secondaryBackground,
+    flex: 1,
+    flexDirection: 'row',
+  },
+  resultBody: {
+    color: Constants.Colors.secondaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+  },
+  resultText: {
+    flex: 1,
+    flexDirection: 'column',
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
+  },
+  resultTitle: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.primaryWhiteText,
+    height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     filter: store.search.terms,
     language: store.config.options.language,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onResultSelect: (sectionKey: ?string, data: any) => {
-      if (sectionKey == null) {
+    onResultSelect: (sectionKey: string | undefined, data: any): any => {
+      if (sectionKey == undefined) {
         return;
       }
 
@@ -673,7 +646,7 @@ const mapDispatchToProps = (dispatch) => {
         }
         case 'External links':
         case 'Liens externes':
-          ExternalUtils.openLink(data.link, data.language, Linking, Alert, Clipboard, TextUtils);
+          External.openLink(data.link, data.language, Linking, Alert, Clipboard, TextUtils);
           break;
         case 'Rooms':
         case 'Chambres':
@@ -702,4 +675,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchView);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchView) as any;

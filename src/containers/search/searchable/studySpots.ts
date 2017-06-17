@@ -17,21 +17,21 @@
  *
  * @author Joseph Roque
  * @created 2017-03-14
- * @file studySpots.js
+ * @file studySpots.ts
  * @description Describes how study spots in the app should be searched.
- *
- * @flow
  */
 'use strict';
 
-// Types
-import type { Language, SearchSupport, Section, StudySpot, StudySpotInfo } from 'types';
-import type { SearchResult } from '../Searchable';
-
 // Imports
-import Promise from 'promise';
-import * as Translations from 'Translations';
-import { filterStudySpot } from 'Search';
+import * as Translations from '../../../util/Translations';
+import { filterStudySpot } from '../../../util/Search';
+
+// Types
+import { SearchResult } from '../Searchable';
+import { SearchSupport } from '../../../util/Search';
+import { Language } from '../../../util/Translations';
+import { Section } from '../../../../typings/global';
+import { StudySpot, StudySpotInfo } from '../../../../typings/university';
 
 /**
  * Returns a promise containing a list of external links and categories which match the search terms.
@@ -39,14 +39,14 @@ import { filterStudySpot } from 'Search';
  * @param {Language}      language    the current language
  * @param {string}        searchTerms the search terms for the query
  * @param {StudySpotInfo} studySpots  study spot informaation
- * @returns {Promise<Array<SearchResult>>} promise which resolves with the results of the search,
+ * @returns {Promise<Section<SearchResult[]>>} promise which resolves with the results of the search,
  *                                         containing study spots
  */
 function _getResults(language: Language,
                      searchTerms: string,
-                     studySpots: StudySpotInfo): Promise < Array < Section < SearchResult > > > {
-  return new Promise((resolve) => {
-    const matchedSpots: Array < SearchResult > = [];
+                     studySpots: StudySpotInfo): Promise<Section<SearchResult>[]> {
+  return new Promise((resolve: (r: any) => void): void => {
+    const matchedSpots: SearchResult[] = [];
 
     const studySpotsTranslation = Translations.get(language, 'study_spots');
 
@@ -81,10 +81,10 @@ function _getResults(language: Language,
       const result = filterStudySpot(language, searchTerms, studySpot);
       if (result.success) {
         matchedSpots.push({
-          key: studySpotsTranslation,
-          description: Translations.getDescription(language, studySpot) || '',
           data: { shorthand: studySpot.building, room: studySpot.room },
+          description: Translations.getDescription(language, studySpot) || '',
           icon: { name: 'import-contacts', class: 'material' },
+          key: studySpotsTranslation,
           matchedTerms: result.matches,
           title: `${studySpot.building} ${studySpot.room || ''}`,
         });
@@ -92,8 +92,8 @@ function _getResults(language: Language,
     });
 
     resolve([{
-      key: studySpotsTranslation,
       data: matchedSpots,
+      key: studySpotsTranslation,
     }]);
   });
 }
@@ -101,24 +101,28 @@ function _getResults(language: Language,
 /**
  * Returns a promise containing a list of study spots which match the search terms.
  *
- * @param {Language}       language    the current language
- * @param {?string}        searchTerms the search terms for the query
- * @param {?SearchSupport} data        supporting data for the query
- * @returns {Promise<Array<Section<SearchResult>>>} promise which resolves with the results of the search,
- *                                                  containing study spots
+ * @param {Language}                language    the current language
+ * @param {string|undefined}        searchTerms the search terms for the query
+ * @param {SearchSupport|undefined} data        supporting data for the query
+ * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
+ *                                             containing study spots
  */
-export function getResults(language: Language, searchTerms: ?string, data: ?SearchSupport):
-    Promise < Array < Section < SearchResult > > > {
-  return new Promise((resolve, reject) => {
-    if (searchTerms == null || searchTerms.length === 0) {
+export function getResults(
+    language: Language,
+    searchTerms: string | undefined,
+    data: SearchSupport | undefined): Promise<Section<SearchResult>[]> {
+  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
+    if (searchTerms == undefined || searchTerms.length === 0) {
       resolve([]);
+
       return;
     }
 
     // Ensure proper supporting data is provided
-    const studySpots = (data && data.studySpots) ? data.studySpots : null;
+    const studySpots = (data && data.studySpots) ? data.studySpots : undefined;
     if (!studySpots) {
       reject(new Error('Must provide study spots search with data.studySpots'));
+
       return;
     }
 
@@ -126,7 +130,7 @@ export function getResults(language: Language, searchTerms: ?string, data: ?Sear
     const adjustedSearchTerms: string = searchTerms.toUpperCase();
 
     _getResults(language, adjustedSearchTerms, studySpots)
-        .then((results: Array < Section < SearchResult > >) => resolve(results))
+        .then(resolve)
         .catch((err: any) => {
           console.error('Could not complete study spot search.', err);
           reject(err);
@@ -138,9 +142,9 @@ export function getResults(language: Language, searchTerms: ?string, data: ?Sear
  * Returns an object which maps the section names to an icon which represents it.
  *
  * @param {Language} language the current language
- * @returns {Object} section names mapped to icon objects
+ * @returns {any} section names mapped to icon objects
  */
-export function getResultIcons(language: Language): Object {
+export function getResultIcons(language: Language): any {
   const icons = {};
   icons[Translations.get(language, 'study_spots')] = {
     icon: {

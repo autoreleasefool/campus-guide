@@ -1,0 +1,199 @@
+/**
+ *
+ * @license
+ * Copyright (C) 2016-2017 Joseph Roque
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author Joseph Roque
+ * @created 2016-11-16
+ * @file links.ts
+ * @description Describes how links in the app should be searched.
+ */
+'use strict';
+
+// Imports
+import * as Display from '../../../util/Display';
+import * as External from '../../../util/External';
+import * as Translations from '../../../util/Translations';
+
+// Types
+import { SearchResult } from '../Searchable';
+import { SearchSupport } from '../../../util/Search';
+import { Language } from '../../../util/Translations';
+import { LinkSection, Section } from '../../../../typings/global';
+
+/**
+ * Returns a promise containing a list of external links and categories which match the search terms.
+ *
+ * @param {Language}      language     the current language
+ * @param {string}        searchTerms  the search terms for the query
+ * @param {LinkSection[]} linkSections list of link sections
+ * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
+ *                                             containing links
+ */
+function _getResults(language: Language,
+                     searchTerms: string,
+                     linkSections: LinkSection[]): Promise<Section<SearchResult>[]> {
+  return new Promise((resolve: (r: any) => void): void => {
+    const links: SearchResult[] = [];
+    const categories: SearchResult[] = [];
+
+    const externalLinksTranslation = Translations.get(language, 'external_links');
+    const usefulLinksTranslation = Translations.get(language, 'uo_info');
+
+    // Method to add a link to the results
+    const pushLink = (sectionName: string,
+                      linkName: string,
+                      iconName: string,
+                      link: object,
+                      matchedSectionName: boolean): void => {
+      const translatedLink: string = Translations.getLink(language, link)
+          || External.getDefaultLink();
+      links.push({
+        data: { link: translatedLink, language },
+        description: sectionName,
+        icon: {
+          class: 'ionicon',
+          name: iconName,
+        },
+        key: externalLinksTranslation,
+        matchedTerms: matchedSectionName
+            ? [ sectionName.toUpperCase(), linkName.toUpperCase() ]
+            : [ linkName.toUpperCase() ],
+        title: linkName,
+      });
+    };
+
+    let sectionsToSearch = linkSections;
+
+    // TODO: confirm this works with changing size of sectionsToSearch
+    for (const section of sectionsToSearch) {
+      let sectionMatches = false;
+      const sectionName: string = Translations.getName(language, section) || '';
+      if (sectionName.toUpperCase().indexOf(searchTerms) >= 0) {
+        sectionMatches = true;
+        categories.push({
+          data: section.id,
+          description: Translations.get(language, 'see_related_links'),
+          icon: section.icon,
+          key: usefulLinksTranslation,
+          matchedTerms: [ sectionName.toUpperCase() ],
+          title: sectionName,
+        });
+      }
+
+      if (section.links) {
+        for (const link of section.links) {
+          const linkName = Translations.getName(language, link) || '';
+          if (sectionMatches || linkName.toUpperCase().indexOf(searchTerms) >= 0) {
+            pushLink(sectionName, linkName, 'md-open', link, true);
+          }
+        }
+      }
+
+      if (section.social) {
+        for (const link of section.social) {
+          const linkName = Translations.getName(language, link) || '';
+          if (sectionMatches || linkName.toUpperCase().indexOf(searchTerms) >= 0) {
+            const iconName = Display.getSocialMediaIconName(Translations.getEnglishName(link) || '');
+            pushLink(sectionName, linkName, iconName, link, true);
+          }
+        }
+      }
+
+      // Add subcategories to be searched
+      if (section.categories) {
+        for (const category of section.categories) {
+          category.id = `${section.id}-${category.id}`;
+        }
+        sectionsToSearch = sectionsToSearch.concat(section.categories);
+      }
+    }
+
+    const results = [];
+    results.push({
+      data: links,
+      key: externalLinksTranslation,
+    });
+    results.push({
+      data: categories,
+      key: usefulLinksTranslation,
+    });
+    resolve(results);
+  });
+}
+
+/**
+ * Returns a promise containing a list of links and link categories which match the search terms.
+ *
+ * @param {Language}                language    the current language
+ * @param {string|undefined}        searchTerms the search terms for the query
+ * @param {SearchSupport|undefined} data        supporting data for the query
+ * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
+ *                                             containing links and categories
+ */
+export function getResults(
+    language: Language,
+    searchTerms: string | undefined,
+    data: SearchSupport | undefined): Promise <Section<SearchResult>[]> {
+  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
+    if (searchTerms == undefined || searchTerms.length === 0) {
+      resolve([]);
+
+      return;
+    }
+
+    // Ensure proper supporting data is provided
+    const linkSections = (data && data.linkSections) ? data.linkSections : undefined;
+    if (!linkSections) {
+      reject(new Error('Must provide links search with data.linkSections'));
+
+      return;
+    }
+
+    // Ignore the case of the search terms
+    const adjustedSearchTerms: string = searchTerms.toUpperCase();
+
+    _getResults(language, adjustedSearchTerms, linkSections)
+        .then(resolve)
+        .catch((err: any) => {
+          console.error('Could not complete useful links search.', err);
+          reject(err);
+        });
+  });
+}
+
+/**
+ * Returns an object which maps the section names to an icon which represents it.
+ *
+ * @param {Language} language the current language
+ * @returns {any} section names mapped to icon objects
+ */
+export function getResultIcons(language: Language): any {
+  const icons = {};
+  icons[Translations.get(language, 'uo_info')] = {
+    icon: {
+      class: 'material',
+      name: 'link',
+    },
+  };
+  icons[Translations.get(language, 'external_links')] = {
+    icon: {
+      class: 'ionicon',
+      name: 'md-open',
+    },
+  };
+
+  return icons;
+}
