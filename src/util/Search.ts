@@ -32,15 +32,15 @@ import { Building, BuildingRoom, RoomTypeInfo, StudySpot, StudySpotInfo } from '
 
 /** Support data required for searches. */
 export interface SearchSupport {
-  linkSections: ReadonlyArray < LinkSection >;  // Link sections to search
-  roomTypeInfo: RoomTypeInfo;                   // Room type info for room searches
+  linkSections: LinkSection[];  // Link sections to search
+  roomTypeInfo: RoomTypeInfo;   // Room type info for room searches
   studySpots: StudySpotInfo;                    // Study spots to search
 }
 
 /** Results for a search. */
 export interface SearchResult {
-  success: boolean;                   // True indicates a successful result, false otherwise
-  matches: ReadonlyArray < string >;  // List of terms that matched the filter for further narrowing of results
+  success: boolean; // True indicates a successful result, false otherwise
+  matches: string;  // List of terms that matched the filter for further narrowing of results
 }
 
 /**

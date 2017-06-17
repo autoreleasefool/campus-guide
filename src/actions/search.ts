@@ -46,7 +46,7 @@ export function search(terms: string | undefined): any {
   };
 }
 
-export function setStudyFilters(filters: ReadonlyArray<string>): any {
+export function setStudyFilters(filters: string[]): any {
   return {
     filters,
     type: Actions.Search.SetStudyFilters,

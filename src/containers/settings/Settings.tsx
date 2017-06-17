@@ -64,7 +64,7 @@ interface Props {
   currentSemester: number;                              // The current semester, selected by the user
   language: Language;                                   // The current language, selected by the user
   prefersWheelchair: boolean;                           // Whether the user prefers wheelchair accessible routes
-  semesters: ReadonlyArray < Semester >;                // Semesters available at the university
+  semesters: Semester[];                                // Semesters available at the university
   timeFormat: TimeFormat;                               // The user's preferred time format
   updateConfiguration(o: Configuration.Options): void;  // Update the global configuration state
 }

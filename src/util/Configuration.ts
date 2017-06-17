@@ -46,21 +46,21 @@ export interface Options {
   prefersWheelchair?: boolean;              // Only provide wheelchair accessible routes
   preferByCourse?: boolean;                 // True to default schedule view by course, false for by week
   scheduleByCourse?: boolean;               // True to sort classes by course, false to sort by week
-  semesters?: ReadonlyArray < Semester >;   // List of semesters currently available
+  semesters?: Semester;                     // List of semesters currently available
   universityLocation?: LatLong | undefined; // Latitude and longitude of the university
   universityName?: Name | undefined;        // Name of the univeristy
 }
 
 /** Describes the progress of an app update. */
 export interface ProgressUpdate {
-  currentDownload?: string | undefined;       // Name of file being downloaded
-  filesDownloaded?: ReadonlyArray < string >; // Array of filenames downloaded
-  intermediateProgress?: number;              // Updated progress of current download
-  showRetry?: boolean;                        // True to show retry button, false to hide
-  showUpdateProgress?: boolean;               // True to show progress bar, false to hide
-  totalFiles?: number;                        // Total number of files to download
-  totalProgress?: number;                     // Total bytes downloaded
-  totalSize?: number;                         // Total number of bytes across all files
+  currentDownload?: string | undefined; // Name of file being downloaded
+  filesDownloaded?: string[];           // Array of filenames downloaded
+  intermediateProgress?: number;        // Updated progress of current download
+  showRetry?: boolean;                  // True to show retry button, false to hide
+  showUpdateProgress?: boolean;         // True to show progress bar, false to hide
+  totalFiles?: number;                  // Total number of files to download
+  totalProgress?: number;               // Total bytes downloaded
+  totalSize?: number;                   // Total number of bytes across all files
 }
 
 /** Describes a configuration file. */
