@@ -36,7 +36,7 @@ import { SearchResult } from '../Searchable';
 import { SearchSupport } from '../../../util/Search';
 import { Language } from '../../../util/Translations';
 import { Section } from '../../../../typings/global';
-import { Building, BuildingRoom, RoomTypeInfo } from '../../../typings/university';
+import { Building, BuildingRoom, RoomTypeInfo } from '../../../../typings/university';
 
 /**
  * Returns a promise containing a list of buildings which match the search terms.

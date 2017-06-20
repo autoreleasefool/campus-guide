@@ -39,8 +39,8 @@ export interface SearchSupport {
 
 /** Results for a search. */
 export interface SearchResult {
-  success: boolean; // True indicates a successful result, false otherwise
-  matches: string;  // List of terms that matched the filter for further narrowing of results
+  success: boolean;   // True indicates a successful result, false otherwise
+  matches: string[];  // List of terms that matched the filter for further narrowing of results
 }
 
 /**

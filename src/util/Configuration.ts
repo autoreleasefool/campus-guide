@@ -46,7 +46,7 @@ export interface Options {
   prefersWheelchair?: boolean;              // Only provide wheelchair accessible routes
   preferByCourse?: boolean;                 // True to default schedule view by course, false for by week
   scheduleByCourse?: boolean;               // True to sort classes by course, false to sort by week
-  semesters?: Semester;                     // List of semesters currently available
+  semesters?: Semester[];                   // List of semesters currently available
   universityLocation?: LatLong | undefined; // Latitude and longitude of the university
   universityName?: Name | undefined;        // Name of the univeristy
 }

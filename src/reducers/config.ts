@@ -25,6 +25,7 @@
 // Imports
 import * as Actions from '../../typings/actions';
 import { Options, ProgressUpdate } from '../util/Configuration';
+import { Semester } from '../../typings/university';
 
 /** Config reducer state. */
 interface State {
@@ -42,7 +43,7 @@ const initialState: State = {
     preferredTimeFormat: '12h',
     prefersWheelchair: false,
     scheduleByCourse: false,
-    semesters: [],
+    semesters: ([] as Semester[]),
     transitInfo: undefined,
     universityLocation: undefined,
     universityName: undefined,

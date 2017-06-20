@@ -207,7 +207,7 @@ class SearchView extends React.PureComponent<Props, State> {
           data: [ searchResult.data[0] ],
           key: searchResult.key,
         });
-      } else if (searchResults.data.length > 1) {
+      } else if (searchResult.data.length > 1) {
         filtered.push({
           data: [ searchResult.data[0], searchResult.data[1] ],
           key: searchResult.key,
