@@ -279,13 +279,13 @@ class SearchView extends React.PureComponent<Props, State> {
    * @param {Searchable.SearchResult} result the result selected
    */
   _onResultSelect(result: Searchable.SearchResult): void {
-    const routes = this.refs.Navigator.getCurrentRoutes();
+    const routes = (this.refs.Navigator as any).getCurrentRoutes();
     if (routes != undefined && routes[routes.length - 1].id === SINGLE) {
       this.props.onResultSelect(this.state.singleResultTitle, result.data);
     } else {
       this.props.onResultSelect(result.key, result.data);
     }
-    this.refs.Navigator.pop();
+    (this.refs.Navigator as any).pop();
   }
 
   /**
@@ -296,7 +296,7 @@ class SearchView extends React.PureComponent<Props, State> {
   _onSourceSelect(source: string | undefined): void {
     if (source == undefined) {
       this.setState({ singleResultTitle: undefined });
-      this.refs.Navigator.pop();
+      (this.refs.Navigator as any).pop();
     } else {
       this._updateSingleResults(source);
       if (this._singleResults.length > 2) {
@@ -304,7 +304,7 @@ class SearchView extends React.PureComponent<Props, State> {
           singleResultTitle: source,
           singleResults: this._singleResults,
         });
-        this.refs.Navigator.push({ id: SINGLE });
+        (this.refs.Navigator as any).push({ id: SINGLE });
       }
     }
   }

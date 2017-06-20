@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-01-27
- * @file Schedule.js
+ * @file Schedule.tsx
  * @description Navigator for managing views for defining a weekly schedule.
- *
- * @flow
  */
 'use strict';
 
@@ -37,55 +35,49 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type {
-  Course,
-  Language,
-  LectureFormat,
-  Semester,
-  TimeFormat,
-} from 'types';
-
-// Type definition for component props.
-type Props = {
-  currentSemester: number,                        // The current semester, selected by the user
-  language: Language,                             // The current language, selected by the user
-  removeCourse: (s: string, c: Course) => void,   // Removes a course from the semester
-  saveCourse: (s: string, c: Course) => void,     // Saves a course to the semester
-  saveSemester: (s: Semester) => void,            // Saves a semester to the schedule
-  scheduleByCourse: boolean,                      // Indicates default to view schedule by course or by week
-  semesters: Array < Semester >,                  // Semesters available at the university
-  timeFormat: TimeFormat,                         // The user's preferred time format
-  switchSemester: (semester: number) => void,     // Switches the current semester
-  viewScheduleByCourse: (view: boolean) => void,  // Updates whether the schedule is viewed by course or by week
-};
-
-// Type definition for component state.
-type State = {
-  addingCourse: boolean,                    // True to use the course modal to add a course, false to edit
-  courseToEdit: ?Course,                    // Course selected by user to edit
-  courseModalVisible: boolean,              // True to show the modal to add or edit a course
-  initialPage: number,                      // Initial schedule view to show
-  lectureFormats: Array < LectureFormat >,  // Array of available lecture types
-  showSemesters: boolean,                   // True to show drop down to swap semesters
-};
+import * as actions from '../../actions';
 
 // Imports
 import ActionButton from 'react-native-action-button';
 import CourseModal from './modals/Course';
-import Header from 'Header';
+import Header from '../../components/Header';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import * as ArrayUtils from 'ArrayUtils';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
+import * as Arrays from '../../util/Arrays';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as Display from '../../util/Display';
+import * as Translations from '../../util/Translations';
 
 // Tabs
 import WeeklySchedule from './WeeklySchedule';
 import ByCourseSchedule from './ByCourseSchedule';
+
+// Types
+import { Language } from '../../util/Translations';
+import { TimeFormat } from '../../../typings/global';
+import { Course, LectureFormat, Semester } from '../../../typings/university';
+
+interface Props {
+  currentSemester: number;                    // The current semester, selected by the user
+  language: Language;                         // The current language, selected by the user
+  scheduleByCourse: boolean;                  // Indicates default to view schedule by course or by week
+  semesters: Semester[];                      // Semesters available at the university
+  timeFormat: TimeFormat;                     // The user's preferred time format
+  removeCourse(s: string, c: Course): void;   // Removes a course from the semester
+  saveCourse(s: string, c: Course): void;     // Saves a course to the semester
+  saveSemester(s: Semester): void;            // Saves a semester to the schedule
+  switchSemester(semester: number): void;     // Switches the current semester
+  viewScheduleByCourse(view: boolean): void;  // Updates whether the schedule is viewed by course or by week
+}
+
+interface State {
+  addingCourse: boolean;            // True to use the course modal to add a course, false to edit
+  courseToEdit: Course | undefined; // Course selected by user to edit
+  courseModalVisible: boolean;      // True to show the modal to add or edit a course
+  initialPage: number;              // Initial schedule view to show
+  lectureFormats: LectureFormat[];  // Array of available lecture types
+  showSemesters: boolean;           // True to show drop down to swap semesters
+}
 
 // Icon for representing the current semester
 const semesterIcon = {
@@ -99,17 +91,7 @@ const semesterIcon = {
   },
 };
 
-class Schedule extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+class Schedule extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -120,23 +102,19 @@ class Schedule extends React.PureComponent {
     super(props);
     this.state = {
       addingCourse: true,
-      courseToEdit: null,
       courseModalVisible: false,
+      courseToEdit: undefined,
       initialPage: props.scheduleByCourse ? 1 : 0,
       lectureFormats: [],
       showSemesters: false,
     };
-
-    (this:any)._closeModal = this._closeModal.bind(this);
-    (this:any)._onEditCourse = this._onEditCourse.bind(this);
-    (this:any)._toggleSwitchSemester = this._toggleSwitchSemester.bind(this);
   }
 
   componentDidMount(): void {
     if (this.state.lectureFormats.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/lecture_formats.json'))
-          .then((lectureFormats) => this.setState({ lectureFormats }))
+          .then((lectureFormats: LectureFormat[]) => this.setState({ lectureFormats }))
           .catch((err: any) => console.error('Configuration could not be initialized for lecture modal.', err));
     }
   }
@@ -163,10 +141,10 @@ class Schedule extends React.PureComponent {
    * @param {boolean} addingCourse true to use the modal to add a course, false to edit
    * @param {?Course} courseToEdit the course to edit, or null when adding a new course
    */
-  _showCourseModal(addingCourse: boolean, courseToEdit: ?Course): void {
+  _showCourseModal(addingCourse: boolean, courseToEdit: Course | undefined): void {
     this.setState({
-      courseModalVisible: true,
       addingCourse,
+      courseModalVisible: true,
       courseToEdit,
     });
   }
@@ -175,7 +153,7 @@ class Schedule extends React.PureComponent {
    * Toggles the drop down to switch semesters.
    */
   _toggleSwitchSemester(): void {
-    LayoutAnimation.easeInEaseOut();
+    LayoutAnimation.easeInEaseOut(undefined, undefined);
     this.setState({ showSemesters: !this.state.showSemesters });
   }
 
@@ -198,7 +176,7 @@ class Schedule extends React.PureComponent {
    */
   _onSaveCourse(semesterExists: boolean, semesterId: string, course: Course): void {
     if (!semesterExists) {
-      const semesterIndex = ArrayUtils.linearSearchObjectArrayByKeyValue(this.props.semesters, 'id', semesterId);
+      const semesterIndex = Arrays.linearSearchObjectArrayByKeyValue(this.props.semesters, 'id', semesterId);
       this.props.saveSemester(this.props.semesters[semesterIndex]);
     }
 
@@ -208,9 +186,9 @@ class Schedule extends React.PureComponent {
   /**
    * Renders the current semester and a drop down to switch semesters.
    *
-   * @returns {ReactElement<any>} the elements to render
+   * @returns {JSX.Element} the elements to render
    */
-  _renderSemesters(): ReactElement < any > {
+  _renderSemesters(): JSX.Element {
     const semesterName = Translations.getName(
       this.props.language,
       this.props.semesters[this.props.currentSemester]
@@ -219,11 +197,11 @@ class Schedule extends React.PureComponent {
     return (
       <View>
         <Header
-            icon={DisplayUtils.getPlatformIcon(Platform.OS, semesterIcon)}
+            icon={Display.getPlatformIcon(Platform.OS, semesterIcon)}
             subtitle={(this.state.showSemesters
               ? Translations.get(this.props.language, 'done')
               : Translations.get(this.props.language, 'switch'))}
-            subtitleCallback={this._toggleSwitchSemester}
+            subtitleCallback={(): void => this._toggleSwitchSemester()}
             title={semesterName} />
         {this.state.showSemesters
           ?
@@ -231,18 +209,15 @@ class Schedule extends React.PureComponent {
                 itemStyle={_styles.semesterItem}
                 prompt={Translations.get(this.props.language, 'semester')}
                 selectedValue={this.props.currentSemester}
-                onValueChange={(value) => this.props.switchSemester(value)}>
-              {this.props.semesters.map((semester, index) => {
-                const name = Translations.getName(this.props.language, semester);
-                return (
+                onValueChange={(value: number): void => this.props.switchSemester(value)}>
+              {this.props.semesters.map((semester: Semester, index: number) => (
                   <Picker.Item
                       key={name}
-                      label={name}
+                      label={Translations.getName(this.props.language, semester)}
                       value={index} />
-                );
-              })}
+              ))}
             </Picker>
-          : null}
+          : undefined}
         <View style={_styles.separator} />
       </View>
     );
@@ -251,21 +226,21 @@ class Schedule extends React.PureComponent {
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <Modal
             animationType={'slide'}
             transparent={false}
             visible={this.state.courseModalVisible}
-            onRequestClose={this._closeModal}>
+            onRequestClose={(): void => this._closeModal()}>
           <CourseModal
               addingCourse={this.state.addingCourse}
               courseToEdit={this.state.courseToEdit}
               lectureFormats={this.state.lectureFormats}
-              onClose={this._closeModal}
+              onClose={(): void => this._closeModal()}
               onSaveCourse={this._onSaveCourse.bind(this)} />
         </Modal>
         <ScrollableTabView
@@ -276,7 +251,7 @@ class Schedule extends React.PureComponent {
             tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
             tabBarPosition='top'
             tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.primaryWhiteText }}
-            onChangeTab={(newTab: { i: number }) => this.props.viewScheduleByCourse(newTab.i === 1)}>
+            onChangeTab={(newTab: { i: number }): void => this.props.viewScheduleByCourse(newTab.i === 1)}>
           <WeeklySchedule
               lectureFormats={this.state.lectureFormats}
               tabLabel={Translations.get(this.props.language, 'weekly')}>
@@ -285,7 +260,7 @@ class Schedule extends React.PureComponent {
           <ByCourseSchedule
               lectureFormats={this.state.lectureFormats}
               tabLabel={Translations.get(this.props.language, 'by_course')}
-              onEditCourse={this._onEditCourse}>
+              onEditCourse={(course: Course): void => this._onEditCourse(course)}>
             {this._renderSemesters()}
           </ByCourseSchedule>
         </ScrollableTabView>
@@ -302,24 +277,24 @@ class Schedule extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   semesterItem: {
     color: Constants.Colors.primaryWhiteText,
   },
   separator: {
-    height: StyleSheet.hairlineWidth * 2,
     backgroundColor: Constants.Colors.secondaryWhiteText,
+    height: StyleSheet.hairlineWidth * 2,
   },
   tabContainer: {
-    flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
     borderBottomWidth: 0,
+    flex: 1,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     currentSemester: store.config.options.currentSemester,
     language: store.config.options.language,
@@ -329,14 +304,14 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    saveSemester: (semester: Semester) => dispatch(actions.addSemester(JSON.parse(JSON.stringify(semester)))),
-    saveCourse: (semester: string, course: Course) => dispatch(actions.addCourse(semester, course)),
-    switchSemester: (semester: number) => dispatch(actions.updateConfiguration({ currentSemester: semester })),
-    removeCourse: (semester: string, course: Course) => dispatch(actions.removeCourse(semester, course.code)),
-    viewScheduleByCourse: (view: boolean) => dispatch(actions.updateConfiguration({ scheduleByCourse: view })),
+    removeCourse: (semester: string, course: Course): void => dispatch(actions.removeCourse(semester, course.code)),
+    saveCourse: (semester: string, course: Course): void => dispatch(actions.addCourse(semester, course)),
+    saveSemester: (semester: Semester): void => dispatch(actions.addSemester(JSON.parse(JSON.stringify(semester)))),
+    switchSemester: (semester: number): void => dispatch(actions.updateConfiguration({ currentSemester: semester })),
+    viewScheduleByCourse: (view: boolean): void => dispatch(actions.updateConfiguration({ scheduleByCourse: view })),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Schedule);
+export default connect(mapStateToProps, mapDispatchToProps)(Schedule) as any;

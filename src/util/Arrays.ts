@@ -25,12 +25,12 @@
  * Binary search an array of objects for one that has a key {key} with a value that matches {value}.
  * The array must be sorted on the key being searched.
  *
- * @param {object[]} array array of objects to search
- * @param {string}   key   the key of each object to check
- * @param {any}      value the value which the key must be paired with
+ * @param {ReadonlyArray<any>} array array of objects to search
+ * @param {string}             key   the key of each object to check
+ * @param {any}                value the value which the key must be paired with
  * @returns {number} the index of the object with the key/value pair in the array, or -1 if it was not found
  */
-export function binarySearchObjectArrayByKeyValue(array: object[], key: string, value: any): number {
+export function binarySearchObjectArrayByKeyValue(array: ReadonlyArray<any>, key: string, value: any): number {
   if (array == undefined || key == undefined || value == undefined || array.length === 0) {
     return -1;
   } else if (!(key in array[0])) {
@@ -58,12 +58,12 @@ export function binarySearchObjectArrayByKeyValue(array: object[], key: string, 
 /**
  * Linear search an array of objects for one that has a key {key} with a value that matches {value}.
  *
- * @param {object[]} array array of objects to search
- * @param {string}   key   the key of each object to check
- * @param {any}      value the value which the key must be paired with
+ * @param {ReadonlyArray<any>} array array of objects to search
+ * @param {string}             key   the key of each object to check
+ * @param {any}                value the value which the key must be paired with
  * @returns {number} the index of the object with the key/value pair in the array, or -1 if it was not found
  */
-export function linearSearchObjectArrayByKeyValue(array: object[], key: string, value: any): number {
+export function linearSearchObjectArrayByKeyValue(array: ReadonlyArray<any>, key: string, value: any): number {
   if (array == undefined || key == undefined || value == undefined || array.length === 0) {
     return -1;
   } else if (!(key in array[0])) {
@@ -83,20 +83,20 @@ export function linearSearchObjectArrayByKeyValue(array: object[], key: string, 
 /**
  * Sorts an array of objects by the value of a key.
  *
- * @param {object[]} array        an array of objects
+ * @param {T[]} array        an array of objects
  * @param {string}   key          the key to sort on
  * @param {string}   secondaryKey secondary key to sort on if first key values are identical. Optional.
  * @returns {object[]} the sorted array
  */
-export function sortObjectArrayByKeyValues(
-    array: object[],
+export function sortObjectArrayByKeyValues<T>(
+    array: T[],
     key: string,
-    secondaryKey?: string): object[] {
+    secondaryKey?: string): T[] {
   if (array == undefined || key == undefined || key.length <= 0) {
     return array;
   }
 
-  return array.sort((a: object, b: object) => {
+  return array.sort((a: T, b: T) => {
     if (a[key] < b[key]) {
       return -1;
     } else if (a[key] > b[key]) {

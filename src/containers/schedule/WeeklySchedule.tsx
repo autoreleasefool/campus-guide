@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-01-27
- * @file WeeklySchedule.js
+ * @file WeeklySchedule.tsx
  * @description Displays the user's schedule, organized by day
- *
- * @flow
  */
 'use strict';
 
@@ -36,62 +34,50 @@ import {
 // Redux imports
 import { connect } from 'react-redux';
 
-// Types
-import type {
-  Course,
-  Destination,
-  Language,
-  LectureFormat,
-  Semester,
-  TimeFormat,
-} from 'types';
+// Imports
+import Header from '../../components/Header';
+import * as Arrays from '../../util/Arrays';
+import * as Constants from '../../constants';
+import * as TextUtils from '../../util/TextUtils';
 
-// Data to render a lecture
-type LectureRow = {
-  courseCode: string,     // Code of the course the lecture belongs to
-  format: number,         // Lecture format
-  location: ?Destination, // Location of the lecture
-  startTime: number,      // Start time of the lecture
+import { Language } from '../../util/Translations';
+import { TimeFormat } from '../../../typings/global';
+import { Course, Destination, LectureFormat, Semester } from '../../../typings/university';
+
+/** Data to render a lecture. */
+interface LectureRow {
+  courseCode: string;                 // Code of the course the lecture belongs to
+  format: number;                     // Lecture format
+  location: Destination | undefined;  // Location of the lecture
+  startTime: number;                  // Start time of the lecture
 }
 
-// Type definition for component props.
-type Props = {
-  children: any,                            // Components from the parent component
-  currentSemester: number,                  // The current semester, selected by the user
-  language: Language,                       // The current language, selected by the user
-  lectureFormats: Array < LectureFormat >,  // Array of available lecture types
-  schedule: Object,                         // The user's current schedule
-  semesters: Array < Semester >,            // Semesters available at the university
-  timeFormat: TimeFormat,                   // The user's preferred time format
-};
+interface Props {
+  children: any;                    // Components from the parent component
+  currentSemester: number;          // The current semester, selected by the user
+  language: Language;               // The current language, selected by the user
+  lectureFormats: LectureFormat[];  // Array of available lecture types
+  schedule: any;                    // The user's current schedule
+  semesters: Semester[];            // Semesters available at the university
+  timeFormat: TimeFormat;           // The user's preferred time format
+}
 
-// Imports
-import Header from 'Header';
-import * as ArrayUtils from 'ArrayUtils';
-import * as Constants from 'Constants';
-import * as TextUtils from 'TextUtils';
+interface State {}
 
-class WeeklySchedule extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+class WeeklySchedule extends React.PureComponent<Props, State> {
 
   /**
    * Gets the lectures in a day, sorted by time.
    *
-   * @param {Array<Course>} courses set of courses to get lectures from
-   * @param {number}        day     day of the week to get lectures for
+   * @param {Course[]} courses set of courses to get lectures from
+   * @param {number}   day     day of the week to get lectures for
    * @returns {Array<LectureRow>} the lectures occuring on {day}, sorted by start time
    */
-  _getLectures(courses: Array < Course >, day: number): Array < LectureRow > {
-    const lectures: Array < LectureRow > = [];
+  _getLectures(courses: Course[], day: number): LectureRow[] {
+    const lectures: LectureRow[] = [];
 
-    for (let i = 0; i < courses.length; i++) {
-      const course = courses[i];
-      for (let j = 0; j < course.lectures.length; j++) {
-        const lecture = course.lectures[j];
+    for (const course of courses) {
+      for (const lecture of course.lectures) {
         if (lecture.day === day) {
           lectures.push({
             courseCode: course.code,
@@ -103,29 +89,29 @@ class WeeklySchedule extends React.PureComponent {
       }
     }
 
-    ArrayUtils.sortObjectArrayByKeyValues(lectures, 'startTime');
-    return lectures;
+    return Arrays.sortObjectArrayByKeyValues(lectures, 'startTime');
   }
 
   /**
    * Renders a single day of lectures in the current semester.
    *
-   * @param {string} day          the day of the week
-   * @param {number} index        index of the day of the week, where 0 is Monday and 6 is Sunday
-   * @returns {?ReactElement<any>} the hierarchy of views to render
+   * @param {string} day   the day of the week
+   * @param {number} index index of the day of the week, where 0 is Monday and 6 is Sunday
+   * @returns {JSX.Element|undefined} the hierarchy of views to render
    */
-  _renderDay(day: string, index: number): ?ReactElement < any > {
+  _renderDay(day: string, index: number): JSX.Element | undefined {
     const schedule = this.props.schedule[this.props.semesters[this.props.currentSemester].id];
     const courses = schedule ? schedule.courses : [];
     const lectures = this._getLectures(courses, index);
 
     if (lectures.length === 0) {
-      return null;
+      return undefined;
     } else {
       return (
         <View key={day}>
           <Header title={day} />
-          {lectures.map((lecture, lecIndex) => this._renderLecture(lecture, lecIndex === lectures.length - 1))}
+          {lectures.map(
+            (lecture: LectureRow, lecIndex: number) => this._renderLecture(lecture, lecIndex === lectures.length - 1))}
         </View>
       );
     }
@@ -136,9 +122,9 @@ class WeeklySchedule extends React.PureComponent {
    *
    * @param {LectureRow} lecture the lecture as defined by the user
    * @param {boolean}    isLast  true if the lecture is the last in the course, false otherwise
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  _renderLecture(lecture: LectureRow, isLast: boolean): ReactElement < any > {
+  _renderLecture(lecture: LectureRow, isLast: boolean): JSX.Element {
     return (
       <View key={`${lecture.courseCode} - ${lecture.startTime}`}>
         <View style={_styles.lectureContainer}>
@@ -155,7 +141,7 @@ class WeeklySchedule extends React.PureComponent {
             {lecture.location ? TextUtils.destinationToString(lecture.location) : ''}
           </Text>
         </View>
-        {isLast ? null : <View style={_styles.lectureSeparator} />}
+        {isLast ? undefined : <View style={_styles.lectureSeparator} />}
       </View>
     );
   }
@@ -163,21 +149,22 @@ class WeeklySchedule extends React.PureComponent {
   /**
    * Renders a list of the user's lectures, organized by course.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
-    if (this.props.lectureFormats == null || this.props.lectureFormats.length === 0) {
+  render(): JSX.Element {
+    if (this.props.lectureFormats == undefined || this.props.lectureFormats.length === 0) {
       return (
         <View style={_styles.container} />
       );
     }
 
     const days = Constants.Days[this.props.language];
+
     return (
       <View style={_styles.container}>
         {this.props.children}
         <ScrollView>
-          {days.map((day, index) => this._renderDay(day, index))}
+          {days.map((day: string, index: number) => this._renderDay(day, index))}
           <View style={_styles.padding} />
         </ScrollView>
       </View>
@@ -188,53 +175,53 @@ class WeeklySchedule extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
-  },
-  padding: {
-    height: 100,
+    flex: 1,
   },
   lectureContainer: {
     flexDirection: 'row',
     marginLeft: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
   },
+  lectureSeparator: {
+    backgroundColor: Constants.Colors.lightTransparentBackground,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+  },
   lectureText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
-    paddingTop: Constants.Sizes.Margins.Expanded,
     paddingBottom: Constants.Sizes.Margins.Expanded,
+    paddingTop: Constants.Sizes.Margins.Expanded,
   },
   lectureTextInnerLeft: {
     flex: 2,
-    textAlign: 'left',
     paddingLeft: Constants.Sizes.Margins.Condensed,
     paddingRight: Constants.Sizes.Margins.Condensed,
+    textAlign: 'left',
   },
   lectureTextInnerRight: {
     flex: 3,
-    textAlign: 'left',
     paddingLeft: Constants.Sizes.Margins.Condensed,
     paddingRight: Constants.Sizes.Margins.Condensed,
+    textAlign: 'left',
   },
   lectureTextLeft: {
     flex: 2,
-    textAlign: 'left',
     paddingRight: Constants.Sizes.Margins.Condensed,
+    textAlign: 'left',
   },
   lectureTextRight: {
     flex: 3,
-    textAlign: 'right',
     paddingLeft: Constants.Sizes.Margins.Condensed,
+    textAlign: 'right',
   },
-  lectureSeparator: {
-    height: StyleSheet.hairlineWidth,
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    backgroundColor: Constants.Colors.lightTransparentBackground,
+  padding: {
+    height: 100,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     currentSemester: store.config.options.currentSemester,
     language: store.config.options.language,
@@ -244,4 +231,4 @@ const mapStateToProps = (store) => {
   };
 };
 
-export default connect(mapStateToProps)(WeeklySchedule);
+export default connect(mapStateToProps)(WeeklySchedule) as any;
