@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-20
- * @file Building.js
+ * @file Building.tsx
  * @description Provides details on a single building on campus.
- *
- * @flow
  */
 'use strict';
 
@@ -35,51 +33,53 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Building, Language } from 'types';
+import * as actions from '../../actions';
 
 // Imports
-import BuildingHeader from 'BuildingHeader';
-import Header from 'Header';
-import RoomGrid from 'RoomGrid';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import BuildingHeader from '../../components/BuildingHeader';
+import Header from '../../components/Header';
+import RoomGrid from '../../components/RoomGrid';
+import * as Constants from '../../constants';
+import * as Translations from '../../util/Translations';
 
-class BuildingComponent extends React.PureComponent {
+// Types
+import { Language } from '../../util/Translations';
+import { Building } from '../../../typings/university';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: {
-    building: Building,                                                 // Building to display details for
-    filter: ?string,                                                    // The current filter for rooms
-    language: Language,                                                 // The current language, selected by the user
-    onDestinationSelected: (shorthand: string, room: ?string) => void,  // Callback for when a room is selected
-  }
+interface Props {
+  building: Building;         // Building to display details for
+  filter: string | undefined; // The current filter for rooms
+  language: Language;         // The current language, selected by the user
+  onDestinationSelected(shorthand: string, room: string | undefined): void;
+                              // Callback for when a room is selected
+}
+
+interface State {}
+
+class BuildingComponent extends React.PureComponent<Props, State> {
 
   /**
    * Informs parent that the user has selected a destination.
    *
    * @param {string} shorthand shorthand code of the building that has been selected
-   * @param {?string} roomName name of the room selected, or null if a building was selected
+   * @param {string|undefined} roomName name of the room selected, or null if a building was selected
    */
-  _onDestinationSelected(shorthand: string, roomName: ?string): void {
+  _onDestinationSelected(shorthand: string, roomName?: string): void {
     this.props.onDestinationSelected(shorthand, roomName);
   }
 
   /**
    * Returns a view which allows the user to navigate to the building depicted.
    *
-   * @returns {ReactElement<any>} a touchable view
+   * @returns {JSX.Element} a touchable view
    */
-  _renderBuildingDirections(): ReactElement < any > {
-    const navigateToBuilding = `${Translations.get(this.props.language, 'navigate_to')} `
-        + (Translations.getName(this.props.language, this.props.building) || '');
+  _renderBuildingDirections(): JSX.Element {
+    const navigateToBuilding =
+        `${Translations.get(this.props.language, 'navigate_to')} `
+        + `${(Translations.getName(this.props.language, this.props.building) || '')}`;
 
     return (
-      <TouchableOpacity onPress={() => this._onDestinationSelected(this.props.building.shorthand, null)}>
+      <TouchableOpacity onPress={(): void => this._onDestinationSelected(this.props.building.shorthand)}>
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon' }}
@@ -91,18 +91,18 @@ class BuildingComponent extends React.PureComponent {
   /**
    * Renders a view with various specifics of the building, as well as an image.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  _renderHeader(): ReactElement < any > {
+  _renderHeader(): JSX.Element {
     const building: Building = this.props.building;
     const properties = [
       {
-        name: Translations.get(this.props.language, 'name'),
         description: Translations.getName(this.props.language, building) || '',
+        name: Translations.get(this.props.language, 'name'),
       },
       {
-        name: Translations.get(this.props.language, 'address'),
         description: Translations.getVariant(this.props.language, 'address', building) || '',
+        name: Translations.get(this.props.language, 'address'),
       },
     ];
 
@@ -122,9 +122,9 @@ class BuildingComponent extends React.PureComponent {
   /**
    * Renders a view containing an image of the building, it's name, and a list of its rooms and facilities.
    *
-   * @returns {ReactElement<any>} a view describing a building
+   * @returns {JSX.Element} a view describing a building
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     const building: Building = this.props.building;
 
     return (
@@ -144,12 +144,12 @@ class BuildingComponent extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     building: store.directions.building,
     filter: store.search.terms,
@@ -157,9 +157,9 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onDestinationSelected: (shorthand: string, room: ?string) => {
+    onDestinationSelected: (shorthand: string, room: string | undefined): any => {
       dispatch(actions.setDestination({ shorthand, room }));
       dispatch(actions.setHeaderTitle('directions', 'find'));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
@@ -167,4 +167,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BuildingComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(BuildingComponent) as any;

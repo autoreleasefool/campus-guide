@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-06-02
- * @file Steps.js
+ * @file Steps.tsx
  * @description Displays steps to travel from one destination to another.
- *
- * @flow
  */
 'use strict';
 
@@ -36,43 +34,32 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-// import * as actions from 'actions';
-
-// Types
-import type { Destination, Language, Step } from 'types';
-
-// Type definition for component props.
-type Props = {
-  destination: ?Destination,  // The user's selected destination
-  language: Language,         // The current language, selected by the user
-}
-
-// Type definition for component state.
-type State = {
-  steps: Array < Step >,  // List of steps for the user to follow
-}
 
 // Imports
 import ActionButton from 'react-native-action-button';
-import AdView from 'AdView';
-import Header from 'Header';
-import PaddedIcon from 'PaddedIcon';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as TextUtils from 'TextUtils';
-import * as Translations from 'Translations';
+import AdView from '../../components/AdView';
+import Header from '../../components/Header';
+import PaddedIcon from '../../components/PaddedIcon';
+import * as Constants from '../../constants';
+import * as Display from '../../util/Display';
+import * as TextUtils from '../../util/TextUtils';
+import * as Translations from '../../util/Translations';
 
-class Steps extends React.PureComponent {
+// Types
+import { Step } from '../../util/Navigation';
+import { Language } from '../../util/Translations';
+import { Destination } from '../../../typings/university';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+interface Props {
+  destination: Destination | undefined; // The user's selected destination
+  language: Language;                   // The current language, selected by the user
+}
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+interface State {
+  steps: Step[];  // List of steps for the user to follow
+}
+
+class Steps extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -87,19 +74,19 @@ class Steps extends React.PureComponent {
     };
   }
 
-  _toggleActionOptions() {
+  _toggleActionOptions(): void {
     console.log('Action options');
   }
 
   /**
    * Renders a title and text for the user's destination.
    *
-   * @returns {?ReactElement<any>} Header for the title and Text for the destination
+   * @returns {JSX.Element|undefined} Header for the title and Text for the destination
    */
-  _renderDestination(): ?ReactElement < any > {
+  _renderDestination(): JSX.Element | undefined {
     const destination = this.props.destination;
-    if (destination == null) {
-      return null;
+    if (destination == undefined) {
+      return undefined;
     }
 
     return (
@@ -116,9 +103,9 @@ class Steps extends React.PureComponent {
   /**
    * Renders a separator line between rows.
    *
-   * @returns {ReactElement<any>} a separator for the list of steps
+   * @returns {JSX.Element} a separator for the list of steps
    */
-  _renderSeparator(): ReactElement < any > {
+  _renderSeparator(): JSX.Element {
     // TODO: remove 'indentSeparator' for first and last items
     return <View style={[ _styles.separator, _styles.indentSeparator ]} />;
   }
@@ -127,12 +114,12 @@ class Steps extends React.PureComponent {
    * Renders a single navigation step.
    *
    * @param {Step} item the navigation step
-   * @returns {ReactElement<any>} the text and icon of the navigation step
+   * @returns {JSX.Element} the text and icon of the navigation step
    */
-  _renderStep({ item }: { item: Step }): ReactElement < any > {
-    const icon = DisplayUtils.getPlatformIcon(Platform.OS, item);
-    let iconView = null;
-    if (icon != null) {
+  _renderStep({ item }: { item: Step }): JSX.Element {
+    const icon = Display.getPlatformIcon(Platform.OS, item);
+    let iconView: JSX.Element | undefined;
+    if (icon != undefined) {
       iconView = (
         <PaddedIcon
             color={Constants.Colors.primaryWhiteText}
@@ -143,7 +130,7 @@ class Steps extends React.PureComponent {
     return (
       <View>
         {iconView}
-        <Text style={[ _styles.step, icon == null ? _styles.stepPadding : {} ]}>
+        <Text style={[ _styles.step, icon == undefined ? _styles.stepPadding : {} ]}>
           {Translations.getDescription(this.props.language, item)}
         </Text>
       </View>
@@ -153,9 +140,9 @@ class Steps extends React.PureComponent {
   /**
    * Renders a title and a list of steps for the user to take to reach their destination.
    *
-   * @returns {ReactElement<any>} Header for the title and FlatList for the steps
+   * @returns {JSX.Element} Header for the title and FlatList for the steps
    */
-  _renderSteps(): ReactElement < any > {
+  _renderSteps(): JSX.Element {
     return (
       <View style={_styles.container}>
         <Header
@@ -173,9 +160,9 @@ class Steps extends React.PureComponent {
   /**
    * Renders the steps to direct the user to their destination.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <AdView />
@@ -195,43 +182,38 @@ class Steps extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
+  },
+  indentSeparator: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
   navigatingTo: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Subtitle,
     margin: Constants.Sizes.Margins.Expanded,
   },
+  separator: {
+    backgroundColor: Constants.Colors.primaryWhiteText,
+    height: StyleSheet.hairlineWidth,
+  },
   step: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
-    marginTop: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
     marginBottom: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
   },
   stepPadding: {
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.primaryWhiteText,
-  },
-  indentSeparator: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
-  },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     destination: store.directions.destination,
     language: store.config.options.language,
   };
 };
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {};
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Steps);
-export default connect(mapStateToProps)(Steps);
+export default connect(mapStateToProps)(Steps) as any;

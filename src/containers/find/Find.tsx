@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-19
- * @file Find.js
+ * @file Find.tsx
  * @description Navigator for managing views for finding rooms on campus.
- *
- * @flow
  */
 'use strict';
 
@@ -31,34 +29,34 @@ import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Route, Tab } from 'types';
-
-// Type definition for component props.
-type Props = {
-  appTab: Tab,                              // The current tab the app is showing
-  backCount: number,                        // Number of times the user has requested back navigation
-  onBackNavigation: (view: number) => void, // Callback when user pops the stacks
-  view: number,                             // The current view
-};
+import * as actions from '../../actions';
 
 // Imports
-import * as Constants from 'Constants';
+import * as Constants from '../../constants';
 
 // Screen imports
-import Building from './Building';
-import Home from './Home';
-import StartingPoint from './StartingPoint';
-import Steps from './Steps';
+import { default as BuildingScreen } from './Building';
+import { default as HomeScreen } from './Home';
+import { default as StartingPointScreen } from './StartingPoint';
+import { default as StepsScreen } from './Steps';
 
-class Find extends React.PureComponent {
+// Types
+import { Route, Tab } from '../../../typings/global';
+import { Building } from '../../../typings/university';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+interface Props {
+  appTab: Tab;                          // The current tab the app is showing
+  backCount: number;                    // Number of times the user has requested back navigation
+  view: number;                         // The current view
+  onBackNavigation(view: number): void; // Callback when user pops the stacks
+}
+
+interface State {}
+
+class Find extends React.PureComponent<Props, State> {
+
+  /** List of buildings in the app. */
+  _buildingList: Building[] = [];
 
   /**
    * Constructor.
@@ -74,7 +72,7 @@ class Find extends React.PureComponent {
    * Adds a listener for navigation events.
    */
   componentDidMount(): void {
-    this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+    (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
   }
 
   /**
@@ -83,29 +81,27 @@ class Find extends React.PureComponent {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    if (nextProps.view != this.props.view) {
-      const currentRoutes = this.refs.Navigator.getCurrentRoutes();
-      for (let i = 0; i < currentRoutes.length; i++) {
-        if (nextProps.view === currentRoutes[i].id) {
-          this.refs.Navigator.popToRoute(currentRoutes[i]);
+    if (nextProps.view !== this.props.view) {
+      const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
+      for (const route of currentRoutes) {
+        if (nextProps.view === route.id) {
+          (this.refs.navigator as any).popToRoute(route);
+
           return;
         }
       }
-      this.refs.Navigator.push({ id: nextProps.view });
-    } else if (nextProps.appTab === 'find' && nextProps.backCount != this.props.backCount) {
-      this.refs.Navigator.pop();
+      (this.refs.navigator as any).push({ id: nextProps.view });
+    } else if (nextProps.appTab === 'find' && nextProps.backCount !== this.props.backCount) {
+      (this.refs.navigator as any).pop();
     }
   }
-
-  /** List of buildings in the app. */
-  _buildingList: Array < Object > = [];
 
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes
+   * @returns {any} a configuration for the transition between scenes
    */
-  _configureScene(): Object {
+  _configureScene(): any {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
@@ -115,7 +111,7 @@ class Find extends React.PureComponent {
    * @param {any} event the event taking place
    */
   _handleNavigationEvent(): void {
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    const currentRoutes = (this.refs.navigator as any).getCurrentRoutes();
     this.props.onBackNavigation(currentRoutes[currentRoutes.length - 1].id);
   }
 
@@ -123,25 +119,25 @@ class Find extends React.PureComponent {
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display
-   * @returns {ReactElement<any>} the view to render, based on {route}
+   * @returns {JSX.Element} the view to render, based on {route}
    */
-  _renderScene(route: Route): ReactElement < any > {
+  _renderScene(route: Route): JSX.Element {
     switch (route.id) {
       case Constants.Views.Find.Home:
         return (
-          <Home buildingList={this._buildingList} />
+          <HomeScreen buildingList={this._buildingList} />
         );
       case Constants.Views.Find.Building:
         return (
-          <Building />
+          <BuildingScreen />
         );
       case Constants.Views.Find.StartingPoint:
         return (
-          <StartingPoint buildingList={this._buildingList} />
+          <StartingPointScreen buildingList={this._buildingList} />
         );
       case Constants.Views.Find.Steps:
         return (
-          <Steps />
+          <StepsScreen />
         );
       default:
         // TODO: generic error view?
@@ -154,9 +150,9 @@ class Find extends React.PureComponent {
   /**
    * Renders a navigator to switch between views in the Find screen.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <Navigator
           configureScene={this._configureScene}
@@ -175,7 +171,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -183,12 +179,12 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onBackNavigation: (view: number) => {
+    onBackNavigation: (view: number): any => {
       if (view === Constants.Views.Find.Home) {
         dispatch(actions.showBack(false, 'find'));
-        dispatch(actions.setHeaderTitle(null, 'find'));
+        dispatch(actions.setHeaderTitle(undefined, 'find'));
       } else {
         dispatch(actions.showBack(true, 'find'));
       }
@@ -198,4 +194,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Find);
+export default connect(mapStateToProps, mapDispatchToProps)(Find) as any;

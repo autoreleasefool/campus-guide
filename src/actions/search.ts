@@ -39,7 +39,7 @@ export function deactivateStudyFilter(filter: string): any {
   };
 }
 
-export function search(terms: string | undefined): any {
+export function search(terms?: string | undefined): any {
   return {
     terms,
     type: Actions.Search.Search,

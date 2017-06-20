@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-19
- * @file Home.js
+ * @file Home.tsx
  * @description Provides the user with details on navigating the campus.
- *
- * @flow
  */
 'use strict';
 
@@ -30,39 +28,40 @@ import { StyleSheet, View } from 'react-native';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Building, Language, Name } from 'types';
+import * as actions from '../../actions';
 
 // Imports
-import ImageGrid from 'ImageGrid';
-import Header from 'Header';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import ImageGrid from '../../components/ImageGrid';
+import Header from '../../components/Header';
+import * as Constants from '../../constants';
+import * as Translations from '../../util/Translations';
+
+// Types
+import { Language } from '../../util/Translations';
+import { Name } from '../../../typings/global';
+import { Building } from '../../../typings/university';
+
+interface Props {
+  buildingList: Building[];                     // List of buildings to display
+  filter: string | undefined;                   // The current filter for buildings
+  language: Language;                           // The current language, selected by the user
+  onBuildingSelect(b: Building, n: Name): void; // Updates the state when a building is selected
+}
+
+interface State {}
 
 // Number of columns to display in building grid
-const BUILDING_COLUMNS: number = 3;
+const BUILDING_COLUMNS = 3;
 
-class FindHome extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: {
-    buildingList: Array < Object >,                   // List of buildings to display
-    filter: ?string,                                  // The current filter for buildings
-    language: Language,                               // The current language, selected by the user
-    onBuildingSelect: (b: Building, n: Name) => void, // Updates the state when a building is selected
-  }
+class FindHome extends React.PureComponent<Props, State> {
 
   /**
    * Loads a view to display details about a building.
    *
-   * @param {Building} building object describing the building
+   * @param {Building|undefined} building object describing the building
    */
-  _onBuildingSelect(building: ?Building): void {
-    if (building != null) {
+  _onBuildingSelect(building: Building | undefined): void {
+    if (building != undefined) {
       const name = {
         name_en: Translations.getEnglishName(building) || '',
         name_fr: Translations.getFrenchName(building) || '',
@@ -75,9 +74,9 @@ class FindHome extends React.PureComponent {
   /**
    * Renders the user's upcoming classes for the day and a list of buildings on campus.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <View style={_styles.headerContainer}>
@@ -101,30 +100,30 @@ class FindHome extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
+    flex: 1,
   },
   headerContainer: {
     backgroundColor: Constants.Colors.primaryBackground,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     filter: store.search.terms,
     language: store.config.options.language,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onBuildingSelect: (building: Building, buildingName: Name) => {
+    onBuildingSelect: (building: Building, buildingName: Name): any => {
       dispatch(actions.setHeaderTitle(buildingName, 'find'));
       dispatch(actions.viewBuilding(building));
       dispatch(actions.switchFindView(Constants.Views.Find.Building));
-      dispatch(actions.search(null));
+      dispatch(actions.search());
     },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FindHome);
+export default connect(mapStateToProps, mapDispatchToProps)(FindHome) as any;

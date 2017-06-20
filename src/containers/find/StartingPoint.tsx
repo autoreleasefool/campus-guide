@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-03-17
- * @file StartingPoint.js
+ * @file StartingPoint.tsx
  * @description Allows the user to select their starting position
- *
- * @flow
  */
 'use strict';
 
@@ -39,75 +37,63 @@ import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type {
-  Building,
-  Destination,
-  Language,
-  LatLong,
-  LatLongDelta,
-  Name,
-  Route,
-  VoidFunction,
-} from 'types';
-
-// Type definition for component props.
-type Props = {
-  buildingList: Array < Object >,                                       // List of buildings to display
-  clearSearch: VoidFunction,                                            // Clear the current search
-  showSearch: (show: boolean) => void,                                  // Hide or show the search box
-  destination: ?Destination,                                            // The user's selected destination
-  filter: ?string,                                                      // Current search terms
-  language: Language,                                                   // The current language, selected by the user
-  universityLocation: LatLong,                                          // Location of the university
-  universityName: (Name),                                               // Name of the university
-  onStartingPointSelected: (shorthand: string, room: ?string) => void,  // Selects a starting point for navigation
-}
-
-// Type definition for component state.
-type State = {
-  closestBuilding: ?Building,   // The closest building, or null if no buildings are nearby
-  locating: boolean,            // Indicates if the app is searching for the closest building
-  selectedBuilding: ?Building,  // The building the user has selected to navigate from
-  viewingMap: boolean,          // True if the user is viewing the map to select a starting point
-}
+import * as actions from '../../actions';
 
 // Imports
-import Header from 'Header';
-import ImageGrid from 'ImageGrid';
+import Header from '../../components/Header';
+import ImageGrid from '../../components/ImageGrid';
 import MapView from 'react-native-maps';
-import PaddedIcon from 'PaddedIcon';
-import RoomGrid from 'RoomGrid';
-import Suggestion from 'Suggestion';
-import * as Constants from 'Constants';
-import * as NavigationUtils from 'NavigationUtils';
-import * as TextUtils from 'TextUtils';
-import * as Translations from 'Translations';
+import PaddedIcon from '../../components/PaddedIcon';
+import RoomGrid from '../../components/RoomGrid';
+import Suggestion from '../../components/Suggestion';
+import * as Constants from '../../constants';
+import * as Navigation from '../../util/Navigation';
+import * as TextUtils from '../../util/TextUtils';
+import * as Translations from '../../util/Translations';
+
+// Types
+import { Language } from '../../util/Translations';
+import { LatLong, LatLongDelta, Name, Route } from '../../../typings/global';
+import { Building, Destination } from '../../../typings/university';
+
+interface Props {
+  buildingList: Building[];             // List of buildings to display
+  destination: Destination | undefined; // The user's selected destination
+  filter: string | undefined;           // Current search terms
+  language: Language;                   // The current language, selected by the user
+  universityLocation: LatLong;          // Location of the university
+  universityName: Name;                 // Name of the university
+  clearSearch(): void;                  // Clear the current search
+  onStartingPointSelected(shorthand: string, room: string | undefined): void;
+                                        // Selects a starting point for navigation
+  showSearch(show: boolean): void;      // Hide or show the search box
+}
+
+interface State {
+  closestBuilding: Building | undefined;  // The closest building, or null if no buildings are nearby
+  locating: boolean;                      // Indicates if the app is searching for the closest building
+  selectedBuilding: Building | undefined; // The building the user has selected to navigate from
+  viewingMap: boolean;                    // True if the user is viewing the map to select a starting point
+}
 
 // Number of columns to display in building grid
-const BUILDING_COLUMNS: number = 3;
+const BUILDING_COLUMNS = 3;
 
 // ID of route to select a building
-const SELECT_BUILDING: number = 0;
+const SELECT_BUILDING = 0;
 // ID of route to select a room
-const SELECT_ROOM: number = 1;
+const SELECT_ROOM = 1;
 
 // Maximum distance to consider a building 'nearby'
 const MAXIMUM_DISTANCE = 0.1; // 100 metres
 
-class StartingPoint extends React.PureComponent {
+class StartingPoint extends React.PureComponent<Props, State> {
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+  /** Starting region to display on map. */
+  _initialRegion: LatLong & LatLongDelta;
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+  /** Buttons for viewing directions to the university */
+  _directionsButtons: any[];
 
   /**
    * Constructor.
@@ -129,9 +115,9 @@ class StartingPoint extends React.PureComponent {
     }
 
     this.state = {
-      closestBuilding: null,
+      closestBuilding: undefined,
       locating: false,
-      selectedBuilding: null,
+      selectedBuilding: undefined,
       viewingMap: false,
     };
 
@@ -153,18 +139,12 @@ class StartingPoint extends React.PureComponent {
     this._findClosestBuilding();
   }
 
-  /** Starting region to display on map. */
-  _initialRegion: LatLong & LatLongDelta;
-
-  /** Buttons for viewing directions to the university */
-  _directionsButtons: Array < Object >;
-
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes
+   * @returns {any} a configuration for the transition between scenes
    */
-  _configureScene(): Object {
+  _configureScene(): any {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
@@ -173,11 +153,11 @@ class StartingPoint extends React.PureComponent {
    */
   _findClosestBuilding(): void {
     this.setState({ locating: true });
-    navigator.geolocation.getCurrentPosition((position: Object) => {
+    navigator.geolocation.getCurrentPosition((position: any) => {
       const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
       this.setState({
+        closestBuilding: Navigation.findClosestBuilding(location, this.props.buildingList, MAXIMUM_DISTANCE),
         locating: false,
-        closestBuilding: NavigationUtils.findClosestBuilding(location, this.props.buildingList, MAXIMUM_DISTANCE),
       });
     },
       (err: any) => console.error('Could not get user location.', err),
@@ -212,7 +192,8 @@ class StartingPoint extends React.PureComponent {
    */
   _onClosestBuildingSelected(): void {
     if (this.state.closestBuilding) {
-      this.props.onStartingPointSelected(this.state.closestBuilding.shorthand, null);
+      // TODO: remove undefined
+      this.props.onStartingPointSelected(this.state.closestBuilding.shorthand, undefined);
     } else {
       const universityName = Translations.getName(this.props.language, this.props.universityName);
       Alert.alert(
@@ -226,12 +207,12 @@ class StartingPoint extends React.PureComponent {
   /**
    * Displays the rooms of the selected building
    *
-   * @param {Building} building object describing the building
+   * @param {Building|undefined} building object describing the building
    */
-  _onBuildingSelected(building: ?Building): void {
-    if (building != null) {
+  _onBuildingSelected(building: Building | undefined): void {
+    if (building != undefined) {
       this.props.clearSearch();
-      this.refs.Navigator.push({ id: SELECT_ROOM, data: building });
+      (this.refs.Navigator as any).push({ id: SELECT_ROOM, data: building });
     }
   }
 
@@ -239,18 +220,18 @@ class StartingPoint extends React.PureComponent {
    * Sets the user's starting point for navigation
    *
    * @param {string}  shorthand shorthand code of the building that has been selected
-   * @param {?string} room name of the room selected, or null if a building was selected
+   * @param {string|undefined} room name of the room selected, or null if a building was selected
    */
-  _onRoomSelected(shorthand: string, room: ?string): void {
+  _onRoomSelected(shorthand: string, room: string | undefined): void {
     this.props.onStartingPointSelected(shorthand, room);
   }
 
   /**
    * Renders the list of buildings for the user to select as their starting point.
    *
-   * @returns {ReactElement<any>} a grid of images
+   * @returns {JSX.Element} a grid of images
    */
-  _renderImageGrid(): ReactElement < any > {
+  _renderImageGrid(): JSX.Element {
     return (
       <ImageGrid
           columns={BUILDING_COLUMNS}
@@ -265,12 +246,12 @@ class StartingPoint extends React.PureComponent {
    * Renders an option to navigate to a building's lobby
    *
    * @param {string} shorthand the building shorthand code
-   * @returns {ReactElement<any>} a text view displaying the building's code
+   * @returns {JSX.Element} a text view displaying the building's code
    */
-  _renderBuildingLobby(shorthand: string): ReactElement < any > {
+  _renderBuildingLobby(shorthand: string): JSX.Element {
     return (
       <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={() => this._onRoomSelected(shorthand, null)}>
+        <TouchableOpacity onPress={(): void => this._onRoomSelected(shorthand, undefined)}>
           <View style={_styles.buildingLobby}>
             <PaddedIcon
                 color={Constants.Colors.primaryWhiteIcon}
@@ -288,12 +269,12 @@ class StartingPoint extends React.PureComponent {
   /**
    * Renders a view describing the user's selected destination.
    *
-   * @returns {?ReactElement<any>} a Header and Text view
+   * @returns {JSX.Element|undefined} a Header and Text view
    */
-  _renderDestination(): ?ReactElement < any > {
+  _renderDestination(): JSX.Element | undefined {
     const destination = this.props.destination;
-    if (destination == null) {
-      return null;
+    if (destination == undefined) {
+      return undefined;
     }
 
     return (
@@ -310,9 +291,9 @@ class StartingPoint extends React.PureComponent {
   /**
    * Renders a header, with a callback to switch between viewing a list of buildings, and a map.
    *
-   * @returns {ReactElement<any>} a Header view, with subtitle to switch between list and map
+   * @returns {JSX.Element} a Header view, with subtitle to switch between list and map
    */
-  _renderStartingPointHeader(): ReactElement < any > {
+  _renderStartingPointHeader(): JSX.Element {
     let subtitleText;
     let subtitleIcon;
     if (this.state.viewingMap) {
@@ -338,14 +319,14 @@ class StartingPoint extends React.PureComponent {
    * Renders a list of rooms to select from a building.
    *
    * @param {Building} building the building to render rooms from
-   * @returns {ReactElement<any>} a room grid
+   * @returns {JSX.Element} a room grid
    */
-  _renderRoomGrid(building: Building): ReactElement < any > {
+  _renderRoomGrid(building: Building): JSX.Element {
     return (
       <View style={_styles.container}>
         <Header
             icon={{ name: 'chevron-left', class: 'material' }}
-            iconCallback={() => this.refs.Navigator.pop()}
+            iconCallback={(): void => (this.refs.Navigator as any).pop()}
             title={Translations.getName(this.props.language, building) || ''} />
         <RoomGrid
             filter={this.props.filter}
@@ -362,9 +343,9 @@ class StartingPoint extends React.PureComponent {
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display
-   * @returns {ReactElement<any>} the view to render, based on {route}
+   * @returns {JSX.Element} the view to render, based on {route}
    */
-  _renderScene(route: Route): ReactElement < any > {
+  _renderScene(route: Route): JSX.Element {
     switch (route.id) {
       case SELECT_BUILDING:
         return this._renderImageGrid();
@@ -381,9 +362,9 @@ class StartingPoint extends React.PureComponent {
   /**
    * Renders a navigator to switch between selecting a building or room.
    *
-   * @returns {ReactElement<any>} a navigator component
+   * @returns {JSX.Element} a navigator component
    */
-  _renderStartingPointList(): ReactElement < any > {
+  _renderStartingPointList(): JSX.Element {
     return (
       <Navigator
           configureScene={this._configureScene}
@@ -396,9 +377,9 @@ class StartingPoint extends React.PureComponent {
   /**
    * Renders a map to select a starting location.
    *
-   * @returns {ReactElement<any>} a map component
+   * @returns {JSX.Element} a map component
    */
-  _renderStartingPointMap(): ReactElement < any > {
+  _renderStartingPointMap(): JSX.Element {
     const suggestion = this.state.closestBuilding
         ? Translations.getName(this.props.language, this.state.closestBuilding)
         : Translations.get(this.props.language, 'no_buildings_nearby');
@@ -421,13 +402,12 @@ class StartingPoint extends React.PureComponent {
     );
   }
 
-
   /**
    * Renders a navigator to switch between selecting a building and a room
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         {this._renderDestination()}
@@ -442,22 +422,17 @@ class StartingPoint extends React.PureComponent {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Constants.Colors.primaryBackground,
-  },
-  navigatingTo: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Subtitle,
-    margin: Constants.Sizes.Margins.Expanded,
-  },
   buildingLobby: {
+    alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    marginTop: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
     marginBottom: Constants.Sizes.Margins.Expanded,
-    alignItems: 'center',
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
+  },
+  container: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   lobbyText: {
     color: Constants.Colors.primaryWhiteText,
@@ -466,14 +441,19 @@ const _styles = StyleSheet.create({
   map: {
     flex: 1,
   },
+  navigatingTo: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
+    margin: Constants.Sizes.Margins.Expanded,
+  },
   separator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
-    backgroundColor: Constants.Colors.tertiaryBackground,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     destination: store.directions.destination,
     filter: store.search.terms,
@@ -483,15 +463,15 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    clearSearch: () => dispatch(actions.search(null)),
-    onStartingPointSelected: (shorthand: string, room: ?string) => {
+    clearSearch: (): void => dispatch(actions.search()),
+    onStartingPointSelected: (shorthand: string, room: string | undefined): void => {
       dispatch(actions.setStartingPoint({ shorthand, room }));
       dispatch(actions.switchFindView(Constants.Views.Find.Steps));
     },
-    showSearch: (show: boolean) => dispatch(actions.showSearch(show)),
+    showSearch: (show: boolean): void => dispatch(actions.showSearch(show)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(StartingPoint);
+export default connect(mapStateToProps, mapDispatchToProps)(StartingPoint) as any;
