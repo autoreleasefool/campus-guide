@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-27
- * @file Home.js
+ * @file Home.tsx
  * @description Root view for info which help users become acquainted with the school.
- *
- * @flow
  */
 'use strict';
 
@@ -30,38 +28,27 @@ import { StyleSheet, View } from 'react-native';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { MenuSection, Language } from 'types';
-
-// Type definition for component props.
-type Props = {
-  language: Language,                           // The current language, selected by the user
-  onSectionSelected: (section: string) => void, // Display contents of the section in new view
-}
-
-// Type definition for component state.
-type State = {
-  sections: Array < MenuSection >,  // Sections in the discover section
-};
+import * as actions from '../../actions';
 
 // Imports
-import Menu from 'Menu';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
+import Menu from '../../components/Menu';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
 
-class DiscoverHome extends React.PureComponent {
+// Types
+import { Language } from '../../util/Translations';
+import { MenuSection } from '../../../typings/global';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props
+interface Props {
+  language: Language;                       // The current language, selected by the user
+  onSectionSelected(section: string): void; // Display contents of the section in new view
+}
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+interface State {
+  sections: MenuSection[];  // Sections in the discover section
+}
+
+class DiscoverHome extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -82,7 +69,7 @@ class DiscoverHome extends React.PureComponent {
     if (this.state.sections.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/discover.json'))
-          .then((sections: Array < MenuSection >) => this.setState({ sections }))
+          .then((sections: MenuSection[]) => this.setState({ sections }))
           .catch((err: any) => console.error('Configuration could not be initialized for discovery.', err));
     }
   }
@@ -90,9 +77,9 @@ class DiscoverHome extends React.PureComponent {
   /**
    * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <Menu
@@ -107,22 +94,22 @@ class DiscoverHome extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     language: store.config.options.language,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onSectionSelected: (section: string) => {
+    onSectionSelected: (section: string): void => {
       let view: number = Constants.Views.Discover.Home;
-      let title: ?string = null;
+      let title: string | undefined;
 
       switch (section) {
         case 'hou':
@@ -157,4 +144,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscoverHome);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscoverHome) as any;

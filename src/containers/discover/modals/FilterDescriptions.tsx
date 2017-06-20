@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-03-13
- * @file FilterDescriptions.js
+ * @file FilterDescriptions.tsx
  * @description List of places to study on campus, along with directions and filtering
- *
- * @flow
  */
 'use strict';
 
@@ -34,45 +32,41 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type { Language } from 'types';
+// Imports
+import PaddedIcon from '../../../components/PaddedIcon';
+import * as Constants from '../../../constants';
+import * as Display from '../../../util/Display';
+import * as Translations from '../../../util/Translations';
 
-// Type definition for component props.
-type Props = {
-  filters: Array < string >,  // List of filter IDs
-  descriptions: Object,       // Mapping of filter IDs to their descriptions
-  language: Language,         // The current language, selected by the user
+// Types
+import { Language } from '../../../util/Translations';
+
+interface Props {
+  filters: string[];  // List of filter IDs
+  descriptions: any;  // Mapping of filter IDs to their descriptions
+  language: Language; // The current language, selected by the user
 }
 
-// Imports
-import PaddedIcon from 'PaddedIcon';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
+interface State {}
 
-export default class StudySpots extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+export default class StudySpots extends React.PureComponent<Props, State> {
 
   /**
    * Renders a description of a filter.
    *
    * @param {string} filter the filter to render
-   * @returns {ReactElement<any>} the filter icon, name and description
+   * @returns {JSX.Element} the filter icon, name and description
    */
-  _renderItem({ item }: { item: string }): ReactElement < any > {
+  _renderItem({ item }: { item: string }): JSX.Element {
     const filter = this.props.descriptions[item];
     const name = Translations.getName(this.props.language, filter) || '';
     const description = Translations.getDescription(this.props.language, filter) || '';
-    const icon = DisplayUtils.getPlatformIcon(Platform.OS, filter);
+    const icon = Display.getPlatformIcon(Platform.OS, filter);
 
     return (
       <View style={_styles.filter}>
-        {icon == null
-          ? null
+        {icon == undefined
+          ? undefined
           : <PaddedIcon
               color={Constants.Colors.primaryWhiteText}
               icon={icon} /> }
@@ -87,18 +81,18 @@ export default class StudySpots extends React.PureComponent {
   /**
    * Renders a separator line between rows.
    *
-   * @returns {ReactElement<any>} a separator for the list of filters
+   * @returns {JSX.Element} a separator for the list of filters
    */
-  _renderSeparator(): ReactElement < any > {
+  _renderSeparator(): JSX.Element {
     return <View style={_styles.separator} />;
   }
 
   /**
    * Renders a list of descriptions for the filters.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <FlatList
@@ -114,15 +108,15 @@ export default class StudySpots extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.secondaryBackground,
+    flex: 1,
   },
   filter: {
-    marginTop: Constants.Sizes.Margins.Expanded,
-    marginBottom: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
     alignItems: 'center',
     flexDirection: 'row',
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
   },
   filterDescription: {
     flex: 1,
@@ -137,8 +131,8 @@ const _styles = StyleSheet.create({
     marginTop: Constants.Sizes.Margins.Regular,
   },
   separator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
-    backgroundColor: Constants.Colors.tertiaryBackground,
   },
 });

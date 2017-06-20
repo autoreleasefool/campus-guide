@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-29
- * @file Links.js
+ * @file Links.tsx
  * @description Root view for info which help users become acquainted with the school.
- *
- * @flow
  */
 'use strict';
 
@@ -31,53 +29,36 @@ import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type {
-  Language,
-  LinkSection,
-  Name,
-  Route,
-  Tab,
-} from 'types';
-
-// Type definition for component props.
-type Props = {
-  appTab: Tab,                                  // The current tab the app is showing
-  backCount: number,                            // Number of times user has requested back navigation
-  canNavigateBack: (can: boolean) => void,      // Indicate whether the app can navigate back
-  filter: ?string,                              // Keywords to filter links by
-  language: Language,                           // The current language, selected by the user
-  linkId: ?string,                              // The selected link category
-  setHeaderTitle: (t: (Name | string)) => void, // Sets the title in the app header
-  showCategory: (id: ?string | number) => void, // Shows a link category
-  showSearch: (show: boolean) => void,          // Shows or hides the search button
-}
-
-// Type definition for component state.
-type State = {
-  links: Array < LinkSection >,  // Sections of links
-};
+import * as actions from '../../actions';
 
 // Imports
-import LinkCategoryView from 'LinkCategoryView';
-import Menu from 'Menu';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import LinkCategoryView from '../../components/LinkCategoryView';
+import Menu from '../../components/Menu';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as Translations from '../../util/Translations';
 
-class Links extends React.PureComponent {
+// Types
+import { Language } from '../../util/Translations';
+import { LinkSection, Name, Tab, Route } from '../../../typings/global';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+interface Props {
+  appTab: Tab;                                          // The current tab the app is showing
+  backCount: number;                                    // Number of times user has requested back navigation
+  filter: string | undefined;                           // Keywords to filter links by
+  language: Language;                                   // The current language, selected by the user
+  linkId: string | undefined;                           // The selected link category
+  canNavigateBack(can: boolean): void;                  // Indicate whether the app can navigate back
+  setHeaderTitle(t: Name | string): void;               // Sets the title in the app header
+  showCategory(id: string | number | undefined): void;  // Shows a link category
+  showSearch(show: boolean): void;                      // Shows or hides the search button
+}
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+interface State {
+  links: LinkSection[]; // Sections of links
+}
+
+class Links extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -95,12 +76,12 @@ class Links extends React.PureComponent {
    * If the sections have not been loaded, then load them. Adds a listener to navigation events.
    */
   componentDidMount(): void {
-    this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+    (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
     if (this.state.links.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/useful_links.json'))
-          .then((links: Array < LinkSection >) => this.setState({ links }))
+          .then((links: LinkSection[]) => this.setState({ links }))
           .catch((err: any) => console.error('Configuration could not be initialized for useful links.', err));
     }
   }
@@ -111,12 +92,12 @@ class Links extends React.PureComponent {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     if (nextProps.appTab === 'discover'
-        && nextProps.backCount != this.props.backCount
+        && nextProps.backCount !== this.props.backCount
         && currentRoutes.length > 1) {
       const linkId = this.props.linkId;
-      if (linkId != null && typeof (linkId) === 'string') {
+      if (linkId != undefined && typeof (linkId) === 'string') {
         const dashIndex = linkId.lastIndexOf('-');
         if (dashIndex >= 0) {
           this.props.showCategory(linkId.substr(0, linkId.lastIndexOf('-')));
@@ -124,18 +105,18 @@ class Links extends React.PureComponent {
           this.props.showCategory(0);
         }
       }
-    } else if (nextProps.linkId != this.props.linkId) {
+    } else if (nextProps.linkId !== this.props.linkId) {
       let popped = false;
-      for (let i = 0; i < currentRoutes.length; i++) {
-        if (currentRoutes[i].id === nextProps.linkId) {
-          this.refs.Navigator.popToRoute(currentRoutes[i]);
+      for (const route of currentRoutes) {
+        if (route.id === nextProps.linkId) {
+          (this.refs.Navigator as any).popToRoute(route);
           popped = true;
           break;
         }
       }
 
       if (!popped) {
-        this.refs.Navigator.push({ id: nextProps.linkId });
+        (this.refs.Navigator as any).push({ id: nextProps.linkId });
       }
     }
   }
@@ -143,9 +124,9 @@ class Links extends React.PureComponent {
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes
+   * @returns {any} a configuration for the transition between scenes
    */
-  _configureScene(): Object {
+  _configureScene(): any {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
@@ -153,26 +134,26 @@ class Links extends React.PureComponent {
    * Gets the LinkSection from the set of useful links.
    *
    * @param {string} id identifiers for category and subcategories, delimited by dashes
-   * @returns {?LinkSection} the LinkSection found, or null
+   * @returns {LinkSection|undefined} the LinkSection found, or undefined
    */
-  _getSection(id: string): ?LinkSection {
-    const ids: Array < string > = id.split('-');
-    let categoryList: Array < LinkSection > = this.state.links;
-    let depth: number = 0;
+  _getSection(id: string): LinkSection | undefined {
+    const ids = id.split('-');
+    let categoryList = this.state.links;
+    let depth = 0;
 
-    let currentSection: ?LinkSection = null;
-    let sectionImage: ?string = null;
+    let currentSection: LinkSection | undefined;
+    let sectionImage: string | undefined;
 
-    while (currentSection == null && categoryList && categoryList.length > 0 && depth < ids.length) {
+    while (currentSection == undefined && categoryList && categoryList.length > 0 && depth < ids.length) {
       for (let i = 0; i < categoryList.length; i++) {
-        if (categoryList[i].id == ids[depth]) {
-          if (depth == 0) {
+        if (categoryList[i].id === ids[depth]) {
+          if (depth === 0) {
             sectionImage = categoryList[i].image;
           }
 
           if (depth === ids.length - 1) {
             currentSection = categoryList[i];
-          } else if (categoryList[i].categories != null) {
+          } else if (categoryList[i].categories != undefined) {
             categoryList = categoryList[i].categories;
             depth += 1;
           }
@@ -181,7 +162,7 @@ class Links extends React.PureComponent {
       }
     }
 
-    if (sectionImage != null && currentSection != null) {
+    if (sectionImage != undefined && currentSection != undefined) {
       currentSection.image = sectionImage;
     }
 
@@ -192,7 +173,7 @@ class Links extends React.PureComponent {
    * Handles navigation events.
    */
   _handleNavigationEvent(): void {
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     if (currentRoutes.length > 1 && this.state.links.length > 0) {
       const section = this._getSection(currentRoutes[currentRoutes.length - 1].id);
       const title = {
@@ -215,8 +196,8 @@ class Links extends React.PureComponent {
    * @param {string} id the id of the category to display
    */
   _onCategorySelected(id: string): void {
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
-    if (currentRoutes != null && currentRoutes.length > 1) {
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
+    if (currentRoutes != undefined && currentRoutes.length > 1) {
       this.props.showCategory(`${currentRoutes[currentRoutes.length - 1].id}-${id}`);
     } else {
       this.props.showCategory(id);
@@ -227,11 +208,11 @@ class Links extends React.PureComponent {
    * Renders a set of views to display details about a link section.
    *
    * @param {string} id identifier of the section to render. If it is a subsection, ids are separated by dashes
-   * @returns {ReactElement<any>} the set of views to render
+   * @returns {JSX.Element} the set of views to render
    */
-  _renderSection(id: string): ReactElement < any > {
+  _renderSection(id: string): JSX.Element {
     const section = this._getSection(id);
-    if (section == null) {
+    if (section == undefined) {
       // TODO: return generic error view?
       return (
         <View style={_styles.container} />
@@ -251,12 +232,12 @@ class Links extends React.PureComponent {
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display
-   * @returns {ReactElement<any>} the view to render, based on {route}
+   * @returns {JSX.Element} the view to render, based on {route}
    */
-  _renderScene(route: Route): ReactElement < any > {
-    if (typeof (route.id) == 'string' && this.state.links.length > 0) {
+  _renderScene(route: Route): JSX.Element {
+    if (typeof (route.id) === 'string' && this.state.links.length > 0) {
       return this._renderSection(route.id);
-    } else if (this.state.links === 0) {
+    } else if (this.state.links.length === 0) {
       return (
         <View style={_styles.container} />
       );
@@ -273,9 +254,9 @@ class Links extends React.PureComponent {
   /**
    * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <Navigator
           configureScene={this._configureScene}
@@ -290,12 +271,12 @@ class Links extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -305,13 +286,13 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('links', can)),
-    setHeaderTitle: (title: (Name | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
-    showCategory: (id: ?string | number) => dispatch(actions.switchLinkCategory(id)),
-    showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
+    canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('links', can)),
+    setHeaderTitle: (title: Name | string): void => dispatch(actions.setHeaderTitle(title, 'discover')),
+    showCategory: (id: string | number | undefined): void => dispatch(actions.switchLinkCategory(id)),
+    showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Links);
+export default connect(mapStateToProps, mapDispatchToProps)(Links) as any;

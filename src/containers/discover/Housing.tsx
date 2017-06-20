@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-05-17
- * @file Housing.js
+ * @file Housing.tsx
  * @description Provides menu options for viewing information about housing near the university
- *
-
  */
 'use strict';
 
@@ -42,74 +40,61 @@ import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type {
-  BuildingProperty,
-  HousingInfo,
-  Language,
-  Residence,
-  ResidenceProperty,
-  Route,
-  Section,
-  Tab,
-} from 'types';
-
-// Type definition for component props.
-type Props = {
-  appTab: Tab,                                  // The current tab the app is showing
-  backCount: number,                            // Number of times user has requested back navigation
-  canNavigateBack: (can: boolean) => void,      // Indicate whether the app can navigate back
-  filter: ?string,                              // Keywords to filter links by
-  language: Language,                           // The current language, selected by the user
-  onSectionSelected: (section: string) => void, // Display contents of the section in new view
-  residence: ?Residence,                        // The currently selected residence
-  selectResidence: (r: ?Residence) => void,     // Selects a residence
-  showSearch: (show: boolean) => void,          // Shows or hides the search button
-  switchView: (view: number) => void,           // Set the current housing view
-  view: number,                                 // Current view to display
-}
-
-// Type definition for component state.
-type State = {
-  header: Array < BuildingProperty >,                         // Header details about the residence
-  housingInfo: ?HousingInfo,                                  // Housing information about the university
-  residenceDetails: Array < Section < ResidenceProperty > >,  // List of specific properties of the residence
-};
+import * as actions from '../../actions';
 
 // Imports
-import BuildingHeader from 'BuildingHeader';
-import Header from 'Header';
-import ImageGrid from 'ImageGrid';
-import LinkCategoryView from 'LinkCategoryView';
-import Menu from 'Menu';
+import BuildingHeader from '../../components/BuildingHeader';
+import Header from '../../components/Header';
+import ImageGrid from '../../components/ImageGrid';
+import LinkCategoryView from '../../components/LinkCategoryView';
+import Menu from '../../components/Menu';
 import Snackbar from 'react-native-snackbar';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as ExternalUtils from 'ExternalUtils';
-import * as TextUtils from 'TextUtils';
-import * as Translations from 'Translations';
-import { default as PaddedIcon, DefaultWidth as PaddedIconWidth } from 'PaddedIcon';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as External from '../../components/External';
+import * as TextUtils from '../../util/TextUtils';
+import * as Translations from '../../util/Translations';
+import { default as PaddedIcon, DefaultWidth as PaddedIconWidth } from '../../components/PaddedIcon';
+
+// Types
+import { Language } from '../../util/Translations';
+import { Route, Section, Tab } from '../../../typings/global';
+import { BuildingProperty, HousingInfo, Residence, ResidenceProperty } from '../../../typings/university';
+
+interface Props {
+  appTab: Tab;                                      // The current tab the app is showing
+  backCount: number;                                // Number of times user has requested back navigation
+  filter: string | undefined;                       // Keywords to filter links by
+  language: Language;                               // The current language, selected by the user
+  residence: Residence | undefined;                 // The currently selected residence
+  view: number;                                     // Current view to display
+  canNavigateBack(can: boolean): void;              // Indicate whether the app can navigate back
+  onSectionSelected(section: string): void;         // Display contents of the section in new view
+  selectResidence(r: Residence | undefined): void;  // Selects a residence
+  showSearch(show: boolean): void;                  // Shows or hides the search button
+  switchView(view: number): void;                   // Set the current housing view
+}
+
+interface State {
+  header: BuildingProperty[];                     // Header details about the residence
+  housingInfo: HousingInfo | undefined;           // Housing information about the university
+  residenceDetails: Section<ResidenceProperty>[]; // List of specific properties of the residence
+}
 
 // Width of screen for consistent property alignment when comparing
-const { width } = Dimensions.get('window');
+const { width }: { width: number} = Dimensions.get('window');
 const RESIDENCE_PROPERTY_WIDTH_RATIO = 0.4;
 
 // Number of columns to show residences in
 const RESIDENCE_COLUMNS = 2;
 
-class Housing extends React.PureComponent {
+class Housing extends React.PureComponent<Props, State> {
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props
+  /** Residences to be compared. */
+  _residencesToCompare: (Residence|undefined)[] = [];
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+  /** Width of properties for comparison screen. */
+  _multiPropertyWidth: { width: number } = { width: 0 };
 
   /**
    * Constructor.
@@ -119,9 +104,9 @@ class Housing extends React.PureComponent {
   constructor(props: Props) {
     super(props);
     this.state = {
-      housingInfo: null,
-      header: [],
-      residence: [],
+      header: ([] as BuildingProperty[]),
+      housingInfo: undefined,
+      residenceDetails: ([] as Section<ResidenceProperty>[]),
     };
   }
 
@@ -129,7 +114,7 @@ class Housing extends React.PureComponent {
    * If the sections have not been loaded, then load them.
    */
   componentDidMount(): void {
-    this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+    (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
     this._multiPropertyWidth.width = width * RESIDENCE_PROPERTY_WIDTH_RATIO;
 
@@ -147,65 +132,59 @@ class Housing extends React.PureComponent {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     if (nextProps.appTab === 'discover'
-        && nextProps.backCount != this.props.backCount
+        && nextProps.backCount !== this.props.backCount
         && currentRoutes.length > 1) {
       this.props.switchView(currentRoutes[currentRoutes.length - 2].id);
-    } else if (nextProps.view != this.props.view) {
+    } else if (nextProps.view !== this.props.view) {
       let popped = false;
-      for (let i = 0; i < currentRoutes.length; i++) {
-        if (currentRoutes[i].id === nextProps.view) {
-          this.refs.Navigator.popToRoute(currentRoutes[i]);
+      for (const route of currentRoutes) {
+        if (route.id === nextProps.view) {
+          (this.refs.Navigator as any).popToRoute(route);
           popped = true;
           break;
         }
       }
 
       if (!popped) {
-        this.refs.Navigator.push({ id: nextProps.view });
+       (this.refs.Navigator as any).push({ id: nextProps.view });
       }
     }
 
-    if (nextProps.residence != this.props.residence) {
+    if (nextProps.residence !== this.props.residence) {
       if (nextProps.residence) {
         const properties = this._buildResidenceProperties(nextProps.residence);
         this.setState({ header: properties });
         this._onSearch(nextProps, false);
       } else {
-        this.setState({ header: [], residenceDetails: []});
+        this.setState({ header: [], residenceDetails: [] });
       }
     }
 
-    if (nextProps.filter != this.props.filter) {
+    if (nextProps.filter !== this.props.filter) {
       this._onSearch(nextProps,
-          this.props.filter == null
+          this.props.filter == undefined
           || this.props.filter.length === 0
           || (nextProps.filter && nextProps.filter.indexOf(this.props.filter) >= 0));
     }
   }
 
-  /** Residences to be compared. */
-  _residencesToCompare: Array < ?Residence > = [];
-
-  /** Width of properties for comparison screen. */
-  _multiPropertyWidth: Object = { width: 0 };
-
   /**
    * Builds arrays of properties when a new residence is selected.
    *
    * @param {Residence} residence residence to setup properties for
-   * @returns {ResidenceDisplayProperties} properties to display a residence
+   * @returns {BuildingProperty[]} properties to display a residence
    */
-  _buildResidenceProperties(residence: Residence): Array < BuildingProperty > {
+  _buildResidenceProperties(residence: Residence): BuildingProperty[] {
     return [
       {
-        name: Translations.get(this.props.language, 'address'),
         description: Translations.getVariant(this.props.language, 'address', residence),
+        name: Translations.get(this.props.language, 'address'),
       },
       {
-        name: Translations.get(this.props.language, 'description'),
         description: Translations.getDescription(this.props.language, residence),
+        name: Translations.get(this.props.language, 'description'),
       },
     ];
   }
@@ -213,9 +192,9 @@ class Housing extends React.PureComponent {
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes
+   * @returns {any} a configuration for the transition between scenes
    */
-  _configureScene(): Object {
+  _configureScene(): any {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
@@ -223,16 +202,16 @@ class Housing extends React.PureComponent {
    * Handles navigation events.
    */
   _handleNavigationEvent(): void {
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     this.props.canNavigateBack(currentRoutes.length > 1);
     if (currentRoutes.length >= 1) {
       switch (currentRoutes[currentRoutes.length - 1].id) {
         case Constants.Views.Housing.Menu:
-          this.props.selectResidence(null);
+          this.props.selectResidence(undefined);
           this.props.showSearch(false);
           break;
         case Constants.Views.Housing.Residences:
-          this.props.selectResidence(null);
+          this.props.selectResidence(undefined);
           this.props.showSearch(true);
           break;
         case Constants.Views.Housing.ResidenceCompare:
@@ -257,14 +236,15 @@ class Housing extends React.PureComponent {
   /**
    * Handler for when user selects a set of residences to compare.
    *
-   * @param {Array<?Residence>} residences residences which were selected
+   * @param {(Residence|undefined)[]} residences residences which were selected
    */
-  _onMultiResidenceSelect(residences: Array < ?Residence >): void {
+  _onMultiResidenceSelect(residences: (Residence|undefined)[]): void {
     if (residences.length < 2) {
       Snackbar.show({
-        title: Translations.get(this.props.language, 'select_at_least_two'),
         duration: Snackbar.LENGTH_LONG,
+        title: Translations.get(this.props.language, 'select_at_least_two'),
       });
+
       return;
     }
 
@@ -279,43 +259,41 @@ class Housing extends React.PureComponent {
    * @param {boolean} narrowResults true to narrow current results, false to filter full results
    */
   _onSearch(props: Props, narrowResults: boolean): void {
-    const adjustedFilter = props.filter ? props.filter.toUpperCase() : null;
+    const adjustedFilter = props.filter ? props.filter.toUpperCase() : undefined;
     switch (props.view) {
       case Constants.Views.Housing.ResidenceCompare:
       case Constants.Views.Housing.ResidenceDetails: {
         // Start with either all of the properties for fresh searches,
         // or narrow down existing results for continued searches
-        let unfilteredProperties = null;
+        let unfilteredProperties;
         if (narrowResults) {
           unfilteredProperties = this.state.residenceDetails;
         } else if (props.residence) {
           unfilteredProperties = this.state.housingInfo.categories;
         }
 
-        if (unfilteredProperties == null) {
+        if (unfilteredProperties == undefined) {
           return;
         }
 
         const filteredProperties = [];
-        for (let i = 0; i < unfilteredProperties.length; i++) {
+        for (const unfilteredProperty of unfilteredProperties) {
           let categoryAdded = false;
 
           // Add categories and all properties if their name matches the filter
-          const category = unfilteredProperties[i];
-          const categoryName = Translations.getName(props.language, category) || '';
-          if (adjustedFilter == null || categoryName.toUpperCase().indexOf(adjustedFilter) >= 0) {
-            filteredProperties.push(category);
+          const categoryName = Translations.getName(props.language, unfilteredProperty) || '';
+          if (adjustedFilter == undefined || categoryName.toUpperCase().indexOf(adjustedFilter) >= 0) {
+            filteredProperties.push(unfilteredProperty);
             continue;
           }
 
           // Check each property in the category and add the category if any match
           // then, add only properties that match the filter
-          for (let j = 0; j < unfilteredProperties[i].data.length; j++) {
-            const property = unfilteredProperties[i].data[j];
+          for (const property of unfilteredProperty.data) {
             const propertyName = Translations.getName(props.language, property) || '';
-            if (adjustedFilter == null || propertyName.toUpperCase().indexOf(adjustedFilter) >= 0) {
+            if (adjustedFilter == undefined || propertyName.toUpperCase().indexOf(adjustedFilter) >= 0) {
               if (!categoryAdded) {
-                filteredProperties.push(Object.assign({}, unfilteredProperties[i]));
+                filteredProperties.push({ ...unfilteredProperty });
                 filteredProperties[filteredProperties.length - 1].data = [];
                 categoryAdded = true;
               }
@@ -335,9 +313,9 @@ class Housing extends React.PureComponent {
   /**
    * Handler for when user selects a residence to view details for.
    *
-   * @param {Residence} residence residence which was selected
+   * @param {Residence|undefined} residence residence which was selected
    */
-  _onSingleResidenceSelect(residence: ?Residence): void {
+  _onSingleResidenceSelect(residence: Residence | undefined): void {
     this.props.selectResidence(residence);
   }
 
@@ -349,8 +327,9 @@ class Housing extends React.PureComponent {
   _onSectionSelected(section: string): void {
     if (section === 'off') {
       const translatedLink = Translations.getLink(this.props.language, this.state.housingInfo.offCampusHousing)
-          || ExternalUtils.getDefaultLink();
-      ExternalUtils.openLink(translatedLink, this.props.language, Linking, Alert, Clipboard, TextUtils);
+          || External.getDefaultLink();
+      External.openLink(translatedLink, this.props.language, Linking, Alert, Clipboard, TextUtils);
+
       return;
     }
 
@@ -360,9 +339,9 @@ class Housing extends React.PureComponent {
   /**
    * Renders a menu to navigate between housing info sections.
    *
-   * @returns {ReactElement<any>} a menu
+   * @returns {JSX.Element} a menu
    */
-  _renderHousingMenu(): ReactElement < any > {
+  _renderHousingMenu(): JSX.Element {
     return (
       <Menu
           language={this.props.language}
@@ -374,11 +353,11 @@ class Housing extends React.PureComponent {
   /**
    * Renders a set of resources for more information on housing at the university.
    *
-   * @returns {?ReactElement<any>} A LinkCategoryView
+   * @returns {JSX.Element|undefined} A LinkCategoryView
    */
-  _renderOtherResources(): ?ReactElement < any > {
-    if (this.state.housingInfo == null) {
-      return null;
+  _renderOtherResources(): JSX.Element | undefined {
+    if (this.state.housingInfo == undefined) {
+      return undefined;
     }
 
     return (
@@ -392,9 +371,9 @@ class Housing extends React.PureComponent {
   /**
    * Renders a grid of residences.
    *
-   * @returns {ReactElement<any>} an image grid for residences
+   * @returns {JSX.Element} an image grid for residences
    */
-  _renderResidenceGrid(): ReactElement < any > {
+  _renderResidenceGrid(): JSX.Element {
     return (
       <ImageGrid
           columns={RESIDENCE_COLUMNS}
@@ -412,9 +391,9 @@ class Housing extends React.PureComponent {
   /**
    * Renders row separator.
    *
-   * @returns {ReactElement<any>} a separator styled view
+   * @returns {JSX.Element} a separator styled view
    */
-  _renderSeparator(): ReactElement < any > {
+  _renderSeparator(): JSX.Element {
     return <View style={_styles.separator} />;
   }
 
@@ -422,15 +401,15 @@ class Housing extends React.PureComponent {
    * Displays a single item, representing a property and value.
    *
    * @param {ResidenceProperty} item property for the residence
-   * @returns {?ReactElement<any>} a checked or unchecked box depending on the property value,
-   *                               and the property name
+   * @returns {JSX.Element|undefined} a checked or unchecked box depending on the property value,
+   *                                  and the property name
    */
-  _renderSingleResidenceProperty({ item }: { item: ResidenceProperty }): ?ReactElement < any > {
+  _renderSingleResidenceProperty({ item }: { item: ResidenceProperty }): JSX.Element | undefined {
     if (item.key === 'none') {
-      return null;
+      return undefined;
     }
-
     const value = this.props.residence.props[item.key];
+
     return (
       <View style={_styles.propertyContainer}>
         <PaddedIcon
@@ -451,12 +430,12 @@ class Housing extends React.PureComponent {
    * Displays a single item, representing a property and values for multiple residences.
    *
    * @param {ResidenceProperty} item property for the residence
-   * @returns {?ReactElement<any>} the property name and checked or unchecked boxes for each residence
-   *                               being compared, depending on if the property pertains to it
+   * @returns {JSX.Element|undefined} the property name and checked or unchecked boxes for each residence
+   *                                  being compared, depending on if the property pertains to it
    */
-  _renderMultiResidenceProperty({ item }: { item: ResidenceProperty }): ?ReactElement < any > {
+  _renderMultiResidenceProperty({ item }: { item: ResidenceProperty }): JSX.Element | undefined {
     if (item.key === 'none') {
-      return null;
+      return undefined;
     }
 
     return (
@@ -464,7 +443,7 @@ class Housing extends React.PureComponent {
         <Text style={[ _styles.propertyText, _styles.multiPropertyText, this._multiPropertyWidth ]}>
           {Translations.getName(this.props.language, item)}
         </Text>
-        {this._residencesToCompare.map((residence) => (
+        {this._residencesToCompare.map((residence: Residence) => (
           <PaddedIcon
               color={Constants.Colors.tertiaryBackground}
               icon={{ class: 'material', name: residence.props[item.key] ? 'check-box' : 'check-box-outline-blank' }}
@@ -478,20 +457,20 @@ class Housing extends React.PureComponent {
   /**
    * Renders a heading for a section of properties.
    *
-   * @param {Object} section section contents
-   * @returns {ReactElement<any>} a {Header} with the name of the section
+   * @param {Section<any>} section section contents
+   * @returns {JSX.Element} a {Header} with the name of the section
    */
-  _renderResidencePropertyCategory({ section }: { section: Section < * > }): ReactElement < any > {
+  _renderResidencePropertyCategory({ section }: { section: Section < any > }): JSX.Element {
     const description = Translations.getDescription(this.props.language, section);
 
     return (
       <View style={_styles.category}>
         <Header title={Translations.getName(this.props.language, section) || ''} />
-        {description == null
-          ? null
+        {description == undefined
+          ? undefined
           : <Text style={_styles.categoryDescription}>{description}</Text>}
-        {description == null
-          ? null
+        {description == undefined
+          ? undefined
           : <View style={_styles.fullSeparator} />}
       </View>
     );
@@ -501,9 +480,9 @@ class Housing extends React.PureComponent {
    * Renders a set of details and image for a single residence.
    *
    * @param {Residence} residence the residence to render details for
-   * @returns {ReactElement<any>} a building header and list of properties of the residence
+   * @returns {JSX.Element} a building header and list of properties of the residence
    */
-  _renderResidenceDetails(residence: Residence): ReactElement < any > {
+  _renderResidenceDetails(residence: Residence): JSX.Element {
     return (
       <View style={_styles.container}>
         <BuildingHeader
@@ -530,15 +509,15 @@ class Housing extends React.PureComponent {
   /**
    * Renders the set of residences being compared.
    *
-   * @returns {ReactElement<any>} residence names
+   * @returns {JSX.Element} residence names
    */
-  _renderResidenceCompareHeader(): ReactElement < any > {
+  _renderResidenceCompareHeader(): JSX.Element {
     return (
       <View>
         <Header
             icon={{ class: 'material', name: 'hotel' }}
             title={Translations.get(this.props.language, 'residences')} />
-        {this._residencesToCompare.map((residence, index) => (
+        {this._residencesToCompare.map((residence: Residence, index: number) => (
           <Text
               key={`name.${Translations.getName(this.props.language, residence)}`}
               style={_styles.multiResidenceName}>
@@ -547,7 +526,7 @@ class Housing extends React.PureComponent {
         ))}
         <View style={_styles.multiResidenceContainer}>
           <View style={[ this._multiPropertyWidth, _styles.multiResidenceColumnPadding ]} />
-          {this._residencesToCompare.map((residence, index) => (
+          {this._residencesToCompare.map((_: any, index: number) => (
             <Text
                 key={`residenceIndex.${index}`}
                 style={_styles.multiResidenceColumn}>
@@ -562,10 +541,9 @@ class Housing extends React.PureComponent {
   /**
    * Renders a set of details about multiple residences, for simple comparison.
    *
-   * @returns {ReactElement<any>} a list of properties and columns indicating which residences
-   *                              they pertain to
+   * @returns {JSX.Element} a list of properties and columns indicating which residences they pertain to
    */
-  _renderResidenceCompare(): ReactElement < any > {
+  _renderResidenceCompare(): JSX.Element {
     return (
       <ScrollView
           bounces={false}
@@ -589,10 +567,10 @@ class Housing extends React.PureComponent {
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display
-   * @returns {ReactElement<any>} the view to render, based on {route}
+   * @returns {JSX.Element} the view to render, based on {route}
    */
-  _renderScene(route: Route): ReactElement < any > {
-    let scene = null;
+  _renderScene(route: Route): JSX.Element {
+    let scene: JSX.Element;
 
     if (this.state.housingInfo) {
       switch (route.id) {
@@ -629,11 +607,11 @@ class Housing extends React.PureComponent {
   /**
    * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     const routeStack = [{ id: Constants.Views.Housing.Menu }];
-    if (this.props.view != Constants.Views.Housing.Menu) {
+    if (this.props.view !== Constants.Views.Housing.Menu) {
       routeStack.push({ id: this.props.view });
     }
 
@@ -650,75 +628,75 @@ class Housing extends React.PureComponent {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Constants.Colors.primaryBackground,
-  },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.tertiaryBackground,
-    marginLeft: Constants.Sizes.Margins.Expanded,
-  },
-  fullSeparator: {
-    flex: 1,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.tertiaryBackground,
-  },
   category: {
     backgroundColor: Constants.Colors.primaryBackground,
   },
   categoryDescription: {
+    color: Constants.Colors.primaryWhiteText,
     flex: 1,
+    fontSize: Constants.Sizes.Text.Body,
     margin: Constants.Sizes.Margins.Expanded,
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
-    textAlign: 'center',
     maxWidth: width - Constants.Sizes.Margins.Expanded * 2,
+    textAlign: 'center',
   },
-  propertyContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  compareHeaderSeparator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
   },
-  propertyText: {
-    marginTop: Constants.Sizes.Margins.Expanded,
-    marginBottom: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
+  container: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
+  },
+  fullSeparator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
   },
   multiPropertyText: {
     marginLeft: Constants.Sizes.Margins.Expanded,
     textAlign: 'right',
   },
-  multiResidenceContainer: {
-    flexDirection: 'row',
-  },
-  multiResidenceName: {
-    marginTop: Constants.Sizes.Margins.Regular,
-    marginBottom: 0,
-    marginLeft: Constants.Sizes.Margins.Regular,
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Subtitle,
-  },
   multiResidenceColumn: {
-    marginTop: Constants.Sizes.Margins.Expanded,
-    marginBottom: Constants.Sizes.Margins.Expanded,
-    width: PaddedIconWidth,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
-    textAlign: 'center',
     fontWeight: 'bold',
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
+    textAlign: 'center',
+    width: PaddedIconWidth,
   },
   multiResidenceColumnPadding: {
     marginRight: Constants.Sizes.Margins.Expanded * 2,
   },
-  compareHeaderSeparator: {
-    height: StyleSheet.hairlineWidth,
+  multiResidenceContainer: {
+    flexDirection: 'row',
+  },
+  multiResidenceName: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
+    marginBottom: 0,
+    marginLeft: Constants.Sizes.Margins.Regular,
+    marginTop: Constants.Sizes.Margins.Regular,
+  },
+  propertyContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  propertyText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
+  },
+  separator: {
     backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -729,29 +707,12 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('housing', can)),
-    switchView: (view: number) => {
-      let title: string = 'housing';
-      switch (view) {
-        case Constants.Views.Housing.Residences:
-        case Constants.Views.Housing.ResidenceCompare:
-        case Constants.Views.Housing.ResidenceSelect:
-          title = 'university_residences';
-          break;
-        default:
-          // Does nothing
-          // Return to default
-          break;
-      }
-
-      dispatch(actions.setHeaderTitle(title, 'discover'));
-      dispatch(actions.switchHousingView(view));
-    },
-    onSectionSelected: (section: ?string) => {
-      let view: number = Constants.Views.Housing.Menu;
-      let title: string = 'housing';
+    canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('housing', can)),
+    onSectionSelected: (section: string | undefined): void => {
+      let view = Constants.Views.Housing.Menu;
+      let title = 'housing';
 
       switch (section) {
         case 'res':
@@ -770,10 +731,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.setHeaderTitle(title, 'discover'));
       dispatch(actions.switchHousingView(view));
     },
-    selectResidence: (residence: ?Residence) => {
+    selectResidence: (residence: Residence | undefined): void => {
       dispatch(actions.switchResidence(residence));
 
-      if (residence != null) {
+      if (residence != undefined) {
         const title = {
           name: residence.name,
           name_en: residence.name_en,
@@ -784,8 +745,24 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actions.switchHousingView(Constants.Views.Housing.ResidenceDetails));
       }
     },
-    showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
+    showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
+    switchView: (view: number): void => {
+      let title = 'housing';
+      switch (view) {
+        case Constants.Views.Housing.Residences:
+        case Constants.Views.Housing.ResidenceCompare:
+        case Constants.Views.Housing.ResidenceSelect:
+          title = 'university_residences';
+          break;
+        default:
+          // Does nothing
+          // Return to default
+      }
+
+      dispatch(actions.setHeaderTitle(title, 'discover'));
+      dispatch(actions.switchHousingView(view));
+    },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Housing);
+export default connect(mapStateToProps, mapDispatchToProps)(Housing) as any;

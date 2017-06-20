@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-27
- * @file Discover.js
+ * @file Discover.tsx
  * @description Navigator for managing views for discovering the university's campus.
- *
- * @flow
  */
 'use strict';
 
@@ -31,25 +29,10 @@ import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Route, Tab, VoidFunction } from 'types';
-
-// Type definition for component props.
-type Props = {
-  appTab: Tab,                              // The current tab the app is showing
-  backCount: number,                        // Number of times the user has requested back navigation
-  canNavigateBack: VoidFunction,            // Indicates back navigation is possible
-  housingCanNavigate: boolean,              // Indicates if the housing subview can navigate backwards
-  linksCanNavigate: boolean,                // Indicates if the link subview can navigate backwards
-  transitCanNavigate: boolean,              // Indicates if the transit subview can navigate backwards
-  onNavigation: (view: number) => void,     // Callback when user navigates in the discover view
-  view: number,                             // The current view
-};
+import * as actions from '../../actions';
 
 // Imports
-import * as Constants from 'Constants';
+import * as Constants from '../../constants';
 
 // Screen imports
 import Home from './Home';
@@ -59,18 +42,29 @@ import Shuttle from './Shuttle';
 import StudySpots from './StudySpots';
 import Transit from './Transit';
 
-class Discover extends React.PureComponent {
+// Types
+import { Route, Tab } from '../../../typings/global';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+interface Props {
+  appTab: Tab;                      // The current tab the app is showing
+  backCount: number;                // Number of times the user has requested back navigation
+  housingCanNavigate: boolean;      // Indicates if the housing subview can navigate backwards
+  linksCanNavigate: boolean;        // Indicates if the link subview can navigate backwards
+  transitCanNavigate: boolean;      // Indicates if the transit subview can navigate backwards
+  view: number;                     // The current view
+  canNavigateBack(): void;          // Indicates back navigation is possible
+  onNavigation(view: number): void; // Callback when user navigates in the discover view
+}
+
+interface State {}
+
+class Discover extends React.PureComponent<Props, State> {
 
   /**
    * Determines whether the initial route can be navigated back from.
    */
   componentWillMount(): void {
-    if (this.props.view != Constants.Views.Discover.Home) {
+    if (this.props.view !== Constants.Views.Discover.Home) {
       this.props.canNavigateBack();
     }
   }
@@ -79,7 +73,7 @@ class Discover extends React.PureComponent {
    * Adds a listener for navigation events.
    */
   componentDidMount(): void {
-    this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+    (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
   }
 
   /**
@@ -88,28 +82,28 @@ class Discover extends React.PureComponent {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    if (nextProps.view != this.props.view) {
-      const currentRoutes = this.refs.Navigator.getCurrentRoutes();
-      if (currentRoutes != null && currentRoutes.length > 0
+    if (nextProps.view !== this.props.view) {
+      const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
+      if (currentRoutes != undefined && currentRoutes.length > 0
           && nextProps.view === currentRoutes[currentRoutes.length - 1].id) {
         return;
       }
-      this.refs.Navigator.push({ id: nextProps.view });
+      (this.refs.Navigator as any).push({ id: nextProps.view });
     } else if (nextProps.appTab === 'discover'
-        && nextProps.backCount != this.props.backCount
+        && nextProps.backCount !== this.props.backCount
         && !(nextProps.view === Constants.Views.Discover.Links && this.props.linksCanNavigate)
         && !(nextProps.view === Constants.Views.Discover.Transit && this.props.transitCanNavigate)
         && !(nextProps.view === Constants.Views.Discover.Housing && this.props.housingCanNavigate)) {
-      this.refs.Navigator.pop();
+      (this.refs.Navigator as any).pop();
     }
   }
 
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes
+   * @returns {any} a configuration for the transition between scenes
    */
-  _configureScene(): Object {
+  _configureScene(): any {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
@@ -119,7 +113,7 @@ class Discover extends React.PureComponent {
    * @param {any} event the event taking place
    */
   _handleNavigationEvent(): void {
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     this.props.onNavigation(currentRoutes[currentRoutes.length - 1].id);
   }
 
@@ -127,9 +121,9 @@ class Discover extends React.PureComponent {
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display
-   * @returns {ReactElement<any>} the view to render, based on {route}
+   * @returns {JSX.Element} the view to render, based on {route}
    */
-  _renderScene(route: Route): ReactElement < any > {
+  _renderScene(route: Route): JSX.Element {
     switch (route.id) {
       case Constants.Views.Discover.Home:
         return (
@@ -166,11 +160,11 @@ class Discover extends React.PureComponent {
   /**
    * Renders a navigator.
    *
-   * @returns {ReactElement<any>} a Navigator instance to render
+   * @returns {JSX.Element} a Navigator instance to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     const routeStack = [{ id: Constants.Views.Discover.Home }];
-    if (this.props.view != Constants.Views.Discover.Home) {
+    if (this.props.view !== Constants.Views.Discover.Home) {
       routeStack.push({ id: this.props.view });
     }
 
@@ -192,7 +186,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -203,15 +197,15 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToprops = (dispatch) => {
+const mapDispatchToprops = (dispatch: any): any => {
   return {
-    canNavigateBack: () => dispatch(actions.showBack(true, 'discover')),
-    onNavigation: (view: number) => {
+    canNavigateBack: (): void => dispatch(actions.showBack(true, 'discover')),
+    onNavigation: (view: number): void => {
       switch (view) {
         case Constants.Views.Discover.Home:
           dispatch(actions.showBack(false, 'discover'));
           dispatch(actions.showSearch(false, 'discover'));
-          dispatch(actions.setHeaderTitle(null, 'discover'));
+          dispatch(actions.setHeaderTitle(undefined, 'discover'));
           break;
         default:
           dispatch(actions.showBack(true, 'discover'));
@@ -222,4 +216,4 @@ const mapDispatchToprops = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToprops)(Discover);
+export default connect(mapStateToProps, mapDispatchToprops)(Discover) as any;

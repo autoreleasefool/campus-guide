@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-03-09
- * @file StudySpots.js
+ * @file StudySpots.tsx
  * @description List of places to study ron campus, along with directions and filtering
- *
- * @flow
  */
 'use strict';
 
@@ -37,64 +35,49 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type {
-  Language,
-  StudySpot,
-  StudySpotInfo,
-  TimeFormat,
-} from 'types';
-
-// Type definition for component props.
-type Props = {
-  activateFilter: (filter: string) => void,         // Activates an inactive study filter
-  deactivateFilter: (filter: string) => void,       // Deactivates an active study filter
-  setFilters: (filters: Array < string >) => void,  // Sets the active filters, removing any other filters
-  activeFilters: Set < string >,                    // List of filters actively being used
-  filter: ?string,                                  // Current search terms
-  language: Language,                               // The current language, selected by the user
-  timeFormat: TimeFormat,                           // Format to display times in
-  showSearch: (show: boolean) => void,              // Shows or hides the search button
-  navigateToStudySpot: (spot: StudySpot) => void,   // Opens directions to the study spot
-}
-
-// Type definition for component state.
-type State = {
-  filterDescriptionsVisible: boolean, // True to show filter descriptions, false to hide
-  filterSelected: boolean,            // Indicates if any filter has been initially selected
-  loaded: boolean,                    // Indicates if the data has been loaded for this view
-  reservationsVisible: boolean,       // True to show reservation info, false to hide
-  studySpots: ?StudySpotInfo,         // Information to display about study spots
-}
+import * as actions from '../../actions';
 
 // Imports
-import Header from 'Header';
+import Header from '../../components/Header';
 import FilterDescriptions from './modals/FilterDescriptions';
-import LinkCategoryView from 'LinkCategoryView';
-import ModalHeader from 'ModalHeader';
+import LinkCategoryView from '../../components/LinkCategoryView';
+import ModalHeader from '../../components/ModalHeader';
 import Snackbar from 'react-native-snackbar';
-import StudyFilters from 'StudyFilters';
-import StudySpotList from 'StudySpotList';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import StudyFilters from '../../components/StudyFilters';
+import StudySpotList from '../../components/StudySpotList';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as Translations from '../../util/Translations';
+
+// Types
+import { Language } from '../../util/Translations';
+import { TimeFormat } from '../../../typings/global';
+import { StudySpot, StudySpotInfo } from '../../../typings/university';
+
+interface Props {
+  activeFilters: Set<string>;                 // List of filters actively being used
+  filter: string | undefined;                 // Current search terms
+  language: Language;                         // The current language, selected by the user
+  timeFormat: TimeFormat;                     // Format to display times in
+  activateFilter(filter: string): void;       // Activates an inactive study filter
+  deactivateFilter(filter: string): void;     // Deactivates an active study filter
+  navigateToStudySpot(spot: StudySpot): void; // Opens directions to the study spot
+  setFilters(filters: string[]): void;        // Sets the active filters, removing any other filters
+  showSearch(show: boolean): void;            // Shows or hides the search button
+}
+
+interface State {
+  filterDescriptionsVisible: boolean;     // True to show filter descriptions, false to hide
+  filterSelected: boolean;                // Indicates if any filter has been initially selected
+  loaded: boolean;                        // Indicates if the data has been loaded for this view
+  reservationsVisible: boolean;           // True to show reservation info, false to hide
+  studySpots: StudySpotInfo | undefined;  // Information to display about study spots
+}
 
 // Height of the screen for animating filters
-const { height } = Dimensions.get('window');
+const { height }: { height: number } = Dimensions.get('window');
 
-class StudySpots extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+class StudySpots extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -108,7 +91,7 @@ class StudySpots extends React.PureComponent {
       filterSelected: false,
       loaded: false,
       reservationsVisible: false,
-      studySpots: null,
+      studySpots: undefined,
     };
   }
 
@@ -119,9 +102,7 @@ class StudySpots extends React.PureComponent {
     if (!this.state.loaded) {
       Configuration.init()
           .then(() => Configuration.getConfig('/study_spots.json'))
-          .then((studySpots: Object) => {
-            this.setState({ studySpots });
-          })
+          .then((studySpots: StudySpotInfo) => this.setState({ studySpots }))
           .catch((err: any) => console.error('Configuration could not be initialized for study spots.', err));
     }
   }
@@ -147,15 +128,15 @@ class StudySpots extends React.PureComponent {
   /**
    * Updates the active filters.
    *
-   * @param {?string} id identifier of the selected filter
+   * @param {string|undefined} id identifier of the selected filter
    */
-  _onFilterSelected(id: ?string): void {
+  _onFilterSelected(id?: string | undefined): void {
     const studySpotInfo = this.state.studySpots;
-    if (studySpotInfo == null) {
+    if (studySpotInfo == undefined) {
       return;
     }
 
-    LayoutAnimation.easeInEaseOut();
+    LayoutAnimation.easeInEaseOut(undefined, undefined);
     this.setState({ filterSelected: true });
     this.props.showSearch(true);
 
@@ -164,18 +145,18 @@ class StudySpots extends React.PureComponent {
       const filterName = Translations.getName(
         this.props.language,
         studySpotInfo.filterDescriptions[filterId]) || '';
-      if (this.props.activeFilters == null) {
+      if (this.props.activeFilters == undefined) {
         this.props.setFilters([ filterId ]);
       } else if (this.props.activeFilters.has(filterId)) {
         Snackbar.show({
-          title: `${Translations.get(this.props.language, 'filter_removed')}: ${filterName}`,
           duration: Snackbar.LENGTH_SHORT,
+          title: `${Translations.get(this.props.language, 'filter_removed')}: ${filterName}`,
         });
         this.props.deactivateFilter(filterId);
       } else {
         Snackbar.show({
-          title: `${Translations.get(this.props.language, 'filter_added')}: ${filterName}`,
           duration: Snackbar.LENGTH_SHORT,
+          title: `${Translations.get(this.props.language, 'filter_added')}: ${filterName}`,
         });
         this.props.activateFilter(filterId);
       }
@@ -196,11 +177,11 @@ class StudySpots extends React.PureComponent {
   /**
    * Renders the filtered study spots and views to filter them.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     const studySpotInfo = this.state.studySpots;
-    if (studySpotInfo == null) {
+    if (studySpotInfo == undefined) {
       return (
         <View style={_styles.container} />
       );
@@ -280,7 +261,7 @@ class StudySpots extends React.PureComponent {
               language={this.props.language}
               onFilterSelected={this._onFilterSelected.bind(this)} />
           <View style={_styles.separator} />
-          <TouchableOpacity onPress={() => this._onFilterSelected(null)}>
+          <TouchableOpacity onPress={(): void => this._onFilterSelected()}>
             <Header
                 backgroundColor={Constants.Colors.secondaryBackground}
                 icon={{ class: 'material', name: 'list' }}
@@ -296,29 +277,29 @@ class StudySpots extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
-  },
-  filterSelection: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    flex: 1,
   },
   filterNotSelected: {
-    top: 0,
     bottom: 0,
+    top: 0,
   },
   filterSelected: {
-    top: height,
     bottom: -height,
+    top: height,
+  },
+  filterSelection: {
+    left: 0,
+    position: 'absolute',
+    right: 0,
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     activeFilters: store.search.studyFilters,
     filter: store.search.terms || '',
@@ -327,19 +308,19 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    activateFilter: (filter: string) => dispatch(actions.activateStudyFilter(filter)),
-    deactivateFilter: (filter: string) => dispatch(actions.deactivateStudyFilter(filter)),
-    setFilters: (filters: Array < string >) => dispatch(actions.setStudyFilters(filters)),
-    showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
-    navigateToStudySpot: (spot: StudySpot) => {
+    activateFilter: (filter: string): void => dispatch(actions.activateStudyFilter(filter)),
+    deactivateFilter: (filter: string): void => dispatch(actions.deactivateStudyFilter(filter)),
+    navigateToStudySpot: (spot: StudySpot): void => {
       dispatch(actions.setHeaderTitle('directions', 'find'));
       dispatch(actions.setDestination({ shorthand: spot.building, room: spot.room }));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
       dispatch(actions.switchTab('find'));
     },
+    setFilters: (filters: string[]): void => dispatch(actions.setStudyFilters(filters)),
+    showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudySpots);
+export default connect(mapStateToProps, mapDispatchToProps)(StudySpots) as any;

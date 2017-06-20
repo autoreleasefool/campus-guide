@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-03-03
- * @file Shuttle.js
+ * @file Shuttle.tsx
  * @description Displays shuttle bus information for the university.
- *
- * @flow
  */
 'use strict';
 
@@ -35,52 +33,35 @@ import {
 // Redux imports
 import { connect } from 'react-redux';
 
-// Types
-import type {
-  Language,
-  LatLong,
-  LatLongDelta,
-  ShuttleDirection,
-  ShuttleInfo,
-  TimeFormat,
-} from 'types';
-
-// Type definition for component props.
-type Props = {
-  language: Language,                   // The current language, selected by the user
-  showSearch: (show: boolean) => void,  // Shows or hides the search button
-  timeFormat: TimeFormat,               // Format to display times in
-}
-
-// Type definition for component state.
-type State = {
-  direction: number,              // Current direction for the schedule being viewed
-  initialPage: number,            // Initial schedule to display
-  region: LatLong & LatLongDelta, // Latitude and longitude for map to display
-  schedule: number,               // Current schedule being viewed
-  shuttle: ?ShuttleInfo,          // Information about the university shuttle
-}
-
 // Imports
-import Header from 'Header';
+import Header from '../../components/Header';
 import MapView from 'react-native-maps';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
-import ShuttleTable from 'ShuttleTable';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import ShuttleTable from '../../components/ShuttleTable';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as Translations from '../../util/Translations';
 
-class Shuttle extends React.PureComponent {
+// Types
+import { Language } from '../../util/Translations';
+import { LatLong, LatLongDelta, TimeFormat } from '../../../typings/global';
+import { ShuttleDirection, ShuttleInfo, ShuttleSchedule, ShuttleStop } from '../../../typings/transit';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+interface Props {
+  language: Language;               // The current language, selected by the user
+  timeFormat: TimeFormat;           // Format to display times in
+  showSearch(show: boolean): void;  // Shows or hides the search button
+}
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+interface State {
+  direction: number;                // Current direction for the schedule being viewed
+  initialPage: number;              // Initial schedule to display
+  region: LatLong & LatLongDelta;   // Latitude and longitude for map to display
+  schedule: number;                 // Current schedule being viewed
+  shuttle: ShuttleInfo | undefined; // Information about the university shuttle
+}
+
+class Shuttle extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -94,7 +75,7 @@ class Shuttle extends React.PureComponent {
       initialPage: 0,
       region: Constants.Map.InitialRegion,
       schedule: 0,
-      shuttle: null,
+      shuttle: undefined,
     };
   }
 
@@ -102,7 +83,7 @@ class Shuttle extends React.PureComponent {
    * If the shuttle info has not been loaded, then load it.
    */
   componentDidMount(): void {
-    if (this.state.shuttle == null) {
+    if (this.state.shuttle == undefined) {
       Configuration.init()
           .then(() => Configuration.getConfig('/shuttle.json'))
           .then((shuttle: ShuttleInfo) => this.setState({ shuttle }))
@@ -121,11 +102,11 @@ class Shuttle extends React.PureComponent {
   /**
    * Renders a map of locations which the shuttle makes stops at.
    *
-   * @returns {ReactElement<any>} the map component
+   * @returns {JSX.Element} the map component
    */
-  _renderMap(): ReactElement < any > {
+  _renderMap(): JSX.Element {
     const shuttle = this.state.shuttle;
-    if (shuttle == null) {
+    if (shuttle == undefined) {
       return (
         <View style={_styles.container} />
       );
@@ -136,10 +117,10 @@ class Shuttle extends React.PureComponent {
         <MapView
             region={this.state.region}
             style={_styles.map}
-            onRegionChange={(region) => this.setState({ region })}>
-          {shuttle.stops.map((stop) => (
+            onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>
+          {shuttle.stops.map((stop: ShuttleStop) => (
             <MapView.Marker
-                coordinate={{ latitude: stop.lat, longitude: stop.long }}
+                coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
                 identifier={stop.id}
                 key={stop.id}
                 title={Translations.getName(this.props.language, stop)} />
@@ -153,13 +134,12 @@ class Shuttle extends React.PureComponent {
    * Renders details about the route the shuttle takes.
    *
    * @param {ShuttleDirection} direction shuttle direction to render
-   * @returns {ReactElement<any>} the route header and description
+   * @returns {JSX.Element} the route header and description
    */
-  _renderRoute(direction: ShuttleDirection): ReactElement < any > {
-    const route = Translations.getVariant(this.props.language, 'route', direction);
+  _renderRoute(direction: ShuttleDirection): JSX.Element {
     return (
       <View style={_styles.dark}>
-        <Text style={_styles.routeText}>{route}</Text>
+        <Text style={_styles.routeText}>{Translations.getVariant(this.props.language, 'route', direction)}</Text>
       </View>
     );
   }
@@ -167,11 +147,11 @@ class Shuttle extends React.PureComponent {
   /**
    * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     const shuttle = this.state.shuttle;
-    if (shuttle == null) {
+    if (shuttle == undefined) {
       return (
         <View style={_styles.container} />
       );
@@ -194,15 +174,15 @@ class Shuttle extends React.PureComponent {
         {this._renderRoute(direction)}
         <ScrollableTabView
             initialPage={this.state.initialPage}
-            style={_styles.tabContainer}
             tabBarActiveTextColor={Constants.Colors.primaryWhiteText}
             tabBarBackgroundColor={Constants.Colors.darkGrey}
             tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
             tabBarPosition='top'
             tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.polarGrey }}
-            onChangeTab={(newTab: { i: number }) => this.setState({ schedule: newTab.i })}>
-          {(shuttle.schedules.map((schedule) => {
+            onChangeTab={(newTab: { i: number }): void => this.setState({ schedule: newTab.i })}>
+          {(shuttle.schedules.map((schedule: ShuttleSchedule): JSX.Element => {
             const name = Translations.getName(this.props.language, schedule);
+
             return (
               <ShuttleTable
                   direction={this.state.direction}
@@ -222,31 +202,31 @@ class Shuttle extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   dark: {
     backgroundColor: Constants.Colors.secondaryBackground,
+  },
+  map: {
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   routeText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     margin: Constants.Sizes.Margins.Expanded,
   },
-  map: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     language: store.config.options.language,
     timeFormat: store.config.options.preferredTimeFormat,
   };
 };
 
-export default connect(mapStateToProps)(Shuttle);
+export default connect(mapStateToProps)(Shuttle) as any;

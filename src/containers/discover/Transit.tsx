@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-11-2
- * @file Transit.js
+ * @file Transit.tsx
  * @description Displays transit information for the city surrounding the university.
- *
- * @flow
  */
 'use strict';
 
@@ -38,68 +36,49 @@ import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type {
-  Language,
-  MenuSection,
-  Name,
-  Route,
-  Tab,
-  TimeFormat,
-  TransitInfo,
-  VoidFunction,
-} from 'types';
-
-// Type definition for component props.
-type Props = {
-  appTab: Tab,                                      // The current tab the app is showing
-  backCount: number,                                // Number of times user has requested back navigation
-  transitInfo: ?TransitInfo,                        // Information about the city transit system
-  campus: ?MenuSection,                             // The current transit campus to display info for
-  canNavigateBack: (can: boolean) => void,          // Indicate whether the app can navigate back
-  filter: ?string,                                  // The current filter for transit routes
-  language: Language,                               // The current language, selected by the user
-  onCampusSelected: (campus: ?MenuSection) => void, // Displays details about a transit campus
-  resetFilter: VoidFunction,                        // Clears the current search terms
-  setHeaderTitle: (t: (Name | string)) => void,     // Sets the title in the app header
-  showSearch: (show: boolean) => void,              // Shows or hides the search button
-  timeFormat: TimeFormat,                           // Format to display times in
-}
-
-// Type definition for component state.
-type State = {
-  campuses: Array < MenuSection >,  // Array of transit campuses to display info for
-}
+import * as actions from '../../actions';
 
 // Imports
-import TransitCampusMap from 'TransitCampusMap';
-import Header from 'Header';
-import Menu from 'Menu';
-import * as ArrayUtils from 'ArrayUtils';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as ExternalUtils from 'ExternalUtils';
-import * as TextUtils from 'TextUtils';
-import * as Translations from 'Translations';
+import TransitCampusMap from '../../components/TransitCampusMap';
+import Header from '../../components/Header';
+import Menu from '../../components/Menu';
+import * as Arrays from '../../util/Arrays';
+import * as Configuration from '../../util/Configuration';
+import * as Constants from '../../constants';
+import * as External from '../../util/External';
+import * as TextUtils from '../../util/TextUtils';
+import * as Translations from '../../util/Translations';
+
+// Types
+import { Language } from '../../util/Translations';
+import { MenuSection, Name, Route, Tab, TimeFormat } from '../../../typings/global';
+import { TransitInfo } from '../../../typings/transit';
+
+interface Props {
+  appTab: Tab;                                              // The current tab the app is showing
+  backCount: number;                                        // Number of times user has requested back navigation
+  transitInfo: TransitInfo | undefined;                     // Information about the city transit system
+  campus: MenuSection | undefined;                          // The current transit campus to display info for
+  filter: string | undefined;                               // The current filter for transit routes
+  language: Language;                                       // The current language, selected by the user
+  timeFormat: TimeFormat;                                   // Format to display times in
+  canNavigateBack(can: boolean): void;                      // Indicate whether the app can navigate back
+  onCampusSelected(campus?: MenuSection | undefined): void;  // Displays details about a transit campus
+  resetFilter(): void;                                      // Clears the current search terms
+  setHeaderTitle(t: Name | string): void;                   // Sets the title in the app header
+  showSearch(show: boolean): void;                          // Shows or hides the search button
+}
+
+interface State {
+  campuses: MenuSection[];  // Array of transit campuses to display info for
+}
 
 // Constant for navigation - show the campus selection screen
-const MENU: number = 0;
+const MENU = 0;
 // Constant for navigation - show a specific campus
-const CAMPUS: number = 1;
+const CAMPUS = 1;
 
-class Transit extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+class Transit extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -117,12 +96,12 @@ class Transit extends React.PureComponent {
    * Adds a listener for navigation events.
    */
   componentDidMount(): void {
-    this.refs.Navigator.navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
+    (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
     if (this.state.campuses.length === 0) {
       Configuration.init()
           .then(() => Configuration.getConfig('/transit_campuses.json'))
-          .then((campuses: Array < MenuSection >) => this.setState({ campuses }))
+          .then((campuses: MenuSection[]) => this.setState({ campuses }))
           .catch((err: any) => console.error('Configuration could not be initialized for transit.', err));
     }
   }
@@ -133,28 +112,28 @@ class Transit extends React.PureComponent {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    if (nextProps.campus != this.props.campus) {
-      if (nextProps.campus == null) {
-        this.refs.Navigator.pop();
+    if (nextProps.campus !== this.props.campus) {
+      if (nextProps.campus == undefined) {
+        (this.refs.Navigator as any).pop();
       } else {
-        this.refs.Navigator.push({ id: CAMPUS });
+        (this.refs.Navigator as any).push({ id: CAMPUS });
       }
     }
 
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     if (nextProps.appTab === 'discover'
-        && nextProps.backCount != this.props.backCount
+        && nextProps.backCount !== this.props.backCount
         && currentRoutes.length > 1) {
-      this.props.onCampusSelected(null);
+      this.props.onCampusSelected();
     }
   }
 
   /**
    * Sets the transition between two views in the navigator.
    *
-   * @returns {Object} a configuration for the transition between scenes
+   * @returns {any} a configuration for the transition between scenes
    */
-  _configureScene(): Object {
+  _configureScene(): any {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
@@ -164,9 +143,9 @@ class Transit extends React.PureComponent {
    * @param {any} event the event taking place
    */
   _handleNavigationEvent(): void {
-    const currentRoutes = this.refs.Navigator.getCurrentRoutes();
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     if (currentRoutes[currentRoutes.length - 1].id === MENU) {
-      this.props.onCampusSelected(null);
+      this.props.onCampusSelected();
       this.props.setHeaderTitle('transit_company');
     } else {
       const title = {
@@ -186,9 +165,9 @@ class Transit extends React.PureComponent {
   _openLink(): void {
     const link = this.props.transitInfo
         ? Translations.getLink(this.props.language, this.props.transitInfo)
-        : ExternalUtils.getDefaultLink();
+        : External.getDefaultLink();
 
-    ExternalUtils.openLink(
+    External.openLink(
         link,
         this.props.language,
         Linking,
@@ -204,17 +183,17 @@ class Transit extends React.PureComponent {
    * @param {string} id id of the selected campus in this.state.campuses
    */
   _onCampusSelected(id: string): void {
-    const index = ArrayUtils.linearSearchObjectArrayByKeyValue(this.state.campuses, 'id', id);
+    const index = Arrays.linearSearchObjectArrayByKeyValue(this.state.campuses, 'id', id);
     this.props.onCampusSelected(this.state.campuses[index]);
   }
 
   /**
    * Returns a map and list of stops near a transit campus.
    *
-   * @param {?MenuSection} campusInfo details of the campus to display
-   * @returns {ReactElement<any>} a map and list of stops/routes
+   * @param {MenuSection|undefined} campusInfo details of the campus to display
+   * @returns {JSX.Element} a map and list of stops/routes
    */
-  _renderCampus(campusInfo: ?MenuSection): ReactElement < any > {
+  _renderCampus(campusInfo: MenuSection | undefined): JSX.Element {
     const campus = campusInfo;
     if (campus) {
       return (
@@ -233,7 +212,7 @@ class Transit extends React.PureComponent {
     }
   }
 
-  _renderGrid(): ReactElement < any > {
+  _renderGrid(): JSX.Element {
     return (
       <View style={_styles.container}>
         <Menu
@@ -241,7 +220,7 @@ class Transit extends React.PureComponent {
             sections={this.state.campuses}
             onSectionSelected={this._onCampusSelected.bind(this)} />
         <View style={_styles.separator} />
-        <TouchableOpacity onPress={() => this._openLink()}>
+        <TouchableOpacity onPress={(): void => this._openLink()}>
           <Header
               icon={{ name: 'md-open', class: 'ionicon' }}
               subtitleIcon={{ name: 'chevron-right', class: 'material' }}
@@ -255,9 +234,9 @@ class Transit extends React.PureComponent {
    * Renders a view according to the current route of the navigator.
    *
    * @param {Route} route object with properties to identify the route to display
-   * @returns {ReactElement<any>} the view to render, based on {route}
+   * @returns {JSX.Element} the view to render, based on {route}
    */
-  _renderScene(route: Route): ReactElement < any > {
+  _renderScene(route: Route): JSX.Element {
     switch (route.id) {
       case MENU:
         return this._renderGrid();
@@ -274,9 +253,9 @@ class Transit extends React.PureComponent {
   /**
    * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <Navigator
           configureScene={this._configureScene}
@@ -291,16 +270,16 @@ class Transit extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.primaryWhiteText,
+    height: StyleSheet.hairlineWidth,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
@@ -312,14 +291,14 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    canNavigateBack: (can: boolean) => dispatch(actions.canNavigateBack('transit', can)),
-    onCampusSelected: (campus: ?MenuSection) => dispatch(actions.switchTransitCampus(campus)),
-    resetFilter: () => dispatch(actions.search(null)),
-    setHeaderTitle: (title: (Name | string)) => dispatch(actions.setHeaderTitle(title, 'discover')),
-    showSearch: (show: boolean) => dispatch(actions.showSearch(show, 'discover')),
+    canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('transit', can)),
+    onCampusSelected: (campus?: MenuSection | undefined): void => dispatch(actions.switchTransitCampus(campus)),
+    resetFilter: (): void => dispatch(actions.search()),
+    setHeaderTitle: (title: Name | string): void => dispatch(actions.setHeaderTitle(title, 'discover')),
+    showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Transit);
+export default connect(mapStateToProps, mapDispatchToProps)(Transit) as any;
