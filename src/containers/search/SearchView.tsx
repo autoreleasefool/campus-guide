@@ -98,7 +98,7 @@ class SearchView extends React.PureComponent<Props, State> {
   _searchIcons: any;
 
   /** ID of timer to delay search. */
-  _delayTimer: Timer;
+  _delayTimer: NodeJS.Timer | undefined;
 
   /**
    * Pass props and declares initial state.
@@ -107,7 +107,6 @@ class SearchView extends React.PureComponent<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this._delayTimer = 0;
     this.state = {
       anyResults: false,
       filteredResults: [],
@@ -155,7 +154,7 @@ class SearchView extends React.PureComponent<Props, State> {
    * Clears the search timeout.
    */
   componentWillUnmount(): void {
-    if (this._delayTimer !== 0) {
+    if (this._delayTimer != undefined) {
       clearTimeout(this._delayTimer);
     }
   }
@@ -182,12 +181,12 @@ class SearchView extends React.PureComponent<Props, State> {
     }
 
     // Clear any waiting searches
-    if (this._delayTimer !== 0) {
+    if (this._delayTimer != undefined) {
       clearTimeout(this._delayTimer);
     }
 
     this._delayTimer = setTimeout(() => {
-      this._delayTimer = 0;
+      this._delayTimer = undefined;
       this._updateSearch(prevProps, nextProps);
     }, SEARCH_DELAY_TIME);
   }
