@@ -49,8 +49,8 @@ export interface RoomType extends Name {
 
 /** Information available on room types. */
 export interface RoomTypeInfo {
-  ids: ReadonlyArray < string >;  // List of IDs of room types
-  types: object;                  // IDs mapped to their descriptions
+  ids: string[];  // List of IDs of room types
+  types: object;  // IDs mapped to their descriptions
 }
 
 /** Street address for a location, optionally translated to French or English. */
@@ -62,12 +62,12 @@ export interface Address {
 
 /** A building on campus, with details describing it, its location, and its rooms. */
 export interface Building extends Name, Address {
-  shorthand: string;                      // Shorthand building code
-  facilities: ReadonlyArray < Facility >; // List of facilities in the building
-  image: React.ReactType;                 // Image to display for the building
-  thumbnail: React.ReactType;             // Smaller size image to display as preview
-  location: LatLong;                      // Location of the building
-  rooms: ReadonlyArray < BuildingRoom >;  // List of rooms in the building
+  shorthand: string;          // Shorthand building code
+  facilities: Facility[];     // List of facilities in the building
+  image: React.ReactType;     // Image to display for the building
+  thumbnail: React.ReactType; // Smaller size image to display as preview
+  location: LatLong;          // Location of the building
+  rooms: BuildingRoom[];      // List of rooms in the building
 }
 
 /** Properties which describe a building, */
@@ -99,14 +99,14 @@ export type Facility =
 
 /** A semester at the school, with its name, identifier, and other info. */
 interface Semester extends Name {
-  id: string;                         // Unique identifier for the semester
-  courses?: ReadonlyArray < Course >; // Courses the user has defined in the semester
+  id: string;         // Unique identifier for the semester
+  courses?: Course[]; // Courses the user has defined in the semester
 }
 
 /** A set of lectures. */
 interface Course {
-  code: string;                         // Course code
-  lectures: ReadonlyArray < Lecture >;  // List of lectures that are a part of the course
+  code: string;         // Course code
+  lectures: Lecture[];  // List of lectures that are a part of the course
 }
 
 /** A single lecture of a course. */
@@ -134,8 +134,8 @@ export interface ResidenceProperty extends Name {
 
 /** Organized categories of similar properties which describe each residence. */
 interface ResidenceCategory extends Name {
-  key: string;                                // Key to identify the category
-  props: ReadonlyArray < ResidenceProperty >; // List of properties in the category
+  key: string;                // Key to identify the category
+  props: ResidenceProperty[]; // List of properties in the category
 }
 
 /** A university residence and specific information about its services and facilities. */
@@ -147,11 +147,11 @@ interface Residence extends Address, Description, Name {
 
 /** Information on housing at the university. */
 interface HousingInfo {
-  offCampusHousing: Link;                           // Link to info about off campus housing
-  categories: ReadonlyArray < ResidenceCategory >;  // List of categories which residences can be described by
-  residences: ReadonlyArray < Residence >;          // List of residences at the university
-  resources: LinkSection;                           // List of other resources for finding housing at the university
-  sections: ReadonlyArray < MenuSection >;          // List of sections of housing info
+  offCampusHousing: Link;           // Link to info about off campus housing
+  categories: ResidenceCategory[];  // List of categories which residences can be described by
+  residences: Residence[];          // List of residences at the university
+  resources: LinkSection;           // List of other resources for finding housing at the university
+  sections: MenuSection[];          // List of sections of housing info
 }
 
 //-----------------------------------------------------------------------------
@@ -168,18 +168,18 @@ export type StudySpotReservation = Description & Link & Name;
 
 /** Location and properties of a study spot. */
 export interface StudySpot extends Description, Name {
-  image: string;                      // Name of the image of the study spot
-  building: string;                   // Building code
-  room: string | undefined;           // Room number
-  opens: string;                      // Time the spot opens at
-  closes: string;                     // Time the spot closes at
-  filters: ReadonlyArray < string >;  // List of properties to filter on
+  image: string;            // Name of the image of the study spot
+  building: string;         // Building code
+  room: string | undefined; // Room number
+  opens: string;            // Time the spot opens at
+  closes: string;           // Time the spot closes at
+  filters: string[];        // List of properties to filter on
 }
 
 /** Information about study spots. */
 export interface StudySpotInfo {
-  filters: ReadonlyArray < string >;  // List of filter IDs
-  filterDescriptions: object;         // Filter IDs mapped to their descriptions
-  reservations: LinkSection;          // Links for making reservations of study spots
-  spots: ReadonlyArray < StudySpot >; // Study spots available on campus
+  filters: string[];          // List of filter IDs
+  filterDescriptions: object; // Filter IDs mapped to their descriptions
+  reservations: LinkSection;  // Links for making reservations of study spots
+  spots: StudySpot[];         // Study spots available on campus
 }

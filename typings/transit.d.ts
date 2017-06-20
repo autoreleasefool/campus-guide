@@ -49,8 +49,8 @@ export interface TransitCampus extends LatLong, Name {
 
 /** Details of the city transit system. */
 export interface TransitSystem {
-  campuses: ReadonlyArray < TransitCampus >;  // List of campuses that will be served by the city transit
-  stopDetails: object;                        // Set of stops identified by their ID
+  campuses: TransitCampus[];  // List of campuses that will be served by the city transit
+  stopDetails: object;        // Set of stops identified by their ID
 }
 
 /** High level information about the city transit system. */
@@ -67,10 +67,10 @@ export interface ShuttleStop extends LatLong, Name {
 
 /** A shuttle's schedule for a certain time of year. */
 export interface ShuttleSchedule extends Name {
-  start_date: string;                             // Date which the schedule becomes effective
-  end_date: string;                               // Final date for which the schedule is effective
-  excluded_dates: ReadonlyArray < string>;        // Dates for which the schedule is explicitly not in effect
-  directions: ReadonlyArray < ShuttleDirection >; // Directions and times for the schedule
+  start_date: string;             // Date which the schedule becomes effective
+  end_date: string;               // Final date for which the schedule is effective
+  excluded_dates: string[];       // Dates for which the schedule is explicitly not in effect
+  directions: ShuttleDirection[]; // Directions and times for the schedule
 }
 
 /** Describes a direction of the shuttle and when it departs in that direction. */
@@ -83,7 +83,7 @@ export interface ShuttleDirection extends Name {
 
 /** Information about the university shuttle. */
 export interface ShuttleInfo {
-  stops: ReadonlyArray < ShuttleStop >;         // Stops the shuttle makes
-  schedules: ReadonlyArray < ShuttleSchedule >; // Schedules for the shuttle
-  additional_info: ReadonlyArray < Details >;   // Additional info for taking the shuttle
+  stops: ShuttleStop[];         // Stops the shuttle makes
+  schedules: ShuttleSchedule[]; // Schedules for the shuttle
+  additional_info: Details[];   // Additional info for taking the shuttle
 }

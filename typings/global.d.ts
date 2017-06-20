@@ -50,11 +50,11 @@ export interface Description {
 
 /** A set of details, optionally translated to English or French. */
 export interface Details extends Name {
-  details?: ReadonlyArray<string>;    // The written details
-  details_en?: ReadonlyArray<string>; // The written details, in English
-  details_fr?: ReadonlyArray<string>; // The written details, in French
-  icon: Icon;                         // Icon representing the details
-  image: string;                      // Image for the details
+  details?: string[];     // The written details
+  details_en?: string[];  // The written details, in English
+  details_fr?: string[];  // The written details, in French
+  icon: Icon;             // Icon representing the details
+  image: string;          // Image for the details
 }
 
 /** Describes an image displayed in ImageGrid. */
@@ -133,9 +133,9 @@ export interface MenuSection extends Name {
 
 /** Expected format for link sections. */
 export interface LinkSection extends MenuSection {
-  links?: ReadonlyArray < NamedLink >;        // List of links in the category
-  social?: ReadonlyArray < NamedLink >;       // List of social media links in the platform
-  categories?: ReadonlyArray < LinkSection >; // List of subcategories
+  links?: NamedLink[];        // List of links in the category
+  social?: NamedLink[];       // List of social media links in the platform
+  categories?: LinkSection[]; // List of subcategories
 }
 
 //-----------------------------------------------------------------------------
