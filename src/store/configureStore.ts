@@ -33,7 +33,7 @@ import { persist } from './persist';
 /**
  * Creates a redux store from the reducers and returns it.
  *
- * @param {?VoidFunction} onComplete called when the store has been created
+ * @param {() => void|undefined} onComplete called when the store has been created
  * @returns {any} redux store
  */
 export default function configureStore(onComplete?: () => void | undefined): any {

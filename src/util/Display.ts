@@ -138,9 +138,9 @@ export function getIOSIcon(obj: any): BasicIcon | undefined {
  * 'android'.
  *
  * @param {PlatformOSType} platform either 'ios' or 'android'.
- * @param {any}              obj      the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
- *                                    properties, or 'icon.name' and 'icon.class' properties.
- * @returns {?Icon} an object with 'name' and 'class' properties, or undefined
+ * @param {any}            obj      the object with either 'icon.{platform}.name' and 'icon.{platform}.class'
+ *                                  properties, or 'icon.name' and 'icon.class' properties.
+ * @returns {BasicIcon|undefined} an object with 'name' and 'class' properties, or undefined
  */
 export function getPlatformIcon(platform: PlatformOSType, obj: any): BasicIcon | undefined {
   switch (platform) {

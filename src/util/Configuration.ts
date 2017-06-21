@@ -473,7 +473,7 @@ export function getConfig(configFile: string): Promise < object | undefined > {
 /**
  * Returns the path to the image.
  *
- * @param {?string} configImage name of the image to retrieve
+ * @param {string|undefined} configImage name of the image to retrieve
  * @returns {string} absolute path to the image or the empty string if configImage was null
  */
 export function getImagePath(configImage: string | undefined): string {
