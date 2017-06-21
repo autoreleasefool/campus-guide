@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-12
- * @file TabBar.js
- * @providesModule TabBar
+ * @file TabBar.tsx
  * @description Renders the tab bar.
- *
- * @flow
  */
 'use strict';
 
@@ -37,17 +34,27 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Icon, Language, Tab, TabSet } from 'types';
+import * as actions from '../actions';
 
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
+import * as Constants from '../constants';
+import * as Display from '../util/Display';
+import * as Translations from '../util/Translations';
+
+// Types
+import { Language } from '../util/Translations';
+import { Tab, TabSet } from '../../typings/global';
+
+interface Props {
+  activeTab: number;          // Current active tab
+  language: Language;         // The user's currently selected language
+  tabs: any[];                // Array of tabs to render
+  switchTab(tab: Tab): void;  // Switches the current tab
+}
+
+interface State {}
 
 // Icons for tab items
 const tabIcons: TabSet = {
@@ -107,17 +114,7 @@ const tabIcons: TabSet = {
   },
 };
 
-class TabBar extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: {
-    activeTab: number,              // Current active tab
-    language: Language,             // The user's currently selected language
-    switchTab: (tab: Tab) => void,  // Switches the current tab
-    tabs: Array < any >,            // Array of tabs to render
-  }
+class TabBar extends React.PureComponent<Props, State> {
 
   /**
    * Switches the active tab.
@@ -131,22 +128,22 @@ class TabBar extends React.PureComponent {
   /**
    * Renders an icon and name for each available tab in the bar.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.tabContainer}>
-        {this.props.tabs.map((tab, i) => {
-          const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, tabIcons[Constants.Tabs[i]]);
+        {this.props.tabs.map((_: any, i: number) => {
+          const icon = Display.getPlatformIcon(Platform.OS, tabIcons[Constants.Tabs[i]]);
           const color = this.props.activeTab === i
               ? Constants.Colors.primaryBackground
               : Constants.Colors.secondaryBackground;
-          let iconView: ?ReactElement < any >;
 
-          if (icon == null) {
-            iconView = null;
+          let iconView: JSX.Element;
+          if (icon == undefined) {
+            iconView = undefined;
           } else {
-            iconView = (icon.class === 'ionicons')
+            iconView = (icon.class === 'ionicon')
                 ? (
                   <Ionicons
                       color={color}
@@ -168,7 +165,7 @@ class TabBar extends React.PureComponent {
                 style={_styles.tab}
                 onPress={this._switchTab.bind(this, i)}>
               {iconView}
-              <Text style={[ _styles.caption, { color: color }]}>
+              <Text style={[ _styles.caption, { color }]}>
                 {Translations.get(this.props.language, Constants.Tabs[i])}
               </Text>
             </TouchableOpacity>
@@ -181,34 +178,34 @@ class TabBar extends React.PureComponent {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  tabContainer: {
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.25)',
-    backgroundColor: Constants.Colors.tertiaryBackground,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: Constants.Sizes.Margins.Condensed,
-    marginBottom: Constants.Sizes.Margins.Condensed,
-  },
   caption: {
     fontSize: Constants.Sizes.Text.Caption,
     marginTop: 2,
   },
+  tab: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginBottom: Constants.Sizes.Margins.Condensed,
+    marginTop: Constants.Sizes.Margins.Condensed,
+  },
+  tabContainer: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    borderTopColor: 'rgba(0, 0, 0, 0.25)',
+    borderTopWidth: 1,
+    flexDirection: 'row',
+  },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     language: store.config.options.language,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    switchTab: (tab: Tab) => dispatch(actions.switchTab(tab)),
+    switchTab: (tab: Tab): void => dispatch(actions.switchTab(tab)),
   };
 };
 

@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-11-24
- * @file Connector.js
- * @providesModule Connector
+ * @file Connector.tsx
  * @description Connects rows and headers to one another.
- *
- * @flow
  */
 'use strict';
 
@@ -30,30 +27,29 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 // Types
-type ConnectorOptions = {
-  top?: boolean,        // True to render a connection to the row above
-  bottom?: boolean,     // True to render a connection to the row below
-  large?: boolean,      // True to render a larger connection for a header
-  circleColor?: string, // Default background is white
-  lineColor?: string,   // Default background is transparent white
+interface ConnectorOptions {
+  top?: boolean;        // True to render a connection to the row above
+  bottom?: boolean;     // True to render a connection to the row below
+  large?: boolean;      // True to render a larger connection for a header
+  circleColor?: string; // Default background is white
+  lineColor?: string;   // Default background is transparent white
 }
 
 // Imports
-import * as Constants from 'Constants';
+import * as Constants from '../constants';
 
 /**
  * Renders a view which connects rows and headers to one another.
  *
  * @param {ConnectorOptions} options set of options to determine how to render the connector
- * @returns {ReactElement<any>} view which visually connects rows and headers
+ * @returns {JSX.Element} view which visually connects rows and headers
  */
-export function renderConnector(options: ConnectorOptions): ReactElement < any > {
+export function renderConnector(options: ConnectorOptions): JSX.Element {
   const circleSize = options.large ? _styles.largeCircle : _styles.smallCircle;
   const background = {
     backgroundColor: options.circleColor ? options.circleColor : Constants.Colors.primaryWhiteIcon,
   };
 
-  const connectorSize = options.large ? _styles.largeConnector : _styles.smallConnector;
   const connectorColor = {
     backgroundColor: options.lineColor ? options.lineColor : Constants.Colors.secondaryWhiteIcon,
   };
@@ -63,7 +59,7 @@ export function renderConnector(options: ConnectorOptions): ReactElement < any >
 
   return (
     <View style={_styles.container}>
-      <View style={[ _styles.connectorContainer, connectorSize ]}>
+      <View style={[ _styles.connectorContainer ]}>
         <View style={[ _styles.connector, _styles.top, connectorColor, topConnector ]} />
         <View style={[ _styles.connector, _styles.bottom, connectorColor, bottomConnector ]} />
       </View>
@@ -88,45 +84,45 @@ export function getConnectorWidth(): number {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    width: getConnectorWidth(),
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-  },
-  largeCircle: {
-    width: Constants.Sizes.Margins.Expanded,
-    height: Constants.Sizes.Margins.Expanded,
-    borderRadius: Constants.Sizes.Margins.Expanded / 2,
-  },
-  smallCircle: {
-    width: Constants.Sizes.Margins.Regular,
-    height: Constants.Sizes.Margins.Regular,
-    borderRadius: Constants.Sizes.Margins.Regular / 2,
+  bottom: {
+    flex: 1,
   },
   connector: {
     width: Constants.Sizes.Margins.Condensed / 2,
   },
+  connectorContainer: {
+    alignItems: 'center',
+    bottom: 0,
+    flex: 1,
+    flexDirection: 'column',
+    position: 'absolute',
+    top: 0,
+    width: getConnectorWidth(),
+  },
+  container: {
+    alignItems: 'center',
+    bottom: 0,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    top: 0,
+    width: getConnectorWidth(),
+  },
   invisible: {
     backgroundColor: 'rgba(0,0,0,0)',
   },
-  connectorContainer: {
-    width: getConnectorWidth(),
-    alignItems: 'center',
-    flexDirection: 'column',
-    flex: 1,
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
+  largeCircle: {
+    borderRadius: Constants.Sizes.Margins.Expanded / 2,
+    height: Constants.Sizes.Margins.Expanded,
+    width: Constants.Sizes.Margins.Expanded,
+  },
+  smallCircle: {
+    borderRadius: Constants.Sizes.Margins.Regular / 2,
+    height: Constants.Sizes.Margins.Regular,
+    width: Constants.Sizes.Margins.Regular,
   },
   top: {
-    flex: 1,
-  },
-  bottom: {
     flex: 1,
   },
 });

@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-03-09
- * @file StudyFilters.js
- * @providesModule StudyFilters
+ * @file StudyFilters.tsx
  * @description Provides options to filter study spots
- *
- * @flow
  */
 'use strict';
 
@@ -35,25 +32,28 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type { Icon, Language } from 'types';
-
-// Type definition for component props.
-type Props = {
-  activeFilters?: Set < string >,           // Set of filters actively being used
-  filters: Array < string >,                // List of available filter IDs
-  filterDescriptions: Object,               // Mapping from filter IDs to their descriptions
-  fullSize: boolean,                        // True to make full size, false for shrunken
-  language: Language,                       // The current language, selected by the user
-  onFilterSelected: (id: ?string) => void,  // Callback for when a filter is selected
-}
-
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
+import * as Constants from '../constants';
+import * as Display from '../util/Display';
+import * as Translations from '../util/Translations';
+
+// Types
+import { Language } from '../util/Translations';
+import { BasicIcon } from '../../typings/global';
+
+// Type definition for component props.
+interface Props {
+  activeFilters?: Set<string>;                    // Set of filters actively being used
+  filters: string[];                              // List of available filter IDs
+  filterDescriptions: any;                        // Mapping from filter IDs to their descriptions
+  fullSize: boolean;                              // True to make full size, false for shrunken
+  language: Language;                             // The current language, selected by the user
+  onFilterSelected(id: string | undefined): void; // Callback for when a filter is selected
+}
+
+interface State {}
 
 /** Size of icons in full size filter view. */
 const FULL_ICON_SIZE = Constants.Sizes.Icons.Medium * 2;
@@ -61,33 +61,30 @@ const FULL_ICON_SIZE = Constants.Sizes.Icons.Medium * 2;
 /** Size of icons in mini filter view. */
 const MINI_ICON_SIZE = Constants.Sizes.Icons.Medium;
 
-export default class StudyFilters extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+export default class StudyFilters extends React.PureComponent<Props, State> {
 
   /**
    * Callback for when a filter is selected
    *
-   * @param {?string} id the identifier of the filter selected
+   * @param {string|undefined} id the identifier of the filter selected
    */
-  _onSelectFilter(id: ?string): void {
-    this.props.onFilterSelected && this.props.onFilterSelected(id);
+  _onSelectFilter(id: string | undefined): void {
+    if (this.props.onFilterSelected) {
+      this.props.onFilterSelected(id);
+    }
   }
 
   /**
    * Renders an icon of a specific size for the small or large filter style.
    *
-   * @param {?Icon}    icon     icon name and class
-   * @param {number}  size     size of the icon
-   * @param {boolean} isActive true to render a full color icon, false for inactive color
-   * @returns {?ReactElement<any>} the icon
+   * @param {BasicIcon} icon     icon name and class
+   * @param {number}    size     size of the icon
+   * @param {boolean}   isActive true to render a full color icon, false for inactive color
+   * @returns {JSX.Element|undefined} the icon
    */
-  _renderIcon(icon: ?Icon, size: number, isActive: boolean): ?ReactElement < any > {
-    if (icon == null) {
-      return null;
+  _renderIcon(icon: BasicIcon, size: number, isActive: boolean): JSX.Element | undefined {
+    if (icon == undefined) {
+      return undefined;
     } else if (icon.class === 'material') {
       return (
         <MaterialIcons
@@ -110,16 +107,17 @@ export default class StudyFilters extends React.PureComponent {
    *
    * @param {string}  filterId       the ID of the filter to draw
    * @param {boolean} withBackground true to include a dark background
-   * @returns {ReactElement<any>} a name and an icon
+   * @returns {JSX.Element} a name and an icon
    */
-  _renderFullFilter(filterId: string, withBackground: boolean): ReactElement < any > {
+  _renderFullFilter(filterId: string, withBackground: boolean): JSX.Element {
     const filter = this.props.filterDescriptions[filterId];
+
     return (
       <TouchableOpacity
           style={_styles.touchableContainer}
-          onPress={() => this._onSelectFilter(filterId)}>
+          onPress={(): void => this._onSelectFilter(filterId)}>
         <View style={[ _styles.filterContainer, withBackground ? _styles.filterBackground : {} ]}>
-          {this._renderIcon(DisplayUtils.getPlatformIcon(Platform.OS, filter), FULL_ICON_SIZE, true)}
+          {this._renderIcon(Display.getPlatformIcon(Platform.OS, filter), FULL_ICON_SIZE, true)}
           <Text style={_styles.fullSizeText}>{Translations.getName(this.props.language, filter)}</Text>
         </View>
       </TouchableOpacity>
@@ -131,17 +129,18 @@ export default class StudyFilters extends React.PureComponent {
    *
    * @param {string}  filterId       the ID of the filter to draw
    * @param {boolean} withBackground true to include a dark background
-   * @returns {ReactElement<any>} a name and an icon
+   * @returns {JSX.Element} a name and an icon
    */
-  _renderMiniFilter(filterId: string, withBackground: boolean): ReactElement < any > {
-    const isActive = this.props.activeFilters != null && this.props.activeFilters.has(filterId);
+  _renderMiniFilter(filterId: string, withBackground: boolean): JSX.Element {
+    const isActive = this.props.activeFilters != undefined && this.props.activeFilters.has(filterId);
     const filter = this.props.filterDescriptions[filterId];
+
     return (
       <TouchableOpacity
           style={_styles.touchableContainer}
-          onPress={() => this._onSelectFilter(filterId)}>
+          onPress={(): void => this._onSelectFilter(filterId)}>
         <View style={[ _styles.filterContainer, withBackground ? _styles.filterBackground : {} ]}>
-          {this._renderIcon(DisplayUtils.getPlatformIcon(Platform.OS, filter), MINI_ICON_SIZE, isActive)}
+          {this._renderIcon(Display.getPlatformIcon(Platform.OS, filter), MINI_ICON_SIZE, isActive)}
         </View>
       </TouchableOpacity>
     );
@@ -150,9 +149,9 @@ export default class StudyFilters extends React.PureComponent {
   /**
    * Renders a large view, with large icons and text for each filter.
    *
-   * @returns {ReactElement<any>} large icons and text for each filter
+   * @returns {JSX.Element} large icons and text for each filter
    */
-  _renderFullSize(): ReactElement < any > {
+  _renderFullSize(): JSX.Element {
     const filters = [];
     const numberOfFilters = this.props.filters.length;
     for (let i = 0; i < numberOfFilters; i += 2) {
@@ -162,14 +161,14 @@ export default class StudyFilters extends React.PureComponent {
             key={`fullPair-${Math.floor(i / 2)}`}
             style={_styles.filterSet}>
           {this._renderFullFilter(this.props.filters[i], evenBackground)}
-          {i + 1 < numberOfFilters ? this._renderFullFilter(this.props.filters[i + 1], !evenBackground) : null}
+          {i + 1 < numberOfFilters ? this._renderFullFilter(this.props.filters[i + 1], !evenBackground) : undefined}
         </View>
       );
     }
 
     return (
       <View style={_styles.fullContainer}>
-        {filters.map((filter) => filter)}
+        {filters.map((filter: JSX.Element) => filter)}
       </View>
     );
   }
@@ -177,10 +176,10 @@ export default class StudyFilters extends React.PureComponent {
   /**
    * Renders a miniature view, with small icons for each filter.
    *
-   * @returns {ReactElement<any>} a header and an icon for each filter
+   * @returns {JSX.Element} a header and an icon for each filter
    */
-  _renderMini(): ReactElement < any > {
-    /* eslint-disable no-magic-numbers */
+  _renderMini(): JSX.Element {
+    /* tslint:disable no-magic-numbers */
     // Constant row size of 4
 
     const filters = [];
@@ -191,18 +190,18 @@ export default class StudyFilters extends React.PureComponent {
             key={`miniQuad-${Math.floor(i / 4)}`}
             style={_styles.filterSet}>
           {this._renderMiniFilter(this.props.filters[i], false)}
-          {i + 1 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 1], false) : null}
-          {i + 2 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 2], false) : null}
-          {i + 3 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 3], false) : null}
+          {i + 1 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 1], false) : undefined}
+          {i + 2 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 2], false) : undefined}
+          {i + 3 < numberOfFilters ? this._renderMiniFilter(this.props.filters[i + 3], false) : undefined}
         </View>
       );
     }
 
-    /* eslint-enable no-magic-numbers */
+    /* tslint:enable no-magic-numbers */
 
     return (
       <View style={_styles.miniContainer}>
-        {filters.map((filter) => filter)}
+        {filters.map((filter: JSX.Element) => filter)}
       </View>
     );
   }
@@ -210,9 +209,9 @@ export default class StudyFilters extends React.PureComponent {
   /**
    * Renders each of the filters, in a large or small view.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     if (this.props.fullSize) {
       return this._renderFullSize();
     } else {
@@ -223,9 +222,22 @@ export default class StudyFilters extends React.PureComponent {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  fullContainer: {
+  filterBackground: {
+    backgroundColor: Constants.Colors.darkTransparentBackground,
+  },
+  filterContainer: {
+    alignItems: 'center',
     flex: 1,
+    justifyContent: 'center',
+    padding: Constants.Sizes.Margins.Expanded,
+  },
+  filterSet: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  fullContainer: {
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   fullSizeText: {
     color: Constants.Colors.primaryWhiteText,
@@ -234,23 +246,10 @@ const _styles = StyleSheet.create({
     textAlign: 'center',
   },
   miniContainer: {
-    height: 100,
     backgroundColor: Constants.Colors.secondaryBackground,
+    height: 100,
   },
   touchableContainer: {
     flex: 1,
-  },
-  filterContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: Constants.Sizes.Margins.Expanded,
-  },
-  filterSet: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  filterBackground: {
-    backgroundColor: Constants.Colors.darkTransparentBackground,
   },
 });

@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-19
- * @file ImageGrid.js
- * @providesModule ImageGrid
+ * @file ImageGrid.tsx
  * @description Displays the list of images in a grid, with a name if available.
- *
- * @flow
  */
 'use strict';
 
@@ -37,52 +34,41 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type { GridImage, Language } from 'types';
+// Imports
+import Header from './Header';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Configuration from '../util/configuration';
+import * as Constants from '../constants';
+import * as Translations from '../util/Translations';
+import { filterGridImage } from '../util/Search';
 
-// Type definition for component props
-type Props = {
-  images: Array < GridImage >,                // List of images to display
-  initialSelection?: Array < GridImage >,     // Images which are selected when the view is initially rendered
-  columns: number,                            // Number of columns to show images in
-  disableImages?: boolean,                    // If true, grid should only show a list of names, with no images
-  includeClear?: boolean,                     // If true, an empty cell should be available to clear the choice
-  filter: ?string,                            // Filter the list of images
-  language: Language,                         // Language to display image names in
-  multiSelect?: boolean,                      // Enable selecting two or more images in the grid
-  multiSelectText?: string,                   // Text to display on button for confirming multi select
-  onSelect?: (i: any) => void,                // Callback for when an image is selected
-  onMultiSelect?: (i: Array < any >) => void, // Callback for when multiple images are selected
+// Types
+import { Language } from '../util/Translations';
+import { GridImage } from '../../typings/global';
+
+interface Props {
+  images: GridImage[];                  // List of images to display
+  initialSelection?: GridImage[];       // Images which are selected when the view is initially rendered
+  columns: number;                      // Number of columns to show images in
+  disableImages?: boolean;              // If true, grid should only show a list of names, with no images
+  includeClear?: boolean;               // If true, an empty cell should be available to clear the choice
+  filter: string | undefined;           // Filter the list of images
+  language: Language;                   // Language to display image names in
+  multiSelect?: boolean;                // Enable selecting two or more images in the grid
+  multiSelectText?: string;             // Text to display on button for confirming multi select
+  onSelect?(i: any): void;              // Callback for when an image is selected
+  onMultiSelect?(i: GridImage[]): void; // Callback for when multiple images are selected
 }
 
-// Type definition for component state
-type State = {
-  images: Array < ?GridImage >, // List of images
-  selected: Set < ?GridImage >, // Indicates which images are selected, for multi select
-};
-
-// Imports
-import Header from 'Header';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
-import { filterGridImage } from 'Search';
+interface State {
+  images: (GridImage | undefined)[];  // List of images
+  selected: Set<GridImage|undefined>; // Indicates which images are selected, for multi select
+}
 
 // Determining size of building icons based on the screen size.
-const { width } = Dimensions.get('window');
+const { width }: { width: number } = Dimensions.get('window');
 
-export default class ImageGrid extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+export default class ImageGrid extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -99,7 +85,7 @@ export default class ImageGrid extends React.PureComponent {
 
     const selected = new Set();
     if (props.multiSelect && props.initialSelection) {
-      props.initialSelection.forEach((selection) => {
+      props.initialSelection.forEach((selection: GridImage | undefined) => {
         selected.add(selection);
       });
     }
@@ -123,7 +109,7 @@ export default class ImageGrid extends React.PureComponent {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
+    if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
       this._filterImages(nextProps);
     }
   }
@@ -131,11 +117,11 @@ export default class ImageGrid extends React.PureComponent {
   /**
    * Gets a unique key for the image.
    *
-   * @param {?GridImage} image the image to get a key for
-   * @param {number}    index index of the image
+   * @param {GridImage|undefined} image the image to get a key for
+   * @param {number}              index index of the image
    * @returns {string} the key
    */
-  _imageNameExtractor(image: ?GridImage, index: number): string {
+  _imageNameExtractor(image: GridImage | undefined, index: number): string {
     return image
         ? image.shorthand || Translations.getName(this.props.language, image) || index.toString()
         : index.toString();
@@ -148,13 +134,13 @@ export default class ImageGrid extends React.PureComponent {
    */
   _filterImages({ language, images, filter, includeClear }: Props): void {
     // Ignore the case of the search terms
-    const adjustedFilter = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
+    const adjustedFilter = (filter == undefined || filter.length === 0) ? undefined : filter.toUpperCase();
 
     // Create array for buildings
-    const filteredImages: Array < ?GridImage > = [];
+    const filteredImages: (GridImage|undefined)[] = [];
 
     if (includeClear) {
-      filteredImages.push(null);
+      filteredImages.push(undefined);
     }
 
     // If the search terms are empty, or the image name contains the terms, add it to the list
@@ -179,9 +165,9 @@ export default class ImageGrid extends React.PureComponent {
   /**
    * Handles event when an image in the grid is selected.
    *
-   * @param {?GridImage} image the selected image
+   * @param {GridImage|undefined} image the selected image
    */
-  _onImageSelected(image: ?GridImage): void {
+  _onImageSelected(image: GridImage | undefined): void {
     if (this.props.multiSelect) {
       const selected = new Set(this.state.selected);
       if (selected.has(image)) {
@@ -192,7 +178,9 @@ export default class ImageGrid extends React.PureComponent {
 
       this.setState({ selected });
     } else {
-      this.props.onSelect && this.props.onSelect(image);
+      if (this.props.onSelect) {
+        this.props.onSelect(image);
+      }
     }
   }
 
@@ -201,13 +189,19 @@ export default class ImageGrid extends React.PureComponent {
    */
   _onMultiSelectConfirm(): void {
     const selected = [];
-    this.props.images.forEach((image) => {
+    this.props.images.forEach((image: GridImage) => {
       if (this.state.selected.has(image)) {
         selected.push(image);
       }
     });
 
-    this.props.onMultiSelect && this.props.onMultiSelect(selected);
+    if (this.state.selected.has(undefined)) {
+      selected.push(undefined);
+    }
+
+    if (this.props.onMultiSelect) {
+      this.props.onMultiSelect(selected);
+    }
   }
 
   /**
@@ -215,25 +209,25 @@ export default class ImageGrid extends React.PureComponent {
    *
    * @param {GridImage} item  information about the image
    * @param {number}    index index of the image in the list
-   * @returns {ReactElement<any>} an image (if enabled) and name for the image
+   * @returns {JSX.Element} an image (if enabled) and name for the image
    */
-  _renderItem({ item, index }: { item: GridImage, index: number }): ReactElement < any > {
+  _renderItem({ item, index }: { item: GridImage; index: number }): JSX.Element {
     const gridImageSize: number = Math.floor(width / this.props.columns);
 
-    let gridImageStyle = { height: gridImageSize, width: gridImageSize };
-    let textStyle = { backgroundColor: Constants.Colors.darkTransparentBackground };
+    let gridImageStyle: any = { height: gridImageSize, width: gridImageSize };
+    let textStyle: any = { backgroundColor: Constants.Colors.darkTransparentBackground };
     if (this.props.disableImages) {
       gridImageStyle = { margin: 1, width: gridImageSize - 2 };
       textStyle = {
         backgroundColor: Constants.Colors.darkMoreTransparentBackground,
-        paddingTop: Constants.Sizes.Margins.Expanded,
         paddingBottom: Constants.Sizes.Margins.Expanded,
+        paddingTop: Constants.Sizes.Margins.Expanded,
       };
     }
 
     const imageStyle = {
-      width: width / this.props.columns,
       height: width / this.props.columns,
+      width: width / this.props.columns,
     };
 
     if (index % this.props.columns === this.props.columns - 1) {
@@ -241,7 +235,7 @@ export default class ImageGrid extends React.PureComponent {
       imageStyle.width += leftover;
     }
 
-    let check = null;
+    let check: JSX.Element;
     if (this.props.multiSelect) {
       if (this.state.selected.has(item)) {
         check = (
@@ -258,8 +252,8 @@ export default class ImageGrid extends React.PureComponent {
       }
     }
 
-    let image = null;
-    if (!this.props.disableImages && item != null) {
+    let image: JSX.Element;
+    if (!this.props.disableImages && item != undefined) {
       const displayImage = item.thumbnail ? item.thumbnail : item.image;
 
       if (typeof (displayImage) === 'string') {
@@ -280,7 +274,7 @@ export default class ImageGrid extends React.PureComponent {
     }
 
     return (
-      <TouchableOpacity onPress={() => this._onImageSelected(item)}>
+      <TouchableOpacity onPress={(): void => this._onImageSelected(item)}>
         <View style={[ _styles.gridImage, gridImageStyle ]}>
           {image}
           {check}
@@ -298,14 +292,14 @@ export default class ImageGrid extends React.PureComponent {
   /**
    * Renders a list of the images and names.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     let style = {};
     if (this.props.disableImages) {
       style = {
-        marginTop: 1,
         marginBottom: 1,
+        marginTop: 1,
       };
     }
 
@@ -326,8 +320,7 @@ export default class ImageGrid extends React.PureComponent {
                     title={this.props.multiSelectText} />
               </TouchableOpacity>
             )
-            : null}
-
+            : undefined}
       </View>
     );
   }
@@ -335,32 +328,32 @@ export default class ImageGrid extends React.PureComponent {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  checkContainer: {
-    flex: 1,
-    backgroundColor: Constants.Colors.transparentCharcoalGrey,
-  },
-  gridImage: {
-    justifyContent: 'flex-end',
-  },
-  shorthand: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
-    textAlign: 'center',
-    paddingTop: 5,
-    paddingBottom: 5,
-  },
   check: {
     alignSelf: 'center',
     backgroundColor: 'transparent',
   },
+  checkContainer: {
+    backgroundColor: Constants.Colors.transparentCharcoalGrey,
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+  },
+  gridImage: {
+    justifyContent: 'flex-end',
+  },
   image: {
-    position: 'absolute',
     bottom: 0,
-    top: 0,
-    right: 0,
     left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  shorthand: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    paddingBottom: 5,
+    paddingTop: 5,
+    textAlign: 'center',
   },
 });

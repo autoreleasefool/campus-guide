@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-05-27
- * @file LinkCategoryView.js
- * @providesModule LinkCategoryView
+ * @file LinkCategoryView.tsx
  * @description Organizes a set of links and categories.
- *
- * @flow
  */
 'use strict';
 
@@ -39,52 +36,48 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type { Language, LinkSection, NamedLink } from 'types';
+// Imports
+import Header from './Header';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import PaddedIcon from './PaddedIcon';
+import * as Configuration from '../util/Configuration';
+import * as Constants from '../constants';
+import * as Display from '../util/Display';
+import * as External from '../util/External';
+import * as TextUtils from '../util/TextUtils';
+import * as Translations from '../util/Translations';
 
-// Type definition for component props.
-type Props = {
-  filter: ?string,                              // Keywords to filter links by
-  language: Language,                           // The current language, selected by the user
-  section: LinkSection,                         // Section to display
-  socialMedia?: ?Array < NamedLink >,           // list of links to social media sites in the current category
-  onSubCategorySelected?: (id: string) => void, // Callback when subcategory in the category is selected by the user
+// Types
+import { Language } from '../util/Translations';
+import { LinkSection, NamedLink } from '../../typings/global';
+
+interface Props {
+  filter: string | undefined;               // Keywords to filter links by
+  language: Language;                       // The current language, selected by the user
+  section: LinkSection;                     // Section to display
+  socialMedia?: NamedLink | undefined;      // List of links to social media sites in the current category
+  onSubCategorySelected?(id: string): void; // Callback when subcategory in the category is selected by the user
 }
 
-// Imports
-import Header from 'Header';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import PaddedIcon from 'PaddedIcon';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as ExternalUtils from 'ExternalUtils';
-import * as TextUtils from 'TextUtils';
-import * as Translations from 'Translations';
+interface State {}
 
-export default class LinkCategoryView extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+export default class LinkCategoryView extends React.PureComponent<Props, State> {
 
   /**
    * Attempts to open a URL.
    *
-   * @param {?string} link        the url to open
-   * @param {Object} Translations language translations
+   * @param {string|undefined} link the url to open
    */
-  _openLink(link: ?string): void {
-    ExternalUtils.openLink(link, this.props.language, Linking, Alert, Clipboard, TextUtils);
+  _openLink(link: string | undefined): void {
+    External.openLink(link, this.props.language, Linking, Alert, Clipboard, TextUtils);
   }
 
   /**
    * Renders a header image for the section links.
    *
-   * @returns {ReactElement<any>} an image and title for the section
+   * @returns {JSX.Element} an image and title for the section
    */
-  _renderBanner(): ReactElement < any > {
+  _renderBanner(): JSX.Element {
     return (
       <View style={_styles.banner}>
         <Image
@@ -105,11 +98,11 @@ export default class LinkCategoryView extends React.PureComponent {
    *
    * @param {string} link      the link to format
    * @param {string} textColor color of the text to display link in
-   * @returns {?ReactElement<any>} a formatted link in a text view
+   * @returns {JSX.Element|undefined} a formatted link in a text view
    */
-  _renderFormattedLink(link: string, textColor: string): ?ReactElement < any > {
+  _renderFormattedLink(link: string, textColor: string): JSX.Element | undefined {
     if (link.indexOf('http') === 0) {
-      return null;
+      return undefined;
     } else {
       return (
         <Text style={[ _styles.linkSubtitle, { color: textColor }]}>{TextUtils.formatLink(link)}</Text>
@@ -120,23 +113,20 @@ export default class LinkCategoryView extends React.PureComponent {
   /**
    * Renders an icon based on the link type.
    *
-   * @param {?string} link     the link to represent with an icon
-   * @param {string} iconColor color for the icon
-   * @returns {?ReactElement<any>} an icon for the link
+   * @param {string|undefined} link     the link to represent with an icon
+   * @param {string}           iconColor color for the icon
+   * @returns {JSX.Element | undefined} an icon for the link
    */
-  _renderLinkIcon(link: ?string, iconColor: string): ?ReactElement < any > {
-    if (link == null) {
-      return null;
+  _renderLinkIcon(link: string | undefined, iconColor: string): JSX.Element | undefined {
+    if (link == undefined) {
+      return undefined;
     }
 
-    let iconName: string;
-    if (link.indexOf('tel:') === 0) {
-      iconName = 'md-call';
-    } else if (link.indexOf('mailto:') === 0) {
-      iconName = 'md-mail';
-    } else {
-      iconName = 'md-open';
-    }
+    const iconName = link.indexOf('tel:') === 0
+        ? 'md-call'
+        : (link.indexOf('mailto:') === 0
+            ? 'md-mail'
+            : 'md-open');
 
     return (
       <PaddedIcon
@@ -150,13 +140,13 @@ export default class LinkCategoryView extends React.PureComponent {
    * Returns a list of touchable views which open links in the web browser.
    *
    * @param {boolean}           isBackgroundDark indicates if the background color of the category is dark
-   * @returns {?ReactElement<any>} for each index in {links}, a {TouchableOpacity} with the name of the link
-   *                               or null if there are no links
+   * @returns {JSX.Element|undefined} for each index in {links}, a {TouchableOpacity} with the name of the link
+   *                                  or null if there are no links
    */
-  _renderLinks(isBackgroundDark: boolean): ?ReactElement < any > {
+  _renderLinks(isBackgroundDark: boolean): JSX.Element | undefined {
     const links = this.props.section.links;
-    if (links == null) {
-      return null;
+    if (links == undefined) {
+      return undefined;
     }
 
     const textColor: string = (isBackgroundDark)
@@ -170,36 +160,36 @@ export default class LinkCategoryView extends React.PureComponent {
     const language: Language = this.props.language;
 
     // Search terms to filter links by
-    const filter = this.props.filter ? this.props.filter.toUpperCase() : null;
+    const filter = this.props.filter ? this.props.filter.toUpperCase() : undefined;
 
     return (
       <View>
         <Header
             icon={{ name: 'insert-link', class: 'material' }}
             title={Translations.get(language, 'uo_info')} />
-        {links.map((link, index) => {
-          const translatedLink: string = Translations.getLink(language, link) || ExternalUtils.getDefaultLink();
-          const translatedName: string = Translations.getName(language, link) || translatedLink;
-          const translatedDescription: ?string = Translations.getDescription(language, link);
+        {links.map((link: NamedLink, index: number) => {
+          const translatedLink = Translations.getLink(language, link) || External.getDefaultLink();
+          const translatedName = Translations.getName(language, link) || translatedLink;
+          const translatedDescription = Translations.getDescription(language, link);
 
           // Compare name to search terms and do not render if they don't match
-          if (filter != null && translatedName.toUpperCase().indexOf(filter) < 0) {
-            return null;
+          if (filter != undefined && translatedName.toUpperCase().indexOf(filter) < 0) {
+            return undefined;
           }
 
           return (
             <View key={translatedLink}>
               <TouchableOpacity
                   style={{ flexDirection: 'row', alignItems: 'center' }}
-                  onPress={() => this._openLink(translatedLink)}>
+                  onPress={(): void => this._openLink(translatedLink)}>
                 {this._renderLinkIcon(translatedLink, iconColor)}
                 <View style={_styles.linkContainer}>
                   <Text style={[ _styles.link, { color: textColor }]}>
                     {translatedName}
                   </Text>
                   {this._renderFormattedLink(translatedLink, textColor)}
-                  {translatedDescription == null
-                    ? null
+                  {translatedDescription == undefined
+                    ? undefined
                     : (
                       <Text style={[ _styles.linkDescription, { color: textColor }]}>
                         {translatedDescription}
@@ -209,7 +199,7 @@ export default class LinkCategoryView extends React.PureComponent {
               </TouchableOpacity>
               {(index < links.length - 1)
                 ? <View style={[ _styles.divider, _styles.inset, { backgroundColor: textColor }]} />
-                : null
+                : undefined
               }
             </View>
           );
@@ -221,13 +211,13 @@ export default class LinkCategoryView extends React.PureComponent {
   /**
    * Returns a list of touchable views which open links in the web browser.
    *
-   * @returns {?ReactElement<any>} for each index in links, a TouchableOpacity with an icon representing
-   *                               the social media site, or null if there are no links
+   * @returns {JSX.Element|undefined} for each index in links, a TouchableOpacity with an icon representing
+   *                                  the social media site, or null if there are no links
    */
-  _renderSocialMedia(): ?ReactElement < any > {
+  _renderSocialMedia(): JSX.Element | undefined {
     const links = this.props.section.social;
-    if (links == null) {
-      return null;
+    if (links == undefined) {
+      return undefined;
     }
 
     // Get current language for translations
@@ -236,20 +226,19 @@ export default class LinkCategoryView extends React.PureComponent {
     return (
       <View style={_styles.socialMediaContainer}>
         {links.map((link: NamedLink) => {
-          const url: string = Translations.getLink(language, link)
-              || ExternalUtils.getDefaultLink();
-          const name: ?string = Translations.getName(language, link);
+          const url = Translations.getLink(language, link) || External.getDefaultLink();
+          const name = Translations.getName(language, link);
 
-          if (name == null) {
-            return null;
+          if (name == undefined) {
+            return undefined;
           } else {
             return (
               <TouchableOpacity
                   key={url}
-                  onPress={() => this._openLink(url)}>
+                  onPress={(): void => this._openLink(url)}>
                 <Ionicons
-                    color={DisplayUtils.getSocialMediaIconColor(name)}
-                    name={DisplayUtils.getSocialMediaIconName(name)}
+                    color={Display.getSocialMediaIconColor(name)}
+                    name={Display.getSocialMediaIconName(name)}
                     size={Constants.Sizes.Icons.Large}
                     style={_styles.socialMediaIcon} />
               </TouchableOpacity>
@@ -264,13 +253,13 @@ export default class LinkCategoryView extends React.PureComponent {
    * Returns a list of touchable views which lead to new pages of categories of links.
    *
    * @param {boolean}             isBackgroundDark indicates if the background color of the category is dark
-   * @returns {?ReactElement<any>} for each index in categories, a TouchableOpacity with the name of the category,
-   *                               or null if there are no categories
+   * @returns {JSX.Element|undefined} for each index in categories, a TouchableOpacity with the name of the category,
+   *                                  or null if there are no categories
    */
-  _renderSubCategories(isBackgroundDark: boolean): ?ReactElement < any > {
+  _renderSubCategories(isBackgroundDark: boolean): JSX.Element | undefined {
     const categories = this.props.section.categories;
-    if (categories == null) {
-      return null;
+    if (categories == undefined) {
+      return undefined;
     }
 
     const language: Language = this.props.language;
@@ -283,14 +272,14 @@ export default class LinkCategoryView extends React.PureComponent {
         <View style={[ _styles.divider, { backgroundColor: dividerColor }]} />
         {categories.map((category: LinkSection) => {
           const categoryName = Translations.getName(language, category);
-          if (categoryName == null) {
-            return null;
+          if (categoryName == undefined) {
+            return undefined;
           }
 
           return (
             <TouchableOpacity
                 key={categoryName}
-                onPress={() => this.props.onSubCategorySelected && this.props.onSubCategorySelected(category.id)}>
+                onPress={(): void => this.props.onSubCategorySelected && this.props.onSubCategorySelected(category.id)}>
               <Header
                   subtitleIcon={{ name: 'chevron-right', class: 'material' }}
                   title={categoryName} />
@@ -305,15 +294,15 @@ export default class LinkCategoryView extends React.PureComponent {
   /**
    * Renders a set of views detailing a set of related links.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     let categoryBackgroundColor: string = Constants.Colors.primaryBackground;
-    if (Constants.Colors[this.props.section.id] != null) {
+    if (Constants.Colors[this.props.section.id] != undefined) {
       categoryBackgroundColor = Constants.Colors[this.props.section.id];
     }
 
-    const isBackgroundDark: boolean = DisplayUtils.isColorDark(categoryBackgroundColor);
+    const isBackgroundDark: boolean = Display.isColorDark(categoryBackgroundColor);
 
     return (
       <View style={[ _styles.container, { backgroundColor: categoryBackgroundColor }]}>
@@ -331,34 +320,64 @@ export default class LinkCategoryView extends React.PureComponent {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Constants.Colors.primaryBackground,
-  },
   banner: {
-    height: 175,
     alignItems: 'flex-end',
+    height: 175,
     justifyContent: 'flex-end',
   },
   bannerImage: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
     bottom: 0,
+    height: undefined,
     left: 0,
-    width: null,
-    height: null,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: undefined,
+  },
+  bannerText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Title,
+    marginBottom: Constants.Sizes.Margins.Regular,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Regular,
   },
   bannerTextContainer: {
     backgroundColor: Constants.Colors.darkTransparentBackground,
   },
-  bannerText: {
-    marginTop: Constants.Sizes.Margins.Regular,
-    marginBottom: Constants.Sizes.Margins.Regular,
+  container: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
+  },
+  divider: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+  },
+  inset: {
     marginLeft: Constants.Sizes.Margins.Expanded,
+  },
+  link: {
+    fontSize: Constants.Sizes.Text.Body,
+  },
+  linkContainer: {
+    flex: 1,
+    marginBottom: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Title,
+    marginTop: Constants.Sizes.Margins.Expanded,
+  },
+  linkDescription: {
+    flex: 1,
+    fontSize: Constants.Sizes.Text.Body,
+    marginTop: Constants.Sizes.Margins.Condensed,
+  },
+  linkIcon: {
+    margin: Constants.Sizes.Margins.Expanded,
+  },
+  linkSubtitle: {
+    fontSize: Constants.Sizes.Text.Caption,
+  },
+  scrollView: {
+    flex: 1,
   },
   socialMediaContainer: {
     backgroundColor: Constants.Colors.tertiaryBackground,
@@ -367,35 +386,5 @@ const _styles = StyleSheet.create({
   },
   socialMediaIcon: {
     margin: Constants.Sizes.Margins.Regular,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  linkContainer: {
-    flex: 1,
-    marginTop: Constants.Sizes.Margins.Expanded,
-    marginBottom: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
-  },
-  link: {
-    fontSize: Constants.Sizes.Text.Body,
-  },
-  linkSubtitle: {
-    fontSize: Constants.Sizes.Text.Caption,
-  },
-  linkDescription: {
-    flex: 1,
-    marginTop: Constants.Sizes.Margins.Condensed,
-    fontSize: Constants.Sizes.Text.Body,
-  },
-  linkIcon: {
-    margin: Constants.Sizes.Margins.Expanded,
-  },
-  divider: {
-    flex: 1,
-    height: StyleSheet.hairlineWidth,
-  },
-  inset: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
   },
 });

@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-20
- * @file BuildingHeader.js
- * @providesModule BuildingHeader
+ * @file BuildingHeader.tsx
  * @description Displays an image and various details about the facilities a particular building provides.
- *
- * @flow
  */
 'use strict';
 
@@ -40,53 +37,45 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type { BuildingProperty, Facility, Language } from 'types';
-
-// Type definition for component props.
-type Props = {
-  facilities?: Array < Facility >,          // List of facilities the building offers
-  hideTitle?: boolean,                      // True to hide the title
-  image: any,                               // An image of the building
-  language: Language,                       // The user's currently selected language
-  name?: string,                            // Name of the building
-  properties: ?Array < BuildingProperty >,  // List of properties to display about the building
-  shorthand?: string,                       // Unique shorthand identifier for the building
-};
-
-// Type definition for component state.
-type State = {
-  bannerPosition: number,
-};
-
 // Imports
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { default as Header, HeaderHeight } from 'Header';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
+import { default as Header, HeaderHeight } from './Header';
+import * as Configuration from '../util/Configuration';
+import * as Constants from '../constants';
+import * as Display from '../util/Display';
+import * as Translations from '../util/Translations';
 
-const { width } = Dimensions.get('window');
+// Types
+import { Language } from '../util/Translations';
+import { BuildingProperty, Facility } from '../../typings/university';
+
+interface Props {
+  facilities?: Facility[];                    // List of facilities the building offers
+  hideTitle?: boolean;                        // True to hide the title
+  image: any;                                 // An image of the building
+  language: Language;                         // The user's currently selected language
+  name?: string;                              // Name of the building
+  properties: BuildingProperty[] | undefined; // List of properties to display about the building
+  shorthand?: string;                         // Unique shorthand identifier for the building
+}
+
+interface State {
+  bannerPosition: number;
+}
+
+const { width }: { width: number } = Dimensions.get('window');
 
 // Percentage of banner that banner will take
-const BANNER_TEXT_WIDTH_PCT: number = 0.75;
+const BANNER_TEXT_WIDTH_PCT = 0.75;
 // Number of milliseconds before the banner swaps
-const BANNER_SWAP_TIME: number = 2000;
+const BANNER_SWAP_TIME = 2000;
 // Amount of whitespace between items in the building details banner
-const BANNER_TEXT_SEPARATOR: number = 5;
+const BANNER_TEXT_SEPARATOR = 5;
 
-export default class BuildingHeader extends React.PureComponent {
+export default class BuildingHeader extends React.PureComponent<Props, State> {
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+  /** Timer which swaps the banner after a set amount of time. */
+  _swapBannerTimer: NodeJS.Timer | undefined;
 
   /**
    * Constructor.
@@ -98,9 +87,6 @@ export default class BuildingHeader extends React.PureComponent {
     this.state = {
       bannerPosition: 0,
     };
-
-    // Explicitly bind 'this' to methods that require it
-    (this:any)._swapBanner = this._swapBanner.bind(this);
   }
 
   /**
@@ -119,9 +105,6 @@ export default class BuildingHeader extends React.PureComponent {
     clearTimeout(this._swapBannerTimer);
   }
 
-  /** Timer which swaps the banner after a set amount of time. */
-  _swapBannerTimer: number;
-
   /**
    * Displays a pop-up to the user, describing what a certain facility icon means.
    *
@@ -130,7 +113,7 @@ export default class BuildingHeader extends React.PureComponent {
   _openFacilityDescription(facility: Facility): void {
     Alert.alert(
       Translations.get(this.props.language, 'whats_this_icon'),
-      Translations.get(this.props.language, facility),
+      Translations.get(this.props.language, facility)
     );
   }
 
@@ -141,7 +124,7 @@ export default class BuildingHeader extends React.PureComponent {
     // Clear the swap banner timer, if the user manually swipes the banner
     clearTimeout(this._swapBannerTimer);
 
-    LayoutAnimation.easeInEaseOut();
+    LayoutAnimation.easeInEaseOut(undefined, undefined);
     this.setState({
       bannerPosition: (this.state.bannerPosition === 0) ? 1 : 0,
     });
@@ -150,12 +133,12 @@ export default class BuildingHeader extends React.PureComponent {
   /**
    * Returns a list of touchable views which describe facilities in the building.
    *
-   * @returns {?ReactElement<any>} an icon representing each of the facilities in this building
+   * @returns {JSX.Element|undefined} an icon representing each of the facilities in this building
    */
-  _renderFacilityIcons(): ?ReactElement < any > {
+  _renderFacilityIcons(): JSX.Element | undefined {
     const facilities = this.props.facilities;
-    if (facilities == null) {
-      return null;
+    if (facilities == undefined) {
+      return undefined;
     }
 
     return (
@@ -167,7 +150,7 @@ export default class BuildingHeader extends React.PureComponent {
                 onPress={this._openFacilityDescription.bind(this, facility)}>
               <MaterialIcons
                   color={Constants.Colors.primaryWhiteIcon}
-                  name={DisplayUtils.getFacilityIconName(facility, Translations)}
+                  name={Display.getFacilityIconName(facility)}
                   size={Constants.Sizes.Icons.Medium}
                   style={_styles.facilitiesIcon} />
             </TouchableOpacity>
@@ -180,9 +163,9 @@ export default class BuildingHeader extends React.PureComponent {
   /**
    * Renders a view containing an image of the building, it's name, and a list of its rooms and facilities.
    *
-   * @returns {ReactElement<any>} a view describing a building
+   * @returns {JSX.Element} a view describing a building
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     const imageStyle = (this.state.bannerPosition === 0)
         ? { right: 0 }
         : { right: width * BANNER_TEXT_WIDTH_PCT };
@@ -194,11 +177,11 @@ export default class BuildingHeader extends React.PureComponent {
     }
 
     const properties = this.props.properties;
-    let propertiesView = null;
-    if (properties != null) {
+    let propertiesView: JSX.Element | undefined;
+    if (properties != undefined) {
       propertiesView = (
         <View>
-          {properties.map((property, i) => (
+          {properties.map((property: BuildingProperty, i: number) => (
             <View key={`prop.${Translations.getEnglishName(property) || ''}`}>
               <Text
                   key={`prop.title.${i}`}
@@ -216,7 +199,7 @@ export default class BuildingHeader extends React.PureComponent {
       );
     }
 
-    let image = null;
+    let image: JSX.Element | undefined;
     if (typeof (this.props.image) === 'string') {
       image = (
         <Image
@@ -245,7 +228,7 @@ export default class BuildingHeader extends React.PureComponent {
           </ScrollView>
         </View>
         {this.props.hideTitle || !this.props.name
-          ? null
+          ? undefined
           : <Header
               style={_styles.header}
               subtitle={this.props.shorthand}
@@ -258,12 +241,12 @@ export default class BuildingHeader extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   banner: {
-    height: 175,
     backgroundColor: Constants.Colors.secondaryBackground,
+    height: 175,
   },
   body: {
-    fontSize: Constants.Sizes.Text.Body,
     color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
     marginBottom: BANNER_TEXT_SEPARATOR,
     marginLeft: BANNER_TEXT_SEPARATOR,
     marginRight: BANNER_TEXT_SEPARATOR,
@@ -278,30 +261,30 @@ const _styles = StyleSheet.create({
     margin: BANNER_TEXT_SEPARATOR * 2,
   },
   header: {
-    position: 'absolute',
-    top: 0,
     left: 0,
+    position: 'absolute',
     right: 0,
+    top: 0,
   },
   image: {
+    bottom: 0,
+    height: undefined,
+    left: 0,
     position: 'absolute',
     top: 0,
-    bottom: 0,
-    left: 0,
-    width: null,
-    height: null,
+    width: undefined,
   },
   textContainer: {
-    position: 'absolute',
-    top: 0,
     bottom: 0,
-    right: 0,
     padding: Constants.Sizes.Margins.Regular,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   title: {
+    color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Title,
     fontWeight: 'bold',
-    color: Constants.Colors.primaryWhiteText,
     marginBottom: BANNER_TEXT_SEPARATOR,
     marginLeft: BANNER_TEXT_SEPARATOR,
     marginRight: BANNER_TEXT_SEPARATOR,

@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-03-09
- * @file StudySpotList.js
- * @providesModule StudySpotList
+ * @file StudySpotList.tsx
  * @description Displays a list of filterable study spots
- *
- * @flow
  */
 'use strict';
 
@@ -37,49 +34,39 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type { Language, StudySpot, TimeFormat } from 'types';
-
-// Type definition for component props.
-type Props = {
-  activeFilters: Set < string >,    // Set of active study spot filters
-  filter: ?string,                  // Filter the list of buildings
-  studyFilters: Object,             // Descriptions of study room filters
-  language: Language,               // Language to display building names in
-  onSelect: (s: StudySpot) => void, // Callback for when a spot is selected
-  spots: Array < StudySpot >,       // Study spot properties to display
-  timeFormat: TimeFormat,           // Format to display times in
-}
-
-// Type definition for component state
-type State = {
-  studySpots: Array < StudySpot >,  // List of study spots
-};
-
 // Imports
 import moment from 'moment';
-import PaddedIcon from 'PaddedIcon';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as TextUtils from 'TextUtils';
-import * as Translations from 'Translations';
-import { filterStudySpot } from 'Search';
+import PaddedIcon from './PaddedIcon';
+import * as Configuration from '../util/Configuration';
+import * as Constants from '../constants';
+import * as Display from '../util/Display';
+import * as TextUtils from '../util/TextUtils';
+import * as Translations from '../util/Translations';
+import { filterStudySpot } from '../util/Search';
+
+// Types
+import { Language } from '../util/Translations';
+import { TimeFormat } from '../../typings/global';
+import { StudySpot } from '../../typings/university';
+
+interface Props {
+  activeFilters: Set<string>;   // Set of active study spot filters
+  filter: string | undefined;   // Filter the list of buildings
+  studyFilters: any;            // Descriptions of study room filters
+  language: Language;           // Language to display building names in
+  spots: StudySpot[];           // Study spot properties to display
+  timeFormat: TimeFormat;       // Format to display times in
+  onSelect(s: StudySpot): void; // Callback for when a spot is selected
+}
+
+interface State {
+  studySpots: StudySpot[];  // List of study spots
+}
 
 /** Regular expression for recognizing an unavailable time. */
 const TIME_UNAVAILABLE_REGEX = /[Nn]\/[Aa]/;
 
-export default class StudySpotList extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+export default class StudySpotList extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -88,7 +75,7 @@ export default class StudySpotList extends React.PureComponent {
    */
   constructor(props: Props) {
     super(props);
-    this.state = { studySpots: []};
+    this.state = { studySpots: [] };
   }
 
   /**
@@ -105,17 +92,11 @@ export default class StudySpotList extends React.PureComponent {
    */
   componentWillReceiveProps(nextProps: Props): void {
     // Basic boolean comparisons to see if re-filtering needs to occur
-    if (nextProps.filter != this.props.filter
-        || nextProps.language != this.props.language
-        || nextProps.spots != this.props.spots) {
+    if (nextProps.filter !== this.props.filter
+        || nextProps.language !== this.props.language
+        || nextProps.spots !== this.props.spots
+        || this.props.activeFilters !== nextProps.activeFilters) {
       this._filterStudySpots(nextProps);
-      return;
-    }
-
-    // Compare filters to see if re-filtering needs to occur
-    if (this.props.activeFilters != nextProps.activeFilters) {
-      this._filterStudySpots(nextProps);
-      return;
     }
   }
 
@@ -132,7 +113,7 @@ export default class StudySpotList extends React.PureComponent {
     }
 
     let matches = 0;
-    spot.filters.forEach((filter) => {
+    spot.filters.forEach((filter: string) => {
       if (activeFilters.has(filter)) {
         matches++;
       }
@@ -161,10 +142,10 @@ export default class StudySpotList extends React.PureComponent {
    */
   _filterStudySpots({ activeFilters, filter, language, spots }: Props): void {
     // Ignore the case of the search terms
-    const adjustedFilter: ?string = (filter == null || filter.length === 0) ? null : filter.toUpperCase();
+    const adjustedFilter = (filter == undefined || filter.length === 0) ? undefined : filter.toUpperCase();
 
     // Create array for spots
-    const filteredSpots: Array < StudySpot > = [];
+    const filteredSpots: StudySpot[] = [];
 
     spots.forEach((studySpot: StudySpot) => {
       if (!this._spotMatchesAllFilters(activeFilters, studySpot)) {
@@ -183,33 +164,25 @@ export default class StudySpotList extends React.PureComponent {
    * Displays a spots's name, image and description.
    *
    * @param {StudySpot} spot information about the study spot to display
-   * @returns {ReactElement<any>} an image and views describing the spot
+   * @returns {JSX.Element} an image and views describing the spot
    */
-  _renderItem({ item }: { item: StudySpot }): ReactElement < any > {
+  _renderItem({ item }: { item: StudySpot }): JSX.Element {
     const altName = Translations.getName(this.props.language, item);
     const name = `${item.building} ${item.room ? item.room : ''}`;
     const description = Translations.getDescription(this.props.language, item) || '';
 
-    let openingTime = '';
-    if (TIME_UNAVAILABLE_REGEX.test(item.opens)) {
-      openingTime = item.opens;
-    } else {
-      openingTime = TextUtils.convertTimeFormat(this.props.timeFormat, item.opens);
-    }
+    const openingTime = TIME_UNAVAILABLE_REGEX.test(item.opens)
+        ? item.opens
+        : TextUtils.convertTimeFormat(this.props.timeFormat, item.opens);
 
-    let closingTime = '';
-    if (TIME_UNAVAILABLE_REGEX.test(item.closes)) {
-      if (!TIME_UNAVAILABLE_REGEX.test(item.opens)) {
-        closingTime = ` - ${item.closes}`;
-      }
-    } else {
-      closingTime = ` - ${TextUtils.convertTimeFormat(this.props.timeFormat, item.closes)}`;
-    }
+    const closingTime = TIME_UNAVAILABLE_REGEX.test(item.closes)
+        ? ` - ${item.closes}`
+        : ` - ${TextUtils.convertTimeFormat(this.props.timeFormat, item.closes)}`;
 
     return (
       <TouchableOpacity
           key={name}
-          onPress={() => this.props.onSelect(item)}>
+          onPress={(): void => this.props.onSelect(item)}>
         <View style={_styles.spot}>
           <Image
               resizeMode={'cover'}
@@ -217,14 +190,14 @@ export default class StudySpotList extends React.PureComponent {
               style={_styles.spotImage} />
           <View style={_styles.spotProperties}>
             <Text style={_styles.spotName}>{name}</Text>
-            {altName == null ? null : <Text style={_styles.spotSubtitle}>{altName}</Text>}
+            {altName == undefined ? undefined : <Text style={_styles.spotSubtitle}>{altName}</Text>}
             <Text style={_styles.spotSubtitle}>{`${openingTime}${closingTime}`}</Text>
             <Text style={_styles.spotDescription}>{description}</Text>
             <View style={_styles.spotFilters}>
-              {item.filters.map((filter) => (
+              {item.filters.map((filter: string) => (
                 <PaddedIcon
                     color={Constants.Colors.primaryWhiteIcon}
-                    icon={DisplayUtils.getPlatformIcon(Platform.OS, this.props.studyFilters[filter])}
+                    icon={Display.getPlatformIcon(Platform.OS, this.props.studyFilters[filter])}
                     key={filter}
                     size={Constants.Sizes.Icons.Medium}
                     width={Constants.Sizes.Icons.Medium + Constants.Sizes.Margins.Expanded} />
@@ -239,18 +212,18 @@ export default class StudySpotList extends React.PureComponent {
   /**
    * Renders a separator line between rows.
    *
-   * @returns {ReactElement<any>} a separator for the list of study spots
+   * @returns {JSX.Element} a separator for the list of study spots
    */
-  _renderSeparator(): ReactElement < any > {
+  _renderSeparator(): JSX.Element {
     return <View style={_styles.separator} />;
   }
 
   /**
    * Returns a list of touchable views listing the study spot descriptions.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <FlatList
@@ -266,32 +239,19 @@ export default class StudySpotList extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
+  },
+  separator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
   spot: {
-    flex: 1,
-    margin: Constants.Sizes.Margins.Expanded,
     alignItems: 'center',
-    flexDirection: 'row',
-  },
-  spotProperties: {
     flex: 1,
-  },
-  spotImage: {
-    alignSelf: 'flex-start',
-    marginRight: Constants.Sizes.Margins.Expanded,
-    width: 64,
-    height: 64,
-  },
-  spotName: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Subtitle,
-  },
-  spotSubtitle: {
-    color: Constants.Colors.secondaryWhiteText,
-    fontSize: Constants.Sizes.Text.Caption,
-    marginTop: Constants.Sizes.Margins.Condensed,
+    flexDirection: 'row',
+    margin: Constants.Sizes.Margins.Expanded,
   },
   spotDescription: {
     color: Constants.Colors.primaryWhiteText,
@@ -299,13 +259,26 @@ const _styles = StyleSheet.create({
     marginTop: Constants.Sizes.Margins.Condensed,
   },
   spotFilters: {
-    flexDirection: 'row',
     alignSelf: 'flex-end',
+    flexDirection: 'row',
     marginTop: Constants.Sizes.Margins.Expanded,
   },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    marginLeft: Constants.Sizes.Margins.Expanded,
-    backgroundColor: Constants.Colors.tertiaryBackground,
+  spotImage: {
+    alignSelf: 'flex-start',
+    height: 64,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    width: 64,
+  },
+  spotName: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
+  },
+  spotProperties: {
+    flex: 1,
+  },
+  spotSubtitle: {
+    color: Constants.Colors.secondaryWhiteText,
+    fontSize: Constants.Sizes.Text.Caption,
+    marginTop: Constants.Sizes.Margins.Condensed,
   },
 });

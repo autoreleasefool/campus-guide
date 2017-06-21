@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-06-02
- * @file AdView.js
- * @providesModule AdView
+ * @file AdView.tsx
  * @description Wrapper for ad network views to display ads in the application
- *
- * @flow
  */
 'use strict';
 
@@ -29,9 +26,18 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 
-export default class AdView extends React.PureComponent {
+interface Props {}
+interface State {}
 
-  render() {
+export default class AdView extends React.PureComponent<Props, State> {
+
+  /**
+   * TODO: This component is incomplete.
+   * Renders an adview.
+   *
+   * @returns {JSX.Element} the hierarchy of views to render
+   */
+  render(): JSX.Element {
     return (
       <Image
           resizeMode={'cover'}

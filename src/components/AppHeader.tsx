@@ -17,12 +17,9 @@
  *
  * @author Joseph Roque
  * @created 2016-10-14
- * @file AppHeader.js
- * @providesModule AppHeader
+ * @file AppHeader.tsx
  * @description Navigation and search bar for the top of the app, to allow the user to
  *              search from anywhere
- *
- * @flow
  */
 'use strict';
 
@@ -41,54 +38,43 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from 'actions';
-
-// Types
-import type { Language, Name, Tab } from 'types';
-
-// Type definition for component props.
-type Props = {
-  appTitle: Name,                   // Title for the header
-  filter: ?string,                  // The current search terms
-  language: Language,               // The user's currently selected language
-  onBack: () => void,               // Tells the app to navigate one screen backwards
-  onSearch: (st: ?string) => void,  // Updates the user's search terms
-  shouldShowBack: boolean,          // Indicates if the header should show a back button
-  shouldShowSearch: boolean,        // Indicates if the header should show a search input option
-  tab: Tab,                         // The current tab the user has open
-}
-
-// Type definition for component state.
-type State = {
-  shouldShowBack: boolean,          // Indicates if the header should show a back button
-  shouldShowSearch: boolean,        // Indicates if the header should show a search button
-  shouldShowSearchBar: boolean,     // Indicates if the header should hide the title and show a search input
-}
+import * as actions from '../actions';
 
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import * as Constants from '../constants';
+import * as Translations from '../util/Translations';
+
+// Types
+import { Language } from '../util/Translations';
+import { Name, Tab } from '../../typings/global';
+
+interface Props {
+  appTitle: Name;                           // Title for the header
+  filter: string | undefined;               // The current search terms
+  language: Language;                       // The user's currently selected language
+  shouldShowBack: boolean;                  // Indicates if the header should show a back button
+  shouldShowSearch: boolean;                // Indicates if the header should show a search input option
+  tab: Tab;                                 // The current tab the user has open
+  onBack(): void;                           // Tells the app to navigate one screen backwards
+  onSearch(st?: string | undefined): void;  // Updates the user's search terms
+}
+
+interface State {
+  shouldShowBack: boolean;          // Indicates if the header should show a back button
+  shouldShowSearch: boolean;        // Indicates if the header should show a search button
+  shouldShowSearchBar: boolean;     // Indicates if the header should hide the title and show a search input
+}
 
 // Height of the navbar
-const NAVBAR_HEIGHT: number = 45;
-const ICON_SIZE: number = 45;
+const NAVBAR_HEIGHT = 45;
+const ICON_SIZE = 45;
 
 // Width of the search input
-const { width } = Dimensions.get('window');
+const { width }: { width: number } = Dimensions.get('window');
 const SEARCH_INPUT_WIDTH = width - ICON_SIZE * 2;
 
-class AppHeader extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+class AppHeader extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -110,18 +96,18 @@ class AppHeader extends React.PureComponent {
    * @param {Props} nextProps the new props
    */
   componentWillReceiveProps(nextProps: Props): void {
-    if (nextProps.shouldShowBack != this.props.shouldShowBack
-        || nextProps.shouldShowSearch != this.props.shouldShowSearch
-        || nextProps.tab != this.props.tab) {
+    if (nextProps.shouldShowBack !== this.props.shouldShowBack
+        || nextProps.shouldShowSearch !== this.props.shouldShowSearch
+        || nextProps.tab !== this.props.tab) {
       if (!(nextProps.shouldShowSearch && this.state.shouldShowSearchBar)) {
-        this.refs.SearchInput.blur();
+        (this.refs.SearchInput as any).blur();
       }
 
-      if (nextProps.tab != this.props.tab && nextProps.tab === 'search') {
-        this.refs.SearchInput.focus();
+      if (nextProps.tab !== this.props.tab && nextProps.tab === 'search') {
+        (this.refs.SearchInput as any).focus();
       }
 
-      LayoutAnimation.easeInEaseOut();
+      LayoutAnimation.easeInEaseOut(undefined, undefined);
       this.setState({
         shouldShowBack: nextProps.shouldShowBack,
         shouldShowSearch: nextProps.shouldShowSearch || nextProps.tab === 'search',
@@ -136,13 +122,13 @@ class AppHeader extends React.PureComponent {
    */
   _toggleSearch(): void {
     if (this.state.shouldShowSearchBar) {
-      this.refs.SearchInput.blur();
-      this.props.onSearch(null);
+      (this.refs.SearchInput as any).blur();
+      this.props.onSearch();
     } else {
-      this.refs.SearchInput.focus();
+      (this.refs.SearchInput as any).focus();
     }
 
-    LayoutAnimation.easeInEaseOut();
+    LayoutAnimation.easeInEaseOut(undefined, undefined);
     this.setState({
       shouldShowSearchBar: !this.state.shouldShowSearchBar,
     });
@@ -152,17 +138,17 @@ class AppHeader extends React.PureComponent {
    * Navigates back in the application.
    */
   _onBack(): void {
-    this.refs.SearchInput.clear();
-    this.refs.SearchInput.blur();
+    (this.refs.SearchInput as any).clear();
+    (this.refs.SearchInput as any).blur();
     this.props.onBack();
   }
 
   /**
    * Prompts the app to search.
    *
-   * @param {?string} text params to search for
+   * @param {string|undefined} text params to search for
    */
-  _onSearch(text: ?string): void {
+  _onSearch(text?: string | undefined): void {
     if (text === this.props.filter) {
       return;
     }
@@ -172,37 +158,34 @@ class AppHeader extends React.PureComponent {
   /**
    * Renders a title, back button for navigation, and search button.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
-    const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
-    const backArrowIcon: string = `${platformModifier}-arrow-back`;
-    const searchIcon: string = `${platformModifier}-search`;
-    const closeIcon: string = `${platformModifier}-close`;
+  render(): JSX.Element {
+    const platformModifier = Platform.OS === 'ios' ? 'ios' : 'md';
+    const backArrowIcon = `${platformModifier}-arrow-back`;
+    const searchIcon = `${platformModifier}-search`;
+    const closeIcon = `${platformModifier}-close`;
 
     // If title is string, use it as key for translations
-    let appTitle: string;
-    if (typeof (this.props.appTitle) === 'string') {
-      appTitle = Translations.get(this.props.language, this.props.appTitle);
-    } else {
-      appTitle = Translations.getName(this.props.language, this.props.appTitle) || '';
-    }
+    const appTitle = (typeof (this.props.appTitle) === 'string')
+        ? Translations.get(this.props.language, this.props.appTitle)
+        : Translations.getName(this.props.language, this.props.appTitle) || '';
 
     // Hide/show back button
-    let backIconStyle: Object = { left: -ICON_SIZE };
+    let backIconStyle = { left: -ICON_SIZE };
     if (this.props.shouldShowBack) {
       backIconStyle = { left: 0 };
     }
 
     // Hide/show search button, title
-    let searchIconStyle: Object = { right: -ICON_SIZE };
+    let searchIconStyle = { right: -ICON_SIZE };
     if (this.props.shouldShowSearch) {
       searchIconStyle = { right: 0 };
     }
 
     // Hide/show title and search input
-    let titleStyle: Object = {};
-    let searchInputStyle: Object = { right: -SEARCH_INPUT_WIDTH };
+    let titleStyle = {};
+    let searchInputStyle = { right: -SEARCH_INPUT_WIDTH };
     if (this.state.shouldShowSearchBar) {
       titleStyle = { opacity: 0 };
       searchInputStyle = { right: ICON_SIZE };
@@ -224,7 +207,7 @@ class AppHeader extends React.PureComponent {
               name={searchIcon}
               size={Constants.Sizes.Icons.Medium}
               style={_styles.searchIcon}
-              onPress={() => this.refs.SearchInput.focus()} />
+              onPress={(): void => (this.refs.SearchInput as any).focus()} />
           <TextInput
               autoCorrect={false}
               placeholder={Translations.get(this.props.language, 'search_placeholder')}
@@ -262,62 +245,62 @@ class AppHeader extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
     backgroundColor: Constants.Colors.primaryBackground,
     flexDirection: 'row',
-    alignItems: 'center',
     height: NAVBAR_HEIGHT,
     marginTop: Constants.Sizes.HeaderPadding[Platform.OS],
   },
-  searchContainer: {
-    flex: 1,
-    width: SEARCH_INPUT_WIDTH,
+  icon: {
     alignItems: 'center',
-    flexDirection: 'row',
-    borderRadius: Constants.Sizes.Margins.Regular,
+    height: ICON_SIZE,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: ICON_SIZE,
+  },
+  noBackground: {
+    backgroundColor: 'rgba(0,0,0,0)',
+  },
+  searchContainer: {
+    alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    borderRadius: Constants.Sizes.Margins.Regular,
+    flex: 1,
+    flexDirection: 'row',
     margin: Constants.Sizes.Margins.Regular,
     position: 'absolute',
+    width: SEARCH_INPUT_WIDTH,
   },
   searchIcon: {
     marginLeft: Constants.Sizes.Margins.Regular,
     marginRight: Constants.Sizes.Margins.Regular,
   },
   searchText: {
+    color: Constants.Colors.primaryWhiteText,
     flex: 1,
     height: 35,
-    color: Constants.Colors.primaryWhiteText,
   },
-  icon: {
+  separator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    bottom: 0,
+    height: StyleSheet.hairlineWidth,
     position: 'absolute',
-    width: ICON_SIZE,
-    height: ICON_SIZE,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width,
   },
   title: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Title,
     paddingLeft: ICON_SIZE,
     paddingRight: ICON_SIZE,
     textAlign: 'center',
-    fontSize: Constants.Sizes.Text.Title,
-    color: Constants.Colors.primaryWhiteText,
   },
   titleContainer: {
-    flex: 1,
     alignItems: 'center',
-  },
-  noBackground: {
-    backgroundColor: 'rgba(0,0,0,0)',
-  },
-  separator: {
-    position: 'absolute',
-    bottom: 0,
-    width: width,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: Constants.Colors.tertiaryBackground,
+    flex: 1,
   },
 });
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store: any): any => {
   return {
     appTitle: store.header.title,
     filter: store.search.terms,
@@ -328,14 +311,14 @@ const mapStateToProps = (store) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onBack: () => {
+    onBack: (): void => {
       dispatch(actions.navigateBack());
-      dispatch(actions.search(null));
+      dispatch(actions.search());
     },
-    onSearch: (text: ?string) => dispatch(actions.search(text)),
+    onSearch: (text?: string | undefined): void => dispatch(actions.search(text)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(AppHeader) as any;

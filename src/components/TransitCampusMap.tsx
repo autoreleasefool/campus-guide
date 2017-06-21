@@ -17,12 +17,9 @@
  *
  * @author Joseph Roque
  * @created 2016-11-3
- * @file TransitCampusMap.js
- * @providesModule TransitCampusMap
+ * @file TransitCampusMap.tsx
  * @description Displays a campus' location on a map, relative to a user's location, as well as a list of the stops
  *              near the campus.
- *
- * @flow
  */
 'use strict';
 
@@ -35,54 +32,36 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type {
-  Language,
-  LatLong,
-  LatLongDelta,
-  TimeFormat,
-  TransitCampus,
-  TransitSystem,
-  VoidFunction,
-} from 'types';
-
-// Type definition for component props.
-type Props = {
-  campusId: string,           // Identifier for the transit campus info to display
-  filter: ?string,            // The current filter for transit routes
-  language: Language,         // The current language, selected by the user
-  resetFilter: VoidFunction,  // Should reset the search filter
-  timeFormat: TimeFormat,     // Format to display times in
-};
-
-// Type definition for component state.
-type State = {
-  campus: ?TransitCampus,                 // Name and routes that visit the campus
-  initialRegion: LatLong & LatLongDelta,  // Initial location to display on map
-  region: ?(LatLong & LatLongDelta),      // Current region displayed by map
-  routesExpanded: boolean,                // True to indicate the routes and times are expanded
-  stops: Object,                          // Set of stop details
-};
-
 // Imports
-import TransitStops from 'TransitStops';
-import Header from 'Header';
+import TransitStops from './TransitStops';
+import Header from './Header';
 import MapView from 'react-native-maps';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as Translations from 'Translations';
+import * as Configuration from '../util/Configuration';
+import * as Constants from '../constants';
+import * as Translations from '../util/Translations';
 
-export default class TransitCampusMap extends React.PureComponent {
+// Types
+import { Language } from '../util/Translations';
+import { LatLong, LatLongDelta, TimeFormat } from '../../typings/global';
+import { TransitCampus, TransitSystem } from '../../typings/transit';
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
+interface Props {
+  campusId: string;           // Identifier for the transit campus info to display
+  filter: string | undefined; // The current filter for transit routes
+  language: Language;         // The current language, selected by the user
+  timeFormat: TimeFormat;     // Format to display times in
+  resetFilter(): void;        // Should reset the search filter
+}
 
-  /**
-   * Current state of the component.
-   */
-  state: State;
+interface State {
+  campus: TransitCampus | undefined;          // Name and routes that visit the campus
+  initialRegion: LatLong & LatLongDelta;      // Initial location to display on map
+  region: LatLong & LatLongDelta | undefined; // Current region displayed by map
+  routesExpanded: boolean;                    // True to indicate the routes and times are expanded
+  stops: any;                                 // Set of stop details
+}
+
+export default class TransitCampusMap extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -93,9 +72,9 @@ export default class TransitCampusMap extends React.PureComponent {
     super(props);
 
     this.state = {
-      campus: null,
+      campus: undefined,
       initialRegion: Constants.Map.InitialRegion,
-      region: null,
+      region: undefined,
       routesExpanded: false,
       stops: {},
     };
@@ -105,23 +84,23 @@ export default class TransitCampusMap extends React.PureComponent {
    * If the campus details have not been loaded, then loads them.
    */
   componentDidMount(): void {
-    if (this.state.campus == null) {
+    if (this.state.campus == undefined) {
       Configuration.init()
           .then(() => Configuration.getConfig('/transit.json'))
           .then((transitSystem: TransitSystem) => {
             const campuses = transitSystem.campuses;
             const stops = transitSystem.stopDetails;
-            for (let i = 0; i < campuses.length; i++) {
-              if (campuses[i].id === this.props.campusId) {
+            for (const campus of campuses) {
+              if (campus.id === this.props.campusId) {
                 this.setState({
-                  stops: stops,
-                  campus: campuses[i],
+                  campus,
                   initialRegion: {
-                    latitude: campuses[i].lat,
-                    longitude: campuses[i].long,
+                    latitude: campus.latitude,
                     latitudeDelta: Constants.Map.DefaultDelta,
+                    longitude: campus.longitude,
                     longitudeDelta: Constants.Map.DefaultDelta,
                   },
+                  stops,
                 });
               }
             }
@@ -143,25 +122,23 @@ export default class TransitCampusMap extends React.PureComponent {
   /**
    * Invoked when the user selects a stop.
    *
-   * @param {?string} stopId id of the selected stop
+   * @param {string|undefined} stopId id of the selected stop
    */
-  _stopSelected(stopId: ?string): void {
-    if (stopId == null) {
-      this.setState({
-        region: null,
-      });
+  _stopSelected(stopId: string | undefined): void {
+    if (stopId == undefined) {
+      this.setState({ region: undefined });
     } else {
       this.props.resetFilter();
 
       // Show stop name and code
-      this.refs[this._getMarkerReference(stopId)].showCallout();
+      (this.refs[this._getMarkerReference(stopId)] as any).showCallout();
 
       // Center on the stop
       this.setState({
         region: {
-          latitude: this.state.stops[stopId].lat,
-          longitude: this.state.stops[stopId].long,
+          latitude: this.state.stops[stopId].latitude,
           latitudeDelta: Constants.Map.DefaultDelta,
+          longitude: this.state.stops[stopId].longitude,
           longitudeDelta: Constants.Map.DefaultDelta,
         },
       });
@@ -172,7 +149,7 @@ export default class TransitCampusMap extends React.PureComponent {
    * Toggles whether the route/stop container is expanded or not.
    */
   _toggleRoutesExpanded(): void {
-    LayoutAnimation.easeInEaseOut();
+    LayoutAnimation.easeInEaseOut(undefined, undefined);
     this.setState({
       routesExpanded: !this.state.routesExpanded,
     });
@@ -181,12 +158,12 @@ export default class TransitCampusMap extends React.PureComponent {
   /**
    * Renders a map with a list of markers to denote transit stops near the campus.
    *
-   * @returns {ReactElement<any>} a {MapView} with a list of markers placed at the stops on the campus
+   * @returns {JSX.Element} a {MapView} with a list of markers placed at the stops on the campus
    */
-  _renderCampusMap(): ReactElement < any > {
-    const markers: Array < string > = [];
+  _renderCampusMap(): JSX.Element {
+    const markers: string[] = [];
 
-    if (this.state.campus != null) {
+    if (this.state.campus != undefined) {
       for (const stopId in this.state.campus.stops) {
         if (this.state.campus.stops.hasOwnProperty(stopId)) {
           markers.push(stopId);
@@ -200,6 +177,7 @@ export default class TransitCampusMap extends React.PureComponent {
           style={_styles.map}>
         {markers.map((stopId: string) => {
           const stop = this.state.stops[stopId];
+
           return (
             <MapView.Marker
                 coordinate={{ latitude: stop.lat, longitude: stop.long }}
@@ -218,20 +196,20 @@ export default class TransitCampusMap extends React.PureComponent {
    * Returns a view containing a header and list with the stops surrounding the campus provided by
    * {this.props.campusId}.
    *
-   * @returns {ReactElement<any>} a {Stops} view with details about the various stops on the campus, or an empty view
+   * @returns {JSX.Element} a {Stops} view with details about the various stops on the campus, or an empty view
    */
-  _renderCampusStops(): ReactElement < any > {
+  _renderCampusStops(): JSX.Element {
     const campus = this.state.campus;
     const stops = this.state.stops;
-    if (campus == null || stops == null) {
+    if (campus == undefined || stops == undefined) {
       return (
         <View />
       );
     }
 
     let expandIcon = 'expand-less';
-    let routeStyle = { flexShrink: 0 };
-    let stopStyle = { height: 0 };
+    let routeStyle: any = { flexShrink: 0 };
+    let stopStyle: any = { height: 0 };
     if (this.state.routesExpanded) {
       expandIcon = 'expand-more';
       routeStyle = { flex: 3 };
@@ -261,9 +239,9 @@ export default class TransitCampusMap extends React.PureComponent {
   /**
    * Renders a map and list of routes and stop times at the various stops.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={[ _styles.container, { backgroundColor: Constants.Colors.primaryBackground }]}>
         <View style={_styles.container}>
@@ -281,10 +259,10 @@ const _styles = StyleSheet.create({
     flex: 2,
   },
   map: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
     bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
 });

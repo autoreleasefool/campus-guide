@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-19
- * @file Header.js
- * @providesModule Header
+ * @file Header.tsx
  * @description Predefined style for section separating headers in the app.
- *
- * @flow
  */
 'use strict';
 
@@ -34,44 +31,43 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type { Icon, VoidFunction } from 'types';
-
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import PaddedIcon from 'PaddedIcon';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Constants from 'Constants';
+import PaddedIcon from './PaddedIcon';
+import * as Display from '../util/Display';
+import * as Constants from '../constants';
 
 // Height of the view
 export const HeaderHeight = 50;
 
-export default class Header extends React.PureComponent {
+// Types
+import { BasicIcon } from '../../typings/global';
 
-  /**
-   * Properties which the parent component should make available to this component.
-   */
-  props: {
-    backgroundColor?: string,         // Background color for the view
-    icon?: ?Icon,                     // Large icon to represent the section
-    iconCallback?: VoidFunction,      // Callback function for icon on press
-    largeSubtitle?: boolean,         // Request a larger font size for subtitles
-    subtitle?: ?string,               // Subtitle text
-    subtitleIcon?: ?Icon,             // Small icon for the subtitle
-    subtitleCallback?: VoidFunction,  // Callback function for subtitle on press
-    title: string,                    // Title for the header
-  };
+interface Props {
+  backgroundColor?: string;             // Background color for the view
+  icon?: BasicIcon | undefined;         // Large icon to represent the section
+  largeSubtitle?: boolean;              // Request a larger font size for subtitles
+  subtitle?: string | undefined;        // Subtitle text
+  subtitleIcon?: BasicIcon | undefined; // Small icon for the subtitle
+  title: string;                        // Title for the header
+  iconCallback?(): void;                // Callback function for icon on press
+  subtitleCallback?(): void;            // Callback function for subtitle on press
+}
+
+interface State {}
+
+export default class Header extends React.PureComponent<Props, State> {
 
   /**
    * Creates a view containing this Header's icon.
    *
    * @param {string} color color of the icon
-   * @returns {?ReactElement<any>} a view with the Header's icon, or null
+   * @returns {JSX.Element|undefined} a view with the Header's icon, or null
    */
-  _renderIcon(color: string): ?ReactElement < any > {
-    let icon: ?ReactElement < any > = null;
-    if (this.props.icon != null) {
+  _renderIcon(color: string): JSX.Element | undefined {
+    let icon: JSX.Element | undefined;
+    if (this.props.icon != undefined) {
       icon = (
         <PaddedIcon
             color={color}
@@ -95,15 +91,15 @@ export default class Header extends React.PureComponent {
    * Builds a view containing the Header's subtitle text and icon, as long as one of them is defined.
    *
    * @param {string} color color of the subtitle
-   * @returns {?ReactElement<any>} a view with the subtitle text and icon, or null if neither exists
+   * @returns {JSX.Element|undefined} a view with the subtitle text and icon, or null if neither exists
    */
-  _renderSubtitle(color: string): ?ReactElement < any > {
-    let subtitle: ?ReactElement < any > = null;
-    const subtitleText: ?ReactElement < any > = this._renderSubtitleText(color);
-    const subtitleIcon: ?ReactElement < any > = this._renderSubtitleIcon(color);
+  _renderSubtitle(color: string): JSX.Element | undefined {
+    let subtitle: JSX.Element | undefined;
+    const subtitleText: JSX.Element | undefined = this._renderSubtitleText(color);
+    const subtitleIcon: JSX.Element | undefined = this._renderSubtitleIcon(color);
 
     // If either subtitle component exists, render the subtitle
-    if (subtitleText != null || subtitleIcon != null) {
+    if (subtitleText != undefined || subtitleIcon != undefined) {
       if (this.props.subtitleCallback) {
         // If there is an action that occurs when a subtitle is clicked, add a TouchableOpacity
         subtitle = (
@@ -132,12 +128,12 @@ export default class Header extends React.PureComponent {
    * Creates a view containing this Header's subtitle icon, so long as it is not null.
    *
    * @param {string} color color of the subtitle
-   * @returns {?ReactElement<any>} a view with the Header's subtitle icon, or null
+   * @returns {JSX.Element|undefined} a view with the Header's subtitle icon, or null
    */
-  _renderSubtitleIcon(color: string): ?ReactElement < any > {
-    let subtitleIcon: ?ReactElement < any > = null;
+  _renderSubtitleIcon(color: string): JSX.Element | undefined {
+    let subtitleIcon: JSX.Element | undefined;
 
-    if (this.props.subtitleIcon != null) {
+    if (this.props.subtitleIcon != undefined) {
       if (this.props.subtitleIcon.class === 'material') {
         subtitleIcon = (
           <MaterialIcons
@@ -164,16 +160,16 @@ export default class Header extends React.PureComponent {
    * Creates a text view containing this Header's subtitle text, so long as it is not null.
    *
    * @param {string} color color of the subtitle
-   * @returns {?ReactElement<any>} a text view with the Header's subtitle text, or null
+   * @returns {JSX.Element|undefined} a text view with the Header's subtitle text, or null
    */
-  _renderSubtitleText(color: string): ?ReactElement < any > {
-    let subtitleText: ?ReactElement < any > = null;
+  _renderSubtitleText(color: string): JSX.Element | undefined {
+    let subtitleText: JSX.Element | undefined;
     const style = {
-      fontSize: this.props.largeSubtitle ? Constants.Sizes.Text.Body : Constants.Sizes.Text.Caption,
       color,
+      fontSize: this.props.largeSubtitle ? Constants.Sizes.Text.Body : Constants.Sizes.Text.Caption,
     };
 
-    if (this.props.subtitle != null) {
+    if (this.props.subtitle != undefined) {
       subtitleText = (
         <Text style={[ _styles.subtitleText, style ]}>
           {this.props.subtitle.toUpperCase()}
@@ -187,20 +183,20 @@ export default class Header extends React.PureComponent {
   /**
    * Builds the components of the section header, including the title, icon, subtitle, and subtitle icon.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     // Set the background color of the header to a default value if not provided
     const headerBackground = this.props.backgroundColor || Constants.Colors.darkTransparentBackground;
     let primaryForeground = Constants.Colors.primaryBlackText;
     let secondaryForeground = Constants.Colors.secondaryBlackText;
-    if (DisplayUtils.isColorDark(headerBackground)) {
+    if (Display.isColorDark(headerBackground)) {
       primaryForeground = Constants.Colors.primaryWhiteText;
       secondaryForeground = Constants.Colors.secondaryWhiteText;
     }
 
     const icon = this._renderIcon(primaryForeground);
-    const titleStyle = { marginLeft: icon == null ? Constants.Sizes.Margins.Expanded : 0 };
+    const titleStyle = { marginLeft: icon == undefined ? Constants.Sizes.Margins.Expanded : 0 };
 
     return (
       <View style={[ _styles.header, { backgroundColor: headerBackground }]}>
@@ -222,9 +218,9 @@ export default class Header extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   header: {
-    height: HeaderHeight,
     alignItems: 'center',
     flexDirection: 'row',
+    height: HeaderHeight,
   },
   subtitle: {
     flexDirection: 'row',

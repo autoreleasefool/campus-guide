@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-20
- * @file RoomGrid.js
- * @providesModule RoomGrid
+ * @file RoomGrid.tsx
  * @description Displays the list of rooms in a certain building.
- *
- * @flow
  */
 'use strict';
 
@@ -36,51 +33,46 @@ import {
   View,
 } from 'react-native';
 
+// Imports
+import PaddedIcon from './PaddedIcon';
+import * as Configuration from '../util/Configuration';
+import * as Constants from '../constants';
+import * as Display from '../util/Display';
+import * as Translations from '../util/Translations';
+import { filterRoom } from '../util/Search';
+
 // Types
-import type { BuildingRoom, Language, RoomTypeInfo } from 'types';
+import { Language } from '../util/Translations';
+import { BuildingRoom, RoomTypeInfo } from '../../typings/university';
 
-// Type definition for component props.
-type Props = {
-  shorthand: string,                                    // Unique shorthand identifier for the building
-  filter: ?string,                                      // Filter the list of rooms
-  language: Language,                                   // Language to display building names in
-  onSelect: (shorthand: string, room: ?string) => void, // Callback function for when a room is selected
-  renderHeader: ?() => ReactElement < any >,            // Render a custom header at the top of the list
-  rooms: Array < BuildingRoom >,                        // The list of rooms in the building
-};
+interface Props {
+  shorthand: string;                                    // Unique shorthand identifier for the building
+  filter: string | undefined;                           // Filter the list of rooms
+  language: Language;                                   // Language to display building names in
+  rooms: BuildingRoom[];                                // The list of rooms in the building
+  renderHeader(): JSX.Element;                          // Render a custom header at the top of the list
+  onSelect(sh: string, room: string | undefined): void; // Callback function for when a room is selected
+}
 
-// Type definition for component state.
-type State = {
-  loaded: boolean,                // Indicates if the room data has been loaded
-  rooms: Array < FilteredRoom >,  // List of rooms
-};
+interface State {
+  loaded: boolean;        // Indicates if the room data has been loaded
+  rooms: FilteredRoom[];  // List of rooms
+}
 
 // Data required for rendering the list of filtered rooms.
-type FilteredRoom = {
-  altName: ?string, // Alternate display name for the room
-  key: string,      // Unique name/number of the room
-  typeId: string,   // Type of room
-};
+interface FilteredRoom {
+  altName: string | undefined;  // Alternate display name for the room
+  key: string;                  // Unique name/number of the room
+  typeId: string;               // Type of room
+}
 
-// Imports
-import PaddedIcon from 'PaddedIcon';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
-import { filterRoom } from 'Search';
+export default class RoomGrid extends React.PureComponent<Props, State> {
 
-export default class RoomGrid extends React.PureComponent {
+  /** Room type descriptions. */
+  _roomTypes: any;
 
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+  /** List of available room type IDs. */
+  _roomTypeIds: string[];
 
   /**
    * Constructor.
@@ -93,9 +85,6 @@ export default class RoomGrid extends React.PureComponent {
       loaded: false,
       rooms: [],
     };
-
-    // Explicitly bind 'this' to methods that require it
-    (this:any)._filterRooms = this._filterRooms.bind(this);
   }
 
   /**
@@ -120,16 +109,10 @@ export default class RoomGrid extends React.PureComponent {
    * @param {Props} nextProps the new props being received
    */
   componentWillReceiveProps(nextProps: Props): void {
-    if (nextProps.filter != this.props.filter || nextProps.language != this.props.language) {
+    if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
       this._filterRooms(nextProps);
     }
   }
-
-  /** Room type descriptions. */
-  _roomTypes: Object;
-
-  /** List of available room type IDs. */
-  _roomTypeIds: Array < string >;
 
   /**
    * Filters the rooms in the building and displays them to the user.
@@ -138,10 +121,10 @@ export default class RoomGrid extends React.PureComponent {
    */
   _filterRooms({ shorthand, filter, language, rooms }: Props): void {
     // Ignore the case of the search terms
-    const adjustedFilter = (filter == null || filter.length === 0) ? '' : filter.toUpperCase();
+    const adjustedFilter = (filter == undefined || filter.length === 0) ? '' : filter.toUpperCase();
 
     // Create array for sets of rooms
-    const filteredRooms: Array < FilteredRoom > = [];
+    const filteredRooms: FilteredRoom[] = [];
 
     // Cache list of room types that match the search terms
     const matchingRoomTypes = new Set();
@@ -170,38 +153,38 @@ export default class RoomGrid extends React.PureComponent {
         const altName = Translations.getVariant(language, 'alt_name', room);
         filteredRooms.push({
           altName,
-          typeId: room.type || Constants.DefaultRoomType,
           key: room.name.toUpperCase(),
+          typeId: room.type || Constants.DefaultRoomType,
         });
       }
     });
 
     // Update the state so the app reflects the changes made
     this.setState({
-      rooms: filteredRooms,
       loaded: true,
+      rooms: filteredRooms,
     });
   }
 
   /**
    * Renders a header for the list of rooms.
    *
-   * @returns {?ReactElement<any>} the header, if this.propsrenderHeader is provided
+   * @returns {JSX.Element|undefined} the header, if this.propsrenderHeader is provided
    */
-  _renderHeader(): ?ReactElement < any > {
-    return this.props.renderHeader == null ? null : this.props.renderHeader();
+  _renderHeader(): JSX.Element | undefined {
+    return this.props.renderHeader ? this.props.renderHeader() : undefined;
   }
 
   /**
    * Renders an item describing a single room in the building.
    *
    * @param {FilteredRoom} room a room to display in this row
-   * @returns {ReactElement<any>} a view describing a set of room
+   * @returns {JSX.ElementReactElement<any>} a view describing a set of room
    */
-  _renderRow({ item }: { item: FilteredRoom }): ReactElement < any > {
+  _renderRow({ item }: { item: FilteredRoom }): JSX.Element {
     const roomType = this._roomTypes[item.typeId];
-    const icon = DisplayUtils.getPlatformIcon(Platform.OS, roomType);
-    let rowIcon: ?ReactElement < any > = null;
+    const icon = Display.getPlatformIcon(Platform.OS, roomType);
+    let rowIcon: JSX.Element | undefined;
     if (icon) {
       rowIcon = (
         <PaddedIcon
@@ -211,11 +194,11 @@ export default class RoomGrid extends React.PureComponent {
     }
 
     return (
-      <TouchableOpacity onPress={() => this.props.onSelect(this.props.shorthand, item.key)}>
+      <TouchableOpacity onPress={(): void => this.props.onSelect(this.props.shorthand, item.key)}>
         <View style={_styles.room}>
           {rowIcon}
           <View style={_styles.roomDescription}>
-            {item.altName ? <Text style={_styles.roomType}>{item.altName}</Text> : null}
+            {item.altName ? <Text style={_styles.roomType}>{item.altName}</Text> : undefined}
             <Text style={_styles.roomName}>{`${this.props.shorthand} ${item.key}`}</Text>
             <Text style={_styles.roomType}>
               {Translations.getName(this.props.language, roomType)}
@@ -229,18 +212,18 @@ export default class RoomGrid extends React.PureComponent {
   /**
    * Renders a separator line between rows.
    *
-   * @returns {ReactElement<any>} a separator for the list of rooms
+   * @returns {JSX.Element} a separator for the list of rooms
    */
-  _renderSeparator(): ReactElement < any > {
+  _renderSeparator(): JSX.Element {
     return <View style={_styles.separator} />;
   }
 
   /**
    * Returns a list of touchable views listing the room names.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
         <FlatList
@@ -256,16 +239,16 @@ export default class RoomGrid extends React.PureComponent {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   room: {
+    alignItems: 'center',
     flex: 1,
-    marginTop: Constants.Sizes.Margins.Expanded,
+    flexDirection: 'row',
     marginBottom: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
-    alignItems: 'center',
-    flexDirection: 'row',
+    marginTop: Constants.Sizes.Margins.Expanded,
   },
   roomDescription: {
     flex: 1,
@@ -273,16 +256,16 @@ const _styles = StyleSheet.create({
   roomName: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
-    marginTop: Constants.Sizes.Margins.Condensed,
     marginBottom: Constants.Sizes.Margins.Condensed,
+    marginTop: Constants.Sizes.Margins.Condensed,
   },
   roomType: {
     color: Constants.Colors.secondaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
   },
   separator: {
+    backgroundColor: Constants.Colors.primaryWhiteText,
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
-    backgroundColor: Constants.Colors.primaryWhiteText,
   },
 });

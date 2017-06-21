@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-03-18
- * @file Suggestion.js
- * @providesModule Suggestion
+ * @file Suggestion.tsx
  * @description Indicates status on suggesting a value to the user
- *
- * @flow
  */
 'use strict';
 
@@ -36,15 +33,27 @@ import {
   View,
 } from 'react-native';
 
-// Types
-import type { Language, VoidFunction } from 'types';
-
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
+import * as Constants from '../constants';
+import * as Display from '../util/Display';
+import * as Translations from '../util/Translations';
+
+// Types
+import { Language } from '../util/Translations';
+
+interface Props {
+  backgroundColor?: string;         // Background color for the view
+  language: Language;               // The user's currently selected language
+  loading: boolean;                 // Indicates whether the view is waiting for a suggestion to display or not
+  loadingText?: string | undefined; // Custom text to display while waiting. Default is 'Loading'
+  suggestion?: string | undefined;  // Suggestion text
+  onRefresh?(): void;               // Callback when the suggestion is refreshed
+  onSelect?(): void;                // Callback when the suggestion is selected
+}
+
+interface State {}
 
 // Default opacity when selecting while a suggestion is available
 const DEFAULT_TOUCH_OPACITY = 0.4;
@@ -52,20 +61,7 @@ const DEFAULT_TOUCH_OPACITY = 0.4;
 // Height of the suggestion view
 const SUGGESTION_HEIGHT = 50;
 
-export default class Suggestion extends React.PureComponent {
-
-  /**
-   * Properties which the parent component should make available to this component.
-   */
-  props: {
-    backgroundColor?: string, // Background color for the view
-    language: Language,       // The user's currently selected language
-    loading: boolean,         // Indicates whether the view is waiting for a suggestion to display or not
-    loadingText?: ?string,    // Custom text to display while waiting. Default is 'Loading'
-    suggestion?: ?string,     // Suggestion text
-    onRefresh?: VoidFunction, // Callback when the suggestion is refreshed
-    onSelect?: VoidFunction,  // Callback when the suggestion is selected
-  };
+export default class Suggestion extends React.PureComponent<Props, State> {
 
   /**
    * Returns the loading text.
@@ -89,23 +85,27 @@ export default class Suggestion extends React.PureComponent {
    * Invokes the onRefresh callback, if available.
    */
   _onRefresh(): void {
-    this.props.onRefresh && this.props.onRefresh();
+    if (this.props.onRefresh) {
+      this.props.onRefresh();
+    }
   }
 
   /**
    * Invokes the onSelect callback, if available.
    */
   _onSelect(): void {
-    !this.props.loading && this.props.onSelect && this.props.onSelect();
+    if (!this.props.loading && this.props.onSelect) {
+      this.props.onSelect();
+    }
   }
 
   /**
    * Renders an activity indicator when a suggestion is unavailable.
    *
    * @param {string} color the foreground color of the activity indicator
-   * @returns {?ReactElement<any>} an activity indicator component, or null if the suggestion is not loading
+   * @returns {JSX.Element|undefined} an activity indicator component, or null if the suggestion is not loading
    */
-  _renderActivityIndicator(color: string): ?ReactElement < any > {
+  _renderActivityIndicator(color: string): JSX.Element | undefined {
     if (this.props.loading) {
       return (
         <ActivityIndicator
@@ -126,7 +126,7 @@ export default class Suggestion extends React.PureComponent {
         </TouchableOpacity>
       );
     } else {
-      return null;
+      return undefined;
     }
   }
 
@@ -134,9 +134,9 @@ export default class Suggestion extends React.PureComponent {
    * Renders the suggestion provided, or loading text if a suggestion is still loading.
    *
    * @param {string} color the foreground color of the text
-   * @returns {ReactElement<any>} a text component
+   * @returns {JSX.Element} a text component
    */
-  _renderSuggestion(color: string): ReactElement < any > {
+  _renderSuggestion(color: string): JSX.Element {
     return (
       <View style={_styles.suggestionContainer}>
         <Text style={[ _styles.suggestion, { color }]}>
@@ -150,11 +150,11 @@ export default class Suggestion extends React.PureComponent {
    * Renders a chevron to indicate the item is selectable
    *
    * @param {string} color foreground color of the icon
-   * @returns {?ReactElement<any>} an icon component, or null if the suggestion is loading
+   * @returns {JSX.Element|undefined} an icon component, or null if the suggestion is loading
    */
-  _renderChevron(color: string): ?ReactElement < any > {
+  _renderChevron(color: string): JSX.Element | undefined {
     if (this.props.loading) {
-      return null;
+      return undefined;
     }
 
     return (
@@ -169,14 +169,14 @@ export default class Suggestion extends React.PureComponent {
   /**
    * Builds the components of the section header, including the title, icon, subtitle, and subtitle icon.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     // Set the background color of the header to a default value if not provided
     const headerBackground = this.props.backgroundColor || Constants.Colors.darkTransparentBackground;
     let primaryForeground = Constants.Colors.primaryBlackText;
     let secondaryForeground = Constants.Colors.secondaryBlackText;
-    if (DisplayUtils.isColorDark(headerBackground)) {
+    if (Display.isColorDark(headerBackground)) {
       primaryForeground = Constants.Colors.primaryWhiteText;
       secondaryForeground = Constants.Colors.secondaryWhiteText;
     }
@@ -198,36 +198,36 @@ export default class Suggestion extends React.PureComponent {
 
 // Private styles for component
 const _styles = StyleSheet.create({
-  header: {
-    height: SUGGESTION_HEIGHT,
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  refreshContainer: {
-    height: SUGGESTION_HEIGHT,
-    justifyContent: 'center',
-  },
-  refresh: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
-  },
   activityIndicator: {
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   chevron: {
     marginRight: Constants.Sizes.Margins.Expanded,
   },
-  touchableSuggestion: {
-    height: SUGGESTION_HEIGHT,
-    flexDirection: 'row',
+  header: {
     alignItems: 'center',
-    flex: 1,
+    flexDirection: 'row',
+    height: SUGGESTION_HEIGHT,
+  },
+  refresh: {
+    marginLeft: Constants.Sizes.Margins.Expanded,
+  },
+  refreshContainer: {
+    height: SUGGESTION_HEIGHT,
+    justifyContent: 'center',
   },
   suggestion: {
-    marginLeft: Constants.Sizes.Margins.Expanded,
     fontSize: Constants.Sizes.Text.Body,
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
   suggestionContainer: {
     flex: 1,
     marginRight: Constants.Sizes.Margins.Expanded,
+  },
+  touchableSuggestion: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    height: SUGGESTION_HEIGHT,
   },
 });

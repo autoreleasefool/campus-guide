@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2016-10-29
- * @file Menu.js
- * @providesModule Menu
+ * @file Menu.tsx
  * @description Provides a set of categories for a user to select between
- *
- * @flow
  */
 'use strict';
 
@@ -37,40 +34,27 @@ import {
 } from 'react-native';
 
 // Types
-import type { Icon, Language, VoidFunction } from 'types';
+import { Language } from '../util/Translations';
+import { MenuSection } from '../../typings/global';
 
-// Type definition for component props.
-type Props = {
-  language: Language,                           // The user's currently selected language
-  onSectionSelected: (section: string) => void, // Displays contents of the section in a new view
-  sections: Array < Object >,                   // List of sections to display
-};
+interface Props {
+  language: Language;                       // The user's currently selected language
+  sections: MenuSection[];                 // List of sections to display
+  onSectionSelected(section: string): void; // Displays contents of the section in a new view
+}
 
-/* FIXME: Replace sections: Array < Object > with Array < MenuSection> */
-
-// Type definition for component state.
-type State = {
-  expandedSection: number,
-};
+interface State {
+  expandedSection: number;  // Currently expanded section
+}
 
 // Imports
-import Header from 'Header';
-import * as Configuration from 'Configuration';
-import * as Constants from 'Constants';
-import * as DisplayUtils from 'DisplayUtils';
-import * as Translations from 'Translations';
+import Header from './Header';
+import * as Configuration from '../util/Configuration';
+import * as Constants from '../Constants';
+import * as Display from '../Util/Display';
+import * as Translations from '../util/Translations';
 
-export default class Menu extends React.PureComponent {
-
-  /**
-   * Properties this component expects to be provided by its parent.
-   */
-  props: Props;
-
-  /**
-   * Current state of the component.
-   */
-  state: State;
+export default class Menu extends React.PureComponent<Props, State> {
 
   /**
    * Constructor.
@@ -94,7 +78,7 @@ export default class Menu extends React.PureComponent {
       return;
     }
 
-    LayoutAnimation.easeInEaseOut();
+    LayoutAnimation.easeInEaseOut(undefined, undefined);
     this.setState({ expandedSection: sectionIdx });
   }
 
@@ -103,21 +87,18 @@ export default class Menu extends React.PureComponent {
    * currently selected.
    *
    * @param {number} index   index of section to render
-   * @param {Object} section section to render
-   * @returns {ReactElement<any>} a view with an image and title which can be clicked by the user
+   * @param {MenuSection} section section to render
+   * @returns {JSX.Element} a view with an image and title which can be clicked by the user
    */
-  _getSectionView(index: number, section: Object): ReactElement < any > {
-    let onPress: VoidFunction;
-    if (index === this.state.expandedSection) {
-      onPress = () => this.props.onSectionSelected(section.id);
-    } else {
-      onPress = () => this._focusSection(index);
-    }
+  _getSectionView(index: number, section: MenuSection): JSX.Element {
+    const onPress = index === this.state.expandedSection
+        ? (): void => this.props.onSectionSelected(section.id)
+        : (): void => this._focusSection(index);
 
-    const icon: ?Icon = DisplayUtils.getPlatformIcon(Platform.OS, section);
-    let sectionImage: ?ReactElement < any > = null;
-    let touchableStyle: Object = { flexShrink: 1 };
-    let subtitleIconName: string = 'expand-more';
+    const icon = Display.getPlatformIcon(Platform.OS, section);
+    let touchableStyle: any = { flexShrink: 1 };
+    let subtitleIconName = 'expand-more';
+    let sectionImage: JSX.Element | undefined;
 
     if (index === this.state.expandedSection && section.image) {
       if (typeof (section.image) === 'string') {
@@ -149,7 +130,7 @@ export default class Menu extends React.PureComponent {
             icon={icon}
             subtitleIcon={{ name: subtitleIconName, class: 'material' }}
             title={Translations.getName(this.props.language, section) || ''} />
-        {index < this.props.sections.length - 1 ? <View style={_styles.separator} /> : null}
+        {index < this.props.sections.length - 1 ? <View style={_styles.separator} /> : undefined}
       </TouchableOpacity>
     );
   }
@@ -157,12 +138,12 @@ export default class Menu extends React.PureComponent {
   /**
    * Renders each of the sections, with one of them focused and showing an image.
    *
-   * @returns {ReactElement<any>} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  render(): ReactElement < any > {
+  render(): JSX.Element {
     return (
       <View style={_styles.container}>
-        {this.props.sections.map((section: Object, index: number) => (
+        {this.props.sections.map((section: MenuSection, index: number) => (
           this._getSectionView(index, section)
         ))}
       </View>
@@ -176,21 +157,21 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   sectionImage: {
-    flex: 1,
-    position: 'absolute',
-    top: 0,
-    right: 0,
     bottom: 0,
+    flex: 1,
+    height: undefined,
     left: 0,
-    width: null,
-    height: null,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: undefined,
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
     backgroundColor: Constants.Colors.primaryWhiteText,
-    position: 'absolute',
     bottom: 0,
+    height: StyleSheet.hairlineWidth,
     left: 0,
+    position: 'absolute',
     right: 0,
   },
 });

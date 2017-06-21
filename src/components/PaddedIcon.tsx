@@ -17,11 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-03-03
- * @file PaddedIcon.js
- * @providesModule PaddedIcon
+ * @file PaddedIcon.tsx
  * @description Renders an icon, centered in a view for which the width can be defined, for consistent widths
- *
- * @flow
  */
 'use strict';
 
@@ -33,20 +30,19 @@ import {
 } from 'react-native';
 
 // Types
-import type { Icon } from 'types';
+import { BasicIcon } from '../../typings/global';
 
-// Properties which the parent component should make available to this component.
-type Props = {
-  color?: ?string,  // Color of the icon, default is white
-  icon: ?Icon,      // Large icon to represent the section
-  size?: ?number,    // Size of the icon, or Constants.Sizes.Icons.Medium
-  width?: number,    // Width of parent container, or DEFAULT_WIDTH
-};
+interface Props {
+  color?: string | undefined;   // Color of the icon, default is white
+  icon: BasicIcon | undefined;  // Large icon to represent the section
+  size?: number | undefined;    // Size of the icon, or Constants.Sizes.Icons.Medium
+  width?: number;               // Width of parent container, or DEFAULT_WIDTH
+}
 
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as Constants from 'Constants';
+import * as Constants from '../constants';
 
 // 16 left padding + 16 right padding + 24 icon size
 export const DefaultWidth = 56;
@@ -55,10 +51,10 @@ export const DefaultWidth = 56;
  * Renders the icon, centered in the parent view
  *
  * @param {Props} props props to render component
- * @returns {ReactElement<any>} hierarchy of views to render
+ * @returns {JSX.Element} hierarchy of views to render
  */
-export default function render(props: Props): ReactElement < any > {
-  let icon: ?ReactElement < any > = null;
+export default function render(props: Props): JSX.Element {
+  let icon: JSX.Element | undefined;
   if (props.icon && props.icon.class === 'material') {
     icon = (
       <MaterialIcons
