@@ -410,7 +410,7 @@ class Settings extends React.PureComponent<Props, State> {
           {this._renderListModal()}
         </Modal>
         <SectionList
-            ItemSeparatorComponent={this._renderSeparator}
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             renderItem={this._renderItem.bind(this)}
             renderSectionHeader={this._renderSectionHeader.bind(this)}
             sections={this._settingSections} />

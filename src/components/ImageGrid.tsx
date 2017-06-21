@@ -254,7 +254,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
 
     let image: JSX.Element;
     if (!this.props.disableImages && item != undefined) {
-      const displayImage = item.thumbnail ? item.thumbnail : item.image;
+      const displayImage: any = item.thumbnail ? item.thumbnail : item.image;
 
       if (typeof (displayImage) === 'string') {
         image = (

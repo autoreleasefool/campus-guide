@@ -47,6 +47,7 @@ interface Props {
   direction: number;          // Which direction of the schedule
   language: Language;         // The user's currently selected language
   schedule: ShuttleSchedule;  // The schedule to render
+  tabLabel?: string;          // Tab label
   timeFormat: TimeFormat;     // The user's preferred time format
 }
 
@@ -196,7 +197,7 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
             renderHeader={this._renderHeader.bind(this)}
             renderRow={this._renderRow.bind(this)}
             renderSectionHeader={this._renderSectionHeader.bind(this)}
-            renderSeparator={this._renderSeparator}
+            renderSeparator={this._renderSeparator.bind(this)}
             stickySectionHeadersEnabled={false} />
       </View>
     );

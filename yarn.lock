@@ -6,10 +6,6 @@
   version "19.2.4"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-19.2.4.tgz#543651712535962b7dc615e18e4a381fc2687442"
 
-"@types/node@^7.0.31":
-  version "7.0.31"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.31.tgz#80ea4d175599b2a00149c29a10a4eb2dff592e86"
-
 "@types/react-native@^0.44.10":
   version "0.44.10"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.44.10.tgz#62f193689aabb7671661ff45f485eb370549a0c4"

@@ -227,9 +227,9 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
     return (
       <View style={_styles.container}>
         <FlatList
-            ItemSeparatorComponent={this._renderSeparator}
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             data={this.state.studySpots}
-            keyExtractor={(studySpot) => `${studySpot.building}.${studySpot.room}`}
+            keyExtractor={(studySpot: StudySpot): string => `${studySpot.building}.${studySpot.room}`}
             renderItem={this._renderItem.bind(this)} />
       </View>
     );

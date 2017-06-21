@@ -96,9 +96,9 @@ export default class StudySpots extends React.PureComponent<Props, State> {
     return (
       <View style={_styles.container}>
         <FlatList
-            ItemSeparatorComponent={this._renderSeparator}
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             data={this.props.filters}
-            keyExtractor={(filterId) => filterId}
+            keyExtractor={(filterId: string): string => filterId}
             renderItem={this._renderItem.bind(this)} />
       </View>
     );

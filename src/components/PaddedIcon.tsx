@@ -36,6 +36,7 @@ interface Props {
   color?: string | undefined;   // Color of the icon, default is white
   icon: BasicIcon | undefined;  // Large icon to represent the section
   size?: number | undefined;    // Size of the icon, or Constants.Sizes.Icons.Medium
+  style?: any;                  // View style
   width?: number;               // Width of parent container, or DEFAULT_WIDTH
 }
 
@@ -74,7 +75,7 @@ export default function render(props: Props): JSX.Element {
   }
 
   return (
-    <View style={[ _styles.iconContainer, { width: props.width || DefaultWidth }]}>
+    <View style={[ _styles.iconContainer, { width: props.width || DefaultWidth }, props.style]}>
       {icon}
     </View>
   );

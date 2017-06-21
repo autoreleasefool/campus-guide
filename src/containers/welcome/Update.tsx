@@ -22,6 +22,8 @@
  */
 'use strict';
 
+/// <reference types="react-native-linear-gradient" />
+
 // React imports
 import React from 'react';
 import {

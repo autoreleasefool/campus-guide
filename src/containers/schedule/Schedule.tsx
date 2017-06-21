@@ -28,6 +28,7 @@ import {
   LayoutAnimation,
   Modal,
   Picker,
+  PickerIOS,
   Platform,
   StyleSheet,
   View,
@@ -194,19 +195,10 @@ class Schedule extends React.PureComponent<Props, State> {
       this.props.semesters[this.props.currentSemester]
     ) || '';
 
-    return (
-      <View>
-        <Header
-            icon={Display.getPlatformIcon(Platform.OS, semesterIcon)}
-            subtitle={(this.state.showSemesters
-              ? Translations.get(this.props.language, 'done')
-              : Translations.get(this.props.language, 'switch'))}
-            subtitleCallback={(): void => this._toggleSwitchSemester()}
-            title={semesterName} />
-        {this.state.showSemesters
-          ?
+    const picker = this.state.showSemesters
+        ? (Platform.OS === 'android'
+            ? (
             <Picker
-                itemStyle={_styles.semesterItem}
                 prompt={Translations.get(this.props.language, 'semester')}
                 selectedValue={this.props.currentSemester}
                 onValueChange={(value: number): void => this.props.switchSemester(value)}>
@@ -217,7 +209,33 @@ class Schedule extends React.PureComponent<Props, State> {
                       value={index} />
               ))}
             </Picker>
-          : undefined}
+            )
+            : (
+            <PickerIOS
+                itemStyle={_styles.semesterItem}
+                selectedValue={this.props.currentSemester}
+                onValueChange={(value: number): void => this.props.switchSemester(value)}>
+              {this.props.semesters.map((semester: Semester, index: number) => (
+                  <PickerIOS.Item
+                      key={name}
+                      label={Translations.getName(this.props.language, semester)}
+                      value={index} />
+              ))}
+            </PickerIOS>
+            )
+        )
+        : undefined;
+
+    return (
+      <View>
+        <Header
+            icon={Display.getPlatformIcon(Platform.OS, semesterIcon)}
+            subtitle={(this.state.showSemesters
+              ? Translations.get(this.props.language, 'done')
+              : Translations.get(this.props.language, 'switch'))}
+            subtitleCallback={(): void => this._toggleSwitchSemester()}
+            title={semesterName} />
+        {picker}
         <View style={_styles.separator} />
       </View>
     );

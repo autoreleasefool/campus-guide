@@ -93,7 +93,7 @@ const initialState: State = {
  * @param {any}   action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken
  */
-export function header(state: State = initialState, action: any): State {
+export default function header(state: State = initialState, action: any): State {
   switch (action.type) {
     case Actions.App.SwitchTab:
       return {

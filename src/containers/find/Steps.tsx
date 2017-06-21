@@ -150,7 +150,7 @@ class Steps extends React.PureComponent<Props, State> {
             icon={{ name: 'list', class: 'material' }}
             title={Translations.get(this.props.language, 'steps')} />
         <FlatList
-            ItemSeparatorComponent={this._renderSeparator}
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             data={this.state.steps}
             renderItem={this._renderStep.bind(this)} />
       </View>

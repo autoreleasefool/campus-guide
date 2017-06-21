@@ -50,6 +50,7 @@ interface Props {
   largeSubtitle?: boolean;              // Request a larger font size for subtitles
   subtitle?: string | undefined;        // Subtitle text
   subtitleIcon?: BasicIcon | undefined; // Small icon for the subtitle
+  style?: any;                          // View style
   title: string;                        // Title for the header
   iconCallback?(): void;                // Callback function for icon on press
   subtitleCallback?(): void;            // Callback function for subtitle on press
@@ -199,7 +200,7 @@ export default class Header extends React.PureComponent<Props, State> {
     const titleStyle = { marginLeft: icon == undefined ? Constants.Sizes.Margins.Expanded : 0 };
 
     return (
-      <View style={[ _styles.header, { backgroundColor: headerBackground }]}>
+      <View style={[ _styles.header, { backgroundColor: headerBackground }, this.props.style ]}>
         {icon}
         <View style={_styles.titleContainer}>
           <Text

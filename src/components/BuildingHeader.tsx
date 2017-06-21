@@ -75,7 +75,7 @@ const BANNER_TEXT_SEPARATOR = 5;
 export default class BuildingHeader extends React.PureComponent<Props, State> {
 
   /** Timer which swaps the banner after a set amount of time. */
-  _swapBannerTimer: NodeJS.Timer | undefined;
+  _swapBannerTimer: number;
 
   /**
    * Constructor.
@@ -84,6 +84,7 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
    */
   constructor(props: Props) {
     super(props);
+    this._swapBannerTimer = 0;
     this.state = {
       bannerPosition: 0,
     };

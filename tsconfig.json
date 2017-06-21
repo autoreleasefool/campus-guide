@@ -20,11 +20,6 @@
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
-  "types": [
-    "react",
-    "react-native",
-    "jest"
-  ],
   "exclude": [
     "android",
     "ios",

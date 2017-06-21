@@ -22,6 +22,8 @@
  */
 'use strict';
 
+declare var process: any;
+
 // React imports
 import React from 'react';
 import { Platform, UIManager } from 'react-native';

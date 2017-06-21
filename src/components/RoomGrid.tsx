@@ -227,7 +227,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
     return (
       <View style={_styles.container}>
         <FlatList
-            ItemSeparatorComponent={this._renderSeparator}
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             ListHeaderComponent={this._renderHeader.bind(this)}
             data={this.state.rooms}
             renderItem={this._renderRow.bind(this)} />

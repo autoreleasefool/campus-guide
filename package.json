@@ -8,7 +8,8 @@
     "lint": "tslint src/**/*.ts",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest --coverage",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "tscp": "tsc --pretty"
   },
   "dependencies": {
     "http-status-codes": "^1.0.6",
@@ -31,7 +32,6 @@
   },
   "devDependencies": {
     "@types/jest": "^19.2.4",
-    "@types/node": "^7.0.31",
     "@types/react": "^15.0.28",
     "@types/react-native": "^0.44.10",
     "@types/react-redux": "^4.4.43",

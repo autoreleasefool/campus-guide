@@ -50,6 +50,7 @@ interface Props {
   filter: string | undefined;                 // Filter stops and times
   language: Language;                         // The current language, selected by the user
   stops: any;                                 // Set of stop ids mapped to details about the stop
+  style?: any;                                // View style
   timeFormat: TimeFormat;                     // Format to display times in
   onSelect(stopId: string | undefined): void; // Callback for when a stop is selected
 }
@@ -463,7 +464,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
           initialRoute={{ id: STOPS }}
           ref='Navigator'
           renderScene={this._renderScene.bind(this)}
-          style={_styles.container} />
+          style={[ _styles.container, this.props.style ]} />
     );
   }
 }

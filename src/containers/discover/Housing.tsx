@@ -51,7 +51,7 @@ import Menu from '../../components/Menu';
 import Snackbar from 'react-native-snackbar';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
-import * as External from '../../components/External';
+import * as External from '../../util/External';
 import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
 import { default as PaddedIcon, DefaultWidth as PaddedIconWidth } from '../../components/PaddedIcon';
@@ -497,7 +497,7 @@ class Housing extends React.PureComponent<Props, State> {
               title={Translations.get(this.props.language, 'compare_with')} />
         </TouchableOpacity>
         <SectionList
-            ItemSeparatorComponent={this._renderSeparator}
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             renderItem={this._renderSingleResidenceProperty.bind(this)}
             renderSectionHeader={this._renderResidencePropertyCategory.bind(this)}
             sections={this.state.residenceDetails}
@@ -553,7 +553,7 @@ class Housing extends React.PureComponent<Props, State> {
           {this._renderResidenceCompareHeader()}
           <View style={_styles.compareHeaderSeparator} />
           <SectionList
-              ItemSeparatorComponent={this._renderSeparator}
+              ItemSeparatorComponent={this._renderSeparator.bind(this)}
               renderItem={this._renderMultiResidenceProperty.bind(this)}
               renderSectionHeader={this._renderResidencePropertyCategory.bind(this)}
               sections={this.state.residenceDetails}

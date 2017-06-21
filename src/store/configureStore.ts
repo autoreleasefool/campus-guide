@@ -23,11 +23,16 @@
 'use strict';
 
 // Redux imports
-import { applyMiddleware, createStore, Middleware, Reducer } from 'redux';
+import { applyMiddleware, combineReducers, createStore, Middleware, Reducer } from 'redux';
 import thunk from 'redux-thunk';
 
 // Imports
-import reducers from '../reducers';
+import config from '../reducers/config';
+import directions from '../reducers/directions';
+import header from '../reducers/header';
+import navigation from '../reducers/navigation';
+import schedule from '../reducers/schedule';
+import search from '../reducers/search';
 import { persist } from './persist';
 
 /**
@@ -37,6 +42,15 @@ import { persist } from './persist';
  * @returns {any} redux store
  */
 export default function configureStore(onComplete?: () => void | undefined): any {
+  const reducers = combineReducers({
+    config,
+    directions,
+    header,
+    navigation,
+    schedule,
+    search,
+  });
+
   const store = createStore(reducers as Reducer<any>, applyMiddleware(thunk, persist as Middleware));
   if (onComplete != undefined) {
     onComplete();

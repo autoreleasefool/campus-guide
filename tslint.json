@@ -173,7 +173,7 @@
       "check-whitespace"
     ],
     "one-variable-per-declaration": true,
-    "ordered-imports": true,
+    "ordered-imports": false,
     "prefer-function-over-method": false,
     "prefer-method-signature": true,
     "prefer-switch": true,

@@ -23,6 +23,9 @@
  */
 'use strict';
 
+// Types
+import { Tab } from '../typings/global';
+
 /* tslint:disable object-literal-sort-keys */
 /* Keys out of order to preserver importance, different groupings, etc. */
 
@@ -149,7 +152,7 @@ export const Sizes = {
 /**
  * Defines the order of tabs in the app.
  */
-export const Tabs = [
+export const Tabs: Tab[] = [
   'find',
   'schedule',
   'discover',

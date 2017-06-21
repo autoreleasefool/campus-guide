@@ -27,6 +27,7 @@ import React from 'react';
 import {
   DatePickerIOS,
   Picker,
+  PickerIOS,
   Platform,
   ScrollView,
   StyleSheet,
@@ -49,7 +50,7 @@ import * as Translations from '../../../util/Translations';
 
 // Types
 import { Language } from '../../../util/Translations';
-import { TimeFormat } from '../../../../typings/global';
+import { BasicIcon, TimeFormat } from '../../../../typings/global';
 import { Building, Course, Destination, Lecture, LectureFormat } from '../../../../typings/university';
 
 interface Props {
@@ -339,7 +340,7 @@ class LectureModal extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a set of headers depicting the item and value
    */
   _renderMenu(): JSX.Element {
-    const pickIcon = {
+    const pickIcon: BasicIcon = {
       class: 'material',
       name: 'chevron-right',
     };
@@ -442,21 +443,41 @@ class LectureModal extends React.PureComponent<Props, State> {
               icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={Translations.get(this.props.language, title)} />
         </TouchableOpacity>
-        <Picker
-            itemStyle={_styles.pickerItem}
-            prompt={Translations.get(this.props.language, title)}
-            selectedValue={selectedValue}
-            style={_styles.pickerContainer}
-            onValueChange={setValue}>
-          {options.map((_: any, index: number) => {
-            return (
-              <Picker.Item
-                  key={getName ? getName(index) : ''}
-                  label={getName ? getName(index) : ''}
-                  value={index} />
-            );
-          })}
-        </Picker>
+        {Platform.OS === 'android'
+            ? (
+            <Picker
+                prompt={Translations.get(this.props.language, title)}
+                selectedValue={selectedValue}
+                style={_styles.pickerContainer}
+                onValueChange={setValue}>
+              {options.map((_: any, index: number) => {
+                return (
+                  <Picker.Item
+                      key={getName ? getName(index) : ''}
+                      label={getName ? getName(index) : ''}
+                      value={index} />
+                );
+              })}
+            </Picker>
+            )
+            : (
+            <PickerIOS
+                itemStyle={_styles.pickerItem}
+                selectedValue={selectedValue}
+                style={_styles.pickerContainer}
+                onValueChange={setValue}>
+              {options.map((_: any, index: number) => {
+                return (
+                  <PickerIOS.Item
+                      key={getName ? getName(index) : ''}
+                      label={getName ? getName(index) : ''}
+                      value={index} />
+                );
+              })}
+            </PickerIOS>
+            )
+        }
+
       </View>
     );
   }

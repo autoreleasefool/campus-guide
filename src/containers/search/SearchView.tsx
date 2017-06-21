@@ -58,7 +58,7 @@ import * as Translations from '../../util/Translations';
 // Types
 import { SearchSupport } from '../../util/Search';
 import { Language } from '../../util/Translations';
-import { Icon, Route, Section } from '../../../typings/global';
+import { BasicIcon, Route, Section } from '../../../typings/global';
 
 interface Props {
   filter: string | undefined;                                       // Search terms
@@ -98,7 +98,7 @@ class SearchView extends React.PureComponent<Props, State> {
   _searchIcons: any;
 
   /** ID of timer to delay search. */
-  _delayTimer: NodeJS.Timer | undefined;
+  _delayTimer: number;
 
   /**
    * Pass props and declares initial state.
@@ -107,6 +107,7 @@ class SearchView extends React.PureComponent<Props, State> {
    */
   constructor(props: Props) {
     super(props);
+    this._delayTimer = 0;
     this.state = {
       anyResults: false,
       filteredResults: [],
@@ -154,7 +155,7 @@ class SearchView extends React.PureComponent<Props, State> {
    * Clears the search timeout.
    */
   componentWillUnmount(): void {
-    if (this._delayTimer != undefined) {
+    if (this._delayTimer !== 0) {
       clearTimeout(this._delayTimer);
     }
   }
@@ -181,12 +182,12 @@ class SearchView extends React.PureComponent<Props, State> {
     }
 
     // Clear any waiting searches
-    if (this._delayTimer != undefined) {
+    if (this._delayTimer !== 0) {
       clearTimeout(this._delayTimer);
     }
 
     this._delayTimer = setTimeout(() => {
-      this._delayTimer = undefined;
+      this._delayTimer = 0;
       this._updateSearch(prevProps, nextProps);
     }, SEARCH_DELAY_TIME);
   }
@@ -396,11 +397,11 @@ class SearchView extends React.PureComponent<Props, State> {
         </TouchableOpacity>
       );
     } else {
-      const icon = Display.getPlatformIcon(Platform.OS, this._searchIcons[section.key])
+      const icon: BasicIcon = Display.getPlatformIcon(Platform.OS, this._searchIcons[section.key])
           || { name: 'search', class: 'material' };
 
       let subtitle: string | undefined;
-      let subtitleIcon: Icon | undefined;
+      let subtitleIcon: BasicIcon | undefined;
       if (numberOfResults > 2) {
         subtitle = `${numberOfResults - 2} ${Translations.get(this.props.language, 'more')}`;
         subtitleIcon = { name: 'chevron-right', class: 'material' };
@@ -462,7 +463,7 @@ class SearchView extends React.PureComponent<Props, State> {
     } else if (this.state.anyResults) {
       results = (
         <SectionList
-            ItemSeparatorComponent={this._renderSeparator}
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             keyExtractor={(result: Searchable.SearchResult): string => `${result.key}.${result.title}`}
             renderItem={this._renderResult.bind(this)}
             renderSectionHeader={this._renderSource.bind(this)}
@@ -491,7 +492,7 @@ class SearchView extends React.PureComponent<Props, State> {
     } else {
       results = (
         <FlatList
-            ItemSeparatorComponent={this._renderSeparator}
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             data={this.state.singleResults}
             keyExtractor={(result: Searchable.SearchResult): string => `${result.key}.${result.title}`}
             renderItem={this._renderResult.bind(this)} />
