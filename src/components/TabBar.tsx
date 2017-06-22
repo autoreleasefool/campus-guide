@@ -61,11 +61,11 @@ const tabIcons: TabSet = {
   discover: {
     icon: {
       android: {
-        class: 'ionicons',
+        class: 'ionicon',
         icon: 'md-compass',
       },
       ios: {
-        class: 'ionicons',
+        class: 'ionicon',
         name: 'ios-compass',
       },
     },
@@ -79,11 +79,11 @@ const tabIcons: TabSet = {
   schedule: {
     icon: {
       android: {
-        class: 'ionicons',
+        class: 'ionicon',
         name: 'md-calendar',
       },
       ios: {
-        class: 'ionicons',
+        class: 'ionicon',
         name: 'ios-calendar-outline',
       },
     },
@@ -91,11 +91,11 @@ const tabIcons: TabSet = {
   search: {
     icon: {
       android: {
-        class: 'ionicons',
+        class: 'ionicon',
         name: 'md-search',
       },
       ios: {
-        class: 'ionicons',
+        class: 'ionicon',
         name: 'ios-search',
       },
     },
@@ -103,11 +103,11 @@ const tabIcons: TabSet = {
   settings: {
     icon: {
       android: {
-        class: 'ionicons',
+        class: 'ionicon',
         name: 'md-settings',
       },
       ios: {
-        class: 'ionicons',
+        class: 'ionicon',
         name: 'ios-settings',
       },
     },

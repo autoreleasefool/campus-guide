@@ -83,11 +83,11 @@ interface State {
 // Icon for representing the current semester
 const semesterIcon = {
   android: {
-    class: 'ionicons',
+    class: 'ionicon',
     name: 'md-calendar',
   },
   ios: {
-    class: 'ionicons',
+    class: 'ionicon',
     name: 'ios-calendar-outline',
   },
 };
