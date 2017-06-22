@@ -28,6 +28,11 @@ public class MainApplication extends Application implements ReactApplication {
     }
 
     @Override
+    protected String getJSMainModuleName() {
+      return "artifacts/index.android";
+    }
+
+    @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),

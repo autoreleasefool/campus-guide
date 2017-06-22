@@ -7,9 +7,12 @@
     "clean": "rimraf artifacts",
     "lint": "tslint src/**/*.ts",
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start:android": "npm run build && concurrently -r 'npm run watch' 'react-native run-android'",
+    "start:ios": "npm run build && concurrently -r 'npm run watch' 'react-native run-ios'",
     "test": "jest --coverage",
     "tsc": "tsc",
-    "tscp": "tsc --pretty"
+    "tscp": "tsc --pretty",
+    "watch": "npm run build -- -w"
   },
   "dependencies": {
     "http-status-codes": "^1.0.6",

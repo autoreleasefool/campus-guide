@@ -32,12 +32,6 @@ sed -ie 's/RCTConvert\+MapKit\.m/RCTConvert\+AirMap\.m/g' node_modules/react-nat
 sed -ie 's/RCTConvert\+MapKit\.h/RCTConvert\+AirMap\.h/g' node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj/project.pbxproj
 rm -f node_modules/react-native-maps/.babelrc
 
-# Update .flowconfig to map filenames
-sed -i '' 's/[[]options[]]/[options]\'$'\n''module.name_mapper='"'"'env'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/csv\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/js\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''module.name_mapper='"'"'.*\/assets\/json\/.*'"'"' -> '"'"'empty\/object'"'"'\'$'\n''/g' ./.flowconfig
-
-# Add additional flow ignore comment
-sed -i '' 's/suppress_type=[$]FixMe/suppress_type=$FixMe\'$'\n''\'$'\n''suppress_comment=\\\\(.\\\\|\\n\\\\)*\\\\$FlowIgnore\'$'\n''/g' ./.flowconfig
-
 # Remove the MainActivity files added in the new package
 rm -r ./android/app/src/main/java/com/
 
