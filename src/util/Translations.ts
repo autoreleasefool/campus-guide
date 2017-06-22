@@ -48,7 +48,7 @@ async function _loadTranslations(language: Language): Promise < object > {
   }
 
   // Check for the configuration
-  const Configuration = require('Configuration');
+  const Configuration = require('./Configuration');
   try {
     await Configuration.init();
   } catch (e) {

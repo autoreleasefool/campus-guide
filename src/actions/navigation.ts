@@ -23,7 +23,7 @@
 'use strict';
 
 // Types
-import * as Actions from '../../typings/actions';
+import * as Actions from '../actionTypes';
 import { MenuSection, Tab } from '../../typings/global';
 import { Residence } from '../../typings/university';
 

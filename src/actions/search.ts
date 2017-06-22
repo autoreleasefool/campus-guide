@@ -23,7 +23,7 @@
 'use strict';
 
 // Types
-import * as Actions from '../../typings/actions';
+import * as Actions from '../actionTypes';
 
 export function activateStudyFilter(filter: string): any {
   return {

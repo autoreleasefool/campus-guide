@@ -23,7 +23,7 @@
 'use strict';
 
 // Imports
-import * as Actions from '../../typings/actions';
+import * as Actions from '../actionTypes';
 import * as Arrays from '../util/Arrays';
 
 /** Schedule reducer state. */

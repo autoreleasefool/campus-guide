@@ -23,7 +23,7 @@
 'use strict';
 
 // Imports
-import * as Actions from '../../typings/actions';
+import * as Actions from '../actionTypes';
 import { Name, TabSet } from '../../typings/global';
 const CoreTranslations = require('../../assets/json/CoreTranslations');
 

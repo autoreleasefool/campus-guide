@@ -50,8 +50,8 @@ interface State {
 // Imports
 import Header from './Header';
 import * as Configuration from '../util/Configuration';
-import * as Constants from '../Constants';
-import * as Display from '../Util/Display';
+import * as Constants from '../constants';
+import * as Display from '../util/Display';
 import * as Translations from '../util/Translations';
 
 export default class Menu extends React.PureComponent<Props, State> {

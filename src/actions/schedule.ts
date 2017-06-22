@@ -23,7 +23,7 @@
 'use strict';
 
 // Types
-import * as Actions from '../../typings/actions';
+import * as Actions from '../actionTypes';
 import { Course, Semester } from '../../typings/university';
 
 export function addCourse(semester: string, course: Course): any {

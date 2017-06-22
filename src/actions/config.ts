@@ -23,7 +23,7 @@
 'use strict';
 
 // Types
-import * as Actions from '../../typings/actions';
+import * as Actions from '../actionTypes';
 import { Options, ProgressUpdate } from '../util/Configuration';
 
 export function updateConfiguration(options: Options): any {

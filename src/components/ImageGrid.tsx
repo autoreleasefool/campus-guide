@@ -37,7 +37,7 @@ import {
 // Imports
 import Header from './Header';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as Configuration from '../util/configuration';
+import * as Configuration from '../util/Configuration';
 import * as Constants from '../constants';
 import * as Translations from '../util/Translations';
 import { filterGridImage } from '../util/Search';

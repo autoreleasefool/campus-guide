@@ -23,7 +23,7 @@
 'use strict';
 
 // Types
-import * as Actions from '../../typings/actions';
+import * as Actions from '../actionTypes';
 import { Building, Destination } from '../../typings/university';
 
 export function setDestination(destination: Destination): any {

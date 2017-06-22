@@ -29,7 +29,7 @@ import { Tab } from '../typings/global';
 /* tslint:disable object-literal-sort-keys */
 /* Keys out of order to preserver importance, different groupings, etc. */
 
-const CoreTranslations = require('../../assets/json/CoreTranslations');
+const CoreTranslations = require('../assets/json/CoreTranslations');
 
 /**
  * Theme colors.

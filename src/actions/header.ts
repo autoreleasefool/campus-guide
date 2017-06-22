@@ -23,7 +23,7 @@
 'use strict';
 
 // Types
-import * as Actions from '../../typings/actions';
+import * as Actions from '../actionTypes';
 import { Name, Tab } from '../../typings/global';
 
 export function setHeaderTitle(title: Name | string | undefined, tab?: Tab): any {
