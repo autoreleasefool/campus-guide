@@ -62,6 +62,10 @@ export function saveSchedule(schedule: object): Promise < void > {
 export function getConfigVersions(): Promise < ConfigFile[] > {
   return store.get(STORE_CONFIG_VERSIONS)
       .then((configVersions: ConfigFile[]) => {
+        if (configVersions == undefined) {
+          configVersions = [];
+        }
+
         return Arrays.sortObjectArrayByKeyValues(configVersions, 'name');
       });
 }

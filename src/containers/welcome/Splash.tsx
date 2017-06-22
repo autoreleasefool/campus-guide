@@ -90,23 +90,20 @@ class Splash extends React.PureComponent<Props, State> {
   /**
    * Loads the downloaded base configuration and updates the redux store.
    */
-  _checkConfiguration(): void {
-    Configuration.init()
-        .then(() => Configuration.getConfig('/university.json'))
-        .then((university: object) => {
-          this.props.setUniversity(university);
+  async _checkConfiguration(): Promise<void> {
+    try {
+      await Configuration.init();
+      const university = await Configuration.getConfig('/university.json');
+      this.props.setUniversity(university);
 
-          return Translations.loadTranslations(this.props.language);
-        })
-        .then(() => Configuration.getConfig('/transit.json'))
-        .then((transitInfo: TransitInfo) => {
-          this.props.setTransit(transitInfo);
-          (this.refs.Navigator as any).push({ id: 'main' });
-        })
-        .catch((err: any) => {
-          console.log('Assuming configuration is not available.', err);
-          (this.refs.Navigator as any).push({ id: 'update' });
-        });
+      await Translations.loadTranslations(this.props.language);
+      const transitInfo: TransitInfo = await Configuration.getConfig('/transit.json');
+      this.props.setTransit(transitInfo);
+      this.props.navigator.push({ id: 'main' });
+    } catch (err) {
+      console.log('Assuming configuration is not available.', err);
+      this.props.navigator.push({ id: 'update' });
+    }
   }
 
   /**

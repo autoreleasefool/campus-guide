@@ -103,7 +103,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   /**
    * Checks to see if a new configuration update is available and, if so, begins downloading.
    */
-  _beginUpdate(): void {
+  async _beginUpdate(): Promise<void> {
     const callbacks = {
       onDownloadComplete: (download: object): void => this._onDownloadComplete(download),
       onDownloadProgress: (progress: object): void => this._onDownloadProgress(progress),
@@ -111,23 +111,25 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       onUpdateStart: (totalSize: number, totalFiles: number): void => this._onUpdateStart(totalSize, totalFiles),
     };
 
-    Configuration.isConfigUpdateAvailable()
-        .then((available: boolean) => {
-          if (available) {
-            Configuration.updateConfig(callbacks)
-                .then(() => this._returnToMain())
-                .catch((err: any) => {
-                  console.error('Failed to update configuration.', err);
-                  this._returnToMain();
-                });
-          } else {
-            this._returnToMain();
-          }
-        })
-        .catch((err: any) => {
-          console.log('Failed configuration update check.', err);
-          this._notifyServerFailed();
-        });
+    let available = false;
+    try {
+      available = await Configuration.isConfigUpdateAvailable();
+    } catch (err) {
+      console.log('Failed configuration update check.', err);
+      this._notifyServerFailed();
+
+      return;
+    }
+
+    if (available) {
+      try {
+        await Configuration.updateConfig(callbacks);
+      } catch (err) {
+        console.error('Failed to update configuration.', err);
+      }
+    }
+
+    this._returnToMain();
   }
 
   /**
@@ -505,7 +507,7 @@ const mapDispatchToProps = (dispatch: any): any => {
     })),
     setUniversity: (university: any): void => dispatch(actions.updateConfiguration({
       semesters: university.semesters,
-      universityLocation: { latitude: university.lat, longitude: university.long },
+      universityLocation: { latitude: university.latitude, longitude: university.longitude },
       universityName: {
         name_en: Translations.getEnglishName(university) || '',
         name_fr: Translations.getFrenchName(university) || '',

@@ -85,14 +85,14 @@ class Find extends React.PureComponent<Props, State> {
       const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
       for (const route of currentRoutes) {
         if (nextProps.view === route.id) {
-          (this.refs.navigator as any).popToRoute(route);
+          (this.refs.Navigator as any).popToRoute(route);
 
           return;
         }
       }
-      (this.refs.navigator as any).push({ id: nextProps.view });
+      (this.refs.Navigator as any).push({ id: nextProps.view });
     } else if (nextProps.appTab === 'find' && nextProps.backCount !== this.props.backCount) {
-      (this.refs.navigator as any).pop();
+      (this.refs.Navigator as any).pop();
     }
   }
 
@@ -111,7 +111,7 @@ class Find extends React.PureComponent<Props, State> {
    * @param {any} event the event taking place
    */
   _handleNavigationEvent(): void {
-    const currentRoutes = (this.refs.navigator as any).getCurrentRoutes();
+    const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     this.props.onBackNavigation(currentRoutes[currentRoutes.length - 1].id);
   }
 

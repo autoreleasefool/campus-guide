@@ -3,7 +3,7 @@
     "target": "es2015",
     "module": "es2015",
     "moduleResolution": "node",
-    "jsx": "react",
+    "jsx": "react-native",
     "outDir": "artifacts",
     "rootDir": "src",
     "allowSyntheticDefaultImports": true,
