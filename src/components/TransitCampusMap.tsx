@@ -180,7 +180,7 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
 
           return (
             <MapView.Marker
-                coordinate={{ latitude: stop.lat, longitude: stop.long }}
+                coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
                 description={stop.code}
                 key={stopId}
                 ref={this._getMarkerReference(stopId)}
