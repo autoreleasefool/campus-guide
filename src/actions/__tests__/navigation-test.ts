@@ -17,89 +17,79 @@
  *
  * @author Joseph Roque
  * @created 2016-10-17
- * @file navigation-test.js
+ * @file navigation-test.ts
  * @description Tests navigation actions
  *
  */
 'use strict';
 
-// Types
-import type { Tab } from 'types';
-import {
-  NAVIGATE_BACK,
-  SET_CAN_BACK,
-  SWITCH_TAB,
-  SWITCH_FIND_VIEW,
-  SWITCH_DISCOVER_VIEW,
-  SWITCH_HOUSING_VIEW,
-  SWITCH_HOUSING_RESIDENCE,
-  SWITCH_DISCOVER_LINK,
-  SWITCH_DISCOVER_TRANSIT_CAMPUS,
-} from 'actionTypes';
-
 // Imports
-import * as actions from '../navigation';
+import * as navigation from '../navigation';
+
+// Types
+import { Tab } from '../../../typings/global';
+import * as Actions from '../../actionTypes';
 
 describe('navigation actions', () => {
 
   it('should create an action to switch the tabs', () => {
     const tab: Tab = 'find';
-    const expectedAction = { type: SWITCH_TAB, tab };
-    expect(actions.switchTab(tab)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.App.SwitchTab, tab };
+    expect(navigation.switchTab(tab)).toEqual(expectedAction);
   });
 
   it('should create an action to navigate backwards', () => {
-    const expectedAction = { type: NAVIGATE_BACK };
-    expect(actions.navigateBack()).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Navigation.NavigateBack };
+    expect(navigation.navigateBack()).toEqual(expectedAction);
   });
 
   it('should set the state for a key which can back navigate', () => {
     const key = 'test_key';
     const can = true;
-    const expectedAction = { type: SET_CAN_BACK, can, key };
-    expect(actions.canNavigateBack(key, can)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Navigation.CanBack, can, key };
+    expect(navigation.canNavigateBack(key, can)).toEqual(expectedAction);
   });
 
   it('should create an action to switch the find view', () => {
     const view = 1;
-    const expectedAction = { type: SWITCH_FIND_VIEW, view };
-    expect(actions.switchFindView(view)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.App.SwitchFindView, view };
+    expect(navigation.switchFindView(view)).toEqual(expectedAction);
   });
 
   it('should create an action to switch the discover view', () => {
     const view = 1;
-    const expectedAction = { type: SWITCH_DISCOVER_VIEW, view };
-    expect(actions.switchDiscoverView(view)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.App.SwitchDiscoverView, view };
+    expect(navigation.switchDiscoverView(view)).toEqual(expectedAction);
   });
 
   it('should create an action to switch the housing view', () => {
     const view = 1;
-    const expectedAction = { type: SWITCH_HOUSING_VIEW, view };
-    expect(actions.switchHousingView(view)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.App.SwitchHousingView, view };
+    expect(navigation.switchHousingView(view)).toEqual(expectedAction);
   });
 
   it('should show a link category', () => {
     const linkId = 'fake_id';
-    const expectedAction = { type: SWITCH_DISCOVER_LINK, linkId };
-    expect(actions.switchLinkCategory(linkId)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.App.SwitchDiscoverLink, linkId };
+    expect(navigation.switchLinkCategory(linkId)).toEqual(expectedAction);
   });
 
   it('should show a transit campus', () => {
-    const campus = {
+    const campus: any = {
       image: 'image.jpg',
       name: 'campus_name',
     };
-    const expectedAction = { type: SWITCH_DISCOVER_TRANSIT_CAMPUS, campus };
-    expect(actions.switchTransitCampus(campus)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.App.SwitchDiscoverTransitCampus, campus };
+    expect(navigation.switchTransitCampus(campus)).toEqual(expectedAction);
   });
 
   it('should show a residence', () => {
-    const residence = {
+    const residence: any = {
       image: 'image.jpg',
       name: 'residence_name',
     };
-    const expectedAction = { type: SWITCH_HOUSING_RESIDENCE, residence };
-    expect(actions.switchResidence(residence)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.App.SwitchHousingResidence, residence };
+    expect(navigation.switchResidence(residence)).toEqual(expectedAction);
   });
 
 });

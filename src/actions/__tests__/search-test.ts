@@ -17,46 +17,46 @@
  *
  * @author Joseph Roque
  * @created 2017-02-12
- * @file search-test.js
+ * @file search-test.ts
  * @description Tests search actions
  *
  */
 'use strict';
 
-// Types
-import { SEARCH, ACTIVATE_STUDY_FILTER, DEACTIVATE_STUDY_FILTER, SET_STUDY_FILTERS } from 'actionTypes';
-
 // Imports
-import * as actions from '../search';
+import * as search from '../search';
+
+// Types
+import * as Actions from '../../actionTypes';
 
 describe('search actions', () => {
 
   it('creates an action to search for a search term', () => {
     const terms = 'search term';
-    const expectedAction = { type: SEARCH, terms };
-    expect(actions.search(terms)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Search.Search, terms };
+    expect(search.search(terms)).toEqual(expectedAction);
   });
 
   it('creates an action to clear the search', () => {
-    const terms = null;
-    const expectedAction = { type: SEARCH, terms };
-    expect(actions.search(null)).toEqual(expectedAction);
+    const terms = undefined;
+    const expectedAction = { type:  Actions.Search.Search, terms };
+    expect(search.search(undefined)).toEqual(expectedAction);
   });
 
   it('creates an action to set the study filters', () => {
     const filters = [ 'filter1', 'filter2' ];
-    const expectedAction = { type: SET_STUDY_FILTERS, filters };
-    expect(actions.setStudyFilters(filters)).toEqual(expectedAction);
+    const expectedAction = { type:  Actions.Search.SetStudyFilters, filters };
+    expect(search.setStudyFilters(filters)).toEqual(expectedAction);
   });
 
   it('creates an action to activate a study filter', () => {
-    const expectedAction = { type: ACTIVATE_STUDY_FILTER, filter: 'filter1' };
-    expect(actions.activateStudyFilter('filter1')).toEqual(expectedAction);
+    const expectedAction = { type:  Actions.Search.ActivateStudyFilter, filter: 'filter1' };
+    expect(search.activateStudyFilter('filter1')).toEqual(expectedAction);
   });
 
   it('creates an action to deactivate a study filter', () => {
-    const expectedAction = { type: DEACTIVATE_STUDY_FILTER, filter: 'filter1' };
-    expect(actions.deactivateStudyFilter('filter1')).toEqual(expectedAction);
+    const expectedAction = { type:  Actions.Search.DeactivateStudyFilter, filter: 'filter1' };
+    expect(search.deactivateStudyFilter('filter1')).toEqual(expectedAction);
   });
 
 });

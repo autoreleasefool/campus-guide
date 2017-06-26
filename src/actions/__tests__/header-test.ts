@@ -17,57 +17,57 @@
  *
  * @author Joseph Roque
  * @created 2016-10-19
- * @file header-test.js
+ * @file header-test.ts
  * @description Tests header actions
  *
  */
 'use strict';
 
-// Types
-import { SET_HEADER_TITLE, SHOW_BACK, SHOW_SEARCH } from 'actionTypes';
-
 // Imports
-import * as actions from '../header';
+import * as header from '../header';
+
+// Types
+import * as Actions from '../../actionTypes';
 
 describe('header actions', () => {
 
   it('should create an action to set the title', () => {
     const title = { name: 'Title' };
-    const expectedAction = { type: SET_HEADER_TITLE, title };
-    expect(actions.setHeaderTitle(title)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Header.SetTitle, title };
+    expect(header.setHeaderTitle(title)).toEqual(expectedAction);
   });
 
   it('should create an action to set the title for a tab', () => {
     const title = 'name';
     const tab = 'find';
-    const expectedAction = { type: SET_HEADER_TITLE, title, tab };
-    expect(actions.setHeaderTitle(title, tab)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Header.SetTitle, title, tab };
+    expect(header.setHeaderTitle(title, tab)).toEqual(expectedAction);
   });
 
   it('should create an action to show the back button for a tab', () => {
     const show = true;
     const tab = 'find';
-    const expectedAction = { type: SHOW_BACK, show, tab };
-    expect(actions.showBack(show, tab)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Header.ShowBack, show, tab };
+    expect(header.showBack(show, tab)).toEqual(expectedAction);
   });
 
   it('should create an action to show the search button for a tab', () => {
     const show = true;
     const tab = 'find';
-    const expectedAction = { type: SHOW_SEARCH, show, tab };
-    expect(actions.showSearch(show, tab)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Header.ShowSearch, show, tab };
+    expect(header.showSearch(show, tab)).toEqual(expectedAction);
   });
 
   it('should create an action to show the back button', () => {
     const show = true;
-    const expectedAction = { type: SHOW_BACK, show };
-    expect(actions.showBack(show)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Header.ShowBack, show };
+    expect(header.showBack(show)).toEqual(expectedAction);
   });
 
   it('should create an action to show the search button', () => {
     const show = true;
-    const expectedAction = { type: SHOW_SEARCH, show };
-    expect(actions.showSearch(show)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Header.ShowSearch, show };
+    expect(header.showSearch(show)).toEqual(expectedAction);
   });
 
 });

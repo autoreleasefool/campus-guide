@@ -17,24 +17,24 @@
  *
  * @author Joseph Roque
  * @created 2016-10-08
- * @file config-test.js
+ * @file config-test.ts
  * @description Tests config actions
  *
  */
 'use strict';
 
-// Types
-import { UPDATE_CONFIGURATION, UPDATE_PROGRESS } from 'actionTypes';
-
 // Imports
-import * as actions from '../config';
+import * as config from '../config';
+
+// Types
+import * as Actions from '../../actionTypes';
 
 describe('configuration actions', () => {
 
   it('should create an action to update the configuration', () => {
     const language = 'en';
-    const expectedAction = { type: UPDATE_CONFIGURATION, options: { language }};
-    expect(actions.updateConfiguration({ language: language })).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Configuration.ConfigUpdate, options: { language } };
+    expect(config.updateConfiguration({ language })).toEqual(expectedAction);
   });
 
   it('should create an action to update the download progress', () => {
@@ -43,9 +43,9 @@ describe('configuration actions', () => {
       filesDownloaded: [ 'download1.jpg', 'download2.jpg' ],
       totalFiles: 1,
     };
-    const expectedAction = { type: UPDATE_PROGRESS, update };
+    const expectedAction = { type: Actions.Configuration.ProgressUpdate, update };
 
-    expect(actions.updateProgress(update)).toEqual(expectedAction);
+    expect(config.updateProgress(update)).toEqual(expectedAction);
   });
 
 });

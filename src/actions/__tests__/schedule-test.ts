@@ -17,44 +17,44 @@
  *
  * @author Joseph Roque
  * @created 2016-10-30
- * @file schedule-test.js
+ * @file schedule-test.ts
  * @description Tests schedule actions
  *
  */
 'use strict';
 
-// Types
-import { ADD_SEMESTER, ADD_COURSE, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
-
 // Imports
-import * as actions from '../schedule';
+import * as schedule from '../schedule';
+
+// Types
+import * as Actions from '../../actionTypes';
 
 describe('schedule actions', () => {
 
   it('creates an action to overwrite the current schedule', () => {
-    const schedule = { semester1: { id: 'semester1', courses: [], name: 'semester 1' }};
-    const expectedAction = { type: LOAD_SCHEDULE, schedule };
-    expect(actions.loadSchedule(schedule)).toEqual(expectedAction);
+    const schedule: any = { semester1: { id: 'semester1', courses: [], name: 'semester 1' } };
+    const expectedAction = { type: Actions.Schedule.Load, schedule };
+    expect(schedule.loadSchedule(schedule)).toEqual(expectedAction);
   });
 
   it('creates an action to add a new semester', () => {
     const semester = { id: 'semester1', courses: [], name: 'semester 1' };
-    const expectedAction = { type: ADD_SEMESTER, semester };
-    expect(actions.addSemester(semester)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Schedule.AddSemester, semester };
+    expect(schedule.addSemester(semester)).toEqual(expectedAction);
   });
 
   it('creates an action to add a new course', () => {
     const semester = 'semester1';
-    const course = { code: 'COURSE_CODE', lectures: []};
-    const expectedAction = { type: ADD_COURSE, semester, course };
-    expect(actions.addCourse(semester, course)).toEqual(expectedAction);
+    const course = { code: 'COURSE_CODE', lectures: [] };
+    const expectedAction = { type: Actions.Schedule.AddCourse, semester, course };
+    expect(schedule.addCourse(semester, course)).toEqual(expectedAction);
   });
 
   it('creates an action to remove a course', () => {
     const semester = 'semester1';
     const courseCode = 'COURSE_CODE';
-    const expectedAction = { type: REMOVE_COURSE, semester, courseCode };
-    expect(actions.removeCourse(semester, courseCode)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Schedule.RemoveCourse, semester, courseCode };
+    expect(schedule.removeCourse(semester, courseCode)).toEqual(expectedAction);
   });
 
 });

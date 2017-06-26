@@ -17,35 +17,34 @@
  *
  * @author Joseph Roque
  * @created 2017-02-11
- * @file directions-test.js
+ * @file directions-test.ts
  * @description Tests direction actions
  *
  */
 'use strict';
 
-// Types
-import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
-
 // Imports
-import * as actions from '../directions';
+import * as directions from '../directions';
+
+// Types
+import * as Actions from '../../actionTypes';
 
 describe('direction actions', () => {
 
   it('should set a building room to navigate to', () => {
     const destination = { shorthand: 'code', room: 'room' };
-    const expectedAction = { type: SET_DESTINATION, destination };
-    expect(actions.setDestination(destination)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Directions.SetDestination, destination };
+    expect(directions.setDestination(destination)).toEqual(expectedAction);
   });
 
   it('should set a building room to navigate from', () => {
     const startingPoint = { shorthand: 'code', room: 'room' };
-    const expectedAction = { type: SET_STARTING_POINT, startingPoint };
-    expect(actions.setStartingPoint(startingPoint)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Directions.SetStartingPoint, startingPoint };
+    expect(directions.setStartingPoint(startingPoint)).toEqual(expectedAction);
   });
 
   it('should set a building to view details for', () => {
-    const building = {
-      shorthand: 'code',
+    const building: any = {
       facilities: [ 'atm', 'gym' ],
       image: 'image.png',
       location: {
@@ -53,8 +52,9 @@ describe('direction actions', () => {
         longitude: 200,
       },
       rooms: [{ name: 'room_1', type: 0 }, { name: 'name_2', type: 1 }],
+      shorthand: 'code',
     };
-    const expectedAction = { type: VIEW_BUILDING, building };
-    expect(actions.viewBuilding(building)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Directions.ViewBuilding, building };
+    expect(directions.viewBuilding(building)).toEqual(expectedAction);
   });
 });
