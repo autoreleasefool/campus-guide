@@ -39,9 +39,9 @@ const translations = {
  * Loads and parses a set of translations from the downloaded configuration.
  *
  * @param {Language} language the set of translations to load
- * @returns {Promise<object>} a promise that resolves with the translations when they have been loaded
+ * @returns {Promise<any>} a promise that resolves with the translations when they have been loaded
  */
-async function _loadTranslations(language: Language): Promise < object > {
+async function _loadTranslations(language: Language): Promise<any> {
   // If the language is already loaded,
   if (translations[language] != undefined) {
     return translations[language];
@@ -263,9 +263,9 @@ export function get(language: Language, property: string): string {
  * Loads and parses a set of translations from the downloaded configuration.
  *
  * @param {Language} language the set of translations to load
- * @returns {Promise<object>} a promise that resolves with the translations when they have been loaded
+ * @returns {Promise<any>} a promise that resolves with the translations when they have been loaded
  */
-export function loadTranslations(language: Language): Promise < object > {
+export function loadTranslations(language: Language): Promise<any> {
   return _loadTranslations(language);
 }
 
@@ -283,9 +283,9 @@ export function unloadTranslations(language: Language): void {
  * Only available in testing.
  *
  * @param {Language} language the set of translations to retrieve
- * @returns {oundefinedbject} a set of translations, or an empty object
+ * @returns {any} a set of translations, or an empty object
  */
-export function getTranslations(language: Language): object {
+export function getTranslations(language: Language): any {
   if (translations[language] == undefined) {
     return {};
   } else {

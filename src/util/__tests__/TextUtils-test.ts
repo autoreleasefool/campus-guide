@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-11-1
- * @file TextUtils-test.js
+ * @file TextUtils-test.ts
  * @description Tests text formatting and adjustments.
  *
  */
@@ -26,22 +26,22 @@
 // Mock translations for days
 jest.mock('../../../assets/json/CoreTranslations.json', () => ({
   en: {
-    monday: 'Day',
-    tuesday: 'Day',
-    wednesday: 'Day',
-    thursday: 'Day',
     friday: 'Day',
+    monday: 'Day',
     saturday: 'Day',
     sunday: 'Day',
+    thursday: 'Day',
+    tuesday: 'Day',
+    wednesday: 'Day',
   },
   fr: {
-    monday: 'Day',
-    tuesday: 'Day',
-    wednesday: 'Day',
-    thursday: 'Day',
-    friday: 'Day',
-    saturday: 'Day',
-    sunday: 'Day',
+    friday: 'Jour',
+    monday: 'Jour',
+    saturday: 'Jour',
+    sunday: 'Jour',
+    thursday: 'Jour',
+    tuesday: 'Jour',
+    wednesday: 'Jour',
   },
 }));
 
@@ -66,13 +66,13 @@ const invalidURL = 'thisIsNotAValidURL';
 
 // A dictionary of time values, with their expected formatting in 24 hour adjusted time.
 const expectedTimeFormats = {
+  '02:50': '02:50',
   '10:20': '10:20',
   '14:08': '14:08',
-  '36:11': '12:11',
   '18:45': '18:45',
-  '02:50': '02:50',
   '25:19': '01:19',
   '28:30': '04:30',
+  '36:11': '12:11',
 };
 
 // Require modules for testing
@@ -81,8 +81,8 @@ import * as TextUtils from '../TextUtils';
 describe('TextUtils-test', () => {
 
   it('tests converting time formats with invalid params', () => {
-    const invalidTime = 'not a time';
-    const invalidFormat = '00';
+    const invalidTime: any = 'not a time';
+    const invalidFormat: any = '00';
     expect(() => TextUtils.convertTimeFormat('12h', invalidTime)).toThrow();
     expect(() => TextUtils.convertTimeFormat(invalidFormat, '12:00')).toThrow();
   });
@@ -120,27 +120,29 @@ describe('TextUtils-test', () => {
     expect(TextUtils.formatLink(exampleLongEmail)).toBe(exampleFormattedEmail);
     expect(TextUtils.formatLink(invalidURL)).toBe(invalidURL);
     expect(TextUtils.formatLink('')).toBe('');
-    expect(TextUtils.formatLink(null)).toBe('');
+    expect(TextUtils.formatLink(undefined)).toBe('');
   });
 
   it('tests that left padding a string returns the proper value.', () => {
 
     /* Magic numbers are used here for simplicity's sake */
-    /* eslint-disable no-magic-numbers */
+    /* tslint:disable no-magic-numbers */
+
     expect(TextUtils.leftPad('Hello', 20)).toBe('               Hello');
     expect(TextUtils.leftPad('Goodbye', 5)).toBe('Goodbye');
     expect(TextUtils.leftPad('Hello, world!', 20, 'e')).toBe('eeeeeeeHello, world!');
     expect(TextUtils.leftPad('12345', 10, '0')).toBe('0000012345');
     expect(TextUtils.leftPad('CampusGuide', 10, 'too_long')).toBe('CampusGuide');
 
-    /* eslint-enable no-magic-numbers */
+    /* tslint:enable no-magic-numbers */
 
   });
 
   it('tests that concatenating a string with ellipses returns the proper value.', () => {
 
     /* Magic numbers are used here for simplicity's sake */
-    /* eslint-disable no-magic-numbers */
+    /* tslint:disable no-magic-numbers */
+
     expect(TextUtils.getTextWithEllipses('Hello', 20)).toBe('Hello');
     expect(TextUtils.getTextWithEllipses('World', 5)).toBe('World');
     expect(TextUtils.getTextWithEllipses('Canada', 4)).toBe('Ca..');
@@ -148,7 +150,7 @@ describe('TextUtils-test', () => {
     expect(TextUtils.getTextWithEllipses('CampusGuide', 2)).toBe('..');
     expect(TextUtils.getTextWithEllipses('ReactNative', 1)).toBe('..');
 
-    /* eslint-enable no-magic-numbers */
+    /* tslint:enable no-magic-numbers */
 
   });
 
@@ -162,7 +164,8 @@ describe('TextUtils-test', () => {
 
   it('tests converting a time in minutes since midnight to text', () => {
 
-    /* eslint-disable no-magic-numbers */
+    /* Magic numbers are used here for simplicity's sake */
+    /* tslint:disable no-magic-numbers */
 
     expect(TextUtils.getFormattedTimeSinceMidnight(0, '24h')).toEqual('00:00');
     expect(TextUtils.getFormattedTimeSinceMidnight(0, '12h')).toEqual('12:00 am');
@@ -171,7 +174,7 @@ describe('TextUtils-test', () => {
     expect(TextUtils.getFormattedTimeSinceMidnight(1300, '24h')).toEqual('21:40');
     expect(TextUtils.getFormattedTimeSinceMidnight(1300, '12h')).toEqual('9:40 pm');
 
-    /* eslint-enable no-magic-numbers */
+    /* tslint:enable no-magic-numbers */
 
   });
 

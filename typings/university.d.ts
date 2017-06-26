@@ -29,8 +29,8 @@ import { Description, Icon, LatLong, Link, LinkSection, MenuSection, Name } from
 
 /** A destination for navigation on campus. */
 export interface Destination {
-  shorthand: string;        // Shorthand building code
-  room: string | undefined; // Room number in the building
+  shorthand: string;          // Shorthand building code
+  room?: string | undefined;  // Room number in the building
 }
 
 /** A room on campus, with a name and the facilities it offers represented by an ID. */

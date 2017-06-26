@@ -167,7 +167,7 @@ export function getTextWithEllipses(text: string, maxLength: number): string {
  * @param {string|undefined} char          optional argument. Character to pad with. Uses ' ' by default
  * @returns {string} a string with at least a length of {desiredLength}
  */
-export function leftPad(text: string, desiredLength: number, char: string | undefined): string {
+export function leftPad(text: string, desiredLength: number, char?: string | undefined): string {
   const replacementChar = char || ' ';
   let replacedString = text;
   let replacedStringLength = replacedString.length;

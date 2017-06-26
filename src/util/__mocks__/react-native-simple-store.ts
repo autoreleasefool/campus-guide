@@ -17,26 +17,24 @@
  *
  * @author Joseph Roque
  * @created 2017-01-25
- * @file react-native-simple-store.js
+ * @file react-native-simple-store.ts
  * @description Mocks the functionality of the npm module `react-native-simple-store`
  *
  */
 'use strict';
 
-import Promise from 'promise';
-
 // Mock object
-const store = jest.genMockFromModule('react-native-simple-store');
+const store: any = jest.genMockFromModule('react-native-simple-store');
 
 // Key-value storage
-let datastore = {};
+let datastore: any = {};
 
 /**
  * Sets a custom datastore.
  *
  * @param {Object} newDatastore object to replace datastore with
  */
-function __setDatastore(newDatastore) {
+function __setDatastore(newDatastore: any): void {
   datastore = newDatastore;
 }
 
@@ -46,10 +44,8 @@ function __setDatastore(newDatastore) {
  * @param {string} key identifier
  * @returns {Promise<any>} a promise which resolves with the value corresponding to key
  */
-function get(key) {
-  return new Promise((resolve) => {
-    resolve(JSON.parse(datastore[key] || 'null'));
-  });
+async function get(key: string): Promise<any> {
+  return JSON.parse(datastore[key] || 'null');
 }
 
 /**
@@ -59,15 +55,12 @@ function get(key) {
  * @param {any}    value value to store
  * @returns {Promise<void>} a promise which resolves when the value has been saved
  */
-function save(key, value) {
-  return new Promise((resolve) => {
-    datastore[key] = JSON.stringify(value);
-    resolve();
-  });
+async function save(key: string, value: any): Promise<void> {
+  datastore[key] = JSON.stringify(value);
 }
 
 // Expose mock functions
 store.__setDatastore = __setDatastore;
 store.get = get;
 store.save = save;
-module.exports = store;
+export default store;

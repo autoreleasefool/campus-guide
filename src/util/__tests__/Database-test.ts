@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2016-10-30
- * @file Database-test.js
+ * @file Database-test.ts
  * @description Tests the functionality of Database
  *
  */
@@ -127,55 +127,43 @@ describe('Database-test', () => {
     require('react-native-simple-store').__setDatastore({});
   });
 
-  it('tests retrieving empty config file versions', () => {
-    return Database.getConfigVersions().then((versions) => {
-      expect(versions).toBeNull();
-    });
+  it('tests retrieving empty config file versions', async() => {
+    const versions = await Database.getConfigVersions();
+    expect(versions).not.toBeDefined();
   });
 
-  it('tests saving and retrieving config file versions 1', () => {
-    return Database.updateConfigVersions(baseVersions)
-        .then(() => Database.getConfigVersions())
-        .then((versions) => {
-          expect(versions).toEqual(baseVersions);
-          return Database.updateConfigVersions(updatedVersions1);
-        })
-        .then(() => Database.getConfigVersions())
-        .then((versions) => {
-          expect(versions).toEqual(baseAndUpdates1);
-        });
+  it('tests saving and retrieving config file versions 1', async() => {
+    await Database.updateConfigVersions(baseVersions);
+    let versions = await Database.getConfigVersions();
+    expect(versions).toEqual(baseVersions);
+
+    await Database.updateConfigVersions(updatedVersions1);
+    versions = await Database.getConfigVersions();
+    expect(versions).toEqual(baseAndUpdates1);
   });
 
-  it('tests saving and retrieving config file versions 2', () => {
-    return Database.updateConfigVersions(baseVersions)
-        .then(() => Database.getConfigVersions())
-        .then((versions) => {
-          expect(versions).toEqual(baseVersions);
-          return Database.updateConfigVersions(updatedVersions2);
-        })
-        .then(() => Database.getConfigVersions())
-        .then((versions) => {
-          expect(versions).toEqual(baseAndUpdates2);
-        });
+  it('tests saving and retrieving config file versions 2', async() => {
+    await Database.updateConfigVersions(baseVersions);
+    let versions = await Database.getConfigVersions();
+    expect(versions).toEqual(baseVersions);
+
+    await Database.updateConfigVersions(updatedVersions2);
+    versions = await Database.getConfigVersions();
+    expect(versions).toEqual(baseAndUpdates2);
   });
 
-  it('tests retrieving the empty schedule', () => {
-    return Database.getSchedule()
-        .then((schedule) => {
-          expect(schedule).toBeNull();
-        });
+  it('tests retrieving the empty schedule', async() => {
+    const schedule = await Database.getSchedule();
+    expect(schedule).not.toBeDefined();
   });
 
-  it('tests saving and retrieving the schedule', () => {
-    return Database.saveSchedule(baseSchedule)
-        .then(() => Database.getSchedule())
-        .then((schedule) => {
-          expect(schedule).toEqual(baseSchedule);
-          return Database.saveSchedule(updatedSchedule);
-        })
-        .then(() => Database.getSchedule())
-        .then((schedule) => {
-          expect(schedule).toEqual(updatedSchedule);
-        });
+  it('tests saving and retrieving the schedule', async() => {
+    await Database.saveSchedule(baseSchedule);
+    let schedule = await Database.getSchedule();
+    expect(schedule).toEqual(baseSchedule);
+
+    await Database.saveSchedule(updatedSchedule);
+    schedule = Database.getSchedule();
+    expect(schedule).toEqual(updatedSchedule);
   });
 });

@@ -17,14 +17,14 @@
  *
  * @author Joseph Roque
  * @created 2017-06-07
- * @file NavigationUtils-test.js
+ * @file Navigation-test.ts
  * @description Tests the navigation methods.
  *
  */
 'use strict';
 
 // Require modules used in testing
-import * as NavigationUtils from '../NavigationUtils';
+import * as Navigation from '../Navigation';
 
 const buildings = [
   {
@@ -47,27 +47,27 @@ const buildings = [
   },
 ];
 
-describe('NavigationUtils-test', () => {
+describe('Navigation-test', () => {
 
   it('tests finding the closest building in a list to a location', () => {
 
-    expect(NavigationUtils.findClosestBuilding({ latitude: 0, longitude: 0 }, buildings)).toBe(buildings[0]);
-    expect(NavigationUtils.findClosestBuilding({ latitude: 38, longitude: -77 }, buildings)).toBe(buildings[2]);
-    expect(NavigationUtils.findClosestBuilding({ latitude: 25, longitude: 25 }, buildings, 1)).toBeNull();
+    expect(Navigation.findClosestBuilding({ latitude: 0, longitude: 0 }, buildings)).toBe(buildings[0]);
+    expect(Navigation.findClosestBuilding({ latitude: 38, longitude: -77 }, buildings)).toBe(buildings[2]);
+    expect(Navigation.findClosestBuilding({ latitude: 25, longitude: 25 }, buildings, 1)).not.toBeDefined();
 
   });
 
   it('tests that comparing the distance between coordinates works', () => {
 
-    /* eslint-disable no-magic-numbers */
+    /* tslint:disable no-magic-numbers */
     /* Test: http://andrew.hedges.name/experiments/haversine/ */
 
-    expect(NavigationUtils.getDistanceBetweenCoordinates(0, 0, 0, 0)).toBe(0);
-    expect(NavigationUtils.getDistanceBetweenCoordinates(0, 0, 45, 75)).toBeCloseTo(8835, 1);
-    expect(NavigationUtils.getDistanceBetweenCoordinates(38.898556, -77.037852, 38.897147, -77.043934))
+    expect(Navigation.getDistanceBetweenCoordinates(0, 0, 0, 0)).toBe(0);
+    expect(Navigation.getDistanceBetweenCoordinates(0, 0, 45, 75)).toBeCloseTo(8835, 1);
+    expect(Navigation.getDistanceBetweenCoordinates(38.898556, -77.037852, 38.897147, -77.043934))
         .toBeCloseTo(0.549, 1);
 
-    /* eslint-enable no-magic-numbers */
+    /* tslint:enable no-magic-numbers */
 
   });
 
