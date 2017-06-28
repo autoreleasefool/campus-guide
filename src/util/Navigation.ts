@@ -54,7 +54,7 @@ function deg2rad(deg: number): number {
 export function findClosestBuilding(
     location: LatLong,
     buildings: Building[],
-    maxDist: number | undefined): Building | undefined {
+    maxDist?: number | undefined): Building | undefined {
   let closestBuilding;
   let minDistance = -1;
 

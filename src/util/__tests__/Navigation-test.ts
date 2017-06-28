@@ -26,7 +26,7 @@
 // Require modules used in testing
 import * as Navigation from '../Navigation';
 
-const buildings = [
+const buildings: any[] = [
   {
     location: {
       latitude: 0,

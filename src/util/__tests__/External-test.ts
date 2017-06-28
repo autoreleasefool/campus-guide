@@ -25,7 +25,7 @@
 
 // Require modules used in testing
 import * as External from '../External';
-const Translations = {};
+const Translations: any = {};
 
 // An example valid URL to open.
 const exampleURL = 'https://google.ca';

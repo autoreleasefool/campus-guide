@@ -9,7 +9,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start:android": "npm run build && concurrently -r 'npm run watch' 'react-native run-android'",
     "start:ios": "npm run build && concurrently -r 'npm run watch' 'react-native run-ios'",
-    "test": "jest --coverage",
+    "test": "npm run build && jest",
     "tsc": "tsc",
     "tscp": "tsc --pretty",
     "watch": "npm run build -- -w"
@@ -48,9 +48,19 @@
     "rimraf": "^2.6.1",
     "tslint": "^5.4.3",
     "tslint-eslint-rules": "^4.1.1",
-    "typescript": "2.4"
+    "typescript": "^2.4.1"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "artifacts/**/*.js",
+      "!artifacts/**/*.spec.js",
+      "!artifacts/**/*.index.js"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text-summary",
+      "html"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 95,
@@ -62,7 +72,11 @@
     "moduleNameMapper": {
       "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
     },
-    "preset": "react-native"
+    "preset": "react-native",
+    "testRegex": "artifacts/.+[-.](test|spec).js$",
+    "transform": {
+      "\\..(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    }
   },
   "pre-commit": [
     "lint",

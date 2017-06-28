@@ -46,7 +46,7 @@ jest.mock('../../../assets/json/CoreTranslations.json', () => ({
 }));
 
 // Require the modules used in testing
-import * as Constants from 'Constants';
+import * as Constants from '../../constants';
 import * as Display from '../Display';
 
 // Example object containing an icon object which describes the android and iOS icons.
@@ -140,15 +140,17 @@ describe('Display-test', () => {
   });
 
   it('tests the failed retrieval of icons.', () => {
+    const invalidPlatform: any = 'invalidPlatform';
+
     expect(Display.getPlatformIcon('android', noIconObject)).not.toBeDefined();
     expect(Display.getPlatformIcon('ios', noIconObject)).not.toBeDefined();
-    expect(Display.getPlatformIcon('invalidPlatform', noIconObject)).not.toBeDefined();
+    expect(Display.getPlatformIcon(invalidPlatform, noIconObject)).not.toBeDefined();
     expect(Display.getAndroidIcon(noIconObject)).not.toBeDefined();
     expect(Display.getIOSIcon(noIconObject)).not.toBeDefined();
 
     expect(Display.getPlatformIcon('android', invalidIconObject)).not.toBeDefined();
     expect(Display.getPlatformIcon('ios', invalidIconObject)).not.toBeDefined();
-    expect(Display.getPlatformIcon('invalidPlatform', invalidIconObject)).not.toBeDefined();
+    expect(Display.getPlatformIcon(invalidPlatform, invalidIconObject)).not.toBeDefined();
     expect(Display.getAndroidIcon(invalidIconObject)).not.toBeDefined();
     expect(Display.getIOSIcon(invalidIconObject)).not.toBeDefined();
   });

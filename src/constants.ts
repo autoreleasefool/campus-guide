@@ -25,6 +25,7 @@
 
 // Types
 import { Tab } from '../typings/global';
+import { Facility } from '../typings/university';
 
 /* tslint:disable object-literal-sort-keys */
 /* Keys out of order to preserver importance, different groupings, etc. */
@@ -163,7 +164,7 @@ export const Tabs: Tab[] = [
 /**
  * List of available building facilities
  */
-export const Facilities = [
+export const Facilities: Facility[] = [
   'atm',
   'food',
   'printer',
