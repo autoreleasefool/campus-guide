@@ -17,7 +17,11 @@ ios/main.jsbundle
 */keystores/*
 
 # Environment
-*/env.js" >> .gitignore
+*/env.js
+
+# Typescript output
+artifacts/
+" >> .gitignore
 
 # Update the package name of the app
 sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/build.gradle

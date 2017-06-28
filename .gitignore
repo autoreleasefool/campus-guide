@@ -68,6 +68,3 @@ ios/main.jsbundle
 
 # Environment
 */env.js
-
-# Typescript output
-artifacts/
