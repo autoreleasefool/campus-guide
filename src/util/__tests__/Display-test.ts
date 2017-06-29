@@ -107,13 +107,21 @@ describe('Display-test', () => {
 
   it('tests retrieving facility icon names.', () => {
     for (const facility of Constants.Facilities) {
-      expect(Display.getFacilityIconName(facility)).toBeDefined();
+      if (facility === 'invalid') {
+        expect(Display.getFacilityIconName(facility)).not.toBeDefined();
+      } else {
+        expect(Display.getFacilityIconName(facility)).toBeDefined();
+      }
     }
   });
 
   it('tests retrieving facility icon classes.', () => {
     for (const facility of Constants.Facilities) {
-      expect(Display.getFacilityIconClass(facility)).toBeDefined();
+      if (facility === 'invalid') {
+        expect(Display.getFacilityIconClass(facility)).not.toBeDefined();
+      } else {
+        expect(Display.getFacilityIconClass(facility)).toBeDefined();
+      }
     }
   });
 

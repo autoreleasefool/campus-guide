@@ -9,7 +9,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start:android": "npm run build && concurrently -r 'npm run watch' 'react-native run-android'",
     "start:ios": "npm run build && concurrently -r 'npm run watch' 'react-native run-ios'",
-    "test": "npm run build && jest",
+    "test": "npm run build && jest --coverage",
     "tsc": "tsc",
     "tscp": "tsc --pretty",
     "watch": "npm run build -- -w"
@@ -34,10 +34,12 @@
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
-    "@types/jest": "^19.2.4",
-    "@types/react": "^15.0.28",
-    "@types/react-native": "^0.44.10",
-    "@types/react-redux": "^4.4.43",
+    "@types/jest": "^20.0.2",
+    "@types/react": "^15.0.33",
+    "@types/react-native": "^0.44.14",
+    "@types/react-redux": "^4.4.45",
+    "babel-jest": "^20.0.3",
+    "babel-preset-react-native": "^2.0.0",
     "concurrently": "^3.5.0",
     "empty": "^0.10.1",
     "jest": "^20.0.4",
@@ -46,15 +48,20 @@
     "pre-commit": "^1.2.2",
     "react-test-renderer": "^15.6.1",
     "rimraf": "^2.6.1",
+    "ts-jest": "^20.0.6",
     "tslint": "^5.4.3",
     "tslint-eslint-rules": "^4.1.1",
-    "typescript": "^2.4.1"
+    "typescript": "2.4.0"
   },
   "jest": {
     "collectCoverageFrom": [
-      "artifacts/**/*.js",
+      "artifacts/util/*.js",
+      "artifacts/actions/*.js",
       "!artifacts/**/*.spec.js",
-      "!artifacts/**/*.index.js"
+      "!artifacts/**/*.index.js",
+      "!artifacts/actions/index.js",
+      "!artifacts/util/Configuration.js",
+      "!artifacts/util/Search.js"
     ],
     "coverageDirectory": "coverage",
     "coverageReporters": [
@@ -69,13 +76,15 @@
         "statements": 95
       }
     },
+    "mapCoverage": true,
     "moduleNameMapper": {
       "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
     },
     "preset": "react-native",
     "testRegex": "artifacts/.+[-.](test|spec).js$",
     "transform": {
-      "\\..(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     }
   },
   "pre-commit": [

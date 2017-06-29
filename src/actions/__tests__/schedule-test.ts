@@ -32,9 +32,9 @@ import * as Actions from '../../actionTypes';
 describe('schedule actions', () => {
 
   it('creates an action to overwrite the current schedule', () => {
-    const schedule: any = { semester1: { id: 'semester1', courses: [], name: 'semester 1' } };
-    const expectedAction = { type: Actions.Schedule.Load, schedule };
-    expect(schedule.loadSchedule(schedule)).toEqual(expectedAction);
+    const testSchedule: any = { semester1: { id: 'semester1', courses: [], name: 'semester 1' } };
+    const expectedAction = { type: Actions.Schedule.Load, schedule: testSchedule };
+    expect(schedule.loadSchedule(testSchedule)).toEqual(expectedAction);
   });
 
   it('creates an action to add a new semester', () => {

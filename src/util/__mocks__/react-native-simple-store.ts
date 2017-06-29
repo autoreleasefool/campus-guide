@@ -45,7 +45,7 @@ function __setDatastore(newDatastore: any): void {
  * @returns {Promise<any>} a promise which resolves with the value corresponding to key
  */
 async function get(key: string): Promise<any> {
-  return JSON.parse(datastore[key] || 'null');
+  return JSON.parse(datastore[key] || 'null') || undefined;
 }
 
 /**

@@ -50,7 +50,11 @@ const AsyncStorage = {
     }
   }),
   setItem: jest.fn((key: string, value: string) => {
-    dataStore[key] = value;
+    if (shouldThrowError) {
+      throw new Error('Preferences-test error thrown on purpose for testing');
+    } else {
+      dataStore[key] = value;
+    }
   }),
 };
 
@@ -185,30 +189,68 @@ describe('Preferences-test', () => {
   });
 
   it('tests error handling preferences', async() => {
-    shouldThrowError = true;
-
-    // Set defaults for the app to load
-    dataStore = {
-      app_by_course: 'false',
-      app_current_semester: '0',
-      app_pref_wheel: 'true',
-      app_selected_language: 'en',
-      app_time_format: '12h',
+    // Test error handling setting preferences
+    let preferences: PreferenceOptions = {
+      byCourse: true,
+      language: 'fr',
+      semester: 2,
+      timeFormat: '24h',
+      wheelchair: false,
     };
 
-    const language = await Preferences.getSelectedLanguage(AsyncStorage);
+    shouldThrowError = true;
+    let errorThrown = false;
+    try {
+      await setPreferences(preferences);
+    } catch (e) {
+      errorThrown = true;
+    }
+    expect(errorThrown).toBeTruthy();
+
+    // Expect defaults
+    let language = await Preferences.getSelectedLanguage(AsyncStorage);
     expect(language).not.toBeDefined();
 
-    const currentSemester = await Preferences.getCurrentSemester(AsyncStorage);
+    let currentSemester = await Preferences.getCurrentSemester(AsyncStorage);
     expect(currentSemester).toEqual(0);
 
-    const prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
+    let prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
     expect(prefersWheelchair).toBeFalsy();
 
-    const preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
+    let preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
     expect(preferredTime).toEqual('12h');
 
-    const prefersByCourse = await Preferences.getPreferScheduleByCourse(AsyncStorage);
+    let prefersByCourse = await Preferences.getPreferScheduleByCourse(AsyncStorage);
+    expect(prefersByCourse).toBeFalsy();
+
+    // Set preferences
+    shouldThrowError = false;
+    preferences = {
+      byCourse: false,
+      language: 'en',
+      semester: 0,
+      timeFormat: '12h',
+      wheelchair: false,
+    };
+    await setPreferences(preferences);
+
+    // Test error handling retrieving preferences
+    shouldThrowError = true;
+
+    // Expect defaults
+    language = await Preferences.getSelectedLanguage(AsyncStorage);
+    expect(language).not.toBeDefined();
+
+    currentSemester = await Preferences.getCurrentSemester(AsyncStorage);
+    expect(currentSemester).toEqual(0);
+
+    prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
+    expect(prefersWheelchair).toBeFalsy();
+
+    preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
+    expect(preferredTime).toEqual('12h');
+
+    prefersByCourse = await Preferences.getPreferScheduleByCourse(AsyncStorage);
     expect(prefersByCourse).toBeFalsy();
   });
 });

@@ -33,9 +33,9 @@ export function updateConfiguration(options: Options): any {
   };
 }
 
-export function updateProgress(options: ProgressUpdate): any {
+export function updateProgress(update: ProgressUpdate): any {
   return {
-    options,
-    type: Actions.Configuration.ConfigUpdate,
+    type: Actions.Configuration.ProgressUpdate,
+    update,
   };
 }

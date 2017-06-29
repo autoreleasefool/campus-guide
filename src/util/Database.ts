@@ -24,7 +24,7 @@
 
 // Imports
 import * as Arrays from './Arrays';
-import * as store from 'react-native-simple-store';
+import { default as store } from 'react-native-simple-store';
 
 import { ConfigFile } from './Configuration';
 

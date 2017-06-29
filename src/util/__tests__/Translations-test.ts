@@ -29,7 +29,7 @@
 // Require modules for testing
 import * as Translations from '../Translations';
 
-jest.setMock('Configuration', {
+jest.setMock('../Configuration', {
   getConfig: async(config: string): Promise<any> => {
     if (getConfigShouldThrowError) {
       throw new Error(getConfigErrorMessage);
@@ -317,6 +317,7 @@ describe('Translations-test', () => {
     expect(Translations.getVariant(invalidLanguage, 'details', objectWithTranslatedProperties)).not.toBeDefined();
 
     expect(Translations.getEnglishVariant('details', undefined)).not.toBeDefined();
+    expect(Translations.getFrenchVariant('details', undefined)).not.toBeDefined();
 
     /* tslint:enable max-line-length */
 

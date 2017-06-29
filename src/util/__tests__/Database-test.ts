@@ -23,10 +23,11 @@
  */
 'use strict';
 
-import * as Database from '../Database';
-
 // Mock the react-native-simple-store module
 jest.mock('react-native-simple-store');
+
+import * as Database from '../Database';
+import { default as store } from 'react-native-simple-store';
 
 // Base set of config file versions
 const baseVersions = [
@@ -122,14 +123,14 @@ const updatedSchedule = {
 };
 
 describe('Database-test', () => {
-  beforeEach(() => {
+  beforeEach(async() => {
     // Reset the datastore between tests
-    require('react-native-simple-store').__setDatastore({});
+    store.__setDatastore({});
   });
 
   it('tests retrieving empty config file versions', async() => {
     const versions = await Database.getConfigVersions();
-    expect(versions).not.toBeDefined();
+    expect(versions).toEqual([]);
   });
 
   it('tests saving and retrieving config file versions 1', async() => {
@@ -163,7 +164,7 @@ describe('Database-test', () => {
     expect(schedule).toEqual(baseSchedule);
 
     await Database.saveSchedule(updatedSchedule);
-    schedule = Database.getSchedule();
+    schedule = await Database.getSchedule();
     expect(schedule).toEqual(updatedSchedule);
   });
 });
