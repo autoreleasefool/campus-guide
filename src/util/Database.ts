@@ -57,7 +57,7 @@ export function saveSchedule(schedule: object): Promise < void > {
 /**
  * Gets a list of config files and their versions from the database.
  *
- * @returns {Promise<ConfigFile[]>} a promise which resolves with a list of config file names and versions, or null
+ * @returns {Promise<ConfigFile[]>} a promise which resolves with a list of config file names and versions, or undefined
  */
 export function getConfigVersions(): Promise < ConfigFile[] > {
   return store.get(STORE_CONFIG_VERSIONS)

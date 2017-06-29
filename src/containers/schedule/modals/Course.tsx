@@ -17,10 +17,8 @@
  *
  * @author Joseph Roque
  * @created 2017-01-30
- * @file Course.js
+ * @file Course.ts
  * @description Menu to add or edit a course.
- *
- * @flow
  */
 'use strict';
 
@@ -55,7 +53,7 @@ import * as Translations from '../../../util/Translations';
 
 // Types
 import { Language } from '../../../util/Translations';
-import { TimeFormat } from '../../../../typings/global';
+import { Route, TimeFormat } from '../../../../typings/global';
 import { Course, Lecture, LectureFormat, Semester } from '../../../../typings/university';
 
 interface Props {
@@ -270,7 +268,7 @@ class CourseModal extends React.PureComponent<Props, State> {
    * Opens the lecture modal to add or edit a lecture.
    *
    * @param {boolean}  addingLecture true to use the modal to add a lecture, false to edit
-   * @param {Lecture|undefined} lectureToEdit a lecture to edit, or null
+   * @param {Lecture|undefined} lectureToEdit a lecture to edit, or undefined
    */
   _showLectureModal(addingLecture: boolean, lectureToEdit?: Lecture): void {
     this.setState({
@@ -474,10 +472,10 @@ class CourseModal extends React.PureComponent<Props, State> {
   /**
    * Renders the current scene based on the navigation route.
    *
-   * @param {Object} route the route to render
+   * @param {Route} route the route to render
    * @returns {JSX.Element} the rendering of the scene
    */
-  _renderScene(route: {id: number}): JSX.Element {
+  _renderScene(route: Route): JSX.Element {
     switch (route.id) {
       case MENU:
         return this._renderMenu();

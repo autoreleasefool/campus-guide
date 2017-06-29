@@ -173,7 +173,7 @@ class Settings extends React.PureComponent<Props, State> {
    * or object, and should correspond to the type of the setting.
    *
    * @param {string} key the setting value to return
-   * @returns {any} the value of the setting corresponding to {key}, or null
+   * @returns {any} the value of the setting corresponding to {key}, or undefined
    */
   _getSetting(key: string): any {
     switch (key) {

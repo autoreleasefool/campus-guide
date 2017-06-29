@@ -70,7 +70,7 @@ interface Props {
 }
 
 interface State {
-  closestBuilding: Building | undefined;  // The closest building, or null if no buildings are nearby
+  closestBuilding: Building | undefined;  // The closest building, or undefined if no buildings are nearby
   locating: boolean;                      // Indicates if the app is searching for the closest building
   selectedBuilding: Building | undefined; // The building the user has selected to navigate from
   viewingMap: boolean;                    // True if the user is viewing the map to select a starting point
@@ -219,8 +219,8 @@ class StartingPoint extends React.PureComponent<Props, State> {
   /**
    * Sets the user's starting point for navigation
    *
-   * @param {string}  shorthand shorthand code of the building that has been selected
-   * @param {string|undefined} room name of the room selected, or null if a building was selected
+   * @param {string}           shorthand shorthand code of the building that has been selected
+   * @param {string|undefined} room      name of the room selected, or undefined if a building was selected
    */
   _onRoomSelected(shorthand: string, room: string | undefined): void {
     this.props.onStartingPointSelected(shorthand, room);

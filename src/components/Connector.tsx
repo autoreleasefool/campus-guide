@@ -79,9 +79,6 @@ export function getConnectorWidth(): number {
   return Constants.Sizes.Margins.Expanded * 2 + Constants.Sizes.Margins.Expanded;
 }
 
-/* eslint-disable react-native/no-unused-styles */
-// Styles are used conditionally above so they appear unused
-
 // Private styles for component
 const _styles = StyleSheet.create({
   bottom: {

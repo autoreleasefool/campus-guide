@@ -103,7 +103,7 @@ export default class Suggestion extends React.PureComponent<Props, State> {
    * Renders an activity indicator when a suggestion is unavailable.
    *
    * @param {string} color the foreground color of the activity indicator
-   * @returns {JSX.Element|undefined} an activity indicator component, or null if the suggestion is not loading
+   * @returns {JSX.Element|undefined} an activity indicator component, or undefined if the suggestion is not loading
    */
   _renderActivityIndicator(color: string): JSX.Element | undefined {
     if (this.props.loading) {
@@ -150,7 +150,7 @@ export default class Suggestion extends React.PureComponent<Props, State> {
    * Renders a chevron to indicate the item is selectable
    *
    * @param {string} color foreground color of the icon
-   * @returns {JSX.Element|undefined} an icon component, or null if the suggestion is loading
+   * @returns {JSX.Element|undefined} an icon component, or undefined if the suggestion is loading
    */
   _renderChevron(color: string): JSX.Element | undefined {
     if (this.props.loading) {

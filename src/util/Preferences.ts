@@ -40,7 +40,7 @@ const PREFER_BY_COURSE = 'app_by_course';
  *
  * @param {any}    AsyncStorage instance of the React Native AsyncStorage
  * @param {string} key          key to retrieve value for
- * @returns {any} the value, if found, or null
+ * @returns {any} the value, if found, or undefined
  */
 async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise < any > {
   try {
@@ -58,7 +58,7 @@ async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise
  * Gets the user's preferred language.
  *
  * @param {any} AsyncStorage instance of the React Native AsyncStorage
- * @returns {string} 'en', 'fr' or null
+ * @returns {string} 'en', 'fr' or undefined
  */
 export async function getSelectedLanguage(AsyncStorage: any): Promise < Language | undefined > {
   const value = await retrieveFromAsyncStorage(AsyncStorage, SELECTED_LANGUAGE);

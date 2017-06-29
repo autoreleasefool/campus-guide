@@ -38,7 +38,7 @@ export interface RouteDetails {
 export interface TransitStop extends LatLong {
   code: string;     // Short code identifying the stop (not necessarily unique)
   name: string;     // Name of the stop
-  sorted?: boolean; // True to indicate the routes have been sorted, false or null otherwise
+  sorted?: boolean; // True to indicate the routes have been sorted, false or undefined otherwise
 }
 
 /** Information about a transit campus. */
@@ -78,7 +78,7 @@ export interface ShuttleDirection extends Name {
   route?: string;     // Description of the route the shuttle takes
   route_en?: string;  // Description of the route the shuttle takes, in English
   route_fr?: string;  // Description of the route the shuttle takes, in French
-  day_times: Object;  // Days and times which the shuttle departs
+  day_times: any;     // Days and times which the shuttle departs
 }
 
 /** Information about the university shuttle. */

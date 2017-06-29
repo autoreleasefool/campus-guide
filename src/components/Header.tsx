@@ -64,7 +64,7 @@ export default class Header extends React.PureComponent<Props, State> {
    * Creates a view containing this Header's icon.
    *
    * @param {string} color color of the icon
-   * @returns {JSX.Element|undefined} a view with the Header's icon, or null
+   * @returns {JSX.Element|undefined} a view with the Header's icon, or undefined
    */
   _renderIcon(color: string): JSX.Element | undefined {
     let icon: JSX.Element | undefined;
@@ -92,7 +92,7 @@ export default class Header extends React.PureComponent<Props, State> {
    * Builds a view containing the Header's subtitle text and icon, as long as one of them is defined.
    *
    * @param {string} color color of the subtitle
-   * @returns {JSX.Element|undefined} a view with the subtitle text and icon, or null if neither exists
+   * @returns {JSX.Element|undefined} a view with the subtitle text and icon, or undefined if neither exists
    */
   _renderSubtitle(color: string): JSX.Element | undefined {
     let subtitle: JSX.Element | undefined;
@@ -126,10 +126,10 @@ export default class Header extends React.PureComponent<Props, State> {
   }
 
   /**
-   * Creates a view containing this Header's subtitle icon, so long as it is not null.
+   * Creates a view containing this Header's subtitle icon, so long as it is not undefined.
    *
    * @param {string} color color of the subtitle
-   * @returns {JSX.Element|undefined} a view with the Header's subtitle icon, or null
+   * @returns {JSX.Element|undefined} a view with the Header's subtitle icon, or undefined
    */
   _renderSubtitleIcon(color: string): JSX.Element | undefined {
     let subtitleIcon: JSX.Element | undefined;
@@ -158,10 +158,10 @@ export default class Header extends React.PureComponent<Props, State> {
   }
 
   /**
-   * Creates a text view containing this Header's subtitle text, so long as it is not null.
+   * Creates a text view containing this Header's subtitle text, so long as it is not undefined.
    *
    * @param {string} color color of the subtitle
-   * @returns {JSX.Element|undefined} a text view with the Header's subtitle text, or null
+   * @returns {JSX.Element|undefined} a text view with the Header's subtitle text, or undefined
    */
   _renderSubtitleText(color: string): JSX.Element | undefined {
     let subtitleText: JSX.Element | undefined;

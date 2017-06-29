@@ -32,7 +32,7 @@ let datastore: any = {};
 /**
  * Sets a custom datastore.
  *
- * @param {Object} newDatastore object to replace datastore with
+ * @param {any} newDatastore object to replace datastore with
  */
 function __setDatastore(newDatastore: any): void {
   datastore = newDatastore;

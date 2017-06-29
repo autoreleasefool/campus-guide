@@ -141,7 +141,7 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
    *
    * @param {boolean}           isBackgroundDark indicates if the background color of the category is dark
    * @returns {JSX.Element|undefined} for each index in {links}, a {TouchableOpacity} with the name of the link
-   *                                  or null if there are no links
+   *                                  or undefined if there are no links
    */
   _renderLinks(isBackgroundDark: boolean): JSX.Element | undefined {
     const links = this.props.section.links;
@@ -212,7 +212,7 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
    * Returns a list of touchable views which open links in the web browser.
    *
    * @returns {JSX.Element|undefined} for each index in links, a TouchableOpacity with an icon representing
-   *                                  the social media site, or null if there are no links
+   *                                  the social media site, or undefined if there are no links
    */
   _renderSocialMedia(): JSX.Element | undefined {
     const links = this.props.section.social;
@@ -252,9 +252,9 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
   /**
    * Returns a list of touchable views which lead to new pages of categories of links.
    *
-   * @param {boolean}             isBackgroundDark indicates if the background color of the category is dark
+   * @param {boolean} isBackgroundDark indicates if the background color of the category is dark
    * @returns {JSX.Element|undefined} for each index in categories, a TouchableOpacity with the name of the category,
-   *                                  or null if there are no categories
+   *                                  or undefined if there are no categories
    */
   _renderSubCategories(isBackgroundDark: boolean): JSX.Element | undefined {
     const categories = this.props.section.categories;

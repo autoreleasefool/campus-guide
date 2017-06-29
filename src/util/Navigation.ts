@@ -44,12 +44,12 @@ function deg2rad(deg: number): number {
 }
 
 /**
- * Finds the nearest building in a list, or returns null if all buildings are too far.
+ * Finds the nearest building in a list, or returns undefined if all buildings are too far.
  *
  * @param {LatLong}          location  location to get closest building to
  * @param {Building[]}       buildings list of buildings
  * @param {number|undefined} maxDist   maximum distance in kilometres for the nearest building. Optional
- * @returns {Building|undefined} the nearest building, or null if none are withing the max distance
+ * @returns {Building|undefined} the nearest building, or undefined if none are withing the max distance
  */
 export function findClosestBuilding(
     location: LatLong,

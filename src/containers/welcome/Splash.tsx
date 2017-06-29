@@ -101,7 +101,9 @@ class Splash extends React.PureComponent<Props, State> {
       this.props.setTransit(transitInfo);
       this.props.navigator.push({ id: 'main' });
     } catch (err) {
-      console.log('Assuming configuration is not available.', err);
+      if (__DEV__) {
+        console.log('Assuming configuration is not available.', err);
+      }
       this.props.navigator.push({ id: 'update' });
     }
   }
@@ -274,7 +276,7 @@ const mapDispatchToProps = (dispatch: any): any => {
         scheduleByCourse: preferences[4],
       }));
 
-      /* eslint-enable no-magic-numbers */
+      /* tslint:enable no-magic-numbers */
     },
   };
 };

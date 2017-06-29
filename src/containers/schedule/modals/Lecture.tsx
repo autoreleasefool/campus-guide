@@ -97,7 +97,7 @@ const DEFAULT_START_TIME = 780;     // 1:00 pm
 // Default end time of a new lecture
 const DEFAULT_END_TIME = 870;       // 2:30 pm
 // Default location of a new lecture
-const DEFAULT_LOCATION = undefined; // null
+const DEFAULT_LOCATION = undefined; // undefined
 
 // Minute intervals available for user to select
 const MINUTE_INTERVAL = 5;
@@ -529,7 +529,7 @@ class LectureModal extends React.PureComponent<Props, State> {
   /**
    * Renders the current scene based on the navigation route.
    *
-   * @param {Object} route the route to render
+   * @param {{id: number; picking?: number}} route the route to render
    * @returns {JSX.Element} the rendering of the scene
    */
   _renderScene(route: {id: number; picking?: number}): JSX.Element {

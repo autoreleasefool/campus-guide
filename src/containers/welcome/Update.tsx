@@ -115,7 +115,9 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     try {
       available = await Configuration.isConfigUpdateAvailable();
     } catch (err) {
-      console.log('Failed configuration update check.', err);
+      if (__DEV__) {
+        console.log('Failed configuration update check.', err);
+      }
       this._notifyServerFailed();
 
       return;
@@ -210,7 +212,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   _notifyConnectionFailed(err?: any): void {
     // TODO: use error and act according to the actual issue
-    if (err != undefined) {
+    if (err != undefined && __DEV__) {
       console.log(err);
     }
 
@@ -280,7 +282,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       filesDownloaded.splice(0, 0, download.filename);
       this.props.onDownloadComplete(filesDownloaded, totalProgress, download.bytesWritten);
     } else {
-      console.error('Something\'s null, but it shouldn\'t be! Check filesDownloaded and totalProgress');
+      console.error('Something\'s undefined, but it shouldn\'t be! Check filesDownloaded and totalProgress');
     }
   }
 

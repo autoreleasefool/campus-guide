@@ -67,11 +67,11 @@ async function _loadTranslations(language: Language): Promise<any> {
 
 /**
  * Gets the French variant of a property from an object, or returns the default of the variant. If neither is
- * available, returns null.
+ * available, returns undefined.
  *
  * @param {string}            property the prefix of the property to look for
  * @param {oject | undefined} obj      the object to look in for the property
- * @returns {string|undefined} the French property in obj, the default property in obj, or null
+ * @returns {string|undefined} the French property in obj, the default property in obj, or undefined
  */
 export function getFrenchVariant(property: string, obj: object | undefined): string | undefined {
   if (obj == undefined) {
@@ -90,11 +90,11 @@ export function getFrenchVariant(property: string, obj: object | undefined): str
 
 /**
  * Gets the English variant of a property from an object, or returns the default of the variant. If neither is
- * available, returns null.
+ * available, returns undefined.
  *
  * @param {string}           property the prefix of the property to look for
  * @param {object|undefined} obj      the object to look in for the property
- * @returns {string|undefined} the English property in obj, the default property in obj, or null
+ * @returns {string|undefined} the English property in obj, the default property in obj, or undefined
  */
 export function getEnglishVariant(property: string, obj: object | undefined): string | undefined {
   if (obj == undefined) {
@@ -112,12 +112,12 @@ export function getEnglishVariant(property: string, obj: object | undefined): st
 }
 
 /**
- * Gets either the French or English translation of a property from an object, or null.
+ * Gets either the French or English translation of a property from an object, or undefined.
  *
  * @param {Language}         language either 'en' or 'fr'
  * @param {string}           property the property to retrieve appropriate translation of
  * @param {object|undefined} obj      the object to get the translation from
- * @returns {string|undefined} the French or English translation of the property in the object, or null
+ * @returns {string|undefined} the French or English translation of the property in the object, or undefined
  */
 export function getVariant(language: Language, property: string, obj: object | undefined): string | undefined {
   if (language === 'en') {
@@ -131,10 +131,10 @@ export function getVariant(language: Language, property: string, obj: object | u
 
 /**
  * Gets the French description of an object, or returns the default description. If neither is available,
- * returns null.
+ * returns undefined.
  *
  * @param {object|undefined} obj the object to look in for the description
- * @returns {string|undefined} the French description, the default description, or null
+ * @returns {string|undefined} the French description, the default description, or undefined
  */
 export function getFrenchDescription(obj: object | undefined): string | undefined {
   return getFrenchVariant('description', obj);
@@ -142,21 +142,21 @@ export function getFrenchDescription(obj: object | undefined): string | undefine
 
 /**
  * Gets the English description of an object, or returns the default description. If neither is available,
- * returns null.
+ * returns undefined.
  *
  * @param {object|undefined} obj the object to look in for the description
- * @returns {string|undefined} the English description, the default description, or null
+ * @returns {string|undefined} the English description, the default description, or undefined
  */
 export function getEnglishDescription(obj: object | undefined): string | undefined {
   return getEnglishVariant('description', obj);
 }
 
 /**
- * Gets either the French or English description from an object, or null.
+ * Gets either the French or English description from an object, or undefined.
  *
  * @param {Language} language either 'en' or 'fr'
  * @param {object|undefined} obj       the object to get the description from
- * @returns {string|undefined} the French or English description of the object, or null
+ * @returns {string|undefined} the French or English description of the object, or undefined
  */
 export function getDescription(language: Language, obj: object | undefined): string | undefined {
   if (language === 'en') {
@@ -170,10 +170,10 @@ export function getDescription(language: Language, obj: object | undefined): str
 
 /**
  * Gets the French link of an object, or returns the default link. If neither is available,
- * returns null.
+ * returns undefined.
  *
  * @param {object|undefined} obj the object to look in for the link
- * @returns {string|undefined} the French link, the default link, or null
+ * @returns {string|undefined} the French link, the default link, or undefined
  */
 export function getFrenchLink(obj: object | undefined): string | undefined {
   return getFrenchVariant('link', obj);
@@ -181,21 +181,21 @@ export function getFrenchLink(obj: object | undefined): string | undefined {
 
 /**
  * Gets the English link of an object, or returns the default link. If neither is available,
- * returns null.
+ * returns undefined.
  *
  * @param {object|undefined} obj the object to look in for the link
- * @returns {string|undefined} the English link, the default link, or null
+ * @returns {string|undefined} the English link, the default link, or undefined
  */
 export function getEnglishLink(obj: object | undefined): string | undefined {
   return getEnglishVariant('link', obj);
 }
 
 /**
- * Gets either the French or English link from an object, or null.
+ * Gets either the French or English link from an object, or undefined.
  *
  * @param {Language} language either 'en' or 'fr'
  * @param {object|undefined} obj       the object to get the link from
- * @returns {string|undefined} the French or English link of the object, or null
+ * @returns {string|undefined} the French or English link of the object, or undefined
  */
 export function getLink(language: Language, obj: object | undefined): string | undefined {
   if (language === 'en') {
@@ -208,31 +208,31 @@ export function getLink(language: Language, obj: object | undefined): string | u
 }
 
 /**
- * Gets the French name of an object, or returns the default name. If neither is available, returns null.
+ * Gets the French name of an object, or returns the default name. If neither is available, returns undefined.
  *
  * @param {object|undefined} obj the object to look in for the name
- * @returns {string|undefined} the French name, the default name, or null
+ * @returns {string|undefined} the French name, the default name, or undefined
  */
 export function getFrenchName(obj: object | undefined): string | undefined {
   return getFrenchVariant('name', obj);
 }
 
 /**
- * Gets the English name of an object, or returns the default name. If neither is available, returns null.
+ * Gets the English name of an object, or returns the default name. If neither is available, returns undefined.
  *
  * @param {object|undefined} obj the object to look in for the name
- * @returns {string|undefined} the English name, the default name, or null
+ * @returns {string|undefined} the English name, the default name, or undefined
  */
 export function getEnglishName(obj: object | undefined): string | undefined {
   return getEnglishVariant('name', obj);
 }
 
 /**
- * Gets either the French or English name from an object, or null.
+ * Gets either the French or English name from an object, or undefined.
  *
  * @param {Language} language either 'en' or 'fr'
  * @param {object|undefined} obj       the object to get the name from
- * @returns {string|undefined} the French or English name of the object, or null
+ * @returns {string|undefined} the French or English name of the object, or undefined
  */
 export function getName(language: Language, obj: object | undefined): string | undefined {
   if (language === 'en') {

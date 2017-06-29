@@ -50,7 +50,7 @@ export function getAndroidIcon(obj: any): BasicIcon | undefined {
  * Returns the icon class to represent a provided facility.
  *
  * @param {Facility} facility the identifier of the facility
- * @returns {string|undefined} a string with the class of the icon, or null
+ * @returns {string|undefined} a string with the class of the icon, or undefined
  */
 export function getFacilityIconClass(facility: Facility): string | undefined {
   switch (facility) {
@@ -77,7 +77,7 @@ export function getFacilityIconClass(facility: Facility): string | undefined {
  * Returns the icon name to represent a provided facility.
  *
  * @param {Facility} facility the identifier of the facility
- * @returns {string|undefined} a string with the name of the icon, or null
+ * @returns {string|undefined} a string with the name of the icon, or undefined
  */
 export function getFacilityIconName(facility: Facility): string | undefined {
   switch (facility) {
@@ -118,7 +118,7 @@ export function getFacilityIconName(facility: Facility): string | undefined {
  *
  * @param {any} obj the object with either 'icon.ios.name' and 'icon.ios.class' properties, or 'icon.name' and
  *                     'icon.class' properties.
- * @returns {Icon|undefined} an object with 'name' and 'class' properties, or null
+ * @returns {Icon|undefined} an object with 'name' and 'class' properties, or undefined
  */
 export function getIOSIcon(obj: any): BasicIcon | undefined {
   if ('icon' in obj) {

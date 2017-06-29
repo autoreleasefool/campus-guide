@@ -62,7 +62,7 @@ class BuildingComponent extends React.PureComponent<Props, State> {
    * Informs parent that the user has selected a destination.
    *
    * @param {string} shorthand shorthand code of the building that has been selected
-   * @param {string|undefined} roomName name of the room selected, or null if a building was selected
+   * @param {string|undefined} roomName name of the room selected, or undefined if a building was selected
    */
   _onDestinationSelected(shorthand: string, roomName?: string): void {
     this.props.onDestinationSelected(shorthand, roomName);

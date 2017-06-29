@@ -150,7 +150,7 @@ async function _requestConfig(): Promise < void > {
         const dir = CONFIG_SUBDIRECTORIES[config.type];
         const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + config.name);
         configAvailable = configAvailable && exists;
-        if (!exists) {
+        if (!exists && __DEV__) {
           console.log(`Could not find configuration file: ${config.name}`);
         }
       } catch (e) {
@@ -183,7 +183,10 @@ function _initSuccess(): void {
  * @param {any} err error encountered while getting configuration
  */
 function _initError(err: any): void {
-  console.log('Error while getting configuration', err);
+  if (__DEV__) {
+    console.log('Error while getting configuration', err);
+  }
+
   configInitializing = false;
   for (const promise of availablePromises) {
     promise.reject(err);
@@ -474,7 +477,7 @@ export function getConfig(configFile: string): Promise < object | undefined > {
  * Returns the path to the image.
  *
  * @param {string|undefined} configImage name of the image to retrieve
- * @returns {string} absolute path to the image or the empty string if configImage was null
+ * @returns {string} absolute path to the image or the empty string if configImage was undefined
  */
 export function getImagePath(configImage: string | undefined): string {
   if (configImage == undefined) {

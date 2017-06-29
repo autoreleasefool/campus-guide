@@ -281,7 +281,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
   /**
    * Filters the routes for which times are displayed, based on the provided search terms.
    *
-   * @param {string|undefined} newStopId the stop id to search for routes and times, or null to use state
+   * @param {string|undefined} newStopId the stop id to search for routes and times, or undefined to use state
    * @param {Props}            props     the props to filter with
    */
   _onTimeSearch(newStopId: string | undefined, { campus, filter, language }: Props): void {

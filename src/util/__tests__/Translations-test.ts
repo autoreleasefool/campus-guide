@@ -23,9 +23,6 @@
  */
 'use strict';
 
-/* eslint-disable max-len */
-/* Allow tests to be on a single line for readability. */
-
 // Require modules for testing
 import * as Translations from '../Translations';
 
@@ -323,7 +320,7 @@ describe('Translations-test', () => {
 
   });
 
-  it('tests ignoring undefined and null properties', () => {
+  it('tests ignoring undefined and undefined properties', () => {
 
     /* Ignore max line length for clearer test cases */
     /* tslint:disable max-line-length */

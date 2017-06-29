@@ -56,7 +56,9 @@ export const persist = ({ getState }: any): any => (next: any): any => (action: 
               Preferences.setPreferScheduleByCourse(AsyncStorage, action.options[option]);
               break;
             default:
-              console.log(`Configuration update not saved: ${option}`);
+              if (__DEV__) {
+                console.log(`Configuration update not saved: ${option}`);
+              }
           }
         }
       }

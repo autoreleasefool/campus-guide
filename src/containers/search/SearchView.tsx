@@ -264,7 +264,7 @@ class SearchView extends React.PureComponent<Props, State> {
   /**
    * Updates the set of single results.
    *
-   * @param {string|undefined} source the source for the single results. Can be null
+   * @param {string|undefined} source the source for the single results. Can be undefined
    */
   _updateSingleResults(source: string | undefined): void {
     if (source != undefined) {
@@ -345,7 +345,7 @@ class SearchView extends React.PureComponent<Props, State> {
    * Renders a search result based on its source.
    *
    * @param {SearchResult} result the result and its source to render
-   * @returns {JSX.Element|undefined} a view describing the result, or null
+   * @returns {JSX.Element|undefined} a view describing the result, or undefined
    */
   _renderResult({ item }: { item: Searchable.SearchResult }): JSX.Element | undefined {
     // Construct the icon view for the result

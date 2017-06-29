@@ -140,7 +140,7 @@ class Schedule extends React.PureComponent<Props, State> {
    * Opens the course modal to add or edit a course.
    *
    * @param {boolean}          addingCourse true to use the modal to add a course, false to edit
-   * @param {Course|undefined} courseToEdit the course to edit, or null when adding a new course
+   * @param {Course|undefined} courseToEdit the course to edit, or undefined when adding a new course
    */
   _showCourseModal(addingCourse: boolean, courseToEdit: Course | undefined): void {
     this.setState({

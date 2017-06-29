@@ -17,7 +17,7 @@
  *
  * @author Joseph Roque
  * @created 2017-02-12
- * @file directions.js
+ * @file directions.ts
  * @description Reducers for direction actions
  */
 'use strict';
