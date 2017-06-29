@@ -28,7 +28,7 @@ import { MenuSection, Tab } from '../../typings/global';
 import { Residence } from '../../typings/university';
 
 /** Navigation reducer state. */
-interface State {
+export interface State {
   backNavigations: number;              // Count of the times the user has navigated back in the app
   canBack: object;                      // Indicates which subsections of the app can navigate backwards
   tab: Tab;                             // Current tab in the root navigation of the app

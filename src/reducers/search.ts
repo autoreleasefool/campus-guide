@@ -26,13 +26,13 @@
 import * as Actions from '../actionTypes';
 
 /** Describes a search. */
-interface Search {
+export interface State {
   studyFilters: Set < string >; // Filters to search study rooms by
   terms: string | undefined;    // Search terms to filter results by
 }
 
 /** Initial search state. */
-const initialState: Search = {
+const initialState: State = {
   studyFilters: new Set(),
   terms: undefined,
 };
@@ -44,7 +44,7 @@ const initialState: Search = {
  * @param {any}   action the action being taken
  * @returns {Search} an updated state based on the previous state and the action taken
  */
-export default function search(state: Search = initialState, action: any): Search {
+export default function search(state: State = initialState, action: any): State {
   switch (action.type) {
     case Actions.Search.Search:
       return {

@@ -27,7 +27,7 @@ import * as Actions from '../actionTypes';
 import { Building, Destination } from '../../typings/university';
 
 /** Directions reducer state. */
-interface State {
+export interface State {
   building: Building | undefined;         // The building selected by the user to navigate to, or view
   destination: Destination | undefined;   // The building and room the user is navigating to
   startingPoint: Destination | undefined; // The building and room the user is starting from

@@ -27,8 +27,8 @@ import * as Actions from '../actionTypes';
 import * as Arrays from '../util/Arrays';
 
 /** Schedule reducer state. */
-interface State {
-  semesters: object; // The user's defined schedule
+export interface State {
+  semesters: any; // The user's defined schedule
 }
 
 /** Initial schedule state. */

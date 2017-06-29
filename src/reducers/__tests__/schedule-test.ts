@@ -17,38 +17,38 @@
  *
  * @author Joseph Roque
  * @created 2016-10-30
- * @file schedule-test.js
+ * @file schedule-test.ts
  * @description Tests schedule reducers
  *
  */
 'use strict';
 
-// Types
-import { ADD_SEMESTER, ADD_COURSE, LOAD_SCHEDULE, REMOVE_COURSE } from 'actionTypes';
-
 // Imports
-import reducer from '../schedule';
+import { default as reducer, State } from '../schedule';
+
+// Types
+import * as Actions from '../../actionTypes';
 
 // Expected initial state
-const initialState = {
+const initialState: State = {
   semesters: {},
 };
 
 // Basic semesters for testing
 const testSemesters = [
   {
-    id: 'semester1',
     courses: [],
+    id: 'semester1',
     name: 'Semester 1',
   },
   {
+    courses: [],
     id: 'semester2',
-    courses: [],
     name: 'Semester 1',
   },
   {
-    id: 'semester1',
     courses: [],
+    id: 'semester1',
     name_en: 'English',
     name_fr: 'French',
   },
@@ -107,19 +107,19 @@ describe('schedule reducer', () => {
 
   it('should replace the existing schedule', () => {
     const schedule = { semester1: testSemesters[2] };
-    const state = reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] });
-    expect(reducer(state, { type: LOAD_SCHEDULE, schedule }))
+    const state = reducer(initialState, { type: Actions.Schedule.AddSemester, semester: testSemesters[0] });
+    expect(reducer(state, { type: Actions.Schedule.Load, schedule }))
         .toEqual({ ...initialState, semesters: schedule });
   });
 
   it('should add a new semester to the schedule', () => {
-    expect(reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] }))
-        .toEqual({ ...initialState, semesters: { semester1: testSemesters[0] }});
+    expect(reducer(initialState, { type: Actions.Schedule.AddSemester, semester: testSemesters[0] }))
+        .toEqual({ ...initialState, semesters: { semester1: testSemesters[0] } });
   });
 
   it('should add a new course to the schedule', () => {
-    const state = reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] });
-    expect(reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[0] }))
+    const state = reducer(initialState, { type: Actions.Schedule.AddSemester, semester: testSemesters[0] });
+    expect(reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[0] }))
         .toEqual({
           ...state,
           semesters: {
@@ -132,10 +132,10 @@ describe('schedule reducer', () => {
   });
 
   it('should overwrite the course in the schedule', () => {
-    let state = reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] });
-    state = reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[0] });
-    state = reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[1] });
-    expect(reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[2] }))
+    let state = reducer(initialState, { type: Actions.Schedule.AddSemester, semester: testSemesters[0] });
+    state = reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[0] });
+    state = reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[1] });
+    expect(reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[2] }))
         .toEqual({
           ...state,
           semesters: {
@@ -148,10 +148,14 @@ describe('schedule reducer', () => {
   });
 
   it('should remove the course in the schedule', () => {
-    let state = reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] });
-    state = reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[0] });
-    state = reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[1] });
-    expect(reducer(state, { type: REMOVE_COURSE, semester: testSemesters[0].id, courseCode: testCourses[1].code }))
+
+    /* Ignore max line length for clearer test cases */
+    /* tslint:disable max-line-length */
+
+    let state = reducer(initialState, { type: Actions.Schedule.AddSemester, semester: testSemesters[0] });
+    state = reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[0] });
+    state = reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[1] });
+    expect(reducer(state, { type: Actions.Schedule.RemoveCourse, semester: testSemesters[0].id, courseCode: testCourses[1].code }))
         .toEqual({
           ...state,
           semesters: {
@@ -161,13 +165,20 @@ describe('schedule reducer', () => {
             },
           },
         });
+
+    /* tslint:enable max-line-length */
+
   });
 
   it('should fail to remove a non-existant course', () => {
-    let state = reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] });
-    state = reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[0] });
-    state = reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[1] });
-    expect(reducer(state, { type: REMOVE_COURSE, semester: testSemesters[0].id, courseCode: 'invalid code' }))
+
+    /* Ignore max line length for clearer test cases */
+    /* tslint:disable max-line-length */
+
+    let state = reducer(initialState, { type: Actions.Schedule.AddSemester, semester: testSemesters[0] });
+    state = reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[0] });
+    state = reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[1] });
+    expect(reducer(state, { type: Actions.Schedule.RemoveCourse, semester: testSemesters[0].id, courseCode: 'invalid code' }))
         .toEqual({
           ...state,
           semesters: {
@@ -177,11 +188,14 @@ describe('schedule reducer', () => {
             },
           },
         });
+
+    /* tslint:enable max-line-length */
+
   });
 
   it('should not find the semester to add a course', () => {
-    const state = reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] });
-    expect(reducer(state, { type: ADD_COURSE, semester: testSemesters[1].id, course: testCourses[0] }))
+    const state = reducer(initialState, { type: Actions.Schedule.AddSemester, semester: testSemesters[0] });
+    expect(reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[1].id, course: testCourses[0] }))
         .toEqual({
           ...state,
           semesters: {
@@ -194,9 +208,13 @@ describe('schedule reducer', () => {
   });
 
   it('should not find the semester to remove a course', () => {
-    let state = reducer(initialState, { type: ADD_SEMESTER, semester: testSemesters[0] });
-    state = reducer(state, { type: ADD_COURSE, semester: testSemesters[0].id, course: testCourses[0] });
-    expect(reducer(state, { type: REMOVE_COURSE, semester: testSemesters[1].id, courseCode: testCourses[0].code }))
+
+    /* Ignore max line length for clearer test cases */
+    /* tslint:disable max-line-length */
+
+    let state = reducer(initialState, { type: Actions.Schedule.AddSemester, semester: testSemesters[0] });
+    state = reducer(state, { type: Actions.Schedule.AddCourse, semester: testSemesters[0].id, course: testCourses[0] });
+    expect(reducer(state, { type: Actions.Schedule.RemoveCourse, semester: testSemesters[1].id, courseCode: testCourses[0].code }))
         .toEqual({
           ...state,
           semesters: {
@@ -206,6 +224,9 @@ describe('schedule reducer', () => {
             },
           },
         });
+
+    /* tslint:enable max-line-length */
+
   });
 
 });

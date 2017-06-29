@@ -28,7 +28,7 @@ import { Name, TabSet } from '../../typings/global';
 const CoreTranslations = require('../../assets/json/CoreTranslations');
 
 /** Header reducer state. */
-interface State {
+export interface State {
   title: Name | string;   // Title for the current screen
   tabTitles: TabSet;      // Title last set in the tab
   showBack: boolean;      // True to show a back button in the header, false to hide

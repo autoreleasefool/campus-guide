@@ -28,7 +28,7 @@ import { Options, ProgressUpdate } from '../util/Configuration';
 import { Semester } from '../../typings/university';
 
 /** Config reducer state. */
-interface State {
+export interface State {
   options: Options;
   update: ProgressUpdate;
 }

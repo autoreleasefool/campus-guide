@@ -17,23 +17,23 @@
  *
  * @author Joseph Roque
  * @created 2017-02-12
- * @file directions-test.js
+ * @file directions-test.ts
  * @description Tests direction reducers
  *
  */
 'use strict';
 
-// Types
-import { SET_DESTINATION, SET_STARTING_POINT, VIEW_BUILDING } from 'actionTypes';
-
 // Imports
-import reducer from '../directions';
+import { default as reducer, State } from '../directions';
+
+// Types
+import * as Actions from '../../actionTypes';
 
 // Expected initial state
-const initialState = {
-  building: null,
-  destination: null,
-  startingPoint: null,
+const initialState: State = {
+  building: undefined,
+  destination: undefined,
+  startingPoint: undefined,
 };
 
 describe('directions reducer', () => {
@@ -44,19 +44,18 @@ describe('directions reducer', () => {
 
   it('should set the destination to navigate to', () => {
     const destination = { shorthand: 'building_sh', room: 'room_number' };
-    expect(reducer(initialState, { type: SET_DESTINATION, destination }))
+    expect(reducer(initialState, { type: Actions.Directions.SetDestination, destination }))
         .toEqual({ ...initialState, destination });
   });
 
   it('should set the point to navigate from', () => {
     const startingPoint = { shorthand: 'building_sh', room: 'room_number' };
-    expect(reducer(initialState, { type: SET_STARTING_POINT, startingPoint }))
+    expect(reducer(initialState, { type: Actions.Directions.SetStartingPoint, startingPoint }))
         .toEqual({ ...initialState, startingPoint });
   });
 
   it('should set the building to display details for', () => {
     const building = {
-      shorthand: 'sh',
       facilities: [ 'atm', 'gym' ],
       image: 'image.png',
       location: {
@@ -64,9 +63,10 @@ describe('directions reducer', () => {
         longitude: 200,
       },
       rooms: [{ name: 'room_1', type: 0 }, { name: 'name_2', type: 1 }],
+      shorthand: 'sh',
     };
 
-    expect(reducer(initialState, { type: VIEW_BUILDING, building }))
+    expect(reducer(initialState, { type: Actions.Directions.ViewBuilding, building }))
         .toEqual({ ...initialState, building });
   });
 

@@ -57,6 +57,7 @@
     "collectCoverageFrom": [
       "artifacts/util/*.js",
       "artifacts/actions/*.js",
+      "artifacts/reducers/*.js",
       "!artifacts/**/*.spec.js",
       "!artifacts/**/*.index.js",
       "!artifacts/actions/index.js",
