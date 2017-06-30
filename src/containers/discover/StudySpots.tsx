@@ -100,10 +100,19 @@ class StudySpots extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (!this.state.loaded) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/study_spots.json'))
-          .then((studySpots: StudySpotInfo) => this.setState({ studySpots }))
-          .catch((err: any) => console.error('Configuration could not be initialized for study spots.', err));
+      this.loadConfiguration();
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const studySpots = await Configuration.getConfig('/study_spots.json');
+      this.setState({ studySpots });
+    } catch (err) {
+      console.error('Configuration could not be initialized for study spots.', err);
     }
   }
 

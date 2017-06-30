@@ -84,10 +84,19 @@ class Shuttle extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (this.state.shuttle == undefined) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/shuttle.json'))
-          .then((shuttle: ShuttleInfo) => this.setState({ shuttle }))
-          .catch((err: any) => console.error('Configuration could not be initialized for shuttle.', err));
+      this.loadConfiguration();
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const shuttle = await Configuration.getConfig('/shuttle.json');
+      this.setState({ shuttle });
+    } catch (err) {
+      console.error('Configuration could not be initialized for shuttle.', err);
     }
   }
 

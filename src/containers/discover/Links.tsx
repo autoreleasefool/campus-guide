@@ -79,10 +79,7 @@ class Links extends React.PureComponent<Props, State> {
     (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
     if (this.state.links.length === 0) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/useful_links.json'))
-          .then((links: LinkSection[]) => this.setState({ links }))
-          .catch((err: any) => console.error('Configuration could not be initialized for useful links.', err));
+      this.loadConfiguration();
     }
   }
 
@@ -118,6 +115,18 @@ class Links extends React.PureComponent<Props, State> {
       if (!popped) {
         (this.refs.Navigator as any).push({ id: nextProps.linkId });
       }
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const links = await Configuration.getConfig('/useful_links.json');
+      this.setState({ links });
+    } catch (err) {
+      console.error('Configuration could not be initialized for useful links.', err);
     }
   }
 

@@ -47,32 +47,29 @@ import { Building, BuildingRoom, RoomTypeInfo } from '../../../../typings/univer
  * @param {Building[]} buildings   list of buildings
  * @returns {Promise<SearchResult[]>} promise which resolves with the results of the search, containing buildings
  */
-function _getBuildingResults(key: string,
+async function _getBuildingResults(key: string,
                              language: Language,
                              searchTerms: string,
-                             buildings: Building[]): Promise <SearchResult[]> {
-  return new Promise((resolve: (r: any) => void): void => {
-    const results: SearchResult[] = [];
-
-    for (const building of buildings) {
-      const result = filterBuilding(language, searchTerms, building);
-      if (result.success) {
-        results.push({
-          data: building,
-          description: Translations.getName(language, building) || '',
-          icon: {
-            class: 'material',
-            name: 'store',
-          },
-          key,
-          matchedTerms: result.matches,
-          title: building.shorthand,
-        });
-      }
+                             buildings: Building[]): Promise<SearchResult[]> {
+  const results: SearchResult[] = [];
+  for (const building of buildings) {
+    const result = filterBuilding(language, searchTerms, building);
+    if (result.success) {
+      results.push({
+        data: building,
+        description: Translations.getName(language, building) || '',
+        icon: {
+          class: 'material',
+          name: 'store',
+        },
+        key,
+        matchedTerms: result.matches,
+        title: building.shorthand,
+      });
     }
+  }
 
-    resolve(results);
-  });
+  return results;
 }
 
 /**
@@ -85,44 +82,42 @@ function _getBuildingResults(key: string,
  * @param {Building[]}   buildings    list of buildings
  * @returns {Promise<SearchResult[]>} promise which resolves with the results of the search, containing rooms
  */
-function _getRoomResults(key: string,
+async function _getRoomResults(key: string,
                          language: Language,
                          searchTerms: string,
                          roomTypeInfo: RoomTypeInfo,
-                         buildings: Building[]): Promise <SearchResult[]> {
-  return new Promise((resolve: (r: any) => void): void => {
-    const results: SearchResult[] = [];
+                         buildings: Building[]): Promise<SearchResult[]> {
+  const results: SearchResult[] = [];
 
-    // Cache list of room types that match the search terms
-    const matchingRoomTypes = new Set();
-    for (const roomTypeId of roomTypeInfo.ids) {
-      const roomTypeName = Translations.getName(language, roomTypeInfo.types[roomTypeId]);
-      if (roomTypeName && roomTypeName.toUpperCase().indexOf(searchTerms) >= 0) {
-        matchingRoomTypes.add(roomTypeId);
-      }
+  // Cache list of room types that match the search terms
+  const matchingRoomTypes = new Set();
+  for (const roomTypeId of roomTypeInfo.ids) {
+    const roomTypeName = Translations.getName(language, roomTypeInfo.types[roomTypeId]);
+    if (roomTypeName && roomTypeName.toUpperCase().indexOf(searchTerms) >= 0) {
+      matchingRoomTypes.add(roomTypeId);
     }
+  }
 
-    buildings.forEach((building: Building) => {
-      building.rooms.forEach((room: BuildingRoom) => {
-        const result = filterRoom(language, searchTerms, matchingRoomTypes, building.shorthand, room);
-        if (result.success) {
-          const roomType = roomTypeInfo.types[room.type || Constants.DefaultRoomType];
-          const icon = Display.getPlatformIcon(Platform.OS, roomType);
-          const description = Translations.getName(language, roomType) || '';
-          results.push({
-            data: { building, shorthand: building.shorthand, room: room.name },
-            description,
-            icon: icon || { name: 'search', class: 'material' },
-            key,
-            matchedTerms: result.matches,
-            title: `${building.shorthand} ${room.name}`,
-          });
-        }
-      });
+  buildings.forEach((building: Building) => {
+    building.rooms.forEach((room: BuildingRoom) => {
+      const result = filterRoom(language, searchTerms, matchingRoomTypes, building.shorthand, room);
+      if (result.success) {
+        const roomType = roomTypeInfo.types[room.type || Constants.DefaultRoomType];
+        const icon = Display.getPlatformIcon(Platform.OS, roomType);
+        const description = Translations.getName(language, roomType) || '';
+        results.push({
+          data: { building, shorthand: building.shorthand, room: room.name },
+          description,
+          icon: icon || { name: 'search', class: 'material' },
+          key,
+          matchedTerms: result.matches,
+          title: `${building.shorthand} ${room.name}`,
+        });
+      }
     });
-
-    resolve(results);
   });
+
+  return results;
 }
 
 /**
@@ -134,54 +129,39 @@ function _getRoomResults(key: string,
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                                  containing buildings and rooms
  */
-export function getResults(
+export async function getResults(
     language: Language,
     searchTerms: string | undefined,
     data: SearchSupport | undefined): Promise<Section<SearchResult>[]> {
-  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
-    if (searchTerms == undefined || searchTerms.length === 0) {
-      resolve([]);
+  if (searchTerms == undefined || searchTerms.length === 0) {
+    return [];
+  }
 
-      return;
-    }
+  const adjustedSearchTerms = searchTerms.toUpperCase();
 
-    const adjustedSearchTerms = searchTerms.toUpperCase();
+  // Ensure proper supporting data is provided
+  const roomTypeInfo = (data && data.roomTypeInfo) ? data.roomTypeInfo : undefined;
+  if (!roomTypeInfo) {
+    throw new Error('Must provide building search with data.roomTypeInfo');
+  }
 
-    // Ensure proper supporting data is provided
-    const roomTypeInfo = (data && data.roomTypeInfo) ? data.roomTypeInfo : undefined;
-    if (!roomTypeInfo) {
-      reject(new Error('Must provide building search with data.roomTypeInfo'));
+  // Ignore the case of the search terms
+  const buildings: Building[] = require('../../../../assets/js/Buildings');
+  const buildingTranslation = Translations.get(language, 'buildings');
+  const roomTranslation = Translations.get(language, 'rooms');
 
-      return;
-    }
+  const buildingResults = await _getBuildingResults(buildingTranslation, language, adjustedSearchTerms, buildings);
+  const roomResults = await _getRoomResults(roomTranslation, language, adjustedSearchTerms, roomTypeInfo, buildings);
 
-    // Ignore the case of the search terms
-    const buildings: Building[] = require('../../../../assets/js/Buildings');
-    const buildingTranslation = Translations.get(language, 'buildings');
-    const roomTranslation = Translations.get(language, 'rooms');
+  const sections = [{
+    data: buildingResults,
+    key: buildingTranslation,
+  }, {
+    data: roomResults,
+    key: roomTranslation,
+  }];
 
-    Promise.all([
-      _getBuildingResults(buildingTranslation, language, adjustedSearchTerms, buildings),
-      _getRoomResults(roomTranslation, language, adjustedSearchTerms, roomTypeInfo, buildings),
-    ])
-        .then((results: any[]) => {
-          const sections = [];
-          sections.push({
-            data: results[0],
-            key: buildingTranslation,
-          });
-          sections.push({
-            data: results[1],
-            key: roomTranslation,
-          });
-
-          resolve(sections);
-        })
-        .catch((err: any) => {
-          console.error('Could not complete building search.');
-          reject(err);
-        });
-  });
+  return sections;
 }
 
 /**

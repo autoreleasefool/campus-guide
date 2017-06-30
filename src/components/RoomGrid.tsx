@@ -43,7 +43,7 @@ import { filterRoom } from '../util/Search';
 
 // Types
 import { Language } from '../util/Translations';
-import { BuildingRoom, RoomTypeInfo } from '../../typings/university';
+import { BuildingRoom } from '../../typings/university';
 
 interface Props {
   shorthand: string;                                    // Unique shorthand identifier for the building
@@ -92,14 +92,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (!this.state.loaded) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/room_types.json'))
-          .then((roomTypeInfo: RoomTypeInfo) => {
-            this._roomTypes = roomTypeInfo.types;
-            this._roomTypeIds = roomTypeInfo.ids;
-            this._filterRooms(this.props);
-          })
-          .catch((err: any) => console.error('Configuration could not be initialized for room grid.', err));
+      this.loadConfiguration();
     }
   }
 
@@ -111,6 +104,20 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
       this._filterRooms(nextProps);
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const roomTypeInfo = await Configuration.getConfig('/room_types.json');
+      this._roomTypes = roomTypeInfo.types;
+      this._roomTypeIds = roomTypeInfo.ids;
+      this._filterRooms(this.props);
+    } catch (err) {
+      console.error('Configuration could not be initialized for room grid.', err);
     }
   }
 

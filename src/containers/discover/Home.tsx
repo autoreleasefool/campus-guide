@@ -67,10 +67,19 @@ class DiscoverHome extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (this.state.sections.length === 0) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/discover.json'))
-          .then((sections: MenuSection[]) => this.setState({ sections }))
-          .catch((err: any) => console.error('Configuration could not be initialized for discovery.', err));
+      this.loadConfiguration();
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const sections = await Configuration.getConfig('/discover.json');
+      this.setState({ sections });
+    } catch (err) {
+      console.error('Configuration could not be initialized for discovery.', err)
     }
   }
 

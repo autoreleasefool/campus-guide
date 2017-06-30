@@ -60,7 +60,7 @@ class Main extends React.PureComponent<Props, State> {
       Alert.alert(
         Translations.get(language, 'only_once_title'),
         Translations.get(language, 'only_once_message'),
-        [{ text: Translations.get(language, 'ok'), onPress: this._checkConfiguration.bind(this) }]
+        [{ text: Translations.get(language, 'ok'), onPress: (): Promise<void> => this._checkConfiguration() }]
       );
     } else {
       this._checkConfiguration();
@@ -70,28 +70,29 @@ class Main extends React.PureComponent<Props, State> {
   /**
    * Checks if a configuration update is available and prompts the user to update.
    */
-  _checkConfiguration(): void {
+  async _checkConfiguration(): Promise<void> {
     if (Configuration.didCheckForUpdate()) {
       // Do not check for configuration updates more than once
       return;
     }
 
-    Configuration.isConfigUpdateAvailable()
-        .then((available: boolean) => {
-          if (available) {
-            const language = this.props.language;
+    try {
+      const available = await Configuration.isConfigUpdateAvailable();
+      if (available) {
+        const language = this.props.language;
 
-            Alert.alert(
-              Translations.get(language, 'update_available_title'),
-              Translations.get(language, 'update_available_msg'),
-              [
-                { text: Translations.get(language, 'cancel'), style: 'cancel' },
-                { text: Translations.get(language, 'update'), onPress: this._updateConfiguration.bind(this) },
-              ]
-            );
-          }
-        })
-        .catch((err: any) => console.error('Error checking for configuration.', err));
+        Alert.alert(
+          Translations.get(language, 'update_available_title'),
+          Translations.get(language, 'update_available_msg'),
+          [
+            { text: Translations.get(language, 'cancel'), style: 'cancel' },
+            { text: Translations.get(language, 'update'), onPress: (): void => this._updateConfiguration() },
+          ]
+        );
+      }
+    } catch (err) {
+        console.error('Error checking for configuration.', err);
+    }
   }
 
   /**

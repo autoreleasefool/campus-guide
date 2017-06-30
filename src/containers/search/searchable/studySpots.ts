@@ -42,60 +42,57 @@ import { StudySpot, StudySpotInfo } from '../../../../typings/university';
  * @returns {Promise<Section<SearchResult[]>>} promise which resolves with the results of the search,
  *                                         containing study spots
  */
-function _getResults(language: Language,
+async function _getResults(language: Language,
                      searchTerms: string,
                      studySpots: StudySpotInfo): Promise<Section<SearchResult>[]> {
-  return new Promise((resolve: (r: any) => void): void => {
-    const matchedSpots: SearchResult[] = [];
+  const matchedSpots: SearchResult[] = [];
+  const studySpotsTranslation = Translations.get(language, 'study_spots');
 
-    const studySpotsTranslation = Translations.get(language, 'study_spots');
-
-    // Returns true if the two sorted arrays have at least one matching element
-    // const hasAnyMatchingElements = (a, b) => {
-    //   const aLength = a.length;
-    //   const bLength = b.length;
-    //   let aIdx = 0;
-    //   let bIdx = 0;
-    //   while (aIdx < aLength && bIdx < bLength) {
-    //     if (a[aIdx] === b[bIdx]) {
-    //       return true;
-    //     } else if (a[aIdx] < b[bIdx]) {
-    //       aIdx += 1;
-    //     } else {
-    //       bIdx += 1;
-    //     }
-    //   }
-    //   return false;
-    // }
-
-    // Cache list of filters that match the search terms
-    // const matchingFilters = [];
-    // for (let i = 0; i < studySpots.filters.length; i++) {
-    //   const filterName = Translations.getName(language, studySpots.filters[i]);
-    //   if (filterName != null && filterName.toUpperCase().indexOf(searchTerms) >= 0) {
-    //     matchingFilters.push(i);
-    //   }
-    // }
-
-    studySpots.spots.forEach((studySpot: StudySpot) => {
-      const result = filterStudySpot(language, searchTerms, studySpot);
-      if (result.success) {
-        matchedSpots.push({
-          data: { shorthand: studySpot.building, room: studySpot.room },
-          description: Translations.getDescription(language, studySpot) || '',
-          icon: { name: 'import-contacts', class: 'material' },
-          key: studySpotsTranslation,
-          matchedTerms: result.matches,
-          title: `${studySpot.building} ${studySpot.room || ''}`,
-        });
-      }
-    });
-
-    resolve([{
-      data: matchedSpots,
-      key: studySpotsTranslation,
-    }]);
+  studySpots.spots.forEach((studySpot: StudySpot) => {
+    const result = filterStudySpot(language, searchTerms, studySpot);
+    if (result.success) {
+      matchedSpots.push({
+        data: { shorthand: studySpot.building, room: studySpot.room },
+        description: Translations.getDescription(language, studySpot) || '',
+        icon: { name: 'import-contacts', class: 'material' },
+        key: studySpotsTranslation,
+        matchedTerms: result.matches,
+        title: `${studySpot.building} ${studySpot.room || ''}`,
+      });
+    }
   });
+
+  return [{
+    data: matchedSpots,
+    key: studySpotsTranslation,
+  }];
+
+  // Returns true if the two sorted arrays have at least one matching element
+  // const hasAnyMatchingElements = (a, b) => {
+  //   const aLength = a.length;
+  //   const bLength = b.length;
+  //   let aIdx = 0;
+  //   let bIdx = 0;
+  //   while (aIdx < aLength && bIdx < bLength) {
+  //     if (a[aIdx] === b[bIdx]) {
+  //       return true;
+  //     } else if (a[aIdx] < b[bIdx]) {
+  //       aIdx += 1;
+  //     } else {
+  //       bIdx += 1;
+  //     }
+  //   }
+  //   return false;
+  // }
+
+  // Cache list of filters that match the search terms
+  // const matchingFilters = [];
+  // for (let i = 0; i < studySpots.filters.length; i++) {
+  //   const filterName = Translations.getName(language, studySpots.filters[i]);
+  //   if (filterName != null && filterName.toUpperCase().indexOf(searchTerms) >= 0) {
+  //     matchingFilters.push(i);
+  //   }
+  // }
 }
 
 /**
@@ -107,35 +104,25 @@ function _getResults(language: Language,
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                             containing study spots
  */
-export function getResults(
+export async function getResults(
     language: Language,
     searchTerms: string | undefined,
     data: SearchSupport | undefined): Promise<Section<SearchResult>[]> {
-  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
-    if (searchTerms == undefined || searchTerms.length === 0) {
-      resolve([]);
+  if (searchTerms == undefined || searchTerms.length === 0) {
+    return [];
+  }
 
-      return;
-    }
+  // Ensure proper supporting data is provided
+  const studySpots = (data && data.studySpots) ? data.studySpots : undefined;
+  if (!studySpots) {
+    throw new Error('Must provide study spots search with data.studySpots');
+  }
 
-    // Ensure proper supporting data is provided
-    const studySpots = (data && data.studySpots) ? data.studySpots : undefined;
-    if (!studySpots) {
-      reject(new Error('Must provide study spots search with data.studySpots'));
+  // Ignore the case of the search terms
+  const adjustedSearchTerms: string = searchTerms.toUpperCase();
+  const results = await _getResults(language, adjustedSearchTerms, studySpots);
 
-      return;
-    }
-
-    // Ignore the case of the search terms
-    const adjustedSearchTerms: string = searchTerms.toUpperCase();
-
-    _getResults(language, adjustedSearchTerms, studySpots)
-        .then(resolve)
-        .catch((err: any) => {
-          console.error('Could not complete study spot search.', err);
-          reject(err);
-        });
-  });
+  return results;
 }
 
 /**

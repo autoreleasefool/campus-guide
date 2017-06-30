@@ -37,10 +37,10 @@ const STORE_SCHEDULE = 'schedule';
 /**
  * Returns the user's full schedule.
  *
- * @returns {Promise<object>} a promise which resolves with a set of semesters mapped to their
- *                            respective courses and schedules, as designated by the user
+ * @returns {Promise<any>} a promise which resolves with a set of semesters mapped to their
+ *                         respective courses and schedules, as designated by the user
  */
-export function getSchedule(): Promise < object > {
+export function getSchedule(): Promise<any> {
   return store.get(STORE_SCHEDULE);
 }
 
@@ -50,24 +50,23 @@ export function getSchedule(): Promise < object > {
  * @param {object} schedule the schedule to save
  * @returns {Promise<void>} a promise which resolves when the schedule has been saved
  */
-export function saveSchedule(schedule: object): Promise < void > {
+export function saveSchedule(schedule: object): Promise<void> {
   return store.save(STORE_SCHEDULE, schedule);
 }
 
 /**
  * Gets a list of config files and their versions from the database.
  *
- * @returns {Promise<ConfigFile[]>} a promise which resolves with a list of config file names and versions, or undefined
+ * @returns {Promise<ConfigFile[]>} a promise which resolves with a list of config file names and versions,
+ *                                  or undefined
  */
-export function getConfigVersions(): Promise < ConfigFile[] > {
-  return store.get(STORE_CONFIG_VERSIONS)
-      .then((configVersions: ConfigFile[]) => {
-        if (configVersions == undefined) {
-          configVersions = [];
-        }
+export async function getConfigVersions(): Promise<ConfigFile[]> {
+  const configVersions: ConfigFile[] = await store.get(STORE_CONFIG_VERSIONS);
+  if (configVersions == undefined) {
+    return [];
+  }
 
-        return Arrays.sortObjectArrayByKeyValues(configVersions, 'name');
-      });
+  return Arrays.sortObjectArrayByKeyValues(configVersions, 'name');
 }
 
 /**
@@ -76,26 +75,25 @@ export function getConfigVersions(): Promise < ConfigFile[] > {
  * @param {ConfigFile[]} updates set of config files and versions
  * @returns {Promise<void>} promise which resolves when all updates have finished
  */
-export function updateConfigVersions(updates: ConfigFile[]): Promise < void > {
-  return store.get(STORE_CONFIG_VERSIONS)
-      .then((original: ConfigFile[]) => {
-        let final: object[] = updates;
+export async function updateConfigVersions(updates: ConfigFile[]): Promise<void> {
+  const original: ConfigFile[] = await store.get(STORE_CONFIG_VERSIONS);
 
-        if (original != undefined) {
-          const sorted = Arrays.sortObjectArrayByKeyValues(original, 'name');
+  let final: object[] = updates;
 
-          // Replace any config versions that should be updated
-          for (const update of updates) {
-            const index = Arrays.binarySearchObjectArrayByKeyValue(sorted, 'name', update.name);
-            if (index >= 0) {
-              sorted.splice(index, 1);
-            }
-          }
+  if (original != undefined) {
+    const sorted = Arrays.sortObjectArrayByKeyValues(original, 'name');
 
-          final = final.concat(sorted);
-        }
+    // Replace any config versions that should be updated
+    for (const update of updates) {
+      const index = Arrays.binarySearchObjectArrayByKeyValue(sorted, 'name', update.name);
+      if (index >= 0) {
+        sorted.splice(index, 1);
+      }
+    }
 
-        // Save the updated config files
-        return store.save(STORE_CONFIG_VERSIONS, final);
-      });
+    final = final.concat(sorted);
+  }
+
+  // Save the updated config files
+  await store.save(STORE_CONFIG_VERSIONS, final);
 }

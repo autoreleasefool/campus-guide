@@ -42,96 +42,93 @@ import { LinkSection, Section } from '../../../../typings/global';
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                             containing links
  */
-function _getResults(language: Language,
+async function _getResults(language: Language,
                      searchTerms: string,
                      linkSections: LinkSection[]): Promise<Section<SearchResult>[]> {
-  return new Promise((resolve: (r: any) => void): void => {
-    const links: SearchResult[] = [];
-    const categories: SearchResult[] = [];
+  const links: SearchResult[] = [];
+  const categories: SearchResult[] = [];
 
-    const externalLinksTranslation = Translations.get(language, 'external_links');
-    const usefulLinksTranslation = Translations.get(language, 'uo_info');
+  const externalLinksTranslation = Translations.get(language, 'external_links');
+  const usefulLinksTranslation = Translations.get(language, 'uo_info');
 
-    // Method to add a link to the results
-    const pushLink = (sectionName: string,
-                      linkName: string,
-                      iconName: string,
-                      link: object,
-                      matchedSectionName: boolean): void => {
-      const translatedLink: string = Translations.getLink(language, link)
-          || External.getDefaultLink();
-      links.push({
-        data: { link: translatedLink, language },
-        description: sectionName,
-        icon: {
-          class: 'ionicon',
-          name: iconName,
-        },
-        key: externalLinksTranslation,
-        matchedTerms: matchedSectionName
-            ? [ sectionName.toUpperCase(), linkName.toUpperCase() ]
-            : [ linkName.toUpperCase() ],
-        title: linkName,
+  // Method to add a link to the results
+  const pushLink = (sectionName: string,
+                    linkName: string,
+                    iconName: string,
+                    link: object,
+                    matchedSectionName: boolean): void => {
+    const translatedLink: string = Translations.getLink(language, link)
+        || External.getDefaultLink();
+    links.push({
+      data: { link: translatedLink, language },
+      description: sectionName,
+      icon: {
+        class: 'ionicon',
+        name: iconName,
+      },
+      key: externalLinksTranslation,
+      matchedTerms: matchedSectionName
+          ? [ sectionName.toUpperCase(), linkName.toUpperCase() ]
+          : [ linkName.toUpperCase() ],
+      title: linkName,
+    });
+  };
+
+  let sectionsToSearch = linkSections;
+
+  // TODO: confirm this works with changing size of sectionsToSearch
+  for (const section of sectionsToSearch) {
+    let sectionMatches = false;
+    const sectionName: string = Translations.getName(language, section) || '';
+    if (sectionName.toUpperCase().indexOf(searchTerms) >= 0) {
+      sectionMatches = true;
+      categories.push({
+        data: section.id,
+        description: Translations.get(language, 'see_related_links'),
+        icon: section.icon,
+        key: usefulLinksTranslation,
+        matchedTerms: [ sectionName.toUpperCase() ],
+        title: sectionName,
       });
-    };
+    }
 
-    let sectionsToSearch = linkSections;
-
-    // TODO: confirm this works with changing size of sectionsToSearch
-    for (const section of sectionsToSearch) {
-      let sectionMatches = false;
-      const sectionName: string = Translations.getName(language, section) || '';
-      if (sectionName.toUpperCase().indexOf(searchTerms) >= 0) {
-        sectionMatches = true;
-        categories.push({
-          data: section.id,
-          description: Translations.get(language, 'see_related_links'),
-          icon: section.icon,
-          key: usefulLinksTranslation,
-          matchedTerms: [ sectionName.toUpperCase() ],
-          title: sectionName,
-        });
-      }
-
-      if (section.links) {
-        for (const link of section.links) {
-          const linkName = Translations.getName(language, link) || '';
-          if (sectionMatches || linkName.toUpperCase().indexOf(searchTerms) >= 0) {
-            pushLink(sectionName, linkName, 'md-open', link, true);
-          }
+    if (section.links) {
+      for (const link of section.links) {
+        const linkName = Translations.getName(language, link) || '';
+        if (sectionMatches || linkName.toUpperCase().indexOf(searchTerms) >= 0) {
+          pushLink(sectionName, linkName, 'md-open', link, true);
         }
-      }
-
-      if (section.social) {
-        for (const link of section.social) {
-          const linkName = Translations.getName(language, link) || '';
-          if (sectionMatches || linkName.toUpperCase().indexOf(searchTerms) >= 0) {
-            const iconName = Display.getSocialMediaIconName(Translations.getEnglishName(link) || '');
-            pushLink(sectionName, linkName, iconName, link, true);
-          }
-        }
-      }
-
-      // Add subcategories to be searched
-      if (section.categories) {
-        for (const category of section.categories) {
-          category.id = `${section.id}-${category.id}`;
-        }
-        sectionsToSearch = sectionsToSearch.concat(section.categories);
       }
     }
 
-    const results = [];
-    results.push({
-      data: links,
-      key: externalLinksTranslation,
-    });
-    results.push({
-      data: categories,
-      key: usefulLinksTranslation,
-    });
-    resolve(results);
-  });
+    if (section.social) {
+      for (const link of section.social) {
+        const linkName = Translations.getName(language, link) || '';
+        if (sectionMatches || linkName.toUpperCase().indexOf(searchTerms) >= 0) {
+          const iconName = Display.getSocialMediaIconName(Translations.getEnglishName(link) || '');
+          pushLink(sectionName, linkName, iconName, link, true);
+        }
+      }
+    }
+
+    // Add subcategories to be searched
+    if (section.categories) {
+      for (const category of section.categories) {
+        category.id = `${section.id}-${category.id}`;
+      }
+      sectionsToSearch = sectionsToSearch.concat(section.categories);
+    }
+  }
+
+  const results = [{
+    data: links,
+    key: externalLinksTranslation,
+  }, {
+    data: categories,
+    key: usefulLinksTranslation,
+  }];
+
+  return results;
 }
 
 /**
@@ -143,35 +140,25 @@ function _getResults(language: Language,
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                             containing links and categories
  */
-export function getResults(
+export async function getResults(
     language: Language,
     searchTerms: string | undefined,
     data: SearchSupport | undefined): Promise <Section<SearchResult>[]> {
-  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
-    if (searchTerms == undefined || searchTerms.length === 0) {
-      resolve([]);
+  if (searchTerms == undefined || searchTerms.length === 0) {
+      return [];
+  }
 
-      return;
-    }
+  // Ensure proper supporting data is provided
+  const linkSections = (data && data.linkSections) ? data.linkSections : undefined;
+  if (!linkSections) {
+    throw new Error('Must provide links search with data.linkSections');
+  }
 
-    // Ensure proper supporting data is provided
-    const linkSections = (data && data.linkSections) ? data.linkSections : undefined;
-    if (!linkSections) {
-      reject(new Error('Must provide links search with data.linkSections'));
+  // Ignore the case of the search terms
+  const adjustedSearchTerms: string = searchTerms.toUpperCase();
+  const results = await _getResults(language, adjustedSearchTerms, linkSections)
 
-      return;
-    }
-
-    // Ignore the case of the search terms
-    const adjustedSearchTerms: string = searchTerms.toUpperCase();
-
-    _getResults(language, adjustedSearchTerms, linkSections)
-        .then(resolve)
-        .catch((err: any) => {
-          console.error('Could not complete useful links search.', err);
-          reject(err);
-        });
-  });
+  return results;
 }
 
 /**

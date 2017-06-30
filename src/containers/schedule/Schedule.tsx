@@ -113,10 +113,19 @@ class Schedule extends React.PureComponent<Props, State> {
 
   componentDidMount(): void {
     if (this.state.lectureFormats.length === 0) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/lecture_formats.json'))
-          .then((lectureFormats: LectureFormat[]) => this.setState({ lectureFormats }))
-          .catch((err: any) => console.error('Configuration could not be initialized for lecture modal.', err));
+      this.loadConfiguration();
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const lectureFormats = await Configuration.getConfig('/lecture_formats.json');
+      this.setState({ lectureFormats });
+    } catch (err) {
+      console.error('Configuration could not be initialized for lecture modal.', err);
     }
   }
 

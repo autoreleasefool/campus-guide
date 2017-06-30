@@ -353,9 +353,9 @@ async function _updateConfig(callbacks: UpdateCallbacks): Promise < void > {
  * Returns a promise that resolves when the config file can be found, or rejects.
  *
  * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
- * @returns {Promise<object|undefined>} promise that resolves when the configuration is loaded
+ * @returns {Promise<any|undefined>} promise that resolves when the configuration is loaded
  */
-async function _getConfigFile(configFile: string): Promise < object | undefined > {
+async function _getConfigFile(configFile: string): Promise < any | undefined > {
   // First, make sure the file exists
   const dir = CONFIG_SUBDIRECTORIES.json;
   const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + configFile);
@@ -467,10 +467,12 @@ export function didCheckForUpdate(): boolean {
  * Returns a promise that resolves when the config file can be found, or rejects.
  *
  * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
- * @returns {Promise<object|undefined>} promise that resolves when the configuration is loaded
+ * @returns {Promise<any|undefined>} promise that resolves when the configuration is loaded
  */
-export function getConfig(configFile: string): Promise < object | undefined > {
-  return _getConfigFile(configFile);
+export async function getConfig(configFile: string): Promise < any | undefined > {
+  await init();
+
+  return await _getConfigFile(configFile);
 }
 
 /**

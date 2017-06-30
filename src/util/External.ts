@@ -38,36 +38,30 @@ import { Language } from './Translations';
  * @param {any}              TextUtils an instance of the TextUtils utility class
  * @returns {Promise<void>} a promise indicating the result of whether the link was opened
  */
-export function openLink(url: string | undefined,
+export async function openLink(url: string | undefined,
                          language: Language,
                          Linking: any,
                          Alert: any,
                          Clipboard: any,
-                         TextUtils: any): Promise < void > {
+                         TextUtils: any): Promise<void> {
   const formattedUrl = TextUtils.formatLink(url);
+  const supported = await Linking.canOpenURL(url);
 
-  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
-    Linking.canOpenURL(url)
-        .then((supported: boolean) => {
-          if (supported) {
-            Linking.openURL(url);
-          } else {
-            Alert.alert(
-              Translations.get(language, 'cannot_open_url'),
-              formattedUrl,
-              [
-                { text: Translations.get(language, 'cancel'), style: 'cancel' },
-                {
-                  onPress: (): void => Clipboard.setString(formattedUrl),
-                  text: Translations.get(language, 'copy_link'),
-                },
-              ]
-            );
-          }
-          resolve({});
-        })
-        .catch(reject);
-  });
+  if (supported) {
+    Linking.openURL(url);
+  } else {
+    Alert.alert(
+      Translations.get(language, 'cannot_open_url'),
+      formattedUrl,
+      [
+        { text: Translations.get(language, 'cancel'), style: 'cancel' },
+        {
+          onPress: (): void => Clipboard.setString(formattedUrl),
+          text: Translations.get(language, 'copy_link'),
+        },
+      ]
+    );
+  }
 }
 
 /**

@@ -119,10 +119,7 @@ class Housing extends React.PureComponent<Props, State> {
     this._multiPropertyWidth.width = width * RESIDENCE_PROPERTY_WIDTH_RATIO;
 
     if (!this.state.housingInfo) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/housing.json'))
-          .then((housingInfo: HousingInfo) => this.setState({ housingInfo }))
-          .catch((err: any) => console.error('Configuration could not be initialized for housing.', err));
+      this.loadConfiguration();
     }
   }
 
@@ -167,6 +164,18 @@ class Housing extends React.PureComponent<Props, State> {
           this.props.filter == undefined
           || this.props.filter.length === 0
           || (nextProps.filter && nextProps.filter.indexOf(this.props.filter) >= 0));
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const housingInfo = await Configuration.getConfig('/housing.json');
+      this.setState({ housingInfo });
+    } catch (err) {
+      console.error('Configuration could not be initialized for housing.', err)
     }
   }
 

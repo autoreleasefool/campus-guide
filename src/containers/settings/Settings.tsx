@@ -113,25 +113,9 @@ class Settings extends React.PureComponent<Props, State> {
    * Loads the settings once the view has been mounted.
    */
   componentDidMount(): void {
-    Configuration.init()
-        .then(() => Translations.loadTranslations('en'))
-        .then(() => Translations.loadTranslations('fr'))
-        .then(() => Configuration.getConfig('/settings.json'))
-        .then((settingSections: Section < Setting >[]) => {
-          const totalSections = settingSections.length;
-          for (let i = 0; i < totalSections; i++) {
-            const section = settingSections[i];
-            const totalRows = section.data.length;
-            for (let j = 0; j < totalRows; j++) {
-              const row = section.data[j];
-              this._settingsCache[row.key] = this._getSetting(row.key);
-            }
-          }
-
-          this._settingSections = settingSections;
-          this.setState({ loaded: true });
-        })
-        .catch((err: any) => console.error('Configuration could not be initialized for settings.', err));
+    if (this._settingSections.length === 0) {
+      this.loadConfiguration();
+    }
   }
 
   /**
@@ -139,6 +123,32 @@ class Settings extends React.PureComponent<Props, State> {
    */
   componentWillUnmount(): void {
     Translations.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      await Translations.loadTranslations('en');
+      await Translations.loadTranslations('fr');
+
+      const settingSections = await Configuration.getConfig('/settings.json');
+      const totalSections = settingSections.length;
+      for (let i = 0; i < totalSections; i++) {
+        const section = settingSections[i];
+        const totalRows = section.data.length;
+        for (let j = 0; j < totalRows; j++) {
+          const row = section.data[j];
+          this._settingsCache[row.key] = this._getSetting(row.key);
+        }
+      }
+
+      this._settingSections = settingSections;
+      this.setState({ loaded: true });
+    } catch (err) {
+      console.error('Configuration could not be initialized for settings.', err)
+    }
   }
 
   /**

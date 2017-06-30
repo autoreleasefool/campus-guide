@@ -99,10 +99,19 @@ class Transit extends React.PureComponent<Props, State> {
     (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
     if (this.state.campuses.length === 0) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/transit_campuses.json'))
-          .then((campuses: MenuSection[]) => this.setState({ campuses }))
-          .catch((err: any) => console.error('Configuration could not be initialized for transit.', err));
+      this.loadConfiguration();
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const campuses = await Configuration.getConfig('/transit_campuses.json');
+      this.setState({ campuses });
+    } catch (err) {
+      console.error('Configuration could not be initialized for transit.', err);
     }
   }
 

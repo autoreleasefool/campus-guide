@@ -123,22 +123,7 @@ class SearchView extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (!this.state.supportData) {
-      Configuration.init()
-          .then(() => Promise.all([
-            Configuration.getConfig('/room_types.json'),
-            Configuration.getConfig('/study_spots.json'),
-            Configuration.getConfig('/useful_links.json'),
-          ]))
-          .then((configs: any[]) => {
-            this.setState({
-              supportData: {
-                linkSections: configs[2],
-                roomTypeInfo: configs[0],
-                studySpots: configs[1],
-              },
-            });
-          })
-          .catch((err: any) => console.error('Configuration could not be initialized for search view.', err));
+      this.loadConfiguration();
     }
   }
 
@@ -157,6 +142,27 @@ class SearchView extends React.PureComponent<Props, State> {
   componentWillUnmount(): void {
     if (this._delayTimer !== 0) {
       clearTimeout(this._delayTimer);
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const linkSections = await Configuration.getConfig('/useful_links.json');
+      const roomTypeInfo = await Configuration.getConfig('/room_types.json');
+      const studySpots = await Configuration.getConfig('/study_spots.json');
+      this.setState({
+        supportData: {
+          linkSections,
+          roomTypeInfo,
+          studySpots,
+        },
+      });
+
+    } catch (err) {
+      console.error('Configuration could not be initialized for search view.', err);
     }
   }
 

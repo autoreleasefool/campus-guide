@@ -43,7 +43,7 @@ import * as Translations from '../util/Translations';
 // Types
 import { Language } from '../util/Translations';
 import { LatLong, LatLongDelta, TimeFormat } from '../../typings/global';
-import { TransitCampus, TransitSystem } from '../../typings/transit';
+import { TransitCampus } from '../../typings/transit';
 
 interface Props {
   campusId: string;           // Identifier for the transit campus info to display
@@ -85,27 +85,34 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
    */
   componentDidMount(): void {
     if (this.state.campus == undefined) {
-      Configuration.init()
-          .then(() => Configuration.getConfig('/transit.json'))
-          .then((transitSystem: TransitSystem) => {
-            const campuses = transitSystem.campuses;
-            const stops = transitSystem.stopDetails;
-            for (const campus of campuses) {
-              if (campus.id === this.props.campusId) {
-                this.setState({
-                  campus,
-                  initialRegion: {
-                    latitude: campus.latitude,
-                    latitudeDelta: Constants.Map.DefaultDelta,
-                    longitude: campus.longitude,
-                    longitudeDelta: Constants.Map.DefaultDelta,
-                  },
-                  stops,
-                });
-              }
-            }
-          })
-          .catch((err: any) => console.error('Configuration could not be initialized for transit campus.', err));
+      this.loadConfiguration();
+    }
+  }
+
+  /**
+   * Asynchronously load relevant configuration files and cache the results.
+   */
+  async loadConfiguration(): Promise<void> {
+    try {
+      const transitSystem = await Configuration.getConfig('/transit.json');
+      const campuses = transitSystem.campuses;
+      const stops = transitSystem.stopDetails;
+      for (const campus of campuses) {
+        if (campus.id === this.props.campusId) {
+          this.setState({
+            campus,
+            initialRegion: {
+              latitude: campus.latitude,
+              latitudeDelta: Constants.Map.DefaultDelta,
+              longitude: campus.longitude,
+              longitudeDelta: Constants.Map.DefaultDelta,
+            },
+            stops,
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Configuration could not be initialized for transit campus.', err);
     }
   }
 

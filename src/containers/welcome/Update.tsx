@@ -63,8 +63,8 @@ interface Props extends Configuration.ProgressUpdate {
   onDownloadStart(fileName: string): void;        // Updates state when a download begins
   onUpdateStart(totalFiles: number, totalSize: number): void;
                                                   // Updates state when the app update begins
-  setTransit(transitInfo: TransitInfo): void;     // Updates the transit info object in the config
-  setUniversity(university: object): void;        // Updates the university object in the config
+  setConfiguration(university: any, transit: TransitInfo): void;
+                                                  // Update the app config data
   updateFailed(): void;                           // Hides the progress bar to show a retry button
 }
 
@@ -168,49 +168,48 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   /**
    * Displays a prompt to user indicating the server could not be reached and their options.
    */
-  _notifyServerFailed(): void {
+  async _notifyServerFailed(): Promise<void> {
     const language = this.props.language;
 
-    Configuration.init()
-        .then(() => {
-          Alert.alert(
-            CoreTranslations[language].server_unavailable,
-            CoreTranslations[language].server_unavailable_config_available,
-            [
-              {
-                onPress: (): void => this._checkConnection(),
-                text: CoreTranslations[language].retry,
-              },
-              {
-                onPress: (): void => this.props.navigator.push({ id: 'main' }),
-                text: CoreTranslations[language].later,
-              },
-            ]
-          );
-        })
-        .catch(() => {
-          Alert.alert(
-            CoreTranslations[language].server_unavailable,
-            CoreTranslations[language].server_unavailable_config_unavailable,
-            [
-              {
-                onPress: (): void => this._checkConnection(),
-                text: CoreTranslations[language].retry,
-              },
-              {
-                onPress: (): void => this.props.updateFailed(),
-                style: 'cancel',
-                text: CoreTranslations[language].cancel,
-              },
-            ]
-          );
-        });
+    try {
+      await Configuration.init();
+      Alert.alert(
+        CoreTranslations[language].server_unavailable,
+        CoreTranslations[language].server_unavailable_config_available,
+        [
+          {
+            onPress: (): void => this._checkConnection(),
+            text: CoreTranslations[language].retry,
+          },
+          {
+            onPress: (): void => this.props.navigator.push({ id: 'main' }),
+            text: CoreTranslations[language].later,
+          },
+        ]
+      );
+    } catch (err) {
+      Alert.alert(
+        CoreTranslations[language].server_unavailable,
+        CoreTranslations[language].server_unavailable_config_unavailable,
+        [
+          {
+            onPress: (): void => this._checkConnection(),
+            text: CoreTranslations[language].retry,
+          },
+          {
+            onPress: (): void => this.props.updateFailed(),
+            style: 'cancel',
+            text: CoreTranslations[language].cancel,
+          },
+        ]
+      );
+    }
   }
 
   /**
    * Displays a prompt to user indicating an internet connection could not be reached and their options.
    */
-  _notifyConnectionFailed(err?: any): void {
+  async _notifyConnectionFailed(err?: any): Promise<void> {
     // TODO: use error and act according to the actual issue
     if (err != undefined && __DEV__) {
       console.log(err);
@@ -218,56 +217,55 @@ class UpdateScreen extends React.PureComponent<Props, State> {
 
     const language = this.props.language;
 
-    Configuration.init()
-        .then(() => {
-          Alert.alert(
-            CoreTranslations[language].no_internet,
-            CoreTranslations[language].no_internet_config_available,
-            [
-              {
-                onPress: (): void => this._checkConnection(),
-                text: CoreTranslations[language].retry,
-              },
-              {
-                onPress: (): void => this.props.navigator.push({ id: 'main' }),
-                text: CoreTranslations[language].later,
-              },
-            ]
-          );
-        })
-        .catch(() => {
-          Alert.alert(
-            CoreTranslations[language].no_internet,
-            CoreTranslations[language].no_internet_config_unavailable,
-            [
-              {
-                onPress: (): void => this._checkConnection(),
-                text: CoreTranslations[language].retry,
-              },
-              {
-                onPress: (): void => this.props.updateFailed(),
-                style: 'cancel',
-                text: CoreTranslations[language].cancel,
-              },
-            ]
-          );
-        });
+    try {
+      await Configuration.init();
+      Alert.alert(
+        CoreTranslations[language].no_internet,
+        CoreTranslations[language].no_internet_config_available,
+        [
+          {
+            onPress: (): void => this._checkConnection(),
+            text: CoreTranslations[language].retry,
+          },
+          {
+            onPress: (): void => this.props.navigator.push({ id: 'main' }),
+            text: CoreTranslations[language].later,
+          },
+        ]
+      );
+    } catch (err) {
+      Alert.alert(
+        CoreTranslations[language].no_internet,
+        CoreTranslations[language].no_internet_config_unavailable,
+        [
+          {
+            onPress: (): void => this._checkConnection(),
+            text: CoreTranslations[language].retry,
+          },
+          {
+            onPress: (): void => this.props.updateFailed(),
+            style: 'cancel',
+            text: CoreTranslations[language].cancel,
+          },
+        ]
+      );
+    }
   }
 
   /**
    * Return to the main screen.
    */
-  _returnToMain(): void {
-    Configuration.init()
-        .then(() => Configuration.getConfig('/university.json'))
-        .then((university: object) => {
-          this.props.setUniversity(university);
+  async _returnToMain(): Promise<void> {
+    try {
+      await Translations.loadTranslations(this.props.language);
 
-          return Translations.loadTranslations(this.props.language);
-        })
-        .then(() => Configuration.getConfig('/transit.json'))
-        .then((transitInfo: TransitInfo) => this.props.setTransit(transitInfo))
-        .then(() => this.props.navigator.push({ id: 'main' }));
+      const university = await Configuration.getConfig('/university.json');
+      const transit = await Configuration.getConfig('/transit.json');
+      this.props.setConfiguration(university, transit);
+      this.props.navigator.push({ id: 'main' });
+    } catch (err) {
+      console.error('Unable to initialize configuration for Update.', err);
+    }
   }
 
   /**
@@ -499,16 +497,14 @@ const mapDispatchToProps = (dispatch: any): any => {
         totalSize,
       }));
     },
-    setTransit: (transitInfo: TransitInfo): void => dispatch(actions.updateConfiguration({
+    setConfiguration: (university: any, transitInfo: TransitInfo): void => dispatch(actions.updateConfiguration({
+      semesters: university.semesters,
       transitInfo: {
         link_en: Translations.getEnglishLink(transitInfo) || '',
         link_fr: Translations.getFrenchLink(transitInfo) || '',
         name_en: Translations.getEnglishName(transitInfo) || '',
         name_fr: Translations.getFrenchName(transitInfo) || '',
       },
-    })),
-    setUniversity: (university: any): void => dispatch(actions.updateConfiguration({
-      semesters: university.semesters,
       universityLocation: { latitude: university.latitude, longitude: university.longitude },
       universityName: {
         name_en: Translations.getEnglishName(university) || '',
