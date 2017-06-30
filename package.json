@@ -3,21 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npm run clean && npm run tsc --",
+    "build": "yarn run clean && yarn run tsc --",
     "clean": "rimraf artifacts",
     "lint": "tslint src/**/*.ts",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "start:android": "npm run build && concurrently -r 'npm run watch' 'react-native run-android'",
-    "start:ios": "npm run build && concurrently -r 'npm run watch' 'react-native run-ios'",
-    "test": "npm run build && jest --coverage",
+    "start:android": "yarn run build && concurrently -r 'yarn run watch' 'react-native run-android'",
+    "start:ios": "yarn run build && concurrently -r 'yarn run watch' 'react-native run-ios'",
+    "test": "yarn run build && jest --coverage",
     "tsc": "tsc",
     "tscp": "tsc --pretty",
-    "watch": "npm run build -- -w"
+    "watch": "yarn run build -- -w"
   },
   "dependencies": {
     "http-status-codes": "^1.0.6",
     "moment": "^2.18.1",
-    "react": "16.0.0-alpha.6",
+    "react": "16.0.0-alpha.12",
     "react-native": "^0.45.1",
     "react-native-action-button": "^2.7.1",
     "react-native-deprecated-custom-components": "^0.1.0",
