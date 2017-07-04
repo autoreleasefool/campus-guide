@@ -3,47 +3,71 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "flow": "flow check",
-    "lint": "eslint .",
+    "build": "yarn run clean && yarn run tsc --",
+    "clean": "rimraf artifacts",
+    "lint": "tslint src/**/*.ts",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest --coverage"
+    "start:android": "yarn run build && concurrently -r 'yarn run watch' 'react-native run-android'",
+    "start:ios": "yarn run build && concurrently -r 'yarn run watch' 'react-native run-ios'",
+    "test": "yarn run build && jest --coverage",
+    "tsc": "tsc",
+    "tscp": "tsc --pretty",
+    "watch": "yarn run build -- -w"
   },
   "dependencies": {
     "http-status-codes": "^1.0.6",
     "moment": "^2.18.1",
-    "react": "16.0.0-alpha.6",
-    "react-native": "^0.44.0",
-    "react-native-action-button": "^2.6.9",
+    "react": "16.0.0-alpha.12",
+    "react-native": "^0.45.1",
+    "react-native-action-button": "^2.7.1",
     "react-native-deprecated-custom-components": "^0.1.0",
     "react-native-device-info": "^0.10.2",
-    "react-native-fs": "^2.3.2",
+    "react-native-fs": "^2.3.3",
     "react-native-linear-gradient": "^2.0.0",
-    "react-native-maps": "^0.14.0",
+    "react-native-maps": "^0.15.3",
     "react-native-scrollable-tab-view": "^0.7.2",
-    "react-native-simple-store": "^1.2.0",
-    "react-native-snackbar": "^0.3.6",
-    "react-native-vector-icons": "^4.1.0",
-    "react-redux": "^5.0.4",
-    "redux": "^3.6.0",
+    "react-native-simple-store": "^1.3.0",
+    "react-native-snackbar": "^0.3.7",
+    "react-native-vector-icons": "^4.2.0",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.1",
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
-    "babel-jest": "^19.0.0",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-react-native": "^1.9.1",
+    "@types/jest": "^20.0.2",
+    "@types/react": "^15.0.34",
+    "@types/react-native": "^0.44.15",
+    "@types/react-redux": "^4.4.45",
+    "babel-jest": "^20.0.3",
+    "babel-preset-react-native": "^2.0.0",
+    "concurrently": "^3.5.0",
     "empty": "^0.10.1",
-    "eslint": "^3.19.0",
-    "eslint-plugin-react": "^6.10.3",
-    "eslint-plugin-react-native": "^2.3.2",
-    "flow-bin": "0.42",
-    "jest": "^19.0.2",
-    "jest-cli": "^19.0.2",
+    "jest": "^20.0.4",
+    "jest-cli": "^20.0.4",
     "jest-react-native": "^18.0.0",
     "pre-commit": "^1.2.2",
-    "react-test-renderer": "^15.5.4"
+    "react-test-renderer": "^15.6.1",
+    "rimraf": "^2.6.1",
+    "ts-jest": "^20.0.6",
+    "tslint": "^5.4.3",
+    "tslint-eslint-rules": "^4.1.1",
+    "typescript": "2.4.0"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "artifacts/util/*.js",
+      "artifacts/actions/*.js",
+      "artifacts/reducers/*.js",
+      "!artifacts/**/*.spec.js",
+      "!artifacts/**/*.index.js",
+      "!artifacts/actions/index.js",
+      "!artifacts/util/Configuration.js"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text-summary",
+      "html"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 95,
@@ -52,13 +76,18 @@
         "statements": 95
       }
     },
+    "mapCoverage": true,
     "moduleNameMapper": {
       "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
     },
-    "preset": "react-native"
+    "preset": "react-native",
+    "testRegex": "artifacts/.+[-.](test|spec).js$",
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    }
   },
   "pre-commit": [
-    "flow",
     "lint",
     "test"
   ]

@@ -28,15 +28,20 @@ public class MainApplication extends Application implements ReactApplication {
     }
 
     @Override
+    protected String getJSMainModuleName() {
+      return "artifacts/index.android";
+    }
+
+    @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new SnackbarPackage(),
-            new RNFSPackage(),
-            new RNDeviceInfo(),
-            new MapsPackage(),
-            new VectorIconsPackage(),
-            new LinearGradientPackage()
+          new SnackbarPackage(),
+          new RNFSPackage(),
+          new RNDeviceInfo(),
+          new MapsPackage(),
+          new VectorIconsPackage(),
+          new LinearGradientPackage()
       );
     }
   };
