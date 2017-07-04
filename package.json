@@ -61,8 +61,7 @@
       "!artifacts/**/*.spec.js",
       "!artifacts/**/*.index.js",
       "!artifacts/actions/index.js",
-      "!artifacts/util/Configuration.js",
-      "!artifacts/util/Search.js"
+      "!artifacts/util/Configuration.js"
     ],
     "coverageDirectory": "coverage",
     "coverageReporters": [

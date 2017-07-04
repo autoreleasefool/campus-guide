@@ -33,10 +33,35 @@ export interface Destination {
   room?: string | undefined;  // Room number in the building
 }
 
+/** IDs for available room types. */
+export type RoomTypeId =
+  | 'bath_men'
+  | 'bath_women'
+  | 'bath_uni'
+  | 'cafe'
+  | 'class'
+  | 'comp'
+  | 'fit'
+  | 'gym'
+  | 'health'
+  | 'kitchen'
+  | 'lab_res'
+  | 'lab_teach'
+  | 'library'
+  | 'meet'
+  | 'office'
+  | 'pool'
+  | 'seminar'
+  | 'service'
+  | 'storage'
+  | 'store'
+  | 'study'
+  | 'test';
+
 /** A room on campus, with a name and the facilities it offers represented by an ID. */
 export interface BuildingRoom {
   name: string;         // Name of the room
-  type: string;         // Type of the room, corresponding to a RoomType
+  type?: RoomTypeId;    // Type of the room, corresponding to a RoomType
   alt_name?: string;    // Alternative name of the room, suitable for English or French
   alt_name_en?: string; // Alternative name of the room, translated to English
   alt_name_fr?: string; // Alternative name of the room, translated to French
@@ -159,6 +184,17 @@ interface HousingInfo {
 //  Study spots
 //-----------------------------------------------------------------------------
 
+/** Study spot filter IDs */
+export type StudySpotFilterId =
+  | 'individual'
+  | 'group'
+  | 'silent'
+  | 'food'
+  | 'outlets'
+  | 'computers'
+  | 'open'
+  | 'lighting';
+
 /** Study spot filter descriptions and whether they are active. */
 export interface StudySpotFilter extends Description, Name {
   icon: Icon; // Icon to represent the filter
@@ -169,12 +205,12 @@ export type StudySpotReservation = Description & Link & Name;
 
 /** Location and properties of a study spot. */
 export interface StudySpot extends Description, Name {
-  image: string;            // Name of the image of the study spot
-  building: string;         // Building code
-  room: string | undefined; // Room number
-  opens: string;            // Time the spot opens at
-  closes: string;           // Time the spot closes at
-  filters: string[];        // List of properties to filter on
+  image: string;                // Name of the image of the study spot
+  building: string;             // Building code
+  room?: string;                // Room number
+  opens: string;                // Time the spot opens at
+  closes: string;               // Time the spot closes at
+  filters: StudySpotFilterId[]; // List of properties to filter on
 }
 
 /** Information about study spots. */

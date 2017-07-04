@@ -52,7 +52,6 @@ export interface SearchResult {
  * @returns {SearchResult} success true if the GridImage matches the filter, false otherwise, and all matching terms
  */
 export function filterGridImage(language: Language, filter: string, gridImage: GridImage): SearchResult {
-  // FIXME: Using type `any` for gridImage is a workaround for Building not extending GridImage type
   const matches = [];
 
   // Compare building properties to search terms to add to results
@@ -144,7 +143,7 @@ export function filterRoom(
   }
 
   if (matchingRoomTypes.has(room.type || Constants.DefaultRoomType)) {
-    matches.push(room.type || Constants.DefaultRoomType);
+    matches.push((room.type || Constants.DefaultRoomType).toUpperCase());
   }
 
   return {
