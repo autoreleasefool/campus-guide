@@ -17,7 +17,7 @@
   "dependencies": {
     "http-status-codes": "^1.0.6",
     "moment": "^2.18.1",
-    "react": "^16.0.0-alpha.12",
+    "react": "16.0.0-alpha.12",
     "react-native": "^0.45.1",
     "react-native-action-button": "^2.7.1",
     "react-native-deprecated-custom-components": "^0.1.0",
@@ -51,7 +51,7 @@
     "ts-jest": "^20.0.6",
     "tslint": "^5.4.3",
     "tslint-eslint-rules": "^4.1.1",
-    "typescript": "^2.4.1"
+    "typescript": "^2.4.0"
   },
   "jest": {
     "collectCoverageFrom": [
