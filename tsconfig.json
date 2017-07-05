@@ -24,7 +24,7 @@
   "exclude": [
     "android",
     "ios",
-    "build",
+    "artifacts",
     "node_modules",
     "coverage"
   ],
