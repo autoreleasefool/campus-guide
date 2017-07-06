@@ -82,10 +82,11 @@ interface FileUpdate {
 
 /** Callback methods that can be provided to the configuration update */
 interface UpdateCallbacks {
-  onUpdateStart?(totalSize: number, totalFiles: number): void;  // Invoked when the update begins
-  onDownloadStart?(download: object): void;                     // Invoked as each file begins downloading
-  onDownloadProgress?(progress: object): void;                  // Invoked multiple times for large file downloads
-  onDownloadComplete?(download: object): void;                  // Invoked as each file finishes downloading
+  onUpdateStart?(totalSize: number, totalFiles: number): void;              // Invoked when the update begins
+  onDownloadStart?(name: string, download: RNFS.DownloadBeginCallbackResult): void;
+                                                                            // Invoked as each file begins downloading
+  onDownloadProgress?(progress: RNFS.DownloadProgressCallbackResult): void; // Invoked for large downloads
+  onDownloadComplete?(name: string, download: RNFS.DownloadResult): void;   // Invoked as each file finishes downloading
 }
 
 /** Stripped down promise class, with only resolve and reject methods. */
@@ -205,7 +206,10 @@ async function _refreshConfigVersions(): Promise < boolean > {
 
     // Fetch most recent config versions from server
     const configUpdateURL = `${env.configUpdatesServerUrl}/config/${DeviceInfo.getVersion()}`;
-    const response = await fetch(configUpdateURL);
+    const response = await fetch(configUpdateURL, {
+      headers: { Authorization: env.authorizationKey },
+      method: 'GET',
+    });
     const appConfig = await response.json();
 
     // Will indicate if any updates are available
@@ -283,10 +287,9 @@ async function _updateConfig(callbacks: UpdateCallbacks): Promise < void > {
   }
 
   // Add filename to download info and invoke start callback
-  const onStart = (filename: string, download: any): void => {
+  const onStart = (filename: string, download: RNFS.DownloadBeginCallbackResult): void => {
     if (callbacks.onDownloadStart) {
-      download.filename = filename;
-      callbacks.onDownloadStart(download);
+      callbacks.onDownloadStart(filename, download);
     }
   };
 
@@ -295,8 +298,9 @@ async function _updateConfig(callbacks: UpdateCallbacks): Promise < void > {
 
       // Download the file
       const downloadResult = await RNFS.downloadFile({
-        begin: (download: object): void => onStart(update.name, download),
+        begin: (download: RNFS.DownloadBeginCallbackResult): void => onStart(update.name, download),
         fromUrl: update.url,
+        headers: { Authorization: env.authorizationKey },
         progress: callbacks.onDownloadProgress,
         toFile: TEMP_CONFIG_DIRECTORY + update.name,
       }).promise;
@@ -307,10 +311,9 @@ async function _updateConfig(callbacks: UpdateCallbacks): Promise < void > {
 
       // Get file stats
       const fileStats = await RNFS.stat(TEMP_CONFIG_DIRECTORY + update.name);
-      downloadResult.bytesWritten = fileStats.size;
-      downloadResult.filename = update.name;
+      downloadResult.bytesWritten = parseInt(fileStats.size);
       if (callbacks.onDownloadComplete) {
-        callbacks.onDownloadComplete(downloadResult);
+        callbacks.onDownloadComplete(update.name, downloadResult);
       }
     }
 
@@ -366,6 +369,8 @@ async function _getConfigFile(configFile: string): Promise < any | undefined > {
 
   // Load and parse the configuration file
   const raw = await RNFS.readFile(CONFIG_DIRECTORY + dir + configFile, 'utf8');
+
+  console.log(`${configFile}: ${raw}`);
 
   return JSON.parse(raw);
 }

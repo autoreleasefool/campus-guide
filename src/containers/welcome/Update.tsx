@@ -47,6 +47,7 @@ import emptyFunction from 'empty/function';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
+import * as RNFS from 'react-native-fs';
 import * as Translations from '../../util/Translations';
 const CoreTranslations = require('../../../assets/json/CoreTranslations');
 
@@ -105,10 +106,14 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   async _beginUpdate(): Promise<void> {
     const callbacks = {
-      onDownloadComplete: (download: object): void => this._onDownloadComplete(download),
-      onDownloadProgress: (progress: object): void => this._onDownloadProgress(progress),
-      onDownloadStart: (download: object): void => this._onDownloadStart(download),
-      onUpdateStart: (totalSize: number, totalFiles: number): void => this._onUpdateStart(totalSize, totalFiles),
+      onDownloadComplete: (name: string, download: RNFS.DownloadResult): void =>
+          this._onDownloadComplete(name, download),
+      onDownloadProgress: (progress: RNFS.DownloadProgressCallbackResult): void =>
+          this._onDownloadProgress(progress),
+      onDownloadStart: (name: string, _: RNFS.DownloadBeginCallbackResult): void =>
+          this._onDownloadStart(name),
+      onUpdateStart: (totalSize: number, totalFiles: number): void =>
+          this._onUpdateStart(totalSize, totalFiles),
     };
 
     let available = false;
@@ -257,10 +262,14 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   async _returnToMain(): Promise<void> {
     try {
+      console.log(1);
       await Translations.loadTranslations(this.props.language);
 
+      console.log(2);
       const university = await Configuration.getConfig('/university.json');
+      console.log(3);
       const transit = await Configuration.getConfig('/transit.json');
+      console.log(4);
       this.props.setConfiguration(university, transit);
       this.props.navigator.push({ id: 'main' });
     } catch (err) {
@@ -271,13 +280,14 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   /**
    * Handles the results of a successful download.
    *
-   * @param {any} download results of the download
+   * @param {string}              name     name of the downloaded file
+   * @param {RNFS.DownloadResult} download results of the download
    */
-  _onDownloadComplete(download: any): void {
+  _onDownloadComplete(name: string, download: RNFS.DownloadResult): void {
     const totalProgress = this.props.totalProgress;
     if (this.props.filesDownloaded != undefined && totalProgress != undefined) {
       const filesDownloaded = this.props.filesDownloaded.slice(0);
-      filesDownloaded.splice(0, 0, download.filename);
+      filesDownloaded.splice(0, 0, name);
       this.props.onDownloadComplete(filesDownloaded, totalProgress, download.bytesWritten);
     } else {
       console.error('Something\'s undefined, but it shouldn\'t be! Check filesDownloaded and totalProgress');
@@ -296,10 +306,10 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   /**
    * Provides details about each file being downloaded.
    *
-   * @param {any} download details about the download
+   * @param {string} name name of the file
    */
-  _onDownloadStart(download: any): void {
-    this.props.onDownloadStart(download.filename);
+  _onDownloadStart(name: string): void {
+    this.props.onDownloadStart(name);
   }
 
   /**
