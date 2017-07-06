@@ -262,14 +262,10 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   async _returnToMain(): Promise<void> {
     try {
-      console.log(1);
       await Translations.loadTranslations(this.props.language);
 
-      console.log(2);
       const university = await Configuration.getConfig('/university.json');
-      console.log(3);
       const transit = await Configuration.getConfig('/transit.json');
-      console.log(4);
       this.props.setConfiguration(university, transit);
       this.props.navigator.push({ id: 'main' });
     } catch (err) {

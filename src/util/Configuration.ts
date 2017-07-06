@@ -370,8 +370,6 @@ async function _getConfigFile(configFile: string): Promise < any | undefined > {
   // Load and parse the configuration file
   const raw = await RNFS.readFile(CONFIG_DIRECTORY + dir + configFile, 'utf8');
 
-  console.log(`${configFile}: ${raw}`);
-
   return JSON.parse(raw);
 }
 
