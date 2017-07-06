@@ -15,16 +15,16 @@ A mobile app, developed with React Native, to help students of the University of
 1. Clone the repository: `git clone https://github.com/josephroque/campus-guide``
 2. Make your changes.
 3. Ensure the following requirements for a contribution are met when running these commands:
-    - `npm run lint`: There should be no errors (warnings are OK).
-    - `npm test`: All tests should pass.
+    - `yarn run lint`: There should be no errors (warnings are OK).
+    - `yarn test`: All tests should pass.
     - If you create any utility methods or files (src/util), ensure there are tests.
 
 ### Travis CI
 
 Travis CI runs the following commands, which must succeed in order for your changes to be accepted:
 
-- `npm run lint`
-- `npm test`
+- `yarn run lint`
+- `yarn run test`
 
 ## Design
 
