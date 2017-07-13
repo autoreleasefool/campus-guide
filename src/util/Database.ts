@@ -31,6 +31,9 @@ import { ConfigFile } from './Configuration';
 /** Identifier for storing Configuration file versions.  */
 const STORE_CONFIG_VERSIONS = 'configFiles';
 
+/** Identifier for storing time of last configuration update. */
+const STORE_CONFIG_LAST_UPDATED_AT = 'configLastUpdatedAt';
+
 /** Identifier for storing user schedule. */
 const STORE_SCHEDULE = 'schedule';
 
@@ -67,6 +70,24 @@ export async function getConfigVersions(): Promise<ConfigFile[]> {
   }
 
   return Arrays.sortObjectArrayByKeyValues(configVersions, 'name');
+}
+
+/**
+ * Gets the time the configuration was last updated at.
+ *
+ * @returns {Promise<number>}
+ */
+export async function getConfigLastUpdatedAt(): Promise<number> {
+  const lastUpdatedAt = await store.get(STORE_CONFIG_LAST_UPDATED_AT);
+  if (lastUpdatedAt == undefined) {
+    return 0;
+  }
+
+  return lastUpdatedAt.time || 0;
+}
+
+export function saveConfigLastUpdatedAt(time: number): Promise<void> {
+  return store.save(STORE_CONFIG_LAST_UPDATED_AT, { time });
 }
 
 /**

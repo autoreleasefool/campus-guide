@@ -20,12 +20,10 @@
  * @file Configuration.ts
  * @description Manages the configuration of the application.
  */
-'use strict';
 
 // Imports
 import * as Database from './Database';
 import * as DeviceInfo from 'react-native-device-info';
-import * as env from '../env';
 import * as HttpStatus from 'http-status-codes';
 import * as RNFS from 'react-native-fs';
 
@@ -42,6 +40,7 @@ export interface Options {
   currentSemester?: number;                 // Current semester for editing, selected by the user
   firstTime?: boolean;                      // Indicates if it's the user's first time in the app
   language?: Language | undefined;          // User's preferred language
+  lastUpdatedAt?: number;                   // Time the config was last updated from the server
   preferredTimeFormat?: TimeFormat;         // Either 12 or 24h time
   prefersWheelchair?: boolean;              // Only provide wheelchair accessible routes
   preferByCourse?: boolean;                 // True to default schedule view by course, false for by week
@@ -66,18 +65,16 @@ export interface ProgressUpdate {
 /** Describes a configuration file. */
 export interface ConfigFile {
   name: string;     // Name of the file
+  size: number;     // Size of the file
   type: string;     // Type of file: image, json, csv, etc.
+  url: string;      // URL to GET file
   version: number;  // Version number
 }
 
-/** Description of a file which is being updated. */
-interface FileUpdate {
-  name: string;       // Name of the file
-  type: string;       // Type of file: image, json, csv, etc.
-  url: string;        // URL to update file from
-  size: number;       // Size of the file, in bytes
-  oldVersion: number; // Existing version number
-  newVersion: number; // New, updated version number
+/** Details of the available configuration files for the app. */
+interface ConfigurationDetails {
+  lastUpdatedAt: number;  // Milliseconds since epoch for time the file was last updated
+  files: ConfigFile[];    // List of files in app configuration
 }
 
 /** Callback methods that can be provided to the configuration update */
@@ -87,12 +84,6 @@ interface UpdateCallbacks {
                                                                             // Invoked as each file begins downloading
   onDownloadProgress?(progress: RNFS.DownloadProgressCallbackResult): void; // Invoked for large downloads
   onDownloadComplete?(name: string, download: RNFS.DownloadResult): void;   // Invoked as each file finishes downloading
-}
-
-/** Stripped down promise class, with only resolve and reject methods. */
-interface NaivePromise {
-  resolve(r: any): void;  // Promises resolve when they complete successfully
-  reject(a: any): void;   // Promises reject when an error occurs
 }
 
 // Subdirectories which files of certain types should be placed/found in
@@ -110,52 +101,47 @@ const TEMP_CONFIG_DIRECTORY = `${RNFS.DocumentDirectoryPath}/temp/config`;
 let configInitializing = false;
 // Indicates if the configuration has finished initializing
 let configurationInitialized = false;
-// List of promises that should resolve or reject if the configuration is available or not
-const availablePromises: NaivePromise[] = [];
-
-// List of configuration files which have updates available
-let configurationUpdates: FileUpdate[] = [];
 // Indicates if the app has checked for a configuration update yet
 let checkedForUpdate = false;
+// List of promises that should resolve or reject if the configuration is available or not
+const initPromises: any[] = [];
 
 // Set to true to delete configuration when app opens. Only possible while debugging.
 let clearConfigOnStart = true;
 
 /**
- * Asynchronously gets the configuration for the application and loads the various config values into their
- * respective variables.
+ * Asynchronously gets the configuration for the application from the cache.
  */
-async function _requestConfig(): Promise < void > {
-
+async function _initializeConfiguration(): Promise<void> {
   if (__DEV__ && clearConfigOnStart) {
     clearConfigOnStart = false;
     await _deleteConfiguration();
   }
 
-  let configVersions;
+  let expectedConfigVersions;
   try {
-    configVersions = await Database.getConfigVersions();
-  } catch (e) {
-    throw e;
+    expectedConfigVersions = await Database.getConfigVersions();
+  } catch (err) {
+    throw err;
   }
 
-  if (configVersions == undefined || configVersions.length === 0) {
+  if (expectedConfigVersions == undefined || expectedConfigVersions.length === 0) {
     throw new Error('Configuration versions were not found in database.');
   }
 
-  // Ensure all config files exist
+  // Ensure all files exist
   let configAvailable = true;
-  for (const config of configVersions) {
-    if (config.version > 0) {
+  for (const file of expectedConfigVersions) {
+    if (file.version > 0) {
       try {
-        const dir = CONFIG_SUBDIRECTORIES[config.type];
-        const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + config.name);
+        const dir = CONFIG_SUBDIRECTORIES[file.type];
+        const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + file.name);
         configAvailable = configAvailable && exists;
         if (!exists && __DEV__) {
-          console.log(`Could not find configuration file: ${config.name}`);
+          console.log(`Could not find configuration file: ${file.name}`);
         }
-      } catch (e) {
-        throw e;
+      } catch (err) {
+        throw err;
       }
     }
   }
@@ -173,7 +159,7 @@ async function _requestConfig(): Promise < void > {
  */
 function _initSuccess(): void {
   configInitializing = false;
-  for (const promise of availablePromises) {
+  for (const promise of initPromises) {
     promise.resolve({});
   }
 }
@@ -189,188 +175,32 @@ function _initError(err: any): void {
   }
 
   configInitializing = false;
-  for (const promise of availablePromises) {
+  for (const promise of initPromises) {
     promise.reject(err);
   }
 }
 
 /**
- * Checks if there is a configuration available to download. Returns true or false in a promise.
+ * Returns a promise that resolves if all expected versions of configuration files exist,
+ * or rejects otherwise.
  *
- * @returns {Promise<boolean>} promise which resolves to true or false depending on if a config update is available
+ * @returns {Promise<void>} promise that will resolve/reject when configuration is found or not
  */
-async function _refreshConfigVersions(): Promise < boolean > {
-  try {
-    // Get current config versions
-    const configVersions = await Database.getConfigVersions();
+export function init(): Promise<void> {
+  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
+    if (configurationInitialized) {
+      resolve({});
+    } else {
+      initPromises.push({ resolve, reject });
 
-    // Fetch most recent config versions from server
-    const configUpdateURL = `${env.configUpdatesServerUrl}/config/${DeviceInfo.getVersion()}`;
-    const response = await fetch(configUpdateURL, {
-      headers: { Authorization: env.authorizationKey },
-      method: 'GET',
-    });
-    const appConfig = await response.json();
-
-    // Will indicate if any updates are available
-    let updateAvailable = false;
-
-    configurationUpdates = [];
-    for (const config in appConfig) {
-      if (appConfig.hasOwnProperty(config)) {
-        let found = false;
-        for (const configVersion of configVersions) {
-          if (configVersion.name === config) {
-              found = true;
-              if (configVersion.version < appConfig[config].version) {
-                updateAvailable = true;
-                configurationUpdates.push({
-                  name: config,
-                  newVersion: appConfig[config].version,
-                  oldVersion: configVersion.version,
-                  size: appConfig[config].size,
-                  type: appConfig[config].type,
-                  url: appConfig[config].location.url,
-                });
-              }
-            }
-        }
-
-        if (!found) {
-          updateAvailable = true;
-          configurationUpdates.push({
-            name: config,
-            newVersion: appConfig[config].version,
-            oldVersion: 0,
-            size: appConfig[config].size,
-            type: appConfig[config].type,
-            url: appConfig[config].location.url,
-          });
-        }
+      if (!configInitializing) {
+        configInitializing = true;
+        _initializeConfiguration()
+            .then(_initSuccess)
+            .catch(_initError);
       }
     }
-
-    return updateAvailable;
-  } catch (e) {
-    throw e;
-  }
-}
-
-/**
- * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
- *
- * @param {UpdateCallbacks} callbacks functions to invoke as update progresses
- */
-async function _updateConfig(callbacks: UpdateCallbacks): Promise < void > {
-  if (configurationUpdates.length === 0) {
-    // If there are no updates, exit
-    return;
-  }
-
-  // Generate directories
-  await RNFS.mkdir(CONFIG_DIRECTORY);
-  await RNFS.mkdir(TEMP_CONFIG_DIRECTORY);
-  for (const type in CONFIG_SUBDIRECTORIES) {
-    if (CONFIG_SUBDIRECTORIES.hasOwnProperty(type)) {
-      await RNFS.mkdir(CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES[type]);
-    }
-  }
-
-  // Get total size of update
-  let totalSize = 0;
-  for (const update of configurationUpdates) {
-    totalSize += update.size;
-  }
-
-  if (callbacks.onUpdateStart) {
-    callbacks.onUpdateStart(totalSize, configurationUpdates.length);
-  }
-
-  // Add filename to download info and invoke start callback
-  const onStart = (filename: string, download: RNFS.DownloadBeginCallbackResult): void => {
-    if (callbacks.onDownloadStart) {
-      callbacks.onDownloadStart(filename, download);
-    }
-  };
-
-  try {
-    for (const update of configurationUpdates) {
-
-      // Download the file
-      const downloadResult = await RNFS.downloadFile({
-        begin: (download: RNFS.DownloadBeginCallbackResult): void => onStart(update.name, download),
-        fromUrl: update.url,
-        headers: { Authorization: env.authorizationKey },
-        progress: callbacks.onDownloadProgress,
-        toFile: TEMP_CONFIG_DIRECTORY + update.name,
-      }).promise;
-
-      if (downloadResult.statusCode !== HttpStatus.OK) {
-        throw new Error(`Download of file ${update.name} failed. Status code: ${downloadResult.statusCode}`);
-      }
-
-      // Get file stats
-      const fileStats = await RNFS.stat(TEMP_CONFIG_DIRECTORY + update.name);
-      downloadResult.bytesWritten = parseInt(fileStats.size);
-      if (callbacks.onDownloadComplete) {
-        callbacks.onDownloadComplete(update.name, downloadResult);
-      }
-    }
-
-    const configRowUpdates: ConfigFile[] = [];
-
-    // Delete the old configuration files, move the new ones
-    for (const update of configurationUpdates) {
-      // Delete the file if it exists
-      const exists = await RNFS.exists(CONFIG_DIRECTORY + update.name);
-      if (exists) {
-        await RNFS.unlink(CONFIG_DIRECTORY + update.name);
-      }
-
-      await RNFS.moveFile(
-        TEMP_CONFIG_DIRECTORY + update.name,
-        CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES[update.type] + update.name
-      );
-
-      configRowUpdates.push({
-        name: update.name,
-        type: update.type,
-        version: update.newVersion,
-      });
-    }
-
-    // Delete temporary downloads
-    await RNFS.unlink(TEMP_CONFIG_DIRECTORY);
-
-    // Update config versions in database
-    await Database.updateConfigVersions(configRowUpdates);
-
-    configurationInitialized = false;
-    await init();
-  } catch (e) {
-    throw e;
-  }
-}
-
-/**
- * Returns a promise that resolves when the config file can be found, or rejects.
- *
- * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
- * @returns {Promise<any|undefined>} promise that resolves when the configuration is loaded
- */
-async function _getConfigFile(configFile: string): Promise < any | undefined > {
-  // First, make sure the file exists
-  const dir = CONFIG_SUBDIRECTORIES.json;
-  const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + configFile);
-
-  if (!exists) {
-    throw new Error(`Configuration file '${dir}${configFile}' does not exist.`);
-  }
-
-  // Load and parse the configuration file
-  const raw = await RNFS.readFile(CONFIG_DIRECTORY + dir + configFile, 'utf8');
-
-  return JSON.parse(raw);
+  });
 }
 
 /**
@@ -378,7 +208,7 @@ async function _getConfigFile(configFile: string): Promise < any | undefined > {
  *
  * @returns {Promise<void>} a promise which reoslves when the configuration is deleted
  */
-async function _deleteConfiguration(): Promise < void > {
+async function _deleteConfiguration(): Promise<void> {
   if (!__DEV__) {
     return;
   }
@@ -401,7 +231,9 @@ async function _deleteConfiguration(): Promise < void > {
 
       clearVersions.push({
         name: configVersion.name,
+        size: 0,
         type: configVersion.type,
+        url: '',
         version: 0,
       });
     }
@@ -414,47 +246,199 @@ async function _deleteConfiguration(): Promise < void > {
 }
 
 /**
- * Returns a promise that resolves if a version of the configuration is available, or rejects if the configuration
- * cannot be found.
+ * Gets the lastUpdatedAt field of the most recent config.
  *
- * @returns {Promise<void>} promise that will resolve/reject when configuration is found or not
+ * @returns {Promise<number>} lastUpdatedAt of config
  */
-export function init(): Promise < void > {
-  return new Promise((resolve: (r: any) => void, reject: (e: any) => void): void => {
-    if (configurationInitialized) {
-      resolve({});
-    } else {
-      availablePromises.push({ resolve, reject });
-
-      if (!configInitializing) {
-        configInitializing = true;
-        _requestConfig()
-            .then(_initSuccess)
-            .catch(_initError);
-      }
-    }
-  });
+async function getConfigLastUpdatedAt(): Promise<number> {
+  try {
+    return await Database.getConfigLastUpdatedAt();
+  } catch (err) {
+    throw err;
+  }
 }
 
 /**
- * Checks if there is a configuration available to download. Returns true or false in a promise.
+ * Updates the configuration lastUpdatedAt time.
  *
- * @returns {Promise<boolean>} promise which resolves to true or false depending on if a config update is available
+ * @param {number} lastUpdatedAt the new time
+ * @returns {Promise<void>} promise which resolves when the time is saved
  */
-export function isConfigUpdateAvailable(): Promise < boolean > {
-  checkedForUpdate = true;
-
-  return _refreshConfigVersions();
+function setConfigLastUpdatedAt(lastUpdatedAt: number): Promise<void> {
+  return Database.saveConfigLastUpdatedAt(lastUpdatedAt);
 }
 
 /**
  * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
  *
- * @param {UpdateCallbacks} callbacks functions to invoke as update progresses
+ * @param {ConfigurationDetails} configDetails set of files to update
+ * @param {UpdateCallbacks}      callbacks     functions to invoke as update progresses
+ */
+async function _updateConfig(configDetails: ConfigurationDetails, callbacks: UpdateCallbacks): Promise < void > {
+  if (configDetails.files.length === 0) {
+    // If there are no updates, exit
+    return;
+  }
+
+  // Generate directories
+  await RNFS.mkdir(CONFIG_DIRECTORY);
+  await RNFS.mkdir(TEMP_CONFIG_DIRECTORY);
+  for (const type in CONFIG_SUBDIRECTORIES) {
+    if (CONFIG_SUBDIRECTORIES.hasOwnProperty(type)) {
+      await RNFS.mkdir(CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES[type]);
+    }
+  }
+
+  // Get total size of update
+  let totalSize = 0;
+  for (const update of configDetails.files) {
+    totalSize += update.size;
+  }
+
+  if (callbacks.onUpdateStart) {
+    callbacks.onUpdateStart(totalSize, configDetails.files.length);
+  }
+
+  // Add filename to download info and invoke start callback
+  const onStart = (filename: string, download: RNFS.DownloadBeginCallbackResult): void => {
+    if (callbacks.onDownloadStart) {
+      callbacks.onDownloadStart(filename, download);
+    }
+  };
+
+  try {
+    for (const update of configDetails.files) {
+
+      // Download the file
+      const downloadResult = await RNFS.downloadFile({
+        begin: (download: RNFS.DownloadBeginCallbackResult): void => onStart(update.name, download),
+        fromUrl: update.url,
+        progress: callbacks.onDownloadProgress,
+        toFile: TEMP_CONFIG_DIRECTORY + update.name,
+      }).promise;
+
+      if (downloadResult.statusCode !== HttpStatus.OK) {
+        throw new Error(`Download of file ${update.name} failed. Status code: ${downloadResult.statusCode}`);
+      }
+
+      // Get file stats
+      const fileStats = await RNFS.stat(TEMP_CONFIG_DIRECTORY + update.name);
+      downloadResult.bytesWritten = parseInt(fileStats.size);
+      if (callbacks.onDownloadComplete) {
+        callbacks.onDownloadComplete(update.name, downloadResult);
+      }
+    }
+
+    const configRowUpdates: ConfigFile[] = [];
+
+    // Delete the old configuration files, move the new ones
+    for (const update of configDetails.files) {
+      // Delete the file if it exists
+      const exists = await RNFS.exists(CONFIG_DIRECTORY + update.name);
+      if (exists) {
+        await RNFS.unlink(CONFIG_DIRECTORY + update.name);
+      }
+
+      await RNFS.moveFile(
+        TEMP_CONFIG_DIRECTORY + update.name,
+        CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES[update.type] + update.name
+      );
+
+      configRowUpdates.push(update);
+    }
+
+    // Delete temporary downloads
+    await RNFS.unlink(TEMP_CONFIG_DIRECTORY);
+
+    // Update config versions in database
+    await Database.updateConfigVersions(configRowUpdates);
+    await setConfigLastUpdatedAt(configDetails.lastUpdatedAt);
+
+    configurationInitialized = false;
+    await init();
+  } catch (e) {
+    throw e;
+  }
+}
+
+/**
+ * Updates the configuration, invoking a callback with progress on the download so the UI may be updated.
+ *
+ * @param {ConfigurationDetails} configDetails set of files to update
+ * @param {UpdateCallbacks}      callbacks     functions to invoke as update progresses
  * @returns {Promise<void>} a promise which resolves when the update is complete
  */
-export function updateConfig(callbacks: UpdateCallbacks): Promise < void > {
-  return _updateConfig(callbacks);
+export function updateConfig(configDetails: ConfigurationDetails, callbacks: UpdateCallbacks): Promise<void> {
+  return _updateConfig(configDetails, callbacks);
+}
+
+/**
+ * Checks if there is a configuration available to download. Returns the list of files available to update.
+ *
+ * @returns {Promise<ConfigurationDetails>} promise which resolves to true or false depending on if a
+ *                                          config update is available
+ */
+async function _getAvailableConfigUpdates(): Promise<ConfigurationDetails> {
+  try {
+    // Fetch most recent config versions from server
+    const configLocation = __DEV__ ? 'http://localhost:8080' : ''; // TODO: get server name in production env
+    const configUpdateURL = `${configLocation}/config/${DeviceInfo.getVersion()}.json`;
+    const response = await fetch(configUpdateURL);
+    const appConfig: ConfigurationDetails = await response.json();
+    const appConfigToUpdate: ConfigurationDetails = {
+      files: [],
+      lastUpdatedAt: appConfig.lastUpdatedAt,
+    };
+
+    const lastUpdatedAt = await getConfigLastUpdatedAt();
+    if (appConfig.lastUpdatedAt <= lastUpdatedAt) {
+      return appConfigToUpdate;
+    }
+
+    // Get current config versions
+    const currentConfigFiles = await Database.getConfigVersions();
+
+    for (const file of appConfig.files) {
+      let found = false;
+      for (let i = 0; i < currentConfigFiles.length; i++) {
+        if (currentConfigFiles[i].name === file.name) {
+          found = true;
+          if (currentConfigFiles[i].version < file.version) {
+            appConfigToUpdate.files.push({
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              url: file.url,
+              version: currentConfigFiles[i].version,
+            });
+          }
+
+          currentConfigFiles.splice(i, 1);
+          break;
+        }
+      }
+
+      if (!found) {
+        appConfigToUpdate.files.push({ ...file });
+      }
+    }
+
+    return appConfigToUpdate;
+  } catch (err) {
+    throw err;
+  }
+}
+
+/**
+ * Checks if there is a configuration available to download. Returns the list of files available to update.
+ *
+ * @returns {Promise<ConfigurationDetails>} promise which resolves to with the list of available updates,
+ *                                          or an empty list
+ */
+export function getAvailableConfigUpdates(): Promise<ConfigurationDetails> {
+  checkedForUpdate = true;
+
+  return _getAvailableConfigUpdates();
 }
 
 /**
@@ -472,7 +456,28 @@ export function didCheckForUpdate(): boolean {
  * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
  * @returns {Promise<any|undefined>} promise that resolves when the configuration is loaded
  */
-export async function getConfig(configFile: string): Promise < any | undefined > {
+async function _getConfigFile(configFile: string): Promise<any|undefined> {
+  // First, make sure the file exists
+  const dir = CONFIG_SUBDIRECTORIES.json;
+  const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + configFile);
+
+  if (!exists) {
+    throw new Error(`Configuration file '${dir}${configFile}' does not exist.`);
+  }
+
+  // Load and parse the configuration file
+  const raw = await RNFS.readFile(CONFIG_DIRECTORY + dir + configFile, 'utf8');
+
+  return JSON.parse(raw);
+}
+
+/**
+ * Returns a promise that resolves when the config file can be found, or rejects.
+ *
+ * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
+ * @returns {Promise<any|undefined>} promise that resolves when the configuration is loaded
+ */
+export async function getConfig(configFile: string): Promise<any|undefined> {
   await init();
 
   return await _getConfigFile(configFile);

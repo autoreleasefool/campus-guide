@@ -33,12 +33,16 @@ import { default as store } from 'react-native-simple-store';
 const baseVersions = [
   {
     name: 'config_1',
+    size: 0,
     type: 'json',
+    url: 'http://example.com',
     version: 1,
   },
   {
     name: 'config_2',
+    size: 100,
     type: 'image',
+    url: 'http://example.com',
     version: 2,
   },
 ];
@@ -47,51 +51,35 @@ const baseVersions = [
 const updatedVersions1 = [
   {
     name: 'config_1',
+    size: 1,
     type: 'json',
+    url: 'http://example.com',
     version: 2,
   },
 ];
 
 // Combine base and updated config files
 const baseAndUpdates1 = [
-  {
-    name: 'config_1',
-    type: 'json',
-    version: 2,
-  },
-  {
-    name: 'config_2',
-    type: 'image',
-    version: 2,
-  },
+  updatedVersions1[0],
+  baseVersions[1],
 ];
 
 // Update specific config file version
 const updatedVersions2 = [
   {
     name: 'config_3',
+    size: 99,
     type: 'json',
+    url: 'http://campusguide.ca',
     version: 3,
   },
 ];
 
 // Combine base and updated config files
 const baseAndUpdates2 = [
-  {
-    name: 'config_1',
-    type: 'json',
-    version: 1,
-  },
-  {
-    name: 'config_2',
-    type: 'image',
-    version: 2,
-  },
-  {
-    name: 'config_3',
-    type: 'json',
-    version: 3,
-  },
+  baseVersions[0],
+  baseVersions[1],
+  updatedVersions2[0],
 ];
 
 // Initial base schedule to load and save

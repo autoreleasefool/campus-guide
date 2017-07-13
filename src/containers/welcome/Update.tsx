@@ -116,9 +116,9 @@ class UpdateScreen extends React.PureComponent<Props, State> {
           this._onUpdateStart(totalSize, totalFiles),
     };
 
-    let available = false;
     try {
-      available = await Configuration.isConfigUpdateAvailable();
+      const availableUpdates = await Configuration.getAvailableConfigUpdates();
+      await Configuration.updateConfig(availableUpdates, callbacks);
     } catch (err) {
       if (__DEV__) {
         console.log('Failed configuration update check.', err);
@@ -126,14 +126,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       this._notifyServerFailed();
 
       return;
-    }
-
-    if (available) {
-      try {
-        await Configuration.updateConfig(callbacks);
-      } catch (err) {
-        console.error('Failed to update configuration.', err);
-      }
     }
 
     this._returnToMain();

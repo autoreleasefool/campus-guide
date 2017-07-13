@@ -77,8 +77,8 @@ class Main extends React.PureComponent<Props, State> {
     }
 
     try {
-      const available = await Configuration.isConfigUpdateAvailable();
-      if (available) {
+      const available = await Configuration.getAvailableConfigUpdates();
+      if (available.files.length > 0) {
         const language = this.props.language;
 
         Alert.alert(
