@@ -69,6 +69,8 @@ export interface ConfigFile {
   type: string;     // Type of file: image, json, csv, etc.
   url: string;      // URL to GET file
   version: number;  // Version number
+  zsize?: number;   // Size of the file, zipped
+  zurl?: boolean;   // True if a gzipped version of the file exists
 }
 
 /** Details of the available configuration files for the app. */
@@ -107,14 +109,16 @@ let checkedForUpdate = false;
 const initPromises: any[] = [];
 
 // Set to true to delete configuration when app opens. Only possible while debugging.
-let clearConfigOnStart = true;
+const clearConfigOnStart = true;
+// Indicates if the config has been cleared
+let configCleared = false;
 
 /**
  * Asynchronously gets the configuration for the application from the cache.
  */
 async function _initializeConfiguration(): Promise<void> {
-  if (__DEV__ && clearConfigOnStart) {
-    clearConfigOnStart = false;
+  if (__DEV__ && clearConfigOnStart && !configCleared) {
+    configCleared = true;
     await _deleteConfiguration();
   }
 
@@ -312,11 +316,11 @@ async function _updateConfig(configDetails: ConfigurationDetails, callbacks: Upd
 
   try {
     for (const update of configDetails.files) {
-
       // Download the file
       const downloadResult = await RNFS.downloadFile({
         begin: (download: RNFS.DownloadBeginCallbackResult): void => onStart(update.name, download),
-        fromUrl: update.url,
+        fromUrl: (update.zsize && update.zurl) ? `${update.url}.gz` : update.url,
+        headers: { 'Accept-Encoding': 'true' },
         progress: callbacks.onDownloadProgress,
         toFile: TEMP_CONFIG_DIRECTORY + update.name,
       }).promise;
@@ -395,7 +399,7 @@ async function _getAvailableConfigUpdates(): Promise<ConfigurationDetails> {
     };
 
     const lastUpdatedAt = await getConfigLastUpdatedAt();
-    if (appConfig.lastUpdatedAt <= lastUpdatedAt) {
+    if (appConfig.lastUpdatedAt <= lastUpdatedAt && !(__DEV__ && clearConfigOnStart)) {
       return appConfigToUpdate;
     }
 
@@ -408,13 +412,20 @@ async function _getAvailableConfigUpdates(): Promise<ConfigurationDetails> {
         if (currentConfigFiles[i].name === file.name) {
           found = true;
           if (currentConfigFiles[i].version < file.version) {
-            appConfigToUpdate.files.push({
+            const fileUpdate: ConfigFile = {
               name: file.name,
               size: file.size,
               type: file.type,
               url: file.url,
               version: currentConfigFiles[i].version,
-            });
+            };
+
+            if (file.zsize && file.zurl) {
+              fileUpdate.zsize = file.zsize;
+              fileUpdate.zurl = file.zurl;
+            }
+
+            appConfigToUpdate.files.push(fileUpdate);
           }
 
           currentConfigFiles.splice(i, 1);
