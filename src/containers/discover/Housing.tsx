@@ -175,7 +175,7 @@ class Housing extends React.PureComponent<Props, State> {
       const housingInfo = await Configuration.getConfig('/housing.json');
       this.setState({ housingInfo });
     } catch (err) {
-      console.error('Configuration could not be initialized for housing.', err)
+      console.error('Configuration could not be initialized for housing.', err);
     }
   }
 

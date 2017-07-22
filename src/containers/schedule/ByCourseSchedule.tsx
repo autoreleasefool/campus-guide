@@ -60,7 +60,6 @@ interface State {}
 
 class ByCourseSchedule extends React.PureComponent<Props, State> {
 
-
   /**
    * Requests a modal for the user to edit an existing course.
    *

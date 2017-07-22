@@ -574,7 +574,7 @@ class LectureModal extends React.PureComponent<Props, State> {
             rightActionText={Translations.get(this.props.language, modalRightAction)}
             title={Translations.get(this.props.language, modalTitle)}
             onLeftAction={this._close.bind(this)}
-            onRightAction={() => this._saveLecture({
+            onRightAction={(): void => this._saveLecture({
               day: this.state.day,
               endTime: this.state.ends,
               format: this.state.format,

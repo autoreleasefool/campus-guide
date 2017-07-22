@@ -147,7 +147,7 @@ class Settings extends React.PureComponent<Props, State> {
       this._settingSections = settingSections;
       this.setState({ loaded: true });
     } catch (err) {
-      console.error('Configuration could not be initialized for settings.', err)
+      console.error('Configuration could not be initialized for settings.', err);
     }
   }
 

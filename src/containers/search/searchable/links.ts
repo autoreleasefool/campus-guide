@@ -156,7 +156,7 @@ export async function getResults(
 
   // Ignore the case of the search terms
   const adjustedSearchTerms: string = searchTerms.toUpperCase();
-  const results = await _getResults(language, adjustedSearchTerms, linkSections)
+  const results = await _getResults(language, adjustedSearchTerms, linkSections);
 
   return results;
 }
