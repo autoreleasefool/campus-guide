@@ -35,6 +35,9 @@ const translations = {
   fr: undefined,
 };
 
+// Core translations
+const CoreTranslations = require('../../assets/json/CoreTranslations');
+
 /**
  * Loads and parses a set of translations from the downloaded configuration.
  *
@@ -252,7 +255,10 @@ export function getName(language: Language, obj: object | undefined): string | u
  * @returns {string} the translated string, or any empty string if the translation is not available
  */
 export function get(language: Language, property: string): string {
-  if (translations[language] == undefined) {
+  if (CoreTranslations[language] != undefined
+      && CoreTranslations[language][property] != undefined) {
+    return CoreTranslations[language][property];
+  } else if (translations[language] == undefined) {
     return '';
   } else {
     return translations[language][property] || '';
