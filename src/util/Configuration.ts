@@ -92,6 +92,7 @@ interface UpdateCallbacks {
 const CONFIG_SUBDIRECTORIES = {
   image: '/images',
   json: '/json',
+  text: '/text',
 };
 
 // Directory for config files
@@ -496,6 +497,39 @@ export async function getConfig(configFile: string): Promise<any|undefined> {
   await init();
 
   return await _getConfigFile(configFile);
+}
+
+/**
+ * Returns a promise that resolves when the text file can be found, or rejects.
+ *
+ * @param {string} textFile name of the text file to retrieve. Make sure it starts with a '/'
+ * @returns {Promise<string|undefined>} promise that resolves when the text is loaded
+ */
+async function _getTextFile(textFile: string): Promise<string|undefined> {
+  // First, make sure the file exists
+  const dir = CONFIG_SUBDIRECTORIES.text;
+  const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + textFile);
+
+  if (!exists) {
+    throw new Error(`Text file '${dir}${textFile}' does not exist.`);
+  }
+
+  // Load and parse the text file
+  const raw = await RNFS.readFile(CONFIG_DIRECTORY + dir + textFile, 'utf8');
+
+  return raw;
+}
+
+/**
+ * Returns a promise that resolves when the text file can be found, or rejects.
+ *
+ * @param {string} textFile name of the text file to retrieve. Make sure it starts with a '/'
+ * @returns {Promise<string|undefined>} promise that resolves when the text is loaded
+ */
+export async function getTextFile(textFile: string): Promise<string|undefined> {
+  await init();
+
+  return await _getTextFile(textFile);
 }
 
 /**
