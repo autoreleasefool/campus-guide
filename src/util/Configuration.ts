@@ -470,9 +470,9 @@ export function didCheckForUpdate(): boolean {
  * Returns a promise that resolves when the config file can be found, or rejects.
  *
  * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
- * @returns {Promise<any|undefined>} promise that resolves when the configuration is loaded
+ * @returns {Promise<any>} promise that resolves when the configuration is loaded
  */
-async function _getConfigFile(configFile: string): Promise<any|undefined> {
+async function _getConfigFile(configFile: string): Promise<any> {
   // First, make sure the file exists
   const dir = CONFIG_SUBDIRECTORIES.json;
   const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + configFile);
@@ -491,9 +491,9 @@ async function _getConfigFile(configFile: string): Promise<any|undefined> {
  * Returns a promise that resolves when the config file can be found, or rejects.
  *
  * @param {string} configFile name of the config file to retrieve. Make sure it starts with a '/'
- * @returns {Promise<any|undefined>} promise that resolves when the configuration is loaded
+ * @returns {Promise<any>} promise that resolves when the configuration is loaded
  */
-export async function getConfig(configFile: string): Promise<any|undefined> {
+export async function getConfig(configFile: string): Promise<any> {
   await init();
 
   return await _getConfigFile(configFile);
@@ -503,9 +503,9 @@ export async function getConfig(configFile: string): Promise<any|undefined> {
  * Returns a promise that resolves when the text file can be found, or rejects.
  *
  * @param {string} textFile name of the text file to retrieve. Make sure it starts with a '/'
- * @returns {Promise<string|undefined>} promise that resolves when the text is loaded
+ * @returns {Promise<string>} promise that resolves when the text is loaded
  */
-async function _getTextFile(textFile: string): Promise<string|undefined> {
+async function _getTextFile(textFile: string): Promise<string> {
   // First, make sure the file exists
   const dir = CONFIG_SUBDIRECTORIES.text;
   const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + textFile);
@@ -524,9 +524,9 @@ async function _getTextFile(textFile: string): Promise<string|undefined> {
  * Returns a promise that resolves when the text file can be found, or rejects.
  *
  * @param {string} textFile name of the text file to retrieve. Make sure it starts with a '/'
- * @returns {Promise<string|undefined>} promise that resolves when the text is loaded
+ * @returns {Promise<string>} promise that resolves when the text is loaded
  */
-export async function getTextFile(textFile: string): Promise<string|undefined> {
+export async function getTextFile(textFile: string): Promise<string> {
   await init();
 
   return await _getTextFile(textFile);
