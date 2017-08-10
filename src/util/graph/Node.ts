@@ -17,12 +17,12 @@
  *
  * @author Joseph Roque
  * @created 2017-08-04
- * @file GraphNode.ts
+ * @file Node.ts
  * @description Node in a graph
  */
 
  /** Node types */
-export enum NodeType {
+export enum Type {
   Door = 'D',
   Elevator = 'E',
   Hallway = 'H',
@@ -30,7 +30,7 @@ export enum NodeType {
   Stairs = 'S',
 }
 
-export default class GraphNode {
+export default class Node {
 
   /** Original ID used to construct the node. */
   _originalId: string;
@@ -39,7 +39,7 @@ export default class GraphNode {
   _formattedId: string;
 
   /** Type of the node. */
-  _type: NodeType;
+  _type: Type;
 
   /** The name of the node. */
   _name: string;
@@ -63,13 +63,13 @@ export default class GraphNode {
   constructor(id: string, building: string, formats: Map<string, string>) {
     // Parse node properties
     this._originalId = id;
-    this._formattedId = GraphNode.buildId(id, building);
-    this._type = this._formattedId.charAt(this._formattedId.indexOf('-') + 1) as NodeType;
+    this._formattedId = Node.buildId(id, building);
+    this._type = this._formattedId.charAt(this._formattedId.indexOf('-') + 1) as Type;
     this._name = this._formattedId.substr(this._formattedId.indexOf('-') + 2);
     this._building = building;
 
     // Get floor of the node by comparing it to available floors
-    if (this._type === NodeType.Room) {
+    if (this._type === Type.Room) {
       for (const format of formats.keys()) {
         if (!format.startsWith('floor')) {
           continue;
@@ -116,14 +116,8 @@ export default class GraphNode {
   /**
    * Returns the type of node.
    */
-  getType(): NodeType {
+  getType(): Type {
     return this._type;
   }
 
-  /**
-   * Override the toString() function.
-   */
-  toString(): string {
-    return this._formattedId;
-  }
 }
