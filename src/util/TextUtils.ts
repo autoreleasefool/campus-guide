@@ -143,6 +143,30 @@ export function getFormattedTimeSinceMidnight(
 }
 
 /**
+ * Returns the ordinal value of a number, such as 1 -> 1st.
+ *
+ * @param value the value to get the ordinal for
+ * @returns {string} the ordinal
+ */
+export function getOrdinal(value: number | string): string {
+  const valueInt = typeof (value) === 'number' ? value : parseInt(value);
+  const ones = valueInt % 10;
+  if (ones >= 1 && ones <= 3) {
+    const tenths = valueInt % 100;
+    if (tenths < 11 || tenths > 13) {
+      switch (ones) {
+        case 1: return '1st';
+        case 2: return '2nd';
+        case 3: return '3rd';
+        default: return `${value}th`;
+      }
+    }
+  }
+
+  return `${value}th`;
+}
+
+/**
  * If text length is greater than {maxLength}, the text is shortened to maxLength - 2 and 2 periods are added to the
  * end of the text.
  *
