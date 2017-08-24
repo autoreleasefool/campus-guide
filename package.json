@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "fastpriorityqueue": "^0.3.1",
-    "http-status-codes": "^1.0.6",
+    "http-status-codes": "^1.2.0",
     "moment": "^2.18.1",
     "react": "16.0.0-alpha.12",
     "react-native": "^0.46.4",
