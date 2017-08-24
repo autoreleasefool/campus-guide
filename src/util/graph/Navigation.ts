@@ -25,8 +25,6 @@ import * as Configuration from '../Configuration';
 import * as FastPriorityQueue from 'fastpriorityqueue';
 import { default as Node, Type as NodeType } from './Node';
 
-import { Destination } from '../../../typings/university';
-
 /** Possible states for parsing graphs. */
 enum GraphParseState {
   Format = '[FORMAT]',
@@ -39,7 +37,7 @@ enum GraphParseState {
 /** Intermediate interface for building a path. */
 interface PartialPath {
   dist: number;
-  source: Node | undefined;
+  node: Node | undefined;
 }
 
 /** Possible directions that edges travel. */
@@ -89,7 +87,7 @@ const graphNodeCache = new Map<string, Node>();
  * @param building building the node is in
  * @param formats  additional formatting rules
  */
-function _getCachedNodeOrBuild(id: string, building: string, formats: Map<string, string>): Node {
+export function getCachedNodeOrBuild(id: string, building: string, formats: Map<string, string>): Node {
   const nodeId = Node.buildId(id, building);
   const node = graphNodeCache.has(nodeId)
       ? graphNodeCache.get(nodeId)
@@ -150,10 +148,13 @@ function _parseAndAppendEdges(node: Node, graph: BuildingGraph, rawEdges: string
  * @param {string}        rawNode  the node details to parse
  */
 function _parseAndAppendNode(node: Node, graph: BuildingGraph, rawNode: string): void {
-  if (node.getType() === NodeType.Elevator) {
-    graph.extra.set(node, {
-      additional: rawNode.split(','),
-    });
+  switch (node.getType()) {
+    case NodeType.Elevator:
+    case NodeType.Street:
+      graph.extra.set(node, rawNode);
+      break;
+    default:
+      // does nothing
   }
 }
 
@@ -168,6 +169,45 @@ function _parseAndAppendExcludedNode(nodeA: Node, nodeB: Node, graph: BuildingGr
   const excluded = graph.excluded.has(nodeA) ? graph.excluded.get(nodeA) : new Set<Node>();
   excluded.add(nodeB);
   graph.excluded.set(nodeA, excluded);
+}
+
+// startNode, targetNode, distances.get(targetNode), previous, graph);
+
+/**
+ * Get the path from a start node to a target node.
+ *
+ * @param startNode  starting node
+ * @param targetNode target node
+ * @param distance   distance of path
+ * @param previous   node which led to another node
+ * @param graph      adjacency graph
+ */
+function _rebuildPath(
+    startNode: Node,
+    targetNode: Node,
+    distance: number,
+    previous: Map<Node, Node>,
+    graph: BuildingGraph): Path {
+  const path: Path = {
+    distance,
+    edges: [],
+    source: startNode,
+  };
+
+  let currentNode = targetNode;
+  while (currentNode != undefined) {
+    for (const edge of graph.adjacencies.get(currentNode)) {
+      if (edge.node === currentNode) {
+        currentNode = previous.get(currentNode);
+        path.edges.push(edge);
+        break;
+      }
+    }
+  }
+
+  path.edges.reverse();
+
+  return path;
 }
 
 /**
@@ -225,18 +265,18 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
           _parseAndAppendGraphFormat(graph, element);
           break;
         case GraphParseState.Edges: {
-          const node = _getCachedNodeOrBuild(graphComponents[0], building, graph.format);
+          const node = getCachedNodeOrBuild(graphComponents[0], building, graph.format);
           _parseAndAppendEdges(node, graph, graphComponents[1]);
           break;
         }
         case GraphParseState.Nodes: {
-          const node = _getCachedNodeOrBuild(graphComponents[0], building, graph.format);
+          const node = getCachedNodeOrBuild(graphComponents[0], building, graph.format);
           _parseAndAppendNode(node, graph, graphComponents[1]);
           break;
         }
         case GraphParseState.Excluded: {
-          const nodeA = _getCachedNodeOrBuild(graphComponents[0], building, graph.format);
-          const nodeB = _getCachedNodeOrBuild(graphComponents[1], building, graph.format);
+          const nodeA = getCachedNodeOrBuild(graphComponents[0], building, graph.format);
+          const nodeB = getCachedNodeOrBuild(graphComponents[1], building, graph.format);
           _parseAndAppendExcludedNode(nodeA, nodeB, graph);
           break;
         }
@@ -254,69 +294,160 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
 /**
  * Find the shortest path in a graph between two nodes.
  *
- * @param {Destination}   start  path start
- * @param {Destination}   target path end
- * @param {BuildingGraph} graph  graph to generate path from
+ * @param {Node}          startNode  path start
+ * @param {Node}          targetNode path end
+ * @param {BuildingGraph} graph      graph to generate path from
  */
-export function findShortestPathBetween(start: Destination, target: Destination, graph: BuildingGraph): Path {
-  const visited = new FastPriorityQueue(partialPathComparator);
-  const partialPaths = new Map<Node, PartialPath>();
-  const unvisited = new Set(graph.adjacencies.keys());
+export function findShortestPathBetween(startNode: Node, targetNode: Node, graph: BuildingGraph): Path {
+  const targetSet: Set<Node> = new Set();
+  targetSet.add(targetNode);
+  const paths = findShortestPathsBetween(startNode, targetSet, graph);
 
-  // Setup initial node
-  const startNode = _getCachedNodeOrBuild(`R${start.room || start.shorthand}`, start.shorthand, graph.format);
-  let currentNode = startNode;
-  let currentNodeState = { dist: 0, source: undefined };
-  partialPaths.set(currentNode, currentNodeState);
+  return paths.get(targetNode);
+}
 
-  // Setup target node
-  const targetNode = _getCachedNodeOrBuild(`R${target.room || target.shorthand}`, target.shorthand, graph.format);
-  let targetFound = false;
+/**
+ * Given a starting node, returns the shortest path from the starting node to each of the target nodes.
+ * See https://github.com/mburst/dijkstras-algorithm/blob/524c76fd26e2d522d9d53e2acb10fc72ea99e266/dijkstras.js#L1
+ *
+ * @param {Node}          startNode   starting node for paths
+ * @param {Set<Node>}     targetNodes set of nodes to reach
+ * @param {BuildingGraph} graph       graph of building with edges and distances
+ * @returns {Map<Node, Path>} mapping from the target node to the path to it from the starting node
+ */
+export function findShortestPathsBetween(
+    startNode: Node,
+    targetNodes: Set<Node>,
+    graph: BuildingGraph): Map<Node, Path> {
+  const paths: Map<Node, Path> = new Map();
 
-  while (!targetFound && unvisited.size > 0 && currentNode != undefined) {
-    for (const neighbor of graph.adjacencies.get(currentNode)) {
-      const currentNeighborState = partialPaths.get(neighbor.node);
-      const neighborDistance = currentNodeState.dist + neighbor.distance;
-      if (currentNeighborState != undefined) {
-        if (currentNeighborState.dist > neighborDistance) {
-          currentNeighborState.dist = neighborDistance;
-          currentNeighborState.source = currentNode;
-        }
-      } else {
-        partialPaths.set(neighbor.node, { dist: neighbor.distance, source: currentNode });
-        visited.add({ dist: neighborDistance, source: neighbor.node });
-      }
+  const nodes = new FastPriorityQueue(partialPathComparator);
+  const distances: Map<Node, number> = new Map();
+  const previous: Map<Node, Node> = new Map();
 
-      if (neighbor.node === targetNode) {
-        targetFound = true;
+  for (const node of graph.adjacencies.keys()) {
+    if (node === startNode) {
+      distances.set(node, 0);
+      nodes.add({ dist: 0, node });
+    } else {
+      distances.set(node, Infinity);
+      nodes.add({ dist: Infinity, node });
+    }
+  }
+
+  let targetsFound = 0;
+  while (!nodes.isEmpty()) {
+    const smallest = nodes.poll();
+
+    if (targetNodes.has(smallest)) {
+      targetsFound += 1;
+      if (targetsFound === targetNodes.size) {
         break;
       }
     }
 
-    unvisited.delete(currentNode);
-    currentNode = visited.poll().source;
-    currentNodeState = partialPaths.get(currentNode);
+    if (smallest == undefined || distances.get(smallest) === Infinity) {
+      continue;
+    }
+
+    for (const neighbor of graph.adjacencies.get(smallest)) {
+      const alt = distances.get(smallest) + neighbor.distance;
+      if (alt < distances.get(neighbor.node)) {
+        distances.set(neighbor.node, alt);
+        previous.set(neighbor.node, smallest);
+        nodes.add({ dist: alt, node: neighbor.node });
+      }
+    }
   }
 
-  const path: Path = {
-    distance: 0,
-    edges: [],
-    source: startNode,
+  for (const node of targetNodes) {
+    paths.set(node, _rebuildPath(startNode, node, distances.get(node), previous, graph));
+  }
+
+  return paths;
+}
+
+/**
+ * Given two sets of doors and their coordinates, get all of the distances between each combination of doors.
+ *
+ * @param {Set<Node>}     firstDoors  first set of doors
+ * @param {Set<Node>}     secondDoors second set of doors
+ * @param {BuildingGraph} graph       graph information
+ * @returns {Map<Node,Map<Node,number>>} map from first set of doors to second set, to the distances between
+ */
+export function findDistancesBetweenDoors(
+    firstDoors: Set<Node>,
+    secondDoors: Set<Node>,
+    graph: BuildingGraph): Map<Node, Map<Node, number>> {
+  const distances: Map<Node, Map<Node, number>> = new Map();
+  const positions: Map<Node, { x: number; y: number }> = new Map();
+
+  const getDoorPosition = (door: Node): { x: number; y: number } => {
+    let doorPosition = positions.get(door);
+    if (doorPosition == undefined) {
+      const rawPosition = graph.extra.get(door).split(',');
+      doorPosition = { x: parseFloat(rawPosition[0]), y: parseFloat(rawPosition[0]) };
+      positions.set(door, doorPosition);
+    }
+
+    return doorPosition;
   };
 
-  currentNode = targetNode;
-  while (currentNode != undefined) {
-    const partialPath = partialPaths.get(currentNode);
-    path.distance += partialPath.dist;
-    for (const edge of graph.adjacencies.get(partialPath.source)) {
-      if (edge.node === currentNode) {
-        path.edges.push(edge);
-        break;
+  for (const firstDoor of firstDoors) {
+    const firstDoorDistances: Map<Node, number> = new Map();
+    distances.set(firstDoor, firstDoorDistances);
+    for (const secondDoor of secondDoors) {
+      const firstDoorPosition = getDoorPosition(firstDoor);
+      const secondDoorPosition = getDoorPosition(secondDoor);
+      const distance = Math.sqrt(
+        Math.pow(secondDoorPosition.x - firstDoorPosition.x, 2)
+        + Math.pow(secondDoorPosition.y - firstDoorPosition.y, 2)
+      );
+
+      firstDoorDistances.set(secondDoor, distance);
+    }
+  }
+
+  return distances;
+}
+
+/**
+ * Builds the shortest path possible between two nodes across multiple graphs.
+ *
+ * @param {Map<Node, Path>}              startToExits          shortest paths from the start node to each exit
+ * @param {Map<Node, Path>}              exitsToTarget         shortest paths from the target node to each exit
+ * @param {Map<Node, Map<Node, number>>} distancesBetweenExits distances between each pair of building entrances
+ * @param {Map<string, BuildingGraph>}   graphs                graphs for each building
+ */
+export function getShortestPathAcross(
+    startToExits: Map<Node, Path>,
+    exitsToTarget: Map<Node, Path>,
+    distancesBetweenExits: Map<Node, Map<Node, number>>,
+    graphs: Map<string, BuildingGraph>): Path {
+
+  let exitNode: Node;
+  let entranceNode: Node;
+  let minimumDistance = Infinity;
+  for (const exit of startToExits.keys()) {
+    for (const entrance of exitsToTarget.keys()) {
+      let pathDistance = startToExits.get(exit).distance;
+      pathDistance += exitsToTarget.get(entrance).distance;
+      pathDistance += distancesBetweenExits.get(exit).get(entrance);
+      if (pathDistance < minimumDistance) {
+        minimumDistance = pathDistance;
+        exitNode = exit;
+        entranceNode = entrance;
       }
     }
   }
 
-  path.edges.reverse();
+  const firstPathComponent = startToExits.get(exitNode);
+  const outerPath = findShortestPathBetween(exitNode, entranceNode, graphs.get('OUT'));
+  const secondPathComponent = exitsToTarget.get(entranceNode);
 
-  return path;
+  return {
+    distance: firstPathComponent.distance + outerPath.distance + secondPathComponent.distance,
+    edges: firstPathComponent.edges.concat(outerPath.edges, secondPathComponent.edges),
+    source: firstPathComponent.source,
+  };
 }

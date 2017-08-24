@@ -21,14 +21,8 @@
  * @description Utility methods for navigation on the university campus.
  */
 
-import { Description, Icon, LatLong } from '../../typings/global';
+import { LatLong } from '../../typings/global';
 import { Building } from '../../typings/university';
-
-/** Information on step by step navigation. */
-export interface Step extends Description {
-  key: string;  // Unique key to identify each step
-  icon?: Icon;  // Icon to represent the step
-}
 
 // Ratio of degrees to radians
 const RAD_RATIO = 180;

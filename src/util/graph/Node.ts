@@ -26,8 +26,11 @@ export enum Type {
   Door = 'D',
   Elevator = 'E',
   Hallway = 'H',
+  Intersection = 'I',
+  Path = 'P',
   Room = 'R',
   Stairs = 'S',
+  Street = 'T',
 }
 
 export default class Node {
@@ -118,6 +121,13 @@ export default class Node {
    */
   getType(): Type {
     return this._type;
+  }
+
+  /**
+   * Returns true if the node is considered outside (it's building is OUT).
+   */
+  isOutside(): boolean {
+    return this.getBuilding() === 'OUT';
   }
 
 }

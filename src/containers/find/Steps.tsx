@@ -44,19 +44,20 @@ import * as Constants from '../../constants';
 import * as Display from '../../util/Display';
 import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
+import * as Directions from '../../util/graph/Directions';
 
 // Types
-import { Step } from '../../util/Navigation';
 import { Language } from '../../util/Translations';
 import { Destination } from '../../../typings/university';
 
 interface Props {
-  destination: Destination | undefined; // The user's selected destination
-  language: Language;                   // The current language, selected by the user
+  destination: Destination | undefined;   // The user's selected destination
+  language: Language;                     // The current language, selected by the user
+  startingPoint: Destination | undefined; // The user's selected starting point for navigation
 }
 
 interface State {
-  steps: Step[];  // List of steps for the user to follow
+  steps: Directions.Step[];  // List of steps for the user to follow
 }
 
 class Steps extends React.PureComponent<Props, State> {
@@ -72,6 +73,16 @@ class Steps extends React.PureComponent<Props, State> {
     this.state = {
       steps: [],
     };
+  }
+
+  componentDidMount(): void {
+    this._loadDirections();
+  }
+
+  async _loadDirections(): Promise<void> {
+    const { startingPoint, destination, language }: Props = this.props;
+    const steps = await Directions.getDirectionsBetween(startingPoint, destination, language);
+    this.setState({ steps });
   }
 
   _toggleActionOptions(): void {
@@ -113,10 +124,10 @@ class Steps extends React.PureComponent<Props, State> {
   /**
    * Renders a single navigation step.
    *
-   * @param {Step} item the navigation step
+   * @param {Directions.Step} item the navigation step
    * @returns {JSX.Element} the text and icon of the navigation step
    */
-  _renderStep({ item }: { item: Step }): JSX.Element {
+  _renderStep({ item }: { item: Directions.Step }): JSX.Element {
     const icon = Display.getPlatformIcon(Platform.OS, item);
     let iconView: JSX.Element | undefined;
     if (icon != undefined) {
@@ -213,6 +224,7 @@ const mapStateToProps = (store: any): any => {
   return {
     destination: store.directions.destination,
     language: store.config.options.language,
+    startingPoint: store.directions.startingPoint,
   };
 };
 
