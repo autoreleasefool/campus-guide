@@ -22,8 +22,8 @@
  */
 
 // Imports
+import DeviceInfo from 'react-native-device-info';
 import * as Database from './Database';
-import * as DeviceInfo from 'react-native-device-info';
 import * as HttpStatus from 'http-status-codes';
 import * as RNFS from 'react-native-fs';
 
