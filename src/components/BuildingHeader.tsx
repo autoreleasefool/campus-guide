@@ -63,7 +63,7 @@ interface State {
   bannerPosition: number;
 }
 
-const { width }: { width: number } = Dimensions.get('window');
+const screenWidth = Dimensions.get('window').width;
 
 // Percentage of banner that banner will take
 const BANNER_TEXT_WIDTH_PCT = 0.75;
@@ -169,10 +169,10 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
   render(): JSX.Element {
     const imageStyle = (this.state.bannerPosition === 0)
         ? { right: 0 }
-        : { right: width * BANNER_TEXT_WIDTH_PCT };
+        : { right: screenWidth * BANNER_TEXT_WIDTH_PCT };
     const textContainerStyle = (this.state.bannerPosition === 1)
-        ? { left: width * (1 - BANNER_TEXT_WIDTH_PCT), marginTop: HeaderHeight }
-        : { left: width, marginTop: HeaderHeight };
+        ? { left: screenWidth * (1 - BANNER_TEXT_WIDTH_PCT), marginTop: HeaderHeight }
+        : { left: screenWidth, marginTop: HeaderHeight };
     if (this.props.hideTitle) {
       textContainerStyle.marginTop = 0;
     }
@@ -219,7 +219,7 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
 
     return (
       <View style={_styles.banner}>
-        <TouchableWithoutFeedback onPress={this._swapBanner}>
+        <TouchableWithoutFeedback onPress={(): void => this._swapBanner()}>
           {image}
         </TouchableWithoutFeedback>
         <View style={[ _styles.textContainer, textContainerStyle ]}>

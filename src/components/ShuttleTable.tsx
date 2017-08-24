@@ -55,7 +55,7 @@ interface State {
   dataSource: any;  // List of times for the shuttle and days they occur
 }
 
-const { width }: { width: number } = Dimensions.get('window');
+const screenWidth = Dimensions.get('window').width;
 const TIMES_PER_ROW = 2;
 
 export default class ShuttleTable extends React.PureComponent<Props, State> {
@@ -214,7 +214,7 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
     margin: Constants.Sizes.Margins.Expanded,
-    width,
+    width: screenWidth,
   },
   evenTimeContainer: {
     marginLeft: Constants.Sizes.Margins.Expanded,
@@ -241,7 +241,7 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Subtitle,
     textAlign: 'center',
-    width,
+    width: screenWidth,
   },
   sectionHeaderContainer: {
     backgroundColor: Constants.Colors.tertiaryBackground,
@@ -250,13 +250,13 @@ const _styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     paddingBottom: Constants.Sizes.Margins.Expanded,
     paddingTop: Constants.Sizes.Margins.Expanded,
-    width,
+    width: screenWidth,
   },
   separator: {
     backgroundColor: Constants.Colors.secondaryBackground,
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
-    width,
+    width: screenWidth,
   },
   time: {
     color: Constants.Colors.primaryBlackText,
@@ -269,10 +269,10 @@ const _styles = StyleSheet.create({
     borderRightWidth: StyleSheet.hairlineWidth,
     paddingBottom: Constants.Sizes.Margins.Regular,
     paddingTop: Constants.Sizes.Margins.Regular,
-    width: Math.floor((width - Constants.Sizes.Margins.Expanded * 2) / 2),
+    width: Math.floor((screenWidth - Constants.Sizes.Margins.Expanded * 2) / 2),
   },
   timeSeparator: {
     marginRight: Constants.Sizes.Margins.Expanded,
-    width: Math.floor(width / 2) * 2 - Constants.Sizes.Margins.Expanded * 2,
+    width: Math.floor(screenWidth / 2) * 2 - Constants.Sizes.Margins.Expanded * 2,
   },
 });

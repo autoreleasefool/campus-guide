@@ -71,8 +71,8 @@ const NAVBAR_HEIGHT = 45;
 const ICON_SIZE = 45;
 
 // Width of the search input
-const { width }: { width: number } = Dimensions.get('window');
-const SEARCH_INPUT_WIDTH = width - ICON_SIZE * 2;
+const screenWidth = Dimensions.get('window').width;
+const SEARCH_INPUT_WIDTH = screenWidth - ICON_SIZE * 2 - Constants.Sizes.Margins.Regular * 2;
 
 class AppHeader extends React.PureComponent<Props, State> {
 
@@ -185,7 +185,7 @@ class AppHeader extends React.PureComponent<Props, State> {
 
     // Hide/show title and search input
     let titleStyle = {};
-    let searchInputStyle = { right: -SEARCH_INPUT_WIDTH };
+    let searchInputStyle = { right: -(SEARCH_INPUT_WIDTH + Constants.Sizes.Margins.Regular * 2) };
     if (this.state.shouldShowSearchBar) {
       titleStyle = { opacity: 0 };
       searchInputStyle = { right: ICON_SIZE };
@@ -285,7 +285,7 @@ const _styles = StyleSheet.create({
     bottom: 0,
     height: StyleSheet.hairlineWidth,
     position: 'absolute',
-    width,
+    width: screenWidth,
   },
   title: {
     color: Constants.Colors.primaryWhiteText,

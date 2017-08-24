@@ -82,7 +82,7 @@ interface State {
 }
 
 // Width of screen for consistent property alignment when comparing
-const { width }: { width: number} = Dimensions.get('window');
+const screenWidth = Dimensions.get('window').width;
 const RESIDENCE_PROPERTY_WIDTH_RATIO = 0.4;
 
 // Number of columns to show residences in
@@ -116,7 +116,7 @@ class Housing extends React.PureComponent<Props, State> {
   componentDidMount(): void {
     (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
-    this._multiPropertyWidth.width = width * RESIDENCE_PROPERTY_WIDTH_RATIO;
+    this._multiPropertyWidth.width = screenWidth * RESIDENCE_PROPERTY_WIDTH_RATIO;
 
     if (!this.state.housingInfo) {
       this.loadConfiguration();
@@ -415,7 +415,7 @@ class Housing extends React.PureComponent<Props, State> {
    */
   _renderSingleResidenceProperty({ item }: { item: ResidenceProperty }): JSX.Element | undefined {
     if (item.key === 'none') {
-      return undefined;
+      return <View />;
     }
     const value = this.props.residence.props[item.key];
 
@@ -645,7 +645,7 @@ const _styles = StyleSheet.create({
     flex: 1,
     fontSize: Constants.Sizes.Text.Body,
     margin: Constants.Sizes.Margins.Expanded,
-    maxWidth: width - Constants.Sizes.Margins.Expanded * 2,
+    maxWidth: screenWidth - Constants.Sizes.Margins.Expanded * 2,
     textAlign: 'center',
   },
   compareHeaderSeparator: {

@@ -152,6 +152,9 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
     const textColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
         : Constants.Colors.primaryBlackText;
+    const secondaryTextColor: string = (isBackgroundDark)
+        ? Constants.Colors.secondaryWhiteText
+        : Constants.Colors.secondaryBlackText;
     const iconColor: string = (isBackgroundDark)
         ? Constants.Colors.secondaryWhiteText
         : Constants.Colors.secondaryBlackText;
@@ -191,7 +194,7 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
                   {translatedDescription == undefined
                     ? undefined
                     : (
-                      <Text style={[ _styles.linkDescription, { color: textColor }]}>
+                      <Text style={[ _styles.linkDescription, { color: secondaryTextColor }]}>
                         {translatedDescription}
                       </Text>
                     )}
@@ -357,13 +360,13 @@ const _styles = StyleSheet.create({
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   link: {
-    fontSize: Constants.Sizes.Text.Body,
+    fontSize: Constants.Sizes.Text.Subtitle,
   },
   linkContainer: {
     flex: 1,
-    marginBottom: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
-    marginTop: Constants.Sizes.Margins.Expanded,
+    marginBottom: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Regular,
+    marginTop: Constants.Sizes.Margins.Regular,
   },
   linkDescription: {
     flex: 1,
@@ -371,7 +374,7 @@ const _styles = StyleSheet.create({
     marginTop: Constants.Sizes.Margins.Condensed,
   },
   linkIcon: {
-    margin: Constants.Sizes.Margins.Expanded,
+    margin: Constants.Sizes.Margins.Regular,
   },
   linkSubtitle: {
     fontSize: Constants.Sizes.Text.Caption,

@@ -110,6 +110,7 @@ class BuildingComponent extends React.PureComponent<Props, State> {
       <View>
         <BuildingHeader
             facilities={building.facilities}
+            hideTitle={true}
             image={building.image}
             language={this.props.language}
             properties={properties}

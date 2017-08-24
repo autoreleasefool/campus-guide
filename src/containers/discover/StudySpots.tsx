@@ -75,7 +75,7 @@ interface State {
 }
 
 // Height of the screen for animating filters
-const { height }: { height: number } = Dimensions.get('window');
+const screenHeight = Dimensions.get('window').height;
 
 class StudySpots extends React.PureComponent<Props, State> {
 
@@ -294,8 +294,8 @@ const _styles = StyleSheet.create({
     top: 0,
   },
   filterSelected: {
-    bottom: -height,
-    top: height,
+    bottom: -screenHeight,
+    top: screenHeight,
   },
   filterSelection: {
     left: 0,

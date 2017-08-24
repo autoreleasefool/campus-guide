@@ -153,21 +153,21 @@ class Links extends React.PureComponent<Props, State> {
     let currentSection: LinkSection | undefined;
     let sectionImage: string | undefined;
 
-    while (currentSection == undefined && categoryList && categoryList.length > 0 && depth < ids.length) {
+    while (currentSection == undefined && categoryList != undefined && categoryList.length > 0 && depth < ids.length) {
       for (const category of categoryList) {
         if (category.id === ids[depth]) {
           if (depth === 0) {
             sectionImage = category.image;
           }
-        }
 
-        if (depth === ids.length - 1) {
-          currentSection = category;
-        } else if (category.categories != undefined) {
-          categoryList = category.categories;
-          depth += 1;
+          if (depth === ids.length - 1) {
+            currentSection = category;
+          } else if (category.categories != undefined) {
+            categoryList = category.categories;
+            depth += 1;
+          }
+          break;
         }
-        break;
       }
     }
 

@@ -66,7 +66,7 @@ interface State {
 }
 
 // Determining size of building icons based on the screen size.
-const { width }: { width: number } = Dimensions.get('window');
+const screenWidth = Dimensions.get('window').width;
 
 export default class ImageGrid extends React.PureComponent<Props, State> {
 
@@ -212,7 +212,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} an image (if enabled) and name for the image
    */
   _renderItem({ item, index }: { item: GridImage; index: number }): JSX.Element {
-    const gridImageSize: number = Math.floor(width / this.props.columns);
+    const gridImageSize: number = Math.floor(screenWidth / this.props.columns);
 
     let gridImageStyle: any = { height: gridImageSize, width: gridImageSize };
     let textStyle: any = { backgroundColor: Constants.Colors.darkTransparentBackground };
@@ -226,12 +226,12 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
     }
 
     const imageStyle = {
-      height: width / this.props.columns,
-      width: width / this.props.columns,
+      height: screenWidth / this.props.columns,
+      width: screenWidth / this.props.columns,
     };
 
     if (index % this.props.columns === this.props.columns - 1) {
-      const leftover = width - (Math.floor(width / this.props.columns) * this.props.columns);
+      const leftover = screenWidth - (Math.floor(screenWidth / this.props.columns) * this.props.columns);
       imageStyle.width += leftover;
     }
 
