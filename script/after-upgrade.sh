@@ -18,6 +18,7 @@ ios/main.jsbundle
 
 # Environment
 */env.js
+*/env.ts
 
 # Typescript output
 artifacts/" >> .gitignore
