@@ -6,32 +6,42 @@
   version "1.0.29"
   resolved "https://registry.yarnpkg.com/@types/http-status-codes/-/http-status-codes-1.0.29.tgz#d308c9aa1f91f64c0e6f751de2789e87c7f0aa0c"
 
-"@types/jest@^20.0.4":
-  version "20.0.4"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-20.0.4.tgz#91e2c76fbe90b3a719b5d689958f0495f005beb9"
+"@types/jest@20.0.8":
+  version "20.0.8"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-20.0.8.tgz#7f8c97f73d20d3bf5448fbe33661a342002b5954"
 
-"@types/react-native-fs@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@types/react-native-fs/-/react-native-fs-2.0.3.tgz#d58446960cf9c099b5397b713de495bdf829b058"
+"@types/react-native-fs@2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@types/react-native-fs/-/react-native-fs-2.0.4.tgz#0548f72e5b01db405011219ddfa88e015c04d471"
   dependencies:
     "@types/react-native" "*"
 
-"@types/react-native@*", "@types/react-native@^0.46.5":
+"@types/react-native@*":
   version "0.46.5"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.46.5.tgz#3b5ad2003072c4c59a565e15301b6437cb1c1399"
   dependencies:
     "@types/react" "*"
 
-"@types/react-redux@^4.4.46":
-  version "4.4.46"
-  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-4.4.46.tgz#83b78c8783f31fc890d9a4d1e2acf9c4665fa913"
+"@types/react-native@0.47.8":
+  version "0.47.8"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.47.8.tgz#9ab9a8fc4e111b510c76f0fb4c2e2bb02fd0fb3d"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-redux@5.0.5":
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-5.0.5.tgz#d6eff90e5480cf129aa12858bf1efd92104b480d"
   dependencies:
     "@types/react" "*"
     redux "^3.6.0"
 
-"@types/react@*", "@types/react@^15.0.38":
+"@types/react@*":
   version "15.0.38"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-15.0.38.tgz#6afea31a9fe66304af474106ba372ddaba449995"
+
+"@types/react@16.0.05":
+  version "16.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.5.tgz#d713cf67cc211dea20463d2a0b66005c22070c4b"
 
 abab@^1.0.3:
   version "1.0.3"
