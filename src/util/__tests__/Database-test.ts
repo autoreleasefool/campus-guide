@@ -37,8 +37,6 @@ const baseVersions = [
     type: 'json',
     url: 'http://example.com',
     version: 1,
-    zsize: 0,
-    zurl: false,
   },
   {
     name: 'config_2',
@@ -55,10 +53,10 @@ const updatedVersions1 = [
     name: 'config_1',
     size: 1,
     type: 'json',
-    url: 'http://example.com',
+    url: 'http://example.com/file',
     version: 2,
     zsize: 99,
-    zurl: true,
+    zurl: 'http://example.com/file.gz',
   },
 ];
 
@@ -76,8 +74,6 @@ const updatedVersions2 = [
     type: 'json',
     url: 'http://campusguide.ca',
     version: 3,
-    zsize: 0,
-    zurl: false,
   },
 ];
 

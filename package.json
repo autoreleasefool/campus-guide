@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "build": "yarn run clean && yarn run tsc --",
+    "build:ios": "react-native bundle --entry-file='artifacts/index.ios.js' --bundle-output='./ios/CampusGuide/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
     "clean": "rimraf artifacts",
     "lint": "tslint 'src/**/*.ts?(x)'",
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start:build": "yarn run build && yarn run watch",
     "start:android": "yarn run build && concurrently -r 'yarn run watch' 'react-native run-android'",
     "start:ios": "yarn run build && concurrently -r 'yarn run watch' 'react-native run-ios'",
     "test": "yarn run build && jest --coverage",

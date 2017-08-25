@@ -70,7 +70,7 @@ export interface ConfigFile {
   url: string;      // URL to GET file
   version: number;  // Version number
   zsize?: number;   // Size of the file, zipped
-  zurl?: boolean;   // True if a gzipped version of the file exists
+  zurl?: string;    // gzipped url of a file
 }
 
 /** Details of the available configuration files for the app. */
@@ -320,7 +320,7 @@ async function _updateConfig(configDetails: ConfigurationDetails, callbacks: Upd
       // Download the file
       const downloadResult = await RNFS.downloadFile({
         begin: (download: RNFS.DownloadBeginCallbackResult): void => onStart(update.name, download),
-        fromUrl: (update.zsize && update.zurl) ? `${update.url}.gz` : update.url,
+        fromUrl: (update.zsize && update.zurl) ? update.zurl : update.url,
         headers: { 'Accept-Encoding': 'true' },
         progress: callbacks.onDownloadProgress,
         toFile: TEMP_CONFIG_DIRECTORY + update.name,

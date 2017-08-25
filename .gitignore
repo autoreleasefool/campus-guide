@@ -62,6 +62,9 @@ coverage/
 
 # Build/bundle
 ios/main.jsbundle
+ios/assets/
+ios/CampusGuide/main.jsbundle
+ios/CampusGuide/main.jsbundle.meta
 
 # Keystores
 */keystores/*
