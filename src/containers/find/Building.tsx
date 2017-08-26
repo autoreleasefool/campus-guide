@@ -44,7 +44,7 @@ import * as Translations from '../../util/Translations';
 
 // Types
 import { Language } from '../../util/Translations';
-import { Building } from '../../../typings/university';
+import { Building, BuildingProperty } from '../../../typings/university';
 
 interface Props {
   building: Building;         // Building to display details for
@@ -54,9 +54,53 @@ interface Props {
                               // Callback for when a room is selected
 }
 
-interface State {}
+interface State {
+  properties: BuildingProperty[];
+}
 
 class BuildingComponent extends React.PureComponent<Props, State> {
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      properties: this._getBuildingProperties(props.building),
+    };
+  }
+
+  /**
+   *  Update building properties if a new building is set.
+   *
+   * @param {Props} nextProps the new building properties
+   */
+  componentWillReceiveProps(nextProps: Props): void {
+    if (this.props.building !== nextProps.building) {
+      this.setState({ properties: this._getBuildingProperties(nextProps.building) });
+    }
+  }
+
+  /**
+   * Get the properties of a building.
+   *
+   * @param {Building} building the building to get properties for
+   * @returns {BuildingProperty[]} properties from the building
+   */
+  _getBuildingProperties(building: Building): BuildingProperty[] {
+    return [
+      {
+        description: Translations.getName(this.props.language, building) || '',
+        name: Translations.get(this.props.language, 'name'),
+      },
+      {
+        description: Translations.getVariant(this.props.language, 'address', building) || '',
+        name: Translations.get(this.props.language, 'address'),
+      },
+    ];
+  }
 
   /**
    * Informs parent that the user has selected a destination.
@@ -95,16 +139,6 @@ class BuildingComponent extends React.PureComponent<Props, State> {
    */
   _renderHeader(): JSX.Element {
     const building: Building = this.props.building;
-    const properties = [
-      {
-        description: Translations.getName(this.props.language, building) || '',
-        name: Translations.get(this.props.language, 'name'),
-      },
-      {
-        description: Translations.getVariant(this.props.language, 'address', building) || '',
-        name: Translations.get(this.props.language, 'address'),
-      },
-    ];
 
     return (
       <View>
@@ -113,7 +147,7 @@ class BuildingComponent extends React.PureComponent<Props, State> {
             hideTitle={true}
             image={building.image}
             language={this.props.language}
-            properties={properties}
+            properties={this.state.properties}
             shorthand={building.shorthand} />
         {this._renderBuildingDirections()}
       </View>
@@ -130,10 +164,10 @@ class BuildingComponent extends React.PureComponent<Props, State> {
 
     return (
       <View style={_styles.container}>
+        {this._renderHeader()}
         <RoomGrid
             filter={this.props.filter}
             language={this.props.language}
-            renderHeader={this._renderHeader.bind(this)}
             rooms={building.rooms}
             shorthand={building.shorthand}
             onSelect={this._onDestinationSelected.bind(this)} />
@@ -153,7 +187,7 @@ const _styles = StyleSheet.create({
 const mapStateToProps = (store: any): any => {
   return {
     building: store.directions.building,
-    filter: store.search.terms,
+    filter: store.search.tabTerms.find,
     language: store.config.options.language,
   };
 };

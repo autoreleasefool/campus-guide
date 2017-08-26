@@ -32,7 +32,13 @@ import * as Actions from '../../actionTypes';
 // Expected initial state
 const initialState: State = {
   studyFilters: new Set(),
-  terms: '',
+  tabTerms: {
+    discover: '',
+    find: '',
+    schedule: '',
+    search: '',
+    settings: '',
+  },
 };
 
 describe('search reducer', () => {
@@ -45,14 +51,11 @@ describe('search reducer', () => {
     const testTerms = 'search';
     const otherTerms = 'other_search';
 
-    expect(reducer(initialState, { type: Actions.Search.Search, terms: testTerms }))
-        .toEqual({ ...initialState, terms: testTerms });
+    expect(reducer(initialState, { type: Actions.Search.Search, tab: 'find', terms: testTerms }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms } });
 
-    expect(reducer(initialState, { type: Actions.Search.Search, terms: otherTerms }))
-        .toEqual({ ...initialState, terms: otherTerms });
-
-    expect(reducer(initialState, { type: Actions.Search.Search, terms: undefined }))
-        .toEqual({ ...initialState, terms: '' });
+    expect(reducer(initialState, { type: Actions.Search.Search, tab: 'discover', terms: otherTerms }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, discover: otherTerms } });
   });
 
   it('should set new filters', () => {
@@ -102,16 +105,25 @@ describe('search reducer', () => {
 
   it('should reset the search filter when a view changes', () => {
     const testTerms = 'search';
-    const updatedState = reducer(initialState, { type: Actions.Search.Search, terms: testTerms });
-    expect(updatedState).toEqual({ ...initialState, terms: testTerms });
+    let updatedState = reducer(initialState, { type: Actions.Search.Search, tab: 'find', terms: testTerms });
+    updatedState = reducer(updatedState, { type: Actions.Search.Search, tab: 'discover', terms: testTerms });
+    expect(updatedState)
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: testTerms } });
 
-    expect(reducer(updatedState, { type: Actions.App.SwitchFindView })).toEqual({ ...initialState, terms: '' });
-    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverView })).toEqual({ ...initialState, terms: '' });
-    expect(reducer(updatedState, { type: Actions.App.SwitchHousingView })).toEqual({ ...initialState, terms: '' });
-    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverLink })).toEqual({ ...initialState, terms: '' });
-    expect(reducer(updatedState, { type: Actions.App.SwitchHousingResidence })).toEqual({ ...initialState, terms: '' });
-    expect(reducer(updatedState, { type: Actions.App.SwitchTab })).toEqual({ ...initialState, terms: '' });
-    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverTransitCampus })).toEqual(updatedState);
+    expect(reducer(updatedState, { type: Actions.App.SwitchFindView }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: '', discover: testTerms } });
+    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverView }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: '' } });
+    expect(reducer(updatedState, { type: Actions.App.SwitchHousingView }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: '' } });
+    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverLink }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: '' } });
+    expect(reducer(updatedState, { type: Actions.App.SwitchHousingResidence }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: '' } });
+    expect(reducer(updatedState, { type: Actions.App.SwitchTab }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: testTerms } });
+    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverTransitCampus }))
+        .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: testTerms } });
   });
 
 });

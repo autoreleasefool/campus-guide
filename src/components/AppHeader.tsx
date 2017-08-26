@@ -47,17 +47,17 @@ import * as Translations from '../util/Translations';
 
 // Types
 import { Language } from '../util/Translations';
-import { Name, Tab } from '../../typings/global';
+import { Name, Tab, TabSet } from '../../typings/global';
 
 interface Props {
   appTitle: Name;                           // Title for the header
-  filter: string;                           // The current search terms
   language: Language;                       // The user's currently selected language
   shouldShowBack: boolean;                  // Indicates if the header should show a back button
   shouldShowSearch: boolean;                // Indicates if the header should show a search input option
   tab: Tab;                                 // The current tab the user has open
-  onBack(): void;                           // Tells the app to navigate one screen backwards
-  onSearch(st?: string | undefined): void;  // Updates the user's search terms
+  tabFilters: TabSet;                       // The current search terms
+  onBack(tab: Tab): void;                   // Tells the app to navigate one screen backwards
+  onSearch(tab: Tab, terms: string): void;  // Updates the user's search terms
 }
 
 interface State {
@@ -115,10 +115,6 @@ class AppHeader extends React.PureComponent<Props, State> {
             || nextProps.tab === 'search',
       });
     }
-
-    if (nextProps.filter !== this.props.filter && nextProps.filter === '') {
-      (this.refs.SearchInput as any).blur();
-    }
   }
 
   /**
@@ -127,7 +123,7 @@ class AppHeader extends React.PureComponent<Props, State> {
   _toggleSearch(): void {
     if (this.state.shouldShowSearchBar) {
       (this.refs.SearchInput as any).blur();
-      this.props.onSearch();
+      this.props.onSearch(this.props.tab, '');
     } else {
       (this.refs.SearchInput as any).focus();
     }
@@ -144,7 +140,7 @@ class AppHeader extends React.PureComponent<Props, State> {
   _onBack(): void {
     (this.refs.SearchInput as any).clear();
     (this.refs.SearchInput as any).blur();
-    this.props.onBack();
+    this.props.onBack(this.props.tab);
   }
 
   /**
@@ -153,10 +149,10 @@ class AppHeader extends React.PureComponent<Props, State> {
    * @param {string} text params to search for
    */
   _onSearch(text: string): void {
-    if (text === this.props.filter) {
+    if (text === this.props.tabFilters[this.props.tab]) {
       return;
     }
-    this.props.onSearch(text);
+    this.props.onSearch(this.props.tab, text);
   }
 
   /**
@@ -219,7 +215,7 @@ class AppHeader extends React.PureComponent<Props, State> {
               ref='SearchInput'
               returnKeyType={'done'}
               style={_styles.searchText}
-              value={this.props.filter}
+              value={this.props.tabFilters[this.props.tab]}
               onChangeText={this._onSearch.bind(this)} />
         </View>
         <TouchableOpacity
@@ -307,21 +303,21 @@ const _styles = StyleSheet.create({
 const mapStateToProps = (store: any): any => {
   return {
     appTitle: store.header.title,
-    filter: store.search.terms,
     language: store.config.options.language,
     shouldShowBack: store.header.showBack,
     shouldShowSearch: store.header.showSearch,
     tab: store.navigation.tab,
+    tabFilters: store.search.tabTerms,
   };
 };
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onBack: (): void => {
+    onBack: (tab: Tab): void => {
       dispatch(actions.navigateBack());
-      dispatch(actions.search());
+      dispatch(actions.search(tab, ''));
     },
-    onSearch: (text?: string | undefined): void => dispatch(actions.search(text)),
+    onSearch: (tab: Tab, text: string): void => dispatch(actions.search(tab, text)),
   };
 };
 

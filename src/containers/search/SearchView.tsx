@@ -624,7 +624,7 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store: any): any => {
   return {
-    filter: store.search.terms,
+    filter: store.search.tabTerms.search,
     language: store.config.options.language,
   };
 };

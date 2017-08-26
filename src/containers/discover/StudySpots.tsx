@@ -311,7 +311,7 @@ const _styles = StyleSheet.create({
 const mapStateToProps = (store: any): any => {
   return {
     activeFilters: store.search.studyFilters,
-    filter: store.search.terms || '',
+    filter: store.search.tabTerms.discover,
     language: store.config.options.language,
     timeFormat: store.config.options.preferredTimeFormat,
   };

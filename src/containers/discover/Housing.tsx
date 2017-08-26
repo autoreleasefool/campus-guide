@@ -709,7 +709,7 @@ const mapStateToProps = (store: any): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
-    filter: store.search.terms,
+    filter: store.search.tabTerms.discover,
     language: store.config.options.language,
     residence: store.navigation.residence,
     view: store.navigation.housingView,

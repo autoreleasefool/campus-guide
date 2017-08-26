@@ -24,17 +24,24 @@
 
 // Types
 import * as Actions from '../actionTypes';
+import { TabSet } from '../../typings/global';
 
 /** Describes a search. */
 export interface State {
   studyFilters: Set < string >; // Filters to search study rooms by
-  terms: string;    // Search terms to filter results by
+  tabTerms: TabSet;             // Search terms to filter results by
 }
 
 /** Initial search state. */
 const initialState: State = {
   studyFilters: new Set(),
-  terms: '',
+  tabTerms: {
+    discover: '',
+    find: '',
+    schedule: '',
+    search: '',
+    settings: '',
+  },
 };
 
 /**
@@ -47,20 +54,35 @@ const initialState: State = {
 export default function search(state: State = initialState, action: any): State {
   switch (action.type) {
     case Actions.App.SwitchFindView:
+      return {
+        ...state,
+        tabTerms: {
+          ...state.tabTerms,
+          find: '',
+        },
+      };
     case Actions.App.SwitchDiscoverView:
     case Actions.App.SwitchHousingView:
     case Actions.App.SwitchDiscoverLink:
     case Actions.App.SwitchHousingResidence:
-    case Actions.App.SwitchTab:
       return {
         ...state,
-        terms: '',
+        tabTerms: {
+          ...state.tabTerms,
+          discover: '',
+        },
       };
-    case Actions.Search.Search:
+    case Actions.Search.Search: {
+      const tabTerms = {
+        ...state.tabTerms,
+      };
+      tabTerms[action.tab] = action.terms;
+
       return {
         ...state,
-        terms: action.terms || '',
+        tabTerms,
       };
+    }
     case Actions.Search.ActivateStudyFilter: {
       // Copy the current list of filters, or create a new one
       const studyFilters = new Set(state.studyFilters);

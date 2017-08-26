@@ -51,7 +51,7 @@ interface Props {
   filter: string;                                       // Filter the list of rooms
   language: Language;                                   // Language to display building names in
   rooms: BuildingRoom[];                                // The list of rooms in the building
-  renderHeader(): JSX.Element;                          // Render a custom header at the top of the list
+  renderHeader?(): JSX.Element;                         // Render a custom header at the top of the list
   onSelect(sh: string, room: string | undefined): void; // Callback function for when a room is selected
 }
 
@@ -174,7 +174,10 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    * @returns {JSX.Element|undefined} the header, if this.propsrenderHeader is provided
    */
   _renderHeader(): JSX.Element | undefined {
-    return this.props.renderHeader ? this.props.renderHeader() : undefined;
+    /* tslint:disable no-null-keyword */
+    /* Allow null since ReactNative doesn't like undefined components in their lists. */
+    return this.props.renderHeader ? this.props.renderHeader() : null;
+    /* tslint:enable no-null-keyword */
   }
 
   /**

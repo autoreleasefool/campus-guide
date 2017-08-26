@@ -534,7 +534,7 @@ const _styles = StyleSheet.create({
 const mapStateToProps = (store: any): any => {
   return {
     destination: store.directions.destination,
-    filter: store.search.terms,
+    filter: store.search.tabTerms.find,
     language: store.config.options.language,
     universityLocation: store.config.options.universityLocation,
     universityName: store.config.options.universityName,
@@ -543,7 +543,7 @@ const mapStateToProps = (store: any): any => {
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
-    clearSearch: (): void => dispatch(actions.search()),
+    clearSearch: (): void => dispatch(actions.search('find', '')),
     onStartingPointSelected: (shorthand: string, room: string | undefined): void => {
       dispatch(actions.setStartingPoint({ shorthand, room }));
       dispatch(actions.switchFindView(Constants.Views.Find.Steps));

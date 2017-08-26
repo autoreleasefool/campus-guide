@@ -24,6 +24,7 @@
 
 // Types
 import * as Actions from '../actionTypes';
+import { Tab } from '../../typings/global';
 
 export function activateStudyFilter(filter: string): any {
   return {
@@ -39,8 +40,9 @@ export function deactivateStudyFilter(filter: string): any {
   };
 }
 
-export function search(terms?: string | undefined): any {
+export function search(tab: Tab, terms: string): any {
   return {
+    tab,
     terms: terms || '',
     type: Actions.Search.Search,
   };

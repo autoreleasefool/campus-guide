@@ -33,14 +33,16 @@ describe('search actions', () => {
 
   it('creates an action to search for a search term', () => {
     const terms = 'search term';
-    const expectedAction = { type: Actions.Search.Search, terms };
-    expect(search.search(terms)).toEqual(expectedAction);
+    const tab = 'find';
+    const expectedAction = { type: Actions.Search.Search, terms, tab };
+    expect(search.search(tab, terms)).toEqual(expectedAction);
   });
 
   it('creates an action to clear the search', () => {
     const terms = undefined;
-    const expectedAction = { type:  Actions.Search.Search, terms: '' };
-    expect(search.search(terms)).toEqual(expectedAction);
+    const tab = 'discover';
+    const expectedAction = { type:  Actions.Search.Search, tab, terms: '' };
+    expect(search.search(tab, terms)).toEqual(expectedAction);
   });
 
   it('creates an action to set the study filters', () => {

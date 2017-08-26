@@ -110,7 +110,7 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store: any): any => {
   return {
-    filter: store.search.terms,
+    filter: store.search.tabTerms.find,
     language: store.config.options.language,
   };
 };
@@ -121,7 +121,7 @@ const mapDispatchToProps = (dispatch: any): any => {
       dispatch(actions.setHeaderTitle(buildingName, 'find'));
       dispatch(actions.viewBuilding(building));
       dispatch(actions.switchFindView(Constants.Views.Find.Building));
-      dispatch(actions.search());
+      dispatch(actions.search('find', ''));
     },
   };
 };

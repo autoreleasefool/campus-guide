@@ -293,7 +293,7 @@ const mapStateToProps = (store: any): any => {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,
     campus: store.navigation.campus,
-    filter: store.search.terms,
+    filter: store.search.tabTerms.discover,
     language: store.config.options.language,
     timeFormat: store.config.options.preferredTimeFormat,
     transitInfo: store.config.options.transitInfo,
@@ -304,7 +304,7 @@ const mapDispatchToProps = (dispatch: any): any => {
   return {
     canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('transit', can)),
     onCampusSelected: (campus?: MenuSection | undefined): void => dispatch(actions.switchTransitCampus(campus)),
-    resetFilter: (): void => dispatch(actions.search()),
+    resetFilter: (): void => dispatch(actions.search('discover', '')),
     setHeaderTitle: (title: Name | string): void => dispatch(actions.setHeaderTitle(title, 'discover')),
     showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
   };
