@@ -32,7 +32,7 @@ import * as Actions from '../../actionTypes';
 // Expected initial state
 const initialState: State = {
   studyFilters: new Set(),
-  terms: undefined,
+  terms: '',
 };
 
 describe('search reducer', () => {
@@ -52,7 +52,7 @@ describe('search reducer', () => {
         .toEqual({ ...initialState, terms: otherTerms });
 
     expect(reducer(initialState, { type: Actions.Search.Search, terms: undefined }))
-        .toEqual({ ...initialState, terms: undefined });
+        .toEqual({ ...initialState, terms: '' });
   });
 
   it('should set new filters', () => {

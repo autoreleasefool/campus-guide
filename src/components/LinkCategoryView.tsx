@@ -52,7 +52,7 @@ import { Language } from '../util/Translations';
 import { LinkSection, NamedLink } from '../../typings/global';
 
 interface Props {
-  filter: string | undefined;               // Keywords to filter links by
+  filter: string;                           // Keywords to filter links by
   language: Language;                       // The current language, selected by the user
   section: LinkSection;                     // Section to display
   socialMedia?: NamedLink | undefined;      // List of links to social media sites in the current category
@@ -163,7 +163,7 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
     const language: Language = this.props.language;
 
     // Search terms to filter links by
-    const filter = this.props.filter ? this.props.filter.toUpperCase() : undefined;
+    const filter = this.props.filter.length > 0 ? this.props.filter.toUpperCase() : undefined;
 
     return (
       <View>

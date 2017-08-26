@@ -65,17 +65,17 @@ function _getSources(): any[] {
  * Gets the results of a search by querying all search result sources.
  *
  * @param {Language}                language    the current language
- * @param {string|undefined}        searchTerms the search terms for the query
+ * @param {string}                  searchTerms the search terms for the query
  * @param {SearchSupport|undefined} supportData data to support searches
  * @returns {Promise<any>} a promise which resolves with the results of the search,
  *                            with each result naming its source.
  */
 export function getResults(
     language: Language,
-    searchTerms: string | undefined,
+    searchTerms: string,
     supportData: SearchSupport | undefined): Promise<any> {
   return new Promise((resolve: (r: ResultData) => void, reject: (err: any) => void): void => {
-    if (searchTerms == undefined || searchTerms.length === 0) {
+    if (searchTerms.length === 0) {
       resolve({ results: [], icons: {} });
     }
 
@@ -119,14 +119,14 @@ export function getResults(
 /**
  * Takes a set of results and narrows them based on new search terms.
  *
- * @param {string | undefined}      searchTerms     the search terms for the query
+ * @param {string}                  searchTerms     the search terms for the query
  * @param {Section<SearchResult>[]} existingResults results to narrow
  * @returns {Section<SearchResult>[]} the narrowed results
  */
 export function narrowResults(
-    searchTerms: string | undefined,
+    searchTerms: string,
     existingResults: Section<SearchResult>[]): Section<SearchResult>[] {
-  if (existingResults == undefined || searchTerms == undefined || searchTerms.length === 0) {
+  if (existingResults == undefined || searchTerms.length === 0) {
     return [];
   }
 

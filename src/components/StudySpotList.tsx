@@ -51,7 +51,7 @@ import { StudySpot } from '../../typings/university';
 
 interface Props {
   activeFilters: Set<string>;   // Set of active study spot filters
-  filter: string | undefined;   // Filter the list of buildings
+  filter: string;               // Filter the list of buildings
   studyFilters: any;            // Descriptions of study room filters
   language: Language;           // Language to display building names in
   spots: StudySpot[];           // Study spot properties to display
@@ -142,7 +142,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
    */
   _filterStudySpots({ activeFilters, filter, language, spots }: Props): void {
     // Ignore the case of the search terms
-    const adjustedFilter = (filter == undefined || filter.length === 0) ? undefined : filter.toUpperCase();
+    const adjustedFilter = (filter.length === 0) ? undefined : filter.toUpperCase();
 
     // Create array for spots
     const filteredSpots: StudySpot[] = [];

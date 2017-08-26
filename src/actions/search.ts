@@ -41,7 +41,7 @@ export function deactivateStudyFilter(filter: string): any {
 
 export function search(terms?: string | undefined): any {
   return {
-    terms,
+    terms: terms || '',
     type: Actions.Search.Search,
   };
 }

@@ -43,7 +43,7 @@ import { Building } from '../../../typings/university';
 
 interface Props {
   buildingList: Building[];                     // List of buildings to display
-  filter: string | undefined;                   // The current filter for buildings
+  filter: string;                               // The current filter for buildings
   language: Language;                           // The current language, selected by the user
   onBuildingSelect(b: Building, n: Name): void; // Updates the state when a building is selected
 }

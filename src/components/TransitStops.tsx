@@ -47,7 +47,7 @@ import { RouteDetails, TransitCampus } from '../../typings/transit';
 
 interface Props {
   campus: TransitCampus;                      // Information about the campus with transit service
-  filter: string | undefined;                 // Filter stops and times
+  filter: string;                             // Filter stops and times
   language: Language;                         // The current language, selected by the user
   stops: any;                                 // Set of stop ids mapped to details about the stop
   style?: any;                                // View style
@@ -164,7 +164,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
     this.props.onSelect(stopId);
 
     const props = this._propCloneWorkaround(this.props);
-    props.filter = undefined;
+    props.filter = '';
     this._onTimeSearch(stopId, props);
     (this.refs.Navigator as any).push({ id: TIMES });
   }
@@ -238,7 +238,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
    */
   _onStopSearch({ campus, filter, stops }: Props): void {
     // Ignore the case of the search terms
-    const adjustedSearchTerms = (filter == undefined || filter.length === 0) ? undefined : filter.toUpperCase();
+    const adjustedSearchTerms = filter.toUpperCase();
 
     const matchedStops: any = {};
     for (const stopId in campus.stops) {
@@ -253,13 +253,13 @@ export default class TransitStops extends React.PureComponent<Props, State> {
         }
 
         // Compare stop details to the search terms
-        matches = adjustedSearchTerms == undefined
+        matches = adjustedSearchTerms.length === 0
             || stop.code.toString().indexOf(adjustedSearchTerms) >= 0
             || stop.name.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
 
         // Compare each route number to the search terms until one matches
         for (let j = 0; j < campus.stops[stopId].length && !matches; j++) {
-          if (adjustedSearchTerms == undefined
+          if (adjustedSearchTerms.length === 0
               || campus.stops[stopId][j].number.toString().indexOf(adjustedSearchTerms) >= 0
               || campus.stops[stopId][j].sign.indexOf(adjustedSearchTerms) >= 0) {
             matches = true;
@@ -291,14 +291,14 @@ export default class TransitStops extends React.PureComponent<Props, State> {
     }
 
     // Ignore the case of the search terms
-    const adjustedSearchTerms = (filter == undefined || filter.length === 0) ? undefined : filter.toUpperCase();
+    const adjustedSearchTerms = filter.toUpperCase();
 
     const stopRoutes = campus.stops[stopId];
     const routesAndTimes: RouteDetails[] = [];
     if (campus.stops[stopId] != undefined) {
       for (const stopRoute of stopRoutes) {
         let matches = false;
-        matches = adjustedSearchTerms == undefined
+        matches = adjustedSearchTerms.length === 0
             || stopRoute.number.toString().indexOf(adjustedSearchTerms) >= 0
             || stopRoute.sign.toUpperCase().indexOf(adjustedSearchTerms) >= 0;
 

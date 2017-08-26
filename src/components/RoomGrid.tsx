@@ -26,6 +26,7 @@
 import React from 'react';
 import {
   FlatList,
+  InteractionManager,
   Platform,
   StyleSheet,
   Text,
@@ -47,7 +48,7 @@ import { BuildingRoom } from '../../typings/university';
 
 interface Props {
   shorthand: string;                                    // Unique shorthand identifier for the building
-  filter: string | undefined;                           // Filter the list of rooms
+  filter: string;                                       // Filter the list of rooms
   language: Language;                                   // Language to display building names in
   rooms: BuildingRoom[];                                // The list of rooms in the building
   renderHeader(): JSX.Element;                          // Render a custom header at the top of the list
@@ -56,14 +57,7 @@ interface Props {
 
 interface State {
   loaded: boolean;        // Indicates if the room data has been loaded
-  rooms: FilteredRoom[];  // List of rooms
-}
-
-// Data required for rendering the list of filtered rooms.
-interface FilteredRoom {
-  altName: string | undefined;  // Alternate display name for the room
-  key: string;                  // Unique name/number of the room
-  typeId: string;               // Type of room
+  rooms: BuildingRoom[];  // List of rooms
 }
 
 export default class RoomGrid extends React.PureComponent<Props, State> {
@@ -92,7 +86,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (!this.state.loaded) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 
@@ -103,7 +97,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
-      this._filterRooms(nextProps);
+      InteractionManager.runAfterInteractions(() => this._filterRooms(nextProps)); // TODO:CHECK
     }
   }
 
@@ -127,11 +121,17 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    * @param {Props} props the props to filter with
    */
   _filterRooms({ shorthand, filter, language, rooms }: Props): void {
+    console.log('Filtering rooms');
+    // If configuration hasn't been loaded, don't filter
+    if (this._roomTypes == undefined || this._roomTypeIds == undefined) {
+      return;
+    }
+
     // Ignore the case of the search terms
-    const adjustedFilter = (filter == undefined || filter.length === 0) ? '' : filter.toUpperCase();
+    const adjustedFilter = filter.toUpperCase();
 
     // Create array for sets of rooms
-    const filteredRooms: FilteredRoom[] = [];
+    const filteredRooms: BuildingRoom[] = [];
 
     // Cache list of room types that match the search terms
     const matchingRoomTypes = new Set();
@@ -157,12 +157,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
       }
 
       if (matches) {
-        const altName = Translations.getVariant(language, 'alt_name', room);
-        filteredRooms.push({
-          altName,
-          key: room.name.toUpperCase(),
-          typeId: room.type || Constants.DefaultRoomType,
-        });
+        filteredRooms.push(room);
       }
     });
 
@@ -185,11 +180,11 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
   /**
    * Renders an item describing a single room in the building.
    *
-   * @param {FilteredRoom} room a room to display in this row
+   * @param {BuildingRoom} room a room to display in this row
    * @returns {JSX.ElementReactElement<any>} a view describing a set of room
    */
-  _renderRow({ item }: { item: FilteredRoom }): JSX.Element {
-    const roomType = this._roomTypes[item.typeId];
+  _renderRow({ item }: { item: BuildingRoom }): JSX.Element {
+    const roomType = this._roomTypes[item.type || Constants.DefaultRoomType];
     const icon = Display.getPlatformIcon(Platform.OS, roomType);
     let rowIcon: JSX.Element | undefined;
     if (icon) {
@@ -200,13 +195,15 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
       );
     }
 
+    const altName = Translations.getVariant(this.props.language, 'alt_name', item);
+
     return (
-      <TouchableOpacity onPress={(): void => this.props.onSelect(this.props.shorthand, item.key)}>
+      <TouchableOpacity onPress={(): void => this.props.onSelect(this.props.shorthand, item.name)}>
         <View style={_styles.room}>
           {rowIcon}
           <View style={_styles.roomDescription}>
-            {item.altName ? <Text style={_styles.roomType}>{item.altName}</Text> : undefined}
-            <Text style={_styles.roomName}>{`${this.props.shorthand} ${item.key}`}</Text>
+            {altName ? <Text style={_styles.roomType}>{altName}</Text> : undefined}
+            <Text style={_styles.roomName}>{`${this.props.shorthand} ${item.name}`}</Text>
             <Text style={_styles.roomType}>
               {Translations.getName(this.props.language, roomType)}
             </Text>
@@ -237,6 +234,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
             ListHeaderComponent={this._renderHeader.bind(this)}
             data={this.state.rooms}
+            keyExtractor={(room: BuildingRoom): string => room.name}
             renderItem={this._renderRow.bind(this)} />
       </View>
     );

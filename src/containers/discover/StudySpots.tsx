@@ -56,7 +56,7 @@ import { StudySpot, StudySpotInfo } from '../../../typings/university';
 
 interface Props {
   activeFilters: Set<string>;                 // List of filters actively being used
-  filter: string | undefined;                 // Current search terms
+  filter: string;                             // Current search terms
   language: Language;                         // The current language, selected by the user
   timeFormat: TimeFormat;                     // Format to display times in
   activateFilter(filter: string): void;       // Activates an inactive study filter

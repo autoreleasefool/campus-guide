@@ -45,7 +45,7 @@ import { LinkSection, Name, Tab, Route } from '../../../typings/global';
 interface Props {
   appTab: Tab;                                          // The current tab the app is showing
   backCount: number;                                    // Number of times user has requested back navigation
-  filter: string | undefined;                           // Keywords to filter links by
+  filter: string;                                       // Keywords to filter links by
   language: Language;                                   // The current language, selected by the user
   linkId: string | undefined;                           // The selected link category
   canNavigateBack(can: boolean): void;                  // Indicate whether the app can navigate back

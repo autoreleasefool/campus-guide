@@ -48,7 +48,7 @@ import { Building } from '../../../typings/university';
 
 interface Props {
   building: Building;         // Building to display details for
-  filter: string | undefined; // The current filter for rooms
+  filter: string;             // The current filter for rooms
   language: Language;         // The current language, selected by the user
   onDestinationSelected(shorthand: string, room: string | undefined): void;
                               // Callback for when a room is selected

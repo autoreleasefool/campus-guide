@@ -51,7 +51,7 @@ import { Name, Tab } from '../../typings/global';
 
 interface Props {
   appTitle: Name;                           // Title for the header
-  filter: string | undefined;               // The current search terms
+  filter: string;                           // The current search terms
   language: Language;                       // The user's currently selected language
   shouldShowBack: boolean;                  // Indicates if the header should show a back button
   shouldShowSearch: boolean;                // Indicates if the header should show a search input option
@@ -150,9 +150,9 @@ class AppHeader extends React.PureComponent<Props, State> {
   /**
    * Prompts the app to search.
    *
-   * @param {string|undefined} text params to search for
+   * @param {string} text params to search for
    */
-  _onSearch(text?: string | undefined): void {
+  _onSearch(text: string): void {
     if (text === this.props.filter) {
       return;
     }

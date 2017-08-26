@@ -47,7 +47,7 @@ import { TransitCampus } from '../../typings/transit';
 
 interface Props {
   campusId: string;           // Identifier for the transit campus info to display
-  filter: string | undefined; // The current filter for transit routes
+  filter: string;             // The current filter for transit routes
   language: Language;         // The current language, selected by the user
   timeFormat: TimeFormat;     // Format to display times in
   resetFilter(): void;        // Should reset the search filter

@@ -64,7 +64,7 @@ import { BuildingProperty, HousingInfo, Residence, ResidenceProperty } from '../
 interface Props {
   appTab: Tab;                                      // The current tab the app is showing
   backCount: number;                                // Number of times user has requested back navigation
-  filter: string | undefined;                       // Keywords to filter links by
+  filter: string;                                   // Keywords to filter links by
   language: Language;                               // The current language, selected by the user
   residence: Residence | undefined;                 // The currently selected residence
   view: number;                                     // Current view to display
@@ -161,9 +161,8 @@ class Housing extends React.PureComponent<Props, State> {
 
     if (nextProps.filter !== this.props.filter) {
       this._onSearch(nextProps,
-          this.props.filter == undefined
-          || this.props.filter.length === 0
-          || (nextProps.filter && nextProps.filter.indexOf(this.props.filter) >= 0));
+          this.props.filter.length === 0
+          || (nextProps.filter.indexOf(this.props.filter) >= 0));
     }
   }
 
@@ -269,7 +268,7 @@ class Housing extends React.PureComponent<Props, State> {
    * @param {boolean} narrowResults true to narrow current results, false to filter full results
    */
   _onSearch(props: Props, narrowResults: boolean): void {
-    const adjustedFilter = props.filter ? props.filter.toUpperCase() : undefined;
+    const adjustedFilter = props.filter.toUpperCase();
     switch (props.view) {
       case Constants.Views.Housing.ResidenceCompare:
       case Constants.Views.Housing.ResidenceDetails: {
@@ -292,7 +291,7 @@ class Housing extends React.PureComponent<Props, State> {
 
           // Add categories and all properties if their name matches the filter
           const categoryName = Translations.getName(props.language, unfilteredProperty) || '';
-          if (adjustedFilter == undefined || categoryName.toUpperCase().indexOf(adjustedFilter) >= 0) {
+          if (adjustedFilter.length === 0 || categoryName.toUpperCase().indexOf(adjustedFilter) >= 0) {
             filteredProperties.push(unfilteredProperty);
             continue;
           }
@@ -301,7 +300,7 @@ class Housing extends React.PureComponent<Props, State> {
           // then, add only properties that match the filter
           for (const property of unfilteredProperty.data) {
             const propertyName = Translations.getName(props.language, property) || '';
-            if (adjustedFilter == undefined || propertyName.toUpperCase().indexOf(adjustedFilter) >= 0) {
+            if (adjustedFilter.length === 0 || propertyName.toUpperCase().indexOf(adjustedFilter) >= 0) {
               if (!categoryAdded) {
                 filteredProperties.push({ ...unfilteredProperty });
                 filteredProperties[filteredProperties.length - 1].data = [];

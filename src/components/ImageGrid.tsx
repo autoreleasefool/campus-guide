@@ -28,6 +28,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  InteractionManager,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -52,7 +53,7 @@ interface Props {
   columns: number;                      // Number of columns to show images in
   disableImages?: boolean;              // If true, grid should only show a list of names, with no images
   includeClear?: boolean;               // If true, an empty cell should be available to clear the choice
-  filter: string | undefined;           // Filter the list of images
+  filter: string;                       // Filter the list of images
   language: Language;                   // Language to display image names in
   multiSelect?: boolean;                // Enable selecting two or more images in the grid
   multiSelectText?: string;             // Text to display on button for confirming multi select
@@ -100,7 +101,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    * Loads the images once the view has been mounted.
    */
   componentDidMount(): void {
-    this._filterImages(this.props);
+    InteractionManager.runAfterInteractions(() => this._filterImages(this.props));
   }
 
   /**
@@ -110,7 +111,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
-      this._filterImages(nextProps);
+      InteractionManager.runAfterInteractions(() => this._filterImages(nextProps));
     }
   }
 
@@ -134,7 +135,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    */
   _filterImages({ language, images, filter, includeClear }: Props): void {
     // Ignore the case of the search terms
-    const adjustedFilter = (filter == undefined || filter.length === 0) ? undefined : filter.toUpperCase();
+    const adjustedFilter = (filter.length === 0) ? undefined : filter.toUpperCase();
 
     // Create array for buildings
     const filteredImages: (GridImage|undefined)[] = [];

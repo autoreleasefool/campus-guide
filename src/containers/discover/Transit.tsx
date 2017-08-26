@@ -59,11 +59,11 @@ interface Props {
   backCount: number;                                        // Number of times user has requested back navigation
   transitInfo: TransitInfo | undefined;                     // Information about the city transit system
   campus: MenuSection | undefined;                          // The current transit campus to display info for
-  filter: string | undefined;                               // The current filter for transit routes
+  filter: string;                                           // The current filter for transit routes
   language: Language;                                       // The current language, selected by the user
   timeFormat: TimeFormat;                                   // Format to display times in
   canNavigateBack(can: boolean): void;                      // Indicate whether the app can navigate back
-  onCampusSelected(campus?: MenuSection | undefined): void;  // Displays details about a transit campus
+  onCampusSelected(campus?: MenuSection | undefined): void; // Displays details about a transit campus
   resetFilter(): void;                                      // Clears the current search terms
   setHeaderTitle(t: Name | string): void;                   // Sets the title in the app header
   showSearch(show: boolean): void;                          // Shows or hides the search button

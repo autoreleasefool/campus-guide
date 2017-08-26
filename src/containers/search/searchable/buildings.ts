@@ -124,16 +124,16 @@ async function _getRoomResults(key: string,
  * Returns a promise containing a list of buildings and rooms which match the search terms.
  *
  * @param {Language}                language    the current language
- * @param {string|undefined}        searchTerms the search terms for the query
+ * @param {string}                  searchTerms the search terms for the query
  * @param {SearchSupport|undefined} data        supporting data for the query
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                                  containing buildings and rooms
  */
 export async function getResults(
     language: Language,
-    searchTerms: string | undefined,
+    searchTerms: string,
     data: SearchSupport | undefined): Promise<Section<SearchResult>[]> {
-  if (searchTerms == undefined || searchTerms.length === 0) {
+  if (searchTerms.length === 0) {
     return [];
   }
 

@@ -61,7 +61,7 @@ import { Language } from '../../util/Translations';
 import { BasicIcon, Route, Section } from '../../../typings/global';
 
 interface Props {
-  filter: string | undefined;                                       // Search terms
+  filter: string;                                                   // Search terms
   language: Language;                                               // The current language, selected by the user
   onResultSelect(sectionKey: string | undefined, data: any): void;  // Callback for when result is selected
 }
@@ -231,8 +231,8 @@ class SearchView extends React.PureComponent<Props, State> {
    * @param {Props} nextProps the props to filter by
    */
   _updateSearch(prevProps: Props, nextProps: Props): void {
-    if (prevProps.filter != undefined && prevProps.filter.length > 0
-        && nextProps.filter != undefined && nextProps.filter.length > 0
+    if (prevProps.filter.length > 0
+        && nextProps.filter.length > 0
         && nextProps.filter.indexOf(prevProps.filter) >= 0
         && this._searchResults.length > 0) {
 
@@ -464,7 +464,7 @@ class SearchView extends React.PureComponent<Props, State> {
    */
   _renderFilteredResults(): JSX.Element {
     let results: JSX.Element | undefined;
-    if (this.props.filter == undefined || this.props.filter.length === 0) {
+    if (this.props.filter.length === 0) {
       results = this._renderEmptySearch();
     } else if (this.state.anyResults) {
       results = (
@@ -493,7 +493,7 @@ class SearchView extends React.PureComponent<Props, State> {
    */
   _renderSingleResults(): JSX.Element | undefined {
     let results: JSX.Element | undefined;
-    if (this.props.filter == undefined || !this.state.anyResults) {
+    if (this.props.filter.length === 0 || !this.state.anyResults) {
       results = this._renderNoResults();
     } else {
       results = (

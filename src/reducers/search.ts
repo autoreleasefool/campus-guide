@@ -28,13 +28,13 @@ import * as Actions from '../actionTypes';
 /** Describes a search. */
 export interface State {
   studyFilters: Set < string >; // Filters to search study rooms by
-  terms: string | undefined;    // Search terms to filter results by
+  terms: string;    // Search terms to filter results by
 }
 
 /** Initial search state. */
 const initialState: State = {
   studyFilters: new Set(),
-  terms: undefined,
+  terms: '',
 };
 
 /**
@@ -59,7 +59,7 @@ export default function search(state: State = initialState, action: any): State 
     case Actions.Search.Search:
       return {
         ...state,
-        terms: action.terms,
+        terms: action.terms || '',
       };
     case Actions.Search.ActivateStudyFilter: {
       // Copy the current list of filters, or create a new one
