@@ -72,6 +72,7 @@ interface Props {
 interface State {
   closestBuilding: Building | undefined;  // The closest building, or undefined if no buildings are nearby
   locating: boolean;                      // Indicates if the app is searching for the closest building
+  region: LatLong & LatLongDelta;         // Current region displayed on the map
   selectedBuilding: Building | undefined; // The building the user has selected to navigate from
   viewingMap: boolean;                    // True if the user is viewing the map to select a starting point
 }
@@ -117,6 +118,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
     this.state = {
       closestBuilding: undefined,
       locating: false,
+      region: this._initialRegion,
       selectedBuilding: undefined,
       viewingMap: false,
     };
@@ -390,7 +392,8 @@ class StartingPoint extends React.PureComponent<Props, State> {
             followsUserLocation={true}
             initialRegion={this._initialRegion}
             showsUserLoction={true}
-            style={_styles.map} />
+            style={_styles.map}
+            onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })} />
         <Suggestion
             backgroundColor={Constants.Colors.secondaryBackground}
             language={this.props.language}

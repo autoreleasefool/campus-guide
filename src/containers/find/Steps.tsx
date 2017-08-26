@@ -36,7 +36,7 @@ import {
 import { connect } from 'react-redux';
 
 // Imports
-import ActionButton from 'react-native-action-button';
+// import ActionButton from 'react-native-action-button';
 import AdView from '../../components/AdView';
 import Header from '../../components/Header';
 import PaddedIcon from '../../components/PaddedIcon';
@@ -179,11 +179,11 @@ class Steps extends React.PureComponent<Props, State> {
         <AdView />
         {this._renderDestination()}
         {this._renderSteps()}
-        <ActionButton
+        {/* <ActionButton
             buttonColor={Constants.Colors.darkGrey}
             offsetX={Constants.Sizes.Margins.Expanded}
-            offsetY={Constants.Sizes.Margins.Regular}
-            onPress={this._toggleActionOptions.bind(this)} />
+            offsetY={Constants.Sizes.Margins.Expanded}
+            onPress={this._toggleActionOptions.bind(this)} /> */}
       </View>
     );
   }

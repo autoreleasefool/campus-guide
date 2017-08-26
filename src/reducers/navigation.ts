@@ -34,7 +34,6 @@ export interface State {
   tab: Tab;                             // Current tab in the root navigation of the app
 
   findView: number;                     // The current view to display in the find tab
-
   discoverView: number;                 // The current view to display in the discover tab
   housingView: number;                  // The current view to display in the housing menu
   linkId: string | number | undefined;  // Currently selected link category id

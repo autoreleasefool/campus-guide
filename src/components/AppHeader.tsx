@@ -115,6 +115,10 @@ class AppHeader extends React.PureComponent<Props, State> {
             || nextProps.tab === 'search',
       });
     }
+
+    if (nextProps.filter !== this.props.filter && nextProps.filter === '') {
+      (this.refs.SearchInput as any).blur();
+    }
   }
 
   /**

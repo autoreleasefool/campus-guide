@@ -211,12 +211,16 @@ class Schedule extends React.PureComponent<Props, State> {
                 prompt={Translations.get(this.props.language, 'semester')}
                 selectedValue={this.props.currentSemester}
                 onValueChange={(value: number): void => this.props.switchSemester(value)}>
-              {this.props.semesters.map((semester: Semester, index: number) => (
+              {this.props.semesters.map((semester: Semester, index: number) => {
+                const name = Translations.getName(this.props.language, semester);
+
+                return (
                   <Picker.Item
                       key={name}
-                      label={Translations.getName(this.props.language, semester)}
+                      label={name}
                       value={index} />
-              ))}
+                );
+              })}
             </Picker>
             )
             : (
@@ -224,12 +228,16 @@ class Schedule extends React.PureComponent<Props, State> {
                 itemStyle={_styles.semesterItem}
                 selectedValue={this.props.currentSemester}
                 onValueChange={(value: number): void => this.props.switchSemester(value)}>
-              {this.props.semesters.map((semester: Semester, index: number) => (
+              {this.props.semesters.map((semester: Semester, index: number) => {
+                const name = Translations.getName(this.props.language, semester);
+
+                return (
                   <PickerIOS.Item
                       key={name}
-                      label={Translations.getName(this.props.language, semester)}
+                      label={name}
                       value={index} />
-              ))}
+                );
+              })}
             </PickerIOS>
             )
         )
@@ -294,7 +302,7 @@ class Schedule extends React.PureComponent<Props, State> {
         <ActionButton
             buttonColor={Constants.Colors.primaryBackground}
             offsetX={Constants.Sizes.Margins.Expanded}
-            offsetY={Constants.Sizes.Margins.Regular}
+            offsetY={Constants.Sizes.Margins.Expanded}
             onPress={this._showCourseModal.bind(this, true)} />
       </View>
     );

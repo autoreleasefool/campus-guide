@@ -181,7 +181,8 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
     return (
       <MapView
           region={this.state.region || this.state.initialRegion}
-          style={_styles.map}>
+          style={_styles.map}
+          onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>
         {markers.map((stopId: string) => {
           const stop = this.state.stops[stopId];
 

@@ -216,6 +216,7 @@ class Housing extends React.PureComponent<Props, State> {
     if (currentRoutes.length >= 1) {
       switch (currentRoutes[currentRoutes.length - 1].id) {
         case Constants.Views.Housing.Menu:
+          this.props.onSectionSelected(undefined);
           this.props.selectResidence(undefined);
           this.props.showSearch(false);
           break;
@@ -444,7 +445,7 @@ class Housing extends React.PureComponent<Props, State> {
    */
   _renderMultiResidenceProperty({ item }: { item: ResidenceProperty }): JSX.Element | undefined {
     if (item.key === 'none') {
-      return undefined;
+      return <View />;
     }
 
     return (

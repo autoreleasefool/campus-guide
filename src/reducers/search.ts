@@ -46,6 +46,16 @@ const initialState: State = {
  */
 export default function search(state: State = initialState, action: any): State {
   switch (action.type) {
+    case Actions.App.SwitchFindView:
+    case Actions.App.SwitchDiscoverView:
+    case Actions.App.SwitchHousingView:
+    case Actions.App.SwitchDiscoverLink:
+    case Actions.App.SwitchHousingResidence:
+    case Actions.App.SwitchTab:
+      return {
+        ...state,
+        terms: '',
+      };
     case Actions.Search.Search:
       return {
         ...state,

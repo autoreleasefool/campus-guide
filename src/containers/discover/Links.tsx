@@ -193,6 +193,7 @@ class Links extends React.PureComponent<Props, State> {
       this.props.showCategory(currentRoutes[currentRoutes.length - 1].id);
     } else {
       this.props.setHeaderTitle('uo_info');
+      this.props.showCategory(0);
     }
 
     this.props.canNavigateBack(currentRoutes.length > 1);

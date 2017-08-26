@@ -99,4 +99,19 @@ describe('search reducer', () => {
     expect(updatedState.studyFilters.has('filter2')).toBeFalsy();
     expect(updatedState.studyFilters.has('filter3')).toBeTruthy();
   });
+
+  it('should reset the search filter when a view changes', () => {
+    const testTerms = 'search';
+    const updatedState = reducer(initialState, { type: Actions.Search.Search, terms: testTerms });
+    expect(updatedState).toEqual({ ...initialState, terms: testTerms });
+
+    expect(reducer(updatedState, { type: Actions.App.SwitchFindView })).toEqual({ ...initialState, terms: '' });
+    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverView })).toEqual({ ...initialState, terms: '' });
+    expect(reducer(updatedState, { type: Actions.App.SwitchHousingView })).toEqual({ ...initialState, terms: '' });
+    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverLink })).toEqual({ ...initialState, terms: '' });
+    expect(reducer(updatedState, { type: Actions.App.SwitchHousingResidence })).toEqual({ ...initialState, terms: '' });
+    expect(reducer(updatedState, { type: Actions.App.SwitchTab })).toEqual({ ...initialState, terms: '' });
+    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverTransitCampus })).toEqual(updatedState);
+  });
+
 });
