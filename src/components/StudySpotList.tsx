@@ -27,6 +27,7 @@ import React from 'react';
 import {
   FlatList,
   Image,
+  InteractionManager,
   Platform,
   StyleSheet,
   Text,
@@ -82,7 +83,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
    * Loads the study spots once the view has been mounted.
    */
   componentDidMount(): void {
-    this._filterStudySpots(this.props);
+    InteractionManager.runAfterInteractions(() => this._filterStudySpots(this.props));
   }
 
   /**

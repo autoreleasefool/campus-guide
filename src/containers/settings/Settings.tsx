@@ -27,6 +27,7 @@ import React from 'react';
 import {
   Alert,
   Clipboard,
+  InteractionManager,
   Linking,
   Modal,
   Platform,
@@ -114,7 +115,7 @@ class Settings extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (this._settingSections.length === 0) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

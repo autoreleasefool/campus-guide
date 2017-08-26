@@ -26,6 +26,7 @@
 // React imports
 import React from 'react';
 import {
+  InteractionManager,
   LayoutAnimation,
   StyleSheet,
   TouchableOpacity,
@@ -85,7 +86,7 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
    */
   componentDidMount(): void {
     if (this.state.campus == undefined) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

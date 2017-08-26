@@ -24,7 +24,7 @@
 
 // React imports
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { InteractionManager, StyleSheet, View } from 'react-native';
 import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Redux imports
@@ -79,7 +79,7 @@ class Links extends React.PureComponent<Props, State> {
     (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
     if (this.state.links.length === 0) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

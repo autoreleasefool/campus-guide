@@ -24,7 +24,7 @@
 
 // React imports
 import React from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, InteractionManager, StyleSheet, View } from 'react-native';
 
 // Redux imports
 import * as actions from '../actions';
@@ -63,7 +63,7 @@ class Main extends React.PureComponent<Props, State> {
         [{ text: Translations.get(language, 'ok'), onPress: (): Promise<void> => this._checkConfiguration() }]
       );
     } else {
-      this._checkConfiguration();
+      InteractionManager.runAfterInteractions(() => this._checkConfiguration());
     }
   }
 

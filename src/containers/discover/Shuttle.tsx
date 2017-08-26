@@ -25,6 +25,7 @@
 // React imports
 import React from 'react';
 import {
+  InteractionManager,
   StyleSheet,
   Text,
   View,
@@ -84,7 +85,7 @@ class Shuttle extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (this.state.shuttle == undefined) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

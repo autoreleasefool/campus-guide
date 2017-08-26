@@ -28,6 +28,7 @@ import {
   Alert,
   Clipboard,
   Dimensions,
+  InteractionManager,
   Linking,
   ScrollView,
   SectionList,
@@ -119,7 +120,7 @@ class Housing extends React.PureComponent<Props, State> {
     this._multiPropertyWidth.width = screenWidth * RESIDENCE_PROPERTY_WIDTH_RATIO;
 
     if (!this.state.housingInfo) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

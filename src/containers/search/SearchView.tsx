@@ -29,6 +29,7 @@ import {
   Alert,
   Clipboard,
   FlatList,
+  InteractionManager,
   Linking,
   Platform,
   SectionList,
@@ -123,7 +124,7 @@ class SearchView extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (!this.state.supportData) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

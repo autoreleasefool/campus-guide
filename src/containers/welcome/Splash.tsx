@@ -27,6 +27,7 @@
 import React from 'react';
 import {
   AsyncStorage,
+  InteractionManager,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -84,7 +85,7 @@ class Splash extends React.PureComponent<Props, State> {
    * Checks if a language has been selected, and moves to the next screen if so.
    */
   componentDidMount(): void {
-    this._loadPreferences();
+    InteractionManager.runAfterInteractions(() => this._loadPreferences());
   }
 
   /**

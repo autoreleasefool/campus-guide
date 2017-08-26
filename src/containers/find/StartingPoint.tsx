@@ -26,6 +26,7 @@
 import React from 'react';
 import {
   Alert,
+  InteractionManager,
   Linking,
   Platform,
   StyleSheet,
@@ -146,7 +147,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
    * Sets up the closest building to the user.
    */
   componentDidMount(): void {
-    this._findClosestBuilding();
+    InteractionManager.runAfterInteractions(() => this._findClosestBuilding());
   }
 
   /**

@@ -24,7 +24,7 @@
 
 // React imports
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { InteractionManager, StyleSheet, View } from 'react-native';
 
 // Redux imports
 import { connect } from 'react-redux';
@@ -67,7 +67,7 @@ class DiscoverHome extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (this.state.sections.length === 0) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

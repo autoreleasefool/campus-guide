@@ -27,6 +27,7 @@ import React from 'react';
 import {
   Alert,
   Clipboard,
+  InteractionManager,
   Linking,
   StyleSheet,
   TouchableOpacity,
@@ -99,7 +100,7 @@ class Transit extends React.PureComponent<Props, State> {
     (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
 
     if (this.state.campuses.length === 0) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

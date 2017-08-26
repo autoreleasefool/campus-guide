@@ -97,7 +97,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
-      InteractionManager.runAfterInteractions(() => this._filterRooms(nextProps)); // TODO:CHECK
+      this._filterRooms(nextProps);
     }
   }
 
@@ -121,7 +121,6 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    * @param {Props} props the props to filter with
    */
   _filterRooms({ shorthand, filter, language, rooms }: Props): void {
-    console.log('Filtering rooms');
     // If configuration hasn't been loaded, don't filter
     if (this._roomTypes == undefined || this._roomTypeIds == undefined) {
       return;

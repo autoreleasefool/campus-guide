@@ -26,6 +26,7 @@
 import React from 'react';
 import {
   Dimensions,
+  InteractionManager,
   LayoutAnimation,
   Modal,
   StyleSheet,
@@ -100,7 +101,7 @@ class StudySpots extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     if (!this.state.loaded) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

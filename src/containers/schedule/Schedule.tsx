@@ -25,6 +25,7 @@
 // React imports
 import React from 'react';
 import {
+  InteractionManager,
   LayoutAnimation,
   Modal,
   Picker,
@@ -113,7 +114,7 @@ class Schedule extends React.PureComponent<Props, State> {
 
   componentDidMount(): void {
     if (this.state.lectureFormats.length === 0) {
-      this.loadConfiguration();
+      InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
   }
 

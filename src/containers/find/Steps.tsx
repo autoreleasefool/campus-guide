@@ -26,6 +26,7 @@
 import React from 'react';
 import {
   FlatList,
+  InteractionManager,
   Platform,
   StyleSheet,
   Text,
@@ -76,7 +77,7 @@ class Steps extends React.PureComponent<Props, State> {
   }
 
   componentDidMount(): void {
-    this._loadDirections();
+    InteractionManager.runAfterInteractions(() => this._loadDirections());
   }
 
   async _loadDirections(): Promise<void> {

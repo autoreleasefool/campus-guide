@@ -111,7 +111,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    */
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
-      InteractionManager.runAfterInteractions(() => this._filterImages(nextProps));
+      this._filterImages(nextProps);
     }
   }
 

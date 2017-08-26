@@ -25,6 +25,7 @@
 // React imports
 import React from 'react';
 import {
+  InteractionManager,
   ListView,
   StyleSheet,
   Text,
@@ -99,7 +100,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
    * If the stops have not beed loaded, then loads them.
    */
   componentDidMount(): void {
-    this._onStopSearch(this.props);
+    InteractionManager.runAfterInteractions(() => this._onStopSearch(this.props));
   }
 
   /**
