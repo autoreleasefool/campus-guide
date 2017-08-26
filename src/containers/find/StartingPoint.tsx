@@ -53,13 +53,18 @@ import * as Translations from '../../util/Translations';
 
 // Types
 import { Language } from '../../util/Translations';
-import { LatLong, LatLongDelta, Name, Route } from '../../../typings/global';
+import { Description, LatLong, LatLongDelta, Name, Route } from '../../../typings/global';
 import { Building, Destination } from '../../../typings/university';
+
+/** An object which can handle an onPress action */
+interface ActionHandler {
+  onPress?(): void;
+}
 
 interface Props {
   buildingList: Building[];             // List of buildings to display
   destination: Destination | undefined; // The user's selected destination
-  filter: string | undefined;           // Current search terms
+  filter: string;                       // Current search terms
   language: Language;                   // The current language, selected by the user
   universityLocation: LatLong;          // Location of the university
   universityName: Name;                 // Name of the university
@@ -72,6 +77,8 @@ interface Props {
 interface State {
   closestBuilding: Building | undefined;  // The closest building, or undefined if no buildings are nearby
   locating: boolean;                      // Indicates if the app is searching for the closest building
+  locationError: (ActionHandler & Description) | undefined;
+                                          // If an error occurred getting the user's location, it is provided here
   region: LatLong & LatLongDelta;         // Current region displayed on the map
   selectedBuilding: Building | undefined; // The building the user has selected to navigate from
   viewingMap: boolean;                    // True if the user is viewing the map to select a starting point
@@ -118,6 +125,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
     this.state = {
       closestBuilding: undefined,
       locating: false,
+      locationError: undefined,
       region: this._initialRegion,
       selectedBuilding: undefined,
       viewingMap: false,
@@ -160,9 +168,10 @@ class StartingPoint extends React.PureComponent<Props, State> {
       this.setState({
         closestBuilding: Navigation.findClosestBuilding(location, this.props.buildingList, MAXIMUM_DISTANCE),
         locating: false,
+        locationError: undefined,
       });
     },
-      (err: any) => console.error('Could not get user location.', err),
+      (err: any) => this._showLocationErrorMessage(err),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
   }
@@ -179,6 +188,45 @@ class StartingPoint extends React.PureComponent<Props, State> {
         ? `https://www.google.com/maps/@${latitude},${longitude},16z`
         : `http://maps.apple.com/?ll=${latitude},${longitude}`;
     Linking.openURL(link).catch((err: any) => console.error('Could not open Google Maps link', err));
+  }
+
+  /**
+   * Informs user of an error when their location could not be determined.
+   *
+   * @param {Error} error the error thrown when requesting user location.
+   */
+  _showLocationErrorMessage(error: any): void {
+    console.log('Could not get user location', error);
+    let locationError: ActionHandler & Description = {
+      description: error.message,
+    };
+
+    /* tslint:disable prefer-switch */
+    /* error.PERMISSION_DENIED and others may not exist on error. */
+
+    if (error.code === error.PERMISSION_DENIED) {
+      locationError = {
+        description_en: Translations.get('en', 'location_permission_denied'),
+        description_fr: Translations.get('fr', 'location_permission_denied'),
+      };
+    } else if (error.code === error.TIMEOUT) {
+      locationError = {
+        description_en: Translations.get('en', 'location_timeout'),
+        description_fr: Translations.get('fr', 'location_timeout'),
+        onPress: (): void => this._findClosestBuilding(),
+      };
+    } else if (error.code === error.POSITION_UNAVAILABLE) {
+      locationError = {
+        description_en: Translations.get('en', 'location_position_unavailable'),
+        description_fr: Translations.get('fr', 'location_position_unavailable'),
+        onPress: (): void => this._findClosestBuilding(),
+      };
+    }
+
+    /* tslint:enable prefer-switch */
+
+    console.log(JSON.stringify(locationError));
+    this.setState({ locationError });
   }
 
   /**
@@ -382,6 +430,22 @@ class StartingPoint extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a map component
    */
   _renderStartingPointMap(): JSX.Element {
+    if (this.state.locationError) {
+      console.log(Translations.getDescription(this.props.language, this.state.locationError));
+
+      return (
+        <View style={_styles.container}>
+          <View style={_styles.locationErrorContainer}>
+            <TouchableOpacity onPress={this.state.locationError.onPress}>
+              <Text style={_styles.locationError}>
+                {Translations.getDescription(this.props.language, this.state.locationError)}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+
     const suggestion = this.state.closestBuilding
         ? Translations.getName(this.props.language, this.state.closestBuilding)
         : Translations.get(this.props.language, 'no_buildings_nearby');
@@ -440,6 +504,17 @@ const _styles = StyleSheet.create({
   lobbyText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
+  },
+  locationError: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
+    textAlign: 'center',
+  },
+  locationErrorContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    margin: Constants.Sizes.Margins.Regular,
   },
   map: {
     flex: 1,
