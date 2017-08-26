@@ -30,8 +30,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "Campus Guide.app"
-               BlueprintName = "Campus Guide"
-               ReferencedContainer = "container:Campus Guide.xcodeproj">
+               BlueprintName = "CampusGuide"
+               ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "Campus GuideTests.xctest"
-               BlueprintName = "Campus GuideTests"
-               ReferencedContainer = "container:Campus Guide.xcodeproj">
+               BuildableName = "CampusGuideTests.xctest"
+               BlueprintName = "CampusGuideTests"
+               ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "Campus GuideTests.xctest"
-               BlueprintName = "Campus GuideTests"
-               ReferencedContainer = "container:Campus Guide.xcodeproj">
+               BuildableName = "CampusGuideTests.xctest"
+               BlueprintName = "CampusGuideTests"
+               ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -72,15 +72,15 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Campus Guide.app"
-            BlueprintName = "Campus Guide"
-            ReferencedContainer = "container:Campus Guide.xcodeproj">
+            BlueprintName = "CampusGuide"
+            ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -95,8 +95,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Campus Guide.app"
-            BlueprintName = "Campus Guide"
-            ReferencedContainer = "container:Campus Guide.xcodeproj">
+            BlueprintName = "CampusGuide"
+            ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -121,8 +121,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Campus Guide.app"
-            BlueprintName = "Campus Guide"
-            ReferencedContainer = "container:Campus Guide.xcodeproj">
+            BlueprintName = "CampusGuide"
+            ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
