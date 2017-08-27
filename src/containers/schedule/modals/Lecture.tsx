@@ -31,6 +31,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -44,6 +45,7 @@ import ImageGrid from '../../../components/ImageGrid';
 import Header from '../../../components/Header';
 import ModalHeader from '../../../components/ModalHeader';
 import moment from 'moment';
+import RoomGrid from '../../../components/RoomGrid';
 import * as Constants from '../../../constants';
 import * as TextUtils from '../../../util/TextUtils';
 import * as Translations from '../../../util/Translations';
@@ -51,7 +53,7 @@ import * as Translations from '../../../util/Translations';
 // Types
 import { Language } from '../../../util/Translations';
 import { BasicIcon, TimeFormat } from '../../../../typings/global';
-import { Building, Course, Destination, Lecture, LectureFormat } from '../../../../typings/university';
+import { Building, Course, Destination, Lecture, LectureFormat, RoomTypeId } from '../../../../typings/university';
 
 interface Props {
   addingLecture: boolean;                 // True when adding a new course, false when editing
@@ -65,6 +67,7 @@ interface Props {
 }
 
 interface State {
+  building: Building | undefined;     // The selected building to display rooms of
   day: number;                        // Day of the week the lecture takes place. 0 for monday.
   format: number;                     // Format type of the lecture
   starts: number;                     // Start time of the lecture, in minutes from midnight
@@ -105,6 +108,14 @@ const MINUTE_INTERVAL = 5;
 // Number of columns to display buildings in
 const BUILDING_COLUMNS = 3;
 
+const LECTURE_ROOM_TYPES: Set<RoomTypeId> = new Set();
+LECTURE_ROOM_TYPES.add('class');
+LECTURE_ROOM_TYPES.add('comp');
+LECTURE_ROOM_TYPES.add('meet');
+LECTURE_ROOM_TYPES.add('lab_res');
+LECTURE_ROOM_TYPES.add('lab_teach');
+LECTURE_ROOM_TYPES.add('seminar');
+
 class LectureModal extends React.PureComponent<Props, State> {
 
   /** List of buildings in the app. */
@@ -121,6 +132,7 @@ class LectureModal extends React.PureComponent<Props, State> {
     const day = props.lectureToEdit ? props.lectureToEdit.day : DEFAULT_DAY;
     const starts = props.lectureToEdit ? props.lectureToEdit.startTime : DEFAULT_START_TIME;
     this.state = {
+      building: undefined,
       day,
       ends: props.lectureToEdit ? props.lectureToEdit.endTime : DEFAULT_END_TIME,
       format: props.lectureToEdit ? props.lectureToEdit.format : DEFAULT_FORMAT,
@@ -272,12 +284,23 @@ class LectureModal extends React.PureComponent<Props, State> {
    */
   _onBuildingSelect(building: Building | undefined): void {
     if (building == undefined) {
-      this.setState({ location: undefined });
+      this.setState({ location: undefined, building });
       (this.refs.Navigator as any).pop();
     } else {
-      this.setState({ location: { shorthand: building.shorthand, room: undefined } });
+      this.setState({ location: { shorthand: building.shorthand, room: undefined }, building });
       this._showPicker(PICKER_ROOM);
     }
+  }
+
+  /**
+   * Handles when a room is selected.
+   *
+   * @param {string}           shorthand selected building shorthand
+   * @param {string|undefined} room      selected room name or undefined
+   */
+  _onRoomSelect(shorthand: string, room: string | undefined): void {
+    this.setState({ location: { shorthand, room } });
+    (this.refs.Navigator as any).popToTop();
   }
 
   /**
@@ -299,12 +322,18 @@ class LectureModal extends React.PureComponent<Props, State> {
               icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={`${locationTranslation} - ${buildingTranslation}`} />
         </TouchableOpacity>
+        <TouchableOpacity onPress={(): void => this._onBuildingSelect(undefined)}>
+          <View style={_styles.removeBuildingTextContainer}>
+            <Text style={_styles.removeBuildingText}>
+              {Translations.get(this.props.language, 'none')}
+            </Text>
+          </View>
+        </TouchableOpacity>
         <ImageGrid
             columns={BUILDING_COLUMNS}
             disableImages={true}
             filter={''}
             images={this._buildingList}
-            includeClear={true}
             language={this.props.language}
             onSelect={this._onBuildingSelect.bind(this)} />
       </View>
@@ -323,6 +352,23 @@ class LectureModal extends React.PureComponent<Props, State> {
     const locationTranslation = Translations.get(this.props.language, 'location');
     const roomTranslation = Translations.get(this.props.language, 'room');
 
+    const building = this.state.building;
+    let roomGrid: JSX.Element;
+    if (building != undefined) {
+      roomGrid = (
+        <View style={_styles.container}>
+          <RoomGrid
+            backgroundColor={Constants.Colors.secondaryBackground}
+            filter={''}
+            language={this.props.language}
+            rooms={building.rooms}
+            roomTypeFilter={LECTURE_ROOM_TYPES}
+            shorthand={building.shorthand}
+            onSelect={this._onRoomSelect.bind(this)} />
+        </View>
+      );
+    }
+
     return (
       <View style={_styles.container}>
         <TouchableOpacity onPress={(): void => (this.refs.Navigator as any).pop()}>
@@ -330,6 +376,7 @@ class LectureModal extends React.PureComponent<Props, State> {
               icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={`${locationTranslation} - ${roomTranslation}`} />
         </TouchableOpacity>
+        {roomGrid}
       </View>
     );
   }
@@ -609,6 +656,16 @@ const _styles = StyleSheet.create({
   pickerItem: {
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Subtitle,
+  },
+  removeBuildingText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    margin: Constants.Sizes.Margins.Expanded,
+    textAlign: 'center',
+  },
+  removeBuildingTextContainer: {
+    backgroundColor: Constants.Colors.darkMoreTransparentBackground,
+    margin: 1,
   },
 });
 

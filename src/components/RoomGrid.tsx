@@ -44,13 +44,15 @@ import { filterRoom } from '../util/Search';
 
 // Types
 import { Language } from '../util/Translations';
-import { BuildingRoom } from '../../typings/university';
+import { BuildingRoom, RoomTypeId } from '../../typings/university';
 
 interface Props {
+  backgroundColor?: string;                             // View background color
   shorthand: string;                                    // Unique shorthand identifier for the building
   filter: string;                                       // Filter the list of rooms
   language: Language;                                   // Language to display building names in
   rooms: BuildingRoom[];                                // The list of rooms in the building
+  roomTypeFilter?: Set<RoomTypeId>;                     // Only show rooms of this type
   renderHeader?(): JSX.Element;                         // Render a custom header at the top of the list
   onSelect(sh: string, room: string | undefined): void; // Callback function for when a room is selected
 }
@@ -145,9 +147,10 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
     const codeMatches = adjustedFilter.length === 0 || shorthand.indexOf(adjustedFilter) >= 0;
 
     rooms.forEach((room: BuildingRoom) => {
-      let matches = false;
-      if (codeMatches) {
-        matches = true;
+      let matches = codeMatches;
+
+      if (this.props.roomTypeFilter && !this.props.roomTypeFilter.has(room.type || Constants.DefaultRoomType)) {
+        return;
       }
 
       if (!matches) {
@@ -230,8 +233,10 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the hierarchy of views to render
    */
   render(): JSX.Element {
+    const background = this.props.backgroundColor ? { backgroundColor: this.props.backgroundColor } : {};
+
     return (
-      <View style={_styles.container}>
+      <View style={[_styles.container, background]}>
         <FlatList
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
             ListHeaderComponent={this._renderHeader.bind(this)}

@@ -52,7 +52,6 @@ interface Props {
   initialSelection?: GridImage[];       // Images which are selected when the view is initially rendered
   columns: number;                      // Number of columns to show images in
   disableImages?: boolean;              // If true, grid should only show a list of names, with no images
-  includeClear?: boolean;               // If true, an empty cell should be available to clear the choice
   filter: string;                       // Filter the list of images
   language: Language;                   // Language to display image names in
   multiSelect?: boolean;                // Enable selecting two or more images in the grid
@@ -118,14 +117,12 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
   /**
    * Gets a unique key for the image.
    *
-   * @param {GridImage|undefined} image the image to get a key for
+   * @param {GridImage} image the image to get a key for
    * @param {number}              index index of the image
    * @returns {string} the key
    */
-  _imageNameExtractor(image: GridImage | undefined, index: number): string {
-    return image
-        ? image.shorthand || Translations.getName(this.props.language, image) || index.toString()
-        : index.toString();
+  _imageNameExtractor(image: GridImage, index: number): string {
+    return image.shorthand || Translations.getName(this.props.language, image) || index.toString();
   }
 
   /**
@@ -133,16 +130,12 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    *
    * @param {Props} props the props to filter with
    */
-  _filterImages({ language, images, filter, includeClear }: Props): void {
+  _filterImages({ language, images, filter }: Props): void {
     // Ignore the case of the search terms
     const adjustedFilter = (filter.length === 0) ? undefined : filter.toUpperCase();
 
     // Create array for buildings
     const filteredImages: (GridImage|undefined)[] = [];
-
-    if (includeClear) {
-      filteredImages.push(undefined);
-    }
 
     // If the search terms are empty, or the image name contains the terms, add it to the list
     images.forEach((image: GridImage) => {
@@ -254,7 +247,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
     }
 
     let image: JSX.Element;
-    if (!this.props.disableImages && item != undefined) {
+    if (!this.props.disableImages) {
       const displayImage: any = item.thumbnail ? item.thumbnail : item.image;
 
       if (typeof (displayImage) === 'string') {
