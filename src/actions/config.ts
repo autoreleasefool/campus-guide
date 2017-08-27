@@ -39,3 +39,9 @@ export function updateProgress(update: ProgressUpdate): any {
     update,
   };
 }
+
+export function confirmUpdate(): any {
+  return {
+    type: Actions.Configuration.ConfirmUpdate,
+  };
+}

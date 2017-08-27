@@ -343,14 +343,17 @@ async function _updateConfig(configDetails: ConfigurationDetails, callbacks: Upd
     // Delete the old configuration files, move the new ones
     for (const update of configDetails.files) {
       // Delete the file if it exists
-      const exists = await RNFS.exists(CONFIG_DIRECTORY + update.name);
+      const targetLocation = `${CONFIG_DIRECTORY}${CONFIG_SUBDIRECTORIES[update.type]}${update.name}`;
+      const tempLocation = `${TEMP_CONFIG_DIRECTORY}${update.name}`;
+
+      const exists = await RNFS.exists(targetLocation);
       if (exists) {
-        await RNFS.unlink(CONFIG_DIRECTORY + update.name);
+        await RNFS.unlink(targetLocation);
       }
 
       await RNFS.moveFile(
-        TEMP_CONFIG_DIRECTORY + update.name,
-        CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES[update.type] + update.name
+        tempLocation,
+        targetLocation
       );
 
       configRowUpdates.push(update);
@@ -412,21 +415,9 @@ async function _getAvailableConfigUpdates(): Promise<ConfigurationDetails> {
       for (let i = 0; i < currentConfigFiles.length; i++) {
         if (currentConfigFiles[i].name === file.name) {
           found = true;
+
           if (currentConfigFiles[i].version < file.version) {
-            const fileUpdate: ConfigFile = {
-              name: file.name,
-              size: file.size,
-              type: file.type,
-              url: file.url,
-              version: currentConfigFiles[i].version,
-            };
-
-            if (file.zsize && file.zurl) {
-              fileUpdate.zsize = file.zsize;
-              fileUpdate.zurl = file.zurl;
-            }
-
-            appConfigToUpdate.files.push(fileUpdate);
+            appConfigToUpdate.files.push({ ...file });
           }
 
           currentConfigFiles.splice(i, 1);
@@ -544,4 +535,32 @@ export function getImagePath(configImage: string | undefined): string {
   } else {
     return `file://${CONFIG_DIRECTORY}${CONFIG_SUBDIRECTORIES.image}${configImage}`;
   }
+}
+
+// Size of 1MB
+const MEGABYTE = 1000000;
+// Size of 1KB
+const KILOBYTE = 1000;
+
+/**
+ * Inject update size into a message.
+ *
+ * @param {string} message    the translated message
+ * @param {number} updateSize size of the update, in bytes
+ * @returns {string} the message with the update size
+ */
+export function constructUpdateMessage(message: string, updateSize: number): string {
+  let breakPoint = message.indexOf('{');
+  const firstPart = message.substring(0, breakPoint);
+  breakPoint = message.indexOf('}', breakPoint);
+  const secondPart = message.substring(breakPoint + 1);
+
+  let updateText = `${updateSize} B`;
+  if (updateSize > MEGABYTE) {
+    updateText = `${(updateSize / MEGABYTE).toFixed(2)} MB`;
+  } else if (updateSize > KILOBYTE) {
+    updateText = `${(updateSize / KILOBYTE).toFixed(2)} KB`;
+  }
+
+  return `${firstPart}${updateText}${secondPart}`;
 }

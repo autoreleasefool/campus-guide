@@ -54,6 +54,7 @@ const initialState: State = {
     totalProgress: 0,
     totalSize: 0,
   },
+  updateConfirmed: false,
 };
 
 // Test configuration update
@@ -65,7 +66,7 @@ const configurationUpdate = {
 };
 
 // Expected state when configuration updated
-const updatedConfigOptions = {
+const updatedConfigOptions: State = {
   options: {
     alwaysSearchAll: true,
     currentSemester: 0,
@@ -80,6 +81,7 @@ const updatedConfigOptions = {
     universityName: undefined,
   },
   update: initialState.update,
+  updateConfirmed: initialState.updateConfirmed,
 };
 
 // Test progress update
@@ -95,7 +97,7 @@ const progressUpdate = {
 };
 
 // Expected state when progress updated
-const updatedProgress = {
+const updatedProgress: State = {
   options: initialState.options,
   update: {
     currentDownload: 'download.jpg',
@@ -110,6 +112,14 @@ const updatedProgress = {
     totalProgress: 0,
     totalSize: 1,
   },
+  updateConfirmed: initialState.updateConfirmed,
+};
+
+// Expected state when update confirmed
+const confirmUpdate = {
+  options: initialState.options,
+  update: initialState.update,
+  updateConfirmed: true,
 };
 
 describe('config reducer', () => {
@@ -126,6 +136,10 @@ describe('config reducer', () => {
   it('should update the update options', () => {
     expect(reducer(initialState, { type: Actions.Configuration.ProgressUpdate, update: progressUpdate }))
         .toEqual(updatedProgress);
+  });
+
+  it('should confirm the update', () => {
+    expect(reducer(initialState, { type: Actions.Configuration.ConfirmUpdate })).toEqual(confirmUpdate);
   });
 
 });

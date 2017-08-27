@@ -96,7 +96,7 @@ export default class CampusGuideApp extends React.PureComponent<Props, State> {
     return (
       <Navigator
           configureScene={this._configureScene}
-          initialRoute={{ id: 'splash' }}
+          initialRoute={{ id: 'main' }}
           renderScene={this._renderScene}
           style={{ flex: 1, backgroundColor: Constants.Colors.primaryBackground }} />
     );

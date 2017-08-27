@@ -29,6 +29,7 @@ import React from 'react';
 import {
   Alert,
   Dimensions,
+  InteractionManager,
   NetInfo,
   Platform,
   ScrollView,
@@ -58,12 +59,15 @@ import { TransitInfo } from '../../../typings/transit';
 interface Props extends Configuration.ProgressUpdate {
   language: Language;                             // The current language, selected by the user
   navigator: any;                                 // Parent navigator
+  updateConfirmed: boolean;                       // Indicates if a user has accepted an update
+  confirmUpdate(): void;                          // Indicate a user has confirmed an update
   onDownloadComplete(filesDownloaded: string[], totalProgress: number, fileSize: number): void;
                                                   // Updates state when a download is finished
   onDownloadProgress(bytesWritten: number): void; // Updates state when a download reports intermediate progress
   onDownloadStart(fileName: string): void;        // Updates state when a download begins
   onUpdateStart(totalFiles: number, totalSize: number): void;
                                                   // Updates state when the app update begins
+  retryUpdate(): void;                            // Hide the retry button
   setConfiguration(university: any, transit: TransitInfo): void;
                                                   // Update the app config data
   updateFailed(): void;                           // Hides the progress bar to show a retry button
@@ -104,7 +108,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   /**
    * Checks to see if a new configuration update is available and, if so, begins downloading.
    */
-  async _beginUpdate(): Promise<void> {
+  async _beginUpdate(availableUpdates: any): Promise<void> {
     const callbacks = {
       onDownloadComplete: (name: string, download: RNFS.DownloadResult): void =>
           this._onDownloadComplete(name, download),
@@ -117,7 +121,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     };
 
     try {
-      const availableUpdates = await Configuration.getAvailableConfigUpdates();
       await Configuration.updateConfig(availableUpdates, callbacks);
     } catch (err) {
       if (__DEV__) {
@@ -132,6 +135,53 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   }
 
   /**
+   * Allow a user to confirm an update before it happens.
+   */
+  async _confirmUpdate(): Promise<void> {
+    try {
+      const available = await Configuration.getAvailableConfigUpdates();
+
+      if (!this.props.updateConfirmed) {
+        if (available.files.length > 0) {
+          const language = this.props.language;
+          let totalSize = 0;
+          for (const file of available.files) {
+            totalSize += file.zsize ? file.zsize : file.size;
+          }
+
+          Alert.alert(
+            Translations.get(language, 'update_available_title'),
+            Configuration.constructUpdateMessage(Translations.get(language, 'update_available_msg'), totalSize),
+            [
+              {
+                onPress: (): Promise<void> => this._updateRejected(),
+                style: 'cancel',
+                text: Translations.get(language, 'cancel'),
+              },
+              {
+                onPress: (): void => {
+                  this.props.confirmUpdate();
+                  this._beginUpdate(available);
+                },
+                text: Translations.get(language, 'update'),
+              },
+            ]
+          );
+        }
+
+        return;
+      }
+
+      this._beginUpdate(available);
+    } catch (err) {
+      if (__DEV__) {
+        console.log('Error confirming configuration update.', err);
+      }
+      this._notifyServerFailed();
+    }
+  }
+
+  /**
    * Checks for an Internet connection and, if one is available, starts the update.
    */
   _checkConnection(): void {
@@ -139,7 +189,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       try {
         const isConnected = await NetInfo.isConnected.fetch();
         if (isConnected || __DEV__) {
-          this._beginUpdate();
+          this._confirmUpdate();
         } else {
           this._notifyConnectionFailed(undefined);
         }
@@ -170,6 +220,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
 
     try {
       await Configuration.init();
+      await Configuration.getConfig('/university.json');
       Alert.alert(
         CoreTranslations[language].server_unavailable,
         CoreTranslations[language].server_unavailable_config_available,
@@ -179,11 +230,12 @@ class UpdateScreen extends React.PureComponent<Props, State> {
             text: CoreTranslations[language].retry,
           },
           {
-            onPress: (): void => this.props.navigator.push({ id: 'main' }),
+            onPress: (): void => this._popOrPushToMain(),
             text: CoreTranslations[language].later,
           },
         ]
       );
+      this._popOrPushToMain();
     } catch (err) {
       Alert.alert(
         CoreTranslations[language].server_unavailable,
@@ -216,6 +268,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
 
     try {
       await Configuration.init();
+      await Configuration.getConfig('/university.json');
       Alert.alert(
         CoreTranslations[language].no_internet,
         CoreTranslations[language].no_internet_config_available,
@@ -225,15 +278,46 @@ class UpdateScreen extends React.PureComponent<Props, State> {
             text: CoreTranslations[language].retry,
           },
           {
-            onPress: (): void => this.props.navigator.push({ id: 'main' }),
+            onPress: (): void => this._popOrPushToMain(),
             text: CoreTranslations[language].later,
           },
         ]
       );
+      this._popOrPushToMain();
     } catch (err) {
       Alert.alert(
         CoreTranslations[language].no_internet,
         CoreTranslations[language].no_internet_config_unavailable,
+        [
+          {
+            onPress: (): void => this._checkConnection(),
+            text: CoreTranslations[language].retry,
+          },
+          {
+            onPress: (): void => this.props.updateFailed(),
+            style: 'cancel',
+            text: CoreTranslations[language].cancel,
+          },
+        ]
+      );
+    }
+  }
+
+  /**
+   * Displays a prompt to user indicating they rejected a required update, or let the user continue with
+   * their current configuration, if available.
+   */
+  async _updateRejected(): Promise<void> {
+    const language = this.props.language;
+
+    try {
+      await Configuration.init();
+      await Configuration.getConfig('/university.json');
+      this._popOrPushToMain();
+    } catch (err) {
+      Alert.alert(
+        CoreTranslations[language].update_rejected,
+        CoreTranslations[language].update_rejected_config_unavailable,
         [
           {
             onPress: (): void => this._checkConnection(),
@@ -259,10 +343,34 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       const university = await Configuration.getConfig('/university.json');
       const transit = await Configuration.getConfig('/transit.json');
       this.props.setConfiguration(university, transit);
-      this.props.navigator.push({ id: 'main' });
+      this._popOrPushToMain();
     } catch (err) {
       console.error('Unable to initialize configuration for Update.', err);
     }
+  }
+
+  /**
+   * Check if a 'main' route already exists on the navigator and pop to it if so.
+   * Otherwise, push a new one.
+   */
+  _popOrPushToMain(): void {
+    const routes = this.props.navigator.getCurrentRoutes();
+    for (const route of routes) {
+      if (route.id === 'main') {
+        this.props.navigator.popToRoute(route);
+
+        return;
+      }
+    }
+    this.props.navigator.push({ id: 'main' });
+  }
+
+  /**
+   * Retry the update.
+   */
+  _retryUpdate(): void {
+    this.props.retryUpdate();
+    InteractionManager.runAfterInteractions(() => this._checkConnection());
   }
 
   /**
@@ -364,7 +472,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     if (this.props.showRetry) {
       return (
         <View style={[ _styles.buttonContainer, { backgroundColor }]}>
-          <TouchableOpacity onPress={(): void => this._checkConnection()}>
+          <TouchableOpacity onPress={(): void => this._retryUpdate()}>
             <View style={_styles.retryContainer}>
               <Text style={_styles.retryText}>{CoreTranslations[language].retry_update}</Text>
             </View>
@@ -470,11 +578,13 @@ const mapStateToProps = (store: any): any => {
     showUpdateProgress: store.config.update.showUpdateProgress,
     totalProgress: store.config.update.totalProgress,
     totalSize: store.config.update.totalSize,
+    updateConfirmed: store.config.updateConfirmed,
   };
 };
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
+    confirmUpdate: (): void => dispatch(actions.confirmUpdate()),
     onDownloadComplete: (filesDownloaded: string[], totalProgress: number, fileSize: number): void => {
       dispatch(actions.updateProgress({
         currentDownload: undefined,
@@ -495,6 +605,7 @@ const mapDispatchToProps = (dispatch: any): any => {
         totalSize,
       }));
     },
+    retryUpdate: (): void => dispatch(actions.updateProgress( { showUpdateProgress: false, showRetry: false })),
     setConfiguration: (university: any, transitInfo: TransitInfo): void => dispatch(actions.updateConfiguration({
       semesters: university.semesters,
       transitInfo: {

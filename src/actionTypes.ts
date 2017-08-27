@@ -42,6 +42,7 @@ export enum Navigation {
 export enum Configuration {
   ConfigUpdate = 'CONF_UPDATE_CONFIGURATION',
   ProgressUpdate = 'CONF_UPDATE_PROGRESS',
+  ConfirmUpdate = 'CONF_CONFIRM_UPDATE',
 }
 
 /* Actions for directing the user. */

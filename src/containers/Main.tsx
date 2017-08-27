@@ -24,7 +24,13 @@
 
 // React imports
 import React from 'react';
-import { Alert, InteractionManager, StyleSheet, View } from 'react-native';
+import {
+  Alert,
+  AsyncStorage,
+  InteractionManager,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 // Redux imports
 import * as actions from '../actions';
@@ -35,42 +41,80 @@ import AppHeader from '../components/AppHeader';
 import TabView from './TabView';
 import * as Configuration from '../util/Configuration';
 import * as Constants from '../constants';
+import * as Database from '../util/Database';
+import * as EmptyMain from './welcome/EmptyMain';
+import * as Preferences from '../util/Preferences';
 import * as Translations from '../util/Translations';
 
 // Types
 import { Language } from '../util/Translations';
+import { TransitInfo } from '../../typings/transit';
 
 interface Props {
-  language: Language;                 // The current language, selected by the user
-  navigator: any;                     // Parent navigator
-  shouldShowLanguageMessage: boolean; // True to show message reminding user they can switch languages
+  language: Language;                           // The current language, selected by the user
+  navigator: any;                               // Parent navigator
+  confirmUpdate(): void;                        // Indicate a user has confirmed an update
+  setSchedule(schedule: object): void;          // Updates the user's schedule
+  setTransit(transitInfo: TransitInfo): void;   // Updates the transit info object in the config
+  setUniversity(university: object): void;      // Updates the university object in the config
+  updatePreferences(preferences: any[]): void;  // Updates the user's preferences
 }
 
-interface State {}
+interface State {
+  loading: boolean; // Indicates if the app is loading the initial configuration.
+}
+
+// True to always show the splash screen in a __DEV__ environment
+let alwaysShowSplash = false;
 
 class Main extends React.PureComponent<Props, State> {
+
+  /**
+   * Constructor.
+   *
+   * @param {Props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      loading: true,
+    };
+  }
 
   /**
    * Displays a pop up when the application opens for the first time.
    */
   componentDidMount(): void {
-    if (this.props.shouldShowLanguageMessage) {
-      const language = this.props.language;
+    InteractionManager.runAfterInteractions(() => this._loadPreferences());
+  }
 
-      Alert.alert(
-        Translations.get(language, 'only_once_title'),
-        Translations.get(language, 'only_once_message'),
-        [{ text: Translations.get(language, 'ok'), onPress: (): Promise<void> => this._checkConfiguration() }]
-      );
-    } else {
-      InteractionManager.runAfterInteractions(() => this._checkConfiguration());
+  /**
+   * Loads the downloaded base configuration and updates the redux store.
+   */
+  async _checkConfiguration(): Promise<void> {
+    try {
+      await Configuration.init();
+      const university = await Configuration.getConfig('/university.json');
+      this.props.setUniversity(university);
+
+      await Translations.loadTranslations(this.props.language);
+      const transitInfo: TransitInfo = await Configuration.getConfig('/transit.json');
+      this.props.setTransit(transitInfo);
+
+      this.setState({ loading: false });
+      this._checkConfigurationUpdate();
+    } catch (err) {
+      if (__DEV__) {
+        console.log('Assuming configuration is not available.', err);
+      }
+      this.props.navigator.push({ id: 'update' });
     }
   }
 
   /**
-   * Checks if a configuration update is available and prompts the user to update.
+   * Check if there are any configuration updates available, and prompt the user to update.
    */
-  async _checkConfiguration(): Promise<void> {
+  async _checkConfigurationUpdate(): Promise<void> {
     if (Configuration.didCheckForUpdate()) {
       // Do not check for configuration updates more than once
       return;
@@ -80,10 +124,14 @@ class Main extends React.PureComponent<Props, State> {
       const available = await Configuration.getAvailableConfigUpdates();
       if (available.files.length > 0) {
         const language = this.props.language;
+        let totalSize = 0;
+        for (const file of available.files) {
+          totalSize += file.zsize ? file.zsize : file.size;
+        }
 
         Alert.alert(
           Translations.get(language, 'update_available_title'),
-          Translations.get(language, 'update_available_msg'),
+          Configuration.constructUpdateMessage(Translations.get(language, 'update_available_msg'), totalSize),
           [
             { text: Translations.get(language, 'cancel'), style: 'cancel' },
             { text: Translations.get(language, 'update'), onPress: (): void => this._updateConfiguration() },
@@ -91,14 +139,44 @@ class Main extends React.PureComponent<Props, State> {
         );
       }
     } catch (err) {
-        console.error('Error checking for configuration.', err);
+      console.error('Error checking for configuration.', err);
     }
+  }
+
+  /**
+   * Loads the user's saved preferences and updates the redux store.
+   */
+  _loadPreferences(): void {
+    const SCHEDULE = 5; // Corresponds to index of Database.getSchedule() below
+
+    Promise.all([
+      Preferences.getSelectedLanguage(AsyncStorage),
+      Preferences.getCurrentSemester(AsyncStorage),
+      Preferences.getPrefersWheelchair(AsyncStorage),
+      Preferences.getPreferredTimeFormat(AsyncStorage),
+      Preferences.getPreferScheduleByCourse(AsyncStorage),
+      Database.getSchedule(),
+    ])
+        .then((results: any[]) => {
+          this.props.setSchedule(results[SCHEDULE] || {});
+          this.props.updatePreferences(results);
+          if (results[0] == undefined || (__DEV__ && alwaysShowSplash)) {
+            // Language has not been selected
+            alwaysShowSplash = false;
+            this.props.navigator.push({ id: 'splash' });
+          } else {
+            // Language is selected, check configuration
+            this._checkConfiguration();
+          }
+        })
+        .catch((err: any) => console.error('Unable to load initial preferences', err));
   }
 
   /**
    * Opens the update screen to update the configuration.
    */
   _updateConfiguration(): void {
+    this.props.confirmUpdate();
     this.props.navigator.push({ id: 'update' });
   }
 
@@ -108,6 +186,14 @@ class Main extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the hierarchy of views to render
    */
   render(): JSX.Element {
+    if (this.state.loading) {
+      return (
+        <View style={_styles.container}>
+          {EmptyMain.renderEmptyMain()}
+        </View>
+      );
+    }
+
     return (
       <View style={_styles.container}>
         <AppHeader />
@@ -128,13 +214,45 @@ const _styles = StyleSheet.create({
 const mapStateToProps = (store: any): object => {
   return {
     language: store.config.options.language,
-    shouldShowLanguageMessage: store.config.options.firstTime,
   };
 };
 
 const mapDispatchToProps = (dispatch: any): object => {
   return {
     acknowledgedLanguageMessage: (): void => dispatch(actions.updateConfiguration({ firstTime: false })),
+    confirmUpdate: (): void => dispatch(actions.confirmUpdate()),
+    setSchedule: (schedule: object): void => dispatch(actions.loadSchedule(schedule)),
+    setTransit: (transitInfo: TransitInfo): void => dispatch(actions.updateConfiguration({
+      transitInfo: {
+        link_en: Translations.getEnglishLink(transitInfo) || '',
+        link_fr: Translations.getFrenchLink(transitInfo) || '',
+        name_en: Translations.getEnglishName(transitInfo) || '',
+        name_fr: Translations.getFrenchName(transitInfo) || '',
+      },
+    })),
+    setUniversity: (university: any): void => dispatch(actions.updateConfiguration({
+      semesters: university.semesters,
+      universityLocation: { latitude: university.latitude, longitude: university.longitude },
+      universityName: {
+        name_en: Translations.getEnglishName(university) || '',
+        name_fr: Translations.getFrenchName(university) || '',
+      },
+    })),
+    updatePreferences: (preferences: any[]): void => {
+
+      /* tslint:disable no-magic-numbers */
+      /* Order of these preferences determined by loadPreferences() order */
+
+      dispatch(actions.updateConfiguration({
+        currentSemester: preferences[1],
+        language: preferences[0],
+        preferredTimeFormat: preferences[3],
+        prefersWheelchair: preferences[2],
+        scheduleByCourse: preferences[4],
+      }));
+
+      /* tslint:enable no-magic-numbers */
+    },
   };
 };
 

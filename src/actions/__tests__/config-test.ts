@@ -48,4 +48,9 @@ describe('configuration actions', () => {
     expect(config.updateProgress(update)).toEqual(expectedAction);
   });
 
+  it('should create an action to confirm an update', () => {
+    const expectedAction = { type: Actions.Configuration.ConfirmUpdate };
+    expect(config.confirmUpdate()).toEqual(expectedAction);
+  });
+
 });

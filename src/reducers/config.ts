@@ -31,6 +31,7 @@ import { Semester } from '../../typings/university';
 export interface State {
   options: Options;
   update: ProgressUpdate;
+  updateConfirmed: boolean;
 }
 
 /** Initial update state. */
@@ -58,6 +59,7 @@ const initialState: State = {
     totalProgress: 0,
     totalSize: 0,
   },
+  updateConfirmed: false,
 };
 
 /**
@@ -73,11 +75,19 @@ export default function config(state: State = initialState, action: any): State 
       return {
         options: { ...state.options, ...action.options },
         update: { ...state.update },
+        updateConfirmed: state.updateConfirmed,
       };
     case Actions.Configuration.ProgressUpdate:
       return {
         options: { ...state.options },
         update: { ...state.update, ...action.update },
+        updateConfirmed: state.updateConfirmed,
+      };
+    case Actions.Configuration.ConfirmUpdate:
+      return {
+        options: { ...state.options },
+        update: { ...state.update, ...action.update },
+        updateConfirmed: true,
       };
     default:
       return state;
