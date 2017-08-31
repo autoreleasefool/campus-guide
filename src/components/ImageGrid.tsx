@@ -346,8 +346,7 @@ const _styles = StyleSheet.create({
   shorthand: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
-    paddingBottom: 5,
-    paddingTop: 5,
+    padding: 5,
     textAlign: 'center',
   },
 });
