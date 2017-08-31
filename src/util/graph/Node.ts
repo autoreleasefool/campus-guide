@@ -130,4 +130,13 @@ export default class Node {
     return this.getBuilding() === 'OUT';
   }
 
+  /**
+   * Return a string representation of this node.
+   *
+   * @returns {string} this node's formatted Id
+   */
+  toString(): string {
+    return this._formattedId;
+  }
+
 }
