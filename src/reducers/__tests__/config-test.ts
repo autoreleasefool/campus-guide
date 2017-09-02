@@ -34,7 +34,6 @@ const initialState: State = {
   options: {
     alwaysSearchAll: false,
     currentSemester: 0,
-    firstTime: false,
     language: undefined,
     preferredTimeFormat: '12h',
     prefersWheelchair: false,
@@ -70,7 +69,6 @@ const updatedConfigOptions: State = {
   options: {
     alwaysSearchAll: true,
     currentSemester: 0,
-    firstTime: false,
     language: 'en',
     preferredTimeFormat: '12h',
     prefersWheelchair: false,

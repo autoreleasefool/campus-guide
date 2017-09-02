@@ -339,10 +339,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   async _returnToMain(): Promise<void> {
     try {
       await Translations.loadTranslations(this.props.language);
-
-      const university = await Configuration.getConfig('/university.json');
-      const transit = await Configuration.getConfig('/transit.json');
-      this.props.setConfiguration(university, transit);
       this._popOrPushToMain();
     } catch (err) {
       console.error('Unable to initialize configuration for Update.', err);

@@ -38,7 +38,6 @@ export interface Options {
   alwaysSearchAll?: boolean;                // Always search the entire app, never within a view
   transitInfo?: TransitInfo | undefined;    // High level information about the city transit
   currentSemester?: number;                 // Current semester for editing, selected by the user
-  firstTime?: boolean;                      // Indicates if it's the user's first time in the app
   language?: Language | undefined;          // User's preferred language
   lastUpdatedAt?: number;                   // Time the config was last updated from the server
   preferredTimeFormat?: TimeFormat;         // Either 12 or 24h time

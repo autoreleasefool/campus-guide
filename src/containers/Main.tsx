@@ -69,6 +69,9 @@ let alwaysShowSplash = false;
 
 class Main extends React.PureComponent<Props, State> {
 
+  /** Indicates if the first navigation event has been skipped yet. */
+  _firstEventSkipped: boolean;
+
   /**
    * Constructor.
    *
@@ -85,6 +88,7 @@ class Main extends React.PureComponent<Props, State> {
    * Displays a pop up when the application opens for the first time.
    */
   componentDidMount(): void {
+    (this.props.navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
     InteractionManager.runAfterInteractions(() => this._loadPreferences());
   }
 
@@ -140,6 +144,23 @@ class Main extends React.PureComponent<Props, State> {
       }
     } catch (err) {
       console.error('Error checking for configuration.', err);
+    }
+  }
+
+  /**
+   * Handles navigation events.
+   */
+  _handleNavigationEvent(): void {
+    if (!this._firstEventSkipped) {
+      this._firstEventSkipped = true;
+
+      return;
+    }
+
+    const currentRoutes = (this.props.navigator as any).getCurrentRoutes();
+    console.log(currentRoutes);
+    if (currentRoutes[currentRoutes.length - 1].id === 'main') {
+      InteractionManager.runAfterInteractions(() => this._loadPreferences());
     }
   }
 
@@ -219,7 +240,6 @@ const mapStateToProps = (store: any): object => {
 
 const mapDispatchToProps = (dispatch: any): object => {
   return {
-    acknowledgedLanguageMessage: (): void => dispatch(actions.updateConfiguration({ firstTime: false })),
     confirmUpdate: (): void => dispatch(actions.confirmUpdate()),
     setSchedule: (schedule: object): void => dispatch(actions.loadSchedule(schedule)),
     setTransit: (transitInfo: TransitInfo): void => dispatch(actions.updateConfiguration({

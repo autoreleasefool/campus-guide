@@ -39,7 +39,6 @@ const initialState: State = {
   options: {
     alwaysSearchAll: false,
     currentSemester: 0,
-    firstTime: false,
     language: undefined,
     preferredTimeFormat: '12h',
     prefersWheelchair: false,

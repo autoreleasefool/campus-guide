@@ -47,10 +47,9 @@ const CoreTranslations = require('../../../assets/json/CoreTranslations');
 import { Language } from '../../util/Translations';
 
 interface Props {
-  language: Language;                           // Language currently selected by user
-  navigator: any;                               // Parent navigator
-  shouldShowLanguageMessage: boolean;           // True to show message reminding user they can switch languages
-  onLanguageSelect(language: Language): void;   // Changes the user's selected language
+  language: Language;                         // Language currently selected by user
+  navigator: any;                             // Parent navigator
+  onLanguageSelect(language: Language): void; // Changes the user's selected language
 }
 
 interface State {}
@@ -176,14 +175,13 @@ const _styles = StyleSheet.create({
 const mapStateToProps = (store: any): any => {
   return {
     language: store.config.options.language,
-    shouldShowLanguageMessage: store.config.options.firstTime,
   };
 };
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
     onLanguageSelect:
-        (language: Language): void => dispatch(actions.updateConfiguration({ language, firstTime: true })),
+        (language: Language): void => dispatch(actions.updateConfiguration({ language })),
   };
 };
 
