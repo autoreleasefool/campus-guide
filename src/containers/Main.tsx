@@ -158,7 +158,6 @@ class Main extends React.PureComponent<Props, State> {
     }
 
     const currentRoutes = (this.props.navigator as any).getCurrentRoutes();
-    console.log(currentRoutes);
     if (currentRoutes[currentRoutes.length - 1].id === 'main') {
       InteractionManager.runAfterInteractions(() => this._loadPreferences());
     }

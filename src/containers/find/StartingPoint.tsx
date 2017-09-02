@@ -54,12 +54,13 @@ import * as Translations from '../../util/Translations';
 
 // Types
 import { Language } from '../../util/Translations';
-import { Description, LatLong, LatLongDelta, Name, Route } from '../../../typings/global';
+import { LatLong, LatLongDelta, Name, Route } from '../../../typings/global';
 import { Building, Destination } from '../../../typings/university';
 
-/** An object which can handle an onPress action */
-interface ActionHandler {
-  onPress?(): void;
+/** Wrapper for an error when location handling occurs. */
+interface LocationError {
+  message: string;  // Error message
+  onPress?(): void; // Handler for when user takes action
 }
 
 interface Props {
@@ -76,13 +77,12 @@ interface Props {
 }
 
 interface State {
-  closestBuilding: Building | undefined;  // The closest building, or undefined if no buildings are nearby
-  locating: boolean;                      // Indicates if the app is searching for the closest building
-  locationError: (ActionHandler & Description) | undefined;
-                                          // If an error occurred getting the user's location, it is provided here
-  region: LatLong & LatLongDelta;         // Current region displayed on the map
-  selectedBuilding: Building | undefined; // The building the user has selected to navigate from
-  viewingMap: boolean;                    // True if the user is viewing the map to select a starting point
+  closestBuilding: Building | undefined;    // The closest building, or undefined if no buildings are nearby
+  locating: boolean;                        // Indicates if the app is searching for the closest building
+  locationError: LocationError | undefined; // If an error occurred getting the user's location, it is provided here
+  region: LatLong & LatLongDelta;           // Current region displayed on the map
+  selectedBuilding: Building | undefined;   // The building the user has selected to navigate from
+  viewingMap: boolean;                      // True if the user is viewing the map to select a starting point
 }
 
 // Number of columns to display in building grid
@@ -198,8 +198,8 @@ class StartingPoint extends React.PureComponent<Props, State> {
    */
   _showLocationErrorMessage(error: any): void {
     console.log('Could not get user location', error);
-    let locationError: ActionHandler & Description = {
-      description: error.message,
+    let locationError: LocationError = {
+      message: error.message,
     };
 
     /* tslint:disable prefer-switch */
@@ -207,26 +207,22 @@ class StartingPoint extends React.PureComponent<Props, State> {
 
     if (error.code === error.PERMISSION_DENIED) {
       locationError = {
-        description_en: Translations.get('en', 'location_permission_denied'),
-        description_fr: Translations.get('fr', 'location_permission_denied'),
+        message: 'location_permission_denied',
       };
     } else if (error.code === error.TIMEOUT) {
       locationError = {
-        description_en: Translations.get('en', 'location_timeout'),
-        description_fr: Translations.get('fr', 'location_timeout'),
+        message: 'location_timeout',
         onPress: (): void => this._findClosestBuilding(),
       };
     } else if (error.code === error.POSITION_UNAVAILABLE) {
       locationError = {
-        description_en: Translations.get('en', 'location_position_unavailable'),
-        description_fr: Translations.get('fr', 'location_position_unavailable'),
+        message: 'location_position_unavailable',
         onPress: (): void => this._findClosestBuilding(),
       };
     }
 
     /* tslint:enable prefer-switch */
 
-    console.log(JSON.stringify(locationError));
     this.setState({ locationError });
   }
 
@@ -432,14 +428,12 @@ class StartingPoint extends React.PureComponent<Props, State> {
    */
   _renderStartingPointMap(): JSX.Element {
     if (this.state.locationError) {
-      console.log(Translations.getDescription(this.props.language, this.state.locationError));
-
       return (
         <View style={_styles.container}>
           <View style={_styles.locationErrorContainer}>
             <TouchableOpacity onPress={this.state.locationError.onPress}>
               <Text style={_styles.locationError}>
-                {Translations.getDescription(this.props.language, this.state.locationError)}
+                {Translations.get(this.props.language, this.state.locationError.message)}
               </Text>
             </TouchableOpacity>
           </View>
