@@ -278,6 +278,8 @@ export interface Step extends Description {
 //     nextEdge: Edge,
 //     language: Language): string[] {
 //   const nodeName = `${_getNodeTypeName(node.getType(), language)} ${node.getName()}`;
+//   TODO: if elevator doesn't have name?
+//   Can't use elevator name, since they're just random numbers Staircase names are okay
 
 //   const turningDirection = _getTurningDirection(exitEdge.direction, nextEdge.direction);
 //   let turningCommand: string;
@@ -540,11 +542,11 @@ export async function getDirectionsBetween(
   const outdoorGraph = graphs.get('OUT');
 
   const startNode = Navigation.getCachedNodeOrBuild(
-    `R${start.room || start.shorthand}`,
+    start.room ? `R${start.room}` : `D1`,
     start.shorthand, startGraph.format
   );
   const targetNode = Navigation.getCachedNodeOrBuild(
-    `R${target.room || target.shorthand}`,
+    target.room ? `R${target.room}` : `D1`,
     target.shorthand, targetGraph.format
   );
 
@@ -563,12 +565,10 @@ export async function getDirectionsBetween(
     //   - If shortest path is start-A-E-target, return path start to A, A to E, E to target
 
     const startToExits = Navigation.findShortestPathsBetween(startNode, startGraph.exits, startGraph);
-    const exitsToTarget = Navigation.findShortestPathsBetween(targetNode, targetGraph.exits, targetGraph);
+    const exitsToTarget = Navigation.findShortestPathsBetween(targetNode, targetGraph.exits, targetGraph, true);
     const exitDistances = Navigation.findDistancesBetweenDoors(startGraph.exits, targetGraph.exits, outdoorGraph);
     path = Navigation.getShortestPathAcross(startToExits, exitsToTarget, exitDistances, graphs);
   }
-
-  console.log(JSON.stringify(path));
 
   return [
     {

@@ -22,7 +22,7 @@
  */
 
 import * as Configuration from '../Configuration';
-import * as FastPriorityQueue from 'fastpriorityqueue';
+import FastPriorityQueue from 'fastpriorityqueue';
 import { default as Node, Type as NodeType } from './Node';
 
 /** Possible states for parsing graphs. */
@@ -31,6 +31,7 @@ enum GraphParseState {
   Edges = '[EDGES]',
   Excluded = '[EXCLUDED]',
   Nodes = '[NODES]',
+  Streets = '[STREETS]',
   None = 'NONE',
 }
 
@@ -63,6 +64,7 @@ export interface BuildingGraph {
   exits: Set<Node>;
   extra: Map<Node, any>;
   format: Map<string, string>;
+  streets: Map<string, string>;
 }
 
 /** A path from a start to a target destination. */
@@ -112,10 +114,11 @@ function _parseAndAppendGraphFormat(graph: BuildingGraph, rawFormat: string): vo
  * Parse a list of Edge and add them to the existing graph.
  *
  * @param {Node}          node     the node connected to the edges
+ * @param {string}        building the building which the graph belongs to
  * @param {BuildingGraph} graph    building graph to add edges to
  * @param {string}        rawEdges the edge details to parse
  */
-function _parseAndAppendEdges(node: Node, graph: BuildingGraph, rawEdges: string): void {
+function _parseAndAppendEdges(node: Node, building: string, graph: BuildingGraph, rawEdges: string): void {
   const connections: Edge[] = graph.adjacencies.has(node) ? graph.adjacencies.get(node) : [];
 
   // Add doors to the graph
@@ -132,7 +135,7 @@ function _parseAndAppendEdges(node: Node, graph: BuildingGraph, rawEdges: string
       accessible: edgeElements[3] === 'T',
       direction: edgeElements[1] as EdgeDirection,
       distance: parseInt(edgeElements[2]),
-      node,
+      node: getCachedNodeOrBuild(edgeElements[0], building, graph.format),
     });
     /* tslint:enable no-magic-numbers */
   }
@@ -149,8 +152,9 @@ function _parseAndAppendEdges(node: Node, graph: BuildingGraph, rawEdges: string
  */
 function _parseAndAppendNode(node: Node, graph: BuildingGraph, rawNode: string): void {
   switch (node.getType()) {
-    case NodeType.Elevator:
+    case NodeType.Intersection:
     case NodeType.Street:
+    case NodeType.Door:
       graph.extra.set(node, rawNode);
       break;
     default:
@@ -171,23 +175,36 @@ function _parseAndAppendExcludedNode(nodeA: Node, nodeB: Node, graph: BuildingGr
   graph.excluded.set(nodeA, excluded);
 }
 
-// startNode, targetNode, distances.get(targetNode), previous, graph);
+/**
+ * Parse a street name and add it to the existing graph.
+ *
+ * @param id
+ * @param streetName
+ */
+function _parseAndAppendStreet(id: string, streetName: string, graph: BuildingGraph): void {
+  graph.streets.set(id, streetName);
+}
+
+/* tslint:disable no-inferrable-types */
+/* Declaring `reverse: boolean = false` has an error with or without `:boolean` definition */
 
 /**
  * Get the path from a start node to a target node.
  *
- * @param startNode  starting node
- * @param targetNode target node
- * @param distance   distance of path
- * @param previous   node which led to another node
- * @param graph      adjacency graph
+ * @param {Node}           startNode  starting node
+ * @param {Node}           targetNode target node
+ * @param {number}         distance   distance of path
+ * @param {Map<Node,Node>} previous   node which led to another node
+ * @param {BuildingGraph}  graph      adjacency graph
+ * @param {boolean}        reverse    true to build a path from target to start
  */
 function _rebuildPath(
     startNode: Node,
     targetNode: Node,
     distance: number,
     previous: Map<Node, Node>,
-    graph: BuildingGraph): Path {
+    graph: BuildingGraph,
+    reverse: boolean = false): Path {
   const path: Path = {
     distance,
     edges: [],
@@ -195,20 +212,38 @@ function _rebuildPath(
   };
 
   let currentNode = targetNode;
-  while (currentNode != undefined) {
-    for (const edge of graph.adjacencies.get(currentNode)) {
-      if (edge.node === currentNode) {
-        currentNode = previous.get(currentNode);
-        path.edges.push(edge);
-        break;
+  let previousNode = previous.get(targetNode);
+  while (previousNode != undefined) {
+    if (reverse) {
+      for (const edge of graph.adjacencies.get(currentNode)) {
+        if (edge.node === previousNode) {
+          currentNode = previousNode;
+          previousNode = previous.get(currentNode);
+          path.edges.push(edge);
+        }
+      }
+    } else {
+      for (const edge of graph.adjacencies.get(previousNode)) {
+        if (edge.node === currentNode) {
+          currentNode = previousNode;
+          previousNode = previous.get(currentNode);
+          path.edges.push(edge);
+          break;
+        }
       }
     }
   }
 
-  path.edges.reverse();
+  if (reverse) {
+    path.source = targetNode;
+  } else {
+    path.edges.reverse();
+  }
 
   return path;
 }
+
+/* tslint:disable no-inferrable-types */
 
 /**
  * Gets the requested set of BuildingGraph instances, mapped to their shorthands.
@@ -225,6 +260,7 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
       exits: new Set(),
       extra: new Map(),
       format: new Map(),
+      streets: new Map(),
     };
 
     const rawGraph = await Configuration.getTextFile(`/${building}_graph.txt`);
@@ -232,6 +268,10 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
 
     let state = GraphParseState.None;
     for (const element of elements) {
+      if (element.length === 0) {
+        continue;
+      }
+
       // Handle state switch
       if (element.charAt(0) === '[') {
         switch (element) {
@@ -246,6 +286,9 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
             break;
           case GraphParseState.Nodes:
             state = GraphParseState.Nodes;
+            break;
+          case GraphParseState.Streets:
+            state = GraphParseState.Streets;
             break;
           default:
             state = GraphParseState.None;
@@ -266,7 +309,7 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
           break;
         case GraphParseState.Edges: {
           const node = getCachedNodeOrBuild(graphComponents[0], building, graph.format);
-          _parseAndAppendEdges(node, graph, graphComponents[1]);
+          _parseAndAppendEdges(node, building, graph, graphComponents[1]);
           break;
         }
         case GraphParseState.Nodes: {
@@ -280,16 +323,22 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
           _parseAndAppendExcludedNode(nodeA, nodeB, graph);
           break;
         }
+        case GraphParseState.Streets: {
+          _parseAndAppendStreet(graphComponents[0], graphComponents[1], graph);
+          break;
+        }
         default:
           // Do nothing
       }
-
-      graphs.set(building, graph);
     }
+    graphs.set(building, graph);
   }
 
   return graphs;
 }
+
+/* tslint:disable no-inferrable-types */
+/* Declaring `reverse: boolean = false` has an error with or without `:boolean` definition */
 
 /**
  * Find the shortest path in a graph between two nodes.
@@ -297,14 +346,24 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
  * @param {Node}          startNode  path start
  * @param {Node}          targetNode path end
  * @param {BuildingGraph} graph      graph to generate path from
+ * @param {boolean}       reverse    true to return path from target to start
  */
-export function findShortestPathBetween(startNode: Node, targetNode: Node, graph: BuildingGraph): Path {
+export function findShortestPathBetween(
+    startNode: Node,
+    targetNode: Node,
+    graph: BuildingGraph,
+    reverse: boolean = false): Path {
   const targetSet: Set<Node> = new Set();
   targetSet.add(targetNode);
-  const paths = findShortestPathsBetween(startNode, targetSet, graph);
+  const paths = findShortestPathsBetween(startNode, targetSet, graph, reverse);
 
   return paths.get(targetNode);
 }
+
+/* tslint:enable no-inferrable-types */
+
+/* tslint:disable no-inferrable-types */
+/* Declaring `reverse: boolean = false` has an error with or without `:boolean` definition */
 
 /**
  * Given a starting node, returns the shortest path from the starting node to each of the target nodes.
@@ -313,12 +372,14 @@ export function findShortestPathBetween(startNode: Node, targetNode: Node, graph
  * @param {Node}          startNode   starting node for paths
  * @param {Set<Node>}     targetNodes set of nodes to reach
  * @param {BuildingGraph} graph       graph of building with edges and distances
+ * @param {boolean}       reverse    true to return path from target to start
  * @returns {Map<Node, Path>} mapping from the target node to the path to it from the starting node
  */
 export function findShortestPathsBetween(
     startNode: Node,
     targetNodes: Set<Node>,
-    graph: BuildingGraph): Map<Node, Path> {
+    graph: BuildingGraph,
+    reverse: boolean = false): Map<Node, Path> {
   const paths: Map<Node, Path> = new Map();
 
   const nodes = new FastPriorityQueue(partialPathComparator);
@@ -339,33 +400,41 @@ export function findShortestPathsBetween(
   while (!nodes.isEmpty()) {
     const smallest = nodes.poll();
 
-    if (targetNodes.has(smallest)) {
+    if (targetNodes.has(smallest.node)) {
       targetsFound += 1;
       if (targetsFound === targetNodes.size) {
         break;
       }
     }
 
-    if (smallest == undefined || distances.get(smallest) === Infinity) {
+    if (smallest == undefined || distances.get(smallest.node) === Infinity) {
       continue;
     }
 
-    for (const neighbor of graph.adjacencies.get(smallest)) {
-      const alt = distances.get(smallest) + neighbor.distance;
+    for (const neighbor of graph.adjacencies.get(smallest.node)) {
+      if (neighbor.node.getType() === NodeType.Room && !targetNodes.has(neighbor.node)) {
+        // Optimization: You'll never have to pass through a room to get to another room, so skip nodes
+        // that aren't targets
+        continue;
+      }
+
+      const alt = distances.get(smallest.node) + neighbor.distance;
       if (alt < distances.get(neighbor.node)) {
         distances.set(neighbor.node, alt);
-        previous.set(neighbor.node, smallest);
+        previous.set(neighbor.node, smallest.node);
         nodes.add({ dist: alt, node: neighbor.node });
       }
     }
   }
 
   for (const node of targetNodes) {
-    paths.set(node, _rebuildPath(startNode, node, distances.get(node), previous, graph));
+    paths.set(node, _rebuildPath(startNode, node, distances.get(node), previous, graph, reverse));
   }
 
   return paths;
 }
+
+/* tslint:enable no-inferrable-types */
 
 /**
  * Given two sets of doors and their coordinates, get all of the distances between each combination of doors.
@@ -430,6 +499,7 @@ export function getShortestPathAcross(
   let minimumDistance = Infinity;
   for (const exit of startToExits.keys()) {
     for (const entrance of exitsToTarget.keys()) {
+      // TODO: adjust path distances inside buildings to give less weight than those outside
       let pathDistance = startToExits.get(exit).distance;
       pathDistance += exitsToTarget.get(entrance).distance;
       pathDistance += distancesBetweenExits.get(exit).get(entrance);
