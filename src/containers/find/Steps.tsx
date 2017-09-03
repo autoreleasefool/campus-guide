@@ -25,11 +25,15 @@
 // React imports
 import React from 'react';
 import {
+  Alert,
+  Clipboard,
   FlatList,
   InteractionManager,
+  Linking,
   Platform,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -43,6 +47,7 @@ import Header from '../../components/Header';
 import PaddedIcon from '../../components/PaddedIcon';
 import * as Constants from '../../constants';
 import * as Display from '../../util/Display';
+import * as External from '../../util/External';
 import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
 import * as Directions from '../../util/graph/Directions';
@@ -52,12 +57,14 @@ import { Language } from '../../util/Translations';
 import { Destination } from '../../../typings/university';
 
 interface Props {
+  accessible: boolean;                    // Indicates if the user wants wheelchair accessible routes only
   destination: Destination | undefined;   // The user's selected destination
   language: Language;                     // The current language, selected by the user
   startingPoint: Destination | undefined; // The user's selected starting point for navigation
 }
 
 interface State {
+  showReport: boolean;       // True to show a report button for errors, false to hide
   steps: Directions.Step[];  // List of steps for the user to follow
 }
 
@@ -72,6 +79,7 @@ class Steps extends React.PureComponent<Props, State> {
     super(props);
 
     this.state = {
+      showReport: false,
       steps: [],
     };
   }
@@ -81,9 +89,26 @@ class Steps extends React.PureComponent<Props, State> {
   }
 
   async _loadDirections(): Promise<void> {
-    const { startingPoint, destination, language }: Props = this.props;
-    const steps = await Directions.getDirectionsBetween(startingPoint, destination, language);
-    this.setState({ steps });
+    const { accessible, destination, language, startingPoint }: Props = this.props;
+    const directionResults = await Directions.getDirectionsBetween(startingPoint, destination, accessible, language);
+    this.setState({
+      showReport: directionResults.showReport,
+      steps: directionResults.steps,
+    });
+  }
+
+  /**
+   * Provides prompt so user can report an error.
+   */
+  _reportError(): void {
+    External.openLink(
+      'mailto:contact@josephroque.ca?subject=Nav Error:%20Ottawa%20Campus%20Guide',
+      this.props.language,
+      Linking,
+      Alert,
+      Clipboard,
+      TextUtils
+    );
   }
 
   _toggleActionOptions(): void {
@@ -113,12 +138,28 @@ class Steps extends React.PureComponent<Props, State> {
   }
 
   /**
+   * Renders a report button.
+   *
+   * @returns {JSX.Element} a button
+   */
+  _renderReportButton(): JSX.Element {
+    return (
+      <TouchableOpacity onPress={(): void => this._reportError()}>
+        <View style={_styles.reportButton}>
+          <Text style={_styles.reportButtonText}>
+            {Translations.get(this.props.language, 'report_problem')}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  /**
    * Renders a separator line between rows.
    *
    * @returns {JSX.Element} a separator for the list of steps
    */
   _renderSeparator(): JSX.Element {
-    // TODO: remove 'indentSeparator' for first and last items
     return <View style={[ _styles.separator, _styles.indentSeparator ]} />;
   }
 
@@ -140,7 +181,7 @@ class Steps extends React.PureComponent<Props, State> {
     }
 
     return (
-      <View>
+      <View style={_styles.stepContainer}>
         {iconView}
         <Text style={[ _styles.step, icon == undefined ? _styles.stepPadding : {} ]}>
           {Translations.getDescription(this.props.language, item)}
@@ -165,6 +206,9 @@ class Steps extends React.PureComponent<Props, State> {
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
             data={this.state.steps}
             renderItem={this._renderStep.bind(this)} />
+        {this.state.showReport
+          ? this._renderReportButton()
+          : undefined}
       </View>
     );
   }
@@ -205,6 +249,17 @@ const _styles = StyleSheet.create({
     fontSize: Constants.Sizes.Text.Subtitle,
     margin: Constants.Sizes.Margins.Expanded,
   },
+  reportButton: {
+    alignSelf: 'center',
+    backgroundColor: Constants.Colors.darkTransparentBackground,
+    margin: Constants.Sizes.Margins.Regular,
+  },
+  reportButtonText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
+    margin: Constants.Sizes.Margins.Regular,
+    textAlign: 'center',
+  },
   separator: {
     backgroundColor: Constants.Colors.primaryWhiteText,
     height: StyleSheet.hairlineWidth,
@@ -216,6 +271,13 @@ const _styles = StyleSheet.create({
     marginRight: Constants.Sizes.Margins.Expanded,
     marginTop: Constants.Sizes.Margins.Expanded,
   },
+  stepContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginBottom: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Regular,
+    marginTop: Constants.Sizes.Margins.Regular,
+  },
   stepPadding: {
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
@@ -223,6 +285,7 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store: any): any => {
   return {
+    accessible: store.config.options.prefersWheelchair,
     destination: store.directions.destination,
     language: store.config.options.language,
     startingPoint: store.directions.startingPoint,

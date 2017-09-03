@@ -22,7 +22,8 @@
  */
 
 import * as Navigation from './Navigation';
-// import * as TextUtils from '../TextUtils';
+import * as Translations from '../Translations';
+import * as TextUtils from '../TextUtils';
 import { Language } from '../Translations';
 
 // Types
@@ -36,6 +37,11 @@ import { Path } from './Navigation';
 export interface Step extends Description {
   key: string;  // Unique key to identify each step
   icon?: Icon;  // Icon to represent the step
+}
+
+export interface DirectionResults {
+  showReport: boolean;  // True indicates an error was encountered and an option to report should appear
+  steps: Step[];        // Steps to between two destinations.
 }
 
 // /** Possible directions for path traversal. */
@@ -371,6 +377,8 @@ export interface Step extends Description {
 //     throw new Error(`Invalid turning direction: ${direction}`);
 //   }
 
+// 6 units is 10m
+
 //   const dirString = (direction === Direction.Left) ? 'left' : 'right';
 //   const streetName = _getNodeStreetName(streetNode, nodeInfo.get(streetNode), language);
 //   const nextStreetName = _getNodeStreetName(nextStreetNode, nodeInfo.get(nextStreetNode), language);
@@ -519,15 +527,17 @@ export interface Step extends Description {
 /**
  * Get a list of steps to travel between two destinations.
  *
- * @param {Destination} start    the starting point for directions
- * @param {Destination} target   the ending point for directions
- * @param {Language}    language the language to return directions in
- * @returns {Promise<string[]>} a list of directions between the destinations
+ * @param {Destination} start      the starting point for directions
+ * @param {Destination} target     the ending point for directions
+ * @param {boolean}     accessible true to force accessible paths, false for any path
+ * @param {Language}    language   the language to return directions in
+ * @returns {Promise<DirectionResults>} a list of directions between the destinations
  */
 export async function getDirectionsBetween(
     start: Destination,
     target: Destination,
-    language: Language): Promise<Step[]> {
+    accessible: boolean,
+    language: Language): Promise<DirectionResults> {
   // Get set of building graphs to request
   const buildingGraphRequests: Set<string> = new Set();
   buildingGraphRequests.add(start.shorthand);
@@ -552,30 +562,71 @@ export async function getDirectionsBetween(
 
   let path: Path;
   if (start.shorthand === target.shorthand) {
-    path = Navigation.findShortestPathBetween(startNode, targetNode, startGraph);
+    path = Navigation.findShortestPathBetween(startNode, targetNode, startGraph, accessible, false);
   } else {
-    // Find shortest distance between exits
-    //   - By looking at x/y of each door, finding shortest line
-    //   - If MHN has exits A,B,C and SMD has exits D,E
-    //     - Find shortest path tree from start to A,B,C
-    //     - Find shortest path tree from target to D,E
-    //     - Find distances of AD,AE,BD,BE,CD,CE
-    //   - Given distanecs of start-A-D-target, start-A-E-target, etc.
-    //     find shortest distance
-    //   - If shortest path is start-A-E-target, return path start to A, A to E, E to target
+    const startToExits = Navigation.findShortestPathsBetween(
+      startNode,
+      startGraph.exits,
+      startGraph,
+      accessible,
+      false
+    );
 
-    const startToExits = Navigation.findShortestPathsBetween(startNode, startGraph.exits, startGraph);
-    const exitsToTarget = Navigation.findShortestPathsBetween(targetNode, targetGraph.exits, targetGraph, true);
+    const exitsToTarget = Navigation.findShortestPathsBetween(
+      targetNode,
+      targetGraph.exits,
+      targetGraph,
+      accessible,
+      true
+    );
+
     const exitDistances = Navigation.findDistancesBetweenDoors(startGraph.exits, targetGraph.exits, outdoorGraph);
-    path = Navigation.getShortestPathAcross(startToExits, exitsToTarget, exitDistances, graphs);
+    path = Navigation.getShortestPathAcross(startToExits, exitsToTarget, exitDistances, graphs, accessible);
   }
 
-  return [
-    {
-      description: `${language}: Done`,
-      key: 'key',
-    },
-  ];
+  if (path == undefined) {
+    const errorMessage = accessible ? 'no_accessible_path_found' : 'no_path_found';
+
+    return {
+      showReport: true,
+      steps: [
+        {
+          description_en: Translations.get(language, errorMessage),
+          description_fr: Translations.get(language, errorMessage),
+          icon: {
+            class: 'material',
+            name: 'error',
+          },
+          key: errorMessage,
+        },
+      ],
+    };
+  }
+
+  const startString = TextUtils.destinationToString(start);
+  const targetString = TextUtils.destinationToString(target);
+
+  return {
+    showReport: false,
+    steps: [
+      {
+        description: startString,
+        icon: {
+          class: 'material',
+          name: 'my-location',
+        },
+        key: `destination_${startString}`,
+      },
+      {
+        description: targetString,
+        icon: {
+          class: 'material',
+          name: 'place',
+        },
+        key: `target_${targetString}`,
+      },
+    ],
+  };
 
   // return _buildDirectionsFromPath(path, graphs, language);
 }

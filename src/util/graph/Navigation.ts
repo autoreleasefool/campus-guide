@@ -41,6 +41,13 @@ interface PartialPath {
   node: Node | undefined;
 }
 
+/** Pair of doors and the distance associated with them, for sorting. */
+interface DoorPair {
+  exit: Node;       // Exit from the first building
+  entrance: Node;   // Entrance to the second building
+  distance: number; // Distance between the two doors
+}
+
 /** Possible directions that edges travel. */
 export enum EdgeDirection {
   Down = 'D',
@@ -74,13 +81,23 @@ export interface Path {
   source: Node;
 }
 
-/** Compare two paths */
+/** Compare two paths. */
 const partialPathComparator = (a: PartialPath, b: PartialPath): boolean => {
   return a.dist < b.dist;
 };
 
+/** Compare two door pairs. */
+const doorPairingComparator = (a: DoorPair, b: DoorPair): boolean => {
+  return a.distance < b.distance;
+};
+
 /** Node instances cached by their ID. */
 const graphNodeCache = new Map<string, Node>();
+
+/** Ratio of units outside to 10m */
+const OUTER_UNIT_TO_M = 1.7;
+/** Ratio of units inside to 10m */
+const INNER_UNIT_TO_M = 0.29;
 
 /**
  * Get a node from the cache if available, or build it and add it to the cache.
@@ -185,9 +202,6 @@ function _parseAndAppendStreet(id: string, streetName: string, graph: BuildingGr
   graph.streets.set(id, streetName);
 }
 
-/* tslint:disable no-inferrable-types */
-/* Declaring `reverse: boolean = false` has an error with or without `:boolean` definition */
-
 /**
  * Get the path from a start node to a target node.
  *
@@ -204,7 +218,7 @@ function _rebuildPath(
     distance: number,
     previous: Map<Node, Node>,
     graph: BuildingGraph,
-    reverse: boolean = false): Path {
+    reverse: boolean): Path {
   const path: Path = {
     distance,
     edges: [],
@@ -242,8 +256,6 @@ function _rebuildPath(
 
   return path;
 }
-
-/* tslint:disable no-inferrable-types */
 
 /**
  * Gets the requested set of BuildingGraph instances, mapped to their shorthands.
@@ -321,6 +333,7 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
           const nodeA = getCachedNodeOrBuild(graphComponents[0], building, graph.format);
           const nodeB = getCachedNodeOrBuild(graphComponents[1], building, graph.format);
           _parseAndAppendExcludedNode(nodeA, nodeB, graph);
+          _parseAndAppendExcludedNode(nodeB, nodeA, graph);
           break;
         }
         case GraphParseState.Streets: {
@@ -337,33 +350,29 @@ export async function getBuildingGraphs(buildings: Set<string>): Promise<Map<str
   return graphs;
 }
 
-/* tslint:disable no-inferrable-types */
-/* Declaring `reverse: boolean = false` has an error with or without `:boolean` definition */
-
 /**
  * Find the shortest path in a graph between two nodes.
  *
  * @param {Node}          startNode  path start
  * @param {Node}          targetNode path end
  * @param {BuildingGraph} graph      graph to generate path from
+ * @param {boolean}       accessible true to force an accessible path, false for any path
  * @param {boolean}       reverse    true to return path from target to start
+ * @returns {Path|undefined} the path between the startNode and targetNode, or undefined if
+ *                           there isn't one
  */
 export function findShortestPathBetween(
     startNode: Node,
     targetNode: Node,
     graph: BuildingGraph,
-    reverse: boolean = false): Path {
+    accessible: boolean,
+    reverse: boolean): Path | undefined {
   const targetSet: Set<Node> = new Set();
   targetSet.add(targetNode);
-  const paths = findShortestPathsBetween(startNode, targetSet, graph, reverse);
+  const paths = findShortestPathsBetween(startNode, targetSet, graph, accessible, reverse);
 
   return paths.get(targetNode);
 }
-
-/* tslint:enable no-inferrable-types */
-
-/* tslint:disable no-inferrable-types */
-/* Declaring `reverse: boolean = false` has an error with or without `:boolean` definition */
 
 /**
  * Given a starting node, returns the shortest path from the starting node to each of the target nodes.
@@ -372,6 +381,7 @@ export function findShortestPathBetween(
  * @param {Node}          startNode   starting node for paths
  * @param {Set<Node>}     targetNodes set of nodes to reach
  * @param {BuildingGraph} graph       graph of building with edges and distances
+ * @param {boolean}       accessible true to force an accessible path, false for any path
  * @param {boolean}       reverse    true to return path from target to start
  * @returns {Map<Node, Path>} mapping from the target node to the path to it from the starting node
  */
@@ -379,8 +389,10 @@ export function findShortestPathsBetween(
     startNode: Node,
     targetNodes: Set<Node>,
     graph: BuildingGraph,
-    reverse: boolean = false): Map<Node, Path> {
+    accessible: boolean,
+    reverse: boolean): Map<Node, Path> {
   const paths: Map<Node, Path> = new Map();
+  const targetsFound: Set<Node> = new Set();
 
   const nodes = new FastPriorityQueue(partialPathComparator);
   const distances: Map<Node, number> = new Map();
@@ -396,25 +408,31 @@ export function findShortestPathsBetween(
     }
   }
 
-  let targetsFound = 0;
   while (!nodes.isEmpty()) {
     const smallest = nodes.poll();
 
-    if (targetNodes.has(smallest.node)) {
-      targetsFound += 1;
-      if (targetsFound === targetNodes.size) {
-        break;
-      }
-    }
-
     if (smallest == undefined || distances.get(smallest.node) === Infinity) {
       continue;
+    }
+
+    if (targetNodes.has(smallest.node) && !targetsFound.has(smallest.node)) {
+      targetsFound.add(smallest.node);
+      if (targetsFound.size === targetNodes.size) {
+        break;
+      }
     }
 
     for (const neighbor of graph.adjacencies.get(smallest.node)) {
       if (neighbor.node.getType() === NodeType.Room && !targetNodes.has(neighbor.node)) {
         // Optimization: You'll never have to pass through a room to get to another room, so skip nodes
         // that aren't targets
+        continue;
+      }
+
+      if ((accessible && (!neighbor.accessible || neighbor.node.getType() === NodeType.Stairs))
+          || graph.excluded.has(smallest.node) && graph.excluded.get(smallest.node).has(neighbor.node)) {
+        // Skip non-accessible edges when the user wants an accessible route, and skip
+        // routes which are closed.
         continue;
       }
 
@@ -428,13 +446,13 @@ export function findShortestPathsBetween(
   }
 
   for (const node of targetNodes) {
-    paths.set(node, _rebuildPath(startNode, node, distances.get(node), previous, graph, reverse));
+    if (targetsFound.has(node)) {
+      paths.set(node, _rebuildPath(startNode, node, distances.get(node), previous, graph, reverse));
+    }
   }
 
   return paths;
 }
-
-/* tslint:enable no-inferrable-types */
 
 /**
  * Given two sets of doors and their coordinates, get all of the distances between each combination of doors.
@@ -487,37 +505,58 @@ export function findDistancesBetweenDoors(
  * @param {Map<Node, Path>}              exitsToTarget         shortest paths from the target node to each exit
  * @param {Map<Node, Map<Node, number>>} distancesBetweenExits distances between each pair of building entrances
  * @param {Map<string, BuildingGraph>}   graphs                graphs for each building
+ * @param {boolean}                      accessible            true to force an accessible path, false for any path
+ * @returns {Path|undefined} the shortest path between the nodes, or undefined if there are no possible paths
  */
 export function getShortestPathAcross(
     startToExits: Map<Node, Path>,
     exitsToTarget: Map<Node, Path>,
     distancesBetweenExits: Map<Node, Map<Node, number>>,
-    graphs: Map<string, BuildingGraph>): Path {
+    graphs: Map<string, BuildingGraph>,
+    accessible: boolean): Path | undefined {
 
-  let exitNode: Node;
-  let entranceNode: Node;
-  let minimumDistance = Infinity;
+  const doorPairings = new FastPriorityQueue(doorPairingComparator);
+
   for (const exit of startToExits.keys()) {
     for (const entrance of exitsToTarget.keys()) {
       // TODO: adjust path distances inside buildings to give less weight than those outside
-      let pathDistance = startToExits.get(exit).distance;
-      pathDistance += exitsToTarget.get(entrance).distance;
-      pathDistance += distancesBetweenExits.get(exit).get(entrance);
-      if (pathDistance < minimumDistance) {
-        minimumDistance = pathDistance;
-        exitNode = exit;
-        entranceNode = entrance;
+      const exitPath = startToExits.get(exit);
+      const entrancePath = exitsToTarget.get(entrance);
+      if (exitPath == undefined || entrancePath == undefined) {
+        // Path could not be found between the start and door, possibly because it's closed,
+        // possibly because the user wants it to be accessible
+        continue;
       }
+
+      let distance = exitPath.distance * INNER_UNIT_TO_M;
+      distance += entrancePath.distance * INNER_UNIT_TO_M;
+      distance += distancesBetweenExits.get(exit).get(entrance) * OUTER_UNIT_TO_M;
+
+      doorPairings.add({
+        distance,
+        entrance,
+        exit,
+      });
     }
   }
 
-  const firstPathComponent = startToExits.get(exitNode);
-  const outerPath = findShortestPathBetween(exitNode, entranceNode, graphs.get('OUT'));
-  const secondPathComponent = exitsToTarget.get(entranceNode);
+  let doors: DoorPair = doorPairings.poll();
+  while (doors != undefined) {
+    const outerPath = findShortestPathBetween(doors.exit, doors.entrance, graphs.get('OUT'), accessible, false);
+    if (outerPath == undefined) {
+      doors = doorPairings.poll();
+      continue;
+    }
 
-  return {
-    distance: firstPathComponent.distance + outerPath.distance + secondPathComponent.distance,
-    edges: firstPathComponent.edges.concat(outerPath.edges, secondPathComponent.edges),
-    source: firstPathComponent.source,
-  };
+    const firstPathComponent = startToExits.get(doors.exit);
+    const secondPathComponent = exitsToTarget.get(doors.entrance);
+
+    return {
+      distance: firstPathComponent.distance + outerPath.distance + secondPathComponent.distance,
+      edges: firstPathComponent.edges.concat(outerPath.edges, secondPathComponent.edges),
+      source: firstPathComponent.source,
+    };
+  }
+
+  return undefined;
 }
