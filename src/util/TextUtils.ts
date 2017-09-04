@@ -30,6 +30,7 @@ import * as Constants from '../constants';
 
 import { TimeFormat } from '../../typings/global';
 import { Destination } from '../../typings/university';
+import { Language } from './Translations';
 
 /**
  * Converts a time to either a 12h or 24h format. If the time is already in the format specified,
@@ -148,16 +149,21 @@ export function getFormattedTimeSinceMidnight(
  * @param value the value to get the ordinal for
  * @returns {string} the ordinal
  */
-export function getOrdinal(value: number | string): string {
+export function getOrdinal(value: number | string, language: Language): string {
   const valueInt = typeof (value) === 'number' ? value : parseInt(value);
+
+  if (language === 'fr') {
+    return (valueInt === 1) ? `${value}er` : `${value}e`;
+  }
+
   const ones = valueInt % 10;
   if (ones >= 1 && ones <= 3) {
     const tenths = valueInt % 100;
     if (tenths < 11 || tenths > 13) {
       switch (ones) {
-        case 1: return '1st';
-        case 2: return '2nd';
-        case 3: return '3rd';
+        case 1: return `${value}st`;
+        case 2: return `${value}nd`;
+        case 3: return `${value}rd`;
         default: return `${value}th`;
       }
     }

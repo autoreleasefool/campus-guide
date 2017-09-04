@@ -164,8 +164,8 @@ describe('TextUtils-test', () => {
 
   it('tests converting a time in minutes since midnight to text', () => {
 
-    /* Magic numbers are used here for simplicity's sake */
     /* tslint:disable no-magic-numbers */
+    /* Magic numbers are used here for simplicity's sake */
 
     expect(TextUtils.getFormattedTimeSinceMidnight(0, '24h')).toEqual('00:00');
     expect(TextUtils.getFormattedTimeSinceMidnight(0, '12h')).toEqual('12:00 am');
@@ -182,4 +182,30 @@ describe('TextUtils-test', () => {
     expect(TextUtils.destinationToString({ shorthand: 'STE' })).toEqual('STE');
     expect(TextUtils.destinationToString({ shorthand: 'STE', room: 'F0126' })).toEqual('STE F0126');
   });
+
+  it('converts a number to an ordinal, in multiple languages', () => {
+
+    /* tslint:disable no-magic-numbers */
+    /* Magic numbers are used here for simplicity's sake */
+
+    expect(TextUtils.getOrdinal(1, 'en')).toEqual('1st');
+    expect(TextUtils.getOrdinal(2, 'en')).toEqual('2nd');
+    expect(TextUtils.getOrdinal(3, 'en')).toEqual('3rd');
+    expect(TextUtils.getOrdinal(4, 'en')).toEqual('4th');
+    expect(TextUtils.getOrdinal(11, 'en')).toEqual('11th');
+    expect(TextUtils.getOrdinal(12, 'en')).toEqual('12th');
+    expect(TextUtils.getOrdinal(21, 'en')).toEqual('21st');
+
+    expect(TextUtils.getOrdinal(1, 'fr')).toEqual('1er');
+    expect(TextUtils.getOrdinal(2, 'fr')).toEqual('2e');
+    expect(TextUtils.getOrdinal(3, 'fr')).toEqual('3e');
+    expect(TextUtils.getOrdinal(4, 'fr')).toEqual('4e');
+    expect(TextUtils.getOrdinal(11, 'fr')).toEqual('11e');
+    expect(TextUtils.getOrdinal(12, 'fr')).toEqual('12e');
+    expect(TextUtils.getOrdinal(21, 'fr')).toEqual('21e');
+
+    /* tslint:enable no-magic-numbers */
+
+  });
+
 });
