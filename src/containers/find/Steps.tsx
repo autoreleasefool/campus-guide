@@ -266,6 +266,7 @@ const _styles = StyleSheet.create({
   },
   step: {
     color: Constants.Colors.primaryWhiteText,
+    flex: 1,
     fontSize: Constants.Sizes.Text.Body,
     marginBottom: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
@@ -273,6 +274,7 @@ const _styles = StyleSheet.create({
   },
   stepContainer: {
     alignItems: 'center',
+    flex: 1,
     flexDirection: 'row',
     marginBottom: Constants.Sizes.Margins.Regular,
     marginRight: Constants.Sizes.Margins.Regular,
