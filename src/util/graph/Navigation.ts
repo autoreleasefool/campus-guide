@@ -95,9 +95,9 @@ const doorPairingComparator = (a: DoorPair, b: DoorPair): boolean => {
 const graphNodeCache = new Map<string, Node>();
 
 /** Ratio of units outside to 10m */
-const OUTER_UNIT_TO_M = 1.7;
+export const OUTER_UNIT_TO_M = 1.7;
 /** Ratio of units inside to 10m */
-const INNER_UNIT_TO_M = 0.29;
+export const INNER_UNIT_TO_M = 0.29;
 
 /**
  * Get a node from the cache if available, or build it and add it to the cache.

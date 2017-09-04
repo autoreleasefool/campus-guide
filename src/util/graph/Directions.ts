@@ -21,17 +21,17 @@
  * @description Generate directions between points in graphs.
  */
 
+import * as DirectionTranslations from './DirectionTranslations';
 import * as Navigation from './Navigation';
 import * as Translations from '../Translations';
 import * as TextUtils from '../TextUtils';
-import { Language } from '../Translations';
 
 // Types
 import { Description, Icon } from '../../../typings/global';
 import { Destination } from '../../../typings/university';
-// import { BuildingGraph, Edge, EdgeDirection, Path } from './Navigation';
-import { Path } from './Navigation';
-// import { default as Node, Type as NodeType } from './Node';
+import { BuildingGraph, Edge, EdgeDirection, Path } from './Navigation';
+import { Language } from '../Translations';
+import { default as Node, Type as NodeType } from './Node';
 
 /** Information on step by step navigation. */
 export interface Step extends Description {
@@ -44,485 +44,531 @@ export interface DirectionResults {
   steps: Step[];        // Steps to between two destinations.
 }
 
-// /** Possible directions for path traversal. */
-// enum Direction {
-//   Left = 0,
-//   Right = 1,
-//   Straight = 2,
-// }
+/** Possible directions for path traversal. */
+export enum Direction {
+  Left = 0,
+  Right = 1,
+  Straight = 2,
+}
 
-// /**
-//  * Get the translated name of a node type.
-//  *
-//  * @param {NodeType} type     the type of node
-//  * @param {Language} language language to return translation in
-//  * @returns {string} the translated name
-//  */
-// function _getNodeTypeName(type: NodeType, language: Language): string {
-//   switch (type) {
-//     case NodeType.Door: return `${language}: Door`;
-//     case NodeType.Room: return `${language}: Room`;
-//     case NodeType.Stairs: return `${language}: Staircase`;
-//     case NodeType.Elevator: return `${language}: Elevator`;
-//     case NodeType.Hallway: return `${language}: Hallway`;
-//     default: throw new Error(`Invalid node type: ${type}`);
-//   }
-// }
+/** Constant for 10 metres. */
+const TEN_METRES = 10;
 
-// /**
-//  * Get the street name of a Street node, translated to the given language.
-//  *
-//  * @param {Node}     node       street node
-//  * @param {string}   streetInfo street name string
-//  * @param {Language} language   language to return name in
-//  * @returns {string} name of the street
-//  */
-// function _getNodeStreetName(node: Node, streetInfo: string, language: Language): string {
-//   if (node.getType() !== NodeType.Street) {
-//     throw new Error('Cannot get street name of non-street nodes');
-//   }
+/**
+ * Given two directions of edges, will return the Direction one would have to turn to change from
+ * one path to the other.
+ *
+ * @param {EdgeDirection} firstDirection  the current facing direction
+ * @param {EdgeDirection} secondDirection the desired direction
+ * @returns {Direction} the direction to turn
+ */
+function _getTurningDirection(firstDirection: EdgeDirection, secondDirection: EdgeDirection): Direction {
 
-//   const translation = language === 'en' ? 0 : 1;
-//   const translatedName = streetInfo.split(',');
+  /* tslint:disable no-multi-spaces */
+  /* Better to line up statements */
 
-//   return translatedName[translation];
-// }
+  if (
+      (firstDirection === EdgeDirection.Down  && secondDirection === EdgeDirection.Left) ||
+      (firstDirection === EdgeDirection.Up    && secondDirection === EdgeDirection.Right) ||
+      (firstDirection === EdgeDirection.Left  && secondDirection === EdgeDirection.Up) ||
+      (firstDirection === EdgeDirection.Right && secondDirection === EdgeDirection.Down)) {
+    return Direction.Right;
+  } else if (
+      (firstDirection === EdgeDirection.Down  && secondDirection === EdgeDirection.Right) ||
+      (firstDirection === EdgeDirection.Up    && secondDirection === EdgeDirection.Left) ||
+      (firstDirection === EdgeDirection.Left  && secondDirection === EdgeDirection.Down) ||
+      (firstDirection === EdgeDirection.Right && secondDirection === EdgeDirection.Up)) {
+    return Direction.Left;
+  }
 
-// /**
-//  * Given two directions of edges, will return the Direction one would have to turn to change from
-//  * one path to the other.
-//  *
-//  * @param {EdgeDirection} firstDirection  the current facing direction
-//  * @param {EdgeDirection} secondDirection the desired direction
-//  * @returns {Direction} the direction to turn
-//  */
-// function _getTurningDirection(firstDirection: EdgeDirection, secondDirection: EdgeDirection): Direction {
+  /* tslint:enable no-multi-spaces */
 
-//   /* tslint:disable no-multi-spaces */
-//   /* Better to line up statements */
+  return Direction.Straight;
+}
 
-//   if (
-//       (firstDirection === EdgeDirection.Down  && secondDirection === EdgeDirection.Left) ||
-//       (firstDirection === EdgeDirection.Up    && secondDirection === EdgeDirection.Right) ||
-//       (firstDirection === EdgeDirection.Left  && secondDirection === EdgeDirection.Up) ||
-//       (firstDirection === EdgeDirection.Right && secondDirection === EdgeDirection.Down)) {
-//     return Direction.Right;
-//   } else if (
-//       (firstDirection === EdgeDirection.Down  && secondDirection === EdgeDirection.Right) ||
-//       (firstDirection === EdgeDirection.Up    && secondDirection === EdgeDirection.Left) ||
-//       (firstDirection === EdgeDirection.Left  && secondDirection === EdgeDirection.Down) ||
-//       (firstDirection === EdgeDirection.Right && secondDirection === EdgeDirection.Up)) {
-//     return Direction.Left;
-//   }
+/**
+ * Count the number of halls skipped when walking a certain direction down a hallway.
+ *
+ * @param {Edge[]}        adjacentEdges the edges being passed
+ * @param {EdgeDirection} direction     the current traveling direction
+ * @returns {object} l, r, and s, representing the number of missed left, right and straight hallways
+ */
+function _countMissedHalls(adjacentEdges: Edge[], direction: EdgeDirection): { l: number; r: number; s: number } {
+  let left = 0;
+  let right = 0;
+  let straight = 0;
 
-//   /* tslint:enable no-multi-spaces */
+  for (const edge of adjacentEdges) {
+    if (edge.node.getType() !== NodeType.Hallway) {
+      continue;
+    }
 
-//   return Direction.Straight;
-// }
+    if (edge.direction === direction) {
+      straight += 1;
+      continue;
+    }
 
-// /**
-//  * Count the number of halls skipped when walking a certain direction down a hallway.
-//  *
-//  * @param {Edge[]}        adjacentEdges the edges being passed
-//  * @param {EdgeDirection} direction     the current traveling direction
-//  * @returns {object} l, r, and s, representing the number of missed left, right and straight hallways
-//  */
-// function _countMissedHalls(adjacentEdges: Edge[], direction: EdgeDirection): { l: number; r: number; s: number } {
-//   let left = 0;
-//   let right = 0;
-//   let straight = 0;
+    switch (direction) {
+      case EdgeDirection.Down:
+        if (edge.direction === EdgeDirection.Left) {
+          right += 1;
+        } else if (edge.direction === EdgeDirection.Right) {
+          left += 1;
+        }
+        break;
+      case EdgeDirection.Up:
+        if (edge.direction === EdgeDirection.Right) {
+          right += 1;
+        } else if (edge.direction === EdgeDirection.Left) {
+          left += 1;
+        }
+        break;
+      case EdgeDirection.Left:
+        if (edge.direction === EdgeDirection.Up) {
+          right += 1;
+        } else if (edge.direction === EdgeDirection.Down) {
+          left += 1;
+        }
+        break;
+      case EdgeDirection.Right:
+        if (edge.direction === EdgeDirection.Down) {
+          right += 1;
+        } else if (edge.direction === EdgeDirection.Up) {
+          left += 1;
+        }
+        break;
+      default:
+        throw new Error(`Invalid edge direction '${direction}'`);
+    }
+  }
 
-//   for (const edge of adjacentEdges) {
-//     if (edge.node.getType() !== NodeType.Hallway) {
-//       continue;
-//     }
+  return { l: left, r: right, s: straight };
+}
 
-//     if (edge.direction === direction) {
-//       straight += 1;
-//       continue;
-//     }
+/**
+ * Provides translated direction to exit a room.
+ *
+ * @param {Node}          room          the room to exit
+ * @param {EdgeDirection} exitDirection the facing direction from exiting the room
+ * @param {EdgeDirection} nextDirection the desired continuing direction
+ * @returns {Step} directions to exit the room
+ */
+function _exitRoom(
+    room: Node,
+    exitDirection: EdgeDirection,
+    nextDirection: EdgeDirection): Step {
+  const turningDirection = _getTurningDirection(exitDirection, nextDirection);
+  const translations = DirectionTranslations.translateExitRoom(room, turningDirection);
 
-//     switch (direction) {
-//       case EdgeDirection.Down:
-//         if (edge.direction === EdgeDirection.Left) {
-//           right += 1;
-//         } else if (edge.direction === EdgeDirection.Right) {
-//           left += 1;
-//         }
-//         break;
-//       case EdgeDirection.Up:
-//         if (edge.direction === EdgeDirection.Right) {
-//           right += 1;
-//         } else if (edge.direction === EdgeDirection.Left) {
-//           left += 1;
-//         }
-//         break;
-//       case EdgeDirection.Left:
-//         if (edge.direction === EdgeDirection.Up) {
-//           right += 1;
-//         } else if (edge.direction === EdgeDirection.Down) {
-//           left += 1;
-//         }
-//         break;
-//       case EdgeDirection.Right:
-//         if (edge.direction === EdgeDirection.Down) {
-//           right += 1;
-//         } else if (edge.direction === EdgeDirection.Up) {
-//           left += 1;
-//         }
-//         break;
-//       default:
-//         throw new Error(`Invalid edge direction '${direction}'`);
-//     }
-//   }
+  return {
+    description_en: Translations.getDescription('en', translations),
+    description_fr: Translations.getDescription('fr', translations),
+    key: `exitRoom_${room}`,
+  };
+}
 
-//   return { l: left, r: right, s: straight };
-// }
+/**
+ * Provides translated directions to enter a building.
+ *
+ * @param {Node}          outdoorNode          node which building is being entered from
+ * @param {Node}          door                 the door of the building to enter
+ * @param {EdgeDirection} approachingDirection direction the user is walking past the building
+ * @param {EdgeDirection} doorDirection        direction the user must turn to enter the building
+ * @param {EdgeDirection} enteredDirection     direction the user is facing upon entering the building
+ * @param {EdgeDirection} continuingDirection  direction the user must turn to proceed to their destination
+ * @param {number}        distance             total distance travelled along the preceding path/street
+ * @param {BuildingGraph} graph                building graph
+ * @returns {Step[]} steps to enter a building from the street
+ */
+function _enterBuilding(
+    outdoorNode: Node,
+    door: Node,
+    approachingDirection: EdgeDirection,
+    doorDirection: EdgeDirection,
+    enteredDirection: EdgeDirection,
+    continuingDirection: EdgeDirection,
+    distance: number,
+    graph: BuildingGraph): Step[] {
+  const passingDirection = _getTurningDirection(approachingDirection, doorDirection);
+  const turningDirection = _getTurningDirection(enteredDirection, continuingDirection);
+  const distanceInMetres = Math.round(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES) * TEN_METRES;
 
-// /**
-//  * Provides translated direction to exit a room.
-//  *
-//  * @param {Node}          room          the room to exit
-//  * @param {EdgeDirection} exitDirection the facing direction from exiting the room
-//  * @param {EdgeDirection} nextDirection the desired continuing direction
-//  * @param {Language}      language      language to return translation in
-//  */
-// function
-// _exitRoom(room: Node, exitDirection: EdgeDirection, nextDirection: EdgeDirection, language: Language): string {
-//   const turningDirection = _getTurningDirection(exitDirection, nextDirection);
-//   let turningCommand: string;
-//   switch (turningDirection) {
-//     case Direction.Left: turningCommand = 'turn left'; break;
-//     case Direction.Right: turningCommand = 'turn right'; break;
-//     case Direction.Straight: turningCommand = 'proceed straight'; break;
-//     default: throw new Error(`Invalid direction: ${turningDirection}`);
-//   }
+  const translations = DirectionTranslations.translateEnterBuilding(
+    passingDirection,
+    turningDirection,
+    distanceInMetres,
+    outdoorNode,
+    graph,
+    door
+  );
 
-//   // TODO: translate
-//   return `${language}: Exit ${room.getName()} and ${turningCommand}.`;
-// }
+  const steps: Step[] = [];
+  for (let i = 0; i < translations.length; i++) {
+    steps.push({
+      description_en: Translations.getDescription('en', translations[i]),
+      description_fr: Translations.getDescription('fr', translations[i]),
+      key: `enterBuilding_${door}_${i}`,
+    });
+  }
 
-// /**
-//  * Provides translated directions to enter a building.
-//  *
-//  * @param {Node}          door                 the door of the building to enter
-//  * @param {EdgeDirection} approachingDirection direction the user is walking past the building
-//  * @param {EdgeDirection} doorDirection        direction the user must turn to enter the building
-//  * @param {EdgeDirection} enteredDirection     direction the user is facing upon entering the building
-//  * @param {EdgeDirection} continuingDirection  direction the user must turn to proceed to their destination
-//  * @param {Language}      language             language to return translation in
-//  */
-// function _enterBuilding(
-//   door: Node,
-//   approachingDirection: EdgeDirection,
-//   doorDirection: EdgeDirection,
-//   enteredDirection: EdgeDirection,
-//   continuingDirection: EdgeDirection,
-//   language: Language): string[] {
-//   const passingDirection = _getTurningDirection(approachingDirection, doorDirection);
-//   let passingCommand: string;
-//   switch (passingDirection) {
-//     case Direction.Left: passingCommand = 'on your left'; break;
-//     case Direction.Right: passingCommand = 'on your right'; break;
-//     case Direction.Straight: passingCommand = 'directly ahead'; break;
-//     default: throw new Error(`Invalid direction: ${passingDirection}`);
-//   }
+  return steps;
+}
 
-//   const turningDirection = _getTurningDirection(enteredDirection, continuingDirection);
-//   let turningCommand: string;
-//   switch (turningDirection) {
-//     case Direction.Left: turningCommand = 'turn left'; break;
-//     case Direction.Right: turningCommand = 'turn right'; break;
-//     case Direction.Straight: turningCommand = 'proceed straight'; break;
-//     default: throw new Error(`Invalid direction: ${turningDirection}`);
-//   }
+/**
+ * Provides translated directions to exit a buildimng.
+ *
+ * @param {Node}          door          the door of the building to exit
+ * @param {EdgeDirection} exitDirection the facing direction from exiting the door
+ * @param {EdgeDirection} nextDirection the desired continuing direction
+ * @returns {Step} steps to exit the building
+ */
+function _exitBuilding(
+    door: Node,
+    exitDirection: EdgeDirection,
+    nextDirection: EdgeDirection): Step {
+  const turningDirection = _getTurningDirection(exitDirection, nextDirection);
+  const translations = DirectionTranslations.translateExitBuilding(door, turningDirection);
 
-//   // TODO: translate
-//   return [
-//     `${language}: ${door.getBuilding()} will be ${passingCommand}`,
-//     `${language}: Enter ${door.getBuilding()} (through door ${door.getName()}) and ${turningCommand}.`,
-//   ];
-// }
+  return {
+    description_en: Translations.getDescription('en', translations),
+    description_fr: Translations.getDescription('fr', translations),
+    key: `exitBuilding_${door}`,
+  };
+}
 
-// /**
-//  * Provides translated directions to exit a buildimng.
-//  *
-//  * @param {Node}          door          the door of the building to exit
-//  * @param {EdgeDirection} exitDirection the facing direction from exiting the door
-//  * @param {EdgeDirection} nextDirection the desired continuing direction
-//  * @param {Language}      language      language to return translation in
-//  */
-// function _exitBuilding(
-//     door: Node,
-//     exitDirection: EdgeDirection,
-//     nextDirection: EdgeDirection,
-//     language: Language): string {
-//   const turningDirection = _getTurningDirection(exitDirection, nextDirection);
-//   let turningCommand: string;
-//   switch (turningDirection) {
-//     case Direction.Left: turningCommand = 'turn left'; break;
-//     case Direction.Right: turningCommand = 'turn right'; break;
-//     case Direction.Straight: turningCommand = 'proceed straight'; break;
-//     default: throw new Error(`Invalid direction: ${turningDirection}`);
-//   }
+/**
+ * Provides translated directions to enter a staircase or elevator, change floors, and exit.
+ *
+ * @param {Node}     door     the door to pass through
+ * @param {Edge}     exitEdge the facing edge from exiting the room
+ * @param {Edge}     nextEdge the desired continuing edge
+ * @returns {Step[]} steps to go to a floor
+ */
+function _changeFloors(
+    node: Node,
+    exitEdge: Edge,
+    nextEdge: Edge): Step[] {
 
-//   // TODO: translate
-//   return `${language}: Exit ${door.getBuilding()} (through door ${door.getName()}) and ${turningCommand}.`;
-// }
+  const turningDirection = _getTurningDirection(exitEdge.direction, nextEdge.direction);
+  const translations = DirectionTranslations.translateChangingFloors(node, exitEdge.node, turningDirection);
 
-// /**
-//  * Provides translated directions to enter a staircase or elevator, change floors, and exit.
-//  *
-//  * @param {Node}     door     the door to pass through
-//  * @param {Edge}     exitEdge the facing edge from exiting the room
-//  * @param {Edge}     nextEdge the desired continuing edge
-//  * @param {Language} language language to return translation in
-//  */
-// function _changeFloors(
-//     node: Node,
-//     exitEdge: Edge,
-//     nextEdge: Edge,
-//     language: Language): string[] {
-//   const nodeName = `${_getNodeTypeName(node.getType(), language)} ${node.getName()}`;
-//   TODO: if elevator doesn't have name?
-//   Can't use elevator name, since they're just random numbers Staircase names are okay
+  const steps: Step[] = [];
+  for (let i = 0; i < translations.length; i++) {
+    steps.push({
+      description_en: Translations.getDescription('en', translations[i]),
+      description_fr: Translations.getDescription('fr', translations[i]),
+      key: `changeFloor_${node}_${i}`,
+    });
+  }
 
-//   const turningDirection = _getTurningDirection(exitEdge.direction, nextEdge.direction);
-//   let turningCommand: string;
-//   switch (turningDirection) {
-//     case Direction.Left: turningCommand = 'turn left'; break;
-//     case Direction.Right: turningCommand = 'turn right'; break;
-//     case Direction.Straight: turningCommand = 'proceed straight'; break;
-//     default: throw new Error(`Invalid direction: ${turningDirection}`);
-//   }
+  return steps;
+}
 
-//   const directions: string[] = [];
-//   directions.push(`${language}: Enter ${nodeName}`);
-//   directions.push(`${language}: Take ${nodeName} to the ${TextUtils.getOrdinal(exitEdge.node.getFloor())} floor.`);
-//   directions.push(`${language}: Exit ${nodeName} and ${turningCommand}.`);
+/**
+ * Provides translated directions to enter a room.
+ *
+ * @param {Edge}     previousEdge the last edge before the room
+ * @param {Edge}     roomEdge     the edge to enter the room
+ * @returns {Step} instruction to enter a room
+ */
+function _enterRoom(previousEdge: Edge, roomEdge: Edge): Step {
+  const turningDirection = _getTurningDirection(previousEdge.direction, roomEdge.direction);
+  const translations = DirectionTranslations.translateEnterRoom(roomEdge.node, turningDirection);
 
-//   //  TODO: translate
-//   return directions;
-// }
+  return {
+    description_en: Translations.getDescription('en', translations),
+    description_fr: Translations.getDescription('fr', translations),
+    key: `enterRoom_${roomEdge.node}`,
+  };
+}
 
-// /**
-//  * Provides translated directions to enter a room.
-//  *
-//  * @param {Edge}     previousEdge the last edge before the room
-//  * @param {Edge}     roomEdge     the edge to enter the room
-//  * @param {Language} language     language to return the translation in
-//  * @returns {string} instructions to enter a room
-//  */
-// function _enterRoom(previousEdge: Edge, roomEdge: Edge, language: Language): string {
-//   const nodeName = `${_getNodeTypeName(roomEdge.node.getType(), language)} ${roomEdge.node.getName()}`;
+/**
+ * Creates directions to turn down a hallway.
+ *
+ * @param {Node}      hallNode            node of hall to turn at
+ * @param {Direction} direction           the direction to turn
+ * @param {number}    missedHalls         number of missed halls in the turning direction
+ * @param {number}    missedStraightHalls number of missed halls at the end of the hallway
+ * @returns {Step} the directions for a user to turn down a hall
+ */
+function _turnDownNthHall(
+      hallNode: Node,
+      direction: Direction,
+      missedHalls: number,
+      missedStraightHalls: number): Step {
+  if (direction !== Direction.Left && direction !== Direction.Right) {
+    throw new Error(`Invalid turning direction: ${direction}`);
+  }
 
-//   const turningDirection = _getTurningDirection(previousEdge.direction, roomEdge.direction);
-//   let turningCommand: string;
-//   switch (turningDirection) {
-//     case Direction.Left: turningCommand = 'on your left'; break;
-//     case Direction.Right: turningCommand = 'on your right'; break;
-//     case Direction.Straight: turningCommand = 'directly ahead'; break;
-//     default: throw new Error(`Invalid direction: ${turningDirection}`);
-//   }
+  const translations = DirectionTranslations.translateTurnDownNthHall(
+    direction,
+    missedHalls,
+    missedStraightHalls
+  );
 
-//   // TODO: translate
-//   return `${language}: ${nodeName} will be ${turningDirection}.`;
-// }
+  return {
+    description_en: Translations.getDescription('en', translations),
+    description_fr: Translations.getDescription('fr', translations),
+    key: `nthHall_${hallNode}`,
+  };
+}
 
-// /**
-//  * Creates directions to turn down a hallway.
-//  *
-//  * @param {Direction} direction           the direction to turn
-//  * @param {number}    missedHalls         number of missed halls in the turning direction
-//  * @param {number}    missedStraightHalls number of missed halls at the end of the hallway
-//  * @param {Language}  language            language to return direction in
-//  * @returns {string} the directions for a user to turn down a hall
-//  */
-// function _turnDownNthHall(
-//       direction: Direction,
-//       missedHalls: number,
-//       missedStraightHalls: number,
-//       language: Language): string {
-//   if (direction !== Direction.Left && direction !== Direction.Right) {
-//     throw new Error(`Invalid turning direction: ${direction}`);
-//   }
+/**
+ * Creates directions to turn down a street outside.
+ *
+ * @param {Node}          currentNode the current path/street being travelled down
+ * @param {Node}          nextNode    the path/street to turn onto
+ * @param {Direction}     direction   the direction of the last path/street
+ * @param {number}        distance    distance to walk down the street before turning
+ * @param {BuildingGraph} graph       building graph
+ * @returns {Step} the directions for a user to turn down a street
+ */
+function _turnDownStreet(
+    currentNode: Node,
+    nextNode: Node,
+    direction: Direction,
+    distance: number,
+    graph: BuildingGraph): Step {
+  const distanceInMetres = Math.round(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES) * TEN_METRES;
+  const translations = DirectionTranslations.translateTurnDownStreet(
+    currentNode,
+    nextNode,
+    direction,
+    distanceInMetres,
+    graph
+  );
 
-//   const dirString = (direction === Direction.Left) ? 'left' : 'right';
-//   const instruction = (missedStraightHalls === 0)
-//       ? `Walk to the end of the hall and turn ${dirString}`
-//       : `Turn down the ${TextUtils.getOrdinal(missedHalls + 1)} hallway on your ${dirString}`;
+  return {
+    description_en: Translations.getDescription('en', translations),
+    description_fr: Translations.getDescription('fr', translations),
+    key: `turnDownStreet_${currentNode}`,
+  };
+}
 
-//   // TODO: translate
-//   return `${language}: ${instruction}.`;
-// }
+/**
+ * Provides directions for a user to cross an intersection.
+ *
+ * @param {Node}          previousEdge     the current path/street being travelled down
+ * @param {Node}          intersectionNode the intersection to cross
+ * @param {Node}          nextEdge         the street/path after the intersection
+ * @param {number}        distance         distance travelled on current path to reach intersection
+ * @param {BuildingGraph} graph            the graph, for retrieving street names
+ * @returns {string[]} instructions for crossing an intersection
+ */
+function _crossIntersection(
+    previousEdge: Edge,
+    intersectionEdge: Edge,
+    nextEdge: Edge,
+    distance: number,
+    graph: BuildingGraph): Step[] {
+  const distanceInMetres = Math.round(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES) * TEN_METRES;
+  const turningDirection = _getTurningDirection(previousEdge.direction, intersectionEdge.direction);
+  const nextDirection = _getTurningDirection(intersectionEdge.direction, nextEdge.direction);
+  const translations = DirectionTranslations.translateCrossIntersection(
+    previousEdge,
+    intersectionEdge,
+    nextEdge,
+    turningDirection,
+    nextDirection,
+    distanceInMetres,
+    graph
+  );
 
-// /**
-//  * Creates directions to turn down a street outside.
-//  *
-//  * @param {Node}      streetNode     the current street being travelled down
-//  * @param {Node}      nextStreetNode the street to turn onto
-//  * @param {Direction} direction      the direction to turn
-//  * @param {number}    distance       distance to walk down the street before turning
-//  * @param {Language}  language       language to return direction in
-//  * @returns {string} the directions for a user to turn down a street
-//  */
-// function _turnDownStreet(
-//     streetNode: Node,
-//     nextStreetNode: Node,
-//     direction: Direction,
-//     distance: number,
-//     nodeInfo: Map<Node, any>,
-//     language: Language): string {
-//   if (direction !== Direction.Left && direction !== Direction.Right) {
-//     throw new Error(`Invalid turning direction: ${direction}`);
-//   }
+  const steps: Step[] = [];
+  for (let i = 0; i < translations.length; i++) {
+    steps.push({
+      description_en: Translations.getDescription('en', translations[i]),
+      description_fr: Translations.getDescription('fr', translations[i]),
+      key: `crossIntersection_${intersectionEdge.node}_${i}`,
+    });
+  }
 
-// 6 units is 10m
+  return steps;
+}
 
-//   const dirString = (direction === Direction.Left) ? 'left' : 'right';
-//   const streetName = _getNodeStreetName(streetNode, nodeInfo.get(streetNode), language);
-//   const nextStreetName = _getNodeStreetName(nextStreetNode, nodeInfo.get(nextStreetNode), language);
+/**
+ * Build step-by-step directions to travel along a path.
+ *
+ * @param {Path|undefined}            path     the path to follow
+ * @param {Map<string, BuildingGraph} graphs   graphs which the path was built from
+ * @returns {Step[]} a list of directions
+ */
+function _buildDirectionsFromPath(
+    path: Path | undefined,
+    graphs: Map<string, BuildingGraph>): Step[] {
+  if (path == undefined) {
+    throw new Error('Path is not defined');
+  }
 
-//   // TODO: translate
-//   return `${language}: Walk approximately ${distance}m along ${streetName}`
-//       + ` and turn ${dirString} onto ${nextStreetName}.`;
-// }
+  const directions: Step[] = [];
+  const totalEdges = path.edges.length;
 
-// /**
-//  * Build step-by-step directions to travel along a path.
-//  *
-//  * @param {Path}                      path     the path to follow
-//  * @param {Map<string, BuildingGraph} graphs   graphs which the path was built from
-//  * @param {Language}                  language language to return directions in
-//  * @returns {string[]} a list of directions
-//  */
-// function _buildDirectionsFromPath(path: Path, graphs: Map<string, BuildingGraph>, language: Language): string[] {
-//   const directions: string[] = [];
-//   const totalEdges = path.edges.length;
+  let missedLeftHalls = 0;
+  let missedRightHalls = 0;
+  let missedStraightHalls = 0;
+  let distanceToTravel = 0;
+  let passingThroughIntersection = false;
 
-//   let currentDirection: Direction | undefined;
-//   let missedLeftHalls = 0;
-//   let missedRightHalls = 0;
-//   let missedStraightHalls = 0;
-//   let distanceToTravel = 0;
-//   let passingThroughIntersection = false;
+  let currentNode = path.source;
+  let nextPath = path.edges[0];
+  let nextNextPath = path.edges[1];
 
-//   let currentNode = path.source;
-//   let nextPath = path.edges[0];
-//   let nextNextPath = path.edges[1];
+  // Initial directions, to exit starting room/building
+  switch (currentNode.getType()) {
+    case NodeType.Room:
+      directions.push(_exitRoom(currentNode, nextPath.direction, nextNextPath.direction));
+      break;
+    case NodeType.Door:
+      directions.push(_exitBuilding(currentNode, nextPath.direction, nextNextPath.direction));
+      break;
+    default:
+      throw new Error('Cannot provide directions from nodes which are not doors or rooms');
+  }
 
-//   directions.push(_exitRoom(currentNode, nextPath.direction, nextNextPath.direction, language));
-//   currentNode = nextPath.node;
+  currentNode = nextPath.node;
+  for (let i = 1; i < totalEdges - 1; i++) {
+    currentNode = path.edges[i - 1].node;
+    nextPath = path.edges[i];
+    nextNextPath = path.edges[i + 1];
 
-//   for (let i = 1; i < totalEdges - 1; i++) {
-//     currentNode = path.edges[i - 1].node;
-//     nextPath = path.edges[i];
-//     nextNextPath = path.edges[i + 1];
+    const nextDirection = _getTurningDirection(nextPath.direction, nextNextPath.direction);
 
-//     const nextDirection = _getTurningDirection(nextPath.direction, nextNextPath.direction);
+    // When going to the same node type, count various properties to report when changing directions
+    // or buildings/nodes
+    if (currentNode.getType() === nextPath.node.getType() || passingThroughIntersection) {
+      passingThroughIntersection = false;
+      switch (currentNode.getType()) {
 
-//     if (currentNode.getType() === nextPath.node.getType() || passingThroughIntersection) {
-//       passingThroughIntersection = false;
-//       switch (currentNode.getType()) {
-//         case NodeType.Hallway:
-//           if (nextDirection === currentDirection) {
-//             const skippedNode = nextPath.node;
-//             const adjacentEdges = graphs.get(skippedNode.getBuilding()).adjacencies.get(skippedNode);
-//             const missedHalls = _countMissedHalls(adjacentEdges, nextPath.direction);
-//             missedLeftHalls += missedHalls.l;
-//             missedRightHalls += missedHalls.r;
-//             missedStraightHalls += missedHalls.s;
-//           } else {
-//             let missedHalls: number;
-//             switch (nextDirection) {
-//               case Direction.Left: missedHalls = missedLeftHalls; break;
-//               case Direction.Right: missedHalls = missedRightHalls; break;
-//               default: throw new Error(`Invalid direction for turn: ${nextDirection}`);
-//             }
+        case NodeType.Hallway:
+          if (nextDirection === Direction.Straight) {
+            const skippedNode = nextPath.node;
+            const adjacentEdges = graphs.get(skippedNode.getBuilding()).adjacencies.get(skippedNode);
+            const missedHalls = _countMissedHalls(adjacentEdges, nextPath.direction);
+            missedLeftHalls += missedHalls.l;
+            missedRightHalls += missedHalls.r;
+            missedStraightHalls += missedHalls.s;
+          } else {
+            let missedHalls: number;
+            switch (nextDirection) {
+              case Direction.Left: missedHalls = missedLeftHalls; break;
+              case Direction.Right: missedHalls = missedRightHalls; break;
+              default: throw new Error(`Invalid direction for turn: ${nextDirection}`);
+            }
 
-//             directions.push(_turnDownNthHall(nextDirection, missedHalls, missedStraightHalls, language));
-//           }
-//           break;
-//         case NodeType.Path:
-//         case NodeType.Street:
-//           distanceToTravel += nextPath.distance;
-//           if (nextDirection !== currentDirection) {
-//             // streetNode: Node,
-//             // nextStreetNode: Node,
-//             // direction: Direction,
-//             // distance: number,
-//             // nodeInfo: Map<Node, any>,
-//             // language: Language)
-//             directions.push(
-//               _turnDownStreet(
-//                 nextDirection, distanceToTravel, language));
-//           }
-//           break;
-//         case NodeType.Intersection:
-//           directions.push(_crossIntersection(currentNode, nextPath.node));
-//           break;
-//         default:
-//           break;
-//       }
-//     } else {
-//       switch (nextPath.node.getType()) {
-//         case NodeType.Street:
-//         case NodeType.Path:
-//           // When entering a street or path, from a path or street, respectively
-//           if (currentNode.getType() === NodeType.Street || currentNode.getType() === NodeType.Path) {
+            directions.push(_turnDownNthHall(nextPath.node, nextDirection, missedHalls, missedStraightHalls));
+          }
+          break;
 
-//           } else {
-//             distanceToTravel += nextPath.distance;
-//           }
-//           break;
-//         case NodeType.Intersection:
-//           passingThroughIntersection = true;
-//           break;
-//         case NodeType.Door:
-//           if (currentNode.isOutside()) {
-//             for (const dir of _enterBuilding(
-//                 nextPath.node,
-//                 path.edges[i - 1].direction,
-//                 path.edges[i].direction,
-//                 path.edges[i + 1].direction,
-//                 path.edges[i + 2].direction,
-//                 language)) {
-//               directions.push(dir);
-//             }
-//           } else {
-//             directions.push(
-//               _exitBuilding(
-//                 nextPath.node,
-//                 path.edges[i + 1].direction,
-//                 path.edges[i + 2].direction,
-//                 language
-//               )
-//             );
-//           }
-//           break;
-//         case NodeType.Elevator:
-//         case NodeType.Stairs:
-//           for (const dir of _changeFloors(
-//               nextPath.node,
-//               path.edges[i + 1],
-//               path.edges[i + 2],
-//               language)) {
-//             directions.push(dir);
-//           }
-//           break;
-//         case NodeType.Room:
-//           directions.push(_enterRoom(path.edges[i - 1], nextPath, language));
-//           break;
-//         default:
-//           // Does nothing
-//       }
-//     }
+        case NodeType.Path:
+        case NodeType.Street:
+          let previousNode = currentNode;
+          if (currentNode.getType() === NodeType.Intersection) {
+            previousNode = path.edges[i - 2].node;
+          }
+          if (nextDirection !== Direction.Straight) {
+            directions.push(
+              _turnDownStreet(
+                previousNode,
+                nextPath.node,
+                nextDirection,
+                distanceToTravel,
+                graphs.get('OUT')
+              )
+            );
+            distanceToTravel = 0;
+          }
+          distanceToTravel += nextPath.distance;
+          break;
 
-//     currentDirection = nextDirection;
-//   }
+        case NodeType.Intersection:
+          for (const dir of _crossIntersection(
+              path.edges[i - 1],
+              nextPath,
+              nextNextPath,
+              distanceToTravel,
+              graphs.get('OUT'))) {
+            directions.push(dir);
+          }
+          break;
 
-//   return directions;
-// }
+        default:
+          // Does nothing
+      }
+    } else {
+      // When entering a new node type, report the steps
+      switch (nextPath.node.getType()) {
+
+        case NodeType.Street:
+        case NodeType.Path:
+          // When entering a street or path, from a path or street, respectively
+          if (currentNode.getType() === NodeType.Street || currentNode.getType() === NodeType.Path) {
+            directions.push(
+              _turnDownStreet(
+                currentNode,
+                nextPath.node,
+                nextDirection,
+                distanceToTravel,
+                graphs.get('OUT')
+              )
+            );
+            distanceToTravel = 0;
+          } else {
+            distanceToTravel += nextPath.distance;
+          }
+          break;
+
+        case NodeType.Intersection:
+          distanceToTravel += nextPath.distance;
+          passingThroughIntersection = true;
+          break;
+
+        case NodeType.Door:
+          if (currentNode.isOutside()) {
+            for (const dir of _enterBuilding(
+                currentNode,
+                nextPath.node,
+                path.edges[i - 1].direction,
+                path.edges[i].direction,
+                path.edges[i + 1].direction,
+                path.edges[i + 2].direction,
+                distanceToTravel,
+                graphs.get('OUT'))) {
+              directions.push(dir);
+            }
+            distanceToTravel = 0;
+          } else {
+            directions.push(
+              _exitBuilding(
+                nextPath.node,
+                path.edges[i + 1].direction,
+                path.edges[i + 2].direction
+              )
+            );
+          }
+          break;
+
+        case NodeType.Elevator:
+        case NodeType.Stairs:
+          for (const dir of _changeFloors(
+              nextPath.node,
+              path.edges[i + 1],
+              path.edges[i + 2])) {
+            directions.push(dir);
+          }
+          break;
+
+        case NodeType.Room:
+          directions.push(_enterRoom(path.edges[i - 1], nextPath));
+          break;
+
+        default:
+          // Does nothing
+      }
+    }
+  }
+
+  return directions;
+}
 
 /**
  * Get a list of steps to travel between two destinations.
@@ -584,7 +630,11 @@ export async function getDirectionsBetween(
     path = Navigation.getShortestPathAcross(startToExits, exitsToTarget, exitDistances, graphs, accessible);
   }
 
-  if (path == undefined) {
+  // Get English/French directions from the given path
+  let steps: Step[];
+  try {
+    steps = _buildDirectionsFromPath(path, graphs);
+  } catch (err) {
     const errorMessage = accessible ? 'no_accessible_path_found' : 'no_path_found';
 
     return {
@@ -606,27 +656,28 @@ export async function getDirectionsBetween(
   const startString = TextUtils.destinationToString(start);
   const targetString = TextUtils.destinationToString(target);
 
+  // Add starting point to beginning of directions
+  steps.unshift({
+    description: startString,
+    icon: {
+      class: 'material',
+      name: 'my-location',
+    },
+    key: `destination_${startString}`,
+  });
+
+  // Add ending point to end of directions
+  steps.push({
+    description: targetString,
+    icon: {
+      class: 'material',
+      name: 'place',
+    },
+    key: `target_${targetString}`,
+  });
+
   return {
     showReport: false,
-    steps: [
-      {
-        description: startString,
-        icon: {
-          class: 'material',
-          name: 'my-location',
-        },
-        key: `destination_${startString}`,
-      },
-      {
-        description: targetString,
-        icon: {
-          class: 'material',
-          name: 'place',
-        },
-        key: `target_${targetString}`,
-      },
-    ],
+    steps,
   };
-
-  // return _buildDirectionsFromPath(path, graphs, language);
 }

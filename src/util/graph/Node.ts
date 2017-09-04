@@ -72,7 +72,7 @@ export default class Node {
     this._building = building;
 
     // Get floor of the node by comparing it to available floors
-    if (this._type === Type.Room) {
+    if (this._type === Type.Room || this._type === Type.Hallway) {
       for (const format of formats.keys()) {
         if (!format.startsWith('floor')) {
           continue;
