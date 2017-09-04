@@ -171,8 +171,8 @@ export function translateExitRoom(room: Node, direction: Direction): Description
   return {
     description_en: `Exit ${getNodeTypeName(room.getType(), 'en')} ${room.getBuilding()} ${room.getName()}`
         + ` and ${turnEn.toLowerCase()}`,
-    description_fr: `Sortie ${getNodeTypeName(room.getType(), 'fr')} ${room.getBuilding()} ${room.getName()}`
-        + ` et ${turnFr.toLowerCase()}`,
+    description_fr: `Sortie ${getNodeTypeName(room.getType(), 'fr').toLowerCase()} ${room.getBuilding()}`
+        + ` ${room.getName()} et ${turnFr.toLowerCase()}`,
   };
 }
 
@@ -232,8 +232,8 @@ export function translateEnterBuilding(
     {
       description_en: `Enter ${door.getBuilding()} (through ${getNodeTypeName(door.getType(), 'en')}`
           + ` ${door.getName()}) and ${turnEn.toLowerCase()}`,
-      description_fr: `Entre dans ${door.getBuilding()} (à travers la ${getNodeTypeName(door.getType(), 'fr')}`
-          + ` ${door.getName()}) et ${turnFr.toLowerCase()}`,
+      description_fr: `Entre dans ${door.getBuilding()} (à travers la`
+          + ` ${getNodeTypeName(door.getType(), 'fr').toLowerCase()} ${door.getName()}) et ${turnFr.toLowerCase()}`,
     },
   ];
 }
@@ -261,7 +261,7 @@ export function translateExitBuilding(door: Node, direction: Direction): Descrip
   return {
     description_en: `Exit ${door.getBuilding()} (through ${getNodeTypeName(door.getType(), 'en')}`
         + ` ${door.getName()}) and ${turnEn.toLowerCase()}`,
-    description_fr: `Sortie ${door.getBuilding()} (à travers la ${getNodeTypeName(door.getType(), 'fr')}`
+    description_fr: `Sortie ${door.getBuilding()} (à travers la ${getNodeTypeName(door.getType(), 'fr').toLowerCase()}`
         + ` ${door.getName()}) et ${turnFr.toLowerCase()}`,
   };
 }
@@ -289,8 +289,8 @@ export function translateChangingFloors(node: Node, floorNode: Node, direction: 
       : `${getNodeTypeName(node.getType(), 'en')} ${node.getName()}`;
 
   const nodeNameFr = node.getType() === NodeType.Elevator
-      ? getNodeTypeName(node.getType(), 'fr')
-      : `${getNodeTypeName(node.getType(), 'fr')} ${node.getName()}`;
+      ? getNodeTypeName(node.getType(), 'fr').toLowerCase()
+      : `${getNodeTypeName(node.getType(), 'fr').toLowerCase()} ${node.getName()}`;
 
   return [
     {
