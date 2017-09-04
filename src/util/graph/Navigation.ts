@@ -64,7 +64,7 @@ export interface Edge {
   accessible: boolean;
 }
 
-/** Graph information for determing steps. */
+/** Graph information for determining steps. */
 export interface BuildingGraph {
   adjacencies: Map<Node, Edge[]>;
   excluded: Map<Node, Set<Node>>;

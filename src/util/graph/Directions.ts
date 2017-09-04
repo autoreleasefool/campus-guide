@@ -55,6 +55,16 @@ export enum Direction {
 const TEN_METRES = 10;
 
 /**
+ * Convert a distance to metres.
+ *
+ * @param {number} distance distance in generic units
+ * @returns {number} distance in metres
+ */
+function _distanceToMetres(distance: number): number {
+  return Math.min(Math.floor(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES), 1) * TEN_METRES;
+}
+
+/**
  * Given two directions of edges, will return the Direction one would have to turn to change from
  * one path to the other.
  *
@@ -90,7 +100,7 @@ function _getTurningDirection(firstDirection: EdgeDirection, secondDirection: Ed
  * Count the number of halls skipped when walking a certain direction down a hallway.
  *
  * @param {Edge[]}        adjacentEdges the edges being passed
- * @param {EdgeDirection} direction     the current traveling direction
+ * @param {EdgeDirection} direction     the current travelling direction
  * @returns {object} l, r, and s, representing the number of missed left, right and straight hallways
  */
 function _countMissedHalls(adjacentEdges: Edge[], direction: EdgeDirection): { l: number; r: number; s: number } {
@@ -191,7 +201,7 @@ function _enterBuilding(
     graph: BuildingGraph): Step[] {
   const passingDirection = _getTurningDirection(approachingDirection, doorDirection);
   const turningDirection = _getTurningDirection(enteredDirection, continuingDirection);
-  const distanceInMetres = Math.round(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES) * TEN_METRES;
+  const distanceInMetres = _distanceToMetres(distance);
 
   const translations = DirectionTranslations.translateEnterBuilding(
     passingDirection,
@@ -215,7 +225,7 @@ function _enterBuilding(
 }
 
 /**
- * Provides translated directions to exit a buildimng.
+ * Provides translated directions to exit a building.
  *
  * @param {Node}          door          the door of the building to exit
  * @param {EdgeDirection} exitDirection the facing direction from exiting the door
@@ -316,24 +326,27 @@ function _turnDownNthHall(
 /**
  * Creates directions to turn down a street outside.
  *
- * @param {Node}          currentNode the current path/street being travelled down
- * @param {Node}          nextNode    the path/street to turn onto
- * @param {Direction}     direction   the direction of the last path/street
- * @param {number}        distance    distance to walk down the street before turning
- * @param {BuildingGraph} graph       building graph
+ * @param {Node}          currentNode      the current path/street being travelled down
+ * @param {Node}          nextNode         the path/street to turn onto
+ * @param {EdgeDirection} currentDirection the direction of the last path/street
+ * @param {EdgeDirection} nextDirection    the direction of the next path/street
+ * @param {number}        distance         distance to walk down the street before turning
+ * @param {BuildingGraph} graph            building graph
  * @returns {Step} the directions for a user to turn down a street
  */
 function _turnDownStreet(
     currentNode: Node,
     nextNode: Node,
-    direction: Direction,
+    currentDirection: EdgeDirection,
+    nextDirection: EdgeDirection,
     distance: number,
     graph: BuildingGraph): Step {
-  const distanceInMetres = Math.round(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES) * TEN_METRES;
+  const turningDirection = _getTurningDirection(currentDirection, nextDirection);
+  const distanceInMetres = _distanceToMetres(distance);
   const translations = DirectionTranslations.translateTurnDownStreet(
     currentNode,
     nextNode,
-    direction,
+    turningDirection,
     distanceInMetres,
     graph
   );
@@ -361,7 +374,7 @@ function _crossIntersection(
     nextEdge: Edge,
     distance: number,
     graph: BuildingGraph): Step[] {
-  const distanceInMetres = Math.round(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES) * TEN_METRES;
+  const distanceInMetres = _distanceToMetres(distance);
   const turningDirection = _getTurningDirection(previousEdge.direction, intersectionEdge.direction);
   const nextDirection = _getTurningDirection(intersectionEdge.direction, nextEdge.direction);
   const translations = DirectionTranslations.translateCrossIntersection(
@@ -433,6 +446,11 @@ function _buildDirectionsFromPath(
 
     const nextDirection = _getTurningDirection(nextPath.direction, nextNextPath.direction);
 
+    if (nextNextPath.node.getType() === NodeType.Room) {
+      directions.push(_enterRoom(nextPath, nextNextPath));
+      break;
+    }
+
     // When going to the same node type, count various properties to report when changing directions
     // or buildings/nodes
     if (currentNode.getType() === nextPath.node.getType() || passingThroughIntersection) {
@@ -446,21 +464,33 @@ function _buildDirectionsFromPath(
             const missedHalls = _countMissedHalls(adjacentEdges, nextPath.direction);
             missedLeftHalls += missedHalls.l;
             missedRightHalls += missedHalls.r;
-            missedStraightHalls += missedHalls.s;
           } else {
-            let missedHalls: number;
+            const skippedNode = nextPath.node;
+            const adjacentEdges = graphs.get(skippedNode.getBuilding()).adjacencies.get(skippedNode);
+            const missedHalls = _countMissedHalls(adjacentEdges, nextPath.direction);
+            missedStraightHalls += missedHalls.s;
+
+            let relevantMissedHalls: number;
             switch (nextDirection) {
-              case Direction.Left: missedHalls = missedLeftHalls; break;
-              case Direction.Right: missedHalls = missedRightHalls; break;
+              case Direction.Left: relevantMissedHalls = missedLeftHalls; break;
+              case Direction.Right: relevantMissedHalls = missedRightHalls; break;
               default: throw new Error(`Invalid direction for turn: ${nextDirection}`);
             }
 
-            directions.push(_turnDownNthHall(nextPath.node, nextDirection, missedHalls, missedStraightHalls));
+            directions.push(_turnDownNthHall(nextPath.node, nextDirection, relevantMissedHalls, missedStraightHalls));
+            missedLeftHalls = 0;
+            missedRightHalls = 0;
+            missedStraightHalls = 0;
           }
           break;
 
         case NodeType.Path:
         case NodeType.Street:
+          if (nextNextPath.node.getType() === NodeType.Door) {
+            distanceToTravel += nextPath.distance;
+            break;
+          }
+
           let previousNode = currentNode;
           if (currentNode.getType() === NodeType.Intersection) {
             previousNode = path.edges[i - 2].node;
@@ -470,8 +500,9 @@ function _buildDirectionsFromPath(
               _turnDownStreet(
                 previousNode,
                 nextPath.node,
-                nextDirection,
-                distanceToTravel,
+                nextPath.direction,
+                nextNextPath.direction,
+                distanceToTravel + nextPath.distance,
                 graphs.get('OUT')
               )
             );
@@ -485,10 +516,11 @@ function _buildDirectionsFromPath(
               path.edges[i - 1],
               nextPath,
               nextNextPath,
-              distanceToTravel,
+              distanceToTravel + nextPath.distance,
               graphs.get('OUT'))) {
             directions.push(dir);
           }
+          distanceToTravel = 0;
           break;
 
         default:
@@ -500,18 +532,35 @@ function _buildDirectionsFromPath(
 
         case NodeType.Street:
         case NodeType.Path:
+          if (nextNextPath.node.getType() === NodeType.Door) {
+            distanceToTravel += nextPath.distance;
+            break;
+          }
+
           // When entering a street or path, from a path or street, respectively
           if (currentNode.getType() === NodeType.Street || currentNode.getType() === NodeType.Path) {
             directions.push(
               _turnDownStreet(
                 currentNode,
                 nextPath.node,
-                nextDirection,
-                distanceToTravel,
+                nextPath.direction,
+                nextNextPath.direction,
+                distanceToTravel + nextPath.distance,
                 graphs.get('OUT')
               )
             );
             distanceToTravel = 0;
+          } else if (currentNode.getType() === NodeType.Door) {
+            directions.push(
+              _turnDownStreet(
+                currentNode,
+                nextPath.node,
+                nextPath.direction,
+                nextNextPath.direction,
+                nextPath.distance,
+                graphs.get('OUT')
+              )
+            );
           } else {
             distanceToTravel += nextPath.distance;
           }
@@ -531,7 +580,7 @@ function _buildDirectionsFromPath(
                 path.edges[i].direction,
                 path.edges[i + 1].direction,
                 path.edges[i + 2].direction,
-                distanceToTravel,
+                distanceToTravel + nextPath.distance,
                 graphs.get('OUT'))) {
               directions.push(dir);
             }
@@ -555,10 +604,6 @@ function _buildDirectionsFromPath(
               path.edges[i + 2])) {
             directions.push(dir);
           }
-          break;
-
-        case NodeType.Room:
-          directions.push(_enterRoom(path.edges[i - 1], nextPath));
           break;
 
         default:

@@ -154,8 +154,10 @@ export function translateExitRoom(room: Node, direction: Direction): Description
   }
 
   return {
-    description_en: `Exit ${room.getName()} and ${turnEn.toLowerCase()}`,
-    description_fr: `Sortie ${room.getName()} et ${turnFr.toLowerCase()}`,
+    description_en: `Exit ${getNodeTypeName(room.getType(), 'en')} ${room.getBuilding()} ${room.getName()}`
+        + ` and ${turnEn.toLowerCase()}`,
+    description_fr: `Sortie ${getNodeTypeName(room.getType(), 'fr')} ${room.getBuilding()} ${room.getName()}`
+        + ` et ${turnFr.toLowerCase()}`,
   };
 }
 
@@ -195,13 +197,13 @@ export function translateEnterBuilding(
     default: throw new Error(`Invalid direction: ${turningDirection}`);
   }
 
-  const streetNameEn = outdoorNode.getType() === NodeType.Street ?
-      getNodeStreetName(outdoorNode, graph, 'en')
-      : _thisPath('en');
+  const streetNameEn = outdoorNode.getType() === NodeType.Street
+      ? getNodeStreetName(outdoorNode, graph, 'en')
+      : _thisPath('en').toLowerCase();
 
-  const streetNameFr = outdoorNode.getType() === NodeType.Street ?
-      getNodeStreetName(outdoorNode, graph, 'fr')
-      : _thisPath('fr');
+  const streetNameFr = outdoorNode.getType() === NodeType.Street
+      ? getNodeStreetName(outdoorNode, graph, 'fr')
+      : _thisPath('fr').toLowerCase();
 
   // TODO: translate
   return [
@@ -233,11 +235,14 @@ export function translateExitBuilding(door: Node, direction: Direction): Descrip
   let turnEn: string;
   let turnFr: string;
   switch (direction) {
-    case Direction.Left: turnEn = _turnLeft('en'); turnFr = _turnLeft('fr'); break;
-    case Direction.Right: turnEn = _turnRight('en'); turnFr = _turnRight('fr'); break;
-    case Direction.Straight: turnEn = _proceedStraight('en'); turnFr = _proceedStraight('fr'); break;
-    default: throw new Error(`Invalid direction: ${direction}`);
+    default: // TODO: Does nothing, this was causing an issue with telling users to turn, then walk X metres straight
+    // case Direction.Left: turnEn = _turnLeft('en'); turnFr = _turnLeft('fr'); break;
+    // case Direction.Right: turnEn = _turnRight('en'); turnFr = _turnRight('fr'); break;
+    // case Direction.Straight: turnEn = _proceedStraight('en'); turnFr = _proceedStraight('fr'); break;
+    // default: throw new Error(`Invalid direction: ${direction}`);
   }
+  turnEn = _proceedStraight('en');
+  turnFr = _proceedStraight('fr');
 
   return {
     description_en: `Exit ${door.getBuilding()} (through ${getNodeTypeName(door.getType(), 'en')}`
@@ -280,7 +285,7 @@ export function translateChangingFloors(node: Node, floorNode: Node, direction: 
     },
     {
       description_en: `Take ${nodeNameEn} to the ${TextUtils.getOrdinal(floorNode.getFloor(), 'en')} floor`,
-      description_fr: `Prendre l'${nodeNameEn} au ${TextUtils.getOrdinal(floorNode.getFloor(), 'fr')} étage`,
+      description_fr: `Prendre l'${nodeNameFr} au ${TextUtils.getOrdinal(floorNode.getFloor(), 'fr')} étage`,
     },
     {
       description_en: `Exit ${nodeNameEn} and ${turnEn.toLowerCase()}`,
@@ -309,8 +314,8 @@ export function translateEnterRoom(room: Node, direction: Direction): Descriptio
   return {
     description_en: `${getNodeTypeName(room.getType(), 'en')} ${room.getBuilding()} ${room.getName()}`
         + ` will be ${turnEn.toLowerCase()}`,
-    description_fr: `${getNodeTypeName(room.getType(), 'en')} ${room.getBuilding()} ${room.getName()}`
-        + ` sera ${turnEn.toLowerCase()}`,
+    description_fr: `${getNodeTypeName(room.getType(), 'fr')} ${room.getBuilding()} ${room.getName()}`
+        + ` sera ${turnFr.toLowerCase()}`,
   };
 }
 
@@ -389,23 +394,23 @@ export function translateTurnDownStreet(
       break;
     case NodeType.Path:
       nextStreetEn = (direction === Direction.Straight) ? _aPath('en').toLowerCase() : _thePath('en').toLowerCase();
-      nextStreetEn = (direction === Direction.Straight) ? _aPath('en').toLowerCase() : _thePath('en').toLowerCase();
+      nextStreetFr = (direction === Direction.Straight) ? _aPath('fr').toLowerCase() : _thePath('fr').toLowerCase();
       break;
     default: throw new Error(`Cannot turn down onto a node which is not a Street or a Path: ${nextNode.getType()}`);
   }
 
-  const streetNameEn = currentNode.getType() === NodeType.Street ?
-      getNodeStreetName(currentNode, graph, 'en')
-      : _thisPath('en');
-  const streetNameFr = currentNode.getType() === NodeType.Street ?
-      getNodeStreetName(currentNode, graph, 'fr')
-      : _thisPath('fr');
+  const streetNameEn = currentNode.getType() === NodeType.Street
+      ? getNodeStreetName(currentNode, graph, 'en')
+      : _thisPath('en').toLowerCase();
+  const streetNameFr = currentNode.getType() === NodeType.Street
+      ? getNodeStreetName(currentNode, graph, 'fr')
+      : _thisPath('fr').toLowerCase();
 
   return {
     description_en: `Walk approximately ${distanceInMetres}m along ${streetNameEn}, then`
-        + `${turnEn.toLowerCase()} ${nextStreetEn}`,
+        + ` ${turnEn.toLowerCase()} ${nextStreetEn}`,
     description_fr: `Marcher environ ${distanceInMetres}m le long de le ${streetNameFr}, puis`
-        + `${turnFr.toLowerCase()} ${nextStreetFr}`,
+        + ` ${turnFr.toLowerCase()} ${nextStreetFr}`,
   };
 }
 
