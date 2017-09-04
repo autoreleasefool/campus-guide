@@ -69,6 +69,21 @@ export function getNodeStreetName(node: Node, graph: BuildingGraph, language: La
   return graph.streets.get(nameId);
 }
 
+/**
+ * Contract word to preposition if the word begins with a vowel, or silent H.
+ *
+ * @param {string} preposition preposition to prepend
+ * @param {string} word        word to examine
+ * @returns {string} the properly contracted form
+ */
+function _prependFrenchPreposition(preposition: string, word: string): string {
+  if (word.match(/^h?(a|e|i|o|u|à|è|ì|ò|ù|á|é|í|ó|ú|â|ê|î|ô|û)/i)) {
+    return `${preposition.charAt(0)}'${word}`;
+  }
+
+  return word;
+}
+
 /** Get translation of 'Turn left' */
 function _turnLeft(language: Language): string {
   return language === 'en' ? 'Turn left' : 'Tournez à gauche';
@@ -202,14 +217,13 @@ export function translateEnterBuilding(
       : _thisPath('en').toLowerCase();
 
   const streetNameFr = outdoorNode.getType() === NodeType.Street
-      ? getNodeStreetName(outdoorNode, graph, 'fr')
+      ? _prependFrenchPreposition('la', getNodeStreetName(outdoorNode, graph, 'fr'))
       : _thisPath('fr').toLowerCase();
 
-  // TODO: translate
   return [
     {
       description_en: `Walk approximately ${distanceInMetres}m along ${streetNameEn}`,
-      description_fr: `Marcher environ ${distanceInMetres}m le long de le ${streetNameFr}`,
+      description_fr: `Marcher environ ${distanceInMetres}m le long de ${streetNameFr}`,
     },
     {
       description_en: `${door.getBuilding()} will be ${passingEn.toLowerCase()}`,
@@ -271,7 +285,7 @@ export function translateChangingFloors(node: Node, floorNode: Node, direction: 
   }
 
   const nodeNameEn = node.getType() === NodeType.Elevator
-      ? getNodeTypeName(node.getType(), 'en')
+      ? `the ${getNodeTypeName(node.getType(), 'en').toLowerCase()}`
       : `${getNodeTypeName(node.getType(), 'en')} ${node.getName()}`;
 
   const nodeNameFr = node.getType() === NodeType.Elevator
@@ -403,13 +417,13 @@ export function translateTurnDownStreet(
       ? getNodeStreetName(currentNode, graph, 'en')
       : _thisPath('en').toLowerCase();
   const streetNameFr = currentNode.getType() === NodeType.Street
-      ? getNodeStreetName(currentNode, graph, 'fr')
+      ? _prependFrenchPreposition('la', getNodeStreetName(currentNode, graph, 'fr'))
       : _thisPath('fr').toLowerCase();
 
   return {
     description_en: `Walk approximately ${distanceInMetres}m along ${streetNameEn}, then`
         + ` ${turnEn.toLowerCase()} ${nextStreetEn}`,
-    description_fr: `Marcher environ ${distanceInMetres}m le long de le ${streetNameFr}, puis`
+    description_fr: `Marcher environ ${distanceInMetres}m le long de ${streetNameFr}, puis`
         + ` ${turnFr.toLowerCase()} ${nextStreetFr}`,
   };
 }
@@ -442,11 +456,11 @@ export function translateCrossIntersection(
         ? getNodeStreetName(previousEdge.node, graph, 'en')
         : _thisPath('en').toLowerCase();
     const previousStreetFr = previousEdge.node.getType() === NodeType.Street
-        ? getNodeStreetName(previousEdge.node, graph, 'fr')
+        ? _prependFrenchPreposition('la', getNodeStreetName(previousEdge.node, graph, 'fr'))
         : _thisPath('fr').toLowerCase();
     translations.push({
       description_en: `Walk approximately ${distanceInMetres}m along ${previousStreetEn}`,
-      description_fr: `Marcher environ ${distanceInMetres}m le long de le ${previousStreetFr}`,
+      description_fr: `Marcher environ ${distanceInMetres}m le long de ${previousStreetFr}`,
     });
   }
 
@@ -477,10 +491,11 @@ export function translateCrossIntersection(
   /* tslint:enable no-magic-numbers */
 
   const streetNameEn = graph.streets.get(intersectionStreets[streetIndex].split(':')[0]);
-  const streetNameFr = graph.streets.get(intersectionStreets[streetIndex].split(':')[1]);
+  const streetNameFr = _prependFrenchPreposition('la',
+      graph.streets.get(intersectionStreets[streetIndex].split(':')[1]));
   translations.push({
     description_en: `${turnEn.toLowerCase()} and cross ${streetNameEn}`,
-    description_fr: `${turnFr.toLowerCase()} et traversez le ${streetNameFr}`,
+    description_fr: `${turnFr.toLowerCase()} et traversez ${streetNameFr}`,
   });
 
   // Determine which direction to turn onto the following path/street, or skip if the next node is an intersection
