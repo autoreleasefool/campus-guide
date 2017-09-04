@@ -89,8 +89,8 @@ class Steps extends React.PureComponent<Props, State> {
   }
 
   async _loadDirections(): Promise<void> {
-    const { accessible, destination, language, startingPoint }: Props = this.props;
-    const directionResults = await Directions.getDirectionsBetween(startingPoint, destination, accessible, language);
+    const { accessible, destination, startingPoint }: Props = this.props;
+    const directionResults = await Directions.getDirectionsBetween(startingPoint, destination, accessible);
     this.setState({
       showReport: directionResults.showReport,
       steps: directionResults.steps,

@@ -30,7 +30,6 @@ import * as TextUtils from '../TextUtils';
 import { Description, Icon } from '../../../typings/global';
 import { Destination } from '../../../typings/university';
 import { BuildingGraph, Edge, EdgeDirection, Path } from './Navigation';
-import { Language } from '../Translations';
 import { default as Node, Type as NodeType } from './Node';
 
 /** Information on step by step navigation. */
@@ -627,8 +626,7 @@ function _buildDirectionsFromPath(
 export async function getDirectionsBetween(
     start: Destination,
     target: Destination,
-    accessible: boolean,
-    language: Language): Promise<DirectionResults> {
+    accessible: boolean): Promise<DirectionResults> {
   // Get set of building graphs to request
   const buildingGraphRequests: Set<string> = new Set();
   buildingGraphRequests.add(start.shorthand);
@@ -653,7 +651,9 @@ export async function getDirectionsBetween(
 
   let path: Path;
   if (start.shorthand === target.shorthand) {
-    path = Navigation.findShortestPathBetween(startNode, targetNode, startGraph, accessible, false);
+    if (start.room != undefined) {
+      path = Navigation.findShortestPathBetween(startNode, targetNode, startGraph, accessible, false);
+    }
   } else {
     const startToExits = Navigation.findShortestPathsBetween(
       startNode,
@@ -686,8 +686,8 @@ export async function getDirectionsBetween(
       showReport: true,
       steps: [
         {
-          description_en: Translations.get(language, errorMessage),
-          description_fr: Translations.get(language, errorMessage),
+          description_en: Translations.get('en', errorMessage),
+          description_fr: Translations.get('fr', errorMessage),
           icon: {
             class: 'material',
             name: 'error',
