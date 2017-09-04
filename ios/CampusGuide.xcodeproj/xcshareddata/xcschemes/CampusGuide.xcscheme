@@ -29,7 +29,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "Campus Guide.app"
+               BuildableName = "CampusGuide.app"
                BlueprintName = "CampusGuide"
                ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
@@ -71,7 +71,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Campus Guide.app"
+            BuildableName = "CampusGuide.app"
             BlueprintName = "CampusGuide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
@@ -94,7 +94,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Campus Guide.app"
+            BuildableName = "CampusGuide.app"
             BlueprintName = "CampusGuide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
@@ -120,7 +120,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Campus Guide.app"
+            BuildableName = "CampusGuide.app"
             BlueprintName = "CampusGuide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
