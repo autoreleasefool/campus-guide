@@ -27,6 +27,7 @@ export enum Type {
   Elevator = 'E',
   Hallway = 'H',
   Intersection = 'I',
+  OutdoorSteps = 'O',
   Path = 'P',
   Room = 'R',
   Stairs = 'S',
