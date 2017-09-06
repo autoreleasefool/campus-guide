@@ -132,6 +132,18 @@ export default class Node {
   }
 
   /**
+   * Returns true if the node is accessible, or false if it is inaccessible.
+   */
+  isAccessible(): boolean {
+    switch (this.getType()) {
+      case Type.Stairs:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  /**
    * Return a string representation of this node.
    *
    * @returns {string} this node's formatted Id

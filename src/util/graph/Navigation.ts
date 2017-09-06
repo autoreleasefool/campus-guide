@@ -429,7 +429,7 @@ export function findShortestPathsBetween(
         continue;
       }
 
-      if ((accessible && (!neighbor.accessible || neighbor.node.getType() === NodeType.Stairs))
+      if ((accessible && !(neighbor.accessible || neighbor.node.isAccessible()))
           || graph.excluded.has(smallest.node) && graph.excluded.get(smallest.node).has(neighbor.node)) {
         // Skip non-accessible edges when the user wants an accessible route, and skip
         // routes which are closed.
