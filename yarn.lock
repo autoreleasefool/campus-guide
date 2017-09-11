@@ -3575,12 +3575,6 @@ react-native-fs@2.5.1:
     base-64 "^0.1.0"
     utf8 "^2.1.1"
 
-react-native-linear-gradient@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.3.0.tgz#757997197e35edf52e290891a11566e462845da1"
-  dependencies:
-    prop-types "^15.5.10"
-
 react-native-maps@0.16.2:
   version "0.16.2"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.16.2.tgz#5716cefd0fb4c3f326bc2281f02e873ebaa1f987"

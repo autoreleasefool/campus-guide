@@ -54,8 +54,6 @@ export interface ProgressUpdate {
   currentDownload?: string | undefined; // Name of file being downloaded
   filesDownloaded?: string[];           // Array of filenames downloaded
   intermediateProgress?: number;        // Updated progress of current download
-  showRetry?: boolean;                  // True to show retry button, false to hide
-  showUpdateProgress?: boolean;         // True to show progress bar, false to hide
   totalFiles?: number;                  // Total number of files to download
   totalProgress?: number;               // Total bytes downloaded
   totalSize?: number;                   // Total number of bytes across all files

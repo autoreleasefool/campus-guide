@@ -22,13 +22,10 @@
  */
 'use strict';
 
-/// <reference types="react-native-linear-gradient" />
-
 // React imports
 import React from 'react';
 import {
   Alert,
-  Dimensions,
   InteractionManager,
   NetInfo,
   Platform,
@@ -45,7 +42,6 @@ import * as actions from '../../actions';
 
 // Imports
 import emptyFunction from 'empty/function';
-import LinearGradient from 'react-native-linear-gradient';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 import * as RNFS from 'react-native-fs';
@@ -67,16 +63,15 @@ interface Props extends Configuration.ProgressUpdate {
   onDownloadStart(fileName: string): void;        // Updates state when a download begins
   onUpdateStart(totalFiles: number, totalSize: number): void;
                                                   // Updates state when the app update begins
-  retryUpdate(): void;                            // Hide the retry button
   setConfiguration(university: any, transit: TransitInfo): void;
                                                   // Update the app config data
-  updateFailed(): void;                           // Hides the progress bar to show a retry button
 }
 
-interface State {}
-
-// Height of te screen
-const screenHeight = Dimensions.get('window').height;
+interface State {
+  coreErrorMessage: string | undefined; // An error message, which appears in CoreTranslations
+  coreErrorTitle: string | undefined;   // An error message title, from CoreTranslations
+  showRetry: boolean;                   // True to show a retry button, false to hide
+}
 
 // Amount of time to wait before checking for connection, to ensure connection event listener is registered
 const CONNECTION_CHECK_TIMEOUT = 250;
@@ -87,6 +82,20 @@ const ProgressBar = (Platform.OS === 'android')
     : require('ProgressViewIOS');
 
 class UpdateScreen extends React.PureComponent<Props, State> {
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      coreErrorMessage: undefined,
+      coreErrorTitle: undefined,
+      showRetry: false,
+    };
+  }
 
   /**
    * Registers a listener for network connectivity.
@@ -205,7 +214,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * @returns {number} a value from 0 to 1
    */
   _getProgress(): number {
-    if (this.props.totalSize != undefined && this.props.totalSize > 0) {
+    if (!this.state.showRetry && this.props.totalSize != undefined && this.props.totalSize > 0) {
       return (this.props.totalProgress + this.props.intermediateProgress) / this.props.totalSize;
     }
 
@@ -221,6 +230,12 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     try {
       await Configuration.init();
       await Configuration.getConfig('/university.json');
+
+      this.setState({
+        coreErrorMessage: 'server_unavailable_config_available',
+        coreErrorTitle: 'server_unavailable',
+      });
+
       Alert.alert(
         CoreTranslations[language].server_unavailable,
         CoreTranslations[language].server_unavailable_config_available,
@@ -237,6 +252,11 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       );
       this._popOrPushToMain();
     } catch (err) {
+      this.setState({
+        coreErrorMessage: 'server_unavailable_config_unavailable',
+        coreErrorTitle: 'server_unavailable',
+      });
+
       Alert.alert(
         CoreTranslations[language].server_unavailable,
         CoreTranslations[language].server_unavailable_config_unavailable,
@@ -246,7 +266,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
             text: CoreTranslations[language].retry,
           },
           {
-            onPress: (): void => this.props.updateFailed(),
+            onPress: (): void => this.setState({ showRetry: true }),
             style: 'cancel',
             text: CoreTranslations[language].cancel,
           },
@@ -269,6 +289,12 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     try {
       await Configuration.init();
       await Configuration.getConfig('/university.json');
+
+      this.setState({
+        coreErrorMessage: 'no_internet_config_available',
+        coreErrorTitle: 'no_internet',
+      });
+
       Alert.alert(
         CoreTranslations[language].no_internet,
         CoreTranslations[language].no_internet_config_available,
@@ -285,6 +311,11 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       );
       this._popOrPushToMain();
     } catch (err) {
+      this.setState({
+        coreErrorMessage: 'no_internet_config_unavailable',
+        coreErrorTitle: 'no_internet',
+      });
+
       Alert.alert(
         CoreTranslations[language].no_internet,
         CoreTranslations[language].no_internet_config_unavailable,
@@ -294,7 +325,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
             text: CoreTranslations[language].retry,
           },
           {
-            onPress: (): void => this.props.updateFailed(),
+            onPress: (): void => this.setState({ showRetry: true }),
             style: 'cancel',
             text: CoreTranslations[language].cancel,
           },
@@ -315,6 +346,11 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       await Configuration.getConfig('/university.json');
       this._popOrPushToMain();
     } catch (err) {
+      this.setState({
+        coreErrorMessage: 'update_rejected_config_unavailable',
+        coreErrorTitle: 'update_rejected',
+      });
+
       Alert.alert(
         CoreTranslations[language].update_rejected,
         CoreTranslations[language].update_rejected_config_unavailable,
@@ -324,7 +360,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
             text: CoreTranslations[language].retry,
           },
           {
-            onPress: (): void => this.props.updateFailed(),
+            onPress: (): void => this.setState({ showRetry: true }),
             style: 'cancel',
             text: CoreTranslations[language].cancel,
           },
@@ -365,7 +401,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * Retry the update.
    */
   _retryUpdate(): void {
-    this.props.retryUpdate();
+    this.setState({ showRetry: false });
     InteractionManager.runAfterInteractions(() => this._checkConnection());
   }
 
@@ -415,11 +451,35 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   }
 
   /**
+   * Renders an error message for the user, and a retry button.
+   *
+   * @returns {JSX.Element} the hierarchy of views to render
+   */
+  _renderErrorScreen(): JSX.Element {
+    const language = this.props.language;
+
+    const errorTitle = CoreTranslations[language][this.state.coreErrorTitle];
+    const errorMessage = CoreTranslations[language][this.state.coreErrorMessage];
+
+    return (
+      <View style={_styles.buttonContainer}>
+        <Text style={_styles.errorTitle}>{errorTitle}</Text>
+        <Text style={_styles.errorMessage}>{errorMessage}</Text>
+        <TouchableOpacity onPress={(): void => this._retryUpdate()}>
+          <View style={_styles.retryContainer}>
+            <Text style={_styles.retryText}>{CoreTranslations[language].retry_update}</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  /**
    * Renders a set of messages regarding update progress so far.
    *
-   * @returns {JSX.Element|undefined} the hierarchy of views to render
+   * @returns {JSX.Element} the hierarchy of views to render
    */
-  _renderStatusMessages(): JSX.Element | undefined {
+  _renderStatusMessages(): JSX.Element {
     const language = this.props.language;
     const filesDownloaded = (this.props.filesDownloaded == undefined)
       ? undefined
@@ -458,57 +518,38 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     // Get background color for screen, and color for progress bar
     let backgroundColor = Constants.Colors.primaryBackground;
     let foregroundColor = Constants.Colors.secondaryBackground;
-    let gradient = [ Constants.Colors.invisibleGarnet, Constants.Colors.garnet ];
     if (language === 'fr') {
       backgroundColor = Constants.Colors.secondaryBackground;
       foregroundColor = Constants.Colors.primaryBackground;
-      gradient = [ Constants.Colors.invisibleCharcoalGrey, Constants.Colors.charcoalGrey ];
     }
 
-    if (this.props.showRetry) {
-      return (
-        <View style={[ _styles.buttonContainer, { backgroundColor }]}>
-          <TouchableOpacity onPress={(): void => this._retryUpdate()}>
-            <View style={_styles.retryContainer}>
-              <Text style={_styles.retryText}>{CoreTranslations[language].retry_update}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    } else if (this.props.showUpdateProgress) {
-      const progress = (Platform.OS === 'android')
-          ? (
-            <ProgressBar
-                indeterminate={false}
-                progress={this._getProgress()}
-                progressTintColor={foregroundColor}
-                style={_styles.progress}
-                styleAttr='Horizontal' />
-          )
-          : (
-            <ProgressBar
-                progress={this._getProgress()}
-                progressTintColor={foregroundColor}
-                style={_styles.progress} />
-          );
+    const progress = (Platform.OS === 'android')
+        ? (
+          <ProgressBar
+              indeterminate={false}
+              progress={this._getProgress()}
+              progressTintColor={foregroundColor}
+              style={_styles.progress}
+              styleAttr='Horizontal' />
+        )
+        : (
+          <ProgressBar
+              progress={this._getProgress()}
+              progressTintColor={foregroundColor}
+              style={_styles.progress} />
+        );
 
-      return (
-        <View style={[ _styles.container, { backgroundColor }]}>
-          <View style={_styles.container}>
-            <View style={_styles.container} />
-            {progress}
-          </View>
-          {this._renderStatusMessages()}
-          <LinearGradient
-              colors={gradient}
-              style={_styles.linearGradient} />
-        </View>
-      );
-    } else {
-      return (
+    return (
+      <View style={[ _styles.container, { backgroundColor }]}>
         <View style={_styles.container} />
-      );
-    }
+        {progress}
+        <View style={_styles.container}>
+          {this.state.showRetry
+              ? this._renderErrorScreen()
+              : this._renderStatusMessages()}
+        </View>
+      </View>
+    );
   }
 }
 
@@ -516,7 +557,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
 const _styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   container: {
     flex: 1,
@@ -529,18 +570,25 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  errorMessage: {
+    color: Constants.Colors.secondaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Regular,
+    textAlign: 'center',
+  },
+  errorTitle: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
+    marginLeft: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Regular,
+    marginTop: Constants.Sizes.Margins.Expanded,
+    textAlign: 'center',
+  },
   fileText: {
     color: Constants.Colors.lightGrey,
-  },
-  linearGradient: {
-    left: 0,
-    position: 'absolute',
-    right: 0,
-
-    /* tslint:disable no-magic-numbers object-literal-sort-keys */
-    top: screenHeight / 4 * 3 - 30,
-    bottom: screenHeight / 4 - 10,
-    /* tslint:enable no-magic-numbers object-literal-sort-keys */
   },
   progress: {
     marginLeft: Constants.Sizes.Margins.Expanded,
@@ -560,8 +608,8 @@ const _styles = StyleSheet.create({
   },
   scrollView: {
     alignItems: 'center',
-    flex: 3,
-    marginTop: Constants.Sizes.Margins.Regular,
+    flex: 1,
+    margin: Constants.Sizes.Margins.Expanded,
   },
 });
 
@@ -571,7 +619,6 @@ const mapStateToProps = (store: any): any => {
     intermediateProgress: store.config.update.intermediateProgress,
     language: store.config.options.language,
     showRetry: store.config.update.showRetry,
-    showUpdateProgress: store.config.update.showUpdateProgress,
     totalProgress: store.config.update.totalProgress,
     totalSize: store.config.update.totalSize,
     updateConfirmed: store.config.updateConfirmed,
@@ -595,13 +642,11 @@ const mapDispatchToProps = (dispatch: any): any => {
     onDownloadStart: (fileName: string): void => dispatch(actions.updateProgress({ currentDownload: fileName })),
     onUpdateStart: (totalFiles: number, totalSize: number): void => {
       dispatch(actions.updateProgress({
-        showUpdateProgress: true,
         totalFiles,
         totalProgress: 0,
         totalSize,
       }));
     },
-    retryUpdate: (): void => dispatch(actions.updateProgress( { showUpdateProgress: false, showRetry: false })),
     setConfiguration: (university: any, transitInfo: TransitInfo): void => dispatch(actions.updateConfiguration({
       semesters: university.semesters,
       transitInfo: {
@@ -616,7 +661,6 @@ const mapDispatchToProps = (dispatch: any): any => {
         name_fr: Translations.getFrenchName(university) || '',
       },
     })),
-    updateFailed: (): void => dispatch(actions.updateProgress({ showUpdateProgress: false, showRetry: true })),
   };
 };
 

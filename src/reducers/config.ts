@@ -52,8 +52,6 @@ const initialState: State = {
     currentDownload: undefined,
     filesDownloaded: [],
     intermediateProgress: 0,
-    showRetry: false,
-    showUpdateProgress: false,
     totalFiles: 0,
     totalProgress: 0,
     totalSize: 0,
