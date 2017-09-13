@@ -122,7 +122,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    *
    * @param {Props} props the props to filter with
    */
-  _filterRooms({ shorthand, filter, language, rooms }: Props): void {
+  _filterRooms({ shorthand, filter, rooms }: Props): void {
     // If configuration hasn't been loaded, don't filter
     if (this._roomTypes == undefined || this._roomTypeIds == undefined) {
       return;
@@ -137,7 +137,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
     // Cache list of room types that match the search terms
     const matchingRoomTypes = new Set();
     this._roomTypeIds.forEach((id: string) => {
-      const name = Translations.getName(language, this._roomTypes[id]);
+      const name = Translations.getName(this._roomTypes[id]);
       if (adjustedFilter.length === 0 || (name && name.toUpperCase().indexOf(adjustedFilter) >= 0)) {
         matchingRoomTypes.add(id);
       }
@@ -154,7 +154,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
       }
 
       if (!matches) {
-        const result = filterRoom(language, adjustedFilter, matchingRoomTypes, shorthand, room);
+        const result = filterRoom(adjustedFilter, matchingRoomTypes, shorthand, room);
         matches = result.success;
       }
 
@@ -200,7 +200,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
       );
     }
 
-    const altName = Translations.getVariant(this.props.language, 'alt_name', item);
+    const altName = Translations.getVariant('alt_name', item);
 
     return (
       <TouchableOpacity onPress={(): void => this.props.onSelect(this.props.shorthand, item.name)}>
@@ -210,7 +210,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
             {altName ? <Text style={_styles.roomType}>{altName}</Text> : undefined}
             <Text style={_styles.roomName}>{`${this.props.shorthand} ${item.name}`}</Text>
             <Text style={_styles.roomType}>
-              {Translations.getName(this.props.language, roomType)}
+              {Translations.getName(roomType)}
             </Text>
           </View>
         </View>

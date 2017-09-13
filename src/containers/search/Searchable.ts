@@ -27,7 +27,6 @@ import * as Arrays from '../../util/Arrays';
 
 // Types
 import { SearchSupport } from '../../util/Search';
-import { Language } from '../../util/Translations';
 import { Icon, Section } from '../../../typings/global';
 
 /** Defines the information provided by a search result. */
@@ -71,7 +70,6 @@ function _getSources(): any[] {
  *                            with each result naming its source.
  */
 export function getResults(
-    language: Language,
     searchTerms: string,
     supportData: SearchSupport | undefined): Promise<any> {
   return new Promise((resolve: (r: ResultData) => void, reject: (err: any) => void): void => {
@@ -86,10 +84,10 @@ export function getResults(
     for (const source of sources) {
       sourceIcons = {
         ...sourceIcons,
-        ...source.getResultIcons(language),
+        ...source.getResultIcons(),
       };
 
-      sourcePromises.push(source.getResults(language, searchTerms, supportData));
+      sourcePromises.push(source.getResults(searchTerms, supportData));
     }
 
     Promise.all(sourcePromises)

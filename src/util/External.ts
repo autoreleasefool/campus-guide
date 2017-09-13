@@ -25,13 +25,10 @@
 // Imports
 import * as Translations from './Translations';
 
-import { Language } from './Translations';
-
 /**
  * Opens a URL if the URL is valid.
  *
  * @param {string|undefined} url       URL to open
- * @param {Language}         language  user's selected language
  * @param {any}              Linking   an instance of the React Native Linking class
  * @param {any}              Alert     an instance of the React Native Alert class
  * @param {any}              Clipboard an instance of the React Native Clipboard class
@@ -39,7 +36,6 @@ import { Language } from './Translations';
  * @returns {Promise<void>} a promise indicating the result of whether the link was opened
  */
 export async function openLink(url: string | undefined,
-                         language: Language,
                          Linking: any,
                          Alert: any,
                          Clipboard: any,
@@ -51,13 +47,13 @@ export async function openLink(url: string | undefined,
     Linking.openURL(url);
   } else {
     Alert.alert(
-      Translations.get(language, 'cannot_open_url'),
+      Translations.get('cannot_open_url'),
       formattedUrl,
       [
-        { text: Translations.get(language, 'cancel'), style: 'cancel' },
+        { text: Translations.get('cancel'), style: 'cancel' },
         {
           onPress: (): void => Clipboard.setString(formattedUrl),
-          text: Translations.get(language, 'copy_link'),
+          text: Translations.get('copy_link'),
         },
       ]
     );

@@ -79,13 +79,13 @@ class ByCourseSchedule extends React.PureComponent<Props, State> {
     return (
       <View key={course.code}>
         <Header
-            subtitle={Translations.get(this.props.language, 'edit')}
+            subtitle={Translations.get('edit')}
             subtitleCallback={(): void => this._handleEditCourse(course)}
             title={course.code} />
         {this.props.lectureFormats.map((format: LectureFormat, index: number) => {
           const lectures = course.lectures.filter((lecture: Lecture) => lecture.format === index);
           if (lectures.length > 0) {
-            const formatName = Translations.getName(this.props.language, format) || '';
+            const formatName = Translations.getName(format) || '';
 
             return (
               <View key={formatName}>
@@ -116,7 +116,7 @@ class ByCourseSchedule extends React.PureComponent<Props, State> {
       <View key={`${lecture.day} - ${lecture.startTime}`}>
         <View style={_styles.lectureContainer}>
           <Text style={[ _styles.lectureText, _styles.lectureTextLeft ]}>
-            {Constants.Days[this.props.language][lecture.day]}
+            {Constants.Days[Translations.getLanguage()][lecture.day]}
           </Text>
           <Text style={[ _styles.lectureText, _styles.lectureTextInner ]}>
             {TextUtils.getFormattedTimeSinceMidnight(lecture.startTime, this.props.timeFormat)}

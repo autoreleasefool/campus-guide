@@ -141,7 +141,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
    *
    * @param {Props} props the props to use to filter
    */
-  _filterStudySpots({ activeFilters, filter, language, spots }: Props): void {
+  _filterStudySpots({ activeFilters, filter, spots }: Props): void {
     // Ignore the case of the search terms
     const adjustedFilter = (filter.length === 0) ? undefined : filter.toUpperCase();
 
@@ -153,7 +153,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
         return;
       }
 
-      if (!adjustedFilter || filterStudySpot(language, adjustedFilter, studySpot).success) {
+      if (!adjustedFilter || filterStudySpot(adjustedFilter, studySpot).success) {
         filteredSpots.push(studySpot);
       }
     });
@@ -162,15 +162,15 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
   }
 
   /**
-   * Displays a spots's name, image and description.
+   * Displays a spot's name, image and description.
    *
    * @param {StudySpot} spot information about the study spot to display
    * @returns {JSX.Element} an image and views describing the spot
    */
   _renderItem({ item }: { item: StudySpot }): JSX.Element {
-    const altName = Translations.getName(this.props.language, item);
+    const altName = Translations.getName(item);
     const name = `${item.building} ${item.room ? item.room : ''}`;
-    const description = Translations.getDescription(this.props.language, item) || '';
+    const description = Translations.getDescription(item) || '';
 
     const openingTime = TIME_UNAVAILABLE_REGEX.test(item.opens)
         ? item.opens

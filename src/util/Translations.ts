@@ -38,16 +38,19 @@ const translations = {
 // Core translations
 const CoreTranslations = require('../../assets/json/CoreTranslations');
 
+// The current language of the application
+let defaultLanguage: Language;
+
 /**
  * Loads and parses a set of translations from the downloaded configuration.
  *
- * @param {Language} language the set of translations to load
+ * @param {Language} lang the set of translations to load
  * @returns {Promise<any>} a promise that resolves with the translations when they have been loaded
  */
-async function _loadTranslations(language: Language): Promise<any> {
+async function _loadTranslations(lang: Language): Promise<any> {
   // If the language is already loaded,
-  if (translations[language] != undefined) {
-    return translations[language];
+  if (translations[lang] != undefined) {
+    return translations[lang];
   }
 
   // Check for the configuration
@@ -60,12 +63,12 @@ async function _loadTranslations(language: Language): Promise<any> {
 
   // Get the current translations
   try {
-    translations[language] = await Configuration.getConfig(`/translations.${language}.json`);
+    translations[lang] = await Configuration.getConfig(`/translations.${lang}.json`);
   } catch (e) {
     throw e;
   }
 
-  return translations[language];
+  return translations[lang];
 }
 
 /**
@@ -117,12 +120,15 @@ export function getEnglishVariant(property: string, obj: object | undefined): st
 /**
  * Gets either the French or English translation of a property from an object, or undefined.
  *
- * @param {Language}         language either 'en' or 'fr'
  * @param {string}           property the property to retrieve appropriate translation of
  * @param {object|undefined} obj      the object to get the translation from
+ * @param {Language}         language override the default language set by the user
  * @returns {string|undefined} the French or English translation of the property in the object, or undefined
  */
-export function getVariant(language: Language, property: string, obj: object | undefined): string | undefined {
+export function getVariant(
+    property: string,
+    obj: object | undefined,
+    language: Language = defaultLanguage): string | undefined {
   if (language === 'en') {
     return getEnglishVariant(property, obj);
   } else if (language === 'fr') {
@@ -157,11 +163,11 @@ export function getEnglishDescription(obj: object | undefined): string | undefin
 /**
  * Gets either the French or English description from an object, or undefined.
  *
- * @param {Language} language either 'en' or 'fr'
- * @param {object|undefined} obj       the object to get the description from
+ * @param {object|undefined} obj      the object to get the description from
+ * @param {Language}         language override the default language set by the user
  * @returns {string|undefined} the French or English description of the object, or undefined
  */
-export function getDescription(language: Language, obj: object | undefined): string | undefined {
+export function getDescription(obj: object | undefined, language: Language = defaultLanguage): string | undefined {
   if (language === 'en') {
     return getEnglishDescription(obj);
   } else if (language === 'fr') {
@@ -196,11 +202,11 @@ export function getEnglishLink(obj: object | undefined): string | undefined {
 /**
  * Gets either the French or English link from an object, or undefined.
  *
- * @param {Language} language either 'en' or 'fr'
- * @param {object|undefined} obj       the object to get the link from
+ * @param {object|undefined} obj      the object to get the link from
+ * @param {Language}         language override the default language set by the user
  * @returns {string|undefined} the French or English link of the object, or undefined
  */
-export function getLink(language: Language, obj: object | undefined): string | undefined {
+export function getLink(obj: object | undefined, language: Language = defaultLanguage): string | undefined {
   if (language === 'en') {
     return getEnglishLink(obj);
   } else if (language === 'fr') {
@@ -233,11 +239,11 @@ export function getEnglishName(obj: object | undefined): string | undefined {
 /**
  * Gets either the French or English name from an object, or undefined.
  *
- * @param {Language} language either 'en' or 'fr'
- * @param {object|undefined} obj       the object to get the name from
+ * @param {object|undefined} obj      the object to get the name from
+ * @param {Language}         language override the default language set by the user
  * @returns {string|undefined} the French or English name of the object, or undefined
  */
-export function getName(language: Language, obj: object | undefined): string | undefined {
+export function getName(obj: object | undefined, language: Language = defaultLanguage): string | undefined {
   if (language === 'en') {
     return getEnglishName(obj);
   } else if (language === 'fr') {
@@ -250,11 +256,11 @@ export function getName(language: Language, obj: object | undefined): string | u
 /**
  * Gets the translation of a certain string.
  *
- * @param {Language} language the language to get the translation in
  * @param {string}   property the string to get the translation of
+ * @param {Language} language override the default language set by the user
  * @returns {string} the translated string, or any empty string if the translation is not available
  */
-export function get(language: Language, property: string): string {
+export function get(property: string, language: Language = defaultLanguage): string {
   if (CoreTranslations[language] != undefined
       && CoreTranslations[language][property] != undefined) {
     return CoreTranslations[language][property];
@@ -268,33 +274,51 @@ export function get(language: Language, property: string): string {
 /**
  * Loads and parses a set of translations from the downloaded configuration.
  *
- * @param {Language} language the set of translations to load
+ * @param {Language} lang the set of translations to load
  * @returns {Promise<any>} a promise that resolves with the translations when they have been loaded
  */
-export function loadTranslations(language: Language): Promise<any> {
-  return _loadTranslations(language);
+export function loadTranslations(lang: Language): Promise<any> {
+  return _loadTranslations(lang);
 }
 
 /**
  * Removes a loaded set of translations.
  *
- * @param {Language} language the set of translations to unload
+ * @param {Language} lang the set of translations to unload
  */
-export function unloadTranslations(language: Language): void {
-  translations[language] = undefined;
+export function unloadTranslations(lang: Language): void {
+  translations[lang] = undefined;
+}
+
+/**
+ * Update the current language used by the app.
+ *
+ * @param {Language} newLanguage new language to set
+ */
+export function setLanguage(newLanguage: Language): void {
+  defaultLanguage = newLanguage;
+}
+
+/**
+ * Get the current language specified by the user.
+ *
+ * @returns {Language} the current language
+ */
+export function getLanguage(): Language {
+  return defaultLanguage;
 }
 
 /**
  * Retrieves a set of translations, or an empty object if the set was not loaded.
  * Only available in testing.
  *
- * @param {Language} language the set of translations to retrieve
+ * @param {Language} lang the set of translations to retrieve
  * @returns {any} a set of translations, or an empty object
  */
-export function getTranslations(language: Language): any {
-  if (translations[language] == undefined) {
+export function getTranslations(lang: Language): any {
+  if (translations[lang] == undefined) {
     return {};
   } else {
-    return translations[language];
+    return translations[lang];
   }
 }

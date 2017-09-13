@@ -38,14 +38,14 @@ import { default as Node, Type as NodeType } from './Node';
  */
 export function getNodeTypeName(type: NodeType, language: Language): string {
   switch (type) {
-    case NodeType.Door: return Translations.get(language, 'door');
-    case NodeType.Room: return Translations.get(language, 'room');
-    case NodeType.Stairs: return Translations.get(language, 'staircase');
-    case NodeType.Elevator: return Translations.get(language, 'elevator');
-    case NodeType.Hallway: return Translations.get(language, 'hallway');
-    case NodeType.Street: return Translations.get(language, 'street');
-    case NodeType.Path: return Translations.get(language, 'path');
-    case NodeType.Intersection: return Translations.get(language, 'intersection');
+    case NodeType.Door: return Translations.get('door', language);
+    case NodeType.Room: return Translations.get('room', language);
+    case NodeType.Stairs: return Translations.get('staircase', language);
+    case NodeType.Elevator: return Translations.get('elevator', language);
+    case NodeType.Hallway: return Translations.get('hallway', language);
+    case NodeType.Street: return Translations.get('street', language);
+    case NodeType.Path: return Translations.get('path', language);
+    case NodeType.Intersection: return Translations.get('intersection', language);
     default: throw new Error(`Invalid node type: ${type}`);
   }
 }

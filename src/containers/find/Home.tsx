@@ -82,7 +82,7 @@ class FindHome extends React.PureComponent<Props, State> {
         <View style={_styles.headerContainer}>
           <Header
               icon={{ name: 'store', class: 'material' }}
-              title={Translations.get(this.props.language, 'building_directory')} />
+              title={Translations.get('building_directory')} />
         </View>
         <View style={_styles.container}>
           <ImageGrid

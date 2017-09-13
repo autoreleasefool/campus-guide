@@ -174,12 +174,11 @@ class Transit extends React.PureComponent<Props, State> {
    */
   _openLink(): void {
     const link = this.props.transitInfo
-        ? Translations.getLink(this.props.language, this.props.transitInfo)
+        ? Translations.getLink(this.props.transitInfo)
         : External.getDefaultLink();
 
     External.openLink(
         link,
-        this.props.language,
         Linking,
         Alert,
         Clipboard,
@@ -234,7 +233,7 @@ class Transit extends React.PureComponent<Props, State> {
           <Header
               icon={{ name: 'md-open', class: 'ionicon' }}
               subtitleIcon={{ name: 'chevron-right', class: 'material' }}
-              title={Translations.get(this.props.language, 'transit_company')} />
+              title={Translations.get('transit_company')} />
         </TouchableOpacity>
       </View>
     );

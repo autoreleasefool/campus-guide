@@ -186,14 +186,14 @@ class CourseModal extends React.PureComponent<Props, State> {
   _handleDeleteCourse(): void {
     const courseCode = this.state.code.length > 0
         ? this.state.code
-        : Translations.get(this.props.language, 'course').toLowerCase();
+        : Translations.get('course').toLowerCase();
 
     Alert.alert(
-      `${Translations.get(this.props.language, 'delete')} ${courseCode}?`,
-      Translations.get(this.props.language, 'cannot_be_undone_confirmation'),
+      `${Translations.get('delete')} ${courseCode}?`,
+      Translations.get('cannot_be_undone_confirmation'),
       [
-        { text: Translations.get(this.props.language, 'cancel'), style: 'cancel' },
-        { text: Translations.get(this.props.language, 'delete'), onPress: (): void => this._close(false) },
+        { text: Translations.get('cancel'), style: 'cancel' },
+        { text: Translations.get('delete'), onPress: (): void => this._close(false) },
       ],
       { cancelable: false }
     );
@@ -206,11 +206,11 @@ class CourseModal extends React.PureComponent<Props, State> {
    */
   _handleDeleteLecture(lecture: Lecture): void {
     Alert.alert(
-      `${Translations.get(this.props.language, 'delete')} ${this.props.lectureFormats[lecture.format].code}?`,
-      Translations.get(this.props.language, 'cannot_be_undone_confirmation'),
+      `${Translations.get('delete')} ${this.props.lectureFormats[lecture.format].code}?`,
+      Translations.get('cannot_be_undone_confirmation'),
       [
-        { text: Translations.get(this.props.language, 'cancel'), style: 'cancel' },
-        { text: Translations.get(this.props.language, 'delete'), onPress: (): void => this._deleteLecture(lecture) },
+        { text: Translations.get('cancel'), style: 'cancel' },
+        { text: Translations.get('delete'), onPress: (): void => this._deleteLecture(lecture) },
       ],
       { cancelable: false }
     );
@@ -340,7 +340,7 @@ class CourseModal extends React.PureComponent<Props, State> {
         <View style={_styles.lectureContainer}>
           <View style={{ flex: 3 }}>
             <Text style={[ _styles.lectureText, _styles.lectureTextLeft ]}>
-              {Constants.Days[this.props.language][lecture.day]}
+              {Constants.Days[Translations.getLanguage()][lecture.day]}
             </Text>
           </View>
           <View style={{ flex: 2 }}>
@@ -368,10 +368,9 @@ class CourseModal extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the hierarchy of views to render
    */
   _renderMenu(): JSX.Element {
-    const language = this.props.language;
     const semesterId = this.props.semesters[this.state.semester].id;
     const semester = this.props.schedule[semesterId];
-    const semesterName = Translations.getName(language, semester) || '';
+    const semesterName = Translations.getName(semester) || '';
 
     return (
       <View style={{ flex: 1 }}>
@@ -381,10 +380,10 @@ class CourseModal extends React.PureComponent<Props, State> {
                 largeSubtitle={true}
                 subtitle={semesterName}
                 subtitleIcon={{ class: 'material', name: 'chevron-right' }}
-                title={Translations.get(language, 'semester')} />
+                title={Translations.get('semester')} />
           </TouchableOpacity>
           <View style={_styles.menuItemSeparator} />
-          <Header title={Translations.get(language, 'course_code')} />
+          <Header title={Translations.get('course_code')} />
           <TextInput
               autoCapitalize={'characters'}
               returnKeyType={'done'}
@@ -395,14 +394,14 @@ class CourseModal extends React.PureComponent<Props, State> {
                 rightActionEnabled: this._isCourseCodeValid(semester, code, this.state.lectures) })} />
           <Header
               subtitle={this.state.editingLectures
-                ? Translations.get(language, 'cancel')
-                : Translations.get(language, 'edit')}
+                ? Translations.get('cancel')
+                : Translations.get('edit')}
               subtitleCallback={this._toggleLectureEditOptions.bind(this)}
-              title={Translations.get(language, 'sessions')} />
+              title={Translations.get('sessions')} />
           {this.props.lectureFormats.map((format: LectureFormat, index: number) => {
             const lectures = this.state.lectures.filter((lecture: Lecture) => lecture.format === index);
             if (lectures.length > 0) {
-              const formatName = Translations.getName(language, format) || '';
+              const formatName = Translations.getName(format) || '';
 
               return (
                 <View key={formatName}>
@@ -419,12 +418,12 @@ class CourseModal extends React.PureComponent<Props, State> {
           })}
           <TouchableOpacity onPress={(): void => this._showLectureModal(true)}>
             <View style={_styles.button}>
-              <Text style={_styles.buttonText}>{Translations.get(language, 'add_lecture')}</Text>
+              <Text style={_styles.buttonText}>{Translations.get('add_lecture')}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._handleDeleteCourse.bind(this)}>
             <View style={_styles.button}>
-              <Text style={_styles.buttonText}>{Translations.get(language, 'delete_course')}</Text>
+              <Text style={_styles.buttonText}>{Translations.get('delete_course')}</Text>
             </View>
           </TouchableOpacity>
         </ScrollView>
@@ -446,16 +445,16 @@ class CourseModal extends React.PureComponent<Props, State> {
         <TouchableOpacity onPress={(): void => (this.refs.Navigator as any).pop()}>
           <Header
               icon={{ name: backArrowIcon, class: 'ionicon' }}
-              title={Translations.get(this.props.language, 'semester')} />
+              title={Translations.get('semester')} />
         </TouchableOpacity>
         <Picker
             itemStyle={_styles.pickerItem}
-            prompt={Translations.get(this.props.language, 'semester')}
+            prompt={Translations.get('semester')}
             selectedValue={this.state.semester}
             style={_styles.pickerContainer}
             onValueChange={(semester: number): void => this.setState({ semester })}>
           {this.props.semesters.map((semester: Semester, index: number) => {
-            const name = Translations.getName(this.props.language, semester);
+            const name = Translations.getName(semester);
 
             return (
               <Picker.Item
@@ -519,10 +518,10 @@ class CourseModal extends React.PureComponent<Props, State> {
         </Modal>
         <ModalHeader
             leftActionEnabled={true}
-            leftActionText={Translations.get(this.props.language, 'cancel')}
+            leftActionText={Translations.get('cancel')}
             rightActionEnabled={this.state.rightActionEnabled}
-            rightActionText={Translations.get(this.props.language, modalRightAction)}
-            title={Translations.get(this.props.language, modalTitle)}
+            rightActionText={Translations.get(modalRightAction)}
+            title={Translations.get(modalTitle)}
             onLeftAction={(): void => this._close(true)}
             onRightAction={(): void =>
               this._saveCourse(this.state.semester, { code: this.state.code, lectures: this.state.lectures })} />

@@ -122,7 +122,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    * @returns {string} the key
    */
   _imageNameExtractor(image: GridImage, index: number): string {
-    return image.shorthand || Translations.getName(this.props.language, image) || index.toString();
+    return image.shorthand || Translations.getName(image) || index.toString();
   }
 
   /**
@@ -130,7 +130,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    *
    * @param {Props} props the props to filter with
    */
-  _filterImages({ language, images, filter }: Props): void {
+  _filterImages({ images, filter }: Props): void {
     // Ignore the case of the search terms
     const adjustedFilter = (filter.length === 0) ? undefined : filter.toUpperCase();
 
@@ -143,7 +143,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
       if (!adjustedFilter || this.state.selected.has(image)) {
         matches = true;
       } else {
-        const result = filterGridImage(language, adjustedFilter, image);
+        const result = filterGridImage(adjustedFilter, image);
         matches = result.success;
       }
 

@@ -170,8 +170,8 @@ function _exitRoom(
   const translations = DirectionTranslations.translateExitRoom(room, turningDirection);
 
   return {
-    description_en: Translations.getDescription('en', translations),
-    description_fr: Translations.getDescription('fr', translations),
+    description_en: Translations.getDescription(translations, 'en'),
+    description_fr: Translations.getDescription(translations, 'fr'),
     key: `exitRoom_${room}`,
   };
 }
@@ -214,8 +214,8 @@ function _enterBuilding(
   const steps: Step[] = [];
   for (let i = 0; i < translations.length; i++) {
     steps.push({
-      description_en: Translations.getDescription('en', translations[i]),
-      description_fr: Translations.getDescription('fr', translations[i]),
+      description_en: Translations.getDescription(translations[i], 'en'),
+      description_fr: Translations.getDescription(translations[i], 'fr'),
       key: `enterBuilding_${door}_${i}`,
     });
   }
@@ -239,8 +239,8 @@ function _exitBuilding(
   const translations = DirectionTranslations.translateExitBuilding(door, turningDirection);
 
   return {
-    description_en: Translations.getDescription('en', translations),
-    description_fr: Translations.getDescription('fr', translations),
+    description_en: Translations.getDescription(translations, 'en'),
+    description_fr: Translations.getDescription(translations, 'fr'),
     key: `exitBuilding_${door}`,
   };
 }
@@ -264,8 +264,8 @@ function _changeFloors(
   const steps: Step[] = [];
   for (let i = 0; i < translations.length; i++) {
     steps.push({
-      description_en: Translations.getDescription('en', translations[i]),
-      description_fr: Translations.getDescription('fr', translations[i]),
+      description_en: Translations.getDescription(translations[i], 'en'),
+      description_fr: Translations.getDescription(translations[i], 'fr'),
       key: `changeFloor_${node}_${i}`,
     });
   }
@@ -285,8 +285,8 @@ function _enterRoom(previousEdge: Edge, roomEdge: Edge): Step {
   const translations = DirectionTranslations.translateEnterRoom(roomEdge.node, turningDirection);
 
   return {
-    description_en: Translations.getDescription('en', translations),
-    description_fr: Translations.getDescription('fr', translations),
+    description_en: Translations.getDescription(translations, 'en'),
+    description_fr: Translations.getDescription(translations, 'fr'),
     key: `enterRoom_${roomEdge.node}`,
   };
 }
@@ -316,8 +316,8 @@ function _turnDownNthHall(
   );
 
   return {
-    description_en: Translations.getDescription('en', translations),
-    description_fr: Translations.getDescription('fr', translations),
+    description_en: Translations.getDescription(translations, 'en'),
+    description_fr: Translations.getDescription(translations, 'fr'),
     key: `nthHall_${hallNode}`,
   };
 }
@@ -351,8 +351,8 @@ function _turnDownStreet(
   );
 
   return {
-    description_en: Translations.getDescription('en', translations),
-    description_fr: Translations.getDescription('fr', translations),
+    description_en: Translations.getDescription(translations, 'en'),
+    description_fr: Translations.getDescription(translations, 'fr'),
     key: `turnDownStreet_${currentNode}`,
   };
 }
@@ -389,8 +389,8 @@ function _crossIntersection(
   const steps: Step[] = [];
   for (let i = 0; i < translations.length; i++) {
     steps.push({
-      description_en: Translations.getDescription('en', translations[i]),
-      description_fr: Translations.getDescription('fr', translations[i]),
+      description_en: Translations.getDescription(translations[i], 'en'),
+      description_fr: Translations.getDescription(translations[i], 'fr'),
       key: `crossIntersection_${intersectionEdge.node}_${i}`,
     });
   }
@@ -686,8 +686,8 @@ export async function getDirectionsBetween(
       showReport: true,
       steps: [
         {
-          description_en: Translations.get('en', errorMessage),
-          description_fr: Translations.get('fr', errorMessage),
+          description_en: Translations.get(errorMessage, 'en'),
+          description_fr: Translations.get(errorMessage, 'fr'),
           icon: {
             class: 'material',
             name: 'error',

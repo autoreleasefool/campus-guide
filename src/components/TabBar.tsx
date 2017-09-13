@@ -166,7 +166,7 @@ class TabBar extends React.PureComponent<Props, State> {
                 onPress={this._switchTab.bind(this, i)}>
               {iconView}
               <Text style={[ _styles.caption, { color }]}>
-                {Translations.get(this.props.language, Constants.Tabs[i])}
+                {Translations.get(Constants.Tabs[i])}
               </Text>
             </TouchableOpacity>
           );

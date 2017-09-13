@@ -29,31 +29,29 @@ import { filterStudySpot } from '../../../util/Search';
 // Types
 import { SearchResult } from '../Searchable';
 import { SearchSupport } from '../../../util/Search';
-import { Language } from '../../../util/Translations';
 import { Section } from '../../../../typings/global';
 import { StudySpot, StudySpotInfo } from '../../../../typings/university';
 
 /**
  * Returns a promise containing a list of external links and categories which match the search terms.
  *
- * @param {Language}      language    the current language
  * @param {string}        searchTerms the search terms for the query
- * @param {StudySpotInfo} studySpots  study spot informaation
+ * @param {StudySpotInfo} studySpots  study spot information
  * @returns {Promise<Section<SearchResult[]>>} promise which resolves with the results of the search,
  *                                         containing study spots
  */
-async function _getResults(language: Language,
-                     searchTerms: string,
-                     studySpots: StudySpotInfo): Promise<Section<SearchResult>[]> {
+async function _getResults(
+    searchTerms: string,
+    studySpots: StudySpotInfo): Promise<Section<SearchResult>[]> {
   const matchedSpots: SearchResult[] = [];
-  const studySpotsTranslation = Translations.get(language, 'study_spots');
+  const studySpotsTranslation = Translations.get('study_spots');
 
   studySpots.spots.forEach((studySpot: StudySpot) => {
-    const result = filterStudySpot(language, searchTerms, studySpot);
+    const result = filterStudySpot(searchTerms, studySpot);
     if (result.success) {
       matchedSpots.push({
         data: { shorthand: studySpot.building, room: studySpot.room },
-        description: Translations.getDescription(language, studySpot) || '',
+        description: Translations.getDescription(studySpot) || '',
         icon: { name: 'import-contacts', class: 'material' },
         key: studySpotsTranslation,
         matchedTerms: result.matches,
@@ -88,7 +86,7 @@ async function _getResults(language: Language,
   // Cache list of filters that match the search terms
   // const matchingFilters = [];
   // for (let i = 0; i < studySpots.filters.length; i++) {
-  //   const filterName = Translations.getName(language, studySpots.filters[i]);
+  //   const filterName = Translations.getName(studySpots.filters[i]);
   //   if (filterName != null && filterName.toUpperCase().indexOf(searchTerms) >= 0) {
   //     matchingFilters.push(i);
   //   }
@@ -98,14 +96,12 @@ async function _getResults(language: Language,
 /**
  * Returns a promise containing a list of study spots which match the search terms.
  *
- * @param {Language}                language    the current language
  * @param {string}                  searchTerms the search terms for the query
  * @param {SearchSupport|undefined} data        supporting data for the query
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                             containing study spots
  */
 export async function getResults(
-    language: Language,
     searchTerms: string,
     data: SearchSupport | undefined): Promise<Section<SearchResult>[]> {
   if (searchTerms.length === 0) {
@@ -120,7 +116,7 @@ export async function getResults(
 
   // Ignore the case of the search terms
   const adjustedSearchTerms: string = searchTerms.toUpperCase();
-  const results = await _getResults(language, adjustedSearchTerms, studySpots);
+  const results = await _getResults(adjustedSearchTerms, studySpots);
 
   return results;
 }
@@ -128,12 +124,11 @@ export async function getResults(
 /**
  * Returns an object which maps the section names to an icon which represents it.
  *
- * @param {Language} language the current language
  * @returns {any} section names mapped to icon objects
  */
-export function getResultIcons(language: Language): any {
+export function getResultIcons(): any {
   const icons = {};
-  icons[Translations.get(language, 'study_spots')] = {
+  icons[Translations.get('study_spots')] = {
     icon: {
       class: 'material',
       name: 'import-contacts',

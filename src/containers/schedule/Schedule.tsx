@@ -200,20 +200,17 @@ class Schedule extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the elements to render
    */
   _renderSemesters(): JSX.Element {
-    const semesterName = Translations.getName(
-      this.props.language,
-      this.props.semesters[this.props.currentSemester]
-    ) || '';
+    const semesterName = Translations.getName(this.props.semesters[this.props.currentSemester]) || '';
 
     const picker = this.state.showSemesters
         ? (Platform.OS === 'android'
             ? (
             <Picker
-                prompt={Translations.get(this.props.language, 'semester')}
+                prompt={Translations.get('semester')}
                 selectedValue={this.props.currentSemester}
                 onValueChange={(value: number): void => this.props.switchSemester(value)}>
               {this.props.semesters.map((semester: Semester, index: number) => {
-                const name = Translations.getName(this.props.language, semester);
+                const name = Translations.getName(semester);
 
                 return (
                   <Picker.Item
@@ -230,7 +227,7 @@ class Schedule extends React.PureComponent<Props, State> {
                 selectedValue={this.props.currentSemester}
                 onValueChange={(value: number): void => this.props.switchSemester(value)}>
               {this.props.semesters.map((semester: Semester, index: number) => {
-                const name = Translations.getName(this.props.language, semester);
+                const name = Translations.getName(semester);
 
                 return (
                   <PickerIOS.Item
@@ -249,8 +246,8 @@ class Schedule extends React.PureComponent<Props, State> {
         <Header
             icon={Display.getPlatformIcon(Platform.OS, semesterIcon)}
             subtitle={(this.state.showSemesters
-              ? Translations.get(this.props.language, 'done')
-              : Translations.get(this.props.language, 'switch'))}
+              ? Translations.get('done')
+              : Translations.get('switch'))}
             subtitleCallback={(): void => this._toggleSwitchSemester()}
             title={semesterName} />
         {picker}
@@ -290,12 +287,12 @@ class Schedule extends React.PureComponent<Props, State> {
             onChangeTab={(newTab: { i: number }): void => this.props.viewScheduleByCourse(newTab.i === 1)}>
           <WeeklySchedule
               lectureFormats={this.state.lectureFormats}
-              tabLabel={Translations.get(this.props.language, 'weekly')}>
+              tabLabel={Translations.get('weekly')}>
             {this._renderSemesters()}
           </WeeklySchedule>
           <ByCourseSchedule
               lectureFormats={this.state.lectureFormats}
-              tabLabel={Translations.get(this.props.language, 'by_course')}
+              tabLabel={Translations.get('by_course')}
               onEditCourse={(course: Course): void => this._onEditCourse(course)}>
             {this._renderSemesters()}
           </ByCourseSchedule>

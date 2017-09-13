@@ -312,8 +312,8 @@ class LectureModal extends React.PureComponent<Props, State> {
     const platformModifier = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon = `${platformModifier}-arrow-back`;
 
-    const locationTranslation = Translations.get(this.props.language, 'location');
-    const buildingTranslation = Translations.get(this.props.language, 'building');
+    const locationTranslation = Translations.get('location');
+    const buildingTranslation = Translations.get('building');
 
     return (
       <View style={_styles.container}>
@@ -325,7 +325,7 @@ class LectureModal extends React.PureComponent<Props, State> {
         <TouchableOpacity onPress={(): void => this._onBuildingSelect(undefined)}>
           <View style={_styles.removeBuildingTextContainer}>
             <Text style={_styles.removeBuildingText}>
-              {Translations.get(this.props.language, 'none')}
+              {Translations.get('none')}
             </Text>
           </View>
         </TouchableOpacity>
@@ -349,8 +349,8 @@ class LectureModal extends React.PureComponent<Props, State> {
     const platformModifier = Platform.OS === 'ios' ? 'ios' : 'md';
     const backArrowIcon = `${platformModifier}-arrow-back`;
 
-    const locationTranslation = Translations.get(this.props.language, 'location');
-    const roomTranslation = Translations.get(this.props.language, 'room');
+    const locationTranslation = Translations.get('location');
+    const roomTranslation = Translations.get('room');
 
     const building = this.state.building;
     let roomGrid: JSX.Element;
@@ -393,7 +393,7 @@ class LectureModal extends React.PureComponent<Props, State> {
     };
 
     const format = this.props.lectureFormats[this.state.format].code;
-    const day = Constants.Days[this.props.language][this.state.day];
+    const day = Constants.Days[Translations.getLanguage()][this.state.day];
     const startTime = TextUtils.getFormattedTimeSinceMidnight(this.state.starts, this.props.timeFormat);
     const endTime = TextUtils.getFormattedTimeSinceMidnight(this.state.ends, this.props.timeFormat);
     const location = this.state.location ? TextUtils.destinationToString(this.state.location) : '';
@@ -405,7 +405,7 @@ class LectureModal extends React.PureComponent<Props, State> {
               largeSubtitle={true}
               subtitle={format}
               subtitleIcon={pickIcon}
-              title={Translations.get(this.props.language, 'format')} />
+              title={Translations.get('format')} />
         </TouchableOpacity>
         <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_DAY)}>
@@ -413,7 +413,7 @@ class LectureModal extends React.PureComponent<Props, State> {
               largeSubtitle={true}
               subtitle={day}
               subtitleIcon={pickIcon}
-              title={Translations.get(this.props.language, 'day')} />
+              title={Translations.get('day')} />
         </TouchableOpacity>
         <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_STARTS)}>
@@ -421,7 +421,7 @@ class LectureModal extends React.PureComponent<Props, State> {
               largeSubtitle={true}
               subtitle={startTime}
               subtitleIcon={pickIcon}
-              title={Translations.get(this.props.language, 'starts')} />
+              title={Translations.get('starts')} />
         </TouchableOpacity>
         <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_ENDS)}>
@@ -429,7 +429,7 @@ class LectureModal extends React.PureComponent<Props, State> {
               largeSubtitle={true}
               subtitle={endTime}
               subtitleIcon={pickIcon}
-              title={Translations.get(this.props.language, 'ends')} />
+              title={Translations.get('ends')} />
         </TouchableOpacity>
         <View style={_styles.menuItemSeparator} />
         <TouchableOpacity onPress={this._showPicker.bind(this, PICKER_BUILDING)}>
@@ -437,7 +437,7 @@ class LectureModal extends React.PureComponent<Props, State> {
               largeSubtitle={true}
               subtitle={location}
               subtitleIcon={pickIcon}
-              title={Translations.get(this.props.language, 'location')} />
+              title={Translations.get('location')} />
         </TouchableOpacity>
       </ScrollView>
     );
@@ -465,7 +465,7 @@ class LectureModal extends React.PureComponent<Props, State> {
         options = this.props.lectureFormats;
         selectedValue = this.state.format;
         getName = (format: number): string => {
-          const name = Translations.getName(this.props.language, this.props.lectureFormats[format]) || '';
+          const name = Translations.getName(this.props.lectureFormats[format]) || '';
 
           return `(${this.props.lectureFormats[format].code}) ${name}`;
         };
@@ -473,9 +473,9 @@ class LectureModal extends React.PureComponent<Props, State> {
         break;
       case PICKER_DAY:
         title = 'day';
-        options = Constants.Days[this.props.language];
+        options = Constants.Days[Translations.getLanguage()];
         selectedValue = this.state.day;
-        getName = (day: number): string => Constants.Days[this.props.language][day];
+        getName = (day: number): string => Constants.Days[Translations.getLanguage()][day];
         setValue = (value: number): void => this._setDay(value);
         break;
       default:
@@ -488,12 +488,12 @@ class LectureModal extends React.PureComponent<Props, State> {
         <TouchableOpacity onPress={(): void => (this.refs.Navigator as any).pop()}>
           <Header
               icon={{ name: backArrowIcon, class: 'ionicon' }}
-              title={Translations.get(this.props.language, title)} />
+              title={Translations.get(title)} />
         </TouchableOpacity>
         {Platform.OS === 'android'
             ? (
             <Picker
-                prompt={Translations.get(this.props.language, title)}
+                prompt={Translations.get(title)}
                 selectedValue={selectedValue}
                 style={_styles.pickerContainer}
                 onValueChange={setValue}>
@@ -561,7 +561,7 @@ class LectureModal extends React.PureComponent<Props, State> {
         <TouchableOpacity onPress={(): void => (this.refs.Navigator as any).pop()}>
           <Header
               icon={{ name: 'ios-arrow-back', class: 'ionicon' }}
-              title={Translations.get(this.props.language, title)} />
+              title={Translations.get(title)} />
         </TouchableOpacity>
         <DatePickerIOS
             date={time}
@@ -616,10 +616,10 @@ class LectureModal extends React.PureComponent<Props, State> {
       <View style={_styles.container}>
         <ModalHeader
             leftActionEnabled={true}
-            leftActionText={Translations.get(this.props.language, 'cancel')}
+            leftActionText={Translations.get('cancel')}
             rightActionEnabled={this.state.rightActionEnabled}
-            rightActionText={Translations.get(this.props.language, modalRightAction)}
-            title={Translations.get(this.props.language, modalTitle)}
+            rightActionText={Translations.get(modalRightAction)}
+            title={Translations.get(modalTitle)}
             onLeftAction={this._close.bind(this)}
             onRightAction={(): void => this._saveLecture({
               day: this.state.day,

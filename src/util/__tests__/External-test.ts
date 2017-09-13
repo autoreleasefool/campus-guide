@@ -25,7 +25,6 @@
 
 // Require modules used in testing
 import * as External from '../External';
-const Translations: any = {};
 
 // An example valid URL to open.
 const exampleURL = 'https://google.ca';
@@ -80,16 +79,16 @@ describe('External-test', () => {
   });
 
   it('tests that links are formatted before opening.', async() => {
-    await External.openLink(exampleURL, Translations, Linking, Alert, Clipboard, TextUtils);
+    await External.openLink(exampleURL, Linking, Alert, Clipboard, TextUtils);
     expect(TextUtils.formatLink).toHaveBeenCalledWith(exampleURL);
 
-    await External.openLink(exampleTelephone, Translations, Linking, Alert, Clipboard, TextUtils);
+    await External.openLink(exampleTelephone, Linking, Alert, Clipboard, TextUtils);
     expect(TextUtils.formatLink).toHaveBeenCalledWith(exampleTelephone);
 
-    await External.openLink(exampleShortTelephone, Translations, Linking, Alert, Clipboard, TextUtils);
+    await External.openLink(exampleShortTelephone, Linking, Alert, Clipboard, TextUtils);
     expect(TextUtils.formatLink).toHaveBeenCalledWith(exampleShortTelephone);
 
-    await External.openLink(exampleEmail, Translations, Linking, Alert, Clipboard, TextUtils);
+    await External.openLink(exampleEmail, Linking, Alert, Clipboard, TextUtils);
     expect(TextUtils.formatLink).toHaveBeenCalledWith(exampleEmail);
 
     expect(Alert.alert).not.toHaveBeenCalled();
@@ -98,7 +97,7 @@ describe('External-test', () => {
   });
 
   it('tests that invalid links are not opened.', async() => {
-    await External.openLink(invalidURL, Translations, Linking, Alert, Clipboard, TextUtils);
+    await External.openLink(invalidURL, Linking, Alert, Clipboard, TextUtils);
     expect(Alert.alert).toHaveBeenCalled();
     expect(Clipboard.setString).not.toHaveBeenCalled();
     expect(Linking.openURL).not.toHaveBeenCalled();
@@ -109,7 +108,7 @@ describe('External-test', () => {
 
   it('tests that errors in links are handled.', async() => {
     try {
-      await External.openLink(exceptionURL, Translations, Linking, Alert, Clipboard, TextUtils);
+      await External.openLink(exceptionURL, Linking, Alert, Clipboard, TextUtils);
       expect(false).toBeTruthy();
     } catch (err) {
       console.error('An error was expected to be thrown.', err);

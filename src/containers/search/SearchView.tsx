@@ -249,7 +249,7 @@ class SearchView extends React.PureComponent<Props, State> {
         singleResults: this._singleResults,
       });
     } else {
-      Searchable.getResults(nextProps.language, nextProps.filter, this.state.supportData)
+      Searchable.getResults(nextProps.filter, this.state.supportData)
           .then((results: Searchable.ResultData) => {
             this._searchResults = results.results;
             this._searchIcons = results.icons;
@@ -342,7 +342,7 @@ class SearchView extends React.PureComponent<Props, State> {
     return (
       <View style={[ _styles.container, _styles.noSearch ]}>
         <Text style={_styles.noSearchText}>
-          {`${Translations.get(this.props.language, 'no_search')}`}
+          {`${Translations.get('no_search')}`}
         </Text>
       </View>
     );
@@ -392,7 +392,7 @@ class SearchView extends React.PureComponent<Props, State> {
     const numberOfResults = this._searchResults[resultPosition].data.length;
     if (nonExpandable) {
       const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
-      const subtitle = `${numberOfResults} ${Translations.get(this.props.language, 'results').toLowerCase()}`;
+      const subtitle = `${numberOfResults} ${Translations.get('results').toLowerCase()}`;
 
       return (
         <TouchableOpacity onPress={this._onSourceSelect.bind(this, undefined)}>
@@ -410,7 +410,7 @@ class SearchView extends React.PureComponent<Props, State> {
       let subtitle: string | undefined;
       let subtitleIcon: BasicIcon | undefined;
       if (numberOfResults > 2) {
-        subtitle = `${numberOfResults - 2} ${Translations.get(this.props.language, 'more')}`;
+        subtitle = `${numberOfResults - 2} ${Translations.get('more')}`;
         subtitleIcon = { name: 'chevron-right', class: 'material' };
       }
 
@@ -443,7 +443,7 @@ class SearchView extends React.PureComponent<Props, State> {
     return (
       <View style={[ _styles.container, _styles.noResults ]}>
         <Text style={_styles.noResultsText}>
-          {`${Translations.get(this.props.language, 'no_results_for')} '${searchTerms}'`}
+          {`${Translations.get('no_results_for')} '${searchTerms}'`}
         </Text>
       </View>
     );
@@ -653,7 +653,7 @@ const mapDispatchToProps = (dispatch: any): any => {
         }
         case 'External links':
         case 'Liens externes':
-          External.openLink(data.link, data.language, Linking, Alert, Clipboard, TextUtils);
+          External.openLink(data.link, Linking, Alert, Clipboard, TextUtils);
           break;
         case 'Rooms':
         case 'Chambres':

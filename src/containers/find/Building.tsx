@@ -92,12 +92,14 @@ class BuildingComponent extends React.PureComponent<Props, State> {
   _getBuildingProperties(building: Building): BuildingProperty[] {
     return [
       {
-        description: Translations.getName(this.props.language, building) || '',
-        name: Translations.get(this.props.language, 'name'),
+        description_en: Translations.getEnglishName(building),
+        description_fr: Translations.getFrenchName(building),
+        name: 'name',
       },
       {
-        description: Translations.getVariant(this.props.language, 'address', building) || '',
-        name: Translations.get(this.props.language, 'address'),
+        description_en: Translations.getEnglishVariant('address', building),
+        description_fr: Translations.getFrenchVariant('address', building),
+        name: 'address',
       },
     ];
   }
@@ -119,8 +121,8 @@ class BuildingComponent extends React.PureComponent<Props, State> {
    */
   _renderBuildingDirections(): JSX.Element {
     const navigateToBuilding =
-        `${Translations.get(this.props.language, 'navigate_to')} `
-        + `${(Translations.getName(this.props.language, this.props.building) || '')}`;
+        `${Translations.get('navigate_to')} `
+        + `${(Translations.getName(this.props.building) || '')}`;
 
     return (
       <TouchableOpacity onPress={(): void => this._onDestinationSelected(this.props.building.shorthand)}>

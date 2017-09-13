@@ -26,7 +26,6 @@
 import * as Constants from '../constants';
 import * as Translations from './Translations';
 
-import { Language } from './Translations';
 import { GridImage, LinkSection } from '../../typings/global';
 import { Building, BuildingRoom, RoomTypeInfo, StudySpot, StudySpotInfo } from '../../typings/university';
 
@@ -46,16 +45,15 @@ export interface SearchResult {
 /**
  * Returns true if the GridImage matches the filter, and the terms that match, or false otherwise.
  *
- * @param {Language}  language  the user's selected language
  * @param {string}    filter    the provided filter
  * @param {GridImage} gridImage the building to compare
  * @returns {SearchResult} success true if the GridImage matches the filter, false otherwise, and all matching terms
  */
-export function filterGridImage(language: Language, filter: string, gridImage: GridImage): SearchResult {
+export function filterGridImage(filter: string, gridImage: GridImage): SearchResult {
   const matches = [];
 
   // Compare building properties to search terms to add to results
-  const name = (Translations.getName(language, gridImage) || '').toUpperCase();
+  const name = (Translations.getName(gridImage) || '').toUpperCase();
   if (name.indexOf(filter) >= 0) {
     matches.push(name);
   }
@@ -74,27 +72,25 @@ export function filterGridImage(language: Language, filter: string, gridImage: G
 /**
  * Returns true if the building matches the filter, and the terms that match, or false otherwise.
  *
- * @param {Language} language the user's selected language
  * @param {string}   filter   the provided filter
  * @param {Building} building the building to compare
  * @returns {SearchResult} success true if the building matches the filter, false otherwise, and all matching terms
  */
-export function filterBuilding(language: Language, filter: string, building: Building): SearchResult {
-  return filterGridImage(language, filter, building);
+export function filterBuilding(filter: string, building: Building): SearchResult {
+  return filterGridImage(filter, building);
 }
 
 /**
  * Returns true if the study spot matches the filter, and the terms that match, or false otherwise.
  *
- * @param {Language}  language the user's selected language
- * @param {string}    filter   the provided filter
+ * @param {string}    filter    the provided filter
  * @param {StudySpot} studySpot the spot to compare
  * @returns {SearchResult} success true if the spot matches the filter, false otherwise, and all matching terms
  */
-export function filterStudySpot(language: Language, filter: string, studySpot: StudySpot): SearchResult {
+export function filterStudySpot(filter: string, studySpot: StudySpot): SearchResult {
   const matches = [];
 
-  const spotName = (Translations.getName(language, studySpot) || '').toUpperCase();
+  const spotName = (Translations.getName(studySpot) || '').toUpperCase();
   if (spotName.indexOf(filter) >= 0) {
     matches.push(spotName);
   }
@@ -117,7 +113,6 @@ export function filterStudySpot(language: Language, filter: string, studySpot: S
 /**
  * Returns true if the room matches the filter, and the terms that match, or false otherwise.
  *
- * @param {Language}     language          the user's selected language
  * @param {string}       filter            the provided filter
  * @param {Set<string>}  matchingRoomTypes set of room types which are valid
  * @param {string}       shorthand         shorthand for the building the room is in
@@ -125,7 +120,6 @@ export function filterStudySpot(language: Language, filter: string, studySpot: S
  * @returns {SearchResult} success true if the room matches the filter, false otherwise, and all matching terms
  */
 export function filterRoom(
-    language: Language,
     filter: string,
     matchingRoomTypes: Set < string >,
     shorthand: string,
@@ -137,7 +131,7 @@ export function filterRoom(
     matches.push(roomName);
   }
 
-  const roomAltName = (Translations.getVariant(language, 'alt_name', room) || '').toUpperCase();
+  const roomAltName = (Translations.getVariant('alt_name', room) || '').toUpperCase();
   if (roomAltName.indexOf(filter) >= 0) {
     matches.push(roomAltName);
   }

@@ -40,7 +40,7 @@ import * as Arrays from '../../util/Arrays';
 import * as Constants from '../../constants';
 import * as TextUtils from '../../util/TextUtils';
 
-import { Language } from '../../util/Translations';
+import { Language, getLanguage } from '../../util/Translations';
 import { TimeFormat } from '../../../typings/global';
 import { Course, Destination, LectureFormat, Semester } from '../../../typings/university';
 
@@ -158,7 +158,7 @@ class WeeklySchedule extends React.PureComponent<Props, State> {
       );
     }
 
-    const days = Constants.Days[this.props.language];
+    const days = Constants.Days[getLanguage()];
 
     return (
       <View style={_styles.container}>

@@ -69,7 +69,7 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
    * @param {string|undefined} link the url to open
    */
   _openLink(link: string | undefined): void {
-    External.openLink(link, this.props.language, Linking, Alert, Clipboard, TextUtils);
+    External.openLink(link, Linking, Alert, Clipboard, TextUtils);
   }
 
   /**
@@ -86,7 +86,7 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
             style={_styles.bannerImage} />
         <View style={_styles.bannerTextContainer}>
           <Text style={_styles.bannerText}>
-            {Translations.getName(this.props.language, this.props.section)}
+            {Translations.getName(this.props.section)}
           </Text>
         </View>
       </View>
@@ -159,9 +159,6 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
         ? Constants.Colors.secondaryWhiteText
         : Constants.Colors.secondaryBlackText;
 
-    // Get current language for translations
-    const language: Language = this.props.language;
-
     // Search terms to filter links by
     const filter = this.props.filter.length > 0 ? this.props.filter.toUpperCase() : undefined;
 
@@ -169,11 +166,11 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
       <View>
         <Header
             icon={{ name: 'insert-link', class: 'material' }}
-            title={Translations.get(language, 'uo_info')} />
+            title={Translations.get('uo_info')} />
         {links.map((link: NamedLink, index: number) => {
-          const translatedLink = Translations.getLink(language, link) || External.getDefaultLink();
-          const translatedName = Translations.getName(language, link) || translatedLink;
-          const translatedDescription = Translations.getDescription(language, link);
+          const translatedLink = Translations.getLink(link) || External.getDefaultLink();
+          const translatedName = Translations.getName(link) || translatedLink;
+          const translatedDescription = Translations.getDescription(link);
 
           // Compare name to search terms and do not render if they don't match
           if (filter != undefined && translatedName.toUpperCase().indexOf(filter) < 0) {
@@ -223,14 +220,11 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
       return undefined;
     }
 
-    // Get current language for translations
-    const language: Language = this.props.language;
-
     return (
       <View style={_styles.socialMediaContainer}>
         {links.map((link: NamedLink) => {
-          const url = Translations.getLink(language, link) || External.getDefaultLink();
-          const name = Translations.getName(language, link);
+          const url = Translations.getLink(link) || External.getDefaultLink();
+          const name = Translations.getName(link);
 
           if (name == undefined) {
             return undefined;
@@ -265,7 +259,6 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
       return undefined;
     }
 
-    const language: Language = this.props.language;
     const dividerColor: string = (isBackgroundDark)
         ? Constants.Colors.primaryWhiteText
         : Constants.Colors.primaryBlackText;
@@ -274,7 +267,7 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
       <View>
         <View style={[ _styles.divider, { backgroundColor: dividerColor }]} />
         {categories.map((category: LinkSection) => {
-          const categoryName = Translations.getName(language, category);
+          const categoryName = Translations.getName(category);
           if (categoryName == undefined) {
             return undefined;
           }

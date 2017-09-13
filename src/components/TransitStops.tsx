@@ -214,7 +214,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
     if (upcomingTimes.length > 0) {
       return upcomingTimes.join('    ');
     } else {
-      return Translations.get(this.props.language, 'no_upcoming_buses');
+      return Translations.get('no_upcoming_buses');
     }
   }
 
@@ -285,7 +285,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
    * @param {string|undefined} newStopId the stop id to search for routes and times, or undefined to use state
    * @param {Props}            props     the props to filter with
    */
-  _onTimeSearch(newStopId: string | undefined, { campus, filter, language }: Props): void {
+  _onTimeSearch(newStopId: string | undefined, { campus, filter }: Props): void {
     const stopId = newStopId || this.state.selectedStopId;
     if (stopId == undefined) {
       return;
@@ -306,7 +306,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
         for (const day in stopRoute.days) {
           if (!matches && adjustedSearchTerms != undefined && stopRoute.days.hasOwnProperty(day)) {
             for (let j = 0; j < day.length; j++) {
-              const weekday = Constants.Days[language][parseInt(day.charAt(j))];
+              const weekday = Constants.Days[Translations.getLanguage()][parseInt(day.charAt(j))];
 
               if (weekday != undefined && weekday.toUpperCase().indexOf(adjustedSearchTerms) >= 0) {
                 matches = true;

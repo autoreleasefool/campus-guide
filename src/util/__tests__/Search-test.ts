@@ -81,47 +81,47 @@ describe('Search-test', () => {
     }];
 
     // Test shorthands
-    let result = Search.filterGridImage('en', 'GI', gridImages[0]);
+    let result = Search.filterGridImage('GI', gridImages[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['GI']);
 
-    result = Search.filterGridImage('en', 'GI', gridImages[1]);
+    result = Search.filterGridImage('GI', gridImages[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test names
-    result = Search.filterGridImage('en', 'GRID', gridImages[0]);
+    result = Search.filterGridImage('GRID', gridImages[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['GRIDIMAGE 1']);
 
-    result = Search.filterGridImage('en', 'GI', gridImages[1]);
+    result = Search.filterGridImage('GI', gridImages[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test French/English names
-    result = Search.filterGridImage('en', 'ENG', gridImages[0]);
+    result = Search.filterGridImage('ENG', gridImages[0]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterGridImage('en', 'ENG', gridImages[1]);
+    result = Search.filterGridImage('ENG', gridImages[1]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['ENGLISH']);
 
-    result = Search.filterGridImage('fr', 'ENG', gridImages[0]);
+    result = Search.filterGridImage('ENG', gridImages[0]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterGridImage('fr', 'ENG', gridImages[1]);
+    result = Search.filterGridImage('ENG', gridImages[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test lowercase
     for (const gridImage of gridImages) {
-      result = Search.filterGridImage('en', 'grid', gridImage);
+      result = Search.filterGridImage('grid', gridImage);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterGridImage('en', 'grid', gridImage);
+      result = Search.filterGridImage('grid', gridImage);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
     }
@@ -161,86 +161,86 @@ describe('Search-test', () => {
     }];
 
     // Test name
-    let result = Search.filterStudySpot('en', studySpots[0].name.toUpperCase(), studySpots[0]);
+    let result = Search.filterStudySpot(studySpots[0].name.toUpperCase(), studySpots[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([studySpots[0].name.toUpperCase()]);
 
-    result = Search.filterStudySpot('en', studySpots[0].name.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[0].name.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterStudySpot('en', studySpots[1].name_en.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[1].name_en.toUpperCase(), studySpots[1]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([studySpots[1].name_en.toUpperCase()]);
 
-    result = Search.filterStudySpot('fr', studySpots[1].name_en.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[1].name_en.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterStudySpot('en', studySpots[1].name_fr.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[1].name_fr.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterStudySpot('fr', studySpots[1].name_fr.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[1].name_fr.toUpperCase(), studySpots[1]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([studySpots[1].name_fr.toUpperCase()]);
 
     // Test description
-    result = Search.filterStudySpot('en', studySpots[0].description.toUpperCase(), studySpots[0]);
+    result = Search.filterStudySpot(studySpots[0].description.toUpperCase(), studySpots[0]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterStudySpot('en', studySpots[0].description.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[0].description.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterStudySpot('en', studySpots[1].description_en.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[1].description_en.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterStudySpot('fr', studySpots[1].description_en.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[1].description_en.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterStudySpot('en', studySpots[1].description_fr.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[1].description_fr.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterStudySpot('fr', studySpots[1].description_fr.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[1].description_fr.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test building
-    result = Search.filterStudySpot('en', studySpots[0].building.toUpperCase(), studySpots[0]);
+    result = Search.filterStudySpot(studySpots[0].building.toUpperCase(), studySpots[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([studySpots[0].building.toUpperCase()]);
 
-    result = Search.filterStudySpot('en', studySpots[0].building.toUpperCase(), studySpots[1]);
+    result = Search.filterStudySpot(studySpots[0].building.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test times
     for (const studySpot of studySpots) {
-      result = Search.filterStudySpot('en', 'JPG', studySpot);
+      result = Search.filterStudySpot('JPG', studySpot);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
     }
 
     // Test image
     for (const studySpot of studySpots) {
-      result = Search.filterStudySpot('en', studySpots[0].opens, studySpot);
+      result = Search.filterStudySpot(studySpots[0].opens, studySpot);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterStudySpot('en', studySpots[1].opens, studySpot);
+      result = Search.filterStudySpot(studySpots[1].opens, studySpot);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterStudySpot('en', studySpots[0].closes, studySpot);
+      result = Search.filterStudySpot(studySpots[0].closes, studySpot);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterStudySpot('en', studySpots[1].closes, studySpot);
+      result = Search.filterStudySpot(studySpots[1].closes, studySpot);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
     }
@@ -277,47 +277,47 @@ describe('Search-test', () => {
     }];
 
     // Test shorthands
-    let result = Search.filterBuilding('en', buildings[0].shorthand.toUpperCase(), buildings[0]);
+    let result = Search.filterBuilding(buildings[0].shorthand.toUpperCase(), buildings[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([buildings[0].shorthand.toUpperCase()]);
 
-    result = Search.filterBuilding('en', buildings[0].shorthand.toUpperCase(), buildings[1]);
+    result = Search.filterBuilding(buildings[0].shorthand.toUpperCase(), buildings[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test names
-    result = Search.filterBuilding('en', buildings[0].name.toUpperCase(), buildings[0]);
+    result = Search.filterBuilding(buildings[0].name.toUpperCase(), buildings[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([buildings[0].name.toUpperCase()]);
 
-    result = Search.filterBuilding('en', buildings[0].name.toUpperCase(), buildings[1]);
+    result = Search.filterBuilding(buildings[0].name.toUpperCase(), buildings[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test French/English names
-    result = Search.filterBuilding('en', buildings[1].name_en.toUpperCase(), buildings[0]);
+    result = Search.filterBuilding(buildings[1].name_en.toUpperCase(), buildings[0]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterBuilding('en', buildings[1].name_en.toUpperCase(), buildings[1]);
+    result = Search.filterBuilding(buildings[1].name_en.toUpperCase(), buildings[1]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([buildings[1].name_en.toUpperCase()]);
 
-    result = Search.filterBuilding('fr', buildings[1].name_en.toUpperCase(), buildings[0]);
+    result = Search.filterBuilding(buildings[1].name_en.toUpperCase(), buildings[0]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterBuilding('fr', buildings[1].name_en.toUpperCase(), buildings[1]);
+    result = Search.filterBuilding(buildings[1].name_en.toUpperCase(), buildings[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test lowercase
     for (const building of buildings) {
-      result = Search.filterBuilding('en', 'build', building);
+      result = Search.filterBuilding('build', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterBuilding('en', 'build', building);
+      result = Search.filterBuilding('build', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
     }
@@ -325,52 +325,52 @@ describe('Search-test', () => {
     // Test addresses
     for (const building of buildings) {
       const address = building.address || building.address_en || building.address_fr || 'ADDRESS';
-      result = Search.filterBuilding('en', address, building);
+      result = Search.filterBuilding(address, building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterBuilding('fr', address, building);
+      result = Search.filterBuilding(address, building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
     }
 
     // Test location
     for (const building of buildings) {
-      result = Search.filterBuilding('en', '99', building);
+      result = Search.filterBuilding('99', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterBuilding('en', '101', building);
+      result = Search.filterBuilding('101', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterBuilding('fr', '99', building);
+      result = Search.filterBuilding('99', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterBuilding('fr', '101', building);
+      result = Search.filterBuilding('101', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
     }
 
     // Test rooms
     for (const building of buildings) {
-      result = Search.filterBuilding('en', 'ROOM', building);
+      result = Search.filterBuilding('ROOM', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterBuilding('fr', 'ROOM', building);
+      result = Search.filterBuilding('ROOM', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
     }
 
     // Test images
     for (const building of buildings) {
-      result = Search.filterBuilding('en', 'JPG', building);
+      result = Search.filterBuilding('JPG', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
 
-      result = Search.filterBuilding('fr', 'JPG', building);
+      result = Search.filterBuilding('JPG', building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
     }
@@ -393,96 +393,96 @@ describe('Search-test', () => {
     const roomTypes2 = new Set(roomTypeLists[1]);
 
     // Test shorthands
-    let result = Search.filterRoom('en', 'B1', new Set(), 'B1', rooms[0]);
+    let result = Search.filterRoom('B1', new Set(), 'B1', rooms[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['B1 ROOM1']);
 
-    result = Search.filterRoom('en', 'B1', new Set(), 'B1', rooms[1]);
+    result = Search.filterRoom('B1', new Set(), 'B1', rooms[1]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['B1 ROOM2']);
 
-    result = Search.filterRoom('en', 'B1', new Set(), 'B1', rooms[2]);
+    result = Search.filterRoom('B1', new Set(), 'B1', rooms[2]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['B1 ROOM3']);
 
     // Test names
-    result = Search.filterRoom('en', 'ROOM1', new Set(), 'B1', rooms[0]);
+    result = Search.filterRoom('ROOM1', new Set(), 'B1', rooms[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['B1 ROOM1']);
 
-    result = Search.filterRoom('en', 'ROOM1', new Set(), 'B1', rooms[1]);
+    result = Search.filterRoom('ROOM1', new Set(), 'B1', rooms[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterRoom('en', 'ROOM1', new Set(), 'B1', rooms[2]);
+    result = Search.filterRoom('ROOM1', new Set(), 'B1', rooms[2]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test alternative names
-    result = Search.filterRoom('en', 'ALTNAME', new Set(), 'B1', rooms[0]);
+    result = Search.filterRoom('ALTNAME', new Set(), 'B1', rooms[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['ALTNAME']);
 
-    result = Search.filterRoom('en', 'ALTNAME', new Set(), 'B1', rooms[1]);
+    result = Search.filterRoom('ALTNAME', new Set(), 'B1', rooms[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterRoom('en', 'ALTNAME', new Set(), 'B1', rooms[2]);
+    result = Search.filterRoom('ALTNAME', new Set(), 'B1', rooms[2]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test English/French alternative names
-    result = Search.filterRoom('en', 'ENG', new Set(), 'B1', rooms[0]);
+    result = Search.filterRoom('ENG', new Set(), 'B1', rooms[0]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterRoom('en', 'ENG', new Set(), 'B1', rooms[1]);
+    result = Search.filterRoom('ENG', new Set(), 'B1', rooms[1]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['ENGLISH']);
 
-    result = Search.filterRoom('en', 'ENG', new Set(), 'B1', rooms[2]);
+    result = Search.filterRoom('ENG', new Set(), 'B1', rooms[2]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterRoom('fr', 'FRE', new Set(), 'B1', rooms[0]);
+    result = Search.filterRoom('FRE', new Set(), 'B1', rooms[0]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterRoom('fr', 'FRE', new Set(), 'B1', rooms[1]);
+    result = Search.filterRoom('FRE', new Set(), 'B1', rooms[1]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['FRENCH']);
 
-    result = Search.filterRoom('fr', 'FRE', new Set(), 'B1', rooms[2]);
+    result = Search.filterRoom('FRE', new Set(), 'B1', rooms[2]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test room types
-    result = Search.filterRoom('en', 'bad filter', roomTypes1, 'B1', rooms[0]);
+    result = Search.filterRoom('bad filter', roomTypes1, 'B1', rooms[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['MEET']);
 
-    result = Search.filterRoom('en', 'bad filter', roomTypes1, 'B1', rooms[1]);
+    result = Search.filterRoom('bad filter', roomTypes1, 'B1', rooms[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterRoom('en', 'bad filter', roomTypes1, 'B1', rooms[2]);
+    result = Search.filterRoom('bad filter', roomTypes1, 'B1', rooms[2]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['OFFICE']);
 
-    result = Search.filterRoom('en', 'bad filter', roomTypes2, 'B1', rooms[0]);
+    result = Search.filterRoom('bad filter', roomTypes2, 'B1', rooms[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['MEET']);
 
-    result = Search.filterRoom('en', 'bad filter', roomTypes2, 'B1', rooms[1]);
+    result = Search.filterRoom('bad filter', roomTypes2, 'B1', rooms[1]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['CLASS']);
 
-    result = Search.filterRoom('en', 'bad filter', roomTypes2, 'B1', rooms[2]);
+    result = Search.filterRoom('bad filter', roomTypes2, 'B1', rooms[2]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
     // Test multiple conditions met
-    result = Search.filterRoom('en', 'B1', roomTypes1, 'B1', rooms[0]);
+    result = Search.filterRoom('B1', roomTypes1, 'B1', rooms[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['B1 ROOM1', 'MEET']);
 

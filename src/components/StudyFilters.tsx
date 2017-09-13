@@ -118,7 +118,7 @@ export default class StudyFilters extends React.PureComponent<Props, State> {
           onPress={(): void => this._onSelectFilter(filterId)}>
         <View style={[ _styles.filterContainer, withBackground ? _styles.filterBackground : {} ]}>
           {this._renderIcon(Display.getPlatformIcon(Platform.OS, filter), FULL_ICON_SIZE, true)}
-          <Text style={_styles.fullSizeText}>{Translations.getName(this.props.language, filter)}</Text>
+          <Text style={_styles.fullSizeText}>{Translations.getName(filter)}</Text>
         </View>
       </TouchableOpacity>
     );

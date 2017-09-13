@@ -231,7 +231,7 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
           <Header
               icon={{ name: 'md-time', class: 'ionicon' }}
               subtitleIcon={{ name: expandIcon, class: 'material' }}
-              title={Translations.get(this.props.language, 'routes_and_times')} />
+              title={Translations.get('routes_and_times')} />
         </TouchableOpacity>
         <TransitStops
             campus={campus}

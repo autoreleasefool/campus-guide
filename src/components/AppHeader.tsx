@@ -168,8 +168,8 @@ class AppHeader extends React.PureComponent<Props, State> {
 
     // If title is string, use it as key for translations
     const appTitle = (typeof (this.props.appTitle) === 'string')
-        ? Translations.get(this.props.language, this.props.appTitle)
-        : Translations.getName(this.props.language, this.props.appTitle) || '';
+        ? Translations.get(this.props.appTitle)
+        : Translations.getName(this.props.appTitle) || '';
 
     // Hide/show back button
     let backIconStyle = { left: -ICON_SIZE };
@@ -210,7 +210,7 @@ class AppHeader extends React.PureComponent<Props, State> {
               onPress={(): void => (this.refs.SearchInput as any).focus()} />
           <TextInput
               autoCorrect={false}
-              placeholder={Translations.get(this.props.language, 'search_placeholder')}
+              placeholder={Translations.get('search_placeholder')}
               placeholderTextColor={Constants.Colors.secondaryWhiteText}
               ref='SearchInput'
               returnKeyType={'done'}

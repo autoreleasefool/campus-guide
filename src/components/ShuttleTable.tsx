@@ -98,15 +98,15 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
     const currentDate: string = moment().format('YYYY-MM-DD');
     if (this.props.schedule.excluded_dates.indexOf(currentDate) >= 0) {
       dateExcluded = (
-        <Text style={_styles.info}>{Translations.get(this.props.language, 'shuttle_not_in_service')}</Text>
+        <Text style={_styles.info}>{Translations.get('shuttle_not_in_service')}</Text>
       );
     }
 
     return (
       <View style={_styles.header}>
         {dateExcluded}
-        <Text style={_styles.info}>{Translations.get(this.props.language, 'shuttle_travel_time')}</Text>
-        <Text style={_styles.info}>{Translations.get(this.props.language, 'shuttle_id_required')}</Text>
+        <Text style={_styles.info}>{Translations.get('shuttle_travel_time')}</Text>
+        <Text style={_styles.info}>{Translations.get('shuttle_id_required')}</Text>
       </View>
     );
   }
@@ -122,12 +122,12 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
     if (header === 'excluded_dates') {
       return (
         <View style={_styles.sectionHeaderContainer}>
-          <Text style={_styles.sectionHeader}>{Translations.get(this.props.language, 'excluded_dates')}</Text>
+          <Text style={_styles.sectionHeader}>{Translations.get('excluded_dates')}</Text>
         </View>
       );
     } else {
-      const firstDay = Constants.Days[this.props.language][parseInt(header.substr(0, 1))];
-      const lastDay = Constants.Days[this.props.language][parseInt(header.substr(header.length - 1))];
+      const firstDay = Constants.Days[Translations.getLanguage()][parseInt(header.substr(0, 1))];
+      const lastDay = Constants.Days[Translations.getLanguage()][parseInt(header.substr(header.length - 1))];
       const period = firstDay === lastDay ? firstDay : `${firstDay} - ${lastDay}`;
 
       return (

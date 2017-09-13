@@ -235,10 +235,10 @@ describe('Translations-test', () => {
   it('tests French and English properties', async() => {
     await Translations.loadTranslations('en');
     await Translations.loadTranslations('fr');
-    expect(Translations.get('en', 'language')).toEqual('English');
-    expect(Translations.get('fr', 'language')).toEqual('French');
-    expect(Translations.get(invalidLanguage, 'language')).toEqual('');
-    expect(Translations.get('en', 'invalid_word')).toEqual('');
+    expect(Translations.get('language', 'en')).toEqual('English');
+    expect(Translations.get('language', 'fr')).toEqual('French');
+    expect(Translations.get('language', invalidLanguage)).toEqual('');
+    expect(Translations.get('invalid_word', 'en')).toEqual('');
   });
 
   it('tests retrieving French and English descriptions.', () => {
@@ -248,17 +248,17 @@ describe('Translations-test', () => {
 
     expect(Translations.getEnglishDescription(objectWithDefaultProperties)).toBe(objectWithDefaultProperties.description);
     expect(Translations.getEnglishDescription(objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.description_en);
-    expect(Translations.getDescription('en', objectWithDefaultProperties)).toBe(objectWithDefaultProperties.description);
-    expect(Translations.getDescription('en', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.description_en);
-    expect(Translations.getDescription('en', invalidObject)).not.toBeDefined();
+    expect(Translations.getDescription(objectWithDefaultProperties, 'en')).toBe(objectWithDefaultProperties.description);
+    expect(Translations.getDescription(objectWithTranslatedProperties, 'en')).toBe(objectWithTranslatedProperties.description_en);
+    expect(Translations.getDescription(invalidObject, 'en')).not.toBeDefined();
 
     expect(Translations.getFrenchDescription(objectWithDefaultProperties)).toBe(objectWithDefaultProperties.description);
     expect(Translations.getFrenchDescription(objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.description_fr);
-    expect(Translations.getDescription('fr', objectWithDefaultProperties)).toBe(objectWithDefaultProperties.description);
-    expect(Translations.getDescription('fr', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.description_fr);
-    expect(Translations.getDescription('fr', invalidObject)).not.toBeDefined();
+    expect(Translations.getDescription(objectWithDefaultProperties, 'fr')).toBe(objectWithDefaultProperties.description);
+    expect(Translations.getDescription(objectWithTranslatedProperties, 'fr')).toBe(objectWithTranslatedProperties.description_fr);
+    expect(Translations.getDescription(invalidObject, 'fr')).not.toBeDefined();
 
-    expect(Translations.getDescription(invalidLanguage, objectWithDefaultProperties)).not.toBeDefined();
+    expect(Translations.getDescription(objectWithDefaultProperties, invalidLanguage)).not.toBeDefined();
 
     /* tslint:enable max-line-length */
 
@@ -267,33 +267,33 @@ describe('Translations-test', () => {
   it('tests retrieving French and English links.', () => {
     expect(Translations.getEnglishLink(objectWithDefaultProperties)).toBe(objectWithDefaultProperties.link);
     expect(Translations.getEnglishLink(objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.link_en);
-    expect(Translations.getLink('en', objectWithDefaultProperties)).toBe(objectWithDefaultProperties.link);
-    expect(Translations.getLink('en', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.link_en);
-    expect(Translations.getLink('en', invalidObject)).not.toBeDefined();
+    expect(Translations.getLink(objectWithDefaultProperties, 'en')).toBe(objectWithDefaultProperties.link);
+    expect(Translations.getLink(objectWithTranslatedProperties, 'en')).toBe(objectWithTranslatedProperties.link_en);
+    expect(Translations.getLink(invalidObject, 'en')).not.toBeDefined();
 
     expect(Translations.getFrenchLink(objectWithDefaultProperties)).toBe(objectWithDefaultProperties.link);
     expect(Translations.getFrenchLink(objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.link_fr);
-    expect(Translations.getLink('fr', objectWithDefaultProperties)).toBe(objectWithDefaultProperties.link);
-    expect(Translations.getLink('fr', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.link_fr);
-    expect(Translations.getLink('fr', invalidObject)).not.toBeDefined();
+    expect(Translations.getLink(objectWithDefaultProperties, 'fr')).toBe(objectWithDefaultProperties.link);
+    expect(Translations.getLink(objectWithTranslatedProperties, 'fr')).toBe(objectWithTranslatedProperties.link_fr);
+    expect(Translations.getLink(invalidObject, 'fr')).not.toBeDefined();
 
-    expect(Translations.getLink(invalidLanguage, objectWithDefaultProperties)).not.toBeDefined();
+    expect(Translations.getLink(objectWithDefaultProperties, invalidLanguage)).not.toBeDefined();
   });
 
   it('tests retrieving French and English names.', () => {
     expect(Translations.getEnglishName(objectWithDefaultProperties)).toBe(objectWithDefaultProperties.name);
     expect(Translations.getEnglishName(objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.name_en);
-    expect(Translations.getName('en', objectWithDefaultProperties)).toBe(objectWithDefaultProperties.name);
-    expect(Translations.getName('en', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.name_en);
-    expect(Translations.getName('en', invalidObject)).not.toBeDefined();
+    expect(Translations.getName(objectWithDefaultProperties, 'en')).toBe(objectWithDefaultProperties.name);
+    expect(Translations.getName(objectWithTranslatedProperties, 'en')).toBe(objectWithTranslatedProperties.name_en);
+    expect(Translations.getName(invalidObject, 'en')).not.toBeDefined();
 
     expect(Translations.getFrenchName(objectWithDefaultProperties)).toBe(objectWithDefaultProperties.name);
     expect(Translations.getFrenchName(objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.name_fr);
-    expect(Translations.getName('fr', objectWithDefaultProperties)).toBe(objectWithDefaultProperties.name);
-    expect(Translations.getName('fr', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.name_fr);
-    expect(Translations.getName('fr', invalidObject)).not.toBeDefined();
+    expect(Translations.getName(objectWithDefaultProperties, 'fr')).toBe(objectWithDefaultProperties.name);
+    expect(Translations.getName(objectWithTranslatedProperties, 'fr')).toBe(objectWithTranslatedProperties.name_fr);
+    expect(Translations.getName(invalidObject, 'fr')).not.toBeDefined();
 
-    expect(Translations.getName(invalidLanguage, objectWithDefaultProperties)).not.toBeDefined();
+    expect(Translations.getName(objectWithDefaultProperties, invalidLanguage)).not.toBeDefined();
   });
 
   it('tests retrieving French and English variants of different properties.', () => {
@@ -309,9 +309,9 @@ describe('Translations-test', () => {
     expect(Translations.getFrenchVariant('details', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.details_fr);
     expect(Translations.getFrenchVariant('details', invalidObject)).not.toBeDefined();
 
-    expect(Translations.getVariant('en', 'details', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.details_en);
-    expect(Translations.getVariant('fr', 'details', objectWithTranslatedProperties)).toBe(objectWithTranslatedProperties.details_fr);
-    expect(Translations.getVariant(invalidLanguage, 'details', objectWithTranslatedProperties)).not.toBeDefined();
+    expect(Translations.getVariant('details', objectWithTranslatedProperties, 'en')).toBe(objectWithTranslatedProperties.details_en);
+    expect(Translations.getVariant('details', objectWithTranslatedProperties, 'fr')).toBe(objectWithTranslatedProperties.details_fr);
+    expect(Translations.getVariant('details', objectWithTranslatedProperties, invalidLanguage)).not.toBeDefined();
 
     expect(Translations.getEnglishVariant('details', undefined)).not.toBeDefined();
     expect(Translations.getFrenchVariant('details', undefined)).not.toBeDefined();

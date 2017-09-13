@@ -101,7 +101,7 @@ class Main extends React.PureComponent<Props, State> {
       const university = await Configuration.getConfig('/university.json');
       this.props.setUniversity(university);
 
-      await Translations.loadTranslations(this.props.language);
+      await Translations.loadTranslations(Translations.getLanguage());
       const transitInfo: TransitInfo = await Configuration.getConfig('/transit.json');
       this.props.setTransit(transitInfo);
 
@@ -127,18 +127,17 @@ class Main extends React.PureComponent<Props, State> {
     try {
       const available = await Configuration.getAvailableConfigUpdates();
       if (available.files.length > 0) {
-        const language = this.props.language;
         let totalSize = 0;
         for (const file of available.files) {
           totalSize += file.zsize ? file.zsize : file.size;
         }
 
         Alert.alert(
-          Translations.get(language, 'update_available_title'),
-          Configuration.constructUpdateMessage(Translations.get(language, 'update_available_msg'), totalSize),
+          Translations.get('update_available_title'),
+          Configuration.constructUpdateMessage(Translations.get('update_available_msg'), totalSize),
           [
-            { text: Translations.get(language, 'cancel'), style: 'cancel' },
-            { text: Translations.get(language, 'update'), onPress: (): void => this._updateConfiguration() },
+            { text: Translations.get('cancel'), style: 'cancel' },
+            { text: Translations.get('update'), onPress: (): void => this._updateConfiguration() },
           ]
         );
       }

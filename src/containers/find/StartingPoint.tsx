@@ -135,7 +135,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
     // Buttons for viewing directions to the university
     this._directionsButtons = [
       { text: 'Google Maps', onPress: this._openMap.bind(this, 'google') },
-      { text: Translations.get(this.props.language, 'cancel'), style: 'cancel' },
+      { text: Translations.get('cancel'), style: 'cancel' },
     ];
 
     if (Platform.OS === 'ios') {
@@ -242,10 +242,10 @@ class StartingPoint extends React.PureComponent<Props, State> {
       // TODO: remove undefined
       this.props.onStartingPointSelected(this.state.closestBuilding.shorthand, undefined);
     } else {
-      const universityName = Translations.getName(this.props.language, this.props.universityName);
+      const universityName = Translations.getName(this.props.universityName);
       Alert.alert(
         universityName,
-        Translations.get(this.props.language, 'get_directions_to_university'),
+        Translations.get('get_directions_to_university'),
         this._directionsButtons
       );
     }
@@ -304,7 +304,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
                 color={Constants.Colors.primaryWhiteIcon}
                 icon={{ name: 'store', class: 'material' }} />
             <Text style={_styles.lobbyText}>
-              {`${shorthand} ${Translations.get(this.props.language, 'lobby').toLowerCase()}`}
+              {`${shorthand} ${Translations.get('lobby').toLowerCase()}`}
             </Text>
           </View>
         </TouchableOpacity>
@@ -329,7 +329,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: 'directions', class: 'material' }}
-            title={Translations.get(this.props.language, 'navigating_to')} />
+            title={Translations.get('navigating_to')} />
         <Text style={_styles.navigatingTo}>{TextUtils.destinationToString(destination)}</Text>
       </View>
     );
@@ -344,10 +344,10 @@ class StartingPoint extends React.PureComponent<Props, State> {
     let subtitleText;
     let subtitleIcon;
     if (this.state.viewingMap) {
-      subtitleText = Translations.get(this.props.language, 'view_list');
+      subtitleText = Translations.get('view_list');
       subtitleIcon = { name: 'view-list', class: 'material' };
     } else {
-      subtitleText = Translations.get(this.props.language, 'view_map');
+      subtitleText = Translations.get('view_map');
       subtitleIcon = { name: 'map', class: 'material' };
     }
 
@@ -358,7 +358,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
           subtitle={subtitleText}
           subtitleCallback={this._toggleViewingMap.bind(this)}
           subtitleIcon={subtitleIcon}
-          title={Translations.get(this.props.language, 'starting_point')} />
+          title={Translations.get('starting_point')} />
     );
   }
 
@@ -374,7 +374,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
         <Header
             icon={{ name: 'chevron-left', class: 'material' }}
             iconCallback={(): void => (this.refs.Navigator as any).pop()}
-            title={Translations.getName(this.props.language, building) || ''} />
+            title={Translations.getName(building) || ''} />
         <RoomGrid
             filter={this.props.filter}
             language={this.props.language}
@@ -433,7 +433,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
           <View style={_styles.locationErrorContainer}>
             <TouchableOpacity onPress={this.state.locationError.onPress}>
               <Text style={_styles.locationError}>
-                {Translations.get(this.props.language, this.state.locationError.message)}
+                {Translations.get(this.state.locationError.message)}
               </Text>
             </TouchableOpacity>
           </View>
@@ -442,8 +442,8 @@ class StartingPoint extends React.PureComponent<Props, State> {
     }
 
     const suggestion = this.state.closestBuilding
-        ? Translations.getName(this.props.language, this.state.closestBuilding)
-        : Translations.get(this.props.language, 'no_buildings_nearby');
+        ? Translations.getName(this.state.closestBuilding)
+        : Translations.get('no_buildings_nearby');
 
     return (
       <View style={_styles.container}>

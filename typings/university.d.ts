@@ -96,9 +96,8 @@ export interface Building extends Name, Address {
 }
 
 /** Properties which describe a building, */
-export interface BuildingProperty {
-  name: string;         // Name of the property
-  description: string;  // Description of the building property
+export interface BuildingProperty extends Description {
+  name: string; // Name of the property
 }
 
 /** Types of facilities that a certain building on campus may offer. */

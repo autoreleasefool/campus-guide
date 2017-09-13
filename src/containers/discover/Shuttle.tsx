@@ -133,7 +133,7 @@ class Shuttle extends React.PureComponent<Props, State> {
                 coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
                 identifier={stop.id}
                 key={stop.id}
-                title={Translations.getName(this.props.language, stop)} />
+                title={Translations.getName(stop)} />
           ))}
         </MapView>
       </View>
@@ -149,7 +149,7 @@ class Shuttle extends React.PureComponent<Props, State> {
   _renderRoute(direction: ShuttleDirection): JSX.Element {
     return (
       <View style={_styles.dark}>
-        <Text style={_styles.routeText}>{Translations.getVariant(this.props.language, 'route', direction)}</Text>
+        <Text style={_styles.routeText}>{Translations.getVariant('route', direction)}</Text>
       </View>
     );
   }
@@ -169,7 +169,7 @@ class Shuttle extends React.PureComponent<Props, State> {
 
     const currentSchedule = shuttle.schedules[this.state.schedule];
     const direction = currentSchedule.directions[this.state.direction % currentSchedule.directions.length];
-    const directionName = Translations.getName(this.props.language, direction) || '';
+    const directionName = Translations.getName(direction) || '';
     const arrow = this.state.direction === 0 ? 'md-arrow-forward' : 'md-arrow-back';
 
     return (
@@ -191,7 +191,7 @@ class Shuttle extends React.PureComponent<Props, State> {
             tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.polarGrey }}
             onChangeTab={(newTab: { i: number }): void => this.setState({ schedule: newTab.i })}>
           {(shuttle.schedules.map((schedule: ShuttleSchedule): JSX.Element => {
-            const name = Translations.getName(this.props.language, schedule);
+            const name = Translations.getName(schedule);
 
             return (
               <ShuttleTable

@@ -123,7 +123,7 @@ class Settings extends React.PureComponent<Props, State> {
    * Unloads the unused language.
    */
   componentWillUnmount(): void {
-    Translations.unloadTranslations(this.props.language === 'en' ? 'fr' : 'en');
+    Translations.unloadTranslations(Translations.getLanguage() === 'en' ? 'fr' : 'en');
   }
 
   /**
@@ -189,7 +189,7 @@ class Settings extends React.PureComponent<Props, State> {
   _getSetting(key: string): any {
     switch (key) {
       case 'pref_lang':
-        return (this.props.language === 'en')
+        return (Translations.getLanguage() === 'en')
           ? 'English'
           : 'Français';
       case 'pref_wheel':
@@ -197,7 +197,7 @@ class Settings extends React.PureComponent<Props, State> {
       case 'pref_semester': {
         const semester = this.props.semesters[this.props.currentSemester];
 
-        return Translations.getName(this.props.language, semester);
+        return Translations.getName(semester);
       }
       case 'pref_time_format':
         return this.props.timeFormat;
@@ -220,10 +220,9 @@ class Settings extends React.PureComponent<Props, State> {
       return;
     } else if (setting.type === 'link' && setting.key !== 'app_open_source') {
       // Open the provided link
-      const link = Translations.getLink(this.props.language, setting);
+      const link = Translations.getLink(setting);
       External.openLink(
         link || External.getDefaultLink(),
-        this.props.language,
         Linking,
         Alert,
         Clipboard,
@@ -235,7 +234,7 @@ class Settings extends React.PureComponent<Props, State> {
 
     switch (setting.key) {
       case 'pref_lang':
-        this.props.updateConfiguration({ language: this.props.language === 'en' ? 'fr' : 'en' });
+        this.props.updateConfiguration({ language: Translations.getLanguage() === 'en' ? 'fr' : 'en' });
         break;
       case 'pref_wheel':
         this.props.updateConfiguration({ prefersWheelchair: !this.props.prefersWheelchair });
@@ -254,7 +253,7 @@ class Settings extends React.PureComponent<Props, State> {
         const licenses = require('../../../assets/json/licenses.json');
         this.setState({
           listModalSections: licenses,
-          listModalTitle: Translations.getName(this.props.language, setting) || '',
+          listModalTitle: Translations.getName(setting) || '',
           listModalVisible: true,
         });
         break;
@@ -274,7 +273,7 @@ class Settings extends React.PureComponent<Props, State> {
         <ModalHeader
             backgroundColor={Constants.Colors.primaryBackground}
             rightActionEnabled={true}
-            rightActionText={Translations.get(this.props.language, 'done')}
+            rightActionText={Translations.get('done')}
             title={this.state.listModalTitle}
             onRightAction={this._closeModal.bind(this)} />
         <SectionList
@@ -366,7 +365,7 @@ class Settings extends React.PureComponent<Props, State> {
             activeOpacity={item.type === 'boolean' ? 1 : DEFAULT_OPACITY}
             onPress={this._onPressRow.bind(this, item, true)}>
           <View style={_styles.setting}>
-            <Text style={_styles.settingText}>{Translations.getName(this.props.language, item)}</Text>
+            <Text style={_styles.settingText}>{Translations.getName(item)}</Text>
             {content}
           </View>
         </TouchableOpacity>
@@ -384,7 +383,7 @@ class Settings extends React.PureComponent<Props, State> {
     const colonIndex: number = section.key.indexOf(':');
     let sectionNameTranslated = section.key;
     if (colonIndex > -1) {
-      sectionNameTranslated = (this.props.language === 'en')
+      sectionNameTranslated = (Translations.getLanguage() === 'en')
           ? section.key.substring(0, colonIndex)
           : section.key.substring(colonIndex + 1);
     }

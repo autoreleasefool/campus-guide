@@ -65,11 +65,11 @@ class Splash extends React.PureComponent<Props, State> {
     this.props.onLanguageSelect(language);
 
     Alert.alert(
-      Translations.get(language, 'only_once_title'),
-      Translations.get(language, 'only_once_message'),
+      Translations.get('only_once_title'),
+      Translations.get('only_once_message'),
       [{
         onPress: (): void => this._popOrPushToMain(),
-        text: Translations.get(language, 'ok'),
+        text: Translations.get('ok'),
       }]
     );
   }
@@ -100,7 +100,7 @@ class Splash extends React.PureComponent<Props, State> {
       <View style={_styles.container}>
         <TouchableWithoutFeedback
             style={{ flex: 1 }}
-            onPress={this._onLanguageSelect.bind(this, 'en')}>
+            onPress={(): void => this._onLanguageSelect('en')}>
           <View style={_styles.englishContainer}>
             <View style={_styles.languageContainer}>
               <Text style={_styles.languageSubtitle}>
@@ -116,7 +116,7 @@ class Splash extends React.PureComponent<Props, State> {
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
             style={{ flex: 1 }}
-            onPress={this._onLanguageSelect.bind(this, 'fr')}>
+            onPress={(): void => this._onLanguageSelect('fr')}>
           <View style={_styles.frenchContainer}>
             <View style={_styles.languageContainer}>
               <Text style={_styles.languageSubtitle}>

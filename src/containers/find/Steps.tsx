@@ -103,7 +103,6 @@ class Steps extends React.PureComponent<Props, State> {
   _reportError(): void {
     External.openLink(
       'mailto:contact@josephroque.ca?subject=Nav Error:%20Ottawa%20Campus%20Guide',
-      this.props.language,
       Linking,
       Alert,
       Clipboard,
@@ -131,7 +130,7 @@ class Steps extends React.PureComponent<Props, State> {
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: 'directions', class: 'material' }}
-            title={Translations.get(this.props.language, 'navigating_to')} />
+            title={Translations.get('navigating_to')} />
         <Text style={_styles.navigatingTo}>{TextUtils.destinationToString(destination)}</Text>
       </View>
     );
@@ -147,7 +146,7 @@ class Steps extends React.PureComponent<Props, State> {
       <TouchableOpacity onPress={(): void => this._reportError()}>
         <View style={_styles.reportButton}>
           <Text style={_styles.reportButtonText}>
-            {Translations.get(this.props.language, 'report_problem')}
+            {Translations.get('report_problem')}
           </Text>
         </View>
       </TouchableOpacity>
@@ -184,7 +183,7 @@ class Steps extends React.PureComponent<Props, State> {
       <View style={_styles.stepContainer}>
         {iconView}
         <Text style={[ _styles.step, icon == undefined ? _styles.stepPadding : {} ]}>
-          {Translations.getDescription(this.props.language, item)}
+          {Translations.getDescription(item)}
         </Text>
       </View>
     );
@@ -201,7 +200,7 @@ class Steps extends React.PureComponent<Props, State> {
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: 'list', class: 'material' }}
-            title={Translations.get(this.props.language, 'steps')} />
+            title={Translations.get('steps')} />
         <FlatList
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
             data={this.state.steps}

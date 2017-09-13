@@ -188,12 +188,14 @@ class Housing extends React.PureComponent<Props, State> {
   _buildResidenceProperties(residence: Residence): BuildingProperty[] {
     return [
       {
-        description: Translations.getVariant(this.props.language, 'address', residence),
-        name: Translations.get(this.props.language, 'address'),
+        description_en: Translations.getEnglishVariant('address', residence),
+        description_fr: Translations.getFrenchVariant('address', residence),
+        name: 'address',
       },
       {
-        description: Translations.getDescription(this.props.language, residence),
-        name: Translations.get(this.props.language, 'description'),
+        description_en: Translations.getEnglishDescription(residence),
+        description_fr: Translations.getFrenchDescription(residence),
+        name: 'description',
       },
     ];
   }
@@ -252,7 +254,7 @@ class Housing extends React.PureComponent<Props, State> {
     if (residences.length < 2) {
       Snackbar.show({
         duration: Snackbar.LENGTH_LONG,
-        title: Translations.get(this.props.language, 'select_at_least_two'),
+        title: Translations.get('select_at_least_two'),
       });
 
       return;
@@ -291,7 +293,7 @@ class Housing extends React.PureComponent<Props, State> {
           let categoryAdded = false;
 
           // Add categories and all properties if their name matches the filter
-          const categoryName = Translations.getName(props.language, unfilteredProperty) || '';
+          const categoryName = Translations.getName(unfilteredProperty) || '';
           if (adjustedFilter.length === 0 || categoryName.toUpperCase().indexOf(adjustedFilter) >= 0) {
             filteredProperties.push(unfilteredProperty);
             continue;
@@ -300,7 +302,7 @@ class Housing extends React.PureComponent<Props, State> {
           // Check each property in the category and add the category if any match
           // then, add only properties that match the filter
           for (const property of unfilteredProperty.data) {
-            const propertyName = Translations.getName(props.language, property) || '';
+            const propertyName = Translations.getName(property) || '';
             if (adjustedFilter.length === 0 || propertyName.toUpperCase().indexOf(adjustedFilter) >= 0) {
               if (!categoryAdded) {
                 filteredProperties.push({ ...unfilteredProperty });
@@ -336,9 +338,9 @@ class Housing extends React.PureComponent<Props, State> {
    */
   _onSectionSelected(section: string): void {
     if (section === 'off') {
-      const translatedLink = Translations.getLink(this.props.language, this.state.housingInfo.offCampusHousing)
+      const translatedLink = Translations.getLink(this.state.housingInfo.offCampusHousing)
           || External.getDefaultLink();
-      External.openLink(translatedLink, this.props.language, Linking, Alert, Clipboard, TextUtils);
+      External.openLink(translatedLink, Linking, Alert, Clipboard, TextUtils);
 
       return;
     }
@@ -392,7 +394,7 @@ class Housing extends React.PureComponent<Props, State> {
           initialSelection={[ this.props.residence ]}
           language={this.props.language}
           multiSelect={this.props.view === Constants.Views.Housing.ResidenceSelect}
-          multiSelectText={Translations.get(this.props.language, 'compare_residences')}
+          multiSelectText={Translations.get('compare_residences')}
           onMultiSelect={this._onMultiResidenceSelect.bind(this)}
           onSelect={this._onSingleResidenceSelect.bind(this)} />
     );
@@ -430,7 +432,7 @@ class Housing extends React.PureComponent<Props, State> {
             ellipsizeMode={'tail'}
             numberOfLines={1}
             style={_styles.propertyText}>
-          {Translations.getName(this.props.language, item)}
+          {Translations.getName(item)}
         </Text>
       </View>
     );
@@ -451,13 +453,13 @@ class Housing extends React.PureComponent<Props, State> {
     return (
       <View style={_styles.propertyContainer}>
         <Text style={[ _styles.propertyText, _styles.multiPropertyText, this._multiPropertyWidth ]}>
-          {Translations.getName(this.props.language, item)}
+          {Translations.getName(item)}
         </Text>
         {this._residencesToCompare.map((residence: Residence) => (
           <PaddedIcon
               color={Constants.Colors.tertiaryBackground}
               icon={{ class: 'material', name: residence.props[item.key] ? 'check-box' : 'check-box-outline-blank' }}
-              key={`${item.key}.${Translations.getName(this.props.language, residence)}`}
+              key={`${item.key}.${Translations.getName(residence)}`}
               size={Constants.Sizes.Icons.Medium} />
         ))}
       </View>
@@ -471,11 +473,11 @@ class Housing extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a {Header} with the name of the section
    */
   _renderResidencePropertyCategory({ section }: { section: Section < any > }): JSX.Element {
-    const description = Translations.getDescription(this.props.language, section);
+    const description = Translations.getDescription(section);
 
     return (
       <View style={_styles.category}>
-        <Header title={Translations.getName(this.props.language, section) || ''} />
+        <Header title={Translations.getName(section) || ''} />
         {description == undefined
           ? undefined
           : <Text style={_styles.categoryDescription}>{description}</Text>}
@@ -504,7 +506,7 @@ class Housing extends React.PureComponent<Props, State> {
           <Header
               backgroundColor={Constants.Colors.tertiaryBackground}
               icon={{ name: 'compare-arrows', class: 'material' }}
-              title={Translations.get(this.props.language, 'compare_with')} />
+              title={Translations.get('compare_with')} />
         </TouchableOpacity>
         <SectionList
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
@@ -526,12 +528,12 @@ class Housing extends React.PureComponent<Props, State> {
       <View>
         <Header
             icon={{ class: 'material', name: 'hotel' }}
-            title={Translations.get(this.props.language, 'residences')} />
+            title={Translations.get('residences')} />
         {this._residencesToCompare.map((residence: Residence, index: number) => (
           <Text
-              key={`name.${Translations.getName(this.props.language, residence)}`}
+              key={`name.${Translations.getName(residence)}`}
               style={_styles.multiResidenceName}>
-            {`${(index + 1)}: ${Translations.getName(this.props.language, residence)}`}
+            {`${(index + 1)}: ${Translations.getName(residence)}`}
           </Text>
         ))}
         <View style={_styles.multiResidenceContainer}>

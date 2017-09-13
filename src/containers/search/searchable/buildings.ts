@@ -34,7 +34,6 @@ import { filterBuilding, filterRoom } from '../../../util/Search';
 // Types
 import { SearchResult } from '../Searchable';
 import { SearchSupport } from '../../../util/Search';
-import { Language } from '../../../util/Translations';
 import { Section } from '../../../../typings/global';
 import { Building, BuildingRoom, RoomTypeInfo } from '../../../../typings/university';
 
@@ -42,22 +41,20 @@ import { Building, BuildingRoom, RoomTypeInfo } from '../../../../typings/univer
  * Returns a promise containing a list of buildings which match the search terms.
  *
  * @param {string}     key         key for the results
- * @param {Language}   language    the current language
  * @param {string}     searchTerms the search terms for the query
  * @param {Building[]} buildings   list of buildings
  * @returns {Promise<SearchResult[]>} promise which resolves with the results of the search, containing buildings
  */
 async function _getBuildingResults(key: string,
-                             language: Language,
                              searchTerms: string,
                              buildings: Building[]): Promise<SearchResult[]> {
   const results: SearchResult[] = [];
   for (const building of buildings) {
-    const result = filterBuilding(language, searchTerms, building);
+    const result = filterBuilding(searchTerms, building);
     if (result.success) {
       results.push({
         data: building,
-        description: Translations.getName(language, building) || '',
+        description: Translations.getName(building) || '',
         icon: {
           class: 'material',
           name: 'store',
@@ -76,14 +73,12 @@ async function _getBuildingResults(key: string,
  * Returns a promise containing a list of rooms which match the search terms.
  *
  * @param {string}       key          key for the results
- * @param {Language}     language     the current language
  * @param {string}       searchTerms  the search terms for the query
  * @param {RoomTypeInfo} roomTypeInfo info on available room types
  * @param {Building[]}   buildings    list of buildings
  * @returns {Promise<SearchResult[]>} promise which resolves with the results of the search, containing rooms
  */
 async function _getRoomResults(key: string,
-                         language: Language,
                          searchTerms: string,
                          roomTypeInfo: RoomTypeInfo,
                          buildings: Building[]): Promise<SearchResult[]> {
@@ -92,7 +87,7 @@ async function _getRoomResults(key: string,
   // Cache list of room types that match the search terms
   const matchingRoomTypes = new Set();
   for (const roomTypeId of roomTypeInfo.ids) {
-    const roomTypeName = Translations.getName(language, roomTypeInfo.types[roomTypeId]);
+    const roomTypeName = Translations.getName(roomTypeInfo.types[roomTypeId]);
     if (roomTypeName && roomTypeName.toUpperCase().indexOf(searchTerms) >= 0) {
       matchingRoomTypes.add(roomTypeId);
     }
@@ -100,11 +95,11 @@ async function _getRoomResults(key: string,
 
   buildings.forEach((building: Building) => {
     building.rooms.forEach((room: BuildingRoom) => {
-      const result = filterRoom(language, searchTerms, matchingRoomTypes, building.shorthand, room);
+      const result = filterRoom(searchTerms, matchingRoomTypes, building.shorthand, room);
       if (result.success) {
         const roomType = roomTypeInfo.types[room.type || Constants.DefaultRoomType];
         const icon = Display.getPlatformIcon(Platform.OS, roomType);
-        const description = Translations.getName(language, roomType) || '';
+        const description = Translations.getName(roomType) || '';
         results.push({
           data: { building, shorthand: building.shorthand, room: room.name },
           description,
@@ -123,14 +118,12 @@ async function _getRoomResults(key: string,
 /**
  * Returns a promise containing a list of buildings and rooms which match the search terms.
  *
- * @param {Language}                language    the current language
  * @param {string}                  searchTerms the search terms for the query
  * @param {SearchSupport|undefined} data        supporting data for the query
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                                  containing buildings and rooms
  */
 export async function getResults(
-    language: Language,
     searchTerms: string,
     data: SearchSupport | undefined): Promise<Section<SearchResult>[]> {
   if (searchTerms.length === 0) {
@@ -147,11 +140,11 @@ export async function getResults(
 
   // Ignore the case of the search terms
   const buildings: Building[] = require('../../../../assets/js/Buildings');
-  const buildingTranslation = Translations.get(language, 'buildings');
-  const roomTranslation = Translations.get(language, 'rooms');
+  const buildingTranslation = Translations.get('buildings');
+  const roomTranslation = Translations.get('rooms');
 
-  const buildingResults = await _getBuildingResults(buildingTranslation, language, adjustedSearchTerms, buildings);
-  const roomResults = await _getRoomResults(roomTranslation, language, adjustedSearchTerms, roomTypeInfo, buildings);
+  const buildingResults = await _getBuildingResults(buildingTranslation, adjustedSearchTerms, buildings);
+  const roomResults = await _getRoomResults(roomTranslation, adjustedSearchTerms, roomTypeInfo, buildings);
 
   const sections = [{
     data: buildingResults,
@@ -167,18 +160,17 @@ export async function getResults(
 /**
  * Returns an object which maps the section names to an icon which represents it.
  *
- * @param {Language} language the current language
  * @returns {any} section names mapped to icon objects
  */
-export function getResultIcons(language: Language): any {
+export function getResultIcons(): any {
   const icons = {};
-  icons[Translations.get(language, 'buildings')] = {
+  icons[Translations.get('buildings')] = {
     icon: {
       class: 'material',
       name: 'store',
     },
   };
-  icons[Translations.get(language, 'rooms')] = {
+  icons[Translations.get('rooms')] = {
     icon: {
       class: 'material',
       name: 'room',

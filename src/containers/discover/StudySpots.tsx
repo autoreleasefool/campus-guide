@@ -152,21 +152,19 @@ class StudySpots extends React.PureComponent<Props, State> {
 
     const filterId = id;
     if (filterId) {
-      const filterName = Translations.getName(
-        this.props.language,
-        studySpotInfo.filterDescriptions[filterId]) || '';
+      const filterName = Translations.getName(studySpotInfo.filterDescriptions[filterId]) || '';
       if (this.props.activeFilters == undefined) {
         this.props.setFilters([ filterId ]);
       } else if (this.props.activeFilters.has(filterId)) {
         Snackbar.show({
           duration: Snackbar.LENGTH_SHORT,
-          title: `${Translations.get(this.props.language, 'filter_removed')}: ${filterName}`,
+          title: `${Translations.get('filter_removed')}: ${filterName}`,
         });
         this.props.deactivateFilter(filterId);
       } else {
         Snackbar.show({
           duration: Snackbar.LENGTH_SHORT,
-          title: `${Translations.get(this.props.language, 'filter_added')}: ${filterName}`,
+          title: `${Translations.get('filter_added')}: ${filterName}`,
         });
         this.props.activateFilter(filterId);
       }
@@ -210,8 +208,8 @@ class StudySpots extends React.PureComponent<Props, State> {
             onRequestClose={this._setFilterDescriptionsVisible.bind(this, false)}>
           <ModalHeader
               rightActionEnabled={true}
-              rightActionText={Translations.get(this.props.language, 'done')}
-              title={Translations.get(this.props.language, 'filter_descriptions')}
+              rightActionText={Translations.get('done')}
+              title={Translations.get('filter_descriptions')}
               onRightAction={this._setFilterDescriptionsVisible.bind(this, false)} />
           <FilterDescriptions
               descriptions={studySpotInfo.filterDescriptions}
@@ -225,8 +223,8 @@ class StudySpots extends React.PureComponent<Props, State> {
             onRequestClose={this._setReservationsVisible.bind(this, false)}>
           <ModalHeader
               rightActionEnabled={true}
-              rightActionText={Translations.get(this.props.language, 'done')}
-              title={Translations.get(this.props.language, 'study_spots')}
+              rightActionText={Translations.get('done')}
+              title={Translations.get('study_spots')}
               onRightAction={this._setReservationsVisible.bind(this, false)} />
           <LinkCategoryView
               filter={this.props.filter}
@@ -248,14 +246,14 @@ class StudySpots extends React.PureComponent<Props, State> {
               backgroundColor={Constants.Colors.secondaryBackground}
               icon={{ name: 'book', class: 'material' }}
               subtitleIcon={{ name: 'chevron-right', class: 'material' }}
-              title={Translations.get(this.props.language, 'reserve_study_spot')} />
+              title={Translations.get('reserve_study_spot')} />
         </TouchableOpacity>
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: 'filter-list', class: 'material' }}
             subtitleCallback={this._setFilterDescriptionsVisible.bind(this, true)}
             subtitleIcon={{ name: 'info', class: 'material' }}
-            title={Translations.get(this.props.language, 'filters')} />
+            title={Translations.get('filters')} />
         <StudyFilters
             activeFilters={this.props.activeFilters}
             filterDescriptions={studySpotInfo.filterDescriptions}
@@ -276,7 +274,7 @@ class StudySpots extends React.PureComponent<Props, State> {
                 backgroundColor={Constants.Colors.secondaryBackground}
                 icon={{ class: 'material', name: 'list' }}
                 subtitleIcon={{ class: 'material', name: 'chevron-right' }}
-                title={Translations.get(this.props.language, 'view_full_list')} />
+                title={Translations.get('view_full_list')} />
           </TouchableOpacity>
         </View>
       </View>

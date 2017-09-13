@@ -30,26 +30,24 @@ import * as Translations from '../../../util/Translations';
 // Types
 import { SearchResult } from '../Searchable';
 import { SearchSupport } from '../../../util/Search';
-import { Language } from '../../../util/Translations';
 import { LinkSection, Section } from '../../../../typings/global';
 
 /**
  * Returns a promise containing a list of external links and categories which match the search terms.
  *
- * @param {Language}      language     the current language
  * @param {string}        searchTerms  the search terms for the query
  * @param {LinkSection[]} linkSections list of link sections
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                             containing links
  */
-async function _getResults(language: Language,
-                     searchTerms: string,
-                     linkSections: LinkSection[]): Promise<Section<SearchResult>[]> {
+async function _getResults(
+    searchTerms: string,
+    linkSections: LinkSection[]): Promise<Section<SearchResult>[]> {
   const links: SearchResult[] = [];
   const categories: SearchResult[] = [];
 
-  const externalLinksTranslation = Translations.get(language, 'external_links');
-  const usefulLinksTranslation = Translations.get(language, 'uo_info');
+  const externalLinksTranslation = Translations.get('external_links');
+  const usefulLinksTranslation = Translations.get('uo_info');
 
   // Method to add a link to the results
   const pushLink = (sectionName: string,
@@ -57,10 +55,10 @@ async function _getResults(language: Language,
                     iconName: string,
                     link: object,
                     matchedSectionName: boolean): void => {
-    const translatedLink: string = Translations.getLink(language, link)
+    const translatedLink: string = Translations.getLink(link)
         || External.getDefaultLink();
     links.push({
-      data: { link: translatedLink, language },
+      data: { link: translatedLink },
       description: sectionName,
       icon: {
         class: 'ionicon',
@@ -79,12 +77,12 @@ async function _getResults(language: Language,
   // TODO: confirm this works with changing size of sectionsToSearch
   for (const section of sectionsToSearch) {
     let sectionMatches = false;
-    const sectionName: string = Translations.getName(language, section) || '';
+    const sectionName: string = Translations.getName(section) || '';
     if (sectionName.toUpperCase().indexOf(searchTerms) >= 0) {
       sectionMatches = true;
       categories.push({
         data: section.id,
-        description: Translations.get(language, 'see_related_links'),
+        description: Translations.get('see_related_links'),
         icon: section.icon,
         key: usefulLinksTranslation,
         matchedTerms: [ sectionName.toUpperCase() ],
@@ -94,7 +92,7 @@ async function _getResults(language: Language,
 
     if (section.links) {
       for (const link of section.links) {
-        const linkName = Translations.getName(language, link) || '';
+        const linkName = Translations.getName(link) || '';
         if (sectionMatches || linkName.toUpperCase().indexOf(searchTerms) >= 0) {
           pushLink(sectionName, linkName, 'md-open', link, true);
         }
@@ -103,7 +101,7 @@ async function _getResults(language: Language,
 
     if (section.social) {
       for (const link of section.social) {
-        const linkName = Translations.getName(language, link) || '';
+        const linkName = Translations.getName(link) || '';
         if (sectionMatches || linkName.toUpperCase().indexOf(searchTerms) >= 0) {
           const iconName = Display.getSocialMediaIconName(Translations.getEnglishName(link) || '');
           pushLink(sectionName, linkName, iconName, link, true);
@@ -134,14 +132,12 @@ async function _getResults(language: Language,
 /**
  * Returns a promise containing a list of links and link categories which match the search terms.
  *
- * @param {Language}                language    the current language
  * @param {string}                  searchTerms the search terms for the query
  * @param {SearchSupport|undefined} data        supporting data for the query
  * @returns {Promise<Section<SearchResult>[]>} promise which resolves with the results of the search,
  *                                             containing links and categories
  */
 export async function getResults(
-    language: Language,
     searchTerms: string,
     data: SearchSupport | undefined): Promise <Section<SearchResult>[]> {
   if (searchTerms.length === 0) {
@@ -156,7 +152,7 @@ export async function getResults(
 
   // Ignore the case of the search terms
   const adjustedSearchTerms: string = searchTerms.toUpperCase();
-  const results = await _getResults(language, adjustedSearchTerms, linkSections);
+  const results = await _getResults(adjustedSearchTerms, linkSections);
 
   return results;
 }
@@ -164,18 +160,17 @@ export async function getResults(
 /**
  * Returns an object which maps the section names to an icon which represents it.
  *
- * @param {Language} language the current language
  * @returns {any} section names mapped to icon objects
  */
-export function getResultIcons(language: Language): any {
+export function getResultIcons(): any {
   const icons = {};
-  icons[Translations.get(language, 'uo_info')] = {
+  icons[Translations.get('uo_info')] = {
     icon: {
       class: 'material',
       name: 'link',
     },
   };
-  icons[Translations.get(language, 'external_links')] = {
+  icons[Translations.get('external_links')] = {
     icon: {
       class: 'ionicon',
       name: 'md-open',

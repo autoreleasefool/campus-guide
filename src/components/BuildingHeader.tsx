@@ -113,8 +113,8 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
    */
   _openFacilityDescription(facility: Facility): void {
     Alert.alert(
-      Translations.get(this.props.language, 'whats_this_icon'),
-      Translations.get(this.props.language, facility)
+      Translations.get('whats_this_icon'),
+      Translations.get(facility)
     );
   }
 
@@ -180,19 +180,21 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
     const properties = this.props.properties;
     let propertiesView: JSX.Element | undefined;
     if (properties != undefined) {
+      console.log(JSON.stringify(properties));
+
       propertiesView = (
         <View>
           {properties.map((property: BuildingProperty, i: number) => (
-            <View key={`prop.${Translations.getEnglishName(property) || ''}`}>
+            <View key={`prop.${property.name}`}>
               <Text
                   key={`prop.title.${i}`}
                   style={_styles.title}>
-                {Translations.getName(this.props.language, property)}
+                {Translations.get(property.name)}
               </Text>
               <Text
                   key={`prop.desc.${i}`}
                   style={_styles.body}>
-                {Translations.getDescription(this.props.language, property)}
+                {Translations.getDescription(property)}
               </Text>
             </View>
           ))}

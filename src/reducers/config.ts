@@ -25,6 +25,7 @@
 // Imports
 import * as Actions from '../actionTypes';
 import { Options, ProgressUpdate } from '../util/Configuration';
+import { setLanguage } from '../util/Translations';
 import { Semester } from '../../typings/university';
 
 /** Config reducer state. */
@@ -69,6 +70,10 @@ const initialState: State = {
 export default function config(state: State = initialState, action: any): State {
   switch (action.type) {
     case Actions.Configuration.ConfigUpdate:
+      if (action.options.language && state.options.language !== action.options.language) {
+        setLanguage(action.options.language);
+      }
+
       return {
         options: { ...state.options, ...action.options },
         update: { ...state.update },

@@ -152,27 +152,26 @@ class UpdateScreen extends React.PureComponent<Props, State> {
 
       if (!this.props.updateConfirmed) {
         if (available.files.length > 0) {
-          const language = this.props.language;
           let totalSize = 0;
           for (const file of available.files) {
             totalSize += file.zsize ? file.zsize : file.size;
           }
 
           Alert.alert(
-            Translations.get(language, 'update_available_title'),
-            Configuration.constructUpdateMessage(Translations.get(language, 'update_available_msg'), totalSize),
+            Translations.get('update_available_title'),
+            Configuration.constructUpdateMessage(Translations.get('update_available_msg'), totalSize),
             [
               {
                 onPress: (): Promise<void> => this._updateRejected(),
                 style: 'cancel',
-                text: Translations.get(language, 'cancel'),
+                text: Translations.get('cancel'),
               },
               {
                 onPress: (): void => {
                   this.props.confirmUpdate();
                   this._beginUpdate(available);
                 },
-                text: Translations.get(language, 'update'),
+                text: Translations.get('update'),
               },
             ]
           );
@@ -225,7 +224,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * Displays a prompt to user indicating the server could not be reached and their options.
    */
   async _notifyServerFailed(): Promise<void> {
-    const language = this.props.language;
+    const language = Translations.getLanguage();
 
     try {
       await Configuration.init();
@@ -374,7 +373,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   async _returnToMain(): Promise<void> {
     try {
-      await Translations.loadTranslations(this.props.language);
+      await Translations.loadTranslations(Translations.getLanguage());
       this._popOrPushToMain();
     } catch (err) {
       console.error('Unable to initialize configuration for Update.', err);
@@ -513,7 +512,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the hierarchy of views to render
    */
   render(): JSX.Element {
-    const language = this.props.language;
+    const language = Translations.getLanguage();
 
     // Get background color for screen, and color for progress bar
     let backgroundColor = Constants.Colors.primaryBackground;

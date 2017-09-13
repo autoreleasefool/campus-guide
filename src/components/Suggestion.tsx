@@ -69,7 +69,7 @@ export default class Suggestion extends React.PureComponent<Props, State> {
    * @returns {string} the loading text prop, or the translation of 'loading'
    */
   _getLoadingText(): string {
-    return this.props.loadingText || Translations.get(this.props.language, 'loading');
+    return this.props.loadingText || Translations.get('loading');
   }
 
   /**
@@ -78,7 +78,7 @@ export default class Suggestion extends React.PureComponent<Props, State> {
    * @returns {string} 'Suggested: <suggestion>'
    */
   _getSuggestion(): string {
-    return `${Translations.get(this.props.language, 'suggested')}: ${this.props.suggestion || ''}`;
+    return `${Translations.get('suggested')}: ${this.props.suggestion || ''}`;
   }
 
   /**

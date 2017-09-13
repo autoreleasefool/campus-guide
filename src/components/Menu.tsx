@@ -129,7 +129,7 @@ export default class Menu extends React.PureComponent<Props, State> {
         <Header
             icon={icon}
             subtitleIcon={{ name: subtitleIconName, class: 'material' }}
-            title={Translations.getName(this.props.language, section) || ''} />
+            title={Translations.getName(section) || ''} />
         {index < this.props.sections.length - 1 ? <View style={_styles.separator} /> : undefined}
       </TouchableOpacity>
     );

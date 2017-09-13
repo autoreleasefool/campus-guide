@@ -59,8 +59,8 @@ export default class StudySpots extends React.PureComponent<Props, State> {
    */
   _renderItem({ item }: { item: string }): JSX.Element {
     const filter = this.props.descriptions[item];
-    const name = Translations.getName(this.props.language, filter) || '';
-    const description = Translations.getDescription(this.props.language, filter) || '';
+    const name = Translations.getName(filter) || '';
+    const description = Translations.getDescription(filter) || '';
     const icon = Display.getPlatformIcon(Platform.OS, filter);
 
     return (
