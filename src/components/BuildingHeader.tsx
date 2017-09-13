@@ -180,8 +180,6 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
     const properties = this.props.properties;
     let propertiesView: JSX.Element | undefined;
     if (properties != undefined) {
-      console.log(JSON.stringify(properties));
-
       propertiesView = (
         <View>
           {properties.map((property: BuildingProperty, i: number) => (
