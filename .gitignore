@@ -53,6 +53,7 @@ fastlane/Preview.html
 fastlane/screenshots
 
 # Assets
+.vscode/
 /assets/
 /scraper/
 strings_secret.xml
