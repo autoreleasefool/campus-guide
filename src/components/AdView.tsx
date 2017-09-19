@@ -41,7 +41,7 @@ export default class AdView extends React.PureComponent<Props, State> {
     return (
       <Image
           resizeMode={'cover'}
-          source={require('../../assets/images/university/tbt.jpg')}
+          source={require('../../assets/images/buildings/full/TBT.jpg')}
           style={[ _styles.image ]} />
     );
   }
