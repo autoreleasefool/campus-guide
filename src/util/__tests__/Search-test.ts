@@ -23,6 +23,7 @@
 
 // Require modules used in testing
 import * as Search from '../Search';
+import * as Translations from '../Translations';
 
 // Mock translations for days
 jest.mock('../../../assets/json/CoreTranslations.json', () => ({
@@ -66,6 +67,11 @@ const rooms: BuildingRoom[] = [{
 
 describe('Search-test', () => {
 
+  beforeEach(() => {
+    // Set default language to English for tests
+    Translations.setLanguage('en');
+  });
+
   it('tests filtering grid images', () => {
 
     // GridImages to filter
@@ -80,7 +86,7 @@ describe('Search-test', () => {
       name_fr: 'French',
     }];
 
-    // Test shorthands
+    // Test short hands
     let result = Search.filterGridImage('GI', gridImages[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['GI']);
@@ -107,15 +113,7 @@ describe('Search-test', () => {
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['ENGLISH']);
 
-    result = Search.filterGridImage('ENG', gridImages[0]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    result = Search.filterGridImage('ENG', gridImages[1]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    // Test lowercase
+    // Test lower case
     for (const gridImage of gridImages) {
       result = Search.filterGridImage('grid', gridImage);
       expect(result.success).toBeFalsy();
@@ -173,18 +171,6 @@ describe('Search-test', () => {
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([studySpots[1].name_en.toUpperCase()]);
 
-    result = Search.filterStudySpot(studySpots[1].name_en.toUpperCase(), studySpots[1]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    result = Search.filterStudySpot(studySpots[1].name_fr.toUpperCase(), studySpots[1]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    result = Search.filterStudySpot(studySpots[1].name_fr.toUpperCase(), studySpots[1]);
-    expect(result.success).toBeTruthy();
-    expect(result.matches).toEqual([studySpots[1].name_fr.toUpperCase()]);
-
     // Test description
     result = Search.filterStudySpot(studySpots[0].description.toUpperCase(), studySpots[0]);
     expect(result.success).toBeFalsy();
@@ -195,18 +181,6 @@ describe('Search-test', () => {
     expect(result.matches).toEqual([]);
 
     result = Search.filterStudySpot(studySpots[1].description_en.toUpperCase(), studySpots[1]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    result = Search.filterStudySpot(studySpots[1].description_en.toUpperCase(), studySpots[1]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    result = Search.filterStudySpot(studySpots[1].description_fr.toUpperCase(), studySpots[1]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    result = Search.filterStudySpot(studySpots[1].description_fr.toUpperCase(), studySpots[1]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
@@ -276,7 +250,7 @@ describe('Search-test', () => {
       thumbnail: 'B2.jpg',
     }];
 
-    // Test shorthands
+    // Test short hands
     let result = Search.filterBuilding(buildings[0].shorthand.toUpperCase(), buildings[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual([buildings[0].shorthand.toUpperCase()]);
@@ -307,11 +281,7 @@ describe('Search-test', () => {
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
-    result = Search.filterBuilding(buildings[1].name_en.toUpperCase(), buildings[1]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    // Test lowercase
+    // Test lower case
     for (const building of buildings) {
       result = Search.filterBuilding('build', building);
       expect(result.success).toBeFalsy();
@@ -324,7 +294,7 @@ describe('Search-test', () => {
 
     // Test addresses
     for (const building of buildings) {
-      const address = building.address || building.address_en || building.address_fr || 'ADDRESS';
+      const address = building.address || building.address_en || 'ADDRESS';
       result = Search.filterBuilding(address, building);
       expect(result.success).toBeFalsy();
       expect(result.matches).toEqual([]);
@@ -392,7 +362,7 @@ describe('Search-test', () => {
     const roomTypes1 = new Set(roomTypeLists[0]);
     const roomTypes2 = new Set(roomTypeLists[1]);
 
-    // Test shorthands
+    // Test short hands
     let result = Search.filterRoom('B1', new Set(), 'B1', rooms[0]);
     expect(result.success).toBeTruthy();
     expect(result.matches).toEqual(['B1 ROOM1']);
@@ -441,18 +411,6 @@ describe('Search-test', () => {
     expect(result.matches).toEqual(['ENGLISH']);
 
     result = Search.filterRoom('ENG', new Set(), 'B1', rooms[2]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    result = Search.filterRoom('FRE', new Set(), 'B1', rooms[0]);
-    expect(result.success).toBeFalsy();
-    expect(result.matches).toEqual([]);
-
-    result = Search.filterRoom('FRE', new Set(), 'B1', rooms[1]);
-    expect(result.success).toBeTruthy();
-    expect(result.matches).toEqual(['FRENCH']);
-
-    result = Search.filterRoom('FRE', new Set(), 'B1', rooms[2]);
     expect(result.success).toBeFalsy();
     expect(result.matches).toEqual([]);
 
