@@ -449,7 +449,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
         <MapView
             followsUserLocation={true}
             initialRegion={this._initialRegion}
-            showsUserLoction={true}
+            showsUserLocation={true}
             style={_styles.map}
             onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })} />
         <Suggestion
@@ -511,7 +511,7 @@ const _styles = StyleSheet.create({
     margin: Constants.Sizes.Margins.Regular,
   },
   map: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
   },
   navigatingTo: {
     color: Constants.Colors.primaryWhiteText,

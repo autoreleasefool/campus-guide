@@ -219,11 +219,7 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.secondaryBackground,
   },
   map: {
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
+    ...StyleSheet.absoluteFillObject,
   },
   routeText: {
     color: Constants.Colors.primaryWhiteText,

@@ -268,10 +268,6 @@ const _styles = StyleSheet.create({
     flex: 2,
   },
   map: {
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
+    ...StyleSheet.absoluteFillObject,
   },
 });
