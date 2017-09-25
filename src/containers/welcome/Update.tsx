@@ -138,7 +138,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     };
 
     try {
-      await Configuration.updateConfig(availableUpdates, callbacks);
+      await Configuration.updateConfig(availableUpdates, callbacks, Platform.OS);
     } catch (err) {
       if (__DEV__) {
         console.log('Failed configuration update check.', err);
@@ -551,9 +551,9 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     const progress = (Platform.OS === 'android')
         ? (
           <ProgressBar
+              color={foregroundColor}
               indeterminate={false}
               progress={this._getProgress()}
-              progressTintColor={foregroundColor}
               style={_styles.progress}
               styleAttr='Horizontal' />
         )

@@ -47,7 +47,7 @@ export interface Options {
   scheduleByCourse?: boolean;               // True to sort classes by course, false to sort by week
   semesters?: Semester[];                   // List of semesters currently available
   universityLocation?: LatLong | undefined; // Latitude and longitude of the university
-  universityName?: Name | undefined;        // Name of the univeristy
+  universityName?: Name | undefined;        // Name of the university
 }
 
 /** Describes the progress of an app update. */
@@ -280,8 +280,12 @@ function setConfigLastUpdatedAt(lastUpdatedAt: number): Promise<void> {
  *
  * @param {ConfigurationDetails} configDetails set of files to update
  * @param {UpdateCallbacks}      callbacks     functions to invoke as update progresses
+ * @param {PlatformOSType}       os            active operating system
  */
-async function _updateConfig(configDetails: ConfigurationDetails, callbacks: UpdateCallbacks): Promise < void > {
+async function _updateConfig(
+    configDetails: ConfigurationDetails,
+    callbacks: UpdateCallbacks,
+    os: PlatformOSType): Promise < void > {
   if (configDetails.files.length === 0) {
     // If there are no updates, exit
     return;
@@ -316,10 +320,12 @@ async function _updateConfig(configDetails: ConfigurationDetails, callbacks: Upd
   try {
     for (const update of configDetails.files) {
       // Download the file
+      // FIXME: Android cannot use Accept-Encoding
+      // (https://react-native.canny.io/feature-requests/p/fetch-with-accept-encoding-gzip-does-not-work)
       const downloadResult = await RNFS.downloadFile({
         begin: (download: RNFS.DownloadBeginCallbackResult): void => onStart(update.name, download),
-        fromUrl: (update.zsize && update.zurl) ? update.zurl : update.url,
-        headers: { 'Accept-Encoding': 'true' },
+        fromUrl: (os !== 'android' && update.zsize && update.zurl) ? update.zurl : update.url,
+        headers: { 'Accept-Encoding': 'gzip,deflate' },
         progress: callbacks.onDownloadProgress,
         toFile: TEMP_CONFIG_DIRECTORY + update.name,
       }).promise;
@@ -376,10 +382,14 @@ async function _updateConfig(configDetails: ConfigurationDetails, callbacks: Upd
  *
  * @param {ConfigurationDetails} configDetails set of files to update
  * @param {UpdateCallbacks}      callbacks     functions to invoke as update progresses
+ * @param {PlatformOSType}       os            active operating system
  * @returns {Promise<void>} a promise which resolves when the update is complete
  */
-export function updateConfig(configDetails: ConfigurationDetails, callbacks: UpdateCallbacks): Promise<void> {
-  return _updateConfig(configDetails, callbacks);
+export function updateConfig(
+    configDetails: ConfigurationDetails,
+    callbacks: UpdateCallbacks,
+    os: PlatformOSType): Promise<void> {
+  return _updateConfig(configDetails, callbacks, os);
 }
 
 /**
@@ -396,7 +406,7 @@ async function _getAvailableConfigUpdates(os: PlatformOSType): Promise<Configura
         ? (os === 'ios' ? 'http://localhost:8080' : 'http://10.0.2.2:8080')
         : ''; // TODO: get server name in production env
     const configUpdateURL = `${configLocation}/config/${DeviceInfo.getVersion()}.json`;
-    const response = await fetch(configUpdateURL);
+    const response = await fetch(configUpdateURL, { headers: { platform: os } });
     const appConfig: ConfigurationDetails = await response.json();
     const appConfigToUpdate: ConfigurationDetails = {
       files: [],
