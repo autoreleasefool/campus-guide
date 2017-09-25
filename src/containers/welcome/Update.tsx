@@ -41,7 +41,6 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 // Imports
-import emptyFunction from 'empty/function';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 import * as RNFS from 'react-native-fs';
@@ -103,7 +102,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   componentDidMount(): void {
     // Must set event listener for NetInfo.isConnected.fetch to work
     // https://github.com/facebook/react-native/issues/8469
-    NetInfo.isConnected.addEventListener('change', emptyFunction);
+    NetInfo.isConnected.addEventListener('change', this._emptyFunction);
     this._checkConnection();
   }
 
@@ -111,7 +110,16 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * Removes the connection listener for NetInfo.
    */
   componentWillUnmount(): void {
-    NetInfo.isConnected.removeEventListener('change', emptyFunction);
+    NetInfo.isConnected.removeEventListener('change', this._emptyFunction);
+  }
+
+  /**
+   * An empty function.
+   */
+  _emptyFunction(): void {
+    if (__DEV__) {
+      console.log('Function purposefully left empty.');
+    }
   }
 
   /**
@@ -148,7 +156,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   async _confirmUpdate(): Promise<void> {
     try {
-      const available = await Configuration.getAvailableConfigUpdates();
+      const available = await Configuration.getAvailableConfigUpdates(Platform.OS);
 
       if (!this.props.updateConfirmed) {
         if (available.files.length > 0) {
@@ -157,12 +165,14 @@ class UpdateScreen extends React.PureComponent<Props, State> {
             totalSize += file.zsize ? file.zsize : file.size;
           }
 
+          const onCancel = (): Promise<void> => this._updateRejected();
+
           Alert.alert(
             Translations.get('update_available_title'),
             Configuration.constructUpdateMessage(Translations.get('update_available_msg'), totalSize),
             [
               {
-                onPress: (): Promise<void> => this._updateRejected(),
+                onPress: onCancel,
                 style: 'cancel',
                 text: Translations.get('cancel'),
               },
@@ -173,7 +183,8 @@ class UpdateScreen extends React.PureComponent<Props, State> {
                 },
                 text: Translations.get('update'),
               },
-            ]
+            ],
+            { onDismiss: onCancel }
           );
         }
 
@@ -235,19 +246,22 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         coreErrorTitle: 'server_unavailable',
       });
 
+      const onCancel = (): void => this._popOrPushToMain();
+
       Alert.alert(
         CoreTranslations[language].server_unavailable,
         CoreTranslations[language].server_unavailable_config_available,
         [
           {
+            onPress: onCancel,
+            text: CoreTranslations[language].later,
+          },
+          {
             onPress: (): void => this._checkConnection(),
             text: CoreTranslations[language].retry,
           },
-          {
-            onPress: (): void => this._popOrPushToMain(),
-            text: CoreTranslations[language].later,
-          },
-        ]
+        ],
+        { onDismiss: onCancel }
       );
       this._popOrPushToMain();
     } catch (err) {
@@ -256,20 +270,23 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         coreErrorTitle: 'server_unavailable',
       });
 
+      const onCancel = (): void => this.setState({ showRetry: true });
+
       Alert.alert(
         CoreTranslations[language].server_unavailable,
         CoreTranslations[language].server_unavailable_config_unavailable,
         [
           {
-            onPress: (): void => this._checkConnection(),
-            text: CoreTranslations[language].retry,
-          },
-          {
-            onPress: (): void => this.setState({ showRetry: true }),
+            onPress: onCancel,
             style: 'cancel',
             text: CoreTranslations[language].cancel,
           },
-        ]
+          {
+            onPress: (): void => this._checkConnection(),
+            text: CoreTranslations[language].retry,
+          },
+        ],
+        { onDismiss: onCancel }
       );
     }
   }
@@ -294,19 +311,22 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         coreErrorTitle: 'no_internet',
       });
 
+      const onCancel = (): void => this._popOrPushToMain();
+
       Alert.alert(
         CoreTranslations[language].no_internet,
         CoreTranslations[language].no_internet_config_available,
         [
           {
+            onPress: onCancel,
+            text: CoreTranslations[language].later,
+          },
+          {
             onPress: (): void => this._checkConnection(),
             text: CoreTranslations[language].retry,
           },
-          {
-            onPress: (): void => this._popOrPushToMain(),
-            text: CoreTranslations[language].later,
-          },
-        ]
+        ],
+        { onDismiss: onCancel }
       );
       this._popOrPushToMain();
     } catch (err) {
@@ -315,20 +335,23 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         coreErrorTitle: 'no_internet',
       });
 
+      const onCancel = (): void => this.setState({ showRetry: true });
+
       Alert.alert(
         CoreTranslations[language].no_internet,
         CoreTranslations[language].no_internet_config_unavailable,
         [
           {
-            onPress: (): void => this._checkConnection(),
-            text: CoreTranslations[language].retry,
-          },
-          {
-            onPress: (): void => this.setState({ showRetry: true }),
+            onPress: onCancel,
             style: 'cancel',
             text: CoreTranslations[language].cancel,
           },
-        ]
+          {
+            onPress: (): void => this._checkConnection(),
+            text: CoreTranslations[language].retry,
+          },
+        ],
+        { onDismiss: onCancel }
       );
     }
   }
@@ -350,20 +373,23 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         coreErrorTitle: 'update_rejected',
       });
 
+      const onCancel = (): void => this.setState({ showRetry: true });
+
       Alert.alert(
         CoreTranslations[language].update_rejected,
         CoreTranslations[language].update_rejected_config_unavailable,
         [
           {
-            onPress: (): void => this._checkConnection(),
-            text: CoreTranslations[language].retry,
-          },
-          {
-            onPress: (): void => this.setState({ showRetry: true }),
+            onPress: onCancel,
             style: 'cancel',
             text: CoreTranslations[language].cancel,
           },
-        ]
+          {
+            onPress: (): void => this._checkConnection(),
+            text: CoreTranslations[language].retry,
+          },
+        ],
+        { onDismiss: onCancel }
       );
     }
   }

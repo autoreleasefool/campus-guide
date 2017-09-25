@@ -28,6 +28,7 @@ import {
   Alert,
   AsyncStorage,
   InteractionManager,
+  Platform,
   StyleSheet,
   View,
 } from 'react-native';
@@ -125,7 +126,7 @@ class Main extends React.PureComponent<Props, State> {
     }
 
     try {
-      const available = await Configuration.getAvailableConfigUpdates();
+      const available = await Configuration.getAvailableConfigUpdates(Platform.OS);
       if (available.files.length > 0) {
         let totalSize = 0;
         for (const file of available.files) {

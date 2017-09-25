@@ -28,6 +28,7 @@ import * as HttpStatus from 'http-status-codes';
 import * as RNFS from 'react-native-fs';
 
 // Types
+import { PlatformOSType } from 'react-native';
 import { Language } from './Translations';
 import { LatLong, Name, TimeFormat } from '../../typings/global';
 import { TransitInfo } from '../../typings/transit';
@@ -107,7 +108,7 @@ let checkedForUpdate = false;
 const initPromises: any[] = [];
 
 // Set to true to delete configuration when app opens. Only possible while debugging.
-const clearConfigOnStart = true;
+const clearConfigOnStart = false;
 // Indicates if the config has been cleared
 let configCleared = false;
 
@@ -384,13 +385,16 @@ export function updateConfig(configDetails: ConfigurationDetails, callbacks: Upd
 /**
  * Checks if there is a configuration available to download. Returns the list of files available to update.
  *
+ * @param {PlatformOSType} os the active operating system
  * @returns {Promise<ConfigurationDetails>} promise which resolves to true or false depending on if a
  *                                          config update is available
  */
-async function _getAvailableConfigUpdates(): Promise<ConfigurationDetails> {
+async function _getAvailableConfigUpdates(os: PlatformOSType): Promise<ConfigurationDetails> {
   try {
     // Fetch most recent config versions from server
-    const configLocation = __DEV__ ? 'http://localhost:8080' : ''; // TODO: get server name in production env
+    const configLocation = __DEV__
+        ? (os === 'ios' ? 'http://localhost:8080' : 'http://10.0.2.2:8080')
+        : ''; // TODO: get server name in production env
     const configUpdateURL = `${configLocation}/config/${DeviceInfo.getVersion()}.json`;
     const response = await fetch(configUpdateURL);
     const appConfig: ConfigurationDetails = await response.json();
@@ -436,13 +440,14 @@ async function _getAvailableConfigUpdates(): Promise<ConfigurationDetails> {
 /**
  * Checks if there is a configuration available to download. Returns the list of files available to update.
  *
+ * @param {PlatformOSType} os the active operating system
  * @returns {Promise<ConfigurationDetails>} promise which resolves to with the list of available updates,
  *                                          or an empty list
  */
-export function getAvailableConfigUpdates(): Promise<ConfigurationDetails> {
+export function getAvailableConfigUpdates(os: PlatformOSType): Promise<ConfigurationDetails> {
   checkedForUpdate = true;
 
-  return _getAvailableConfigUpdates();
+  return _getAvailableConfigUpdates(os);
 }
 
 /**
