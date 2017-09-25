@@ -88,6 +88,7 @@ export default class Menu extends React.PureComponent<Props, State> {
    */
   _getSectionImage(section: MenuSection): JSX.Element | undefined {
     let image: JSX.Element;
+    const borderRadius = Platform.OS === 'android' ? { borderRadius: Constants.Sizes.Margins.Regular } : {};
 
     if (section.image) {
       if (typeof (section.image) === 'string') {
@@ -95,14 +96,14 @@ export default class Menu extends React.PureComponent<Props, State> {
           <Image
               resizeMode={'cover'}
               source={{ uri: Configuration.getImagePath(section.image) }}
-              style={_styles.sectionImage} />
+              style={[ _styles.sectionImage, borderRadius ]} />
         );
       } else {
         image = (
           <Image
               resizeMode={'cover'}
               source={section.image}
-              style={_styles.sectionImage} />
+              style={[ _styles.sectionImage, borderRadius ]} />
         );
       }
     }
@@ -150,12 +151,13 @@ export default class Menu extends React.PureComponent<Props, State> {
 
     return (
       <TouchableOpacity
-          style={_styles.cardShadow}
+          style={[ _styles.cardShadow, _styles.rounded ]}
           onPress={(): void => this.props.onSectionSelected(item.id)}>
-        <View style={[ _styles.cardAndroid, viewMargins, cardHeight ]}>
+        <View style={[ _styles.cardAndroid, _styles.rounded, viewMargins, cardHeight ]}>
           {sectionImage}
           <Header
               icon={icon}
+              style={[ _styles.rounded, { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 } ]}
               title={Translations.getName(item) || ''} />
         </View>
       </TouchableOpacity>
@@ -172,7 +174,7 @@ export default class Menu extends React.PureComponent<Props, State> {
       <FlatList
           data={this.props.sections}
           keyExtractor={(section: MenuSection): string => section.id}
-          renderItem={Platform.OS === 'android' ? this._renderSection.bind(this) : this._renderSectionCard.bind(this)}
+          renderItem={Platform.OS === 'ios' ? this._renderSection.bind(this) : this._renderSectionCard.bind(this)}
           style={_styles.container} />
     );
   }
@@ -181,7 +183,6 @@ export default class Menu extends React.PureComponent<Props, State> {
 // Private styles for component
 const _styles = StyleSheet.create({
   cardAndroid: {
-    borderRadius: Constants.Sizes.Margins.Regular,
     overflow: 'hidden',
     width: cardWidth,
   },
@@ -190,7 +191,6 @@ const _styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   cardShadow: {
-    borderRadius: Constants.Sizes.Margins.Regular,
     elevation: Constants.Sizes.Margins.Condensed,
     margin: Constants.Sizes.Margins.Expanded,
     shadowOffset: {
@@ -202,6 +202,9 @@ const _styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  rounded: {
+    borderRadius: Constants.Sizes.Margins.Regular,
   },
   sectionImage: {
     bottom: 0,

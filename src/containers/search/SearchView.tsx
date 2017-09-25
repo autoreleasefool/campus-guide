@@ -264,7 +264,7 @@ class SearchView extends React.PureComponent<Props, State> {
               singleResults: this._singleResults,
             });
           })
-          .catch((err: any) => console.error('Could not get search results.', err));
+          .catch((err: any) => console.log('Could not get search results.', err));
     }
   }
 
