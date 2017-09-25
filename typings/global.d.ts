@@ -159,12 +159,12 @@ export type Tab =
   ;
 
 /** The set of tabs in the app. */
-export interface TabSet {
-  discover: any;  // Represents the discovery tab
-  find: any;      // Represents the find tab
-  schedule: any;  // Represents the schedule tab
-  search: any;    // Represents the search tab
-  settings: any;  // Represents the setting tab
+export interface TabSet<T> {
+  discover: T;  // Represents the discovery tab
+  find: T;      // Represents the find tab
+  schedule: T;  // Represents the schedule tab
+  search: T;    // Represents the search tab
+  settings: T;  // Represents the setting tab
 }
 
 /** A navigator route. */

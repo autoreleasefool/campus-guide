@@ -28,8 +28,8 @@ import { TabSet } from '../../typings/global';
 
 /** Describes a search. */
 export interface State {
-  studyFilters: Set < string >; // Filters to search study rooms by
-  tabTerms: TabSet;             // Search terms to filter results by
+  studyFilters: Set<string>; // Filters to search study rooms by
+  tabTerms: TabSet<string>;  // Search terms to filter results by
 }
 
 /** Initial search state. */

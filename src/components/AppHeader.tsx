@@ -55,7 +55,7 @@ interface Props {
   shouldShowBack: boolean;                  // Indicates if the header should show a back button
   shouldShowSearch: boolean;                // Indicates if the header should show a search input option
   tab: Tab;                                 // The current tab the user has open
-  tabFilters: TabSet;                       // The current search terms
+  tabFilters: TabSet<string>;               // The current search terms
   onBack(tab: Tab): void;                   // Tells the app to navigate one screen backwards
   onSearch(tab: Tab, terms: string): void;  // Updates the user's search terms
 }

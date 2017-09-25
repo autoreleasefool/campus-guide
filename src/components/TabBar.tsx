@@ -45,7 +45,7 @@ import * as Translations from '../util/Translations';
 
 // Types
 import { Language } from '../util/Translations';
-import { Tab, TabSet } from '../../typings/global';
+import { Icon, Tab, TabSet } from '../../typings/global';
 
 interface Props {
   activeTab: number;          // Current active tab
@@ -57,12 +57,12 @@ interface Props {
 interface State {}
 
 // Icons for tab items
-const tabIcons: TabSet = {
+const tabIcons: TabSet<{ icon: Icon }> = {
   discover: {
     icon: {
       android: {
         class: 'ionicon',
-        icon: 'md-compass',
+        name: 'md-compass',
       },
       ios: {
         class: 'ionicon',
