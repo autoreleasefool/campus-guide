@@ -26,6 +26,7 @@
 // React imports
 import React from 'react';
 import {
+  BackHandler,
   Dimensions,
   LayoutAnimation,
   Platform,
@@ -56,6 +57,7 @@ interface Props {
   shouldShowSearch: boolean;                // Indicates if the header should show a search input option
   tab: Tab;                                 // The current tab the user has open
   tabFilters: TabSet<string>;               // The current search terms
+  tabShowBack: TabSet<boolean>;             // Indicates if a tab should show a back button or not
   onBack(tab: Tab): void;                   // Tells the app to navigate one screen backwards
   onSearch(tab: Tab, terms: string): void;  // Updates the user's search terms
 }
@@ -88,6 +90,26 @@ class AppHeader extends React.PureComponent<Props, State> {
       shouldShowSearch: false,
       shouldShowSearchBar: false,
     };
+
+    this._onBack = this._onBack.bind(this);
+  }
+
+  /**
+   * Register back listener for Android.
+   */
+  componentDidMount(): void {
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener('hardwareBackPress', this._onBack);
+    }
+  }
+
+  /**
+   * Remove back listener for Android
+   */
+  componentWillUnmount(): void {
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener('hardwareBackPress', this._onBack);
+    }
   }
 
   /**
@@ -137,10 +159,16 @@ class AppHeader extends React.PureComponent<Props, State> {
   /**
    * Navigates back in the application.
    */
-  _onBack(): void {
+  _onBack(): boolean {
+    if (!this.props.tabShowBack[this.props.tab]) {
+      return false;
+    }
+
     (this.refs.SearchInput as any).clear();
     (this.refs.SearchInput as any).blur();
     this.props.onBack(this.props.tab);
+
+    return true;
   }
 
   /**
@@ -229,7 +257,7 @@ class AppHeader extends React.PureComponent<Props, State> {
         </TouchableOpacity>
         <TouchableOpacity
             style={[ _styles.icon, backIconStyle ]}
-            onPress={this._onBack.bind(this)}>
+            onPress={this._onBack}>
           <Ionicons
               color={Constants.Colors.primaryWhiteIcon}
               name={backArrowIcon}
@@ -290,13 +318,19 @@ const _styles = StyleSheet.create({
   title: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Title,
-    paddingLeft: ICON_SIZE,
-    paddingRight: ICON_SIZE,
+    left: ICON_SIZE,
+    position: 'absolute',
+    right: ICON_SIZE,
     textAlign: 'center',
   },
   titleContainer: {
     alignItems: 'center',
+    bottom: 0,
     flex: 1,
+    justifyContent: 'center',
+    left: 0,
+    right: 0,
+    top: 0,
   },
 });
 
@@ -308,6 +342,7 @@ const mapStateToProps = (store: any): any => {
     shouldShowSearch: store.header.showSearch,
     tab: store.navigation.tab,
     tabFilters: store.search.tabTerms,
+    tabShowBack: store.header.tabShowBack,
   };
 };
 
