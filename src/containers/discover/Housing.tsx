@@ -89,6 +89,9 @@ const RESIDENCE_PROPERTY_WIDTH_RATIO = 0.4;
 // Number of columns to show residences in
 const RESIDENCE_COLUMNS = 2;
 
+// Number of housing sections to show on screen at a time
+const HOUSING_SECTIONS = 3;
+
 class Housing extends React.PureComponent<Props, State> {
 
   /** Residences to be compared. */
@@ -358,6 +361,7 @@ class Housing extends React.PureComponent<Props, State> {
       <Menu
           language={this.props.language}
           sections={this.state.housingInfo.sections}
+          sectionsOnScreen={HOUSING_SECTIONS}
           onSectionSelected={this._onSectionSelected.bind(this)} />
     );
   }

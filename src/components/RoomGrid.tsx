@@ -186,7 +186,7 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    * Renders an item describing a single room in the building.
    *
    * @param {BuildingRoom} room a room to display in this row
-   * @returns {JSX.ElementReactElement<any>} a view describing a set of room
+   * @returns {JSX.Element} a view describing a set of room
    */
   _renderRow({ item }: { item: BuildingRoom }): JSX.Element {
     const roomType = this._roomTypes[item.type || Constants.DefaultRoomType];

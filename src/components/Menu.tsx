@@ -25,8 +25,9 @@
 // React imports
 import React from 'react';
 import {
+  Dimensions,
+  FlatList,
   Image,
-  LayoutAnimation,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -39,13 +40,12 @@ import { MenuSection } from '../../typings/global';
 
 interface Props {
   language: Language;                       // The user's currently selected language
-  sections: MenuSection[];                 // List of sections to display
+  sections: MenuSection[];                  // List of sections to display
+  sectionsOnScreen?: number;                // Max number of sections to display at a time. Default is 4.
   onSectionSelected(section: string): void; // Displays contents of the section in a new view
 }
 
-interface State {
-  expandedSection: number;  // Currently expanded section
-}
+interface State {}
 
 // Imports
 import Header from './Header';
@@ -54,83 +54,110 @@ import * as Constants from '../constants';
 import * as Display from '../util/Display';
 import * as Translations from '../util/Translations';
 
+/** Width of the screen. */
+const screenDimensions = Dimensions.get('window');
+
+/** Aspect ratio of cards. */
+const CARD_ASPECT_RATIO = 0.75;
+
+/** Default maximum number of cards on screen at a time. */
+const DEFAULT_MAX_CARDS = 4;
+
+/** Width of a standard card. */
+const cardWidth = screenDimensions.width - (Constants.Sizes.Margins.Expanded * 2);
+
 export default class Menu extends React.PureComponent<Props, State> {
 
   /**
-   * Constructor.
+   * Returns the height of a card, depending on the max number of cards on the screen
+   * at a time.
    *
-   * @param {props} props component props
+   * @returns {number} calculated height of a card
    */
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      expandedSection: 0,
-    };
+  _getCardHeight(): number {
+    const maxCardHeightRatio = this.props.sectionsOnScreen || DEFAULT_MAX_CARDS;
+
+    return Math.min(cardWidth * CARD_ASPECT_RATIO, screenDimensions.height / maxCardHeightRatio);
   }
 
   /**
-   * Focuses a new section for the user, hides the old section's image and shows the new section's image.
+   * Returns the image to render for the section, if one exists.
    *
-   * @param {number} sectionIdx index of new section to focus
+   * @param {MenuSection} section the section to render image for
+   * @returns {JSX.Element|undefined} the image for the section
    */
-  _focusSection(sectionIdx: number): void {
-    if (this.state.expandedSection === sectionIdx || sectionIdx < 0 || sectionIdx >= this.props.sections.length) {
-      return;
-    }
+  _getSectionImage(section: MenuSection): JSX.Element | undefined {
+    let image: JSX.Element;
 
-    LayoutAnimation.easeInEaseOut(undefined, undefined);
-    this.setState({ expandedSection: sectionIdx });
-  }
-
-  /**
-   * Returns a view for a section which displays the section name and icon, as well as an image if the section is
-   * currently selected.
-   *
-   * @param {number} index   index of section to render
-   * @param {MenuSection} section section to render
-   * @returns {JSX.Element} a view with an image and title which can be clicked by the user
-   */
-  _getSectionView(index: number, section: MenuSection): JSX.Element {
-    const onPress = index === this.state.expandedSection
-        ? (): void => this.props.onSectionSelected(section.id)
-        : (): void => this._focusSection(index);
-
-    const icon = Display.getPlatformIcon(Platform.OS, section);
-    let touchableStyle: any = { flexShrink: 1 };
-    let subtitleIconName = 'expand-more';
-    let sectionImage: JSX.Element | undefined;
-
-    if (index === this.state.expandedSection && section.image) {
+    if (section.image) {
       if (typeof (section.image) === 'string') {
-        sectionImage = (
+        image = (
           <Image
               resizeMode={'cover'}
               source={{ uri: Configuration.getImagePath(section.image) }}
               style={_styles.sectionImage} />
         );
       } else {
-        sectionImage = (
+        image = (
           <Image
               resizeMode={'cover'}
               source={section.image}
               style={_styles.sectionImage} />
         );
       }
-      touchableStyle = { flexGrow: 1 };
-      subtitleIconName = 'chevron-right';
     }
+
+    return image;
+  }
+
+  /**
+   * Renders a view for a section.
+   *
+   * @param {MenuSection} item  the section to render
+   * @param {number}      index index of the section
+   * @returns {JSX.Element} a view with the section image and title
+   */
+  _renderSection({ item }: { item: MenuSection; index: number }): JSX.Element {
+    const icon = Display.getPlatformIcon(Platform.OS, item);
+    const cardDimensions = { height: this._getCardHeight(), width: screenDimensions.width };
+    const sectionImage = this._getSectionImage(item);
 
     return (
       <TouchableOpacity
-          key={section.id}
-          style={touchableStyle}
-          onPress={onPress}>
+          style={[ _styles.cardIOS, cardDimensions ]}
+          onPress={(): void => this.props.onSectionSelected(item.id)}>
         {sectionImage}
         <Header
             icon={icon}
-            subtitleIcon={{ name: subtitleIconName, class: 'material' }}
-            title={Translations.getName(section) || ''} />
-        {index < this.props.sections.length - 1 ? <View style={_styles.separator} /> : undefined}
+            title={Translations.getName(item) || ''} />
+        <View style={_styles.separator} />
+      </TouchableOpacity>
+    );
+  }
+
+  /**
+   * Renders a card for a section.
+   *
+   * @param {MenuSection} item  the section to render
+   * @param {number}      index index of the section
+   * @returns {JSX.Element} a card with the section image and title
+   */
+  _renderSectionCard({ item, index }: { item: MenuSection; index: number }): JSX.Element {
+    const icon = Display.getPlatformIcon(Platform.OS, item);
+    const viewMargins: object = index === 0 ? {} : { marginTop: 0 };
+    const cardHeight = { height: this._getCardHeight() };
+    const sectionImage = this._getSectionImage(item);
+
+    return (
+      <TouchableOpacity
+          style={_styles.cardShadow}
+          onPress={(): void => this.props.onSectionSelected(item.id)}>
+        <View style={[ _styles.cardAndroid, viewMargins, cardHeight ]}>
+          {sectionImage}
+          <Header
+              icon={icon}
+              title={Translations.getName(item) || ''} />
+        </View>
       </TouchableOpacity>
     );
   }
@@ -142,17 +169,37 @@ export default class Menu extends React.PureComponent<Props, State> {
    */
   render(): JSX.Element {
     return (
-      <View style={_styles.container}>
-        {this.props.sections.map((section: MenuSection, index: number) => (
-          this._getSectionView(index, section)
-        ))}
-      </View>
+      <FlatList
+          data={this.props.sections}
+          keyExtractor={(section: MenuSection): string => section.id}
+          renderItem={Platform.OS === 'android' ? this._renderSection.bind(this) : this._renderSectionCard.bind(this)}
+          style={_styles.container} />
     );
   }
 }
 
 // Private styles for component
 const _styles = StyleSheet.create({
+  cardAndroid: {
+    borderRadius: Constants.Sizes.Margins.Regular,
+    overflow: 'hidden',
+    width: cardWidth,
+  },
+  cardIOS: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  cardShadow: {
+    borderRadius: Constants.Sizes.Margins.Regular,
+    elevation: Constants.Sizes.Margins.Condensed,
+    margin: Constants.Sizes.Margins.Expanded,
+    shadowOffset: {
+      height: Constants.Sizes.Margins.Condensed,
+      width: 0,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: Constants.Sizes.Margins.Regular,
+  },
   container: {
     flex: 1,
   },
@@ -167,7 +214,7 @@ const _styles = StyleSheet.create({
     width: undefined,
   },
   separator: {
-    backgroundColor: Constants.Colors.primaryWhiteText,
+    backgroundColor: Constants.Colors.tertiaryBackground,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
     left: 0,
