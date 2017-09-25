@@ -194,8 +194,7 @@ class CourseModal extends React.PureComponent<Props, State> {
       [
         { text: Translations.get('cancel'), style: 'cancel' },
         { text: Translations.get('delete'), onPress: (): void => this._close(false) },
-      ],
-      { cancelable: false }
+      ]
     );
   }
 
@@ -211,8 +210,7 @@ class CourseModal extends React.PureComponent<Props, State> {
       [
         { text: Translations.get('cancel'), style: 'cancel' },
         { text: Translations.get('delete'), onPress: (): void => this._deleteLecture(lecture) },
-      ],
-      { cancelable: false }
+      ]
     );
   }
 

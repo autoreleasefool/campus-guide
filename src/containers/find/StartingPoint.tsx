@@ -53,6 +53,7 @@ import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { AlertButton } from 'react-native';
 import { Language } from '../../util/Translations';
 import { LatLong, LatLongDelta, Name, Route } from '../../../typings/global';
 import { Building, Destination } from '../../../typings/university';
@@ -101,9 +102,6 @@ class StartingPoint extends React.PureComponent<Props, State> {
   /** Starting region to display on map. */
   _initialRegion: LatLong & LatLongDelta;
 
-  /** Buttons for viewing directions to the university */
-  _directionsButtons: any[];
-
   /**
    * Constructor.
    *
@@ -131,16 +129,6 @@ class StartingPoint extends React.PureComponent<Props, State> {
       selectedBuilding: undefined,
       viewingMap: false,
     };
-
-    // Buttons for viewing directions to the university
-    this._directionsButtons = [
-      { text: 'Google Maps', onPress: this._openMap.bind(this, 'google') },
-      { text: Translations.get('cancel'), style: 'cancel' },
-    ];
-
-    if (Platform.OS === 'ios') {
-      this._directionsButtons.splice(1, 0, { text: 'Apple Maps', onPress: this._openMap.bind(this, 'apple') });
-    }
   }
 
   /**
@@ -243,10 +231,21 @@ class StartingPoint extends React.PureComponent<Props, State> {
       this.props.onStartingPointSelected(this.state.closestBuilding.shorthand, undefined);
     } else {
       const universityName = Translations.getName(this.props.universityName);
+
+      // Buttons for viewing directions to the university
+      const buttons: AlertButton[] = [
+        { text: Translations.get('cancel'), style: 'cancel' },
+        { text: 'Google Maps', onPress: this._openMap.bind(this, 'google') },
+      ];
+
+      if (Platform.OS === 'ios') {
+        buttons.splice(1, 0, { text: 'Apple Maps', onPress: this._openMap.bind(this, 'apple') });
+      }
+
       Alert.alert(
         universityName,
         Translations.get('get_directions_to_university'),
-        this._directionsButtons
+        buttons
       );
     }
   }

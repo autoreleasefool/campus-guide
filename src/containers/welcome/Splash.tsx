@@ -64,13 +64,18 @@ class Splash extends React.PureComponent<Props, State> {
   _onLanguageSelect(language: Language): void {
     this.props.onLanguageSelect(language);
 
+    const onAction = (): void => {
+      this._popOrPushToMain();
+    };
+
     Alert.alert(
       Translations.get('only_once_title'),
       Translations.get('only_once_message'),
       [{
-        onPress: (): void => this._popOrPushToMain(),
+        onPress: onAction,
         text: Translations.get('ok'),
-      }]
+      }],
+      { onDismiss: onAction }
     );
   }
 
