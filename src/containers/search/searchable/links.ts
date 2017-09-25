@@ -68,7 +68,7 @@ async function _getResults(
       matchedTerms: matchedSectionName
           ? [ sectionName.toUpperCase(), linkName.toUpperCase() ]
           : [ linkName.toUpperCase() ],
-      title: linkName,
+      title: `${sectionName} - ${linkName}`,
     });
   };
 
