@@ -602,6 +602,7 @@
 				00E356EF1AD99517003FC87E /* CampusGuideTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				407742F1D1CC4E0B96C0CFE2 /* Resources */,
+				CA9128651F787DCA005D7BFB /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -616,6 +617,18 @@
 				2D02E4901E0B4A5D006451C7 /* CampusGuide-tvOSTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CA9128651F787DCA005D7BFB /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				F0AE9B3CBFB64421A401B1E7 /* libRNVectorIcons.a */,
+				EBBF1BB43F4842C28D9E1194 /* libAirMaps.a */,
+				BBC6F23617154C27858C1E1F /* libRNDeviceInfo.a */,
+				D81F8363BD5D44FFA4096EDA /* libRNFS.a */,
+				A7AAD27A5B9049AFACE180D4 /* libRNSnackbar.a */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		CAA2C8441F50B06B00230DBA /* Products */ = {

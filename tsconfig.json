@@ -17,8 +17,7 @@
     "noUnusedLocals": true,
     "baseUrl": ".",
     "paths": {
-      "*": ["*", "*.ios", "*.android"],
-      "react-native-linear-gradient": ["node_modules/react-native-linear-gradient/index.ios", "node_modules/react-native-linear-gradient/index.android"]
+      "*": ["*", "*.ios", "*.android"]
     }
   },
   "exclude": [
