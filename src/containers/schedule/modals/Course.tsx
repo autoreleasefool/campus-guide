@@ -608,7 +608,6 @@ const _styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
-    height: 30,
     margin: Constants.Sizes.Margins.Expanded,
     paddingLeft: Constants.Sizes.Margins.Regular,
   },

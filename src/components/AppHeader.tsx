@@ -69,8 +69,8 @@ interface State {
 }
 
 // Height of the navbar
-const NAVBAR_HEIGHT = 45;
-const ICON_SIZE = 45;
+const NAVBAR_HEIGHT = 50;
+const ICON_SIZE = 50;
 
 // Width of the search input
 const screenWidth = Dimensions.get('window').width;
@@ -221,11 +221,11 @@ class AppHeader extends React.PureComponent<Props, State> {
 
     return (
       <View style={_styles.container}>
-        <View style={[ _styles.titleContainer, titleStyle ]}>
+        <View style={_styles.titleContainer}>
           <Text
               ellipsizeMode={'tail'}
               numberOfLines={1}
-              style={_styles.title}>
+              style={[ _styles.title, titleStyle ]}>
             {appTitle}
           </Text>
         </View>
@@ -243,6 +243,7 @@ class AppHeader extends React.PureComponent<Props, State> {
               ref='SearchInput'
               returnKeyType={'done'}
               style={_styles.searchText}
+              underlineColorAndroid={'transparent'}
               value={this.props.tabFilters[this.props.tab]}
               onChangeText={this._onSearch.bind(this)} />
         </View>
@@ -306,7 +307,7 @@ const _styles = StyleSheet.create({
   searchText: {
     color: Constants.Colors.primaryWhiteText,
     flex: 1,
-    height: 35,
+    height: 40,
   },
   separator: {
     backgroundColor: Constants.Colors.tertiaryBackground,

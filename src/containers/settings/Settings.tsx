@@ -339,16 +339,19 @@ class Settings extends React.PureComponent<Props, State> {
         break;
       case 'link':
         const icon = Display.getPlatformIcon(Platform.OS, item);
+        const iconColor = Platform.OS === 'android'
+            ? Constants.Colors.primaryWhiteIcon
+            : Constants.Colors.primaryBlackIcon;
         if (icon != undefined) {
           content = (
             <View style={_styles.settingContent}>
               {icon.class === 'ionicon'
                 ? <Ionicons
-                    color={Constants.Colors.primaryBlackIcon}
+                    color={iconColor}
                     name={icon.name}
                     size={Constants.Sizes.Icons.Medium} />
                 : <MaterialIcons
-                    color={Constants.Colors.primaryBlackIcon}
+                    color={iconColor}
                     name={icon.name}
                     size={Constants.Sizes.Icons.Medium} />}
             </View>
@@ -388,9 +391,13 @@ class Settings extends React.PureComponent<Props, State> {
           : section.key.substring(colonIndex + 1);
     }
 
+    const headerColor = Platform.OS === 'android'
+        ? Constants.Colors.polarGrey
+        : Constants.Colors.lightGrey;
+
     return (
       <Header
-          backgroundColor={Constants.Colors.lightGrey}
+          backgroundColor={headerColor}
           title={sectionNameTranslated} />
     );
   }
@@ -432,7 +439,9 @@ class Settings extends React.PureComponent<Props, State> {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    backgroundColor: Constants.Colors.tertiaryBackground,
+    backgroundColor: Platform.OS === 'android'
+        ? Constants.Colors.primaryBackground
+        : Constants.Colors.tertiaryBackground,
     flex: 1,
   },
   modalList: {
@@ -447,18 +456,24 @@ const _styles = StyleSheet.create({
     margin: Constants.Sizes.Margins.Expanded,
   },
   separator: {
-    backgroundColor: Constants.Colors.darkTransparentBackground,
+    backgroundColor: Platform.OS === 'android'
+        ? Constants.Colors.tertiaryBackground
+        : Constants.Colors.darkTransparentBackground,
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   setting: {
     alignItems: 'center',
-    backgroundColor: Constants.Colors.tertiaryBackground,
+    backgroundColor: Platform.OS === 'android'
+        ? 'transparent'
+        : Constants.Colors.tertiaryBackground,
     flexDirection: 'row',
     height: 50,
   },
   settingContainer: {
-    backgroundColor: Constants.Colors.secondaryBackground,
+    backgroundColor: Platform.OS === 'android'
+        ? Constants.Colors.primaryBackground
+        : Constants.Colors.secondaryBackground,
   },
   settingContent: {
     height: 50,
@@ -467,12 +482,16 @@ const _styles = StyleSheet.create({
     right: 20,
   },
   settingText: {
-    color: Constants.Colors.primaryBlackText,
+    color: Platform.OS === 'android'
+        ? Constants.Colors.primaryWhiteText
+        : Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   settingValue: {
-    color: Constants.Colors.primaryBlackText,
+    color: Platform.OS === 'android'
+        ? Constants.Colors.primaryWhiteText
+        : Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
   },
 });

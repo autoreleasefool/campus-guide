@@ -1,8 +1,10 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowBackground">@color/garnet</item>
+        <item name="colorPrimary">@color/garnet</item>
+        <item name="colorPrimaryDark">@color/charcoalGrey</item>
+        <item name="colorAccent">@color/polarGrey</item>
     </style>
 
 </resources>
