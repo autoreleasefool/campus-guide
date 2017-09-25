@@ -18,7 +18,6 @@
  * @author Joseph Roque
  * @created 2016-10-07
  * @file constants.ts
- * @providesModule Constants
  * @description Constant values for the application
  */
 'use strict';

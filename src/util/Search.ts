@@ -18,7 +18,6 @@
  * @author Joseph Roque
  * @created 2017-05-31
  * @file Search.ts
- * @providesModule Search
  * @description Provides methods for searching various structures in the application.
  */
 

@@ -18,7 +18,6 @@
  * @author Joseph Roque
  * @created 2016-10-09
  * @file Translations.ts
- * @providesModule Translations
  * @description Defines a set of methods to easily get translations from objects.
  */
 'use strict';

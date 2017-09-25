@@ -114,7 +114,6 @@ LECTURE_ROOM_TYPES.add('comp');
 LECTURE_ROOM_TYPES.add('meet');
 LECTURE_ROOM_TYPES.add('lab_res');
 LECTURE_ROOM_TYPES.add('lab_teach');
-LECTURE_ROOM_TYPES.add('seminar');
 
 class LectureModal extends React.PureComponent<Props, State> {
 

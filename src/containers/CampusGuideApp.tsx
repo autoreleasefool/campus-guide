@@ -18,7 +18,6 @@
  * @author Joseph Roque
  * @created 2016-10-03
  * @file CampusGuideApp.tsx
- * @providesModule CampusGuideApp
  * @description Base component for the application.
  */
 'use strict';
