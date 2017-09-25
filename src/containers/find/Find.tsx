@@ -188,7 +188,13 @@ const mapDispatchToProps = (dispatch: any): any => {
       } else {
         dispatch(actions.showBack(true, 'find'));
       }
-      dispatch(actions.showSearch(true, 'find'));
+
+      if (view === Constants.Views.Find.Steps) {
+        dispatch(actions.showSearch(false, 'find'));
+      } else {
+        dispatch(actions.showSearch(true, 'find'));
+      }
+
       dispatch(actions.switchFindView(view));
     },
   };
