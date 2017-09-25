@@ -35,7 +35,6 @@ sed -i '' 's/domain = require/\/\/domain = require/g' ./node_modules/asap/raw.js
 rm -r ./android/app/src/main/java/com/
 
 # Link react-native dependencies
-react-native link react-native-linear-gradient
 react-native link react-native-vector-icons
 react-native link react-native-maps
 react-native link react-native-device-info
