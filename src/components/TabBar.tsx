@@ -56,8 +56,9 @@ interface Props {
 
 interface State {}
 
-// Icons for tab items
-const tabIcons: TabSet<{ icon: Icon }> = {
+// Icons for tab items when active
+// NOTE: Should be kept in line with inactiveTabIcons below
+const activeTabIcons: TabSet<{ icon: Icon }> = {
   discover: {
     icon: {
       android: {
@@ -72,8 +73,14 @@ const tabIcons: TabSet<{ icon: Icon }> = {
   },
   find: {
     icon: {
-      class: 'material',
-      name: 'near-me',
+      android: {
+        class: 'ionicon',
+        name: 'md-navigate',
+      },
+      ios: {
+        class: 'ionicon',
+        name: 'ios-navigate',
+      },
     },
   },
   schedule: {
@@ -84,7 +91,7 @@ const tabIcons: TabSet<{ icon: Icon }> = {
       },
       ios: {
         class: 'ionicon',
-        name: 'ios-calendar-outline',
+        name: 'ios-calendar',
       },
     },
   },
@@ -114,6 +121,56 @@ const tabIcons: TabSet<{ icon: Icon }> = {
   },
 };
 
+// Icons for tab items when inactive
+// NOTE: Should be kept in line with activeTabIcons above
+const inactiveTabIcons: TabSet<{ icon: Icon }> = {
+  discover: {
+    icon: {
+      android: Display.getAndroidIcon(activeTabIcons.discover),
+      ios: {
+        class: 'ionicon',
+        name: 'ios-compass-outline',
+      },
+    },
+  },
+  find: {
+    icon: {
+      android: Display.getAndroidIcon(activeTabIcons.find),
+      ios: {
+        class: 'ionicon',
+        name: 'ios-navigate-outline',
+      },
+    },
+  },
+  schedule: {
+    icon: {
+      android: Display.getAndroidIcon(activeTabIcons.schedule),
+      ios: {
+        class: 'ionicon',
+        name: 'ios-calendar-outline',
+      },
+    },
+  },
+  search: {
+    icon: {
+      android: Display.getAndroidIcon(activeTabIcons.search),
+      ios: {
+        class: 'ionicon',
+        name: 'ios-search-outline',
+      },
+    },
+  },
+  settings: {
+    icon: {
+      android: Display.getAndroidIcon(activeTabIcons.settings),
+      ios: {
+        class: 'ionicon',
+        name: 'ios-settings-outline',
+      },
+    },
+  },
+};
+
 class TabBar extends React.PureComponent<Props, State> {
 
   /**
@@ -134,7 +191,8 @@ class TabBar extends React.PureComponent<Props, State> {
     return (
       <View style={_styles.tabContainer}>
         {this.props.tabs.map((_: any, i: number) => {
-          const icon = Display.getPlatformIcon(Platform.OS, tabIcons[Constants.Tabs[i]]);
+          const iconSet = this.props.activeTab === i ? activeTabIcons : inactiveTabIcons;
+          const icon = Display.getPlatformIcon(Platform.OS, iconSet[Constants.Tabs[i]]);
           const color = this.props.activeTab === i
               ? Constants.Colors.primaryBackground
               : Constants.Colors.secondaryBackground;
