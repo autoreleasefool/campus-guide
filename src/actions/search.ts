@@ -26,21 +26,21 @@
 import * as Actions from '../actionTypes';
 import { Tab } from '../../typings/global';
 
-export function activateStudyFilter(filter: string): any {
+export function activateStudyFilter(filter: string): Actions.ActionType {
   return {
     filter,
     type: Actions.Search.ActivateStudyFilter,
   };
 }
 
-export function deactivateStudyFilter(filter: string): any {
+export function deactivateStudyFilter(filter: string): Actions.ActionType {
   return {
     filter,
     type: Actions.Search.DeactivateStudyFilter,
   };
 }
 
-export function search(tab: Tab, terms: string): any {
+export function search(tab: Tab, terms: string): Actions.ActionType {
   return {
     tab,
     terms: terms || '',
@@ -48,7 +48,7 @@ export function search(tab: Tab, terms: string): any {
   };
 }
 
-export function setStudyFilters(filters: string[]): any {
+export function setStudyFilters(filters: string[]): Actions.ActionType {
   return {
     filters,
     type: Actions.Search.SetStudyFilters,

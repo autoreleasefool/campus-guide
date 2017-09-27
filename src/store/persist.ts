@@ -36,7 +36,7 @@ export const persist = ({ getState }: any): any => (next: any): any => (action: 
   const store = getState();
 
   switch (action.type) {
-    case Actions.Configuration.ConfigUpdate:
+    case Actions.Config.ConfigUpdate:
       for (const option in action.options) {
         if (action.options.hasOwnProperty(option)) {
           switch (option) {

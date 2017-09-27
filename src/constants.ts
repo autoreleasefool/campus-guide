@@ -258,6 +258,27 @@ export const Views = {
   },
 
   /**
+   * Set of views to navigate through within SCHEDULE tab
+   */
+  Schedule: {
+    Home: 0,
+  },
+
+  /**
+   * Set of views to navigate through within SEARCH tab
+   */
+  Search: {
+    Home: 0,
+  },
+
+  /**
+   * Set of views to navigate through within SETTINGS tab
+   */
+  Settings: {
+    Home: 0,
+  },
+
+  /**
    * Set of views to navigate through within Housing screen
    */
   Housing: {

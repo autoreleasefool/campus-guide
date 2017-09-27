@@ -26,7 +26,7 @@
 import * as Actions from '../actionTypes';
 import { Course, Semester } from '../../typings/university';
 
-export function addCourse(semester: string, course: Course): any {
+export function addCourse(semester: string, course: Course): Actions.ActionType {
   return {
     course,
     semester,
@@ -34,21 +34,21 @@ export function addCourse(semester: string, course: Course): any {
   };
 }
 
-export function addSemester(semester: Semester): any {
+export function addSemester(semester: Semester): Actions.ActionType {
   return {
     semester,
     type: Actions.Schedule.AddSemester,
   };
 }
 
-export function loadSchedule(schedule: object): any {
+export function loadSchedule(schedule: object): Actions.ActionType {
   return {
     schedule,
     type: Actions.Schedule.Load,
   };
 }
 
-export function removeCourse(semester: string, courseCode: string): any {
+export function removeCourse(semester: string, courseCode: string): Actions.ActionType {
   return {
     courseCode,
     semester,

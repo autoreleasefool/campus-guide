@@ -21,28 +21,110 @@
  * @description Type definitions for available actions in the application
  */
 
-/* Actions with a global scope. */
-export enum App {
-  SwitchTab = 'APP_SWITCH_TAB',
-  SwitchFindView = 'APP_SWITCH_FIND_VIEW',
-  SwitchDiscoverView = 'APP_SWITCH_DISCOVER_VIEW',
-  SwitchHousingView = 'APP_SWITCH_HOUSING_VIEW',
-  SwitchHousingResidence = 'APP_SWITCH_HOUSING_RESIDENCE',
-  SwitchDiscoverLink = 'APP_SWITCH_DISCOVER_LINK',
-  SwitchDiscoverTransitCampus = 'APP_SWITCH_DISCOVER_TRANSIT_CAMPUS',
-}
+// Types
+import * as Configuration from './util/Configuration';
+import { MenuSection, Name, Tab } from '../typings/global';
+import { Building, Course, Destination, Residence, Semester } from '../typings/university';
 
 /* Actions for app navigation. */
 export enum Navigation {
-  NavigateBack = 'NAV_NAVIGATE_BACK',
   CanBack = 'NAV_CAN_BACK',
+  NavigateBack = 'NAV_NAVIGATE_BACK',
+  SetTitle = 'NAV_SET_TITLE',
+  ShowBack = 'NAV_SHOW_BACK',
+  ShowSearch = 'NAV_SHOW_SEARCH',
+  SwitchDiscoverView = 'NAV_SWITCH_DISCOVER_VIEW',
+  SwitchDiscoverLink = 'NAV_SWITCH_DISCOVER_LINK',
+  SwitchDiscoverTransitCampus = 'NAV_SWITCH_DISCOVER_TRANSIT_CAMPUS',
+  SwitchFindView = 'NAV_SWITCH_FIND_VIEW',
+  SwitchHousingView = 'NAV_SWITCH_HOUSING_VIEW',
+  SwitchHousingResidence = 'NAV_SWITCH_HOUSING_RESIDENCE',
+  SwitchTab = 'NAV_SWITCH_TAB',
+}
+
+interface CanBackAction {
+  type: Navigation.CanBack;
+  can: boolean;
+  key: string;
+}
+
+interface NavigateBackAction {
+  type: Navigation.NavigateBack;
+}
+
+interface SetTitleAction {
+  type: Navigation.SetTitle;
+  title: Name | string | undefined;
+  tab: Tab;
+  view: number;
+}
+
+interface ShowBackAction {
+  type: Navigation.ShowBack;
+  show: boolean;
+  tab: Tab;
+}
+
+interface ShowSearchAction {
+  type: Navigation.ShowSearch;
+  show: boolean;
+  tab: Tab;
+}
+
+interface SwitchDiscoverViewAction {
+  type: Navigation.SwitchDiscoverView;
+  view: number;
+}
+
+interface SwitchDiscoverLinkAction {
+  type: Navigation.SwitchDiscoverLink;
+  linkId: string | number | undefined;
+}
+
+interface SwitchDiscoverTransitCampusAction {
+  type: Navigation.SwitchDiscoverTransitCampus;
+  campus: MenuSection | undefined;
+}
+
+interface SwitchFindViewAction {
+  type: Navigation.SwitchFindView;
+  view: number;
+}
+
+interface SwitchHousingViewAction {
+  type: Navigation.SwitchHousingView;
+  view: number;
+}
+
+interface SwitchHousingResidenceAction {
+  type: Navigation.SwitchHousingResidence;
+  residence: Residence | undefined;
+}
+
+interface SwitchTabAction {
+  type: Navigation.SwitchTab;
+  tab: Tab;
 }
 
 /* Actions to specify the app configuration. */
-export enum Configuration {
+export enum Config {
   ConfigUpdate = 'CONF_UPDATE_CONFIGURATION',
   ProgressUpdate = 'CONF_UPDATE_PROGRESS',
   ConfirmUpdate = 'CONF_CONFIRM_UPDATE',
+}
+
+interface ConfigUpdateAction {
+  type: Config.ConfigUpdate;
+  options: Configuration.Options;
+}
+
+interface ProgressUpdateAction {
+  type: Config.ProgressUpdate;
+  update: Configuration.ProgressUpdate;
+}
+
+interface ConfirmUpdateAction {
+  type: Config.ConfirmUpdate;
 }
 
 /* Actions for directing the user. */
@@ -52,12 +134,19 @@ export enum Directions {
   ViewBuilding = 'DIR_VIEW_BUILDING',
 }
 
-/* Actions which affect the app header. */
-export enum Header {
-  PopTitle = 'HEADER_POP_TITLE',
-  PushTitle = 'HEADER_PUSH_TITLE',
-  ShowBack = 'HEADER_SHOW_BACK',
-  ShowSearch = 'HEADER_SHOW_SEARCH',
+interface SetDestinationAction {
+  type: Directions.SetDestination;
+  destination: Destination;
+}
+
+interface SetStartingPointAction {
+  type: Directions.SetStartingPoint;
+  startingPoint: Destination;
+}
+
+interface ViewBuildingAction {
+  type: Directions.ViewBuilding;
+  building: Building;
 }
 
 /* Actions to adjust the user's schedule. */
@@ -68,6 +157,28 @@ export enum Schedule {
   RemoveCourse = 'SCHED_REMOVE_COURSE',
 }
 
+interface LoadScheduleAction {
+  type: Schedule.Load;
+  schedule: object;
+}
+
+interface AddSemesterAction {
+  type: Schedule.AddSemester;
+  semester: Semester;
+}
+
+interface AddCourseAction {
+  type: Schedule.AddCourse;
+  semester: string;
+  course: Course;
+}
+
+interface RemoveCourseAction {
+  type: Schedule.RemoveCourse;
+  semester: string;
+  courseCode: string;
+}
+
 /* Actions to search the app. */
 export enum Search {
   Search = 'SEARCH',
@@ -75,3 +186,64 @@ export enum Search {
   DeactivateStudyFilter = 'SEARCH_DEACTIVATE_STUDY_FILTER',
   SetStudyFilters = 'SEARCH_SET_STUDY_FILTERS',
 }
+
+interface SearchAction {
+  type: Search.Search;
+  tab: Tab;
+  terms: string;
+}
+
+interface ActivateStudyFilterAction {
+  type: Search.ActivateStudyFilter;
+  filter: string;
+}
+
+interface DeactivateStudyFilterAction {
+  type: Search.DeactivateStudyFilter;
+  filter: string;
+}
+
+interface SetStudyFiltersAction {
+  type: Search.SetStudyFilters;
+  filters: string[];
+}
+
+/** Default "other" action type */
+export enum Other {
+  Invalid = 'INVALID_ACTION_TYPE',
+}
+
+interface OtherAction {
+  type: Other.Invalid;
+}
+
+/** Valid action types */
+export type ActionType =
+  | OtherAction
+  | CanBackAction
+  | NavigateBackAction
+  | SetTitleAction
+  | ShowBackAction
+  | ShowSearchAction
+  | SwitchDiscoverViewAction
+  | SwitchDiscoverLinkAction
+  | SwitchDiscoverTransitCampusAction
+  | SwitchFindViewAction
+  | SwitchHousingViewAction
+  | SwitchHousingResidenceAction
+  | SwitchTabAction
+  | ConfigUpdateAction
+  | ProgressUpdateAction
+  | ConfirmUpdateAction
+  | SetDestinationAction
+  | SetStartingPointAction
+  | ViewBuildingAction
+  | LoadScheduleAction
+  | AddSemesterAction
+  | AddCourseAction
+  | RemoveCourseAction
+  | SearchAction
+  | ActivateStudyFilterAction
+  | DeactivateStudyFilterAction
+  | SetStudyFiltersAction
+  ;

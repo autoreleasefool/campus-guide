@@ -28,6 +28,7 @@ import { default as reducer, State } from '../schedule';
 
 // Types
 import * as Actions from '../../actionTypes';
+import { Course, Lecture, Semester } from '../../../typings/university';
 
 // Expected initial state
 const initialState: State = {
@@ -35,7 +36,7 @@ const initialState: State = {
 };
 
 // Basic semesters for testing
-const testSemesters = [
+const testSemesters: Semester[] = [
   {
     courses: [],
     id: 'semester1',
@@ -55,29 +56,32 @@ const testSemesters = [
 ];
 
 // Basic lectures for testing
-const testLectures = [
+const testLectures: Lecture[] = [
   {
     day: 1,
     endTime: 90,
     format: 0,
+    location: { shorthand: 'building' },
     startTime: 0,
   },
   {
     day: 2,
     endTime: 180,
     format: 3,
+    location: { shorthand: 'building' },
     startTime: 270,
   },
   {
     day: 1,
     endTime: 180,
     format: 1,
+    location: { shorthand: 'building' },
     startTime: 90,
   },
 ];
 
 // Basic courses for testing
-const testCourses = [
+const testCourses: Course[] = [
   {
     code: 'code1',
     lectures: [],
@@ -92,9 +96,7 @@ const testCourses = [
   {
     code: 'code1',
     lectures: [
-      {
-        name: 'Empty Lecture',
-      },
+      testLectures[2],
     ],
   },
 ];
@@ -102,7 +104,7 @@ const testCourses = [
 describe('schedule reducer', () => {
 
   it('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual(initialState);
+    expect(reducer(undefined, { type: Actions.Other.Invalid })).toEqual(initialState);
   });
 
   it('should replace the existing schedule', () => {

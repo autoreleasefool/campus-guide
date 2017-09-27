@@ -23,7 +23,30 @@
  */
 'use strict';
 
+// Mock translations for days
+jest.mock('../../../assets/json/CoreTranslations.json', () => ({
+  en: {
+    friday: 'Day',
+    monday: 'Day',
+    saturday: 'Day',
+    sunday: 'Day',
+    thursday: 'Day',
+    tuesday: 'Day',
+    wednesday: 'Day',
+  },
+  fr: {
+    friday: 'Jour',
+    monday: 'Jour',
+    saturday: 'Jour',
+    sunday: 'Jour',
+    thursday: 'Jour',
+    tuesday: 'Jour',
+    wednesday: 'Jour',
+  },
+}));
+
 // Imports
+import * as Constants from '../../constants';
 import { default as reducer, State } from '../search';
 
 // Types
@@ -44,7 +67,7 @@ const initialState: State = {
 describe('search reducer', () => {
 
   it('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual(initialState);
+    expect(reducer(undefined, { type: Actions.Other.Invalid })).toEqual(initialState);
   });
 
   it('should perform a set of searches', () => {
@@ -105,24 +128,26 @@ describe('search reducer', () => {
 
   it('should reset the search filter when a view changes', () => {
     const testTerms = 'search';
+    const residence = { image: 'image', name: 'name', location: { latitude: 0, longitude: 0 }, props: [] };
+    const campus = { id: 'id' };
     let updatedState = reducer(initialState, { type: Actions.Search.Search, tab: 'find', terms: testTerms });
     updatedState = reducer(updatedState, { type: Actions.Search.Search, tab: 'discover', terms: testTerms });
     expect(updatedState)
         .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: testTerms } });
 
-    expect(reducer(updatedState, { type: Actions.App.SwitchFindView }))
+    expect(reducer(updatedState, { type: Actions.Navigation.SwitchFindView, view: Constants.Views.Find.Home }))
         .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: '', discover: testTerms } });
-    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverView }))
+    expect(reducer(updatedState, { type: Actions.Navigation.SwitchDiscoverView, view: Constants.Views.Discover.Home }))
         .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: '' } });
-    expect(reducer(updatedState, { type: Actions.App.SwitchHousingView }))
+    expect(reducer(updatedState, { type: Actions.Navigation.SwitchHousingView, view: Constants.Views.Housing.Menu }))
         .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: '' } });
-    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverLink }))
+    expect(reducer(updatedState, { type: Actions.Navigation.SwitchDiscoverLink, linkId: 0 }))
         .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: '' } });
-    expect(reducer(updatedState, { type: Actions.App.SwitchHousingResidence }))
+    expect(reducer(updatedState, { type: Actions.Navigation.SwitchHousingResidence, residence }))
         .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: '' } });
-    expect(reducer(updatedState, { type: Actions.App.SwitchTab }))
+    expect(reducer(updatedState, { type: Actions.Navigation.SwitchTab, tab: 'find' }))
         .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: testTerms } });
-    expect(reducer(updatedState, { type: Actions.App.SwitchDiscoverTransitCampus }))
+    expect(reducer(updatedState, { type: Actions.Navigation.SwitchDiscoverTransitCampus, campus }))
         .toEqual({ ...initialState, tabTerms: { ...initialState.tabTerms, find: testTerms, discover: testTerms } });
   });
 

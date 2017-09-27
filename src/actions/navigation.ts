@@ -24,10 +24,10 @@
 
 // Types
 import * as Actions from '../actionTypes';
-import { MenuSection, Tab } from '../../typings/global';
+import { MenuSection, Name, Tab } from '../../typings/global';
 import { Residence } from '../../typings/university';
 
-export function canNavigateBack(key: string, can: boolean): any {
+export function canNavigateBack(key: string, can: boolean): Actions.ActionType {
   return {
     can,
     key,
@@ -35,58 +35,82 @@ export function canNavigateBack(key: string, can: boolean): any {
   };
 }
 
-export function navigateBack(tab: Tab): any {
+export function navigateBack(): Actions.ActionType {
   return {
-    tab,
     type: Actions.Navigation.NavigateBack,
   };
 }
 
-export function switchDiscoverView(view: number): any {
-  return {
-    type: Actions.App.SwitchDiscoverView,
-    view,
-  };
-}
-
-export function switchFindView(view: number): any {
-  return {
-    type: Actions.App.SwitchFindView,
-    view,
-  };
-}
-
-export function switchHousingView(view: number): any {
-  return {
-    type: Actions.App.SwitchHousingView,
-    view,
-  };
-}
-
-export function switchLinkCategory(linkId: string | number | undefined): any {
-  return {
-    linkId,
-    type: Actions.App.SwitchDiscoverLink,
-  };
-}
-
-export function switchResidence(residence: Residence | undefined): any {
-  return {
-    residence,
-    type: Actions.App.SwitchHousingResidence,
-  };
-}
-
-export function switchTab(tab: Tab): any {
+export function setHeaderTitle(title: Name | string | undefined, tab: Tab, view: number): Actions.ActionType {
   return {
     tab,
-    type: Actions.App.SwitchTab,
+    title,
+    type: Actions.Navigation.SetTitle,
+    view,
   };
 }
 
-export function switchTransitCampus(campus: MenuSection | undefined): any {
+export function showBack(show: boolean, tab?: Tab): Actions.ActionType {
+  return {
+    show,
+    tab,
+    type: Actions.Navigation.ShowBack,
+  };
+}
+
+export function showSearch(show: boolean, tab?: Tab): Actions.ActionType {
+  return {
+    show,
+    tab,
+    type: Actions.Navigation.ShowSearch,
+  };
+}
+
+export function switchDiscoverView(view: number): Actions.ActionType {
+  return {
+    type: Actions.Navigation.SwitchDiscoverView,
+    view,
+  };
+}
+
+export function switchFindView(view: number): Actions.ActionType {
+  return {
+    type: Actions.Navigation.SwitchFindView,
+    view,
+  };
+}
+
+export function switchHousingView(view: number): Actions.ActionType {
+  return {
+    type: Actions.Navigation.SwitchHousingView,
+    view,
+  };
+}
+
+export function switchLinkCategory(linkId: string | number | undefined): Actions.ActionType {
+  return {
+    linkId,
+    type: Actions.Navigation.SwitchDiscoverLink,
+  };
+}
+
+export function switchResidence(residence: Residence | undefined): Actions.ActionType {
+  return {
+    residence,
+    type: Actions.Navigation.SwitchHousingResidence,
+  };
+}
+
+export function switchTab(tab: Tab): Actions.ActionType {
+  return {
+    tab,
+    type: Actions.Navigation.SwitchTab,
+  };
+}
+
+export function switchTransitCampus(campus: MenuSection | undefined): Actions.ActionType {
   return {
     campus,
-    type: Actions.App.SwitchDiscoverTransitCampus,
+    type: Actions.Navigation.SwitchDiscoverTransitCampus,
   };
 }

@@ -33,7 +33,7 @@ describe('configuration actions', () => {
 
   it('should create an action to update the configuration', () => {
     const language = 'en';
-    const expectedAction = { type: Actions.Configuration.ConfigUpdate, options: { language } };
+    const expectedAction = { type: Actions.Config.ConfigUpdate, options: { language } };
     expect(config.updateConfiguration({ language })).toEqual(expectedAction);
   });
 
@@ -43,13 +43,13 @@ describe('configuration actions', () => {
       filesDownloaded: [ 'download1.jpg', 'download2.jpg' ],
       totalFiles: 1,
     };
-    const expectedAction = { type: Actions.Configuration.ProgressUpdate, update };
+    const expectedAction = { type: Actions.Config.ProgressUpdate, update };
 
     expect(config.updateProgress(update)).toEqual(expectedAction);
   });
 
   it('should create an action to confirm an update', () => {
-    const expectedAction = { type: Actions.Configuration.ConfirmUpdate };
+    const expectedAction = { type: Actions.Config.ConfirmUpdate };
     expect(config.confirmUpdate()).toEqual(expectedAction);
   });
 

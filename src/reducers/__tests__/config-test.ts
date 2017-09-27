@@ -28,6 +28,7 @@ import { default as reducer, State } from '../config';
 
 // Types
 import * as Actions from '../../actionTypes';
+import { Language } from '../../util/Translations';
 
 // Expected initial state
 const initialState: State = {
@@ -57,7 +58,7 @@ const initialState: State = {
 // Test configuration update
 const configurationUpdate = {
   alwaysSearchAll: true,
-  language: 'en',
+  language: 'en' as Language,
   scheduleByCourse: true,
   transitInfo: { name: 'Transit', link: 'http://example.com' },
 };
@@ -67,7 +68,7 @@ const updatedConfigOptions: State = {
   options: {
     alwaysSearchAll: true,
     currentSemester: 0,
-    language: 'en',
+    language: 'en' as Language,
     preferredTimeFormat: '12h',
     prefersWheelchair: false,
     scheduleByCourse: true,
@@ -118,21 +119,21 @@ const confirmUpdate = {
 describe('config reducer', () => {
 
   it('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual(initialState);
+    expect(reducer(undefined, { type: Actions.Other.Invalid })).toEqual(initialState);
   });
 
   it('should update the config options', () => {
-    expect(reducer(initialState, { type: Actions.Configuration.ConfigUpdate, options: configurationUpdate }))
+    expect(reducer(initialState, { type: Actions.Config.ConfigUpdate, options: configurationUpdate }))
         .toEqual(updatedConfigOptions);
   });
 
   it('should update the update options', () => {
-    expect(reducer(initialState, { type: Actions.Configuration.ProgressUpdate, update: progressUpdate }))
+    expect(reducer(initialState, { type: Actions.Config.ProgressUpdate, update: progressUpdate }))
         .toEqual(updatedProgress);
   });
 
   it('should confirm the update', () => {
-    expect(reducer(initialState, { type: Actions.Configuration.ConfirmUpdate })).toEqual(confirmUpdate);
+    expect(reducer(initialState, { type: Actions.Config.ConfirmUpdate })).toEqual(confirmUpdate);
   });
 
 });

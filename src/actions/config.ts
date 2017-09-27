@@ -26,22 +26,22 @@
 import * as Actions from '../actionTypes';
 import { Options, ProgressUpdate } from '../util/Configuration';
 
-export function updateConfiguration(options: Options): any {
+export function updateConfiguration(options: Options): Actions.ActionType {
   return {
     options,
-    type: Actions.Configuration.ConfigUpdate,
+    type: Actions.Config.ConfigUpdate,
   };
 }
 
-export function updateProgress(update: ProgressUpdate): any {
+export function updateProgress(update: ProgressUpdate): Actions.ActionType {
   return {
-    type: Actions.Configuration.ProgressUpdate,
+    type: Actions.Config.ProgressUpdate,
     update,
   };
 }
 
-export function confirmUpdate(): any {
+export function confirmUpdate(): Actions.ActionType {
   return {
-    type: Actions.Configuration.ConfirmUpdate,
+    type: Actions.Config.ConfirmUpdate,
   };
 }

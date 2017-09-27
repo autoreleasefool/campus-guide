@@ -28,6 +28,7 @@ import { default as reducer, State } from '../directions';
 
 // Types
 import * as Actions from '../../actionTypes';
+import { Building } from '../../../typings/university';
 
 // Expected initial state
 const initialState: State = {
@@ -39,7 +40,7 @@ const initialState: State = {
 describe('directions reducer', () => {
 
   it('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual(initialState);
+    expect(reducer(undefined, { type: Actions.Other.Invalid })).toEqual(initialState);
   });
 
   it('should set the destination to navigate to', () => {
@@ -55,15 +56,16 @@ describe('directions reducer', () => {
   });
 
   it('should set the building to display details for', () => {
-    const building = {
+    const building: Building = {
       facilities: [ 'atm', 'gym' ],
       image: 'image.png',
       location: {
         latitude: 100,
         longitude: 200,
       },
-      rooms: [{ name: 'room_1', type: 0 }, { name: 'name_2', type: 1 }],
+      rooms: [{ name: 'room_1', type: 'class' }, { name: 'name_2', type: 'meet' }],
       shorthand: 'sh',
+      thumbnail: 'thumbnail.png',
     };
 
     expect(reducer(initialState, { type: Actions.Directions.ViewBuilding, building }))

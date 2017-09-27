@@ -25,7 +25,6 @@
 // Imports
 export * from './config';
 export * from './directions';
-export * from './header';
 export * from './navigation';
 export * from './schedule';
 export * from './search';

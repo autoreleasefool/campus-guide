@@ -43,11 +43,11 @@ const initialState: State = {
 /**
  * When provided with a direction action, parses the parameters and returns an updated state.
  *
- * @param {State} state  the current state
- * @param {any}   action the action being taken
+ * @param {State}              state  the current state
+ * @param {Actions.ActionType} action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken
  */
-export default function directions(state: State = initialState, action: any): State {
+export default function directions(state: State = initialState, action: Actions.ActionType): State {
   switch (action.type) {
     case Actions.Directions.SetDestination:
       return {

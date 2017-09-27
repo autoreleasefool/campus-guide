@@ -47,13 +47,13 @@ const initialState: State = {
 /**
  * When provided with a search action, parses the search terms and returns an updated state.
  *
- * @param {State} state  the current state
- * @param {any}   action the action being taken
+ * @param {State}              state  the current state
+ * @param {Actions.ActionType} action the action being taken
  * @returns {Search} an updated state based on the previous state and the action taken
  */
-export default function search(state: State = initialState, action: any): State {
+export default function search(state: State = initialState, action: Actions.ActionType): State {
   switch (action.type) {
-    case Actions.App.SwitchFindView:
+    case Actions.Navigation.SwitchFindView:
       return {
         ...state,
         tabTerms: {
@@ -61,10 +61,10 @@ export default function search(state: State = initialState, action: any): State 
           find: '',
         },
       };
-    case Actions.App.SwitchDiscoverView:
-    case Actions.App.SwitchHousingView:
-    case Actions.App.SwitchDiscoverLink:
-    case Actions.App.SwitchHousingResidence:
+    case Actions.Navigation.SwitchDiscoverView:
+    case Actions.Navigation.SwitchHousingView:
+    case Actions.Navigation.SwitchDiscoverLink:
+    case Actions.Navigation.SwitchHousingResidence:
       return {
         ...state,
         tabTerms: {

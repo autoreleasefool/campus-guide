@@ -63,13 +63,13 @@ const initialState: State = {
 /**
  * When provided with a configuration action, parses the parameters and returns an updated state.
  *
- * @param {State} state  the current state
- * @param {any}   action the action being taken
+ * @param {State}              state  the current state
+ * @param {Actions.ActionType} action the action being taken
  * @returns {State} an updated state based on the previous state and the action taken
  */
-export default function config(state: State = initialState, action: any): State {
+export default function config(state: State = initialState, action: Actions.ActionType): State {
   switch (action.type) {
-    case Actions.Configuration.ConfigUpdate:
+    case Actions.Config.ConfigUpdate:
       if (action.options.language && state.options.language !== action.options.language) {
         setLanguage(action.options.language);
       }
@@ -79,16 +79,16 @@ export default function config(state: State = initialState, action: any): State 
         update: { ...state.update },
         updateConfirmed: state.updateConfirmed,
       };
-    case Actions.Configuration.ProgressUpdate:
+    case Actions.Config.ProgressUpdate:
       return {
         options: { ...state.options },
         update: { ...state.update, ...action.update },
         updateConfirmed: state.updateConfirmed,
       };
-    case Actions.Configuration.ConfirmUpdate:
+    case Actions.Config.ConfirmUpdate:
       return {
         options: { ...state.options },
-        update: { ...state.update, ...action.update },
+        update: { ...state.update },
         updateConfirmed: true,
       };
     default:

@@ -26,21 +26,21 @@
 import * as Actions from '../actionTypes';
 import { Building, Destination } from '../../typings/university';
 
-export function setDestination(destination: Destination): any {
+export function setDestination(destination: Destination): Actions.ActionType {
   return {
     destination,
     type: Actions.Directions.SetDestination,
   };
 }
 
-export function setStartingPoint(startingPoint: Destination): any {
+export function setStartingPoint(startingPoint: Destination): Actions.ActionType {
   return {
     startingPoint,
     type: Actions.Directions.SetStartingPoint,
   };
 }
 
-export function viewBuilding(building: Building): any {
+export function viewBuilding(building: Building): Actions.ActionType {
   return {
     building,
     type: Actions.Directions.ViewBuilding,

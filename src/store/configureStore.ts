@@ -29,7 +29,6 @@ import thunk from 'redux-thunk';
 // Imports
 import config from '../reducers/config';
 import directions from '../reducers/directions';
-import header from '../reducers/header';
 import navigation from '../reducers/navigation';
 import schedule from '../reducers/schedule';
 import search from '../reducers/search';
@@ -45,7 +44,6 @@ export default function configureStore(onComplete?: () => void | undefined): any
   const reducers = combineReducers({
     config,
     directions,
-    header,
     navigation,
     schedule,
     search,
