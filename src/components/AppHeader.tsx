@@ -350,7 +350,7 @@ const mapStateToProps = (store: any): any => {
 const mapDispatchToProps = (dispatch: any): any => {
   return {
     onBack: (tab: Tab): void => {
-      dispatch(actions.navigateBack());
+      dispatch(actions.navigateBack(tab));
       dispatch(actions.search(tab, ''));
     },
     onSearch: (tab: Tab, text: string): void => dispatch(actions.search(tab, text)),

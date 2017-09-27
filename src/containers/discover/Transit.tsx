@@ -63,11 +63,10 @@ interface Props {
   filter: string;                                           // The current filter for transit routes
   language: Language;                                       // The current language, selected by the user
   timeFormat: TimeFormat;                                   // Format to display times in
-  canNavigateBack(can: boolean): void;                      // Indicate whether the app can navigate back
   onCampusSelected(campus?: MenuSection | undefined): void; // Displays details about a transit campus
   resetFilter(): void;                                      // Clears the current search terms
-  setHeaderTitle(t: Name | string): void;                   // Sets the title in the app header
-  showSearch(show: boolean): void;                          // Shows or hides the search button
+  pushHeaderTitle(t: Name | string): void;                  // Sets the title in the app header
+  updateHeader(showSearchAndBack: boolean): void;           // Update header state
 }
 
 interface State {
@@ -156,17 +155,9 @@ class Transit extends React.PureComponent<Props, State> {
     const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     if (currentRoutes[currentRoutes.length - 1].id === MENU) {
       this.props.onCampusSelected();
-      this.props.setHeaderTitle('transit_company');
-    } else {
-      const title = {
-        name_en: Translations.getEnglishName(this.props.campus) || '',
-        name_fr: Translations.getFrenchName(this.props.campus) || '',
-      };
-      this.props.setHeaderTitle(title);
     }
 
-    this.props.canNavigateBack(currentRoutes.length > 1);
-    this.props.showSearch(currentRoutes.length > 1);
+    this.props.updateHeader(currentRoutes.length > 1);
   }
 
   /**
@@ -193,7 +184,12 @@ class Transit extends React.PureComponent<Props, State> {
    */
   _onCampusSelected(id: string): void {
     const index = Arrays.linearSearchObjectArrayByKeyValue(this.state.campuses, 'id', id);
-    this.props.onCampusSelected(this.state.campuses[index]);
+    const campus = this.state.campuses[index];
+    this.props.onCampusSelected(campus);
+    this.props.pushHeaderTitle({
+      name_en: Translations.getEnglishName(campus) || '',
+      name_fr: Translations.getFrenchName(campus) || '',
+    });
   }
 
   /**
@@ -302,11 +298,13 @@ const mapStateToProps = (store: any): any => {
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
-    canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('transit', can)),
     onCampusSelected: (campus?: MenuSection | undefined): void => dispatch(actions.switchTransitCampus(campus)),
+    pushHeaderTitle: (title: Name | string): void => dispatch(actions.pushHeaderTitle(title, 'discover')),
     resetFilter: (): void => dispatch(actions.search('discover', '')),
-    setHeaderTitle: (title: Name | string): void => dispatch(actions.setHeaderTitle(title, 'discover')),
-    showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
+    updateHeader: (showSearchAndBack: boolean): void => {
+      dispatch(actions.canNavigateBack('transit', showSearchAndBack));
+      dispatch(actions.showSearch(showSearchAndBack, 'discover'));
+    },
   };
 };
 

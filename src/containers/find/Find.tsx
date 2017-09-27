@@ -184,7 +184,6 @@ const mapDispatchToProps = (dispatch: any): any => {
     onBackNavigation: (view: number): any => {
       if (view === Constants.Views.Find.Home) {
         dispatch(actions.showBack(false, 'find'));
-        dispatch(actions.setHeaderTitle(undefined, 'find'));
       } else {
         dispatch(actions.showBack(true, 'find'));
       }

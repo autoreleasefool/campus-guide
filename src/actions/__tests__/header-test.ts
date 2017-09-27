@@ -31,17 +31,17 @@ import * as Actions from '../../actionTypes';
 
 describe('header actions', () => {
 
-  it('should create an action to set the title', () => {
-    const title = { name: 'Title' };
-    const expectedAction = { type: Actions.Header.SetTitle, title };
-    expect(header.setHeaderTitle(title)).toEqual(expectedAction);
-  });
-
   it('should create an action to set the title for a tab', () => {
     const title = 'name';
     const tab = 'find';
-    const expectedAction = { type: Actions.Header.SetTitle, title, tab };
-    expect(header.setHeaderTitle(title, tab)).toEqual(expectedAction);
+    const expectedAction = { type: Actions.Header.PushTitle, title, tab };
+    expect(header.pushHeaderTitle(title, tab)).toEqual(expectedAction);
+  });
+
+  it('should create an action to pop the title for a tab', () => {
+    const tab = 'find';
+    const expectedAction = { type: Actions.Header.PopTitle, tab };
+    expect(header.popHeaderTitle(tab)).toEqual(expectedAction);
   });
 
   it('should create an action to show the back button for a tab', () => {

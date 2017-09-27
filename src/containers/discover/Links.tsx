@@ -49,7 +49,7 @@ interface Props {
   language: Language;                                   // The current language, selected by the user
   linkId: string | undefined;                           // The selected link category
   canNavigateBack(can: boolean): void;                  // Indicate whether the app can navigate back
-  setHeaderTitle(t: Name | string): void;               // Sets the title in the app header
+  pushHeaderTitle(t: Name | string): void;              // Sets the title in the app header
   showCategory(id: string | number | undefined): void;  // Shows a link category
   showSearch(show: boolean): void;                      // Shows or hides the search button
 }
@@ -184,15 +184,8 @@ class Links extends React.PureComponent<Props, State> {
   _handleNavigationEvent(): void {
     const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
     if (currentRoutes.length > 1 && this.state.links.length > 0) {
-      const section = this._getSection(currentRoutes[currentRoutes.length - 1].id);
-      const title = {
-        name_en: Translations.getEnglishName(section) || '',
-        name_fr: Translations.getFrenchName(section) || '',
-      };
-      this.props.setHeaderTitle(title);
       this.props.showCategory(currentRoutes[currentRoutes.length - 1].id);
     } else {
-      this.props.setHeaderTitle('uo_info');
       this.props.showCategory(0);
     }
 
@@ -207,11 +200,18 @@ class Links extends React.PureComponent<Props, State> {
    */
   _onCategorySelected(id: string): void {
     const currentRoutes = (this.refs.Navigator as any).getCurrentRoutes();
+    let sectionId = id;
     if (currentRoutes != undefined && currentRoutes.length > 1) {
-      this.props.showCategory(`${currentRoutes[currentRoutes.length - 1].id}-${id}`);
-    } else {
-      this.props.showCategory(id);
+      sectionId = `${currentRoutes[currentRoutes.length - 1].id}-${id}`;
     }
+
+    const newSection = this._getSection(sectionId);
+    const title = {
+      name_en: Translations.getEnglishName(newSection) || '',
+      name_fr: Translations.getFrenchName(newSection) || '',
+    };
+    this.props.pushHeaderTitle(title);
+    this.props.showCategory(sectionId);
   }
 
   /**
@@ -299,7 +299,7 @@ const mapStateToProps = (store: any): any => {
 const mapDispatchToProps = (dispatch: any): any => {
   return {
     canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('links', can)),
-    setHeaderTitle: (title: Name | string): void => dispatch(actions.setHeaderTitle(title, 'discover')),
+    pushHeaderTitle: (title: Name | string): void => dispatch(actions.pushHeaderTitle(title, 'discover')),
     showCategory: (id: string | number | undefined): void => dispatch(actions.switchLinkCategory(id)),
     showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
   };

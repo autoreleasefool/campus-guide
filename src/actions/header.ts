@@ -26,11 +26,18 @@
 import * as Actions from '../actionTypes';
 import { Name, Tab } from '../../typings/global';
 
-export function setHeaderTitle(title: Name | string | undefined, tab?: Tab): any {
+export function pushHeaderTitle(title: Name | string | undefined, tab: Tab): any {
   return {
     tab,
     title,
-    type: Actions.Header.SetTitle,
+    type: Actions.Header.PushTitle,
+  };
+}
+
+export function popHeaderTitle(tab: Tab): any {
+  return {
+    tab,
+    type: Actions.Header.PopTitle,
   };
 }
 

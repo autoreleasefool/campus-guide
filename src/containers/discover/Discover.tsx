@@ -197,7 +197,7 @@ const mapStateToProps = (store: any): any => {
   };
 };
 
-const mapDispatchToprops = (dispatch: any): any => {
+const mapDispatchToProps = (dispatch: any): any => {
   return {
     canNavigateBack: (): void => dispatch(actions.showBack(true, 'discover')),
     onNavigation: (view: number): void => {
@@ -205,7 +205,6 @@ const mapDispatchToprops = (dispatch: any): any => {
         case Constants.Views.Discover.Home:
           dispatch(actions.showBack(false, 'discover'));
           dispatch(actions.showSearch(false, 'discover'));
-          dispatch(actions.setHeaderTitle(undefined, 'discover'));
           break;
         default:
           dispatch(actions.showBack(true, 'discover'));
@@ -216,4 +215,4 @@ const mapDispatchToprops = (dispatch: any): any => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToprops)(Discover) as any;
+export default connect(mapStateToProps, mapDispatchToProps)(Discover) as any;

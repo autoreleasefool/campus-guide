@@ -728,23 +728,21 @@ const mapDispatchToProps = (dispatch: any): any => {
     canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('housing', can)),
     onSectionSelected: (section: string | undefined): void => {
       let view = Constants.Views.Housing.Menu;
-      let title = 'housing';
 
       switch (section) {
         case 'res':
           view = Constants.Views.Housing.Residences;
-          title = 'university_residences';
+          dispatch(actions.pushHeaderTitle('university_residences', 'discover'));
           break;
         case 'oth':
           view = Constants.Views.Housing.Resources;
-          title = 'housing';
+          dispatch(actions.pushHeaderTitle('other_resources', 'discover'));
           break;
         default:
           // Does nothing
           // Return to default view, MENU
       }
 
-      dispatch(actions.setHeaderTitle(title, 'discover'));
       dispatch(actions.switchHousingView(view));
     },
     selectResidence: (residence: Residence | undefined): void => {
@@ -757,25 +755,25 @@ const mapDispatchToProps = (dispatch: any): any => {
           name_fr: residence.name_fr,
         };
 
-        dispatch(actions.setHeaderTitle(title, 'discover'));
+        dispatch(actions.pushHeaderTitle(title, 'discover'));
         dispatch(actions.switchHousingView(Constants.Views.Housing.ResidenceDetails));
       }
     },
     showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
     switchView: (view: number): void => {
-      let title = 'housing';
-      switch (view) {
-        case Constants.Views.Housing.Residences:
-        case Constants.Views.Housing.ResidenceCompare:
-        case Constants.Views.Housing.ResidenceSelect:
-          title = 'university_residences';
-          break;
-        default:
-          // Does nothing
-          // Return to default
-      }
+      // let title = 'housing';
+      // switch (view) {
+      //   case Constants.Views.Housing.Residences:
+      //   case Constants.Views.Housing.ResidenceCompare:
+      //   case Constants.Views.Housing.ResidenceSelect:
+      //     title = 'university_residences';
+      //     break;
+      //   default:
+      //     // Does nothing
+      //     // Return to default
+      // }
 
-      dispatch(actions.setHeaderTitle(title, 'discover'));
+      // dispatch(actions.setHeaderTitle(title, 'discover'));
       dispatch(actions.switchHousingView(view));
     },
   };

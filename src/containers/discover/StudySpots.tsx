@@ -321,7 +321,7 @@ const mapDispatchToProps = (dispatch: any): any => {
     activateFilter: (filter: string): void => dispatch(actions.activateStudyFilter(filter)),
     deactivateFilter: (filter: string): void => dispatch(actions.deactivateStudyFilter(filter)),
     navigateToStudySpot: (spot: StudySpot): void => {
-      dispatch(actions.setHeaderTitle('directions', 'find'));
+      dispatch(actions.pushHeaderTitle('directions', 'find'));
       dispatch(actions.setDestination({ shorthand: spot.building, room: spot.room }));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
       dispatch(actions.switchTab('find'));

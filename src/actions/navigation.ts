@@ -35,8 +35,9 @@ export function canNavigateBack(key: string, can: boolean): any {
   };
 }
 
-export function navigateBack(): any {
+export function navigateBack(tab: Tab): any {
   return {
+    tab,
     type: Actions.Navigation.NavigateBack,
   };
 }

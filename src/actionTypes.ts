@@ -54,7 +54,8 @@ export enum Directions {
 
 /* Actions which affect the app header. */
 export enum Header {
-  SetTitle = 'HEADER_SET_TITLE',
+  PopTitle = 'HEADER_POP_TITLE',
+  PushTitle = 'HEADER_PUSH_TITLE',
   ShowBack = 'HEADER_SHOW_BACK',
   ShowSearch = 'HEADER_SHOW_SEARCH',
 }

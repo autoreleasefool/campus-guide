@@ -27,10 +27,13 @@ import * as Actions from '../actionTypes';
 import { Name, TabSet } from '../../typings/global';
 const CoreTranslations = require('../../assets/json/CoreTranslations');
 
+/** Valid types for a tab title */
+type TabTitle = Name | string;
+
 /** Header reducer state. */
 export interface State {
   title: Name | string;           // Title for the current screen
-  tabTitles: TabSet<Name|string>; // Title last set in the tab
+  tabTitles: TabSet<TabTitle[]>;  // Titles of tabs, with the last in the array being the most recent
   showBack: boolean;              // True to show a back button in the header, false to hide
   tabShowBack: TabSet<boolean>;   // Whether the tab should show a back button
   showSearch: boolean;            // True to show a search field in the header, false to hide
@@ -62,23 +65,23 @@ const initialState: State = {
     settings: false,
   },
   tabTitles: {
-    discover: {
+    discover: [{
       name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.discover : 'Campus Guide',
       name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.discover : 'Guide de campus',
-    },
-    find: defaultTitle,
-    schedule: {
+    }],
+    find: [ defaultTitle ],
+    schedule: [{
       name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.schedule : 'Campus Guide',
       name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.schedule : 'Guide de campus',
-    },
-    search: {
+    }],
+    search: [{
       name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.search : 'Campus Guide',
       name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.search : 'Guide de campus',
-    },
-    settings: {
+    }],
+    settings: [{
       name_en: CoreTranslations && CoreTranslations.en ? CoreTranslations.en.settings : 'Campus Guide',
       name_fr: CoreTranslations && CoreTranslations.fr ? CoreTranslations.fr.settings : 'Guide de campus',
-    },
+    }],
   },
   title: defaultTitle,
 };
@@ -92,19 +95,39 @@ const initialState: State = {
  */
 export default function header(state: State = initialState, action: any): State {
   switch (action.type) {
+    case Actions.Navigation.NavigateBack: {
+      const tabTitles = state.tabTitles[action.tab].slice();
+      if (tabTitles.length > 1) {
+        tabTitles.pop();
+      }
+
+      const title = tabTitles[tabTitles.length - 1];
+
+      return {
+        ...state,
+        tabTitles: {
+          ...state.tabTitles,
+          [action.tab]: tabTitles,
+        },
+        title,
+      };
+    }
     case Actions.App.SwitchTab:
       return {
         ...state,
         showBack: state.tabShowBack[action.tab],
         showSearch: state.tabShowSearch[action.tab],
-        title: state.tabTitles[action.tab],
+        title: state.tabTitles[action.tab][state.tabTitles[action.tab].length - 1],
       };
-    case Actions.Header.SetTitle: {
+    case Actions.Header.PushTitle: {
       const tabTitles = { ...state.tabTitles };
-
-      if (action.tab != undefined) {
-        tabTitles[action.tab] = action.title || initialState.tabTitles[action.tab];
+      for (const tab in tabTitles) {
+        if (tabTitles.hasOwnProperty(tab)) {
+          tabTitles[tab] = tabTitles[tab].slice();
+        }
       }
+
+      tabTitles[action.tab].push(action.title || initialState.tabTitles[action.tab]);
 
       return {
         ...state,

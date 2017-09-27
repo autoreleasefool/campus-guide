@@ -39,8 +39,9 @@ describe('navigation actions', () => {
   });
 
   it('should create an action to navigate backwards', () => {
-    const expectedAction = { type: Actions.Navigation.NavigateBack };
-    expect(navigation.navigateBack()).toEqual(expectedAction);
+    const tab = 'find';
+    const expectedAction = { tab, type: Actions.Navigation.NavigateBack };
+    expect(navigation.navigateBack(tab)).toEqual(expectedAction);
   });
 
   it('should set the state for a key which can back navigate', () => {

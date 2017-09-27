@@ -198,7 +198,7 @@ const mapDispatchToProps = (dispatch: any): any => {
   return {
     onDestinationSelected: (shorthand: string, room: string | undefined): any => {
       dispatch(actions.setDestination({ shorthand, room }));
-      dispatch(actions.setHeaderTitle('directions', 'find'));
+      dispatch(actions.pushHeaderTitle('directions', 'find'));
       dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
     },
   };

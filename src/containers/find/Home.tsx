@@ -118,7 +118,7 @@ const mapStateToProps = (store: any): any => {
 const mapDispatchToProps = (dispatch: any): any => {
   return {
     onBuildingSelect: (building: Building, buildingName: Name): any => {
-      dispatch(actions.setHeaderTitle(buildingName, 'find'));
+      dispatch(actions.pushHeaderTitle(buildingName, 'find'));
       dispatch(actions.viewBuilding(building));
       dispatch(actions.switchFindView(Constants.Views.Find.Building));
       dispatch(actions.search('find', ''));

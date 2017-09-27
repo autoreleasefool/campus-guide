@@ -48,14 +48,18 @@ const initialState: State = {
     settings: false,
   },
   tabTitles: {
-    discover: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
-    find: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
-    schedule: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
-    search: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
-    settings: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
+    discover: [{ name_en: 'Campus Guide', name_fr: 'Guide de campus' }],
+    find: [{ name_en: 'Campus Guide', name_fr: 'Guide de campus' }],
+    schedule: [{ name_en: 'Campus Guide', name_fr: 'Guide de campus' }],
+    search: [{ name_en: 'Campus Guide', name_fr: 'Guide de campus' }],
+    settings: [{ name_en: 'Campus Guide', name_fr: 'Guide de campus' }],
   },
   title: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
 };
+
+const findTabDuplicated = [ initialState.tabTitles.find[0], initialState.tabTitles.find[0] ];
+const findTabChanged = [ initialState.tabTitles.find[0], 'title' ];
+const scheduleTabChanged = [ initialState.tabTitles.schedule[0], 'schedule' ];
 
 describe('header reducer', () => {
 
@@ -63,39 +67,40 @@ describe('header reducer', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
   });
 
-  it('should use the default header title', () => {
-    expect(reducer(initialState, { type: Actions.Header.SetTitle, title: undefined })).toEqual(initialState);
+  it('should use the default header title for a tab', () => {
+    expect(
+      reducer(
+        initialState,
+        { type: Actions.Header.PushTitle, title: undefined, tab: 'find' }
+      )
+    ).toEqual({
+      ...initialState,
+      tabTitles: {
+        ...initialState.tabTitles,
+        find: findTabDuplicated,
+      },
+    });
+  });
+
+  it('should revert the title for a tab', () => {
+    const updatedState = reducer(initialState, { type: Actions.Header.PushTitle, title: 'title', tab: 'find' });
+    expect(reducer(updatedState, { type: Actions.Navigation.NavigateBack, tab: 'find' })).toEqual(initialState);
   });
 
   it('should use the default header title for a tab', () => {
-
-    /* Ignore max line length for clearer test cases */
-    /* tslint:disable max-line-length */
-
-    expect(reducer(initialState, { type: Actions.Header.SetTitle, title: undefined, tab: 'find' })).toEqual(initialState);
-
-    /* tslint:enable max-line-length */
-
-  });
-
-  it('should set a new header title', () => {
-    expect(reducer(initialState, { type: Actions.Header.SetTitle, title: { name: 'New title' } }))
-        .toEqual({ ...initialState, title: { name: 'New title' } });
-  });
-
-  it('should set a new header title for a tab', () => {
-    expect(reducer(initialState, { type: Actions.Header.SetTitle, tab: 'find', title: { name: 'New title' } }))
-        .toEqual({
-          ...initialState,
-          tabTitles: {
-            discover: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
-            find: { name: 'New title' },
-            schedule: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
-            search: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
-            settings: { name_en: 'Campus Guide', name_fr: 'Guide de campus' },
-          },
-          title: { name: 'New title' },
-        });
+    expect(
+      reducer(
+        initialState,
+        { type: Actions.Header.PushTitle, title: 'title', tab: 'find' }
+      )
+    ).toEqual({
+      ...initialState,
+      tabTitles: {
+        ...initialState.tabTitles,
+        find: findTabChanged,
+      },
+      title: 'title',
+    });
   });
 
   it('should show the back button', () => {
@@ -139,7 +144,7 @@ describe('header reducer', () => {
   });
 
   it('should set the title and back/search buttons when the tab changes', () => {
-    let updatedState = reducer(initialState, { type: Actions.Header.SetTitle, title: 'schedule', tab: 'schedule' });
+    let updatedState = reducer(initialState, { type: Actions.Header.PushTitle, title: 'schedule', tab: 'schedule' });
     updatedState = reducer(updatedState, { type: Actions.Header.ShowBack, show: true, tab: 'schedule' });
     updatedState = reducer(updatedState, { type: Actions.Header.ShowSearch, show: true, tab: 'schedule' });
 
@@ -158,7 +163,7 @@ describe('header reducer', () => {
           },
           tabTitles: {
             ...initialState.tabTitles,
-            schedule: 'schedule',
+            schedule: scheduleTabChanged,
           },
           title: 'schedule',
         });
