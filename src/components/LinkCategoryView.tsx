@@ -219,8 +219,8 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
 
     return (
       <Header
-        icon={{ name: 'insert-link', class: 'material' }}
-        title={Translations.get('uo_info')} />
+          icon={{ name: 'insert-link', class: 'material' }}
+          title={Translations.get('useful_links')} />
     );
   }
 
