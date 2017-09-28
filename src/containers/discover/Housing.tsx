@@ -612,7 +612,7 @@ class Housing extends React.PureComponent<Props, State> {
           scene = this._renderOtherResources();
           break;
         default:
-          // TODO: generic error view?
+          // FIXME: generic error view?
       }
     }
 

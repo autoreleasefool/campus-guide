@@ -259,7 +259,7 @@ class LectureModal extends React.PureComponent<Props, State> {
       case PICKER_STARTS:
       case PICKER_ENDS:
         if (Platform.OS === 'android') {
-          // FIXME: setup android picker
+          // TODO: setup android picker
           throw new Error('No android picker setup');
         } else {
           (this.refs.Navigator as any).push({ id: TIME_PICKER, picking });
@@ -479,7 +479,7 @@ class LectureModal extends React.PureComponent<Props, State> {
         break;
       default:
         // do nothing
-        // TODO: return some error view
+        // FIXME: return some error view
     }
 
     return (
@@ -552,7 +552,7 @@ class LectureModal extends React.PureComponent<Props, State> {
         break;
       default:
         // do nothing
-        // TODO: return some error view
+        // FIXME: return some error view
     }
 
     return (
@@ -591,7 +591,7 @@ class LectureModal extends React.PureComponent<Props, State> {
       case ROOM_PICKER:
         return this._renderRoomPicker();
       default:
-        // TODO: return some error view
+        // FIXME: return some error view
         return (
           <View />
         );

@@ -527,7 +527,7 @@ class SearchView extends React.PureComponent<Props, State> {
       case SINGLE:
         return this._renderSingleResults();
       default:
-        // TODO: render generic error screen?
+        // FIXME: render generic error screen?
         console.error(`Invalid navigator route: ${route.id}.`);
     }
 

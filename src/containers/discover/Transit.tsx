@@ -211,7 +211,7 @@ class Transit extends React.PureComponent<Props, State> {
             timeFormat={this.props.timeFormat} />
       );
     } else {
-      // TODO: return generic error view?
+      // FIXME: return generic error view?
       return (
         <View />
       );
@@ -249,7 +249,7 @@ class Transit extends React.PureComponent<Props, State> {
       case CAMPUS:
         return this._renderCampus(this.props.campus);
       default:
-        // TODO: return generic error view?
+        // FIXME: return generic error view?
         return (
           <View />
         );

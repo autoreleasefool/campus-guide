@@ -281,7 +281,7 @@ class CourseModal extends React.PureComponent<Props, State> {
    */
   _showSemesterPicker(): void {
     if (Platform.OS === 'android') {
-      // FIXME: setup android picker
+      // TODO: setup android picker
       throw new Error('No android picker setup');
     } else {
       (this.refs.Navigator as any).push({ id: PICKER });
@@ -479,7 +479,7 @@ class CourseModal extends React.PureComponent<Props, State> {
       case PICKER:
         return this._renderPicker();
       default:
-        // TODO: return some error view
+        // FIXME: return some error view
         return (
           <View />
         );

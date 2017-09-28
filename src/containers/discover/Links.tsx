@@ -220,7 +220,7 @@ class Links extends React.PureComponent<Props, State> {
   _renderSection(id: string): JSX.Element {
     const section = this._getSection(id);
     if (section == undefined) {
-      // TODO: return generic error view?
+      // FIXME: return generic error view?
       return (
         <View style={_styles.container} />
       );

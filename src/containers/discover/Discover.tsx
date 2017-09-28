@@ -150,7 +150,7 @@ class Discover extends React.PureComponent<Props, State> {
           <StudySpots />
         );
       default:
-        // TODO: generic error view?
+        // FIXME: generic error view?
         return (
           <View style={_styles.container} />
         );

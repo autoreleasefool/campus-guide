@@ -140,7 +140,7 @@ class Find extends React.PureComponent<Props, State> {
           <StepsScreen />
         );
       default:
-        // TODO: generic error view?
+        // FIXME: generic error view?
         return (
           <View style={_styles.container} />
         );

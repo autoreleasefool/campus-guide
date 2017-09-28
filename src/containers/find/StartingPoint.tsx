@@ -72,7 +72,7 @@ interface Props {
   universityLocation: LatLong;          // Location of the university
   universityName: Name;                 // Name of the university
   clearSearch(): void;                  // Clear the current search
-  onStartingPointSelected(shorthand: string, room: string | undefined): void;
+  onStartingPointSelected(shorthand: string, room?: string | undefined): void;
                                         // Selects a starting point for navigation
   showSearch(show: boolean): void;      // Hide or show the search box
 }
@@ -227,8 +227,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
    */
   _onClosestBuildingSelected(): void {
     if (this.state.closestBuilding) {
-      // TODO: remove undefined
-      this.props.onStartingPointSelected(this.state.closestBuilding.shorthand, undefined);
+      this.props.onStartingPointSelected(this.state.closestBuilding.shorthand);
     } else {
       const universityName = Translations.getName(this.props.universityName);
 
@@ -398,7 +397,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
       case SELECT_ROOM:
         return this._renderRoomGrid(route.data);
       default:
-        // TODO: generic error view?
+        // FIXME: generic error view?
         return (
           <View style={_styles.container} />
         );
@@ -538,7 +537,7 @@ const mapStateToProps = (store: any): any => {
 const mapDispatchToProps = (dispatch: any): any => {
   return {
     clearSearch: (): void => dispatch(actions.search('find', '')),
-    onStartingPointSelected: (shorthand: string, room: string | undefined): void => {
+    onStartingPointSelected: (shorthand: string, room?: string | undefined): void => {
       dispatch(actions.setHeaderTitle('directions', 'find', Constants.Views.Find.Steps));
       dispatch(actions.setStartingPoint({ shorthand, room }));
       dispatch(actions.switchFindView(Constants.Views.Find.Steps));
