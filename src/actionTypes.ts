@@ -54,6 +54,7 @@ interface NavigateBackAction {
 
 interface SetTitleAction {
   type: Navigation.SetTitle;
+  setActive: boolean;
   title: Name | string | undefined;
   tab: Tab;
   view: number;

@@ -539,6 +539,7 @@ const mapDispatchToProps = (dispatch: any): any => {
   return {
     clearSearch: (): void => dispatch(actions.search('find', '')),
     onStartingPointSelected: (shorthand: string, room: string | undefined): void => {
+      dispatch(actions.setHeaderTitle('directions', 'find', Constants.Views.Find.Steps));
       dispatch(actions.setStartingPoint({ shorthand, room }));
       dispatch(actions.switchFindView(Constants.Views.Find.Steps));
     },

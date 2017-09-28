@@ -41,8 +41,13 @@ export function navigateBack(): Actions.ActionType {
   };
 }
 
-export function setHeaderTitle(title: Name | string | undefined, tab: Tab, view: number): Actions.ActionType {
+export function setHeaderTitle(
+    title: Name | string | undefined,
+    tab: Tab,
+    view: number,
+    setActive?: boolean): Actions.ActionType {
   return {
+    setActive: setActive || false,
     tab,
     title,
     type: Actions.Navigation.SetTitle,

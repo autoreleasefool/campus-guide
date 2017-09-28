@@ -147,7 +147,7 @@ const mapDispatchToProps = (dispatch: any): any => {
           // Return to default view, Views.Home
       }
 
-      dispatch(actions.pushHeaderTitle(title, 'discover'));
+      dispatch(actions.setHeaderTitle(title, 'discover', view));
       dispatch(actions.switchDiscoverView(view));
     },
   };

@@ -59,21 +59,22 @@ import { default as PaddedIcon, DefaultWidth as PaddedIconWidth } from '../../co
 
 // Types
 import { Language } from '../../util/Translations';
-import { Route, Section, Tab } from '../../../typings/global';
+import { Name, Route, Section, Tab } from '../../../typings/global';
 import { BuildingProperty, HousingInfo, Residence, ResidenceProperty } from '../../../typings/university';
 
 interface Props {
-  appTab: Tab;                                      // The current tab the app is showing
-  backCount: number;                                // Number of times user has requested back navigation
-  filter: string;                                   // Keywords to filter links by
-  language: Language;                               // The current language, selected by the user
-  residence: Residence | undefined;                 // The currently selected residence
-  view: number;                                     // Current view to display
-  canNavigateBack(can: boolean): void;              // Indicate whether the app can navigate back
-  onSectionSelected(section: string): void;         // Display contents of the section in new view
-  selectResidence(r: Residence | undefined): void;  // Selects a residence
-  showSearch(show: boolean): void;                  // Shows or hides the search button
-  switchView(view: number): void;                   // Set the current housing view
+  appTab: Tab;                                          // The current tab the app is showing
+  backCount: number;                                    // Number of times user has requested back navigation
+  filter: string;                                       // Keywords to filter links by
+  language: Language;                                   // The current language, selected by the user
+  residence: Residence | undefined;                     // The currently selected residence
+  view: number;                                         // Current view to display
+  canNavigateBack(can: boolean): void;                  // Indicate whether the app can navigate back
+  onSectionSelected(section: string): void;             // Display contents of the section in new view
+  setHeaderTitle(t: Name | string, view: number): void; // Sets the title in the app header
+  selectResidence(r: Residence | undefined): void;      // Selects a residence
+  showSearch(show: boolean): void;                      // Shows or hides the search button
+  switchView(view: number): void;                       // Set the current housing view
 }
 
 interface State {
@@ -245,6 +246,7 @@ class Housing extends React.PureComponent<Props, State> {
    * Opens view to select residences to compare.
    */
   _onBeginCompare(): void {
+    this.props.setHeaderTitle('compare_residences', Constants.Views.Housing.ResidenceSelect);
     this.props.switchView(Constants.Views.Housing.ResidenceSelect);
   }
 
@@ -264,6 +266,7 @@ class Housing extends React.PureComponent<Props, State> {
     }
 
     this._residencesToCompare = residences;
+    this.props.setHeaderTitle('compare_residences', Constants.Views.Housing.ResidenceCompare);
     this.props.switchView(Constants.Views.Housing.ResidenceCompare);
   }
 
@@ -732,11 +735,11 @@ const mapDispatchToProps = (dispatch: any): any => {
       switch (section) {
         case 'res':
           view = Constants.Views.Housing.Residences;
-          dispatch(actions.pushHeaderTitle('university_residences', 'discover'));
+          dispatch(actions.setHeaderTitle('university_residences', 'discover', view));
           break;
         case 'oth':
           view = Constants.Views.Housing.Resources;
-          dispatch(actions.pushHeaderTitle('other_resources', 'discover'));
+          dispatch(actions.setHeaderTitle('other_resources', 'discover', view));
           break;
         default:
           // Does nothing
@@ -755,27 +758,14 @@ const mapDispatchToProps = (dispatch: any): any => {
           name_fr: residence.name_fr,
         };
 
-        dispatch(actions.pushHeaderTitle(title, 'discover'));
+        dispatch(actions.setHeaderTitle(title, 'discover', Constants.Views.Housing.ResidenceDetails));
         dispatch(actions.switchHousingView(Constants.Views.Housing.ResidenceDetails));
       }
     },
+    setHeaderTitle: (title: Name | string, view: number): void =>
+        dispatch(actions.setHeaderTitle(title, 'discover', view)),
     showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
-    switchView: (view: number): void => {
-      // let title = 'housing';
-      // switch (view) {
-      //   case Constants.Views.Housing.Residences:
-      //   case Constants.Views.Housing.ResidenceCompare:
-      //   case Constants.Views.Housing.ResidenceSelect:
-      //     title = 'university_residences';
-      //     break;
-      //   default:
-      //     // Does nothing
-      //     // Return to default
-      // }
-
-      // dispatch(actions.setHeaderTitle(title, 'discover'));
-      dispatch(actions.switchHousingView(view));
-    },
+    switchView: (view: number): void => dispatch(actions.switchHousingView(view)),
   };
 };
 

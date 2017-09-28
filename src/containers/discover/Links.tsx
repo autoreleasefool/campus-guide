@@ -43,15 +43,15 @@ import { Language } from '../../util/Translations';
 import { LinkSection, Name, Tab, Route } from '../../../typings/global';
 
 interface Props {
-  appTab: Tab;                                          // The current tab the app is showing
-  backCount: number;                                    // Number of times user has requested back navigation
-  filter: string;                                       // Keywords to filter links by
-  language: Language;                                   // The current language, selected by the user
-  linkId: string | undefined;                           // The selected link category
-  canNavigateBack(can: boolean): void;                  // Indicate whether the app can navigate back
-  pushHeaderTitle(t: Name | string): void;              // Sets the title in the app header
-  showCategory(id: string | number | undefined): void;  // Shows a link category
-  showSearch(show: boolean): void;                      // Shows or hides the search button
+  appTab: Tab;                                                // The current tab the app is showing
+  backCount: number;                                          // Number of times user has requested back navigation
+  filter: string;                                             // Keywords to filter links by
+  language: Language;                                         // The current language, selected by the user
+  linkId: string | undefined;                                 // The selected link category
+  canNavigateBack(can: boolean): void;                        // Indicate whether the app can navigate back
+  setHeaderTitle(t: Name | string, v: number | string): void; // Sets the title in the app header
+  showCategory(id: string | number | undefined): void;        // Shows a link category
+  showSearch(show: boolean): void;                            // Shows or hides the search button
 }
 
 interface State {
@@ -103,18 +103,15 @@ class Links extends React.PureComponent<Props, State> {
         }
       }
     } else if (nextProps.linkId !== this.props.linkId) {
-      let popped = false;
       for (const route of currentRoutes) {
         if (route.id === nextProps.linkId) {
           (this.refs.Navigator as any).popToRoute(route);
-          popped = true;
-          break;
+
+          return;
         }
       }
 
-      if (!popped) {
-        (this.refs.Navigator as any).push({ id: nextProps.linkId });
-      }
+      (this.refs.Navigator as any).push({ id: nextProps.linkId });
     }
   }
 
@@ -210,7 +207,7 @@ class Links extends React.PureComponent<Props, State> {
       name_en: Translations.getEnglishName(newSection) || '',
       name_fr: Translations.getFrenchName(newSection) || '',
     };
-    this.props.pushHeaderTitle(title);
+    this.props.setHeaderTitle(title, sectionId);
     this.props.showCategory(sectionId);
   }
 
@@ -299,7 +296,8 @@ const mapStateToProps = (store: any): any => {
 const mapDispatchToProps = (dispatch: any): any => {
   return {
     canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('links', can)),
-    pushHeaderTitle: (title: Name | string): void => dispatch(actions.pushHeaderTitle(title, 'discover')),
+    setHeaderTitle: (title: Name | string, view: number): void =>
+        dispatch(actions.setHeaderTitle(title, 'discover', view)),
     showCategory: (id: string | number | undefined): void => dispatch(actions.switchLinkCategory(id)),
     showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
   };

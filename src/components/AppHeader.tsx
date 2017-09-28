@@ -337,20 +337,20 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store: any): any => {
   return {
-    appTitle: store.header.title,
+    appTitle: store.navigation.title,
     language: store.config.options.language,
-    shouldShowBack: store.header.showBack,
-    shouldShowSearch: store.header.showSearch,
+    shouldShowBack: store.navigation.showBack,
+    shouldShowSearch: store.navigation.showSearch,
     tab: store.navigation.tab,
     tabFilters: store.search.tabTerms,
-    tabShowBack: store.header.tabShowBack,
+    tabShowBack: store.navigation.tabShowBack,
   };
 };
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
     onBack: (tab: Tab): void => {
-      dispatch(actions.navigateBack(tab));
+      dispatch(actions.navigateBack());
       dispatch(actions.search(tab, ''));
     },
     onSearch: (tab: Tab, text: string): void => dispatch(actions.search(tab, text)),

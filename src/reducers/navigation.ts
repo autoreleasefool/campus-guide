@@ -144,12 +144,15 @@ function getTabTitle(state: State, tab: Tab): TabTitle {
     case 'discover':
       switch (state.discoverView) {
         case Constants.Views.Discover.Housing:
-          // TODO: make this use the proper housing section
-          title = state.tabTitles.discover[Constants.Views.Discover.Housing];
+          title = state.tabTitles.discover[state.housingView];
+          title = (state.housingView === Constants.Views.Housing.Menu)
+              ? state.tabTitles.discover[Constants.Views.Discover.Housing]
+              : state.tabTitles.discover[state.housingView];
           break;
         case Constants.Views.Discover.Links:
-          // TODO: make this properly use the current link section
-          title = state.tabTitles.discover[Constants.Views.Discover.Links];
+          title = (state.linkId === 0)
+              ? state.tabTitles.discover[Constants.Views.Discover.Links]
+              : state.tabTitles.discover[state.linkId] || state.tabTitles.discover[Constants.Views.Discover.Links];
           break;
         case Constants.Views.Discover.Shuttle:
         case Constants.Views.Discover.StudySpots:
@@ -215,6 +218,7 @@ export default function navigation(state: State = initialState, action: Actions.
             [action.view]: action.title,
           },
         },
+        title: action.setActive ? action.title : state.title,
       };
     }
     case Actions.Navigation.ShowBack:
@@ -246,36 +250,60 @@ export default function navigation(state: State = initialState, action: Actions.
 
       return updatedState;
     }
-    case Actions.Navigation.SwitchFindView:
-      return {
+    case Actions.Navigation.SwitchFindView: {
+      const updatedState = {
         ...state,
         findView: action.view,
       };
-    case Actions.Navigation.SwitchDiscoverView:
-      return {
+      updatedState.title = getTabTitle(updatedState, 'find');
+
+      return updatedState;
+    }
+    case Actions.Navigation.SwitchDiscoverView: {
+      const updatedState = {
         ...state,
         discoverView: action.view,
       };
-    case Actions.Navigation.SwitchHousingView:
-      return {
+      updatedState.title = getTabTitle(updatedState, 'discover');
+
+      return updatedState;
+    }
+    case Actions.Navigation.SwitchHousingView: {
+      const updatedState = {
         ...state,
         housingView: action.view,
       };
-    case Actions.Navigation.SwitchDiscoverLink:
-      return {
+      updatedState.title = getTabTitle(updatedState, 'discover');
+
+      return updatedState;
+    }
+    case Actions.Navigation.SwitchDiscoverLink: {
+      const updatedState = {
         ...state,
         linkId: action.linkId,
       };
-    case Actions.Navigation.SwitchDiscoverTransitCampus:
-      return {
+      updatedState.title = getTabTitle(updatedState, 'discover');
+
+      return updatedState;
+    }
+    case Actions.Navigation.SwitchDiscoverTransitCampus: {
+      const updatedState = {
         ...state,
         campus: action.campus,
       };
-    case Actions.Navigation.SwitchHousingResidence:
-      return {
+      updatedState.title = getTabTitle(updatedState, 'discover');
+
+      return updatedState;
+    }
+    case Actions.Navigation.SwitchHousingResidence: {
+      const updatedState = {
         ...state,
         residence: action.residence,
       };
+      updatedState.title = getTabTitle(updatedState, 'discover');
+
+      return updatedState;
+    }
     default:
       return state;
   }

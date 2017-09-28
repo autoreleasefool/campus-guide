@@ -65,7 +65,7 @@ interface Props {
   timeFormat: TimeFormat;                                   // Format to display times in
   onCampusSelected(campus?: MenuSection | undefined): void; // Displays details about a transit campus
   resetFilter(): void;                                      // Clears the current search terms
-  pushHeaderTitle(t: Name | string): void;                  // Sets the title in the app header
+  setHeaderTitle(t: Name | string): void;                   // Sets the title in the app header
   updateHeader(showSearchAndBack: boolean): void;           // Update header state
 }
 
@@ -133,6 +133,7 @@ class Transit extends React.PureComponent<Props, State> {
     if (nextProps.appTab === 'discover'
         && nextProps.backCount !== this.props.backCount
         && currentRoutes.length > 1) {
+      this.props.setHeaderTitle('transit_company');
       this.props.onCampusSelected();
     }
   }
@@ -186,7 +187,7 @@ class Transit extends React.PureComponent<Props, State> {
     const index = Arrays.linearSearchObjectArrayByKeyValue(this.state.campuses, 'id', id);
     const campus = this.state.campuses[index];
     this.props.onCampusSelected(campus);
-    this.props.pushHeaderTitle({
+    this.props.setHeaderTitle({
       name_en: Translations.getEnglishName(campus) || '',
       name_fr: Translations.getFrenchName(campus) || '',
     });
@@ -299,8 +300,9 @@ const mapStateToProps = (store: any): any => {
 const mapDispatchToProps = (dispatch: any): any => {
   return {
     onCampusSelected: (campus?: MenuSection | undefined): void => dispatch(actions.switchTransitCampus(campus)),
-    pushHeaderTitle: (title: Name | string): void => dispatch(actions.pushHeaderTitle(title, 'discover')),
     resetFilter: (): void => dispatch(actions.search('discover', '')),
+    setHeaderTitle: (title: Name | string): void =>
+        dispatch(actions.setHeaderTitle(title, 'discover', Constants.Views.Discover.Transit, true)),
     updateHeader: (showSearchAndBack: boolean): void => {
       dispatch(actions.canNavigateBack('transit', showSearchAndBack));
       dispatch(actions.showSearch(showSearchAndBack, 'discover'));

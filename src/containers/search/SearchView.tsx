@@ -645,7 +645,7 @@ const mapDispatchToProps = (dispatch: any): any => {
             name_fr: Translations.getFrenchName(data) || '',
           };
 
-          dispatch(actions.pushHeaderTitle(name, 'find'));
+          dispatch(actions.setHeaderTitle(name, 'find', Constants.Views.Find.Building));
           dispatch(actions.viewBuilding(data));
           dispatch(actions.switchFindView(Constants.Views.Find.Building));
           dispatch(actions.switchTab('find'));
@@ -657,20 +657,21 @@ const mapDispatchToProps = (dispatch: any): any => {
           break;
         case 'Rooms':
         case 'Chambres':
-          dispatch(actions.pushHeaderTitle('directions', 'find'));
+          dispatch(actions.setHeaderTitle('directions', 'find', Constants.Views.Find.StartingPoint));
           dispatch(actions.setDestination({ shorthand: data.shorthand, room: data.room }));
           dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
           dispatch(actions.switchTab('find'));
           break;
-        case 'Useful links':
-        case 'Liens utiles':
+        case 'uO Info':
+          // FIXME: figure out proper title here
+          dispatch(actions.setHeaderTitle('uo_info', 'discover', Constants.Views.Discover.Links));
           dispatch(actions.switchLinkCategory(data));
           dispatch(actions.switchDiscoverView(Constants.Views.Discover.Links));
           dispatch(actions.switchTab('discover'));
           break;
         case 'Study spots':
         case 'Taches d\'étude':
-          dispatch(actions.pushHeaderTitle('directions', 'find'));
+          dispatch(actions.setHeaderTitle('directions', 'find', Constants.Views.Find.StartingPoint));
           dispatch(actions.setDestination({ shorthand: data.shorthand, room: data.room }));
           dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
           dispatch(actions.switchTab('find'));

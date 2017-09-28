@@ -181,7 +181,7 @@ const mapStateToProps = (store: any): any => {
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onBackNavigation: (view: number): any => {
+    onBackNavigation: (view: number): void => {
       if (view === Constants.Views.Find.Home) {
         dispatch(actions.showBack(false, 'find'));
       } else {
