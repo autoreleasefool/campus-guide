@@ -50,11 +50,20 @@ describe('navigation actions', () => {
     expect(navigation.canNavigateBack(key, can)).toEqual(expectedAction);
   });
 
-  it('should create an action to set the title for a tab', () => {
+  it('should create an action to set the title for a tab, and the active title', () => {
     const title = 'name';
     const tab = 'find';
     const view = 0;
-    const expectedAction = { type: Actions.Navigation.SetTitle, title, tab, view };
+    const setActive = true;
+    const expectedAction = { type: Actions.Navigation.SetTitle, title, tab, view, setActive };
+    expect(navigation.setHeaderTitle(title, tab, view, setActive)).toEqual(expectedAction);
+  });
+
+  it('should create an action to set the title for a tab, without changing the active title', () => {
+    const title = 'name';
+    const tab = 'find';
+    const view = 0;
+    const expectedAction = { type: Actions.Navigation.SetTitle, title, tab, view, setActive: false };
     expect(navigation.setHeaderTitle(title, tab, view)).toEqual(expectedAction);
   });
 

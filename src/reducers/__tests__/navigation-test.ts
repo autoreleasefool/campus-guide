@@ -162,39 +162,76 @@ describe('navigation reducer', () => {
 
   it('switches the housing view', () => {
     expect(reducer(initialState, { type: Actions.Navigation.SwitchHousingView, view: 1 }))
-        .toEqual({ ...initialState, housingView: 1 });
+        .toEqual({ ...initialState, housingView: 1, title: initialState.tabTitles.discover[0] });
   });
 
   it('switches the link id', () => {
     expect(reducer(initialState, { type: Actions.Navigation.SwitchDiscoverLink, linkId: 1 }))
-        .toEqual({ ...initialState, linkId: 1 });
+        .toEqual({ ...initialState, linkId: 1, title: initialState.tabTitles.discover[0] });
   });
 
   it('switches the campus', () => {
     const campus = { image: 'image', name: 'name', id: 'id' };
     expect(reducer(initialState, { type: Actions.Navigation.SwitchDiscoverTransitCampus, campus }))
-        .toEqual({ ...initialState, campus });
+        .toEqual({ ...initialState, campus, title: initialState.tabTitles.discover[0] });
   });
 
   it('switches the residence', () => {
     const residence = { image: 'image', name: 'name', location: { latitude: 0, longitude: 0 }, props: [] };
     expect(reducer(initialState, { type: Actions.Navigation.SwitchHousingResidence, residence }))
-        .toEqual({ ...initialState, residence });
+        .toEqual({ ...initialState, residence, title: initialState.tabTitles.discover[0] });
   });
 
   it('should not alter the tab home title', () => {
     expect(
       reducer(
         initialState,
-        { type: Actions.Navigation.SetTitle, title: 'new title', tab: 'find', view: Constants.Views.Find.Home }
+        {
+          setActive: false,
+          tab: 'find',
+          title: 'new title',
+          type: Actions.Navigation.SetTitle,
+          view: Constants.Views.Find.Home,
+        }
       )).toEqual(initialState);
+  });
+
+  it('should set the title when setActive is true', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          setActive: true,
+          tab: 'find',
+          title: 'title',
+          type: Actions.Navigation.SetTitle,
+          view: Constants.Views.Find.Building,
+        }
+      )
+    ).toEqual({
+      ...initialState,
+      tabTitles: {
+        ...initialState.tabTitles,
+        find: {
+          ...initialState.tabTitles.find,
+          [Constants.Views.Find.Building]: 'title',
+        },
+      },
+      title: 'title',
+    });
   });
 
   it('should set the header title for a tab', () => {
     expect(
       reducer(
         initialState,
-        { type: Actions.Navigation.SetTitle, title: 'title', tab: 'find', view: Constants.Views.Find.Building }
+        {
+          setActive: false,
+          tab: 'find',
+          title: 'title',
+          type: Actions.Navigation.SetTitle,
+          view: Constants.Views.Find.Building,
+        }
       )
     ).toEqual({
       ...initialState,
@@ -236,6 +273,7 @@ describe('navigation reducer', () => {
     let updatedState = reducer(
       initialState,
       {
+        setActive: false,
         tab: 'discover',
         title: 'discover',
         type: Actions.Navigation.SetTitle,
