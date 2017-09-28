@@ -27,9 +27,10 @@ import React from 'react';
 import {
   Alert,
   Clipboard,
+  FlatList,
   Image,
+  InteractionManager,
   Linking,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -59,9 +60,89 @@ interface Props {
   onSubCategorySelected?(id: string): void; // Callback when subcategory in the category is selected by the user
 }
 
-interface State {}
+interface State {
+  iconColor: string;          // Icon color for links
+  isBackgroundDark: boolean;  // Indicates if the category background is dark
+  links: NamedLink[];         // List of filtered links
+  secondaryTextColor: string; // Description text color for links
+  textColor: string;          // Text color for link titles
+}
 
 export default class LinkCategoryView extends React.PureComponent<Props, State> {
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+
+    const categoryBackgroundColor = Constants.Colors[props.section.id] || Constants.Colors.primaryBackground;
+    const isBackgroundDark = Display.isColorDark(categoryBackgroundColor);
+
+    const textColor = (isBackgroundDark)
+        ? Constants.Colors.primaryWhiteText
+        : Constants.Colors.primaryBlackText;
+    const secondaryTextColor = (isBackgroundDark)
+        ? Constants.Colors.secondaryWhiteText
+        : Constants.Colors.secondaryBlackText;
+    const iconColor = (isBackgroundDark)
+        ? Constants.Colors.secondaryWhiteText
+        : Constants.Colors.secondaryBlackText;
+
+    this.state = {
+      iconColor,
+      isBackgroundDark,
+      links: [],
+      secondaryTextColor,
+      textColor,
+    };
+  }
+
+  /**
+   * Loads the study spots once the view has been mounted.
+   */
+  componentDidMount(): void {
+    InteractionManager.runAfterInteractions(() => this._filterLinks(this.props));
+  }
+
+  /**
+   * If a new filter is provided, update the list of links.
+   *
+   * @param {Props} nextProps the new props being received
+   */
+  componentWillReceiveProps(nextProps: Props): void {
+    if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
+      this._filterLinks(nextProps);
+    }
+  }
+
+  /**
+   * Filter to only show links which names contain the search terms.
+   *
+   * @param {Props} props the props to filter with
+   */
+  _filterLinks({ section, filter }: Props): void {
+    // Ignore the case of the search terms
+    const adjustedFilter = (filter.length === 0) ? undefined : filter.toUpperCase();
+
+    // Create array for links
+    const filteredLinks: NamedLink[] = [];
+
+    if (section.links) {
+      section.links.forEach((link: NamedLink) => {
+        const translatedLink = Translations.getLink(link) || External.getDefaultLink();
+        const translatedName = Translations.getName(link) || translatedLink;
+        if (adjustedFilter == undefined || translatedName.toUpperCase().indexOf(adjustedFilter) >= 0) {
+          filteredLinks.push(link);
+        }
+      });
+    }
+
+    // Update the state so the app reflects the changes made
+    this.setState({ links: filteredLinks });
+  }
 
   /**
    * Attempts to open a URL.
@@ -111,6 +192,39 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
   }
 
   /**
+   * Constructs a header with social media links and subcategories for the link category.
+   *
+   * @param {boolean} isBackgroundDark true if the category background color is dark, false otherwise
+   * @returns {JSX.Element} a hierarchy of views
+   */
+  _renderHeader(isBackgroundDark: boolean): JSX.Element {
+    return (
+      <View>
+        {this._renderSocialMedia()}
+        {this._renderSubCategories(isBackgroundDark)}
+        {this._renderLinkHeader()}
+      </View>
+    );
+  }
+
+  /**
+   * Render a header for the list of links, or nothing if there are no links to render.
+   *
+   * @returns {JSX.Element|undefined} a <Header> element, or undefined
+   */
+  _renderLinkHeader(): JSX.Element | undefined {
+    if (this.state.links.length === 0) {
+      return undefined;
+    }
+
+    return (
+      <Header
+        icon={{ name: 'insert-link', class: 'material' }}
+        title={Translations.get('uo_info')} />
+    );
+  }
+
+  /**
    * Renders an icon based on the link type.
    *
    * @param {string|undefined} link     the link to represent with an icon
@@ -136,75 +250,32 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
     );
   }
 
-  /**
-   * Returns a list of touchable views which open links in the web browser.
-   *
-   * @param {boolean}           isBackgroundDark indicates if the background color of the category is dark
-   * @returns {JSX.Element|undefined} for each index in {links}, a {TouchableOpacity} with the name of the link
-   *                                  or undefined if there are no links
-   */
-  _renderLinks(isBackgroundDark: boolean): JSX.Element | undefined {
-    const links = this.props.section.links;
-    if (links == undefined) {
-      return undefined;
-    }
+  _renderLink({ item }: { item: NamedLink }): JSX.Element {
+    const translatedLink = Translations.getLink(item) || External.getDefaultLink();
+    const translatedName = Translations.getName(item) || translatedLink;
+    const translatedDescription = Translations.getDescription(item);
 
-    const textColor: string = (isBackgroundDark)
-        ? Constants.Colors.primaryWhiteText
-        : Constants.Colors.primaryBlackText;
-    const secondaryTextColor: string = (isBackgroundDark)
-        ? Constants.Colors.secondaryWhiteText
-        : Constants.Colors.secondaryBlackText;
-    const iconColor: string = (isBackgroundDark)
-        ? Constants.Colors.secondaryWhiteText
-        : Constants.Colors.secondaryBlackText;
-
-    // Search terms to filter links by
-    const filter = this.props.filter.length > 0 ? this.props.filter.toUpperCase() : undefined;
+    const { textColor, secondaryTextColor, iconColor }: State = this.state;
 
     return (
-      <View>
-        <Header
-            icon={{ name: 'insert-link', class: 'material' }}
-            title={Translations.get('uo_info')} />
-        {links.map((link: NamedLink, index: number) => {
-          const translatedLink = Translations.getLink(link) || External.getDefaultLink();
-          const translatedName = Translations.getName(link) || translatedLink;
-          const translatedDescription = Translations.getDescription(link);
-
-          // Compare name to search terms and do not render if they don't match
-          if (filter != undefined && translatedName.toUpperCase().indexOf(filter) < 0) {
-            return undefined;
-          }
-
-          return (
-            <View key={translatedLink}>
-              <TouchableOpacity
-                  style={{ flexDirection: 'row', alignItems: 'center' }}
-                  onPress={(): void => this._openLink(translatedLink)}>
-                {this._renderLinkIcon(translatedLink, iconColor)}
-                <View style={_styles.linkContainer}>
-                  <Text style={[ _styles.link, { color: textColor }]}>
-                    {translatedName}
-                  </Text>
-                  {this._renderFormattedLink(translatedLink, textColor)}
-                  {translatedDescription == undefined
-                    ? undefined
-                    : (
-                      <Text style={[ _styles.linkDescription, { color: secondaryTextColor }]}>
-                        {translatedDescription}
-                      </Text>
-                    )}
-                </View>
-              </TouchableOpacity>
-              {(index < links.length - 1)
-                ? <View style={[ _styles.divider, _styles.inset, { backgroundColor: textColor }]} />
-                : undefined
-              }
-            </View>
-          );
-        })}
-      </View>
+      <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+          onPress={(): void => this._openLink(translatedLink)}>
+        {this._renderLinkIcon(translatedLink, iconColor)}
+        <View style={_styles.linkContainer}>
+          <Text style={[ _styles.link, { color: textColor }]}>
+            {translatedName}
+          </Text>
+          {this._renderFormattedLink(translatedLink, textColor)}
+          {translatedDescription == undefined
+            ? undefined
+            : (
+              <Text style={[ _styles.linkDescription, { color: secondaryTextColor }]}>
+                {translatedDescription}
+              </Text>
+            )}
+        </View>
+      </TouchableOpacity>
     );
   }
 
@@ -288,26 +359,33 @@ export default class LinkCategoryView extends React.PureComponent<Props, State> 
   }
 
   /**
+   * Renders a separator line between rows.
+   *
+   * @returns {JSX.Element} a separator for the list of links
+   */
+  _renderSeparator(): JSX.Element {
+    const { textColor }: State = this.state;
+
+    return <View style={[ _styles.separator, { backgroundColor: textColor }]} />;
+  }
+
+  /**
    * Renders a set of views detailing a set of related links.
    *
    * @returns {JSX.Element} the hierarchy of views to render
    */
   render(): JSX.Element {
-    let categoryBackgroundColor: string = Constants.Colors.primaryBackground;
-    if (Constants.Colors[this.props.section.id] != undefined) {
-      categoryBackgroundColor = Constants.Colors[this.props.section.id];
-    }
-
-    const isBackgroundDark: boolean = Display.isColorDark(categoryBackgroundColor);
+    const categoryBackgroundColor = Constants.Colors[this.props.section.id] || Constants.Colors.primaryBackground;
 
     return (
       <View style={[ _styles.container, { backgroundColor: categoryBackgroundColor }]}>
-        <ScrollView style={_styles.scrollView}>
-          {this._renderBanner()}
-          {this._renderSocialMedia()}
-          {this._renderSubCategories(isBackgroundDark)}
-          {this._renderLinks(isBackgroundDark)}
-        </ScrollView>
+        {this._renderBanner()}
+        <FlatList
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
+            ListHeaderComponent={this._renderHeader.bind(this, this.state.isBackgroundDark)}
+            data={this.state.links}
+            keyExtractor={(link: NamedLink): string => Translations.getLink(link) || External.getDefaultLink()}
+            renderItem={this._renderLink.bind(this)} />
       </View>
     );
   }
@@ -374,6 +452,11 @@ const _styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  separator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
   socialMediaContainer: {
     backgroundColor: Constants.Colors.tertiaryBackground,
