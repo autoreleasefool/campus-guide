@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "yarn run clean && yarn run tsc --",
+    "build": "yarn run clean && yarn run tsc",
     "build:ios": "react-native bundle --entry-file='artifacts/index.ios.js' --bundle-output='./ios/CampusGuide/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
     "clean": "rimraf artifacts",
     "lint": "tslint 'src/**/*.ts?(x)'",
@@ -14,7 +14,7 @@
     "test": "yarn run build && jest --coverage",
     "tsc": "tsc",
     "tscp": "tsc --pretty",
-    "watch": "yarn run build -- -w"
+    "watch": "yarn run build -w"
   },
   "dependencies": {
     "fastpriorityqueue": "^0.3.1",
@@ -58,6 +58,7 @@
     "typescript": "2.5.1"
   },
   "jest": {
+    "collectCoverage": true,
     "collectCoverageFrom": [
       "artifacts/util/*.js",
       "artifacts/actions/*.js",
@@ -68,10 +69,6 @@
       "!artifacts/util/Configuration.js"
     ],
     "coverageDirectory": "coverage",
-    "coverageReporters": [
-      "text-summary",
-      "html"
-    ],
     "coverageThreshold": {
       "global": {
         "branches": 95,
