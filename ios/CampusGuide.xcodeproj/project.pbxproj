@@ -47,6 +47,8 @@
 		AA2F23075DD54EE19C09D574 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81FD275346A544D5968FB330 /* Entypo.ttf */; };
 		BB2DB69161C04E1787F80B13 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 98E54E979ECD49AF93B0DD02 /* Octicons.ttf */; };
 		C92B26944304437E8C0154BB /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38415F9AF19A4511B905E3A3 /* Foundation.ttf */; };
+		CA3F41DA1F7D3235005A6624 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = CA3F41B61F7D3235005A6624 /* main.jsbundle */; };
+		CA3F41DC1F7D32FF005A6624 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = CA3F41DB1F7D32FE005A6624 /* assets */; };
 		CD3069613891486E810ACDF7 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9513930096C2425F9D89501E /* FontAwesome.ttf */; };
 		D4E34507B79A4776ACD4EFAD /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 970BFCEE253B429BB1B569CF /* SimpleLineIcons.ttf */; };
 		E5008079F83B495E91BF0BEB /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0AE9B3CBFB64421A401B1E7 /* libRNVectorIcons.a */; };
@@ -353,6 +355,8 @@
 		A7AAD27A5B9049AFACE180D4 /* libRNSnackbar.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSnackbar.a; sourceTree = "<group>"; };
 		BBC6F23617154C27858C1E1F /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		C4E1473A709349F3A4735C21 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		CA3F41B61F7D3235005A6624 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release/main.jsbundle; sourceTree = "<group>"; };
+		CA3F41DB1F7D32FE005A6624 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../release/assets; sourceTree = "<group>"; };
 		D49E5841E7D74394B34FC0BA /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		D4DCB4FF9FAE488A95730ABC /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		D81F8363BD5D44FFA4096EDA /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
@@ -530,6 +534,8 @@
 		407742F1D1CC4E0B96C0CFE2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CA3F41DB1F7D32FE005A6624 /* assets */,
+				CA3F41B61F7D3235005A6624 /* main.jsbundle */,
 				81FD275346A544D5968FB330 /* Entypo.ttf */,
 				D49E5841E7D74394B34FC0BA /* EvilIcons.ttf */,
 				9513930096C2425F9D89501E /* FontAwesome.ttf */,
@@ -1131,8 +1137,10 @@
 				13809E0F8106445F9D121E8C /* Ionicons.ttf in Resources */,
 				71E09E7D72BE4F9D9C8F2C30 /* MaterialCommunityIcons.ttf in Resources */,
 				280F29B90C8246C189C51F2E /* MaterialIcons.ttf in Resources */,
+				CA3F41DC1F7D32FF005A6624 /* assets in Resources */,
 				BB2DB69161C04E1787F80B13 /* Octicons.ttf in Resources */,
 				D4E34507B79A4776ACD4EFAD /* SimpleLineIcons.ttf in Resources */,
+				CA3F41DA1F7D3235005A6624 /* main.jsbundle in Resources */,
 				0C592CE2DD874E9884D39498 /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

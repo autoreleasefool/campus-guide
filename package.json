@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "yarn run clean && yarn run tsc",
-    "build:ios": "react-native bundle --entry-file='artifacts/index.ios.js' --bundle-output='./ios/CampusGuide/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
+    "build:ios": "react-native bundle --entry-file='artifacts/index.ios.js' --bundle-output='./release/main.jsbundle' --dev=false --platform='ios' --assets-dest='./release'",
     "clean": "rimraf artifacts",
     "lint": "tslint 'src/**/*.ts?(x)'",
     "start": "node node_modules/react-native/local-cli/cli.js start",
