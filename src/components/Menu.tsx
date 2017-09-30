@@ -36,7 +36,7 @@ import {
 
 // Types
 import { Language } from '../util/Translations';
-import { MenuSection } from '../../typings/global';
+import { DoubleMenuSection, MenuSection, SingleMenuSection } from '../../typings/global';
 
 interface Props {
   language: Language;                       // The user's currently selected language
@@ -83,10 +83,10 @@ export default class Menu extends React.PureComponent<Props, State> {
   /**
    * Returns the image to render for the section, if one exists.
    *
-   * @param {MenuSection} section the section to render image for
+   * @param {SingleMenuSection} section the section to render image for
    * @returns {JSX.Element|undefined} the image for the section
    */
-  _getSectionImage(section: MenuSection): JSX.Element | undefined {
+  _getSectionImage(section: SingleMenuSection): JSX.Element | undefined {
     let image: JSX.Element;
     const borderRadius = Platform.OS === 'android' ? { borderRadius: Constants.Sizes.Margins.Regular } : {};
 
@@ -114,23 +114,36 @@ export default class Menu extends React.PureComponent<Props, State> {
   /**
    * Renders a view for a section.
    *
-   * @param {MenuSection} item  the section to render
-   * @param {number}      index index of the section
+   * @param {MenuSection} item the section to render
+   * @param {boolean}     mini true to render a card at half size
    * @returns {JSX.Element} a view with the section image and title
    */
-  _renderSection({ item }: { item: MenuSection; index: number }): JSX.Element {
-    const icon = Display.getPlatformIcon(Platform.OS, item);
-    const cardDimensions = { height: this._getCardHeight(), width: screenDimensions.width };
-    const sectionImage = this._getSectionImage(item);
+  _renderSection({ item, mini }: { item: MenuSection; mini?: boolean }): JSX.Element {
+    if ('left' in item) {
+      return (
+        <View style={_styles.doubleCard}>
+          {this._renderSection({ item: (item as DoubleMenuSection).left, mini: true })}
+          <View style={[ _styles.splitSeparator, { height: this._getCardHeight() }]} />
+          {this._renderSection({ item: (item as DoubleMenuSection).right, mini: true })}
+        </View>
+      );
+    }
+
+    const section = (item as SingleMenuSection);
+
+    const icon = Display.getPlatformIcon(Platform.OS, section);
+    const width = mini ? screenDimensions.width / 2 : screenDimensions.width;
+    const cardDimensions = { height: this._getCardHeight(), width };
+    const sectionImage = this._getSectionImage(section);
 
     return (
       <TouchableOpacity
           style={[ _styles.cardIOS, cardDimensions ]}
-          onPress={(): void => this.props.onSectionSelected(item.id)}>
+          onPress={(): void => this.props.onSectionSelected(section.id)}>
         {sectionImage}
         <Header
             icon={icon}
-            title={Translations.getName(item) || ''} />
+            title={Translations.getName(section) || ''} />
         <View style={_styles.separator} />
       </TouchableOpacity>
     );
@@ -141,24 +154,46 @@ export default class Menu extends React.PureComponent<Props, State> {
    *
    * @param {MenuSection} item  the section to render
    * @param {number}      index index of the section
+   * @param {boolean}
+   * @param {boolean}     mini  true to render a c ard at half size
    * @returns {JSX.Element} a card with the section image and title
    */
-  _renderSectionCard({ item, index }: { item: MenuSection; index: number }): JSX.Element {
-    const icon = Display.getPlatformIcon(Platform.OS, item);
+  _renderSectionCard(
+      { item, index, left, mini }: { item: MenuSection; index: number; left?: boolean, mini?: boolean }): JSX.Element {
+    if ('left' in item) {
+      return (
+        <View style={_styles.doubleCard}>
+          {this._renderSectionCard({ item: (item as DoubleMenuSection).left, index, mini: true, left: true })}
+          {this._renderSectionCard({ item: (item as DoubleMenuSection).right, index, mini: true, left: false })}
+        </View>
+      );
+    }
+
+    const section = (item as SingleMenuSection);
+
+    const icon = Display.getPlatformIcon(Platform.OS, section);
     const viewMargins: object = index === 0 ? {} : { marginTop: 0 };
-    const cardHeight = { height: this._getCardHeight() };
-    const sectionImage = this._getSectionImage(item);
+    const width = mini
+        ? (screenDimensions.width - Constants.Sizes.Margins.Expanded * 3) / 2
+        : screenDimensions.width - (Constants.Sizes.Margins.Expanded * 2);
+    const cardMargins = mini
+        ? left
+            ? { marginLeft: Constants.Sizes.Margins.Expanded, marginRight: Constants.Sizes.Margins.Regular }
+            : { marginLeft: Constants.Sizes.Margins.Regular, marginRight: Constants.Sizes.Margins.Expanded }
+        : {};
+    const cardDimensions = { height: this._getCardHeight(), width };
+    const sectionImage = this._getSectionImage(section);
 
     return (
       <TouchableOpacity
-          style={[ _styles.cardShadow, _styles.rounded ]}
-          onPress={(): void => this.props.onSectionSelected(item.id)}>
-        <View style={[ _styles.cardAndroid, _styles.rounded, viewMargins, cardHeight ]}>
+          style={[ _styles.cardShadow, _styles.rounded, cardMargins ]}
+          onPress={(): void => this.props.onSectionSelected(section.id)}>
+        <View style={[ _styles.cardAndroid, _styles.rounded, viewMargins, cardDimensions ]}>
           {sectionImage}
           <Header
               icon={icon}
               style={[ _styles.rounded, { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 } ]}
-              title={Translations.getName(item) || ''} />
+              title={Translations.getName(section) || ''} />
         </View>
       </TouchableOpacity>
     );
@@ -173,7 +208,8 @@ export default class Menu extends React.PureComponent<Props, State> {
     return (
       <FlatList
           data={this.props.sections}
-          keyExtractor={(section: MenuSection): string => section.id}
+          keyExtractor={(section: MenuSection): string =>
+              ('id' in section) ? (section as SingleMenuSection).id : (section as DoubleMenuSection).left.id}
           renderItem={Platform.OS === 'ios' ? this._renderSection.bind(this) : this._renderSectionCard.bind(this)}
           style={_styles.container} />
     );
@@ -203,6 +239,9 @@ const _styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  doubleCard: {
+    flexDirection: 'row',
+  },
   rounded: {
     borderRadius: Constants.Sizes.Margins.Regular,
   },
@@ -223,5 +262,9 @@ const _styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
     right: 0,
+  },
+  splitSeparator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    width: StyleSheet.hairlineWidth,
   },
 });

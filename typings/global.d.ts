@@ -124,15 +124,27 @@ export type Icon =
 //  Menus
 //-----------------------------------------------------------------------------
 
-/** Expected format for menu sections. */
-export interface MenuSection extends Name {
+/** Defines a single menu section */
+export interface SingleMenuSection {
   icon?: Icon;    // Icon for the section to display
   id: string;     // Unique id to report which section was selected
   image?: string; // Image to display when section is expanded
 }
 
+/** Defines two menu sections to be put side by side */
+export interface DoubleMenuSection {
+  left: SingleMenuSection;
+  right: SingleMenuSection;
+}
+
+/** Expected format for menu sections. */
+export type MenuSection =
+  | SingleMenuSection
+  | DoubleMenuSection
+  ;
+
 /** Expected format for link sections. */
-export interface LinkSection extends MenuSection {
+export interface LinkSection extends SingleMenuSection {
   links?: NamedLink[];        // List of links in the category
   social?: NamedLink[];       // List of social media links in the platform
   categories?: LinkSection[]; // List of subcategories

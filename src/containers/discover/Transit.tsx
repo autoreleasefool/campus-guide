@@ -52,25 +52,25 @@ import * as Translations from '../../util/Translations';
 
 // Types
 import { Language } from '../../util/Translations';
-import { MenuSection, Name, Route, Tab, TimeFormat } from '../../../typings/global';
+import { Name, Route, SingleMenuSection, Tab, TimeFormat } from '../../../typings/global';
 import { TransitInfo } from '../../../typings/transit';
 
 interface Props {
-  appTab: Tab;                                              // The current tab the app is showing
-  backCount: number;                                        // Number of times user has requested back navigation
-  transitInfo: TransitInfo | undefined;                     // Information about the city transit system
-  campus: MenuSection | undefined;                          // The current transit campus to display info for
-  filter: string;                                           // The current filter for transit routes
-  language: Language;                                       // The current language, selected by the user
-  timeFormat: TimeFormat;                                   // Format to display times in
-  onCampusSelected(campus?: MenuSection | undefined): void; // Displays details about a transit campus
-  resetFilter(): void;                                      // Clears the current search terms
-  setHeaderTitle(t: Name | string): void;                   // Sets the title in the app header
-  updateHeader(showSearchAndBack: boolean): void;           // Update header state
+  appTab: Tab;                                                    // The current tab the app is showing
+  backCount: number;                                              // Number of times user has requested back navigation
+  transitInfo: TransitInfo | undefined;                           // Information about the city transit system
+  campus: SingleMenuSection | undefined;                          // The current transit campus to display info for
+  filter: string;                                                 // The current filter for transit routes
+  language: Language;                                             // The current language, selected by the user
+  timeFormat: TimeFormat;                                         // Format to display times in
+  onCampusSelected(campus?: SingleMenuSection | undefined): void; // Displays details about a transit campus
+  resetFilter(): void;                                            // Clears the current search terms
+  setHeaderTitle(t: Name | string): void;                         // Sets the title in the app header
+  updateHeader(showSearchAndBack: boolean): void;                 // Update header state
 }
 
 interface State {
-  campuses: MenuSection[];  // Array of transit campuses to display info for
+  campuses: SingleMenuSection[];  // Array of transit campuses to display info for
 }
 
 // Constant for navigation - show the campus selection screen
@@ -196,10 +196,10 @@ class Transit extends React.PureComponent<Props, State> {
   /**
    * Returns a map and list of stops near a transit campus.
    *
-   * @param {MenuSection|undefined} campusInfo details of the campus to display
+   * @param {SingleMenuSection|undefined} campusInfo details of the campus to display
    * @returns {JSX.Element} a map and list of stops/routes
    */
-  _renderCampus(campusInfo: MenuSection | undefined): JSX.Element {
+  _renderCampus(campusInfo: SingleMenuSection | undefined): JSX.Element {
     const campus = campusInfo;
     if (campus) {
       return (
@@ -299,7 +299,7 @@ const mapStateToProps = (store: any): any => {
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onCampusSelected: (campus?: MenuSection | undefined): void => dispatch(actions.switchTransitCampus(campus)),
+    onCampusSelected: (campus?: SingleMenuSection | undefined): void => dispatch(actions.switchTransitCampus(campus)),
     resetFilter: (): void => dispatch(actions.search('discover', '')),
     setHeaderTitle: (title: Name | string): void =>
         dispatch(actions.setHeaderTitle(title, 'discover', Constants.Views.Discover.Transit, true)),

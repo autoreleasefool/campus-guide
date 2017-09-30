@@ -23,7 +23,7 @@
 
 // Types
 import * as Configuration from './util/Configuration';
-import { MenuSection, Name, Tab } from '../typings/global';
+import { SingleMenuSection, Name, Tab } from '../typings/global';
 import { Building, Course, Destination, Residence, Semester } from '../typings/university';
 
 /* Actions for app navigation. */
@@ -84,7 +84,7 @@ interface SwitchDiscoverLinkAction {
 
 interface SwitchDiscoverTransitCampusAction {
   type: Navigation.SwitchDiscoverTransitCampus;
-  campus: MenuSection | undefined;
+  campus: SingleMenuSection | undefined;
 }
 
 interface SwitchFindViewAction {

@@ -28,7 +28,7 @@ const CoreTranslations = require('../../assets/json/CoreTranslations');
 
 // Types
 import * as Actions from '../actionTypes';
-import { MenuSection, Name, Tab, TabSet } from '../../typings/global';
+import { Name, SingleMenuSection, Tab, TabSet } from '../../typings/global';
 import { Residence } from '../../typings/university';
 
 /** Valid types for a tab title */
@@ -47,7 +47,7 @@ export interface State {
   discoverView: number;                 // The current view to display in the discover tab
   housingView: number;                  // The current view to display in the housing menu
   linkId: string | number | undefined;  // Currently selected link category id
-  campus: MenuSection;                  // Selected transit campus to display info for
+  campus: SingleMenuSection;            // Selected transit campus to display info for
   residence: Residence | undefined;     // Selected residence to display info for
 
   title: Name | string;           // Title for the current screen

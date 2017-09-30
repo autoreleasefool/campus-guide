@@ -24,7 +24,7 @@
 
 // Types
 import * as Actions from '../actionTypes';
-import { MenuSection, Name, Tab } from '../../typings/global';
+import { SingleMenuSection, Name, Tab } from '../../typings/global';
 import { Residence } from '../../typings/university';
 
 export function canNavigateBack(key: string, can: boolean): Actions.ActionType {
@@ -113,7 +113,7 @@ export function switchTab(tab: Tab): Actions.ActionType {
   };
 }
 
-export function switchTransitCampus(campus: MenuSection | undefined): Actions.ActionType {
+export function switchTransitCampus(campus: SingleMenuSection | undefined): Actions.ActionType {
   return {
     campus,
     type: Actions.Navigation.SwitchDiscoverTransitCampus,
