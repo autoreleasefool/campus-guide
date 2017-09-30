@@ -52,7 +52,7 @@ import * as Translations from '../../util/Translations';
 
 // Types
 import { Language } from '../../util/Translations';
-import { TimeFormat } from '../../../typings/global';
+import { Icon, TimeFormat } from '../../../typings/global';
 import { StudySpot, StudySpotInfo } from '../../../typings/university';
 
 interface Props {
@@ -72,6 +72,7 @@ interface State {
   filterSelected: boolean;                // Indicates if any filter has been initially selected
   loaded: boolean;                        // Indicates if the data has been loaded for this view
   reservationsVisible: boolean;           // True to show reservation info, false to hide
+  showFilters: boolean;                   // True to show the filters to select, false to hide
   studySpots: StudySpotInfo | undefined;  // Information to display about study spots
 }
 
@@ -92,6 +93,7 @@ class StudySpots extends React.PureComponent<Props, State> {
       filterSelected: false,
       loaded: false,
       reservationsVisible: false,
+      showFilters: false,
       studySpots: undefined,
     };
   }
@@ -133,6 +135,14 @@ class StudySpots extends React.PureComponent<Props, State> {
    */
   _setReservationsVisible(visible: boolean): void {
     this.setState({ reservationsVisible: visible });
+  }
+
+  /**
+   * Toggle the filter view.
+   */
+  _toggleFilters(): void {
+    LayoutAnimation.easeInEaseOut(undefined, undefined);
+    this.setState({ showFilters: !this.state.showFilters });
   }
 
   /**
@@ -183,6 +193,58 @@ class StudySpots extends React.PureComponent<Props, State> {
   }
 
   /**
+   * Renders a modal to show descriptions of the various study spot filters.
+   *
+   * @param {StudySpotInfo} studySpotInfo information about study spots to display
+   * @returns {JSX.Element} a modal view which is visible when the user opts to open the filter descriptions
+   */
+  _renderFilterDescriptionsModal(studySpotInfo: StudySpotInfo): JSX.Element {
+    return (
+      <Modal
+          animationType={'slide'}
+          transparent={false}
+          visible={this.state.filterDescriptionsVisible}
+          onRequestClose={this._setFilterDescriptionsVisible.bind(this, false)}>
+        <ModalHeader
+            rightActionEnabled={true}
+            rightActionText={Translations.get('done')}
+            title={Translations.get('filter_descriptions')}
+            onRightAction={this._setFilterDescriptionsVisible.bind(this, false)} />
+        <FilterDescriptions
+            descriptions={studySpotInfo.filterDescriptions}
+            filters={studySpotInfo.filters}
+            language={this.props.language} />
+      </Modal>
+    );
+  }
+
+  /**
+   * Renders a modal to show links to reserve various study rooms around the university.
+   *
+   * @param {StudySpotInfo} studySpotInfo information about study spots to display
+   * @returns {JSX.Element} a modal view which is visible when the user wants to reserve a study room
+   */
+  _renderReservationsModal(studySpotInfo: StudySpotInfo): JSX.Element {
+    return (
+      <Modal
+          animationType={'slide'}
+          transparent={false}
+          visible={this.state.reservationsVisible}
+          onRequestClose={this._setReservationsVisible.bind(this, false)}>
+        <ModalHeader
+            rightActionEnabled={true}
+            rightActionText={Translations.get('done')}
+            title={Translations.get('study_spots')}
+            onRightAction={this._setReservationsVisible.bind(this, false)} />
+        <LinkCategoryView
+            filter={this.props.filter}
+            language={this.props.language}
+            section={studySpotInfo.reservations} />
+      </Modal>
+    );
+  }
+
+  /**
    * Renders the filtered study spots and views to filter them.
    *
    * @returns {JSX.Element} the hierarchy of views to render
@@ -199,38 +261,17 @@ class StudySpots extends React.PureComponent<Props, State> {
         ? _styles.filterSelected
         : _styles.filterNotSelected;
 
+    const showFilterIcon: Icon = { name: 'arrow-drop-up', class: 'material' };
+    let showFilterStyle: any = { height: 0 };
+    if (this.state.showFilters) {
+      showFilterIcon.name = 'arrow-drop-down';
+      showFilterStyle = {};
+    }
+
     return (
       <View style={_styles.container}>
-        <Modal
-            animationType={'slide'}
-            transparent={false}
-            visible={this.state.filterDescriptionsVisible}
-            onRequestClose={this._setFilterDescriptionsVisible.bind(this, false)}>
-          <ModalHeader
-              rightActionEnabled={true}
-              rightActionText={Translations.get('done')}
-              title={Translations.get('filter_descriptions')}
-              onRightAction={this._setFilterDescriptionsVisible.bind(this, false)} />
-          <FilterDescriptions
-              descriptions={studySpotInfo.filterDescriptions}
-              filters={studySpotInfo.filters}
-              language={this.props.language} />
-        </Modal>
-        <Modal
-            animationType={'slide'}
-            transparent={false}
-            visible={this.state.reservationsVisible}
-            onRequestClose={this._setReservationsVisible.bind(this, false)}>
-          <ModalHeader
-              rightActionEnabled={true}
-              rightActionText={Translations.get('done')}
-              title={Translations.get('study_spots')}
-              onRightAction={this._setReservationsVisible.bind(this, false)} />
-          <LinkCategoryView
-              filter={this.props.filter}
-              language={this.props.language}
-              section={studySpotInfo.reservations} />
-        </Modal>
+        {this._renderFilterDescriptionsModal(studySpotInfo)}
+        {this._renderReservationsModal(studySpotInfo)}
         <View style={_styles.container}>
           <StudySpotList
               activeFilters={this.props.activeFilters}
@@ -248,19 +289,23 @@ class StudySpots extends React.PureComponent<Props, State> {
               subtitleIcon={{ name: 'chevron-right', class: 'material' }}
               title={Translations.get('reserve_study_spot')} />
         </TouchableOpacity>
-        <Header
-            backgroundColor={Constants.Colors.tertiaryBackground}
-            icon={{ name: 'filter-list', class: 'material' }}
-            subtitleCallback={this._setFilterDescriptionsVisible.bind(this, true)}
-            subtitleIcon={{ name: 'info', class: 'material' }}
-            title={Translations.get('filters')} />
-        <StudyFilters
-            activeFilters={this.props.activeFilters}
-            filterDescriptions={studySpotInfo.filterDescriptions}
-            filters={studySpotInfo.filters}
-            fullSize={false}
-            language={this.props.language}
-            onFilterSelected={this._onFilterSelected.bind(this)} />
+        <TouchableOpacity onPress={(): void => this._toggleFilters()}>
+          <Header
+              backgroundColor={Constants.Colors.tertiaryBackground}
+              icon={showFilterIcon}
+              subtitleCallback={this._setFilterDescriptionsVisible.bind(this, true)}
+              subtitleIcon={{ name: 'info', class: 'material' }}
+              title={Translations.get('filters')} />
+        </TouchableOpacity>
+        <View style={showFilterStyle}>
+          <StudyFilters
+              activeFilters={this.props.activeFilters}
+              filterDescriptions={studySpotInfo.filterDescriptions}
+              filters={studySpotInfo.filters}
+              fullSize={false}
+              language={this.props.language}
+              onFilterSelected={this._onFilterSelected.bind(this)} />
+        </View>
         <View style={[ _styles.filterSelection, filterStyle ]}>
           <StudyFilters
               filterDescriptions={studySpotInfo.filterDescriptions}
