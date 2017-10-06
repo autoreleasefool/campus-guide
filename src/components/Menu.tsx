@@ -63,6 +63,9 @@ const CARD_ASPECT_RATIO = 0.75;
 /** Default maximum number of cards on screen at a time. */
 const DEFAULT_MAX_CARDS = 4;
 
+/** Magnitude of margins on mini cards. */
+const MINI_CARD_MARGINS = 3;
+
 /** Width of a standard card. */
 const cardWidth = screenDimensions.width - (Constants.Sizes.Margins.Expanded * 2);
 
@@ -159,7 +162,7 @@ export default class Menu extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a card with the section image and title
    */
   _renderSectionCard(
-      { item, index, left, mini }: { item: MenuSection; index: number; left?: boolean, mini?: boolean }): JSX.Element {
+      { item, index, left, mini }: { item: MenuSection; index: number; left?: boolean; mini?: boolean }): JSX.Element {
     if ('left' in item) {
       return (
         <View style={_styles.doubleCard}>
@@ -174,7 +177,7 @@ export default class Menu extends React.PureComponent<Props, State> {
     const icon = Display.getPlatformIcon(Platform.OS, section);
     const viewMargins: object = index === 0 ? {} : { marginTop: 0 };
     const width = mini
-        ? (screenDimensions.width - Constants.Sizes.Margins.Expanded * 3) / 2
+        ? (screenDimensions.width - Constants.Sizes.Margins.Expanded * MINI_CARD_MARGINS) / 2
         : screenDimensions.width - (Constants.Sizes.Margins.Expanded * 2);
     const cardMargins = mini
         ? left
