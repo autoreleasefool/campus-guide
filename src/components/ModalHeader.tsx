@@ -93,7 +93,6 @@ export default class ModalHeader extends React.PureComponent<Props, State> {
 
     return (
       <View style={[ _styles.container, { backgroundColor: headerBackground }]}>
-        <View style={_styles.separator} />
         <Text style={_styles.title}>{this.props.title}</Text>
         {this.props.leftActionText == undefined
           ? undefined
@@ -117,6 +116,7 @@ export default class ModalHeader extends React.PureComponent<Props, State> {
               </TouchableOpacity>
             </View>
           )}
+        <View style={_styles.separator} />
       </View>
     );
   }
@@ -126,6 +126,7 @@ export default class ModalHeader extends React.PureComponent<Props, State> {
 const _styles = StyleSheet.create({
   action: {
     fontSize: Constants.Sizes.Text.Body,
+    padding: Constants.Sizes.Margins.Regular,
   },
   container: {
     alignItems: 'flex-end',
@@ -136,20 +137,22 @@ const _styles = StyleSheet.create({
     width: screenWidth,
   },
   leftActionWrapper: {
-    bottom: Constants.Sizes.Margins.Regular,
-    left: Constants.Sizes.Margins.Regular,
+    bottom: 0,
+    left: 0,
     position: 'absolute',
   },
   rightActionWrapper: {
-    bottom: Constants.Sizes.Margins.Regular,
+    bottom: 0,
     position: 'absolute',
-    right: Constants.Sizes.Margins.Regular,
+    right: 0,
   },
   separator: {
     backgroundColor: Constants.Colors.tertiaryBackground,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
+    left: 0,
     position: 'absolute',
+    right: 0,
     width: screenWidth,
   },
   title: {
