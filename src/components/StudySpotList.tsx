@@ -121,7 +121,9 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
     });
 
     if (activeFilters.has('open')) {
-      if (TIME_UNAVAILABLE_REGEX.test(spot.opens)) {
+      if (spot.alwaysOpen) {
+        matches++;
+      } else if (TIME_UNAVAILABLE_REGEX.test(spot.opens)) {
         matches++;
       } else {
         const openTime = moment(spot.opens, 'HH:mm');
@@ -172,13 +174,18 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
     const name = `${item.building} ${item.room ? item.room : ''}`;
     const description = Translations.getDescription(item) || '';
 
-    const openingTime = TIME_UNAVAILABLE_REGEX.test(item.opens)
-        ? item.opens
-        : TextUtils.convertTimeFormat(this.props.timeFormat, item.opens);
-
-    const closingTime = TIME_UNAVAILABLE_REGEX.test(item.closes)
-        ? ` - ${item.closes}`
-        : ` - ${TextUtils.convertTimeFormat(this.props.timeFormat, item.closes)}`;
+    let openingTime = '';
+    let closingTime = '';
+    if (item.alwaysOpen) {
+      openingTime = Translations.get('always_open');
+    } else {
+      openingTime = TIME_UNAVAILABLE_REGEX.test(item.opens)
+          ? item.opens
+          : TextUtils.convertTimeFormat(this.props.timeFormat, item.opens);
+      closingTime = TIME_UNAVAILABLE_REGEX.test(item.closes)
+          ? ` - ${item.closes}`
+          : ` - ${TextUtils.convertTimeFormat(this.props.timeFormat, item.closes)}`;
+    }
 
     return (
       <TouchableOpacity
