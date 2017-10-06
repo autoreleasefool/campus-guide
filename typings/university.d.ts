@@ -210,7 +210,7 @@ export interface StudySpot extends Description, Name {
   opens: string;                // Time the spot opens at
   closes: string;               // Time the spot closes at
   filters: StudySpotFilterId[]; // List of properties to filter on
-  alwaysOpen: boolean;          // If true, indicates a study spot is open 24/7
+  alwaysOpen?: boolean;         // If true, indicates a study spot is open 24/7
 }
 
 /** Information about study spots. */

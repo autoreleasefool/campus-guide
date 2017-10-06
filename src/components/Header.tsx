@@ -224,10 +224,15 @@ const _styles = StyleSheet.create({
     height: HeaderHeight,
   },
   subtitle: {
+    alignItems: 'center',
     flexDirection: 'row',
-    marginRight: Constants.Sizes.Margins.Regular,
+    height: HeaderHeight,
+    justifyContent: 'center',
+    paddingLeft: Constants.Sizes.Margins.Regular,
+    paddingRight: Constants.Sizes.Margins.Regular,
   },
   subtitleIcon: {
+    alignSelf: 'center',
     marginBottom: Constants.Sizes.Margins.Regular,
     marginRight: Constants.Sizes.Margins.Regular,
     marginTop: Constants.Sizes.Margins.Regular,

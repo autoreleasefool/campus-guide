@@ -342,6 +342,7 @@ const _styles = StyleSheet.create({
     top: screenHeight,
   },
   filterSelection: {
+    backgroundColor: Constants.Colors.primaryBackground,
     left: 0,
     position: 'absolute',
     right: 0,
