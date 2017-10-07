@@ -141,7 +141,7 @@ class StudySpots extends React.PureComponent<Props, State> {
    * Toggle the filter view.
    */
   _toggleFilters(): void {
-    LayoutAnimation.easeInEaseOut(undefined, undefined);
+    LayoutAnimation.easeInEaseOut();
     this.setState({ showFilters: !this.state.showFilters });
   }
 
@@ -156,7 +156,7 @@ class StudySpots extends React.PureComponent<Props, State> {
       return;
     }
 
-    LayoutAnimation.easeInEaseOut(undefined, undefined);
+    LayoutAnimation.easeInEaseOut();
     this.setState({ filterSelected: true });
     this.props.showSearch(true);
 

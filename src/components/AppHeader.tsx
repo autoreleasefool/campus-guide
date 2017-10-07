@@ -129,7 +129,7 @@ class AppHeader extends React.PureComponent<Props, State> {
         (this.refs.SearchInput as any).focus();
       }
 
-      LayoutAnimation.easeInEaseOut(undefined, undefined);
+      LayoutAnimation.easeInEaseOut();
       this.setState({
         shouldShowBack: nextProps.shouldShowBack,
         shouldShowSearch: nextProps.shouldShowSearch || nextProps.tab === 'search',
@@ -150,7 +150,7 @@ class AppHeader extends React.PureComponent<Props, State> {
       (this.refs.SearchInput as any).focus();
     }
 
-    LayoutAnimation.easeInEaseOut(undefined, undefined);
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       shouldShowSearchBar: !this.state.shouldShowSearchBar,
     });

@@ -157,7 +157,7 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
    * Toggles whether the route/stop container is expanded or not.
    */
   _toggleRoutesExpanded(): void {
-    LayoutAnimation.easeInEaseOut(undefined, undefined);
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       routesExpanded: !this.state.routesExpanded,
     });

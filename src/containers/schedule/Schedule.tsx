@@ -164,7 +164,7 @@ class Schedule extends React.PureComponent<Props, State> {
    * Toggles the drop down to switch semesters.
    */
   _toggleSwitchSemester(): void {
-    LayoutAnimation.easeInEaseOut(undefined, undefined);
+    LayoutAnimation.easeInEaseOut();
     this.setState({ showSemesters: !this.state.showSemesters });
   }
 

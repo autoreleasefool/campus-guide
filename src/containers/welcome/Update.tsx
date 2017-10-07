@@ -102,7 +102,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   componentDidMount(): void {
     // Must set event listener for NetInfo.isConnected.fetch to work
     // https://github.com/facebook/react-native/issues/8469
-    NetInfo.isConnected.addEventListener('change', this._emptyFunction);
+    NetInfo.addEventListener('connectionChange', this._emptyFunction);
     this._checkConnection();
   }
 
@@ -110,7 +110,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * Removes the connection listener for NetInfo.
    */
   componentWillUnmount(): void {
-    NetInfo.isConnected.removeEventListener('change', this._emptyFunction);
+    NetInfo.removeEventListener('connectionChange', this._emptyFunction);
   }
 
   /**
@@ -206,8 +206,8 @@ class UpdateScreen extends React.PureComponent<Props, State> {
   _checkConnection(): void {
     setTimeout(async() => {
       try {
-        const isConnected = await NetInfo.isConnected.fetch();
-        if (isConnected || __DEV__) {
+        const connectionInfo = await (NetInfo as any).getConnectionInfo();
+        if (connectionInfo.type !== 'none' && connectionInfo.type !== 'unknown' || __DEV__) {
           this._confirmUpdate();
         } else {
           this._notifyConnectionFailed(undefined);

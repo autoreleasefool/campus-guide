@@ -3,7 +3,7 @@
 # Append additional files and directories to ignore
 echo "
 # Assets
-/assets/
+**/assets/**
 /scraper/
 strings_secret.xml
 
@@ -11,7 +11,7 @@ strings_secret.xml
 coverage/
 
 # Build/bundle
-ios/main.jsbundle
+release/
 
 # Keystores
 */keystores/*

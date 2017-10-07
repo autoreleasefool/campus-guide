@@ -125,7 +125,7 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
     // Clear the swap banner timer, if the user manually swipes the banner
     clearTimeout(this._swapBannerTimer);
 
-    LayoutAnimation.easeInEaseOut(undefined, undefined);
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       bannerPosition: (this.state.bannerPosition === 0) ? 1 : 0,
     });
