@@ -257,7 +257,6 @@ const _styles = StyleSheet.create({
 
 const mapStateToProps = (store: any): any => {
   return {
-    activeTab: store.navigation.tab,
     language: store.config.options.language,
   };
 };
