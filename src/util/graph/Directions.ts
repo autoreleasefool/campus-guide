@@ -53,6 +53,9 @@ export enum Direction {
 /** Constant for 10 metres. */
 const TEN_METRES = 10;
 
+/** Key for a report button step. */
+export const REPORT_STEP_KEY = 'report';
+
 /**
  * Convert a distance to metres.
  *
@@ -615,6 +618,42 @@ function _buildDirectionsFromPath(
 }
 
 /**
+ * Returns an appropriate error result for directions.
+ *
+ * @param {Destination} start      the starting point for directions
+ * @param {Destination} target     the ending point for directions
+ * @param {boolean} accessible true for accessible paths, false for any path
+ * @param {any}     err        the error that occurred
+ * @returns {DirectionSteps} an error return state
+ */
+function directionsError(
+    start: Destination,
+    target: Destination,
+    accessible: boolean,
+    err: any): DirectionResults {
+  console.log(`Error while getting directions between ${start} and ${target}`, err);
+  const errorMessage = accessible ? 'no_accessible_path_found' : 'no_path_found';
+
+  return {
+    showReport: true,
+    steps: [
+      {
+        description_en: Translations.get(errorMessage, 'en'),
+        description_fr: Translations.get(errorMessage, 'fr'),
+        icon: {
+          class: 'material',
+          name: 'error',
+        },
+        key: errorMessage,
+      },
+      {
+        key: REPORT_STEP_KEY,
+      },
+    ],
+  };
+}
+
+/**
  * Get a list of steps to travel between two destinations.
  *
  * @param {Destination} start      the starting point for directions
@@ -635,11 +674,19 @@ export async function getDirectionsBetween(
     buildingGraphRequests.add('OUT');
   }
 
-  const graphs = await Navigation.getBuildingGraphs(buildingGraphRequests);
+  let graphs: Map<string, BuildingGraph>;
+
+  try {
+    graphs = await Navigation.getBuildingGraphs(buildingGraphRequests);
+  } catch (err) {
+    return directionsError(start, target, accessible, err);
+  }
+
   const startGraph = graphs.get(start.shorthand);
   const targetGraph = graphs.get(target.shorthand);
   const outdoorGraph = graphs.get('OUT');
 
+  // FIXME: don't just use door 1, check all the doors
   const startNode = Navigation.getCachedNodeOrBuild(
     start.room ? `R${start.room}` : `D1`,
     start.shorthand, startGraph.format
@@ -680,22 +727,7 @@ export async function getDirectionsBetween(
   try {
     steps = _buildDirectionsFromPath(path, graphs);
   } catch (err) {
-    const errorMessage = accessible ? 'no_accessible_path_found' : 'no_path_found';
-
-    return {
-      showReport: true,
-      steps: [
-        {
-          description_en: Translations.get(errorMessage, 'en'),
-          description_fr: Translations.get(errorMessage, 'fr'),
-          icon: {
-            class: 'material',
-            name: 'error',
-          },
-          key: errorMessage,
-        },
-      ],
-    };
+    return directionsError(start, target, accessible, err);
   }
 
   const startString = TextUtils.destinationToString(start);

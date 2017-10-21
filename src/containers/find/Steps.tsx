@@ -159,7 +159,11 @@ class Steps extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a separator for the list of steps
    */
   _renderSeparator(): JSX.Element {
-    return <View style={[ _styles.separator, _styles.indentSeparator ]} />;
+    if (this.state.showReport) {
+      return <View />;
+    } else {
+      return <View style={[ _styles.separator, _styles.indentSeparator ]} />;
+    }
   }
 
   /**
@@ -169,6 +173,10 @@ class Steps extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the text and icon of the navigation step
    */
   _renderStep({ item }: { item: Directions.Step }): JSX.Element {
+    if (item.key === Directions.REPORT_STEP_KEY) {
+      return this._renderReportButton();
+    }
+
     const icon = Display.getPlatformIcon(Platform.OS, item);
     let iconView: JSX.Element | undefined;
     if (icon != undefined) {
@@ -205,9 +213,6 @@ class Steps extends React.PureComponent<Props, State> {
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
             data={this.state.steps}
             renderItem={this._renderStep.bind(this)} />
-        {this.state.showReport
-          ? this._renderReportButton()
-          : undefined}
       </View>
     );
   }
