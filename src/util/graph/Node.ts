@@ -34,6 +34,9 @@ export enum Type {
   Street = 'T',
 }
 
+/** Length of the floor format key. */
+const FLOOR_FORMAT_KEY_LENGTH = 'floor'.length;
+
 export default class Node {
 
   /** Original ID used to construct the node. */
@@ -82,7 +85,7 @@ export default class Node {
         const floorRegex = new RegExp(formats.get(format));
         const match = floorRegex.exec(this._name);
         if (match != undefined) {
-          this._floor = match[1];
+          this._floor = format.endsWith('*') ? match[1] : format.substr(FLOOR_FORMAT_KEY_LENGTH);
           break;
         }
       }
