@@ -25,6 +25,7 @@
 // React imports
 import React from 'react';
 import {
+  Alert,
   DatePickerIOS,
   Picker,
   PickerIOS,
@@ -67,6 +68,7 @@ interface Props {
 }
 
 interface State {
+  anyEdits: boolean;                  // Indicate if there are any changes to save
   building: Building | undefined;     // The selected building to display rooms of
   day: number;                        // Day of the week the lecture takes place. 0 for monday.
   format: number;                     // Format type of the lecture
@@ -131,6 +133,7 @@ class LectureModal extends React.PureComponent<Props, State> {
     const day = props.lectureToEdit ? props.lectureToEdit.day : DEFAULT_DAY;
     const starts = props.lectureToEdit ? props.lectureToEdit.startTime : DEFAULT_START_TIME;
     this.state = {
+      anyEdits: false,
       building: undefined,
       day,
       ends: props.lectureToEdit ? props.lectureToEdit.endTime : DEFAULT_END_TIME,
@@ -147,10 +150,25 @@ class LectureModal extends React.PureComponent<Props, State> {
    * Closes this menu and, if editing, re-saves the provided lecture.
    */
   _close(): void {
-    if (!this.props.addingLecture && this.props.lectureToEdit != undefined) {
-      this._saveLecture(this.props.lectureToEdit);
+    const gracefulClose = (): void => {
+      if (!this.props.addingLecture && this.props.lectureToEdit != undefined) {
+        this._saveLecture(this.props.lectureToEdit);
+      } else {
+        this.props.onClose();
+      }
+    };
+
+    if (this.state.anyEdits) {
+      Alert.alert(
+        Translations.get('quit_without_saving'),
+        Translations.get('quit_without_saving_msg'),
+        [
+          { text: Translations.get('cancel'), style: 'cancel' },
+          { text: Translations.get('quit'), onPress: gracefulClose },
+        ]
+      );
     } else {
-      this.props.onClose();
+      gracefulClose();
     }
   }
 
@@ -258,22 +276,24 @@ class LectureModal extends React.PureComponent<Props, State> {
     switch (picking) {
       case PICKER_STARTS:
       case PICKER_ENDS:
-        if (Platform.OS === 'android') {
-          // TODO: setup android picker
-          throw new Error('No android picker setup');
-        } else {
-          (this.refs.Navigator as any).push({ id: TIME_PICKER, picking });
-        }
-        break;
+      if (Platform.OS === 'android') {
+        // TODO: setup android picker
+        throw new Error('No android picker setup');
+      } else {
+        (this.refs.Navigator as any).push({ id: TIME_PICKER, picking });
+      }
+      break;
       case PICKER_BUILDING:
-        (this.refs.Navigator as any).push({ id: BUILDING_PICKER });
-        break;
+      (this.refs.Navigator as any).push({ id: BUILDING_PICKER });
+      break;
       case PICKER_ROOM:
-        (this.refs.Navigator as any).push({ id: ROOM_PICKER });
-        break;
+      (this.refs.Navigator as any).push({ id: ROOM_PICKER });
+      break;
       default:
-        (this.refs.Navigator as any).push({ id: REGULAR_PICKER, picking });
+      (this.refs.Navigator as any).push({ id: REGULAR_PICKER, picking });
     }
+
+    this.setState({ anyEdits: true });
   }
 
   /**

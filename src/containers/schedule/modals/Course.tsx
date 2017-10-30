@@ -75,6 +75,7 @@ interface Props {
 
 interface State {
   addingLecture: boolean;             // True to use the lecture modal to add a lecture, false to edit
+  anyEdits: boolean;                  // Indicate if there are any changes to save
   code: string;                       // Value for course code
   editingLectures: boolean;           // True to show buttons to edit or remove lectures
   lectureModalVisible: boolean;       // True to show the modal to add or edit a lecture
@@ -103,6 +104,7 @@ class CourseModal extends React.PureComponent<Props, State> {
 
     this.state = {
       addingLecture: true,
+      anyEdits: false,
       code,
       editingLectures: false,
       lectureModalVisible: false,
@@ -126,6 +128,7 @@ class CourseModal extends React.PureComponent<Props, State> {
     lectures.push(lecture);
     Arrays.sortObjectArrayByKeyValues(lectures, 'day', 'startTime');
     this.setState({
+      anyEdits: true,
       lectures,
       rightActionEnabled: this._isCourseCodeValid(semester, this.state.code, lectures),
     });
@@ -137,10 +140,25 @@ class CourseModal extends React.PureComponent<Props, State> {
    * @param {boolean} save true to save the course, false to discard
    */
   _close(save: boolean): void {
-    if (save && !this.props.addingCourse && this.props.courseToEdit != undefined) {
-      this._saveCourse(this.props.currentSemester, this.props.courseToEdit);
+    const gracefulClose = (): void => {
+      if (save && !this.props.addingCourse && this.props.courseToEdit != undefined) {
+        this._saveCourse(this.props.currentSemester, this.props.courseToEdit);
+      } else {
+        this.props.onClose();
+      }
+    };
+
+    if (this.state.anyEdits) {
+      Alert.alert(
+        Translations.get('quit_without_saving'),
+        Translations.get('quit_without_saving_msg'),
+        [
+          { text: Translations.get('cancel'), style: 'cancel' },
+          { text: Translations.get('quit'), onPress: gracefulClose },
+        ]
+      );
     } else {
-      this.props.onClose();
+      gracefulClose();
     }
   }
 
@@ -177,7 +195,10 @@ class CourseModal extends React.PureComponent<Props, State> {
         break;
       }
     }
-    this.setState({ lectures });
+    this.setState({
+      anyEdits: true,
+      lectures,
+    });
   }
 
   /**
@@ -280,6 +301,8 @@ class CourseModal extends React.PureComponent<Props, State> {
    * Shows the picker to pick a semester.
    */
   _showSemesterPicker(): void {
+    this.setState({ anyEdits: true });
+
     if (Platform.OS === 'android') {
       // TODO: setup android picker
       throw new Error('No android picker setup');
@@ -388,6 +411,7 @@ class CourseModal extends React.PureComponent<Props, State> {
               style={_styles.textInput}
               value={this.state.code}
               onChangeText={(code: string): void => this.setState({
+                anyEdits: true,
                 code,
                 rightActionEnabled: this._isCourseCodeValid(semester, code, this.state.lectures) })} />
           <Header
@@ -609,7 +633,7 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     margin: Constants.Sizes.Margins.Expanded,
-    paddingLeft: Constants.Sizes.Margins.Regular,
+    padding: Constants.Sizes.Margins.Regular,
   },
 });
 
