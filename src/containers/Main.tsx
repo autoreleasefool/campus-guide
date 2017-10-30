@@ -138,7 +138,7 @@ class Main extends React.PureComponent<Props, State> {
           Configuration.constructUpdateMessage(Translations.get('update_available_msg'), totalSize),
           [
             { text: Translations.get('cancel'), style: 'cancel' },
-            { text: Translations.get('update'), onPress: (): void => this._updateConfiguration() },
+            { text: Translations.get('update'), onPress: (): void => this._updateConfiguration(available) },
           ]
         );
       }
@@ -194,10 +194,12 @@ class Main extends React.PureComponent<Props, State> {
 
   /**
    * Opens the update screen to update the configuration.
+   *
+   * @param {Configuration.ConfigurationDetails} available available config file updates
    */
-  _updateConfiguration(): void {
+  _updateConfiguration(available: Configuration.ConfigurationDetails): void {
     this.props.confirmUpdate();
-    this.props.navigator.push({ id: 'update' });
+    this.props.navigator.push({ id: 'update', data: { available } });
   }
 
   /**

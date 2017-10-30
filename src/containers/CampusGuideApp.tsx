@@ -41,7 +41,8 @@ interface State {}
 
 // Route to describe which view the Navigator should display.
 interface AppRoute {
-  id: WelcomeTab;  // The expected tab
+  id: WelcomeTab; // The expected view
+  data: any;      // Additional data for the view
 }
 
 export default class CampusGuideApp extends React.PureComponent<Props, State> {
@@ -77,7 +78,9 @@ export default class CampusGuideApp extends React.PureComponent<Props, State> {
         );
       case 'update':
         return (
-          <Update navigator={navigator} />
+          <Update
+              navigator={navigator}
+              available={route.data ? route.data.available : undefined} />
         );
       default:
         return (

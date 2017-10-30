@@ -72,7 +72,7 @@ export interface ConfigFile {
 }
 
 /** Details of the available configuration files for the app. */
-interface ConfigurationDetails {
+export interface ConfigurationDetails {
   lastUpdatedAt: number;  // Milliseconds since epoch for time the file was last updated
   files: ConfigFile[];    // List of files in app configuration
 }

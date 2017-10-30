@@ -52,6 +52,7 @@ import { Language } from '../../util/Translations';
 import { TransitInfo } from '../../../typings/transit';
 
 interface Props extends Configuration.ProgressUpdate {
+  available?: Configuration.ConfigurationDetails; // Details about available config updates
   language: Language;                             // The current language, selected by the user
   navigator: any;                                 // Parent navigator
   updateConfirmed: boolean;                       // Indicates if a user has accepted an update
@@ -156,7 +157,9 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   async _confirmUpdate(): Promise<void> {
     try {
-      const available = await Configuration.getAvailableConfigUpdates(Platform.OS);
+      const available = this.props.available
+          ? this.props.available
+          : await Configuration.getAvailableConfigUpdates(Platform.OS);
 
       if (!this.props.updateConfirmed) {
         if (available.files.length > 0) {
