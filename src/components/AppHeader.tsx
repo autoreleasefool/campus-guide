@@ -72,6 +72,9 @@ interface State {
 const NAVBAR_HEIGHT = 50;
 const ICON_SIZE = 50;
 
+// Z index to place header above everything else
+const HEADER_Z_INDEX = 1000;
+
 // Width of the search input
 const screenWidth = Dimensions.get('window').width;
 const SEARCH_INPUT_WIDTH = screenWidth - ICON_SIZE * 2 - Constants.Sizes.Margins.Regular * 2;
@@ -221,51 +224,54 @@ class AppHeader extends React.PureComponent<Props, State> {
 
     return (
       <View style={_styles.container}>
-        <View style={_styles.titleContainer}>
-          <Text
-              ellipsizeMode={'tail'}
-              numberOfLines={1}
-              style={[ _styles.title, titleStyle ]}>
-            {appTitle}
-          </Text>
+        <View style={_styles.header}>
+          <View style={_styles.titleContainer}>
+            <Text
+                ellipsizeMode={'tail'}
+                numberOfLines={1}
+                style={[ _styles.title, titleStyle ]}>
+              {appTitle}
+            </Text>
+          </View>
+          <View style={[ _styles.searchContainer, searchInputStyle ]}>
+            <Ionicons
+                color={Constants.Colors.primaryWhiteIcon}
+                name={searchIcon}
+                size={Constants.Sizes.Icons.Medium}
+                style={_styles.searchIcon}
+                onPress={(): void => (this.refs.SearchInput as any).focus()} />
+            <TextInput
+                autoCorrect={false}
+                placeholder={Translations.get('search_placeholder')}
+                placeholderTextColor={Constants.Colors.secondaryWhiteText}
+                ref='SearchInput'
+                returnKeyType={'done'}
+                style={_styles.searchText}
+                underlineColorAndroid={'transparent'}
+                value={this.props.tabFilters[this.props.tab]}
+                onChangeText={this._onSearch.bind(this)} />
+          </View>
+          <TouchableOpacity
+              style={[ _styles.icon, searchIconStyle ]}
+              onPress={this._toggleSearch.bind(this)}>
+            <Ionicons
+                color={Constants.Colors.primaryWhiteIcon}
+                name={(this.state.shouldShowSearchBar) ? closeIcon : searchIcon}
+                size={Constants.Sizes.Icons.Medium}
+                style={_styles.noBackground} />
+          </TouchableOpacity>
+          <TouchableOpacity
+              style={[ _styles.icon, backIconStyle ]}
+              onPress={this._onBack}>
+            <Ionicons
+                color={Constants.Colors.primaryWhiteIcon}
+                name={backArrowIcon}
+                size={Constants.Sizes.Icons.Medium}
+                style={_styles.noBackground} />
+          </TouchableOpacity>
+          <View style={_styles.separator} />
         </View>
-        <View style={[ _styles.searchContainer, searchInputStyle ]}>
-          <Ionicons
-              color={Constants.Colors.primaryWhiteIcon}
-              name={searchIcon}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.searchIcon}
-              onPress={(): void => (this.refs.SearchInput as any).focus()} />
-          <TextInput
-              autoCorrect={false}
-              placeholder={Translations.get('search_placeholder')}
-              placeholderTextColor={Constants.Colors.secondaryWhiteText}
-              ref='SearchInput'
-              returnKeyType={'done'}
-              style={_styles.searchText}
-              underlineColorAndroid={'transparent'}
-              value={this.props.tabFilters[this.props.tab]}
-              onChangeText={this._onSearch.bind(this)} />
-        </View>
-        <TouchableOpacity
-            style={[ _styles.icon, searchIconStyle ]}
-            onPress={this._toggleSearch.bind(this)}>
-          <Ionicons
-              color={Constants.Colors.primaryWhiteIcon}
-              name={(this.state.shouldShowSearchBar) ? closeIcon : searchIcon}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.noBackground} />
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={[ _styles.icon, backIconStyle ]}
-            onPress={this._onBack}>
-          <Ionicons
-              color={Constants.Colors.primaryWhiteIcon}
-              name={backArrowIcon}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.noBackground} />
-        </TouchableOpacity>
-        <View style={_styles.separator} />
+        <View style={_styles.statusBar} />
       </View>
     );
   }
@@ -274,11 +280,16 @@ class AppHeader extends React.PureComponent<Props, State> {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
+    zIndex: HEADER_Z_INDEX,
+  },
+  header: {
     alignItems: 'center',
     backgroundColor: Constants.Colors.primaryBackground,
+    elevation: Constants.Sizes.Margins.Condensed / 2,
     flexDirection: 'row',
     height: NAVBAR_HEIGHT,
     marginTop: Constants.Sizes.HeaderPadding[Platform.OS],
+    zIndex: HEADER_Z_INDEX,
   },
   icon: {
     alignItems: 'center',
@@ -315,6 +326,14 @@ const _styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     position: 'absolute',
     width: screenWidth,
+  },
+  statusBar: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    height: Constants.Sizes.HeaderPadding[Platform.OS],
+    position: 'absolute',
+    top: 0,
+    width: screenWidth,
+    zIndex: HEADER_Z_INDEX + 1,
   },
   title: {
     color: Constants.Colors.primaryWhiteText,
