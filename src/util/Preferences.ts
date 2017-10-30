@@ -22,6 +22,8 @@
  */
 'use strict';
 
+// Type imports
+import { AsyncStorageStatic } from 'react-native';
 import { Language } from './Translations';
 
 // Represents the language selected by the user to use the app in
@@ -38,13 +40,13 @@ const PREFER_BY_COURSE = 'app_by_course';
 /**
  * Retrieves the value of a key from AsyncStorage.
  *
- * @param {any}    AsyncStorage instance of the React Native AsyncStorage
- * @param {string} key          key to retrieve value for
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @param {string}             key          key to retrieve value for
  * @returns {any} the value, if found, or undefined
  */
-async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise < any > {
+async function retrieveFromAsyncStorage(asyncStorage: AsyncStorageStatic, key: string): Promise < any > {
   try {
-    const value = await AsyncStorage.getItem(key);
+    const value = await asyncStorage.getItem(key);
 
     return value;
   } catch (e) {
@@ -57,11 +59,11 @@ async function retrieveFromAsyncStorage(AsyncStorage: any, key: string): Promise
 /**
  * Gets the user's preferred language.
  *
- * @param {any} AsyncStorage instance of the React Native AsyncStorage
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {string} 'en', 'fr' or undefined
  */
-export async function getSelectedLanguage(AsyncStorage: any): Promise < Language | undefined > {
-  const value = await retrieveFromAsyncStorage(AsyncStorage, SELECTED_LANGUAGE);
+export async function getSelectedLanguage(asyncStorage: AsyncStorageStatic): Promise < Language | undefined > {
+  const value = await retrieveFromAsyncStorage(asyncStorage, SELECTED_LANGUAGE);
 
   return value;
 }
@@ -69,23 +71,23 @@ export async function getSelectedLanguage(AsyncStorage: any): Promise < Language
 /**
  * Updates the user's selected language.
  *
- * @param {any}      AsyncStorage instance of the React Native AsyncStorage
- * @param {Language} language     either 'fr' or 'en'
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @param {Language}           language     either 'fr' or 'en'
  */
-export function setSelectedLanguage(AsyncStorage: any, language: any): void {
+export function setSelectedLanguage(asyncStorage: AsyncStorageStatic, language: any): void {
   if (language === 'en' || language === 'fr') {
-    AsyncStorage.setItem(SELECTED_LANGUAGE, language);
+    asyncStorage.setItem(SELECTED_LANGUAGE, language);
   }
 }
 
 /**
  * Gets the user's current selected semester.
  *
- * @param {any} AsyncStorage instance of the React Native AsyncStorage
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {number} the current semester, or 0 by default
  */
-export async function getCurrentSemester(AsyncStorage: any): Promise < number > {
-  const value = await retrieveFromAsyncStorage(AsyncStorage, CURRENT_SEMESTER);
+export async function getCurrentSemester(asyncStorage: AsyncStorageStatic): Promise < number > {
+  const value = await retrieveFromAsyncStorage(asyncStorage, CURRENT_SEMESTER);
 
   return (value == undefined)
       ? 0
@@ -95,23 +97,23 @@ export async function getCurrentSemester(AsyncStorage: any): Promise < number > 
 /**
  * Updates the user's selected semester.
  *
- * @param {any}    AsyncStorage instance of the React Native AsyncStorage
- * @param {number} semester     the new semester
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @param {number}             semester     the new semester
  */
-export function setCurrentSemester(AsyncStorage: any, semester: any): void {
+export function setCurrentSemester(asyncStorage: AsyncStorageStatic, semester: any): void {
   if (typeof (semester) === 'number' && semester >= 0) {
-    AsyncStorage.setItem(CURRENT_SEMESTER, semester.toString());
+    asyncStorage.setItem(CURRENT_SEMESTER, semester.toString());
   }
 }
 
 /**
  * Gets whether the user prefers wheelchair accessible routes.
  *
- * @param {any} AsyncStorage instance of the React Native AsyncStorage
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {boolean} true if the user prefers wheelchair routes, false by default
  */
-export async function getPrefersWheelchair(AsyncStorage: any): Promise < boolean > {
-  const value = await retrieveFromAsyncStorage(AsyncStorage, PREFER_WHEELCHAIR);
+export async function getPrefersWheelchair(asyncStorage: AsyncStorageStatic): Promise < boolean > {
+  const value = await retrieveFromAsyncStorage(asyncStorage, PREFER_WHEELCHAIR);
 
   return (value == undefined)
       ? false
@@ -121,23 +123,23 @@ export async function getPrefersWheelchair(AsyncStorage: any): Promise < boolean
 /**
  * Updates the user's preference for wheelchair routes.
  *
- * @param {any}     AsyncStorage instance of the React Native AsyncStorage
- * @param {boolean} prefer       true to prefer wheelchair routes, false for any routes
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @param {boolean}            prefer       true to prefer wheelchair routes, false for any routes
  */
-export function setPrefersWheelchair(AsyncStorage: any, prefer: any): void {
+export function setPrefersWheelchair(asyncStorage: AsyncStorageStatic, prefer: any): void {
   if (prefer === true || prefer === false) {
-    AsyncStorage.setItem(PREFER_WHEELCHAIR, prefer.toString());
+    asyncStorage.setItem(PREFER_WHEELCHAIR, prefer.toString());
   }
 }
 
 /**
  * Gets the user's preferred time format.
  *
- * @param {any} AsyncStorage instance of the React Native AsyncStorage
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {string} 12h or 24h, 12h by default
  */
-export async function getPreferredTimeFormat(AsyncStorage: any): Promise < string > {
-  const value = await retrieveFromAsyncStorage(AsyncStorage, PREFERRED_TIME_FORMAT);
+export async function getPreferredTimeFormat(asyncStorage: AsyncStorageStatic): Promise < string > {
+  const value = await retrieveFromAsyncStorage(asyncStorage, PREFERRED_TIME_FORMAT);
 
   return (value == undefined)
       ? '12h'
@@ -147,23 +149,23 @@ export async function getPreferredTimeFormat(AsyncStorage: any): Promise < strin
 /**
  * Updates the user's preference for time formatting.
  *
- * @param {any}    AsyncStorage instance of the React Native AsyncStorage
- * @param {string} format       12h or 24h time
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @param {string}             format       12h or 24h time
  */
-export function setPreferredTimeFormat(AsyncStorage: any, format: any): void {
+export function setPreferredTimeFormat(asyncStorage: AsyncStorageStatic, format: any): void {
   if (format === '12h' || format === '24h') {
-    AsyncStorage.setItem(PREFERRED_TIME_FORMAT, format);
+    asyncStorage.setItem(PREFERRED_TIME_FORMAT, format);
   }
 }
 
 /**
  * Gets whether the user prefers to view their schedule by course or not.
  *
- * @param {any} AsyncStorage instance of the React Native AsyncStorage
- * @returns {boolea} true to view schedule by course, false to view by week
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @returns {boolean} true to view schedule by course, false to view by week
  */
-export async function getPreferScheduleByCourse(AsyncStorage: any): Promise < boolean > {
-  const value = await retrieveFromAsyncStorage(AsyncStorage, PREFER_BY_COURSE);
+export async function getPreferScheduleByCourse(asyncStorage: AsyncStorageStatic): Promise < boolean > {
+  const value = await retrieveFromAsyncStorage(asyncStorage, PREFER_BY_COURSE);
 
   return (value == undefined)
       ? false
@@ -173,11 +175,11 @@ export async function getPreferScheduleByCourse(AsyncStorage: any): Promise < bo
 /**
  * Updates the user's preference for viewing their schedule.
  *
- * @param {any}     AsyncStorage instance of the React Native AsyncStorage
- * @param {boolean} prefer       true to view by course, false to view by week
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @param {boolean}            prefer       true to view by course, false to view by week
  */
-export function setPreferScheduleByCourse(AsyncStorage: any, prefer: any): void {
+export function setPreferScheduleByCourse(asyncStorage: AsyncStorageStatic, prefer: any): void {
   if (prefer === true || prefer === false) {
-    AsyncStorage.setItem(PREFER_BY_COURSE, prefer.toString());
+    asyncStorage.setItem(PREFER_BY_COURSE, prefer.toString());
   }
 }

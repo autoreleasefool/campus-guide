@@ -41,7 +41,7 @@ let dataStore: any = {};
 let shouldThrowError = false;
 
 // Create mock functions for storing / retrieving data
-const AsyncStorage = {
+const AsyncStorage: any = {
   getItem: jest.fn(async(key: string) => {
     if (shouldThrowError) {
       throw new Error('Preferences-test error thrown on purpose for testing');
