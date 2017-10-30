@@ -101,7 +101,9 @@ export default class ModalHeader extends React.PureComponent<Props, State> {
               <TouchableOpacity
                   activeOpacity={this.props.leftActionEnabled ? DEFAULT_TOUCH_OPACITY : 1}
                   onPress={this._onLeftAction.bind(this)}>
-                <Text style={[ _styles.action, leftActionStyle ]}>{this.props.leftActionText}</Text>
+                <Text style={[ _styles.action, _styles.actionLeft, leftActionStyle ]}>
+                  {this.props.leftActionText}
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -112,7 +114,9 @@ export default class ModalHeader extends React.PureComponent<Props, State> {
               <TouchableOpacity
                   activeOpacity={this.props.rightActionEnabled ? DEFAULT_TOUCH_OPACITY : 1}
                   onPress={this._onRightAction.bind(this)}>
-                <Text style={[ _styles.action, rightActionStyle ]}>{this.props.rightActionText}</Text>
+                <Text style={[ _styles.action, _styles.actionRight, rightActionStyle ]}>
+                  {this.props.rightActionText}
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -126,7 +130,14 @@ export default class ModalHeader extends React.PureComponent<Props, State> {
 const _styles = StyleSheet.create({
   action: {
     fontSize: Constants.Sizes.Text.Body,
-    padding: Constants.Sizes.Margins.Regular,
+    padding: Constants.Sizes.Margins.Regular + Constants.Sizes.Margins.Condensed,
+    paddingBottom: Constants.Sizes.Margins.Regular,
+  },
+  actionLeft: {
+    paddingLeft: Constants.Sizes.Margins.Regular,
+  },
+  actionRight: {
+    paddingRight: Constants.Sizes.Margins.Regular,
   },
   container: {
     alignItems: 'flex-end',
