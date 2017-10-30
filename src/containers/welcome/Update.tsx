@@ -26,6 +26,7 @@
 import React from 'react';
 import {
   Alert,
+  AsyncStorage,
   InteractionManager,
   NetInfo,
   Platform,
@@ -159,7 +160,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     try {
       const available = this.props.available
           ? this.props.available
-          : await Configuration.getAvailableConfigUpdates(Platform.OS);
+          : await Configuration.getAvailableConfigUpdates(Platform.OS, AsyncStorage);
 
       if (!this.props.updateConfirmed) {
         if (available.files.length > 0) {

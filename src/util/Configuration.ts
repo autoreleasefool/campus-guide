@@ -23,12 +23,13 @@
 
 // Imports
 import DeviceInfo from 'react-native-device-info';
+import moment from 'moment';
 import * as Database from './Database';
 import * as HttpStatus from 'http-status-codes';
 import * as RNFS from 'react-native-fs';
 
 // Types
-import { PlatformOSType } from 'react-native';
+import { PlatformOSType, AsyncStorageStatic } from 'react-native';
 import { Language } from './Translations';
 import { LatLong, Name, TimeFormat } from '../../typings/global';
 import { TransitInfo } from '../../typings/transit';
@@ -106,6 +107,13 @@ let configurationInitialized = false;
 let checkedForUpdate = false;
 // List of promises that should resolve or reject if the configuration is available or not
 const initPromises: any[] = [];
+
+// Key to indicate the last time the app checked for an update
+const KEY_LAST_UPDATE_TIME = 'key_config_last_update_time';
+// Amount of time to wait before checking for an update
+const TIME_BEFORE_UPDATE_CHECK: { amount: number; unit: string} = { amount: 1, unit: 'h' }; // 1 hour
+// Set to true to always check for config updates. Only possible while debugging.
+const alwaysCheckForUpdate = false;
 
 // Set to true to delete configuration when app opens. Only possible while debugging.
 const clearConfigOnStart = false;
@@ -451,22 +459,45 @@ async function _getAvailableConfigUpdates(os: PlatformOSType): Promise<Configura
  * Checks if there is a configuration available to download. Returns the list of files available to update.
  *
  * @param {PlatformOSType} os the active operating system
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {Promise<ConfigurationDetails>} promise which resolves to with the list of available updates,
  *                                          or an empty list
  */
-export function getAvailableConfigUpdates(os: PlatformOSType): Promise<ConfigurationDetails> {
+export function getAvailableConfigUpdates(
+    os: PlatformOSType,
+    asyncStorage: AsyncStorageStatic): Promise<ConfigurationDetails> {
   checkedForUpdate = true;
+  asyncStorage.setItem(KEY_LAST_UPDATE_TIME, moment().format());
 
   return _getAvailableConfigUpdates(os);
 }
 
 /**
- * Returns true if the app has already performed a check for a configuration update.
+ * Checks if the app has already performed an update check since opening, and, if so, checks if enough time
+ * has passed that it should check again.
  *
- * @returns {boolean} true if the app checked for a configuration update, false otherwise
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @returns {boolean} true if the app should check for an update, false otherwise
  */
-export function didCheckForUpdate(): boolean {
-  return checkedForUpdate;
+export async function shouldCheckForUpdate(asyncStorage: AsyncStorageStatic): Promise<boolean> {
+  if (__DEV__ && alwaysCheckForUpdate) {
+    return true;
+  }
+
+  if (checkedForUpdate) {
+    try {
+      const lastUpdated = await asyncStorage.getItem(KEY_LAST_UPDATE_TIME);
+      const lastUpdatedTime = lastUpdated ? moment(lastUpdated) : moment(0);
+      const { amount, unit }: { amount: number; unit: string } = TIME_BEFORE_UPDATE_CHECK;
+      lastUpdatedTime.add(amount as any, unit);
+
+      return lastUpdatedTime.isBefore(moment());
+    } catch (e) {
+      // Ignore errors
+    }
+  }
+
+  return true;
 }
 
 /**

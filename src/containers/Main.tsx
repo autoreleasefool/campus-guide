@@ -26,6 +26,7 @@
 import React from 'react';
 import {
   Alert,
+  AppState,
   AsyncStorage,
   InteractionManager,
   Platform,
@@ -62,6 +63,7 @@ interface Props {
 }
 
 interface State {
+  appState: string; // The current active app state.
   loading: boolean; // Indicates if the app is loading the initial configuration.
 }
 
@@ -81,8 +83,11 @@ class Main extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      appState: AppState.currentState,
       loading: true,
     };
+
+    this._handleAppStateChange = this._handleAppStateChange.bind(this);
   }
 
   /**
@@ -91,6 +96,27 @@ class Main extends React.PureComponent<Props, State> {
   componentDidMount(): void {
     (this.props.navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
     InteractionManager.runAfterInteractions(() => this._loadPreferences());
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  /**
+   * Remove app state change listener.
+   */
+  componentWillUnmount(): void {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  /**
+   * Handle app state changes. Update configuration when app comes to foreground.
+   *
+   * @param {string} nextAppState new app state
+   */
+  _handleAppStateChange = (nextAppState: string): void => {
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      this._checkConfiguration();
+    }
+
+    this.setState({ appState: nextAppState });
   }
 
   /**
@@ -120,13 +146,13 @@ class Main extends React.PureComponent<Props, State> {
    * Check if there are any configuration updates available, and prompt the user to update.
    */
   async _checkConfigurationUpdate(): Promise<void> {
-    if (Configuration.didCheckForUpdate()) {
-      // Do not check for configuration updates more than once
+    if (!Configuration.shouldCheckForUpdate(AsyncStorage)) {
+      // Do not check for configuration updates more than once in an hour
       return;
     }
 
     try {
-      const available = await Configuration.getAvailableConfigUpdates(Platform.OS);
+      const available = await Configuration.getAvailableConfigUpdates(Platform.OS, AsyncStorage);
       if (available.files.length > 0) {
         let totalSize = 0;
         for (const file of available.files) {
