@@ -174,9 +174,9 @@ class StartingPoint extends React.PureComponent<Props, State> {
     const latitude = this.props.universityLocation.latitude;
     const longitude = this.props.universityLocation.longitude;
     const link = provider === 'google'
-        ? `https://www.google.com/maps/@${latitude},${longitude},16z`
-        : `http://maps.apple.com/?ll=${latitude},${longitude}`;
-    Linking.openURL(link).catch((err: any) => console.error('Could not open Google Maps link', err));
+        ? `https://www.google.com/maps/dir/?${encodeURIComponent(`api=1&query=${latitude},${longitude}`)}`
+        : `http://maps.apple.com/?${encodeURIComponent(`daddr=${latitude},${longitude}`)}`;
+    Linking.openURL(link).catch((err: any) => console.error('Could not open map link', err));
   }
 
   /**
