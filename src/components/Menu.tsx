@@ -29,6 +29,7 @@ import {
   FlatList,
   Image,
   Platform,
+  ScaledSize,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -45,7 +46,10 @@ interface Props {
   onSectionSelected(section: string): void; // Displays contents of the section in a new view
 }
 
-interface State {}
+interface State {
+  screenHeight: number; // Active height of the screen
+  screenWidth: number;  // Active width of the screen
+}
 
 // Imports
 import Header from './Header';
@@ -53,9 +57,6 @@ import * as Configuration from '../util/Configuration';
 import * as Constants from '../constants';
 import * as Display from '../util/Display';
 import * as Translations from '../util/Translations';
-
-/** Width of the screen. */
-const screenDimensions = Dimensions.get('window');
 
 /** Aspect ratio of cards. */
 const CARD_ASPECT_RATIO = 0.75;
@@ -66,10 +67,43 @@ const DEFAULT_MAX_CARDS = 4;
 /** Magnitude of margins on mini cards. */
 const MINI_CARD_MARGINS = 3;
 
-/** Width of a standard card. */
-const cardWidth = screenDimensions.width - (Constants.Sizes.Margins.Expanded * 2);
-
 export default class Menu extends React.PureComponent<Props, State> {
+
+  /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+  this.setState({ screenHeight: dims.window.height })
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    const screenDimensions = Dimensions.get('window');
+    this.state = {
+      screenHeight: screenDimensions.height,
+      screenWidth: screenDimensions.width,
+    };
+  }
+
+  /**
+   * Add listener to screen dimensions.
+   */
+  componentDidMount(): void {
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
+  }
+
+  /**
+   * Removes screen dimension listener.
+   */
+  componentWillUnmount(): void {
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
+  }
 
   /**
    * Returns the height of a card, depending on the max number of cards on the screen
@@ -80,7 +114,17 @@ export default class Menu extends React.PureComponent<Props, State> {
   _getCardHeight(): number {
     const maxCardHeightRatio = this.props.sectionsOnScreen || DEFAULT_MAX_CARDS;
 
-    return Math.min(cardWidth * CARD_ASPECT_RATIO, screenDimensions.height / maxCardHeightRatio);
+    return Math.min(this._getCardWidth() * CARD_ASPECT_RATIO, this.state.screenHeight / maxCardHeightRatio);
+  }
+
+  /**
+   * Returns the width of a card, depending on the max number of cards on the screen
+   * at a time.
+   *
+   * @returns {number} calculated width of a card
+   */
+  _getCardWidth(): number {
+    return this.state.screenWidth - (Constants.Sizes.Margins.Expanded * 2);
   }
 
   /**
@@ -135,7 +179,7 @@ export default class Menu extends React.PureComponent<Props, State> {
     const section = (item as SingleMenuSection);
 
     const icon = Display.getPlatformIcon(Platform.OS, section);
-    const width = mini ? screenDimensions.width / 2 : screenDimensions.width;
+    const width = mini ? this.state.screenWidth / 2 : this.state.screenWidth;
     const cardDimensions = { height: this._getCardHeight(), width };
     const sectionImage = this._getSectionImage(section);
 
@@ -177,8 +221,8 @@ export default class Menu extends React.PureComponent<Props, State> {
     const icon = Display.getPlatformIcon(Platform.OS, section);
     const viewMargins: object = index === 0 ? {} : { marginTop: 0 };
     const width = mini
-        ? (screenDimensions.width - Constants.Sizes.Margins.Expanded * MINI_CARD_MARGINS) / 2
-        : screenDimensions.width - (Constants.Sizes.Margins.Expanded * 2);
+        ? (this.state.screenWidth - Constants.Sizes.Margins.Expanded * MINI_CARD_MARGINS) / 2
+        : this.state.screenWidth - (Constants.Sizes.Margins.Expanded * 2);
     const cardMargins = mini
         ? left
             ? { marginLeft: Constants.Sizes.Margins.Expanded, marginRight: Constants.Sizes.Margins.Regular }
@@ -223,7 +267,6 @@ export default class Menu extends React.PureComponent<Props, State> {
 const _styles = StyleSheet.create({
   cardAndroid: {
     overflow: 'hidden',
-    width: cardWidth,
   },
   cardIOS: {
     flex: 1,

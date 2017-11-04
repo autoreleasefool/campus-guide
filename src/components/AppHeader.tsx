@@ -30,6 +30,7 @@ import {
   Dimensions,
   LayoutAnimation,
   Platform,
+  ScaledSize,
   StyleSheet,
   TouchableOpacity,
   Text,
@@ -63,6 +64,7 @@ interface Props {
 }
 
 interface State {
+  screenWidth: number;              // Active width of the screen
   shouldShowBack: boolean;          // Indicates if the header should show a back button
   shouldShowSearch: boolean;        // Indicates if the header should show a search button
   shouldShowSearchBar: boolean;     // Indicates if the header should hide the title and show a search input
@@ -75,11 +77,15 @@ const ICON_SIZE = 50;
 // Z index to place header above everything else
 const HEADER_Z_INDEX = 1000;
 
-// Width of the search input
-const screenWidth = Dimensions.get('window').width;
-const SEARCH_INPUT_WIDTH = screenWidth - ICON_SIZE * 2 - Constants.Sizes.Margins.Regular * 2;
-
 class AppHeader extends React.PureComponent<Props, State> {
+
+  /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+      this.setState({ screenWidth: dims.window.width })
 
   /**
    * Constructor.
@@ -88,7 +94,9 @@ class AppHeader extends React.PureComponent<Props, State> {
    */
   constructor(props: Props) {
     super(props);
+
     this.state = {
+      screenWidth: Dimensions.get('window').width,
       shouldShowBack: false,
       shouldShowSearch: false,
       shouldShowSearchBar: false,
@@ -98,21 +106,25 @@ class AppHeader extends React.PureComponent<Props, State> {
   }
 
   /**
-   * Register back listener for Android.
+   * Register back listener for Android and dimension size listener.
    */
   componentDidMount(): void {
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', this._onBack);
     }
+
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
-   * Remove back listener for Android
+   * Remove back listener for Android and dimension size listener.
    */
   componentWillUnmount(): void {
     if (Platform.OS === 'android') {
       BackHandler.removeEventListener('hardwareBackPress', this._onBack);
     }
+
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
@@ -140,6 +152,15 @@ class AppHeader extends React.PureComponent<Props, State> {
             || nextProps.tab === 'search',
       });
     }
+  }
+
+  /**
+   * Calculate the search input width based on current screen size.
+   *
+   * @returns {number} size for input width
+   */
+  _getSearchInputWidth(): number {
+    return this.state.screenWidth - ICON_SIZE * 2 - Constants.Sizes.Margins.Regular * 2;
   }
 
   /**
@@ -216,7 +237,7 @@ class AppHeader extends React.PureComponent<Props, State> {
 
     // Hide/show title and search input
     let titleStyle = {};
-    let searchInputStyle = { right: -(SEARCH_INPUT_WIDTH + Constants.Sizes.Margins.Regular * 2) };
+    let searchInputStyle = { right: -(this._getSearchInputWidth() + Constants.Sizes.Margins.Regular * 2) };
     if (this.state.shouldShowSearchBar) {
       titleStyle = { opacity: 0 };
       searchInputStyle = { right: ICON_SIZE };
@@ -233,7 +254,7 @@ class AppHeader extends React.PureComponent<Props, State> {
               {appTitle}
             </Text>
           </View>
-          <View style={[ _styles.searchContainer, searchInputStyle ]}>
+          <View style={[ _styles.searchContainer, searchInputStyle, { width: this._getSearchInputWidth() } ]}>
             <Ionicons
                 color={Constants.Colors.primaryWhiteIcon}
                 name={searchIcon}
@@ -269,9 +290,9 @@ class AppHeader extends React.PureComponent<Props, State> {
                 size={Constants.Sizes.Icons.Medium}
                 style={_styles.noBackground} />
           </TouchableOpacity>
-          <View style={_styles.separator} />
+          <View style={[ _styles.separator, { width: this.state.screenWidth }]} />
         </View>
-        <View style={_styles.statusBar} />
+        <View style={[ _styles.statusBar, { width: this.state.screenWidth }]} />
       </View>
     );
   }
@@ -309,7 +330,6 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     margin: Constants.Sizes.Margins.Regular,
     position: 'absolute',
-    width: SEARCH_INPUT_WIDTH,
   },
   searchIcon: {
     marginLeft: Constants.Sizes.Margins.Regular,
@@ -325,14 +345,12 @@ const _styles = StyleSheet.create({
     bottom: 0,
     height: StyleSheet.hairlineWidth,
     position: 'absolute',
-    width: screenWidth,
   },
   statusBar: {
     backgroundColor: Constants.Colors.primaryBackground,
     height: Constants.Sizes.HeaderPadding[Platform.OS],
     position: 'absolute',
     top: 0,
-    width: screenWidth,
     zIndex: HEADER_Z_INDEX + 1,
   },
   title: {

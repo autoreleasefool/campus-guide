@@ -27,6 +27,7 @@ import React from 'react';
 import {
   Dimensions,
   ListView,
+  ScaledSize,
   StyleSheet,
   Text,
   View,
@@ -52,14 +53,28 @@ interface Props {
 }
 
 interface State {
-  dataSource: any;  // List of times for the shuttle and days they occur
+  dataSource: any;      // List of times for the shuttle and days they occur
+  screenWidth: number;  // Active width of the screen
 }
 
-const screenWidth = Dimensions.get('window').width;
+// Max number of shuttle times to display in a single row
 const TIMES_PER_ROW = 2;
 
 export default class ShuttleTable extends React.PureComponent<Props, State> {
 
+  /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+      this.setState({ screenWidth: dims.window.width })
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
   constructor(props: Props) {
     super(props);
 
@@ -71,7 +86,24 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
     const data: any = { ...props.schedule.directions[props.direction].day_times };
     data.excluded_dates = props.schedule.excluded_dates;
     dataSource = dataSource.cloneWithRowsAndSections(data);
-    this.state = { dataSource };
+    this.state = {
+      dataSource,
+      screenWidth: Dimensions.get('window').width,
+    };
+  }
+
+  /**
+   * Add listener to screen dimensions.
+   */
+  componentDidMount(): void {
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
+  }
+
+  /**
+   * Removes screen dimension listener.
+   */
+  componentWillUnmount(): void {
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
@@ -119,10 +151,12 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the header for a certain section
    */
   _renderSectionHeader(_: any, header: string): JSX.Element {
+    const sectionHeaderWidth = { width: this.state.screenWidth };
+
     if (header === 'excluded_dates') {
       return (
-        <View style={_styles.sectionHeaderContainer}>
-          <Text style={_styles.sectionHeader}>{Translations.get('excluded_dates')}</Text>
+        <View style={[ _styles.sectionHeaderContainer, sectionHeaderWidth ]}>
+          <Text style={[ _styles.sectionHeader, sectionHeaderWidth ]}>{Translations.get('excluded_dates')}</Text>
         </View>
       );
     } else {
@@ -131,8 +165,8 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
       const period = firstDay === lastDay ? firstDay : `${firstDay} - ${lastDay}`;
 
       return (
-        <View style={_styles.sectionHeaderContainer}>
-          <Text style={_styles.sectionHeader}>{period}</Text>
+        <View style={[ _styles.sectionHeaderContainer, sectionHeaderWidth ]}>
+          <Text style={[ _styles.sectionHeader, sectionHeaderWidth ]}>{period}</Text>
         </View>
       );
     }
@@ -150,12 +184,17 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
       return undefined;
     }
 
-    const separatorStyle = sectionID === 'excluded_dates' ? {} : _styles.timeSeparator;
+    const separatorStyle = sectionID === 'excluded_dates'
+        ? { width: this.state.screenWidth }
+        : {
+          marginRight: Constants.Sizes.Margins.Expanded,
+          width: Math.floor(this.state.screenWidth / 2) * 2 - Constants.Sizes.Margins.Expanded * 2,
+        };
 
     return (
       <View
           key={`Separator,${sectionID},${rowID}`}
-          style={[ _styles.separator, separatorStyle ]} />
+          style={[ _styles.separator, separatorStyle, { width: this.state.screenWidth }]} />
     );
   }
 
@@ -170,13 +209,16 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
   _renderRow(dateTime: string, _: any, rowID: any): JSX.Element {
     if (/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(dateTime)) {
       return (
-        <Text style={_styles.date}>{moment(dateTime).format('dddd, MMMM Do YYYY')}</Text>
+        <Text style={[ _styles.date, { width: this.state.screenWidth }]}>
+          {moment(dateTime).format('dddd, MMMM Do YYYY')}
+        </Text>
       );
     } else {
       const container = rowID % TIMES_PER_ROW === 0 ? _styles.evenTimeContainer : _styles.oddTimeContainer;
+      const timeWidth = Math.floor((this.state.screenWidth - Constants.Sizes.Margins.Expanded * 2) / 2);
 
       return (
-        <View style={[ _styles.timeContainer, container ]}>
+        <View style={[ _styles.timeContainer, container, { width: timeWidth }]}>
           <Text style={_styles.time}>{TextUtils.convertTimeFormat(this.props.timeFormat, dateTime)}</Text>
         </View>
       );
@@ -214,7 +256,6 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
     margin: Constants.Sizes.Margins.Expanded,
-    width: screenWidth,
   },
   evenTimeContainer: {
     marginLeft: Constants.Sizes.Margins.Expanded,
@@ -241,7 +282,6 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Subtitle,
     textAlign: 'center',
-    width: screenWidth,
   },
   sectionHeaderContainer: {
     backgroundColor: Constants.Colors.tertiaryBackground,
@@ -250,13 +290,11 @@ const _styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     paddingBottom: Constants.Sizes.Margins.Expanded,
     paddingTop: Constants.Sizes.Margins.Expanded,
-    width: screenWidth,
   },
   separator: {
     backgroundColor: Constants.Colors.secondaryBackground,
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
-    width: screenWidth,
   },
   time: {
     color: Constants.Colors.primaryBlackText,
@@ -269,10 +307,5 @@ const _styles = StyleSheet.create({
     borderRightWidth: StyleSheet.hairlineWidth,
     paddingBottom: Constants.Sizes.Margins.Regular,
     paddingTop: Constants.Sizes.Margins.Regular,
-    width: Math.floor((screenWidth - Constants.Sizes.Margins.Expanded * 2) / 2),
-  },
-  timeSeparator: {
-    marginRight: Constants.Sizes.Margins.Expanded,
-    width: Math.floor(screenWidth / 2) * 2 - Constants.Sizes.Margins.Expanded * 2,
   },
 });

@@ -29,6 +29,7 @@ import {
   Dimensions,
   Image,
   LayoutAnimation,
+  ScaledSize,
   ScrollView,
   StyleSheet,
   Text,
@@ -60,10 +61,9 @@ interface Props {
 }
 
 interface State {
-  bannerPosition: number;
+  bannerPosition: number; // Position the banner is in, or moving towards
+  screenWidth: number;    // Active width of the screen
 }
-
-const screenWidth = Dimensions.get('window').width;
 
 // Percentage of banner that banner will take
 const BANNER_TEXT_WIDTH_PCT = 0.75;
@@ -78,6 +78,14 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
   _swapBannerTimer: number;
 
   /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+      this.setState({ screenWidth: dims.window.width })
+
+  /**
    * Constructor.
    *
    * @param {props} props component props
@@ -87,23 +95,26 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
     this._swapBannerTimer = 0;
     this.state = {
       bannerPosition: 0,
+      screenWidth: Dimensions.get('window').width,
     };
   }
 
   /**
-   * Sets up timer to swap banner, display additional info on load.
+   * Sets up timer to swap banner, display additional info on load. Add listener to screen dimensions.
    */
   componentDidMount(): void {
     this._swapBannerTimer = setTimeout(() => {
       this._swapBanner();
     }, BANNER_SWAP_TIME);
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
-   * Clears the timer if it is active.
+   * Clears the timer if it is active. Removes screen dimension listener
    */
   componentWillUnmount(): void {
     clearTimeout(this._swapBannerTimer);
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
@@ -169,10 +180,10 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
   render(): JSX.Element {
     const imageStyle = (this.state.bannerPosition === 0)
         ? { right: 0 }
-        : { right: screenWidth * BANNER_TEXT_WIDTH_PCT };
+        : { right: this.state.screenWidth * BANNER_TEXT_WIDTH_PCT };
     const textContainerStyle = (this.state.bannerPosition === 1)
-        ? { left: screenWidth * (1 - BANNER_TEXT_WIDTH_PCT), marginTop: HeaderHeight }
-        : { left: screenWidth, marginTop: HeaderHeight };
+        ? { left: this.state.screenWidth * (1 - BANNER_TEXT_WIDTH_PCT), marginTop: HeaderHeight }
+        : { left: this.state.screenWidth, marginTop: HeaderHeight };
     if (this.props.hideTitle) {
       textContainerStyle.marginTop = 0;
     }

@@ -27,6 +27,7 @@ import React from 'react';
 import {
   Dimensions,
   Platform,
+  ScaledSize,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -48,16 +49,51 @@ interface Props {
   onRightAction?(): void;       // Callback for when the right action is pressed
 }
 
-interface State {}
+interface State {
+  screenWidth: number;  // Active width of the screen
+}
 
 // Height of the modal header
 const MODAL_HEADER_HEIGHT = 50;
-const screenWidth = Dimensions.get('window').width;
 
 // Default opacity when touching a left or right action
 const DEFAULT_TOUCH_OPACITY = 0.4;
 
 export default class ModalHeader extends React.PureComponent<Props, State> {
+
+  /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+      this.setState({ screenWidth: dims.window.width })
+
+  /**
+   * Constructor.
+   *
+   * @param {props} props component props
+   */
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      screenWidth: Dimensions.get('window').width,
+    };
+  }
+
+  /**
+   * Add listener to screen dimensions.
+   */
+  componentDidMount(): void {
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
+  }
+
+  /**
+   * Removes screen dimension listener.
+   */
+  componentWillUnmount(): void {
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
+  }
 
   /**
    * Invokes the right action callback.
@@ -92,8 +128,8 @@ export default class ModalHeader extends React.PureComponent<Props, State> {
     };
 
     return (
-      <View style={[ _styles.container, { backgroundColor: headerBackground }]}>
-        <Text style={_styles.title}>{this.props.title}</Text>
+      <View style={[ _styles.container, { backgroundColor: headerBackground, width: this.state.screenWidth }]}>
+        <Text style={[ _styles.title, { width: this.state.screenWidth }]}>{this.props.title}</Text>
         {this.props.leftActionText == undefined
           ? undefined
           : (
@@ -120,7 +156,7 @@ export default class ModalHeader extends React.PureComponent<Props, State> {
               </TouchableOpacity>
             </View>
           )}
-        <View style={_styles.separator} />
+        <View style={[ _styles.separator, { width: this.state.screenWidth }]} />
       </View>
     );
   }
@@ -145,7 +181,6 @@ const _styles = StyleSheet.create({
     height: MODAL_HEADER_HEIGHT + Constants.Sizes.HeaderPadding[Platform.OS],
     paddingBottom: Constants.Sizes.Margins.Regular,
     paddingTop: Constants.Sizes.HeaderPadding[Platform.OS],
-    width: screenWidth,
   },
   leftActionWrapper: {
     bottom: 0,
@@ -164,12 +199,10 @@ const _styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
     right: 0,
-    width: screenWidth,
   },
   title: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Title,
     textAlign: 'center',
-    width: screenWidth,
   },
 });

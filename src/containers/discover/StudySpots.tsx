@@ -29,6 +29,7 @@ import {
   InteractionManager,
   LayoutAnimation,
   Modal,
+  ScaledSize,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -72,14 +73,20 @@ interface State {
   filterSelected: boolean;                // Indicates if any filter has been initially selected
   loaded: boolean;                        // Indicates if the data has been loaded for this view
   reservationsVisible: boolean;           // True to show reservation info, false to hide
+  screenHeight: number;                   // Active height of the screen
   showFilters: boolean;                   // True to show the filters to select, false to hide
   studySpots: StudySpotInfo | undefined;  // Information to display about study spots
 }
 
-// Height of the screen for animating filters
-const screenHeight = Dimensions.get('window').height;
-
 class StudySpots extends React.PureComponent<Props, State> {
+
+  /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+      this.setState({ screenHeight: dims.window.height })
 
   /**
    * Constructor.
@@ -93,6 +100,7 @@ class StudySpots extends React.PureComponent<Props, State> {
       filterSelected: false,
       loaded: false,
       reservationsVisible: false,
+      screenHeight: Dimensions.get('window').height,
       showFilters: false,
       studySpots: undefined,
     };
@@ -102,9 +110,17 @@ class StudySpots extends React.PureComponent<Props, State> {
    * If the study spot info has not been loaded, then load it.
    */
   componentDidMount(): void {
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
     if (!this.state.loaded) {
       InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
+  }
+
+  /**
+   * Removes screen dimension listener.
+   */
+  componentWillUnmount(): void {
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
@@ -258,7 +274,7 @@ class StudySpots extends React.PureComponent<Props, State> {
     }
 
     const filterStyle = this.state.filterSelected
-        ? _styles.filterSelected
+        ? { bottom: -this.state.screenHeight, top: this.state.screenHeight }
         : _styles.filterNotSelected;
 
     const showFilterIcon: Icon = { name: 'arrow-drop-up', class: 'material' };
@@ -336,10 +352,6 @@ const _styles = StyleSheet.create({
   filterNotSelected: {
     bottom: 0,
     top: 0,
-  },
-  filterSelected: {
-    bottom: -screenHeight,
-    top: screenHeight,
   },
   filterSelection: {
     backgroundColor: Constants.Colors.primaryBackground,

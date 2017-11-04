@@ -29,6 +29,7 @@ import {
   FlatList,
   Image,
   InteractionManager,
+  ScaledSize,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -62,13 +63,19 @@ interface Props {
 
 interface State {
   images: (GridImage | undefined)[];  // List of images
+  screenWidth: number;                // Active width of the screen
   selected: Set<GridImage|undefined>; // Indicates which images are selected, for multi select
 }
 
-// Determining size of building icons based on the screen size.
-const screenWidth = Dimensions.get('window').width;
-
 export default class ImageGrid extends React.PureComponent<Props, State> {
+
+  /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+      this.setState({ screenWidth: dims.window.width })
 
   /**
    * Constructor.
@@ -92,6 +99,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
 
     this.state = {
       images: [],
+      screenWidth: Dimensions.get('window').width,
       selected,
     };
   }
@@ -101,6 +109,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     InteractionManager.runAfterInteractions(() => this._filterImages(this.props));
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
@@ -112,6 +121,13 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
     if (nextProps.filter !== this.props.filter || nextProps.language !== this.props.language) {
       this._filterImages(nextProps);
     }
+  }
+
+  /**
+   * Removes screen dimension listener.
+   */
+  componentWillUnmount(): void {
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
@@ -206,7 +222,7 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} an image (if enabled) and name for the image
    */
   _renderItem({ item, index }: { item: GridImage; index: number }): JSX.Element {
-    const gridImageSize: number = Math.floor(screenWidth / this.props.columns);
+    const gridImageSize: number = Math.floor(this.state.screenWidth / this.props.columns);
 
     let gridImageStyle: any = { height: gridImageSize, width: gridImageSize };
     let textStyle: any = { backgroundColor: Constants.Colors.darkTransparentBackground };
@@ -220,12 +236,13 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
     }
 
     const imageStyle = {
-      height: screenWidth / this.props.columns,
-      width: screenWidth / this.props.columns,
+      height: this.state.screenWidth / this.props.columns,
+      width: this.state.screenWidth / this.props.columns,
     };
 
     if (index % this.props.columns === this.props.columns - 1) {
-      const leftover = screenWidth - (Math.floor(screenWidth / this.props.columns) * this.props.columns);
+      const leftover = this.state.screenWidth -
+          (Math.floor(this.state.screenWidth / this.props.columns) * this.props.columns);
       imageStyle.width += leftover;
     }
 

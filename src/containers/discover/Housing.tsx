@@ -30,6 +30,7 @@ import {
   Dimensions,
   InteractionManager,
   Linking,
+  ScaledSize,
   ScrollView,
   SectionList,
   StyleSheet,
@@ -81,10 +82,10 @@ interface State {
   header: BuildingProperty[];                     // Header details about the residence
   housingInfo: HousingInfo | undefined;           // Housing information about the university
   residenceDetails: Section<ResidenceProperty>[]; // List of specific properties of the residence
+  screenWidth: number;                            // Active width of the screen
 }
 
 // Width of screen for consistent property alignment when comparing
-const screenWidth = Dimensions.get('window').width;
 const RESIDENCE_PROPERTY_WIDTH_RATIO = 0.4;
 
 // Number of columns to show residences in
@@ -98,8 +99,13 @@ class Housing extends React.PureComponent<Props, State> {
   /** Residences to be compared. */
   _residencesToCompare: (Residence|undefined)[] = [];
 
-  /** Width of properties for comparison screen. */
-  _multiPropertyWidth: { width: number } = { width: 0 };
+  /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+      this.setState({ screenWidth: dims.window.width })
 
   /**
    * Constructor.
@@ -112,6 +118,7 @@ class Housing extends React.PureComponent<Props, State> {
       header: ([] as BuildingProperty[]),
       housingInfo: undefined,
       residenceDetails: ([] as Section<ResidenceProperty>[]),
+      screenWidth: Dimensions.get('window').width,
     };
   }
 
@@ -120,12 +127,18 @@ class Housing extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     (this.refs.Navigator as any).navigationContext.addListener('didfocus', this._handleNavigationEvent.bind(this));
-
-    this._multiPropertyWidth.width = screenWidth * RESIDENCE_PROPERTY_WIDTH_RATIO;
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
 
     if (!this.state.housingInfo) {
       InteractionManager.runAfterInteractions(() => this.loadConfiguration());
     }
+  }
+
+  /**
+   * Removes screen dimension listener.
+   */
+  componentWillUnmount(): void {
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
@@ -169,6 +182,15 @@ class Housing extends React.PureComponent<Props, State> {
           this.props.filter.length === 0
           || (nextProps.filter.indexOf(this.props.filter) >= 0));
     }
+  }
+
+  /**
+   * Get the width of a property when comparing residences.
+   *
+   * @returns {number} width of a single property
+   */
+  _getMultiPropertyWidth(): number {
+    return this.state.screenWidth * RESIDENCE_PROPERTY_WIDTH_RATIO;
   }
 
   /**
@@ -459,7 +481,7 @@ class Housing extends React.PureComponent<Props, State> {
 
     return (
       <View style={_styles.propertyContainer}>
-        <Text style={[ _styles.propertyText, _styles.multiPropertyText, this._multiPropertyWidth ]}>
+        <Text style={[ _styles.propertyText, _styles.multiPropertyText, { width: this._getMultiPropertyWidth() }]}>
           {Translations.getName(item)}
         </Text>
         {this._residencesToCompare.map((residence: Residence) => (
@@ -487,7 +509,12 @@ class Housing extends React.PureComponent<Props, State> {
         <Header title={Translations.getName(section) || ''} />
         {description == undefined
           ? undefined
-          : <Text style={_styles.categoryDescription}>{description}</Text>}
+          : <Text style={[
+                _styles.categoryDescription,
+                { maxWidth: this.state.screenWidth - Constants.Sizes.Margins.Expanded * 2 }]}>
+              {description}
+            </Text>
+          }
         {description == undefined
           ? undefined
           : <View style={_styles.fullSeparator} />}
@@ -544,7 +571,7 @@ class Housing extends React.PureComponent<Props, State> {
           </Text>
         ))}
         <View style={_styles.multiResidenceContainer}>
-          <View style={[ this._multiPropertyWidth, _styles.multiResidenceColumnPadding ]} />
+          <View style={[ { width: this._getMultiPropertyWidth() }, _styles.multiResidenceColumnPadding ]} />
           {this._residencesToCompare.map((_: any, index: number) => (
             <Text
                 key={`residenceIndex.${index}`}
@@ -655,7 +682,6 @@ const _styles = StyleSheet.create({
     flex: 1,
     fontSize: Constants.Sizes.Text.Body,
     margin: Constants.Sizes.Margins.Expanded,
-    maxWidth: screenWidth - Constants.Sizes.Margins.Expanded * 2,
     textAlign: 'center',
   },
   compareHeaderSeparator: {
