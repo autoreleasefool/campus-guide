@@ -29,7 +29,7 @@ import * as HttpStatus from 'http-status-codes';
 import * as RNFS from 'react-native-fs';
 
 // Types
-import { PlatformOSType, AsyncStorageStatic } from 'react-native';
+import { AsyncStorageStatic, PlatformOSType } from 'react-native';
 import { Language } from './Translations';
 import { LatLong, Name, TimeFormat } from '../../typings/global';
 import { TransitInfo } from '../../typings/transit';
@@ -217,7 +217,7 @@ export function init(): Promise<void> {
 /**
  * Deletes the configuration on the disk and clears versions in the database. Used for debugging.
  *
- * @returns {Promise<void>} a promise which reoslves when the configuration is deleted
+ * @returns {Promise<void>} a promise which resolves when the configuration is deleted
  */
 async function _deleteConfiguration(): Promise<void> {
   if (!__DEV__) {
@@ -413,9 +413,14 @@ async function _getAvailableConfigUpdates(os: PlatformOSType): Promise<Configura
     const configLocation = __DEV__
         ? (os === 'ios' ? 'http://localhost:8080' : 'http://10.0.2.2:8080')
         : ''; // TODO: get server name in production env
+
     const configUpdateURL = `${configLocation}/config/${DeviceInfo.getVersion()}.json`;
-    const response = await fetch(configUpdateURL, { headers: { platform: os } });
+
+    const headers = new Headers();
+    headers.append('platform', os);
+    const response = await fetch(configUpdateURL, { headers });
     const appConfig: ConfigurationDetails = await response.json();
+
     const appConfigToUpdate: ConfigurationDetails = {
       files: [],
       lastUpdatedAt: appConfig.lastUpdatedAt,
