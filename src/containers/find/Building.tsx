@@ -129,6 +129,7 @@ class BuildingComponent extends React.PureComponent<Props, State> {
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
             icon={{ name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon' }}
+            subtitleIcon={{ name: 'chevron-right', class: 'material' }}
             title={navigateToBuilding} />
       </TouchableOpacity>
     );
