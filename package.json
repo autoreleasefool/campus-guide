@@ -8,13 +8,12 @@
     "clean": "rimraf artifacts",
     "lint": "tslint 'src/**/*.ts?(x)'",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "start:build": "yarn run build && yarn run watch",
+    "start:build": "yarn run build -w",
     "start:android": "react-native run-android",
     "start:ios": "react-native run-ios",
     "test": "yarn run build && jest --coverage",
     "tsc": "tsc",
-    "tscp": "tsc --pretty",
-    "watch": "yarn run build -w"
+    "tscp": "tsc --pretty"
   },
   "dependencies": {
     "fastpriorityqueue": "^0.3.1",
