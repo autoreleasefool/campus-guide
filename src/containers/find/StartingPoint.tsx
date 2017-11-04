@@ -81,6 +81,7 @@ interface State {
   closestBuilding: Building | undefined;    // The closest building, or undefined if no buildings are nearby
   locating: boolean;                        // Indicates if the app is searching for the closest building
   locationError: LocationError | undefined; // If an error occurred getting the user's location, it is provided here
+  mapReady: boolean;                        // Indicates if the map has finished loading
   region: LatLong & LatLongDelta;           // Current region displayed on the map
   selectedBuilding: Building | undefined;   // The building the user has selected to navigate from
   viewingMap: boolean;                      // True if the user is viewing the map to select a starting point
@@ -125,6 +126,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
       closestBuilding: undefined,
       locating: false,
       locationError: undefined,
+      mapReady: true,
       region: this._initialRegion,
       selectedBuilding: undefined,
       viewingMap: false,
@@ -219,7 +221,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
    */
   _toggleViewingMap(): void {
     this.props.showSearch(this.state.viewingMap);
-    this.setState({ viewingMap: !this.state.viewingMap });
+    this.setState({ viewingMap: !this.state.viewingMap, mapReady: false });
   }
 
   /**
@@ -369,10 +371,11 @@ class StartingPoint extends React.PureComponent<Props, State> {
   _renderRoomGrid(building: Building): JSX.Element {
     return (
       <View style={_styles.container}>
-        <Header
-            icon={{ name: 'chevron-left', class: 'material' }}
-            iconCallback={(): void => (this.refs.Navigator as any).pop()}
-            title={Translations.getName(building) || ''} />
+        <TouchableOpacity onPress={(): void => (this.refs.Navigator as any).pop()}>
+          <Header
+              icon={{ name: 'chevron-left', class: 'material' }}
+              title={Translations.getName(building) || ''} />
+        </TouchableOpacity>
         <RoomGrid
             filter={this.props.filter}
             language={this.props.language}
@@ -450,11 +453,12 @@ class StartingPoint extends React.PureComponent<Props, State> {
             initialRegion={this._initialRegion}
             showsUserLocation={true}
             style={_styles.map}
+            onMapReady={(): void => this.setState({ mapReady: true })}
             onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })} />
         <Suggestion
             backgroundColor={Constants.Colors.secondaryBackground}
             language={this.props.language}
-            loading={this.state.locating}
+            loading={this.state.locating && this.state.mapReady}
             suggestion={suggestion}
             onRefresh={this._findClosestBuilding.bind(this)}
             onSelect={this._onClosestBuildingSelected.bind(this)} />

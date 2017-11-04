@@ -71,6 +71,7 @@ export default class Header extends React.PureComponent<Props, State> {
     if (this.props.icon != undefined) {
       icon = (
         <PaddedIcon
+            style={_styles.icon}
             color={color}
             icon={this.props.icon} />
       );
@@ -221,6 +222,9 @@ const _styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     flexDirection: 'row',
+    height: HeaderHeight,
+  },
+  icon: {
     height: HeaderHeight,
   },
   subtitle: {

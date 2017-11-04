@@ -49,7 +49,7 @@ import * as Constants from '../constants';
 export const DefaultWidth = 56;
 
 /**
- * Renders the icon, centered in the parent view
+ * Renders the icon, centred in the parent view
  *
  * @param {Props} props props to render component
  * @returns {JSX.Element} hierarchy of views to render
@@ -59,7 +59,6 @@ export default function render(props: Props): JSX.Element {
   if (props.icon && props.icon.class === 'material') {
     icon = (
       <MaterialIcons
-          {...props}
           color={props.color || Constants.Colors.primaryWhiteIcon}
           name={props.icon.name}
           size={props.size || Constants.Sizes.Icons.Medium} />
@@ -67,7 +66,6 @@ export default function render(props: Props): JSX.Element {
   } else if (props.icon && props.icon.class === 'ionicon') {
     icon = (
       <Ionicons
-          {...props}
           color={props.color || Constants.Colors.primaryWhiteIcon}
           name={props.icon.name}
           size={props.size || Constants.Sizes.Icons.Medium} />

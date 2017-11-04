@@ -34,7 +34,7 @@ import {
 } from 'react-native';
 
 // Imports
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import PaddedIcon from './PaddedIcon';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Constants from '../constants';
 import * as Display from '../util/Display';
@@ -118,11 +118,9 @@ export default class Suggestion extends React.PureComponent<Props, State> {
         <TouchableOpacity
             style={_styles.refreshContainer}
             onPress={this._onRefresh.bind(this)}>
-          <Ionicons
+          <PaddedIcon
               color={color}
-              name={Platform.OS === 'ios' ? 'ios-refresh' : 'md-refresh'}
-              size={Constants.Sizes.Icons.Medium}
-              style={_styles.refresh} />
+              icon={{ name: Platform.OS === 'ios' ? 'ios-refresh' : 'md-refresh', class: 'ionicon' }} />
         </TouchableOpacity>
       );
     } else {
@@ -137,9 +135,13 @@ export default class Suggestion extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a text component
    */
   _renderSuggestion(color: string): JSX.Element {
+    const suggestionStyle = this.props.loading
+        ? { marginLeft: Constants.Sizes.Margins.Expanded }
+        : {};
+
     return (
       <View style={_styles.suggestionContainer}>
-        <Text style={[ _styles.suggestion, { color }]}>
+        <Text style={[ _styles.suggestion, suggestionStyle, { color }]}>
           {(this.props.loading ? this._getLoadingText() : this._getSuggestion())}
         </Text>
       </View>
@@ -218,7 +220,6 @@ const _styles = StyleSheet.create({
   },
   suggestion: {
     fontSize: Constants.Sizes.Text.Body,
-    marginLeft: Constants.Sizes.Margins.Expanded,
   },
   suggestionContainer: {
     flex: 1,
