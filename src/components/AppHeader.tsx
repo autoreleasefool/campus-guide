@@ -267,6 +267,7 @@ class AppHeader extends React.PureComponent<Props, State> {
                 placeholderTextColor={Constants.Colors.secondaryWhiteText}
                 ref='SearchInput'
                 returnKeyType={'done'}
+                selectionColor={Constants.Colors.secondaryWhiteText}
                 style={_styles.searchText}
                 underlineColorAndroid={'transparent'}
                 value={this.props.tabFilters[this.props.tab]}
@@ -301,12 +302,13 @@ class AppHeader extends React.PureComponent<Props, State> {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    elevation: Constants.Sizes.Margins.Regular,
     zIndex: HEADER_Z_INDEX,
   },
   header: {
     alignItems: 'center',
     backgroundColor: Constants.Colors.primaryBackground,
-    elevation: Constants.Sizes.Margins.Condensed / 2,
     flexDirection: 'row',
     height: NAVBAR_HEIGHT,
     marginTop: Constants.Sizes.HeaderPadding[Platform.OS],

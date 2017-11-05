@@ -408,7 +408,9 @@ class CourseModal extends React.PureComponent<Props, State> {
           <TextInput
               autoCapitalize={'characters'}
               returnKeyType={'done'}
+              selectionColor={Constants.Colors.secondaryWhiteText}
               style={_styles.textInput}
+              underlineColorAndroid={Constants.Colors.primaryWhiteText}
               value={this.state.code}
               onChangeText={(code: string): void => this.setState({
                 anyEdits: true,

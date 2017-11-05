@@ -273,7 +273,7 @@ const _styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   cardShadow: {
-    elevation: Constants.Sizes.Margins.Condensed,
+    elevation: Constants.Sizes.Margins.Regular,
     margin: Constants.Sizes.Margins.Expanded,
     shadowOffset: {
       height: Constants.Sizes.Margins.Condensed,
