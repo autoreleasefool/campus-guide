@@ -339,9 +339,7 @@ class Settings extends React.PureComponent<Props, State> {
         break;
       case 'link':
         const icon = Display.getPlatformIcon(Platform.OS, item);
-        const iconColor = Platform.OS === 'android'
-            ? Constants.Colors.primaryWhiteIcon
-            : Constants.Colors.primaryBlackIcon;
+        const iconColor = Constants.Colors.primaryBlackIcon;
         if (icon != undefined) {
           content = (
             <View style={_styles.settingContent}>
@@ -391,13 +389,9 @@ class Settings extends React.PureComponent<Props, State> {
           : section.key.substring(colonIndex + 1);
     }
 
-    const headerColor = Platform.OS === 'android'
-        ? Constants.Colors.polarGrey
-        : Constants.Colors.lightGrey;
-
     return (
       <Header
-          backgroundColor={headerColor}
+          backgroundColor={Constants.Colors.lightGrey}
           title={sectionNameTranslated} />
     );
   }
@@ -439,9 +433,7 @@ class Settings extends React.PureComponent<Props, State> {
 // Private styles for component
 const _styles = StyleSheet.create({
   container: {
-    backgroundColor: Platform.OS === 'android'
-        ? Constants.Colors.primaryBackground
-        : Constants.Colors.tertiaryBackground,
+    backgroundColor: Constants.Colors.tertiaryBackground,
     flex: 1,
   },
   modalList: {
@@ -456,24 +448,18 @@ const _styles = StyleSheet.create({
     margin: Constants.Sizes.Margins.Expanded,
   },
   separator: {
-    backgroundColor: Platform.OS === 'android'
-        ? Constants.Colors.tertiaryBackground
-        : Constants.Colors.darkTransparentBackground,
+    backgroundColor: Constants.Colors.darkTransparentBackground,
     height: StyleSheet.hairlineWidth,
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   setting: {
     alignItems: 'center',
-    backgroundColor: Platform.OS === 'android'
-        ? 'transparent'
-        : Constants.Colors.tertiaryBackground,
+    backgroundColor: Constants.Colors.tertiaryBackground,
     flexDirection: 'row',
     height: 50,
   },
   settingContainer: {
-    backgroundColor: Platform.OS === 'android'
-        ? Constants.Colors.primaryBackground
-        : Constants.Colors.secondaryBackground,
+    backgroundColor: Constants.Colors.secondaryBackground,
   },
   settingContent: {
     height: 50,
@@ -482,16 +468,12 @@ const _styles = StyleSheet.create({
     right: 20,
   },
   settingText: {
-    color: Platform.OS === 'android'
-        ? Constants.Colors.primaryWhiteText
-        : Constants.Colors.primaryBlackText,
+    color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   settingValue: {
-    color: Platform.OS === 'android'
-        ? Constants.Colors.primaryWhiteText
-        : Constants.Colors.primaryBlackText,
+    color: Constants.Colors.primaryBlackText,
     fontSize: Constants.Sizes.Text.Body,
   },
 });

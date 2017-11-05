@@ -1,9 +1,17 @@
 <resources>
 
+    <!-- Theme colors -->
     <color name="garnet">#8F001A</color>
+    <color name="darkGarnet">#5b0000</color>
+    <color name="lightGarnet">#c64141</color>
+
     <color name="darkGrey">#80746C</color>
     <color name="polarGrey">#F2F2F2</color>
     <color name="charcoalGrey">#2D2D2C</color>
     <color name="lightGrey">#ACA39A</color>
+
+    <!-- Other colors -->
+    <color name="activeSwitch">#81c784</color>
+    <color name="inactiveSwitch">#ACA39A</color>
 
 </resources>

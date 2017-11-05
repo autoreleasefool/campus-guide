@@ -3,7 +3,10 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowBackground">@color/garnet</item>
         <item name="colorPrimary">@color/garnet</item>
+        <item name="colorPrimaryDark">@color/darkGarnet</item>
         <item name="colorAccent">@color/charcoalGrey</item>
+        <item name="colorControlActivated">@color/activeSwitch</item>
+        <item name="colorSwitchThumbNormal">@color/inactiveSwitch</item>
     </style>
 
 </resources>
