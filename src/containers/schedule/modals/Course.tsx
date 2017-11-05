@@ -148,7 +148,7 @@ class CourseModal extends React.PureComponent<Props, State> {
       }
     };
 
-    if (this.state.anyEdits) {
+    if (save && this.state.anyEdits) {
       Alert.alert(
         Translations.get('quit_without_saving'),
         Translations.get('quit_without_saving_msg'),
@@ -177,7 +177,6 @@ class CourseModal extends React.PureComponent<Props, State> {
   _configureScene(): any {
     return {
       ...Navigator.SceneConfigs.PushFromRight,
-      gestures: false,
     };
   }
 
@@ -302,13 +301,7 @@ class CourseModal extends React.PureComponent<Props, State> {
    */
   _showSemesterPicker(): void {
     this.setState({ anyEdits: true });
-
-    if (Platform.OS === 'android') {
-      // TODO: setup android picker
-      throw new Error('No android picker setup');
-    } else {
-      (this.refs.Navigator as any).push({ id: PICKER });
-    }
+    (this.refs.Navigator as any).push({ id: PICKER });
   }
 
   /**
@@ -473,6 +466,7 @@ class CourseModal extends React.PureComponent<Props, State> {
         </TouchableOpacity>
         <Picker
             itemStyle={_styles.pickerItem}
+            mode={'dialog'}
             prompt={Translations.get('semester')}
             selectedValue={this.state.semester}
             style={_styles.pickerContainer}
@@ -622,11 +616,9 @@ const _styles = StyleSheet.create({
   },
   pickerContainer: {
     backgroundColor: Constants.Colors.tertiaryBackground,
-    flex: 1,
   },
   pickerItem: {
     color: Constants.Colors.primaryBlackText,
-    fontSize: Constants.Sizes.Text.Subtitle,
   },
   textInput: {
     backgroundColor: Constants.Colors.secondaryBackground,

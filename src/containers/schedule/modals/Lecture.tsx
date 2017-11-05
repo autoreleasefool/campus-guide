@@ -28,11 +28,11 @@ import {
   Alert,
   DatePickerIOS,
   Picker,
-  PickerIOS,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TimePickerAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -180,7 +180,6 @@ class LectureModal extends React.PureComponent<Props, State> {
   _configureScene(): any {
     return {
       ...Navigator.SceneConfigs.PushFromRight,
-      gestures: false,
     };
   }
 
@@ -246,7 +245,7 @@ class LectureModal extends React.PureComponent<Props, State> {
    * Sets the start or end time for the lecture
    *
    * @param {Date}    time        the time to set
-   * @param {boolean} isStartTime true to set the start time, false to set ends time
+   * @param {boolean} isStartTime true to set the start time, false to set end time
    */
   _setTime(time: Date, isStartTime: boolean): void {
     if (isStartTime) {
@@ -268,6 +267,32 @@ class LectureModal extends React.PureComponent<Props, State> {
   }
 
   /**
+   * Shows the TimePicker on Android to pick a time.
+   *
+   * @param {number} picking the value to pick
+   */
+  async _showAndroidTimePicker(picking: number): Promise<void> {
+    const initialTime = (picking === PICKER_STARTS) ? this.state.starts : this.state.ends;
+    const hour = Math.floor(initialTime / Constants.Time.MINUTES_IN_HOUR);
+    const minute = initialTime % Constants.Time.MINUTES_IN_HOUR;
+
+    try {
+      const timePicked = await TimePickerAndroid.open({
+        hour,
+        is24Hour: this.props.timeFormat === '24h',
+        minute,
+      });
+      if (timePicked.action !== TimePickerAndroid.dismissedAction) {
+        const time = new Date();
+        time.setHours(timePicked.hour, timePicked.minute, 0, 0);
+        this._setTime(time, picking === PICKER_STARTS);
+      }
+    } catch ({ code, message }) {
+      console.warn('Cannot open time picker.', message);
+    }
+  }
+
+  /**
    * Shows the picker to pick a value.
    *
    * @param {number} picking the value to pick
@@ -277,8 +302,7 @@ class LectureModal extends React.PureComponent<Props, State> {
       case PICKER_STARTS:
       case PICKER_ENDS:
       if (Platform.OS === 'android') {
-        // TODO: setup android picker
-        throw new Error('No android picker setup');
+        this._showAndroidTimePicker(picking);
       } else {
         (this.refs.Navigator as any).push({ id: TIME_PICKER, picking });
       }
@@ -498,8 +522,7 @@ class LectureModal extends React.PureComponent<Props, State> {
         setValue = (value: number): void => this._setDay(value);
         break;
       default:
-        // do nothing
-        // FIXME: return some error view
+        throw new Error(`Cannot use regular picker for ${picking}`);
     }
 
     return (
@@ -509,41 +532,22 @@ class LectureModal extends React.PureComponent<Props, State> {
               icon={{ name: backArrowIcon, class: 'ionicon' }}
               title={Translations.get(title)} />
         </TouchableOpacity>
-        {Platform.OS === 'android'
-            ? (
-            <Picker
-                prompt={Translations.get(title)}
-                selectedValue={selectedValue}
-                style={_styles.pickerContainer}
-                onValueChange={setValue}>
-              {options.map((_: any, index: number) => {
-                return (
-                  <Picker.Item
-                      key={getName ? getName(index) : ''}
-                      label={getName ? getName(index) : ''}
-                      value={index} />
-                );
-              })}
-            </Picker>
-            )
-            : (
-            <PickerIOS
-                itemStyle={_styles.pickerItem}
-                selectedValue={selectedValue}
-                style={_styles.pickerContainer}
-                onValueChange={setValue}>
-              {options.map((_: any, index: number) => {
-                return (
-                  <PickerIOS.Item
-                      key={getName ? getName(index) : ''}
-                      label={getName ? getName(index) : ''}
-                      value={index} />
-                );
-              })}
-            </PickerIOS>
-            )
-        }
-
+        <Picker
+            itemStyle={_styles.pickerItem}
+            mode={'dialog'}
+            prompt={Translations.get(title)}
+            selectedValue={selectedValue}
+            style={_styles.pickerContainer}
+            onValueChange={setValue}>
+          {options.map((_: any, index: number) => {
+            return (
+              <Picker.Item
+                  key={getName ? getName(index) : ''}
+                  label={getName ? getName(index) : ''}
+                  value={index} />
+            );
+          })}
+        </Picker>
       </View>
     );
   }
@@ -555,9 +559,9 @@ class LectureModal extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the time picker with the options to select between
    */
   _renderTimePicker(picking: number): JSX.Element {
-    let title = '';
-    let time = new Date();
-    time.setHours(1, 0, 0, 0);
+    let title;
+    let time;
+
     let setValue: (arg: any) => void;
     switch (picking) {
       case PICKER_STARTS:
@@ -571,8 +575,7 @@ class LectureModal extends React.PureComponent<Props, State> {
         setValue = (value: Date): void => this._setTime(value, false);
         break;
       default:
-        // do nothing
-        // FIXME: return some error view
+        throw new Error(`Cannot pick time for ${picking}`);
     }
 
     return (
@@ -670,11 +673,9 @@ const _styles = StyleSheet.create({
   },
   pickerContainer: {
     backgroundColor: Constants.Colors.tertiaryBackground,
-    flex: 1,
   },
   pickerItem: {
     color: Constants.Colors.primaryBlackText,
-    fontSize: Constants.Sizes.Text.Subtitle,
   },
   removeBuildingText: {
     color: Constants.Colors.primaryWhiteText,

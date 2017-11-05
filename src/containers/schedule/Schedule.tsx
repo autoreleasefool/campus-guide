@@ -29,7 +29,6 @@ import {
   LayoutAnimation,
   Modal,
   Picker,
-  PickerIOS,
   Platform,
   StyleSheet,
   View,
@@ -203,43 +202,26 @@ class Schedule extends React.PureComponent<Props, State> {
     const semesterName = Translations.getName(this.props.semesters[this.props.currentSemester]) || '';
 
     const picker = this.state.showSemesters
-        ? (Platform.OS === 'android'
-            ? (
-            <Picker
-                prompt={Translations.get('semester')}
-                selectedValue={this.props.currentSemester}
-                onValueChange={(value: number): void => this.props.switchSemester(value)}>
-              {this.props.semesters.map((semester: Semester, index: number) => {
-                const name = Translations.getName(semester);
+      ? (
+        <Picker
+            itemStyle={_styles.pickerItem}
+            prompt={Translations.get('semester')}
+            style={_styles.picker}
+            selectedValue={this.props.currentSemester}
+            onValueChange={(value: number): void => this.props.switchSemester(value)}>
+          {this.props.semesters.map((semester: Semester, index: number) => {
+            const name = Translations.getName(semester);
 
-                return (
-                  <Picker.Item
-                      key={name}
-                      label={name}
-                      value={index} />
-                );
-              })}
-            </Picker>
-            )
-            : (
-            <PickerIOS
-                itemStyle={_styles.semesterItem}
-                selectedValue={this.props.currentSemester}
-                onValueChange={(value: number): void => this.props.switchSemester(value)}>
-              {this.props.semesters.map((semester: Semester, index: number) => {
-                const name = Translations.getName(semester);
-
-                return (
-                  <PickerIOS.Item
-                      key={name}
-                      label={name}
-                      value={index} />
-                );
-              })}
-            </PickerIOS>
-            )
-        )
-        : undefined;
+            return (
+              <Picker.Item
+                  key={name}
+                  label={name}
+                  value={index} />
+            );
+          })}
+        </Picker>
+      )
+      : undefined;
 
     return (
       <View>
@@ -312,6 +294,12 @@ const _styles = StyleSheet.create({
   container: {
     backgroundColor: Constants.Colors.primaryBackground,
     flex: 1,
+  },
+  picker: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+  },
+  pickerItem: {
+    color: Constants.Colors.primaryBlackText,
   },
   semesterItem: {
     color: Constants.Colors.primaryWhiteText,
