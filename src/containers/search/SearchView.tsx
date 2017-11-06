@@ -529,8 +529,6 @@ class SearchView extends React.PureComponent<Props, State> {
       default:
         throw new Error(`Attempting to render invalid SearchView scene: ${route}`);
     }
-
-    return undefined;
   }
 
   /**
