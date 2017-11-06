@@ -77,7 +77,6 @@ class DiscoverHome extends React.PureComponent<Props, State> {
   async loadConfiguration(): Promise<void> {
     try {
       const sections = await Configuration.getConfig('/discover.json');
-      console.log(sections);
       this.setState({ sections });
     } catch (err) {
       console.error('Configuration could not be initialized for discovery.', err);

@@ -31,6 +31,7 @@
     "react-native-simple-store": "^1.3.0",
     "react-native-snackbar": "^0.4.3",
     "react-native-vector-icons": "^4.4.0",
+    "react-native-zip-archive": "^2.1.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.1",
     "redux-thunk": "^2.1.0"

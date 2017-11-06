@@ -53,7 +53,8 @@ buck-out/
 */fastlane/screenshots
 
 # Assets
-**/assets/**
+/assets/
+**/ios/**/assets/**
 /scraper/
 strings_secret.xml
 
