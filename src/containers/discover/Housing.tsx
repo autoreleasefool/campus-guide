@@ -639,7 +639,7 @@ class Housing extends React.PureComponent<Props, State> {
           scene = this._renderOtherResources();
           break;
         default:
-          // FIXME: generic error view?
+          throw new Error(`Attempting to render invalid Housing scene: ${route}`);
       }
     }
 

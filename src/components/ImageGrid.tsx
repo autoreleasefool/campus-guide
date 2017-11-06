@@ -85,7 +85,6 @@ export default class ImageGrid extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    // FIXME: Better way to throw this error?
     if (props.multiSelect && !props.multiSelectText) {
       throw new Error('props.multiSelectText must be provided for multiSelect mode');
     }

@@ -614,10 +614,7 @@ class LectureModal extends React.PureComponent<Props, State> {
       case ROOM_PICKER:
         return this._renderRoomPicker();
       default:
-        // FIXME: return some error view
-        return (
-          <View />
-        );
+        throw new Error(`Attempting to render invalid Lecture scene: ${route}`);
     }
   }
 

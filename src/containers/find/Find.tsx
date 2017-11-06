@@ -140,10 +140,7 @@ class Find extends React.PureComponent<Props, State> {
           <StepsScreen />
         );
       default:
-        // FIXME: generic error view?
-        return (
-          <View style={_styles.container} />
-        );
+        throw new Error(`Attempting to render invalid Fine scene: ${route}`);
     }
   }
 

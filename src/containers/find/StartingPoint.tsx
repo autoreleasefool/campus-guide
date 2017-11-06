@@ -400,10 +400,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
       case SELECT_ROOM:
         return this._renderRoomGrid(route.data);
       default:
-        // FIXME: generic error view?
-        return (
-          <View style={_styles.container} />
-        );
+        throw new Error(`Attempting to render invalid StartingPoint scene: ${route}`);
     }
   }
 

@@ -328,7 +328,7 @@ async function _updateConfig(
   try {
     for (const update of configDetails.files) {
       // Download the file
-      // FIXME: Android cannot use Accept-Encoding
+      // TODO: Android cannot use Accept-Encoding
       // (https://react-native.canny.io/feature-requests/p/fetch-with-accept-encoding-gzip-does-not-work)
       const downloadResult = await RNFS.downloadFile({
         begin: (download: RNFS.DownloadBeginCallbackResult): void => onStart(update.name, download),

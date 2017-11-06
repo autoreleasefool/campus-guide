@@ -499,10 +499,7 @@ class CourseModal extends React.PureComponent<Props, State> {
       case PICKER:
         return this._renderPicker();
       default:
-        // FIXME: return some error view
-        return (
-          <View />
-        );
+        throw new Error(`Attempting to render invalid Course scene: ${route}`);
     }
   }
 

@@ -211,10 +211,7 @@ class Transit extends React.PureComponent<Props, State> {
             timeFormat={this.props.timeFormat} />
       );
     } else {
-      // FIXME: return generic error view?
-      return (
-        <View />
-      );
+      throw new Error(`Campus was not defined in Transit.tsx: ${campus}`);
     }
   }
 
@@ -249,10 +246,7 @@ class Transit extends React.PureComponent<Props, State> {
       case CAMPUS:
         return this._renderCampus(this.props.campus);
       default:
-        // FIXME: return generic error view?
-        return (
-          <View />
-        );
+        throw new Error(`Attempting to render invalid Transit scene: ${route}`);
     }
   }
 

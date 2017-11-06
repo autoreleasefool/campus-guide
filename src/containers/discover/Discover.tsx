@@ -150,10 +150,7 @@ class Discover extends React.PureComponent<Props, State> {
           <StudySpots />
         );
       default:
-        // FIXME: generic error view?
-        return (
-          <View style={_styles.container} />
-        );
+        throw new Error(`Attempting to render invalid Discover scene: ${route}`);
     }
   }
 
