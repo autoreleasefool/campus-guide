@@ -58,6 +58,10 @@ buck-out/
 /scraper/
 strings_secret.xml
 
+# Config
+**/android/**/assets/config/**
+**/ios/**/config.bundle/**
+
 # Code coverage
 coverage/
 
