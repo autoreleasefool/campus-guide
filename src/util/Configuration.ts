@@ -478,6 +478,60 @@ export function getAvailableConfigUpdates(
 }
 
 /**
+ * Load the default configuration from the asset bundle.
+ */
+export async function setupDefaultConfiguration(os: PlatformOSType): Promise<void> {
+  let assetBasePath;
+  let readDir;
+  let copyFile;
+  let configDetails: ConfigurationDetails;
+
+  // Get functions and locations for Android vs iOS assets
+  if (os === 'android') {
+    assetBasePath = 'config';
+    readDir = RNFS.readDirAssets;
+    copyFile = RNFS.copyFileAssets;
+    configDetails = JSON.parse(await RNFS.readFileAssets(`${assetBasePath}/base_config.json`));
+  } else {
+    assetBasePath = `${RNFS.MainBundlePath}/config.bundle`;
+    readDir = RNFS.readDir;
+    copyFile = RNFS.copyFile;
+    configDetails = JSON.parse(await RNFS.readFile(`${assetBasePath}/base_config.json`));
+  }
+
+  // Create the config file directory
+  await RNFS.mkdir(CONFIG_DIRECTORY);
+  for (const type in CONFIG_SUBDIRECTORIES) {
+    if (CONFIG_SUBDIRECTORIES.hasOwnProperty(type)) {
+      await RNFS.mkdir(CONFIG_DIRECTORY + CONFIG_SUBDIRECTORIES[type]);
+    }
+  }
+
+  // Copy base assets to config file directory
+  const assetTypes = await readDir(assetBasePath);
+  console.log(JSON.stringify(assetTypes));
+  for (const type of assetTypes) {
+    if (!(type.name in CONFIG_SUBDIRECTORIES)) {
+      continue;
+    }
+
+    const assets = await readDir(`${assetBasePath}/${type.name}`);
+    console.log(JSON.stringify(assets));
+    for (const asset of assets) {
+      const sourcePath = asset.path;
+      const fileName = asset.path.substr(asset.path.lastIndexOf('/'));
+      const destPath = `${CONFIG_DIRECTORY}${CONFIG_SUBDIRECTORIES[type.name]}${fileName}`;
+      console.log(`Copying config file from ${sourcePath} to ${destPath}`);
+      await copyFile(sourcePath, destPath);
+    }
+  }
+
+  // Update config versions in database
+  await Database.updateConfigVersions(configDetails.files);
+  await setConfigLastUpdatedAt(configDetails.lastUpdatedAt);
+}
+
+/**
  * Checks if the app has already performed an update check since opening, and, if so, checks if enough time
  * has passed that it should check again.
  *

@@ -124,6 +124,8 @@ class Main extends React.PureComponent<Props, State> {
    */
   async _checkConfiguration(): Promise<void> {
     try {
+      // FIXME: check for ALL config files in base_config, not just these two
+      // since any could be deleted at any time
       await Configuration.init();
       const university = await Configuration.getConfig('/university.json');
       this.props.setUniversity(university);
@@ -138,6 +140,10 @@ class Main extends React.PureComponent<Props, State> {
       if (__DEV__) {
         console.log('Assuming configuration is not available.', err);
       }
+
+      // FIXME: only setup config once, and then re-run check configuration
+      // so that update screen does not open unnecessarily
+      await Configuration.setupDefaultConfiguration(Platform.OS);
       this.props.navigator.push({ id: 'update' });
     }
   }

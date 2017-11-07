@@ -190,6 +190,9 @@ class UpdateScreen extends React.PureComponent<Props, State> {
             ],
             { onDismiss: onCancel }
           );
+        } else {
+          // No config files available to update
+          this._returnToMain();
         }
 
         return;
