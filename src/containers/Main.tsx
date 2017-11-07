@@ -113,7 +113,7 @@ class Main extends React.PureComponent<Props, State> {
    */
   _handleAppStateChange = (nextAppState: string): void => {
     if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
-      this._checkConfiguration();
+      this._checkConfiguration(false);
     }
 
     this.setState({ appState: nextAppState });
@@ -121,11 +121,12 @@ class Main extends React.PureComponent<Props, State> {
 
   /**
    * Loads the downloaded base configuration and updates the redux store.
+   *
+   * @param {boolean} fallbackToUpdate if true, then force the user to update when the config
+   *                                   has been found unavailable, otherwise re-check for config
    */
-  async _checkConfiguration(): Promise<void> {
+  async _checkConfiguration(fallbackToUpdate: boolean): Promise<void> {
     try {
-      // FIXME: check for ALL config files in base_config, not just these two
-      // since any could be deleted at any time
       await Configuration.init();
       const university = await Configuration.getConfig('/university.json');
       this.props.setUniversity(university);
@@ -141,10 +142,16 @@ class Main extends React.PureComponent<Props, State> {
         console.log('Assuming configuration is not available.', err);
       }
 
-      // FIXME: only setup config once, and then re-run check configuration
-      // so that update screen does not open unnecessarily
+      // Load the base configuration when the full configuration is not available.
       await Configuration.setupDefaultConfiguration(Platform.OS);
-      this.props.navigator.push({ id: 'update' });
+
+      // Only force an update if the configuration is not available after the
+      // default configuration is set up
+      if (fallbackToUpdate) {
+        this.props.navigator.push({ id: 'update' });
+      } else {
+        this._checkConfiguration(true);
+      }
     }
   }
 
@@ -218,7 +225,7 @@ class Main extends React.PureComponent<Props, State> {
             this.props.navigator.push({ id: 'splash' });
           } else {
             // Language is selected, check configuration
-            this._checkConfiguration();
+            this._checkConfiguration(false);
           }
         })
         .catch((err: any) => console.error('Unable to load initial preferences', err));

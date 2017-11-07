@@ -509,14 +509,12 @@ export async function setupDefaultConfiguration(os: PlatformOSType): Promise<voi
 
   // Copy base assets to config file directory
   const assetTypes = await readDir(assetBasePath);
-  console.log(JSON.stringify(assetTypes));
   for (const type of assetTypes) {
     if (!(type.name in CONFIG_SUBDIRECTORIES)) {
       continue;
     }
 
     const assets = await readDir(`${assetBasePath}/${type.name}`);
-    console.log(JSON.stringify(assets));
     for (const asset of assets) {
       const sourcePath = asset.path;
       const fileName = asset.path.substr(asset.path.lastIndexOf('/'));
