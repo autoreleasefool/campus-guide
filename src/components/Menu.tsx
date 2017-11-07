@@ -64,6 +64,9 @@ const CARD_ASPECT_RATIO = 0.75;
 /** Default maximum number of cards on screen at a time. */
 const DEFAULT_MAX_CARDS = 4;
 
+/** Minimum card height so they do not appear too squished. */
+const MIN_CARD_HEIGHT = 200;
+
 /** Magnitude of margins on mini cards. */
 const MINI_CARD_MARGINS = 3;
 
@@ -75,7 +78,7 @@ export default class Menu extends React.PureComponent<Props, State> {
    * @param {ScaledSize} dims the new dimensions
    */
   _dimensionsHandler = (dims: { window: ScaledSize }): void =>
-  this.setState({ screenHeight: dims.window.height })
+      this.setState({ screenHeight: dims.window.height })
 
   /**
    * Constructor.
@@ -113,8 +116,12 @@ export default class Menu extends React.PureComponent<Props, State> {
    */
   _getCardHeight(): number {
     const maxCardHeightRatio = this.props.sectionsOnScreen || DEFAULT_MAX_CARDS;
+    const height = Math.min(
+      this._getCardWidth() * CARD_ASPECT_RATIO,
+      Math.max(MIN_CARD_HEIGHT, this.state.screenHeight / maxCardHeightRatio)
+    );
 
-    return Math.min(this._getCardWidth() * CARD_ASPECT_RATIO, this.state.screenHeight / maxCardHeightRatio);
+    return height;
   }
 
   /**
@@ -233,9 +240,9 @@ export default class Menu extends React.PureComponent<Props, State> {
 
     return (
       <TouchableOpacity
-          style={[ _styles.cardShadow, _styles.rounded, cardMargins ]}
+          style={[ _styles.cardShadow, _styles.rounded, cardMargins, viewMargins ]}
           onPress={(): void => this.props.onSectionSelected(section.id)}>
-        <View style={[ _styles.cardAndroid, _styles.rounded, viewMargins, cardDimensions ]}>
+        <View style={[ _styles.cardAndroid, _styles.rounded, cardDimensions ]}>
           {sectionImage}
           <Header
               icon={icon}
@@ -266,6 +273,7 @@ export default class Menu extends React.PureComponent<Props, State> {
 // Private styles for component
 const _styles = StyleSheet.create({
   cardAndroid: {
+    flex: 1,
     overflow: 'hidden',
   },
   cardIOS: {
@@ -292,13 +300,9 @@ const _styles = StyleSheet.create({
     borderRadius: Constants.Sizes.Margins.Regular,
   },
   sectionImage: {
-    bottom: 0,
+    ...StyleSheet.absoluteFillObject,
     flex: 1,
     height: undefined,
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
     width: undefined,
   },
   separator: {
