@@ -3557,8 +3557,8 @@ react-native-device-info@^0.12.1:
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.12.1.tgz#659ed145caa5a86a4815904381b25e9ebe0c24f6"
 
 react-native-fs@^2.8.3:
-  version "2.8.3"
-  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.8.3.tgz#aa2eb841bc121f78bfa02443558a67050a9bb03e"
+  version "2.8.5"
+  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.8.5.tgz#f4c6d32bdd636079675f6b5585a23227acaca2ba"
   dependencies:
     base-64 "^0.1.0"
     utf8 "^2.1.1"
