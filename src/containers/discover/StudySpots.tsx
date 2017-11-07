@@ -29,6 +29,7 @@ import {
   InteractionManager,
   LayoutAnimation,
   Modal,
+  SafeAreaView,
   ScaledSize,
   StyleSheet,
   TouchableOpacity,
@@ -221,15 +222,17 @@ class StudySpots extends React.PureComponent<Props, State> {
           transparent={false}
           visible={this.state.filterDescriptionsVisible}
           onRequestClose={this._setFilterDescriptionsVisible.bind(this, false)}>
-        <ModalHeader
-            rightActionEnabled={true}
-            rightActionText={Translations.get('done')}
-            title={Translations.get('filter_descriptions')}
-            onRightAction={this._setFilterDescriptionsVisible.bind(this, false)} />
-        <FilterDescriptions
-            descriptions={studySpotInfo.filterDescriptions}
-            filters={studySpotInfo.filters}
-            language={this.props.language} />
+        <SafeAreaView style={_styles.safeAreaView}>
+          <ModalHeader
+              rightActionEnabled={true}
+              rightActionText={Translations.get('done')}
+              title={Translations.get('filter_descriptions')}
+              onRightAction={this._setFilterDescriptionsVisible.bind(this, false)} />
+          <FilterDescriptions
+              descriptions={studySpotInfo.filterDescriptions}
+              filters={studySpotInfo.filters}
+              language={this.props.language} />
+        </SafeAreaView>
       </Modal>
     );
   }
@@ -247,15 +250,17 @@ class StudySpots extends React.PureComponent<Props, State> {
           transparent={false}
           visible={this.state.reservationsVisible}
           onRequestClose={this._setReservationsVisible.bind(this, false)}>
-        <ModalHeader
-            rightActionEnabled={true}
-            rightActionText={Translations.get('done')}
-            title={Translations.get('study_spots')}
-            onRightAction={this._setReservationsVisible.bind(this, false)} />
-        <LinkCategoryView
-            filter={this.props.filter}
-            language={this.props.language}
-            section={studySpotInfo.reservations} />
+        <SafeAreaView style={_styles.safeAreaView}>
+          <ModalHeader
+              rightActionEnabled={true}
+              rightActionText={Translations.get('done')}
+              title={Translations.get('study_spots')}
+              onRightAction={this._setReservationsVisible.bind(this, false)} />
+          <LinkCategoryView
+              filter={this.props.filter}
+              language={this.props.language}
+              section={studySpotInfo.reservations} />
+        </SafeAreaView>
       </Modal>
     );
   }
@@ -358,6 +363,10 @@ const _styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
     right: 0,
+  },
+  safeAreaView: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   separator: {
     backgroundColor: Constants.Colors.tertiaryBackground,

@@ -31,6 +31,7 @@ import {
   Linking,
   Modal,
   Platform,
+  SafeAreaView,
   SectionList,
   StyleSheet,
   Switch,
@@ -418,7 +419,9 @@ class Settings extends React.PureComponent<Props, State> {
             transparent={false}
             visible={this.state.listModalVisible}
             onRequestClose={this._closeModal.bind(this)}>
-          {this._renderListModal()}
+          <SafeAreaView style={_styles.safeAreaView}>
+            {this._renderListModal()}
+          </SafeAreaView>
         </Modal>
         <SectionList
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
@@ -446,6 +449,10 @@ const _styles = StyleSheet.create({
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Caption,
     margin: Constants.Sizes.Margins.Expanded,
+  },
+  safeAreaView: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   separator: {
     backgroundColor: Constants.Colors.darkTransparentBackground,

@@ -30,6 +30,7 @@ import {
   Modal,
   Picker,
   Platform,
+  SafeAreaView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -251,12 +252,14 @@ class Schedule extends React.PureComponent<Props, State> {
             transparent={false}
             visible={this.state.courseModalVisible}
             onRequestClose={(): void => this._closeModal()}>
-          <CourseModal
-              addingCourse={this.state.addingCourse}
-              courseToEdit={this.state.courseToEdit}
-              lectureFormats={this.state.lectureFormats}
-              onClose={(): void => this._closeModal()}
-              onSaveCourse={this._onSaveCourse.bind(this)} />
+          <SafeAreaView style={_styles.safeAreaView}>
+            <CourseModal
+                addingCourse={this.state.addingCourse}
+                courseToEdit={this.state.courseToEdit}
+                lectureFormats={this.state.lectureFormats}
+                onClose={(): void => this._closeModal()}
+                onSaveCourse={this._onSaveCourse.bind(this)} />
+          </SafeAreaView>
         </Modal>
         <ScrollableTabView
             initialPage={this.state.initialPage}
@@ -300,6 +303,10 @@ const _styles = StyleSheet.create({
   },
   pickerItem: {
     color: Constants.Colors.primaryBlackText,
+  },
+  safeAreaView: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   semesterItem: {
     color: Constants.Colors.primaryWhiteText,

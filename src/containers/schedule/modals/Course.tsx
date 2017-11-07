@@ -29,6 +29,7 @@ import {
   Modal,
   Picker,
   Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -523,13 +524,15 @@ class CourseModal extends React.PureComponent<Props, State> {
             transparent={false}
             visible={this.state.lectureModalVisible}
             onRequestClose={(): void => this._closeLectureModal()}>
-          <LectureModal
-              addingLecture={this.state.addingLecture}
-              course={{ code: this.state.code, lectures: this.state.lectures }}
-              lectureFormats={this.props.lectureFormats}
-              lectureToEdit={this.state.lectureToEdit}
-              onClose={(): void => this._closeLectureModal()}
-              onSaveLecture={this._addLecture.bind(this)} />
+          <SafeAreaView style={_styles.safeAreaView}>
+            <LectureModal
+                addingLecture={this.state.addingLecture}
+                course={{ code: this.state.code, lectures: this.state.lectures }}
+                lectureFormats={this.props.lectureFormats}
+                lectureToEdit={this.state.lectureToEdit}
+                onClose={(): void => this._closeLectureModal()}
+                onSaveLecture={this._addLecture.bind(this)} />
+          </SafeAreaView>
         </Modal>
         <ModalHeader
             leftActionEnabled={true}
@@ -616,6 +619,10 @@ const _styles = StyleSheet.create({
   },
   pickerItem: {
     color: Constants.Colors.primaryBlackText,
+  },
+  safeAreaView: {
+    backgroundColor: Constants.Colors.primaryBackground,
+    flex: 1,
   },
   textInput: {
     backgroundColor: Constants.Colors.secondaryBackground,

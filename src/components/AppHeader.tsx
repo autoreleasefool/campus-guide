@@ -311,7 +311,6 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.primaryBackground,
     flexDirection: 'row',
     height: NAVBAR_HEIGHT,
-    marginTop: Constants.Sizes.HeaderPadding[Platform.OS],
     zIndex: HEADER_Z_INDEX,
   },
   icon: {
@@ -350,7 +349,6 @@ const _styles = StyleSheet.create({
   },
   statusBar: {
     backgroundColor: Constants.Colors.primaryBackground,
-    height: Constants.Sizes.HeaderPadding[Platform.OS],
     position: 'absolute',
     top: 0,
     zIndex: HEADER_Z_INDEX + 1,

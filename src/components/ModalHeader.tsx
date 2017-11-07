@@ -26,7 +26,6 @@
 import React from 'react';
 import {
   Dimensions,
-  Platform,
   ScaledSize,
   StyleSheet,
   Text,
@@ -178,9 +177,8 @@ const _styles = StyleSheet.create({
   container: {
     alignItems: 'flex-end',
     flexDirection: 'row',
-    height: MODAL_HEADER_HEIGHT + Constants.Sizes.HeaderPadding[Platform.OS],
+    height: MODAL_HEADER_HEIGHT,
     paddingBottom: Constants.Sizes.Margins.Regular,
-    paddingTop: Constants.Sizes.HeaderPadding[Platform.OS],
   },
   leftActionWrapper: {
     bottom: 0,

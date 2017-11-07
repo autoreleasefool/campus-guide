@@ -25,7 +25,6 @@
 // React imports
 import React from 'react';
 import {
-  Platform,
   StyleSheet,
   View,
 } from 'react-native';
@@ -53,7 +52,6 @@ const _styles = StyleSheet.create({
   header: {
     backgroundColor: Constants.Colors.primaryBackground,
     height: 45,
-    marginTop: Constants.Sizes.HeaderPadding[Platform.OS],
   },
   innerContainer: {
     backgroundColor: Constants.Colors.darkTransparentBackground,
