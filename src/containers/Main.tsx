@@ -159,7 +159,8 @@ class Main extends React.PureComponent<Props, State> {
    * Check if there are any configuration updates available, and prompt the user to update.
    */
   async _checkConfigurationUpdate(): Promise<void> {
-    if (!Configuration.shouldCheckForUpdate(AsyncStorage)) {
+    const shouldCheckForUpdate = await Configuration.shouldCheckForUpdate(AsyncStorage);
+    if (!shouldCheckForUpdate) {
       // Do not check for configuration updates more than once in an hour
       return;
     }
