@@ -412,7 +412,7 @@ async function _getAvailableConfigUpdates(os: PlatformOSType): Promise<Configura
     // Fetch most recent config versions from server
     const configLocation = __DEV__
         ? (os === 'ios' ? 'http://localhost:8080' : 'http://10.0.2.2:8080')
-        : ''; // TODO: get server name in production env
+        : ''; // FIXME: get server name in production env
 
     const configUpdateURL = `${configLocation}/config/${DeviceInfo.getVersion()}.json`;
 

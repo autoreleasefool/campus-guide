@@ -74,7 +74,6 @@ async function _getResults(
 
   let sectionsToSearch = linkSections;
 
-  // TODO: confirm this works with changing size of sectionsToSearch
   for (const section of sectionsToSearch) {
     let sectionMatches = false;
     const sectionName: string = Translations.getName(section) || '';

@@ -32,7 +32,7 @@ interface State {}
 export default class AdView extends React.PureComponent<Props, State> {
 
   /**
-   * TODO: This component is incomplete.
+   * FIXME: This component is incomplete.
    * Renders an adview.
    *
    * @returns {JSX.Element} the hierarchy of views to render
