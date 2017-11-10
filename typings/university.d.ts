@@ -204,6 +204,7 @@ export type StudySpotReservation = Description & Link & Name;
 
 /** Location and properties of a study spot. */
 export interface StudySpot extends Description, Name {
+  id: string;                   // Unique ID for each study spot
   image: string;                // Name of the image of the study spot
   building: string;             // Building code
   room?: string;                // Room number
