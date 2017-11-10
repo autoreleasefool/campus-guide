@@ -94,6 +94,11 @@ const CONFIG_SUBDIRECTORIES = {
   text: '/text',
 };
 
+// Time, in milliseconds, to wait before connection timeout when downloading config files
+const CONFIG_CONNECTION_TIMEOUT = 5000;
+// Time, in milliseconds, to wait before data read timeout when downloading config files
+const CONFIG_READ_TIMEOUT = 5000;
+
 // Directory for config files
 const CONFIG_DIRECTORY = `${RNFS.DocumentDirectoryPath}/config`;
 // Directory for downloaded config files
@@ -332,9 +337,11 @@ async function _updateConfig(
       // (https://react-native.canny.io/feature-requests/p/fetch-with-accept-encoding-gzip-does-not-work)
       const downloadResult = await RNFS.downloadFile({
         begin: (download: RNFS.DownloadBeginCallbackResult): void => onStart(update.name, download),
+        connectionTimeout: CONFIG_CONNECTION_TIMEOUT,
         fromUrl: (os !== 'android' && update.zsize && update.zurl) ? update.zurl : update.url,
         headers: { 'Accept-Encoding': 'gzip,deflate' },
         progress: callbacks.onDownloadProgress,
+        readTimeout: CONFIG_READ_TIMEOUT,
         toFile: TEMP_CONFIG_DIRECTORY + update.name,
       }).promise;
 
