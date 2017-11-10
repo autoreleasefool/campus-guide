@@ -25,10 +25,12 @@
 // React imports
 import React from 'react';
 import {
+  Dimensions,
   FlatList,
-  Image,
+  ImageBackground,
   InteractionManager,
   Platform,
+  ScaledSize,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -36,6 +38,7 @@ import {
 } from 'react-native';
 
 // Imports
+import Header from './Header';
 import moment from 'moment';
 import PaddedIcon from './PaddedIcon';
 import * as Configuration from '../util/Configuration';
@@ -61,13 +64,25 @@ interface Props {
 }
 
 interface State {
+  screenWidth: number;      // Active width of the screen
   studySpots: StudySpot[];  // List of study spots
 }
 
 /** Regular expression for recognizing an unavailable time. */
 const TIME_UNAVAILABLE_REGEX = /[Nn]\/[Aa]/;
 
+/** Width to height ratio of study spot images. */
+const IMAGE_SIZE_RATIO = 0.75;
+
 export default class StudySpotList extends React.PureComponent<Props, State> {
+
+  /**
+   * Update the screen width, and rerender component.
+   *
+   * @param {ScaledSize} dims the new dimensions
+   */
+  _dimensionsHandler = (dims: { window: ScaledSize }): void =>
+      this.setState({ screenWidth: dims.window.width })
 
   /**
    * Constructor.
@@ -76,7 +91,10 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = { studySpots: [] };
+    this.state = {
+      screenWidth: Dimensions.get('window').width,
+      studySpots: [],
+    };
   }
 
   /**
@@ -84,6 +102,14 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
    */
   componentDidMount(): void {
     InteractionManager.runAfterInteractions(() => this._filterStudySpots(this.props));
+    Dimensions.addEventListener('change', this._dimensionsHandler as any);
+  }
+
+  /**
+   * Removes screen dimension listener.
+   */
+  componentWillUnmount(): void {
+    Dimensions.removeEventListener('change', this._dimensionsHandler as any);
   }
 
   /**
@@ -187,33 +213,43 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
           : ` - ${TextUtils.convertTimeFormat(this.props.timeFormat, item.closes)}`;
     }
 
+    const imageSize = {
+      height: this.state.screenWidth * IMAGE_SIZE_RATIO,
+      width: this.state.screenWidth,
+    };
+
     return (
-      <TouchableOpacity
+      <View
           key={name}
-          onPress={(): void => this.props.onSelect(item)}>
-        <View style={_styles.spot}>
-          <Image
-              resizeMode={'cover'}
-              source={{ uri: Configuration.getImagePath(item.image) }}
-              style={_styles.spotImage} />
-          <View style={_styles.spotProperties}>
-            <Text style={_styles.spotName}>{name}</Text>
-            {altName == undefined ? undefined : <Text style={_styles.spotSubtitle}>{altName}</Text>}
-            <Text style={_styles.spotSubtitle}>{`${openingTime}${closingTime}`}</Text>
-            <Text style={_styles.spotDescription}>{description}</Text>
-            <View style={_styles.spotFilters}>
-              {item.filters.map((filter: string) => (
-                <PaddedIcon
-                    color={Constants.Colors.primaryWhiteIcon}
-                    icon={Display.getPlatformIcon(Platform.OS, this.props.studyFilters[filter])}
-                    key={filter}
-                    size={Constants.Sizes.Icons.Medium}
-                    width={Constants.Sizes.Icons.Medium + Constants.Sizes.Margins.Expanded} />
-              ))}
-            </View>
+          style={_styles.spot}>
+        <ImageBackground
+            resizeMode={'cover'}
+            source={{ uri: Configuration.getImagePath(item.image) }}
+            style={[ _styles.spotImage, imageSize]}>
+          <TouchableOpacity onPress={(): void => this.props.onSelect(item)}>
+            <Header
+                backgroundColor={Constants.Colors.charcoalGrey}
+                subtitleIcon={{ name: 'chevron-right', class: 'material' }}
+                title={Translations.get('study_here')} />
+          </TouchableOpacity>
+        </ImageBackground>
+        <View style={_styles.spotProperties}>
+          <Text style={_styles.spotName}>{name}</Text>
+          {altName == undefined ? undefined : <Text style={_styles.spotSubtitle}>{altName}</Text>}
+          <Text style={_styles.spotSubtitle}>{`${openingTime}${closingTime}`}</Text>
+          <Text style={_styles.spotDescription}>{description}</Text>
+          <View style={_styles.spotFilters}>
+            {item.filters.map((filter: string) => (
+              <PaddedIcon
+                  color={Constants.Colors.primaryWhiteIcon}
+                  icon={Display.getPlatformIcon(Platform.OS, this.props.studyFilters[filter])}
+                  key={filter}
+                  size={Constants.Sizes.Icons.Medium}
+                  width={Constants.Sizes.Icons.Medium + Constants.Sizes.Margins.Expanded} />
+            ))}
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
 
@@ -256,10 +292,8 @@ const _styles = StyleSheet.create({
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   spot: {
-    alignItems: 'center',
     flex: 1,
-    flexDirection: 'row',
-    margin: Constants.Sizes.Margins.Expanded,
+    marginBottom: Constants.Sizes.Margins.Expanded,
   },
   spotDescription: {
     color: Constants.Colors.primaryWhiteText,
@@ -272,17 +306,16 @@ const _styles = StyleSheet.create({
     marginTop: Constants.Sizes.Margins.Expanded,
   },
   spotImage: {
-    alignSelf: 'flex-start',
-    height: 64,
-    marginRight: Constants.Sizes.Margins.Expanded,
-    width: 64,
+    justifyContent: 'flex-end',
   },
   spotName: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Subtitle,
   },
   spotProperties: {
-    flex: 1,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
   },
   spotSubtitle: {
     color: Constants.Colors.secondaryWhiteText,

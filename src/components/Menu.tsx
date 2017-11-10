@@ -73,7 +73,7 @@ const MINI_CARD_MARGINS = 3;
 export default class Menu extends React.PureComponent<Props, State> {
 
   /**
-   * Update the screen width, and rerender component.
+   * Update the screen height, and rerender component.
    *
    * @param {ScaledSize} dims the new dimensions
    */

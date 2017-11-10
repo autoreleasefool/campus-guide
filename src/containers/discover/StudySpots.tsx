@@ -18,7 +18,7 @@
  * @author Joseph Roque
  * @created 2017-03-09
  * @file StudySpots.tsx
- * @description List of places to study ron campus, along with directions and filtering
+ * @description List of places to study on campus, along with directions and filtering
  */
 'use strict';
 
@@ -82,7 +82,7 @@ interface State {
 class StudySpots extends React.PureComponent<Props, State> {
 
   /**
-   * Update the screen width, and rerender component.
+   * Update the screen height, and rerender component.
    *
    * @param {ScaledSize} dims the new dimensions
    */
