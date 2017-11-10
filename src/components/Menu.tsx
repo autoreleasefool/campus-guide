@@ -264,7 +264,7 @@ export default class Menu extends React.PureComponent<Props, State> {
           data={this.props.sections}
           keyExtractor={(section: MenuSection): string =>
               ('id' in section) ? (section as SingleMenuSection).id : (section as DoubleMenuSection).left.id}
-          renderItem={Platform.OS === 'ios' ? this._renderSection.bind(this) : this._renderSectionCard.bind(this)}
+          renderItem={Platform.OS === 'android' ? this._renderSectionCard.bind(this) : this._renderSection.bind(this)}
           style={_styles.container} />
     );
   }

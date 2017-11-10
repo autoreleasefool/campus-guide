@@ -128,7 +128,7 @@ class BuildingComponent extends React.PureComponent<Props, State> {
       <TouchableOpacity onPress={(): void => this._onDestinationSelected(this.props.building.shorthand)}>
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
-            icon={{ name: Platform.OS === 'ios' ? 'ios-navigate' : 'md-navigate', class: 'ionicon' }}
+            icon={{ name: Platform.OS === 'android' ? 'md-navigate' : 'ios-navigate', class: 'ionicon' }}
             subtitleIcon={{ name: 'chevron-right', class: 'material' }}
             title={navigateToBuilding} />
       </TouchableOpacity>

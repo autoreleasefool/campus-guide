@@ -120,7 +120,7 @@ export default class Suggestion extends React.PureComponent<Props, State> {
             onPress={this._onRefresh.bind(this)}>
           <PaddedIcon
               color={color}
-              icon={{ name: Platform.OS === 'ios' ? 'ios-refresh' : 'md-refresh', class: 'ionicon' }} />
+              icon={{ name: Platform.OS === 'android' ? 'md-refresh' : 'ios-refresh', class: 'ionicon' }} />
         </TouchableOpacity>
       );
     } else {

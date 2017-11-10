@@ -213,7 +213,7 @@ class AppHeader extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the hierarchy of views to render
    */
   render(): JSX.Element {
-    const platformModifier = Platform.OS === 'ios' ? 'ios' : 'md';
+    const platformModifier = Platform.OS === 'android' ? 'md' : 'ios';
     const backArrowIcon = `${platformModifier}-arrow-back`;
     const searchIcon = `${platformModifier}-search`;
     const closeIcon = `${platformModifier}-close`;

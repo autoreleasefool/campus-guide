@@ -322,7 +322,7 @@ class CourseModal extends React.PureComponent<Props, State> {
   _renderLecture(lecture: Lecture, isLast: boolean): JSX.Element {
     let roomOrOptions;
     if (this.state.editingLectures) {
-      const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
+      const platformModifier: string = Platform.OS === 'android' ? 'md' : 'ios';
       const closeIcon = `${platformModifier}-close`;
       const editIcon = `${platformModifier}-create`;
 
@@ -455,7 +455,7 @@ class CourseModal extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the picker with the options to select between
    */
   _renderPicker(): JSX.Element {
-    const platformModifier = Platform.OS === 'ios' ? 'ios' : 'md';
+    const platformModifier = Platform.OS === 'android' ? 'md' : 'ios';
     const backArrowIcon = `${platformModifier}-arrow-back`;
 
     return (

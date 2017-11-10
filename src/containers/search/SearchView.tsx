@@ -391,7 +391,7 @@ class SearchView extends React.PureComponent<Props, State> {
     const resultPosition = Arrays.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', section.key);
     const numberOfResults = this._searchResults[resultPosition].data.length;
     if (nonExpandable) {
-      const platformModifier: string = Platform.OS === 'ios' ? 'ios' : 'md';
+      const platformModifier = Platform.OS === 'android' ? 'md' : 'ios';
       const subtitle = `${numberOfResults} ${Translations.get('results').toLowerCase()}`;
 
       return (

@@ -352,7 +352,7 @@ class LectureModal extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} an image grid to select a building
    */
   _renderBuildingPicker(): JSX.Element {
-    const platformModifier = Platform.OS === 'ios' ? 'ios' : 'md';
+    const platformModifier = Platform.OS === 'android' ? 'md' : 'ios';
     const backArrowIcon = `${platformModifier}-arrow-back`;
 
     const locationTranslation = Translations.get('location');
@@ -389,7 +389,7 @@ class LectureModal extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a room grid to select a room
    */
   _renderRoomPicker(): JSX.Element {
-    const platformModifier = Platform.OS === 'ios' ? 'ios' : 'md';
+    const platformModifier = Platform.OS === 'android' ? 'md' : 'ios';
     const backArrowIcon = `${platformModifier}-arrow-back`;
 
     const locationTranslation = Translations.get('location');
@@ -493,7 +493,7 @@ class LectureModal extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the picker with the options to select between
    */
   _renderRegularPicker(picking: number): JSX.Element {
-    const platformModifier = Platform.OS === 'ios' ? 'ios' : 'md';
+    const platformModifier = Platform.OS === 'android' ? 'md' : 'ios';
     const backArrowIcon = `${platformModifier}-arrow-back`;
 
     let title = '';
