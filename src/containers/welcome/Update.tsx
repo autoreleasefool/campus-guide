@@ -253,7 +253,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         coreErrorTitle: 'server_unavailable',
       });
 
-      const onCancel = (): void => this._popOrPushToMain();
+      const onCancel = (): Promise<void> => this._returnToMain();
 
       Alert.alert(
         CoreTranslations[language].server_unavailable,
@@ -270,7 +270,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         ],
         { onDismiss: onCancel }
       );
-      this._popOrPushToMain();
     } catch (err) {
       this.setState({
         coreErrorMessage: 'server_unavailable_config_unavailable',
@@ -318,7 +317,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         coreErrorTitle: 'no_internet',
       });
 
-      const onCancel = (): void => this._popOrPushToMain();
+      const onCancel = (): Promise<void> => this._returnToMain();
 
       Alert.alert(
         CoreTranslations[language].no_internet,
@@ -335,7 +334,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         ],
         { onDismiss: onCancel }
       );
-      this._popOrPushToMain();
     } catch (err) {
       this.setState({
         coreErrorMessage: 'no_internet_config_unavailable',
@@ -372,8 +370,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
 
     try {
       await Configuration.init();
-      await Configuration.getConfig('/university.json');
-      this._popOrPushToMain();
+      this._returnToMain();
     } catch (err) {
       this.setState({
         coreErrorMessage: 'update_rejected_config_unavailable',
