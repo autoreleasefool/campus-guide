@@ -122,6 +122,7 @@ class StudySpots extends React.PureComponent<Props, State> {
    */
   componentWillUnmount(): void {
     Dimensions.removeEventListener('change', this._dimensionsHandler as any);
+    this.props.setFilters([]);
   }
 
   /**
