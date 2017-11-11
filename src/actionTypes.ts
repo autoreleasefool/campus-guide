@@ -62,12 +62,14 @@ interface SetTitleAction {
 
 interface ShowBackAction {
   type: Navigation.ShowBack;
+  disableAnimation: boolean;
   show: boolean;
   tab: Tab;
 }
 
 interface ShowSearchAction {
   type: Navigation.ShowSearch;
+  disableAnimation: boolean;
   show: boolean;
   tab: Tab;
 }

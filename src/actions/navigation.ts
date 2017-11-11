@@ -55,16 +55,18 @@ export function setHeaderTitle(
   };
 }
 
-export function showBack(show: boolean, tab?: Tab): Actions.ActionType {
+export function showBack(show: boolean, tab?: Tab, disableAnimation?: boolean): Actions.ActionType {
   return {
+    disableAnimation,
     show,
     tab,
     type: Actions.Navigation.ShowBack,
   };
 }
 
-export function showSearch(show: boolean, tab?: Tab): Actions.ActionType {
+export function showSearch(show: boolean, tab?: Tab, disableAnimation?: boolean): Actions.ActionType {
   return {
+    disableAnimation,
     show,
     tab,
     type: Actions.Navigation.ShowSearch,

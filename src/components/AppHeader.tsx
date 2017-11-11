@@ -56,6 +56,8 @@ interface Props {
   language: Language;                       // The user's currently selected language
   shouldShowBack: boolean;                  // Indicates if the header should show a back button
   shouldShowSearch: boolean;                // Indicates if the header should show a search input option
+  showBackDisableCount: number;             // Incremented when the next showBack animation should be disabled
+  showSearchDisableCount: number;           // Incremented when the next showSearch animation should be disabled
   tab: Tab;                                 // The current tab the user has open
   tabFilters: TabSet<string>;               // The current search terms
   tabShowBack: TabSet<boolean>;             // Indicates if a tab should show a back button or not
@@ -144,7 +146,10 @@ class AppHeader extends React.PureComponent<Props, State> {
         (this.refs.SearchInput as any).focus();
       }
 
-      LayoutAnimation.easeInEaseOut();
+      if (nextProps.showBackDisableCount === this.props.showBackDisableCount
+          && nextProps.showSearchDisableCount === this.props.showSearchDisableCount) {
+        LayoutAnimation.easeInEaseOut();
+      }
       this.setState({
         shouldShowBack: nextProps.shouldShowBack,
         shouldShowSearch: nextProps.shouldShowSearch || nextProps.tab === 'search',
@@ -378,6 +383,8 @@ const mapStateToProps = (store: any): any => {
     language: store.config.options.language,
     shouldShowBack: store.navigation.showBack,
     shouldShowSearch: store.navigation.showSearch,
+    showBackDisableCount: store.navigation.showBackDisableCount,
+    showSearchDisableCount: store.navigation.showSearchDisableCount,
     tab: store.navigation.tab,
     tabFilters: store.search.tabTerms,
     tabShowBack: store.navigation.tabShowBack,

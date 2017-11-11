@@ -73,7 +73,9 @@ const initialState: State = {
   residence: undefined,
 
   showBack: false,
+  showBackDisableCount: 0,
   showSearch: true,
+  showSearchDisableCount: 0,
   tabShowBack: {
     discover: false,
     find: false,
@@ -246,27 +248,89 @@ describe('navigation reducer', () => {
   });
 
   it('should show the back button for a tab', () => {
-    expect(reducer(initialState, { type: Actions.Navigation.ShowBack, show: true, tab: 'find' }))
-        .toEqual({
-          ...initialState,
-          showBack: true,
-          tabShowBack: {
-            ...initialState.tabShowBack,
-            find: true,
-          },
-        });
+    expect(
+      reducer(
+        initialState,
+        {
+          disableAnimation: false,
+          show: true,
+          tab: 'find',
+          type: Actions.Navigation.ShowBack,
+        }
+      )
+    ).toEqual({
+      ...initialState,
+      showBack: true,
+      tabShowBack: {
+        ...initialState.tabShowBack,
+        find: true,
+      },
+    });
+  });
+
+  it('should show the back button for a tab, with no animation', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          disableAnimation: true,
+          show: true,
+          tab: 'find',
+          type: Actions.Navigation.ShowBack,
+        }
+      )
+    ).toEqual({
+      ...initialState,
+      showBack: true,
+      showBackDisableCount: 1,
+      tabShowBack: {
+        ...initialState.tabShowBack,
+        find: true,
+      },
+    });
   });
 
   it('should show the search button for a tab', () => {
-    expect(reducer(initialState, { type: Actions.Navigation.ShowSearch, show: true, tab: 'schedule' }))
-        .toEqual({
-          ...initialState,
-          showSearch: true,
-          tabShowSearch: {
-            ...initialState.tabShowSearch,
-            schedule: true,
-          },
-        });
+    expect(
+      reducer(
+        initialState,
+        {
+          disableAnimation: false,
+          show: true,
+          tab: 'schedule',
+          type: Actions.Navigation.ShowSearch,
+        }
+      )
+    ).toEqual({
+      ...initialState,
+      showSearch: true,
+      tabShowSearch: {
+        ...initialState.tabShowSearch,
+        schedule: true,
+      },
+    });
+  });
+
+  it('should show the search button, with no animation', () => {
+    expect(
+      reducer(
+        initialState,
+        {
+          disableAnimation: true,
+          show: true,
+          tab: 'schedule',
+          type: Actions.Navigation.ShowSearch,
+        }
+      )
+    ).toEqual({
+      ...initialState,
+      showSearch: true,
+      showSearchDisableCount: 1,
+      tabShowSearch: {
+        ...initialState.tabShowSearch,
+        schedule: true,
+      },
+    });
   });
 
   it('should set the title and back/search buttons when the tab changes', () => {
@@ -280,8 +344,10 @@ describe('navigation reducer', () => {
         view: Constants.Views.Discover.Transit,
       }
     );
-    updatedState = reducer(updatedState, { type: Actions.Navigation.ShowBack, show: true, tab: 'discover' });
-    updatedState = reducer(updatedState, { type: Actions.Navigation.ShowSearch, show: true, tab: 'discover' });
+    updatedState = reducer(updatedState,
+        { type: Actions.Navigation.ShowBack, show: true, tab: 'discover', disableAnimation: false });
+    updatedState = reducer(updatedState,
+        { type: Actions.Navigation.ShowSearch, show: true, tab: 'discover', disableAnimation: false });
     updatedState = reducer(updatedState,
         { type: Actions.Navigation.SwitchDiscoverView, view: Constants.Views.Discover.Transit });
 

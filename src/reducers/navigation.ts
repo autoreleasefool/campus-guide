@@ -53,8 +53,10 @@ export interface State {
   title: Name | string;           // Title for the current screen
   tabTitles: TabSet<TabTitleMap>; // Titles of tabs, with the last in the array being the most recent
   showBack: boolean;              // True to show a back button in the header, false to hide
+  showBackDisableCount: number;   // Incremented when the next showBack animation should be disabled
   tabShowBack: TabSet<boolean>;   // Whether the tab should show a back button
   showSearch: boolean;            // True to show a search field in the header, false to hide
+  showSearchDisableCount: number; // Incremented when the next showSearch animation should be disabled
   tabShowSearch: TabSet<boolean>; // Whether the tab should show a search button
 }
 
@@ -81,7 +83,9 @@ const initialState: State = {
   residence: undefined,
 
   showBack: false,
+  showBackDisableCount: 0,
   showSearch: true,
+  showSearchDisableCount: 0,
   tabShowBack: {
     discover: false,
     find: false,
@@ -225,6 +229,7 @@ export default function navigation(state: State = initialState, action: Actions.
       return {
         ...state,
         showBack: action.show,
+        showBackDisableCount: state.showBackDisableCount + (action.disableAnimation ? 1 : 0),
         tabShowBack: {
           ...state.tabShowBack,
           [action.tab]: action.show,
@@ -234,6 +239,7 @@ export default function navigation(state: State = initialState, action: Actions.
       return {
         ...state,
         showSearch: action.show,
+        showSearchDisableCount: state.showSearchDisableCount + (action.disableAnimation ? 1 : 0),
         tabShowSearch: {
           ...state.tabShowSearch,
           [action.tab]: action.show,
