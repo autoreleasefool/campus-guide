@@ -174,7 +174,6 @@ class StudySpots extends React.PureComponent<Props, State> {
       return;
     }
 
-    LayoutAnimation.easeInEaseOut();
     this.setState({ filterSelected: true });
     this.props.showSearch(true);
 
@@ -184,17 +183,17 @@ class StudySpots extends React.PureComponent<Props, State> {
       if (this.props.activeFilters == undefined) {
         this.props.setFilters([ filterId ]);
       } else if (this.props.activeFilters.has(filterId)) {
+        this.props.deactivateFilter(filterId);
         Snackbar.show({
           duration: Snackbar.LENGTH_SHORT,
           title: `${Translations.get('filter_removed')}: ${filterName}`,
         });
-        this.props.deactivateFilter(filterId);
       } else {
+        this.props.activateFilter(filterId);
         Snackbar.show({
           duration: Snackbar.LENGTH_SHORT,
           title: `${Translations.get('filter_added')}: ${filterName}`,
         });
-        this.props.activateFilter(filterId);
       }
     } else {
       this.props.setFilters([]);
@@ -279,10 +278,6 @@ class StudySpots extends React.PureComponent<Props, State> {
       );
     }
 
-    const filterStyle = this.state.filterSelected
-        ? { bottom: -this.state.screenHeight, top: this.state.screenHeight }
-        : _styles.filterNotSelected;
-
     const showFilterIcon: Icon = { name: 'arrow-drop-up', class: 'material' };
     let showFilterStyle: any = { height: 0 };
     if (this.state.showFilters) {
@@ -328,22 +323,27 @@ class StudySpots extends React.PureComponent<Props, State> {
               language={this.props.language}
               onFilterSelected={this._onFilterSelected.bind(this)} />
         </View>
-        <View style={[ _styles.filterSelection, filterStyle ]}>
-          <StudyFilters
-              filterDescriptions={studySpotInfo.filterDescriptions}
-              filters={studySpotInfo.filters}
-              fullSize={true}
-              language={this.props.language}
-              onFilterSelected={this._onFilterSelected.bind(this)} />
-          <View style={_styles.separator} />
-          <TouchableOpacity onPress={(): void => this._onFilterSelected()}>
-            <Header
-                backgroundColor={Constants.Colors.secondaryBackground}
-                icon={{ class: 'material', name: 'list' }}
-                subtitleIcon={{ class: 'material', name: 'chevron-right' }}
-                title={Translations.get('view_full_list')} />
-          </TouchableOpacity>
-        </View>
+        {!this.state.filterSelected
+            ? (
+              <View style={[ _styles.filterSelection, _styles.filterNotSelected ]}>
+                <StudyFilters
+                    filterDescriptions={studySpotInfo.filterDescriptions}
+                    filters={studySpotInfo.filters}
+                    fullSize={true}
+                    language={this.props.language}
+                    onFilterSelected={this._onFilterSelected.bind(this)} />
+                <View style={_styles.separator} />
+                <TouchableOpacity onPress={(): void => this._onFilterSelected()}>
+                  <Header
+                      backgroundColor={Constants.Colors.secondaryBackground}
+                      icon={{ class: 'material', name: 'list' }}
+                      subtitleIcon={{ class: 'material', name: 'chevron-right' }}
+                      title={Translations.get('view_full_list')} />
+                </TouchableOpacity>
+              </View>
+            )
+            : undefined
+        }
       </View>
     );
   }
@@ -395,7 +395,7 @@ const mapDispatchToProps = (dispatch: any): any => {
       dispatch(actions.switchTab('find'));
     },
     setFilters: (filters: string[]): void => dispatch(actions.setStudyFilters(filters)),
-    showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover')),
+    showSearch: (show: boolean): void => dispatch(actions.showSearch(show, 'discover', true)),
   };
 };
 

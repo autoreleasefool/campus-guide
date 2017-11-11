@@ -122,7 +122,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
     if (nextProps.filter !== this.props.filter
         || nextProps.language !== this.props.language
         || nextProps.spots !== this.props.spots
-        || this.props.activeFilters !== nextProps.activeFilters) {
+        || nextProps.activeFilters !== this.props.activeFilters) {
       this._filterStudySpots(nextProps);
     }
   }
@@ -219,9 +219,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
     };
 
     return (
-      <View
-          key={name}
-          style={_styles.spot}>
+      <View style={_styles.spot}>
         <ImageBackground
             resizeMode={'cover'}
             source={{ uri: Configuration.getImagePath(item.image) }}
@@ -273,7 +271,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
         <FlatList
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
             data={this.state.studySpots}
-            keyExtractor={(studySpot: StudySpot): string => `${studySpot.building}.${studySpot.room}`}
+            keyExtractor={(studySpot: StudySpot): string => `${studySpot.id}`}
             renderItem={this._renderItem.bind(this)} />
       </View>
     );
@@ -292,7 +290,6 @@ const _styles = StyleSheet.create({
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
   spot: {
-    flex: 1,
     marginBottom: Constants.Sizes.Margins.Expanded,
   },
   spotDescription: {
