@@ -73,12 +73,12 @@ const MINI_CARD_MARGINS = 3;
 export default class Menu extends React.PureComponent<Props, State> {
 
   /**
-   * Update the screen height, and rerender component.
+   * Update the screen size, and rerender component.
    *
    * @param {ScaledSize} dims the new dimensions
    */
   _dimensionsHandler = (dims: { window: ScaledSize }): void =>
-      this.setState({ screenHeight: dims.window.height })
+      this.setState({ screenHeight: dims.window.height, screenWidth: dims.window.width })
 
   /**
    * Constructor.
@@ -262,6 +262,7 @@ export default class Menu extends React.PureComponent<Props, State> {
     return (
       <FlatList
           data={this.props.sections}
+          extraData={this.props.language}
           keyExtractor={(section: MenuSection): string =>
               ('id' in section) ? (section as SingleMenuSection).id : (section as DoubleMenuSection).left.id}
           renderItem={Platform.OS === 'android' ? this._renderSectionCard.bind(this) : this._renderSection.bind(this)}
