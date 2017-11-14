@@ -428,12 +428,13 @@ export default class TransitStops extends React.PureComponent<Props, State> {
 
       return (
         <View style={_styles.container}>
-          <Header
-              backgroundColor={Constants.Colors.tertiaryBackground}
-              icon={{ name: 'chevron-left', class: 'material' }}
-              iconCallback={(): void => (this.refs.Navigator as any).pop()}
-              subtitle={stop.code}
-              title={stop.name} />
+          <TouchableOpacity onPress={(): void => (this.refs.Navigator as any).pop()}>
+            <Header
+                backgroundColor={Constants.Colors.tertiaryBackground}
+                icon={{ name: 'chevron-left', class: 'material' }}
+                subtitle={stop.code}
+                title={stop.name} />
+          </TouchableOpacity>
           <ListView
               dataSource={this.state.dataSourceTimes}
               enableEmptySections={true}

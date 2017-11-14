@@ -448,6 +448,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
         <MapView
             followsUserLocation={true}
             initialRegion={this._initialRegion}
+            region={this.state.region}
             showsUserLocation={true}
             style={_styles.map}
             onMapReady={(): void => this.setState({ mapReady: true })}

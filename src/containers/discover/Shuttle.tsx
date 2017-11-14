@@ -64,6 +64,9 @@ interface State {
 
 class Shuttle extends React.PureComponent<Props, State> {
 
+  /** Starting region to display on map. */
+  _initialRegion: LatLong & LatLongDelta;
+
   /**
    * Constructor.
    *
@@ -74,10 +77,12 @@ class Shuttle extends React.PureComponent<Props, State> {
     this.state = {
       direction: 0,
       initialPage: 0,
-      region: Constants.Map.InitialRegion,
+      region: undefined,
       schedule: 0,
       shuttle: undefined,
     };
+
+    this._initialRegion = Constants.Map.InitialRegion;
   }
 
   /**
@@ -125,6 +130,7 @@ class Shuttle extends React.PureComponent<Props, State> {
     return (
       <View style={_styles.container}>
         <MapView
+            initialRegion={this._initialRegion}
             region={this.state.region}
             style={_styles.map}
             onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>

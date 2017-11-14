@@ -56,13 +56,15 @@ interface Props {
 
 interface State {
   campus: TransitCampus | undefined;          // Name and routes that visit the campus
-  initialRegion: LatLong & LatLongDelta;      // Initial location to display on map
   region: LatLong & LatLongDelta | undefined; // Current region displayed by map
   routesExpanded: boolean;                    // True to indicate the routes and times are expanded
   stops: any;                                 // Set of stop details
 }
 
 export default class TransitCampusMap extends React.PureComponent<Props, State> {
+
+  /** Starting region to display on map. */
+  _initialRegion: LatLong & LatLongDelta;
 
   /**
    * Constructor.
@@ -74,11 +76,12 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
 
     this.state = {
       campus: undefined,
-      initialRegion: Constants.Map.InitialRegion,
       region: undefined,
       routesExpanded: false,
       stops: {},
     };
+
+    this._initialRegion = Constants.Map.InitialRegion;
   }
 
   /**
@@ -100,14 +103,16 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
       const stops = transitSystem.stopDetails;
       for (const campus of campuses) {
         if (campus.id === this.props.campusId) {
+          this._initialRegion = {
+            latitude: campus.latitude,
+            latitudeDelta: Constants.Map.DefaultDelta,
+            longitude: campus.longitude,
+            longitudeDelta: Constants.Map.DefaultDelta,
+          };
+
           this.setState({
             campus,
-            initialRegion: {
-              latitude: campus.latitude,
-              latitudeDelta: Constants.Map.DefaultDelta,
-              longitude: campus.longitude,
-              longitudeDelta: Constants.Map.DefaultDelta,
-            },
+            region: this._initialRegion,
             stops,
           });
         }
@@ -134,7 +139,7 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
    */
   _stopSelected(stopId: string | undefined): void {
     if (stopId == undefined) {
-      this.setState({ region: undefined });
+      this.setState({ region: this._initialRegion });
     } else {
       this.props.resetFilter();
 
@@ -181,7 +186,8 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
 
     return (
       <MapView
-          region={this.state.region || this.state.initialRegion}
+          initialRegion={this._initialRegion}
+          region={this.state.region}
           style={_styles.map}
           onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>
         {markers.map((stopId: string) => {
