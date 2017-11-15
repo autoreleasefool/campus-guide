@@ -1248,7 +1248,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.josephroque.ottawa-campus-guide";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.josephroque.campusguide";
 				PRODUCT_NAME = CampusGuide;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1285,7 +1285,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "ca.josephroque.ottawa-campus-guide";
+				PRODUCT_BUNDLE_IDENTIFIER = "ca.josephroque.campusguide";
 				PRODUCT_NAME = CampusGuide;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
