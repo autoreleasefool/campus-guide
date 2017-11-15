@@ -30,6 +30,7 @@ import { StyleSheet, View } from 'react-native';
 interface ConnectorOptions {
   top?: boolean;        // True to render a connection to the row above
   bottom?: boolean;     // True to render a connection to the row below
+  cap?: boolean;        // True to render a cap to the row before. Overrides top/bottom. Uses line color.
   large?: boolean;      // True to render a larger connection for a header
   circleColor?: string; // Default background is white
   lineColor?: string;   // Default background is transparent white
@@ -45,27 +46,37 @@ import * as Constants from '../constants';
  * @returns {JSX.Element} view which visually connects rows and headers
  */
 export function renderConnector(options: ConnectorOptions): JSX.Element {
-  const circleSize = options.large ? _styles.largeCircle : _styles.smallCircle;
-  const background = {
-    backgroundColor: options.circleColor ? options.circleColor : Constants.Colors.primaryWhiteIcon,
-  };
-
   const connectorColor = {
     backgroundColor: options.lineColor ? options.lineColor : Constants.Colors.secondaryWhiteIcon,
   };
 
-  const topConnector = options.top ? {} : _styles.invisible;
-  const bottomConnector = options.bottom ? {} : _styles.invisible;
-
-  return (
-    <View style={_styles.container}>
-      <View style={[ _styles.connectorContainer ]}>
-        <View style={[ _styles.connector, _styles.top, connectorColor, topConnector ]} />
-        <View style={[ _styles.connector, _styles.bottom, connectorColor, bottomConnector ]} />
+  if (options.cap) {
+    return (
+      <View style={_styles.container}>
+        <View style={[ _styles.connectorContainer ]}>
+          <View style={[ _styles.connector, _styles.cap, connectorColor]} />
+        </View>
       </View>
-      <View style={[ circleSize, background ]} />
-    </View>
-  );
+    );
+  } else {
+    const circleSize = options.large ? _styles.largeCircle : _styles.smallCircle;
+    const background = {
+      backgroundColor: options.circleColor ? options.circleColor : Constants.Colors.primaryWhiteIcon,
+    };
+
+    const topConnector = options.top ? {} : _styles.invisible;
+    const bottomConnector = options.bottom ? {} : _styles.invisible;
+
+    return (
+      <View style={_styles.container}>
+        <View style={[ _styles.connectorContainer ]}>
+          <View style={[ _styles.connector, _styles.top, connectorColor, topConnector ]} />
+          <View style={[ _styles.connector, _styles.bottom, connectorColor, bottomConnector ]} />
+        </View>
+        <View style={[ circleSize, background ]} />
+      </View>
+    );
+  }
 }
 
 /**
@@ -83,6 +94,13 @@ export function getConnectorWidth(): number {
 const _styles = StyleSheet.create({
   bottom: {
     flex: 1,
+  },
+  cap: {
+    borderRadius: Constants.Sizes.Margins.Condensed / 2,
+    height: Constants.Sizes.Margins.Condensed,
+    position: 'absolute',
+    top: -Constants.Sizes.Margins.Condensed / 2,
+    width: Constants.Sizes.Margins.Condensed,
   },
   connector: {
     width: Constants.Sizes.Margins.Condensed / 2,

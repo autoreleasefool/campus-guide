@@ -25,8 +25,9 @@
 // React imports
 import React from 'react';
 import {
+  FlatList,
   InteractionManager,
-  ListView,
+  SectionList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -43,7 +44,7 @@ import * as Translations from '../util/Translations';
 
 // Types
 import { Language } from '../util/Translations';
-import { Route, TimeFormat } from '../../typings/global';
+import { Route, Section, TimeFormat } from '../../typings/global';
 import { RouteDetails, TransitCampus } from '../../typings/transit';
 
 interface Props {
@@ -57,8 +58,8 @@ interface Props {
 }
 
 interface State {
-  dataSourceStops: any;               // List of transit stops near the campus
-  dataSourceTimes: any;               // List of times that buses visit the stops
+  stops: Section < RouteDetails >[];   // List of transit stops near the campus
+  times: RouteDetails[];              // List of times that buses visit the stops
   selectedStopId: string | undefined; // Currently selected stop to display details for
 }
 
@@ -85,14 +86,9 @@ export default class TransitStops extends React.PureComponent<Props, State> {
     super(props);
 
     this.state = {
-      dataSourceStops: new ListView.DataSource({
-        rowHasChanged: (r1: any, r2: any): boolean => r1 !== r2,
-        sectionHeaderHasChanged: (s1: any, s2: any): boolean => s1 !== s2,
-      }),
-      dataSourceTimes: new ListView.DataSource({
-        rowHasChanged: (r1: any, r2: any): boolean => r1 !== r2,
-      }),
       selectedStopId: undefined,
+      stops: [],
+      times: [],
     };
   }
 
@@ -159,9 +155,29 @@ export default class TransitStops extends React.PureComponent<Props, State> {
   /**
    * Displays details about a single stop.
    *
-   * @param {string} stopId identifies the stop to display details about
+   * @param {RouteDetails} routeDetails route details which belong to the stop to display
    */
-  _pressRow(stopId: string): void {
+  _selectStopByRoute(routeDetails: RouteDetails): void {
+    let selectedStop: Section<RouteDetails>;
+    for (const section of this.state.stops) {
+      for (const route of section.data) {
+        if (route === routeDetails) {
+          selectedStop = section;
+        }
+      }
+    }
+
+    if (selectedStop) {
+      this._selectStop(selectedStop.key);
+    }
+  }
+
+  /**
+   * Displays details about a single stop.
+   *
+   * @param {string} stopId id of the stop to display
+   */
+  _selectStop(stopId: string): void {
     this.props.onSelect(stopId);
 
     const props = this._propCloneWorkaround(this.props);
@@ -241,7 +257,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
     // Ignore the case of the search terms
     const adjustedSearchTerms = filter.toUpperCase();
 
-    const matchedStops: any = {};
+    const matchedStops: Section<RouteDetails>[] = [];
     for (const stopId in campus.stops) {
       if (campus.stops.hasOwnProperty(stopId)) {
         const stop = stops[stopId];
@@ -269,14 +285,15 @@ export default class TransitStops extends React.PureComponent<Props, State> {
         }
 
         if (matches) {
-          matchedStops[stopId] = campus.stops[stopId];
+          matchedStops.push({
+            data: campus.stops[stopId],
+            key: stopId,
+          });
         }
       }
     }
 
-    this.setState({
-      dataSourceStops: this.state.dataSourceStops.cloneWithRowsAndSections(matchedStops),
-    });
+    this.setState({ stops: matchedStops });
   }
 
   /**
@@ -327,36 +344,37 @@ export default class TransitStops extends React.PureComponent<Props, State> {
 
     this._sortByRouteNumber(routesAndTimes);
     this.setState({
-      dataSourceTimes: this.state.dataSourceTimes.cloneWithRows(routesAndTimes),
       selectedStopId: stopId,
+      times: routesAndTimes,
     });
   }
 
   /**
    * Shows the name and code of a stop.
    *
-   * @param {any}    _      section object
-   * @param {string} stopId id of the stop
+   * @param {Section<RouteDetails>} section the section to render a header for
    * @returns {JSX.Element} details of the stop and its code
    */
-  _renderStopHeader(_: any, stopId: string): JSX.Element {
-    const stop = this.props.stops[stopId];
+  _renderStopHeader({ section }: { section: Section <RouteDetails> }): JSX.Element {
+    const stop = this.props.stops[section.key];
 
     return (
-      <TouchableOpacity onPress={this._pressRow.bind(this, stopId)}>
-        <View style={_styles.stopHeaderContainer}>
-          {Connector.renderConnector({
-            bottom: true,
-            circleColor: Constants.Colors.secondaryBackground,
-            large: true,
-            lineColor: Constants.Colors.secondaryBackground,
-          })}
-          <View style={_styles.stopHeader}>
-            <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryBlackText }]}>{stop.name}</Text>
-            <Text style={[ _styles.headerSubtitle, { color: Constants.Colors.secondaryBlackText }]}>{stop.code}</Text>
+      <View style={_styles.stopHeaderContainerContainer}>
+        <TouchableOpacity onPress={this._selectStop.bind(this, section.key)}>
+          <View style={_styles.stopHeaderContainer}>
+            {Connector.renderConnector({
+              bottom: true,
+              circleColor: Constants.Colors.secondaryBackground,
+              large: true,
+              lineColor: Constants.Colors.secondaryBackground,
+            })}
+            <View style={_styles.stopHeader}>
+              <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryBlackText }]}>{stop.name}</Text>
+              <Text style={[ _styles.headerSubtitle, { color: Constants.Colors.secondaryBlackText }]}>{stop.code}</Text>
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -364,27 +382,22 @@ export default class TransitStops extends React.PureComponent<Props, State> {
    * Shows details of a route serving a stop
    *
    * @param {string} route  the route
-   * @param {string} stopId stop id
    * @returns {JSX.Element} a route that serves the stop
    */
-  _renderStopRow(route: RouteDetails, stopId: string): JSX.Element {
-    const needsBottom = route !== this.props.campus.stops[stopId][this.props.campus.stops[stopId].length - 1];
-
+  _renderStopRow({ item }: { item: RouteDetails }): JSX.Element {
     return (
-      <TouchableOpacity
-          key={`${route.number} - ${route.sign}`}
-          onPress={this._pressRow.bind(this, stopId)}>
+      <TouchableOpacity onPress={this._selectStopByRoute.bind(this, item)}>
         <View style={_styles.stopRowContainer}>
           {Connector.renderConnector({
-            bottom: needsBottom,
+            bottom: true,
             circleColor: Constants.Colors.tertiaryBackground,
             lineColor: Constants.Colors.tertiaryBackground,
             top: true,
           })}
           <Text
-              key={route.number}
+              key={item.number}
               style={_styles.stopRoute}>
-            {`${route.number} - ${route.sign}`}
+            {`${item.number} - ${item.sign}`}
           </Text>
         </View>
       </TouchableOpacity>
@@ -394,24 +407,44 @@ export default class TransitStops extends React.PureComponent<Props, State> {
   /**
    * Shows partial details about a route.
    *
-   * @param {RouteDetails} route    details about the route to display
-   * @param {any}          _        index of the section the route is in
-   * @param {number}       rowIndex index of the row the route is in
+   * @param {RouteDetails} item details about the route to display
    * @returns {ReactElement<any>} the headline and number of the route, and the upcoming times
    */
-  _renderTimeRow(route: RouteDetails, _: any, rowIndex: number): JSX.Element {
+  _renderTimeRow({ item }: { item: RouteDetails }): JSX.Element {
     return (
-      <View key={`${route.number} - ${route.sign}`}>
+      <View>
         <View style={_styles.timeHeader}>
-          <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryWhiteText }]}>{route.sign}</Text>
-          <Text style={[ _styles.headerSubtitle, { color: Constants.Colors.secondaryWhiteText }]}>{route.number}</Text>
+          <Text style={[ _styles.headerTitle, { color: Constants.Colors.primaryWhiteText }]}>{item.sign}</Text>
+          <Text style={[ _styles.headerSubtitle, { color: Constants.Colors.secondaryWhiteText }]}>{item.number}</Text>
         </View>
         <Text style={_styles.stopTimes}>
-          {this._retrieveUpcomingTimes(route.days, this.props.timeFormat)}
+          {this._retrieveUpcomingTimes(item.days, this.props.timeFormat)}
         </Text>
-        {(rowIndex < this.state.dataSourceTimes.getRowCount() - 1)
-            ? <View style={_styles.divider} />
-            : undefined}
+      </View>
+    );
+  }
+
+  /**
+   * Renders row separator.
+   *
+   * @returns {JSX.Element} a separator styled view
+   */
+  _renderSeparator(): JSX.Element {
+    return <View style={_styles.separator} />;
+  }
+
+  /**
+   * Renders section separator.
+   *
+   * @returns {JSX.Element} a separator styled view
+   */
+  _renderSectionSeparator(): JSX.Element {
+    return (
+      <View style={_styles.sectionSeparator}>
+        {Connector.renderConnector({
+          cap: true,
+          lineColor: Constants.Colors.tertiaryBackground,
+        })}
       </View>
     );
   }
@@ -435,20 +468,22 @@ export default class TransitStops extends React.PureComponent<Props, State> {
                 subtitle={stop.code}
                 title={stop.name} />
           </TouchableOpacity>
-          <ListView
-              dataSource={this.state.dataSourceTimes}
-              enableEmptySections={true}
-              renderRow={this._renderTimeRow.bind(this)}
+          <FlatList
+              ItemSeparatorComponent={this._renderSeparator.bind(this)}
+              data={this.state.times}
+              keyExtractor={(routeDetails: RouteDetails): string => `${routeDetails.number} - ${routeDetails.sign}`}
+              renderItem={this._renderTimeRow.bind(this)}
               style={_styles.container} />
         </View>
       );
     } else {
       return (
-        <ListView
-            dataSource={this.state.dataSourceStops}
-            enableEmptySections={true}
-            renderRow={this._renderStopRow.bind(this)}
+        <SectionList
+            renderSectionFooter={this._renderSectionSeparator.bind(this)}
+            keyExtractor={(routeDetails: RouteDetails): string => `${routeDetails.number} - ${routeDetails.sign}`}
+            renderItem={this._renderStopRow.bind(this)}
             renderSectionHeader={this._renderStopHeader.bind(this)}
+            sections={this.state.stops}
             style={_styles.container} />
       );
     }
@@ -477,12 +512,6 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.secondaryBackground,
     flex: 1,
   },
-  divider: {
-    backgroundColor: Constants.Colors.secondaryWhiteText,
-    flex: 1,
-    height: StyleSheet.hairlineWidth,
-    marginLeft: Constants.Sizes.Margins.Expanded,
-  },
   headerSubtitle: {
     fontSize: Constants.Sizes.Text.Caption,
     textAlign: 'right',
@@ -491,6 +520,14 @@ const _styles = StyleSheet.create({
     flex: 1,
     fontSize: Constants.Sizes.Text.Subtitle,
     textAlign: 'left',
+  },
+  sectionSeparator: {
+    height: Constants.Sizes.Margins.Regular,
+  },
+  separator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded,
   },
   stopHeader: {
     alignItems: 'center',
@@ -502,6 +539,9 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.tertiaryBackground,
     height: 50,
     justifyContent: 'center',
+  },
+  stopHeaderContainerContainer: {
+    backgroundColor: Constants.Colors.secondaryBackground,
   },
   stopRoute: {
     color: Constants.Colors.primaryWhiteText,
