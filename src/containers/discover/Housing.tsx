@@ -115,9 +115,9 @@ class Housing extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      header: ([] as BuildingProperty[]),
+      header: [],
       housingInfo: undefined,
-      residenceDetails: ([] as Section<ResidenceProperty>[]),
+      residenceDetails: [],
       screenWidth: Dimensions.get('window').width,
     };
   }

@@ -100,8 +100,8 @@ class CourseModal extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const code = props.courseToEdit ? props.courseToEdit.code : '';
-    const lectures = (props.courseToEdit ? props.courseToEdit.lectures : []) as Lecture[];
+    const code: string = props.courseToEdit ? props.courseToEdit.code : '';
+    const lectures: Lecture[] = props.courseToEdit ? props.courseToEdit.lectures : [];
 
     this.state = {
       addingLecture: true,
