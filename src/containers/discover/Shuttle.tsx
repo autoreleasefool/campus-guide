@@ -132,6 +132,7 @@ class Shuttle extends React.PureComponent<Props, State> {
         <MapView
             initialRegion={this._initialRegion}
             region={this.state.region}
+            showsUserLocation={true}
             style={_styles.map}
             onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>
           {shuttle.stops.map((stop: ShuttleStop) => (
