@@ -326,9 +326,11 @@ class SearchView extends React.PureComponent<Props, State> {
       <View
           pointerEvents={'none'}
           style={_styles.activityIndicator}>
+        <View style={_styles.emptyPaddingTop} />
         <ActivityIndicator
             animating={this.state.performingSearch}
             color={Constants.Colors.tertiaryBackground} />
+        <View style={_styles.emptyPaddingBottom} />
       </View>
     );
   }
@@ -341,9 +343,11 @@ class SearchView extends React.PureComponent<Props, State> {
   _renderEmptySearch(): JSX.Element {
     return (
       <View style={[ _styles.container, _styles.noSearch ]}>
+        <View style={_styles.emptyPaddingTop} />
         <Text style={_styles.noSearchText}>
           {`${Translations.get('no_search')}`}
         </Text>
+        <View style={_styles.emptyPaddingBottom} />
       </View>
     );
   }
@@ -442,9 +446,11 @@ class SearchView extends React.PureComponent<Props, State> {
 
     return (
       <View style={[ _styles.container, _styles.noResults ]}>
+        <View style={_styles.emptyPaddingTop} />
         <Text style={_styles.noResultsText}>
           {`${Translations.get('no_results_for')} '${searchTerms}'`}
         </Text>
+        <View style={_styles.emptyPaddingBottom} />
       </View>
     );
   }
@@ -557,16 +563,18 @@ class SearchView extends React.PureComponent<Props, State> {
 
 const _styles = StyleSheet.create({
   activityIndicator: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
-    bottom: 0,
     justifyContent: 'center',
-    left: 0,
-    position: 'absolute',
-    right: 0,
-    top: 0,
   },
   container: {
     backgroundColor: Constants.Colors.secondaryBackground,
+    flex: 1,
+  },
+  emptyPaddingBottom: {
+    flex: 3,
+  },
+  emptyPaddingTop: {
     flex: 1,
   },
   noResults: {
