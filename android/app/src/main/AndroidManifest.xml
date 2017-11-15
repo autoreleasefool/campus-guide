@@ -21,7 +21,11 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="API_KEY_HERE"/>
+            android:value="API_KEY_HERE" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="API_KEY_HERE" />
 
         <activity
             android:name=".MainActivity"

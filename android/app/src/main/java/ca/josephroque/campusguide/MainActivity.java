@@ -1,6 +1,10 @@
 package ca.josephroque.campusguide;
 
+import android.os.Bundle;
+
 import com.facebook.react.ReactActivity;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends ReactActivity {
 
@@ -11,5 +15,11 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "CampusGuide";
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
     }
 }
