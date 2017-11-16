@@ -67,6 +67,7 @@ interface Props {
 
 interface State {
   screenWidth: number;              // Active width of the screen
+  searchText: string;               // The current search text
   shouldShowBack: boolean;          // Indicates if the header should show a back button
   shouldShowSearch: boolean;        // Indicates if the header should show a search button
   shouldShowSearchBar: boolean;     // Indicates if the header should hide the title and show a search input
@@ -79,7 +80,13 @@ const ICON_SIZE = 50;
 // Z index to place header above everything else
 const HEADER_Z_INDEX = 1000;
 
+// Time to delay searches by while user types
+const SEARCH_DELAY_TIME = 800;
+
 class AppHeader extends React.PureComponent<Props, State> {
+
+  /** ID of timer to delay search. */
+  _delayTimer: number;
 
   /**
    * Update the screen width, and rerender component.
@@ -97,14 +104,19 @@ class AppHeader extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    this._delayTimer = 0;
     this.state = {
       screenWidth: Dimensions.get('window').width,
+      searchText: '',
       shouldShowBack: false,
       shouldShowSearch: false,
       shouldShowSearchBar: false,
     };
 
+    this._delaySearch = this._delaySearch.bind(this);
+    this._focusSearchInput = this._focusSearchInput.bind(this);
     this._onBack = this._onBack.bind(this);
+    this._toggleSearch = this._toggleSearch.bind(this);
   }
 
   /**
@@ -119,11 +131,15 @@ class AppHeader extends React.PureComponent<Props, State> {
   }
 
   /**
-   * Remove back listener for Android and dimension size listener.
+   * Remove back listener for Android and dimension size listener. Clears search timer.
    */
   componentWillUnmount(): void {
     if (Platform.OS === 'android') {
       BackHandler.removeEventListener('hardwareBackPress', this._onBack);
+    }
+
+    if (this._delayTimer !== 0) {
+      clearTimeout(this._delayTimer);
     }
 
     Dimensions.removeEventListener('change', this._dimensionsHandler as any);
@@ -151,12 +167,43 @@ class AppHeader extends React.PureComponent<Props, State> {
         LayoutAnimation.easeInEaseOut();
       }
       this.setState({
+        searchText: nextProps.tabFilters[nextProps.tab],
         shouldShowBack: nextProps.shouldShowBack,
         shouldShowSearch: nextProps.shouldShowSearch || nextProps.tab === 'search',
         shouldShowSearchBar: (nextProps.shouldShowSearch && this.state.shouldShowSearchBar)
             || nextProps.tab === 'search',
       });
+    } else if (this.props.tabFilters[this.props.tab] !== nextProps.tabFilters[nextProps.tab]) {
+      this.setState({ searchText: nextProps.tabFilters[nextProps.tab] });
     }
+  }
+
+  /**
+   * Delays the current search by a constant each time the search terms update, to allow the user
+   * to stop typing before searching.
+   *
+   * @param {string} text the updated search text
+   */
+  _delaySearch(text: string): void {
+    // Update the search text
+    this.setState({ searchText: text });
+
+    // Clear any waiting searches
+    if (this._delayTimer !== 0) {
+      clearTimeout(this._delayTimer);
+    }
+
+    this._delayTimer = setTimeout(() => {
+      this._delayTimer = 0;
+      this._onSearch(text);
+    }, SEARCH_DELAY_TIME);
+  }
+
+  /**
+   * Request focus in the SearchInput.
+   */
+  _focusSearchInput(): void {
+    (this.refs.SearchInput as any).focus();
   }
 
   /**
@@ -265,7 +312,7 @@ class AppHeader extends React.PureComponent<Props, State> {
                 name={searchIcon}
                 size={Constants.Sizes.Icons.Medium}
                 style={_styles.searchIcon}
-                onPress={(): void => (this.refs.SearchInput as any).focus()} />
+                onPress={this._focusSearchInput} />
             <TextInput
                 autoCorrect={false}
                 placeholder={Translations.get('search_placeholder')}
@@ -275,12 +322,12 @@ class AppHeader extends React.PureComponent<Props, State> {
                 selectionColor={Constants.Colors.secondaryWhiteText}
                 style={_styles.searchText}
                 underlineColorAndroid={'transparent'}
-                value={this.props.tabFilters[this.props.tab]}
-                onChangeText={this._onSearch.bind(this)} />
+                value={this.state.searchText}
+                onChangeText={this._delaySearch} />
           </View>
           <TouchableOpacity
               style={[ _styles.icon, searchIconStyle ]}
-              onPress={this._toggleSearch.bind(this)}>
+              onPress={this._toggleSearch}>
             <Ionicons
                 color={Constants.Colors.primaryWhiteIcon}
                 name={(this.state.shouldShowSearchBar) ? closeIcon : searchIcon}

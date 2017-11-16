@@ -81,9 +81,6 @@ const FILTERED = 0;
 // Render full results for a single category
 const SINGLE = 1;
 
-// Time to delay searches by while user types
-const SEARCH_DELAY_TIME = 800;
-
 class SearchView extends React.PureComponent<Props, State> {
 
   /** Set of complete, unaltered search results */
@@ -98,9 +95,6 @@ class SearchView extends React.PureComponent<Props, State> {
   /** Set of icons to display for each search result. */
   _searchIcons: any;
 
-  /** ID of timer to delay search. */
-  _delayTimer: number;
-
   /**
    * Pass props and declares initial state.
    *
@@ -108,7 +102,6 @@ class SearchView extends React.PureComponent<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this._delayTimer = 0;
     this.state = {
       anyResults: false,
       filteredResults: [],
@@ -134,16 +127,7 @@ class SearchView extends React.PureComponent<Props, State> {
    * @param {Props} nextProps updated props
    */
   componentWillReceiveProps(nextProps: Props): void {
-    this._delaySearch(this.props, nextProps);
-  }
-
-  /**
-   * Clears the search timeout.
-   */
-  componentWillUnmount(): void {
-    if (this._delayTimer !== 0) {
-      clearTimeout(this._delayTimer);
-    }
+    this._updateSearch(this.props, nextProps);
   }
 
   /**
@@ -174,29 +158,6 @@ class SearchView extends React.PureComponent<Props, State> {
    */
   _configureScene(): object {
     return Navigator.SceneConfigs.PushFromRight;
-  }
-
-  /**
-   * Delays the current search by a constant each time the search terms update, to allow the user
-   * to stop typing before searching.
-   *
-   * @param {Props} prevProps the props last filtered by
-   * @param {Props} nextProps the props to filter by
-   */
-  _delaySearch(prevProps: Props, nextProps: Props): void {
-    if (!this.state.performingSearch) {
-      this.setState({ performingSearch: true });
-    }
-
-    // Clear any waiting searches
-    if (this._delayTimer !== 0) {
-      clearTimeout(this._delayTimer);
-    }
-
-    this._delayTimer = setTimeout(() => {
-      this._delayTimer = 0;
-      this._updateSearch(prevProps, nextProps);
-    }, SEARCH_DELAY_TIME);
   }
 
   /**
