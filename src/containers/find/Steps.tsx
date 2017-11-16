@@ -42,7 +42,6 @@ import { connect } from 'react-redux';
 
 // Imports
 // import ActionButton from 'react-native-action-button';
-import AdView from '../../components/AdView';
 import Header from '../../components/Header';
 import PaddedIcon from '../../components/PaddedIcon';
 import * as Constants from '../../constants';
@@ -225,7 +224,6 @@ class Steps extends React.PureComponent<Props, State> {
   render(): JSX.Element {
     return (
       <View style={_styles.container}>
-        <AdView />
         {this._renderDestination()}
         {this._renderSteps()}
         {/* <ActionButton
