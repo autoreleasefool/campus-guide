@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -44,6 +43,7 @@
 		DB4DFBFE0D4340B4AA48B019 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2001460F7D482CBE904950 /* libRNFS.a */; };
 		E68589BF87724D3DB39890F8 /* libRNZipArchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 193631FC5AD44EFC81C4006A /* libRNZipArchive.a */; };
 		EA3D97CF5736409292A0AFFE /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9242CC4A766A40008ECC002D /* Ionicons.ttf */; };
+		4D1EC64C38D24D3BA20461B1 /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F442A15324094BCCB9E2B104 /* libSMXCrashlytics.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -398,6 +398,8 @@
 		CAC93E641FBC0A5B003211D0 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		CB5C6915128F455EAAF7A038 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		EE2350FD82394D068850B91E /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		BB3C3BE9AD4B48EFAD5E63FC /* SMXCrashlytics.xcodeproj */ = {isa = PBXFileReference; name = "SMXCrashlytics.xcodeproj"; path = "../node_modules/react-native-fabric/ios/SMXCrashlytics.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		F442A15324094BCCB9E2B104 /* libSMXCrashlytics.a */ = {isa = PBXFileReference; name = "libSMXCrashlytics.a"; path = "libSMXCrashlytics.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -427,6 +429,7 @@
 				A95B913CCCF542F690139621 /* libRNSnackbar.a in Frameworks */,
 				E68589BF87724D3DB39890F8 /* libRNZipArchive.a in Frameworks */,
 				5BD430A56D3D4159977C731D /* libz.tbd in Frameworks */,
+				4D1EC64C38D24D3BA20461B1 /* libSMXCrashlytics.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,6 +572,7 @@
 				B3CD5D89BF0641508D4CA992 /* RNFS.xcodeproj */,
 				6B65316EF08B4CB69684044E /* RNSnackbar.xcodeproj */,
 				A238BCAA801D4A6D9C3885CC /* RNZipArchive.xcodeproj */,
+				BB3C3BE9AD4B48EFAD5E63FC /* SMXCrashlytics.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1236,11 +1240,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
 					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
 				);
 				INFOPLIST_FILE = CampusGuide/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/CampusGuide\"",
 					"\"$(SRCROOT)/CampusGuide\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1273,11 +1279,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fs/**",
 					"$(SRCROOT)/../node_modules/react-native-snackbar/ios",
 					"$(SRCROOT)/../node_modules/react-native-zip-archive/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-fabric/ios/SMXCrashlytics",
 				);
 				INFOPLIST_FILE = CampusGuide/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/CampusGuide\"",
 					"\"$(SRCROOT)/CampusGuide\"",
 				);
 				OTHER_LDFLAGS = (

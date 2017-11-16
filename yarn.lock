@@ -11,27 +11,27 @@
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-21.1.6.tgz#9467945ce33261e4fdd14276576951aa130515aa"
 
 "@types/react-native-fs@^2.0.4":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@types/react-native-fs/-/react-native-fs-2.0.5.tgz#d60747fead9ce112a182b2b165238ab6a8087561"
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-fs/-/react-native-fs-2.8.0.tgz#dd7d996b4645fae57b446ed5b477054832abd7a7"
   dependencies:
     "@types/react-native" "*"
 
 "@types/react-native@*", "@types/react-native@^0.50.0":
-  version "0.50.5"
-  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.50.5.tgz#d56742243851f4f55b0a55e460b94e605f9b38dd"
+  version "0.50.7"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.50.7.tgz#4c18bb14aa08f11934f539d2b8dcb2f1a6b88bd8"
   dependencies:
     "@types/react" "*"
 
 "@types/react-redux@^5.0.12":
-  version "5.0.12"
-  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-5.0.12.tgz#c066812eb970009b373372f439d08265ed2a6f8e"
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-5.0.13.tgz#dcc67764b7455ed54422a0302fedf47e32db3579"
   dependencies:
     "@types/react" "*"
     redux "^3.6.0"
 
 "@types/react@*", "@types/react@^16.0.20":
-  version "16.0.22"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.22.tgz#19ad106e124aceebd2b4d430a278d55413ee8759"
+  version "16.0.23"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.23.tgz#f0f713b07912c6fd8e10c9ccc539443ceb06dbca"
 
 abab@^1.0.3:
   version "1.0.4"
@@ -3064,8 +3064,8 @@ mute-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
 nan@^2.3.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.7.0.tgz#d95bf721ec877e08db276ed3fc6eb78f9083ad46"
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -3558,6 +3558,10 @@ react-native-device-info@^0.12.1:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-0.12.1.tgz#659ed145caa5a86a4815904381b25e9ebe0c24f6"
 
+react-native-fabric@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-fabric/-/react-native-fabric-0.5.1.tgz#e5eb65c56196355b41f230c14adcc9c4bcf60dda"
+
 react-native-fs@^2.8.3:
   version "2.8.5"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.8.5.tgz#f4c6d32bdd636079675f6b5585a23227acaca2ba"
@@ -3584,8 +3588,8 @@ react-native-simple-store@^1.3.0:
     lodash.merge "4.6.0"
 
 react-native-snackbar@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/react-native-snackbar/-/react-native-snackbar-0.4.3.tgz#b865bd50388c5776d13b2b4ef28052c493b5107c"
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/react-native-snackbar/-/react-native-snackbar-0.4.4.tgz#46d35c171dd28189c60eab0998b88d1c37e9f14e"
 
 react-native-vector-icons@^4.4.0:
   version "4.4.2"

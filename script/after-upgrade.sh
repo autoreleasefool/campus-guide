@@ -41,3 +41,4 @@ react-native link react-native-device-info
 react-native link react-native-fs
 react-native link react-native-snackbar
 react-native link react-native-zip-archive
+react-native link react-native-fabric
