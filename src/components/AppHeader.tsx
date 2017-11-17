@@ -167,12 +167,15 @@ class AppHeader extends React.PureComponent<Props, State> {
           && nextProps.showSearchDisableCount === this.props.showSearchDisableCount) {
         LayoutAnimation.easeInEaseOut();
       }
+
+      const searchExists = nextProps.tabFilters[nextProps.tab] && nextProps.tabFilters[nextProps.tab].length > 0;
       this.setState({
         searchText: nextProps.tabFilters[nextProps.tab],
         shouldShowBack: nextProps.shouldShowBack,
         shouldShowSearch: nextProps.shouldShowSearch || nextProps.tab === 'search',
-        shouldShowSearchBar: (nextProps.shouldShowSearch && this.state.shouldShowSearchBar)
-            || nextProps.tab === 'search',
+        shouldShowSearchBar:
+          (nextProps.shouldShowSearch && (this.state.shouldShowSearchBar || searchExists))
+          || nextProps.tab === 'search',
       });
     } else if (this.props.tabFilters[this.props.tab] !== nextProps.tabFilters[nextProps.tab]) {
       this.setState({ searchText: nextProps.tabFilters[nextProps.tab] });
