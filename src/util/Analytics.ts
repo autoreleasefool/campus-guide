@@ -34,13 +34,29 @@ interface EventOptions {
   [key: string]: string | number | undefined;
 }
 
+// Force analytics on or off, if analyticsOverrideEnabled is tru
+let analyticsOverride = false;
+// Enable override analytics setting.
+let analyticsOverrideEnabled = false;
+
 /**
  * Check if analytics are enabled.
  *
  * @returns {boolean} true if analytics are enabled, false otherwise.
  */
 export function isAnalyticsEnabled(): boolean {
-  return !__DEV__;
+  return (analyticsOverrideEnabled && analyticsOverride) || !__DEV__;
+}
+
+/**
+ * Override to enable or disable analytics. Only works in dev.
+ *
+ * @param {boolean} enableOverride true to enable override, false to return to default setting.
+ * @param {boolean} enabled        true to enable analytics, false to return to default.
+ */
+export function setAnalyticsEnabledOverride(enableOverride: boolean, enabled?: boolean): void {
+  analyticsOverrideEnabled = enableOverride;
+  analyticsOverride = enabled || false;
 }
 
 /**
