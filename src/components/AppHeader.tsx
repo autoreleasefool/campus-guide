@@ -74,7 +74,8 @@ interface State {
 }
 
 // Height of the navbar
-const NAVBAR_HEIGHT = 50;
+export const NavbarHeight = 50;
+// Size of icons in the navbar
 const ICON_SIZE = 50;
 
 // Z index to place header above everything else
@@ -362,7 +363,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Constants.Colors.primaryBackground,
     flexDirection: 'row',
-    height: NAVBAR_HEIGHT,
+    height: NavbarHeight,
     zIndex: HEADER_Z_INDEX,
   },
   icon: {

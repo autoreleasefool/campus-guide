@@ -76,7 +76,7 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
 
     this.state = {
       campus: undefined,
-      region: undefined,
+      region: Constants.Map.InitialRegion,
       routesExpanded: false,
       stops: {},
     };

@@ -26,8 +26,8 @@
 import React from 'react';
 import {
   InteractionManager,
+  Platform,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 
@@ -36,17 +36,16 @@ import { connect } from 'react-redux';
 
 // Imports
 import Header from '../../components/Header';
-import MapView from 'react-native-maps';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ShuttleTable from '../../components/ShuttleTable';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
+import * as Display from '../../util/Display';
 import * as Translations from '../../util/Translations';
 
 // Types
 import { Language } from '../../util/Translations';
-import { LatLong, LatLongDelta, TimeFormat } from '../../../typings/global';
-import { ShuttleDirection, ShuttleInfo, ShuttleSchedule, ShuttleStop } from '../../../typings/transit';
+import { TimeFormat } from '../../../typings/global';
+import { ShuttleInfo } from '../../../typings/transit';
 
 interface Props {
   language: Language;               // The current language, selected by the user
@@ -57,15 +56,27 @@ interface Props {
 interface State {
   direction: number;                // Current direction for the schedule being viewed
   initialPage: number;              // Initial schedule to display
-  region: LatLong & LatLongDelta;   // Latitude and longitude for map to display
   schedule: number;                 // Current schedule being viewed
   shuttle: ShuttleInfo | undefined; // Information about the university shuttle
 }
 
 class Shuttle extends React.PureComponent<Props, State> {
 
-  /** Starting region to display on map. */
-  _initialRegion: LatLong & LatLongDelta;
+  /**
+   * Switches direction being rendered.
+   */
+  _toggleDirection = (): void => {
+    const nextDirection = (this.state.direction + 1) % 2;
+    this.setState({ direction: nextDirection });
+  }
+
+  /**
+   * Switches schedule being rendered.
+   */
+  _toggleSchedule = (): void => {
+    const nextSchedule = (this.state.schedule + 1) % this.state.shuttle.schedules.length;
+    this.setState({ schedule: nextSchedule });
+  }
 
   /**
    * Constructor.
@@ -77,12 +88,9 @@ class Shuttle extends React.PureComponent<Props, State> {
     this.state = {
       direction: 0,
       initialPage: 0,
-      region: undefined,
       schedule: 0,
       shuttle: undefined,
     };
-
-    this._initialRegion = Constants.Map.InitialRegion;
   }
 
   /**
@@ -107,62 +115,7 @@ class Shuttle extends React.PureComponent<Props, State> {
   }
 
   /**
-   * Switches direction being rendered
-   */
-  _switchDirection(): void {
-    const nextDirection = (this.state.direction + 1) % 2;
-    this.setState({ direction: nextDirection });
-  }
-
-  /**
-   * Renders a map of locations which the shuttle makes stops at.
-   *
-   * @returns {JSX.Element} the map component
-   */
-  _renderMap(): JSX.Element {
-    const shuttle = this.state.shuttle;
-    if (shuttle == undefined) {
-      return (
-        <View style={_styles.container} />
-      );
-    }
-
-    return (
-      <View style={_styles.container}>
-        <MapView
-            initialRegion={this._initialRegion}
-            region={this.state.region}
-            showsUserLocation={true}
-            style={_styles.map}
-            onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>
-          {shuttle.stops.map((stop: ShuttleStop) => (
-            <MapView.Marker
-                coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
-                identifier={stop.id}
-                key={stop.id}
-                title={Translations.getName(stop)} />
-          ))}
-        </MapView>
-      </View>
-    );
-  }
-
-  /**
-   * Renders details about the route the shuttle takes.
-   *
-   * @param {ShuttleDirection} direction shuttle direction to render
-   * @returns {JSX.Element} the route header and description
-   */
-  _renderRoute(direction: ShuttleDirection): JSX.Element {
-    return (
-      <View style={_styles.dark}>
-        <Text style={_styles.routeText}>{Translations.getVariant('route', direction)}</Text>
-      </View>
-    );
-  }
-
-  /**
-   * Renders each of the sections, with one of them focused and showing an image.
+   * Renders the shuttle info.
    *
    * @returns {JSX.Element} the hierarchy of views to render
    */
@@ -175,42 +128,31 @@ class Shuttle extends React.PureComponent<Props, State> {
     }
 
     const currentSchedule = shuttle.schedules[this.state.schedule];
+    const currentScheduleName = Translations.getName(currentSchedule);
     const direction = currentSchedule.directions[this.state.direction % currentSchedule.directions.length];
     const directionName = Translations.getName(direction) || '';
     const arrow = this.state.direction === 0 ? 'md-arrow-forward' : 'md-arrow-back';
 
     return (
       <View style={_styles.container}>
-        {this._renderMap()}
         <Header
-            backgroundColor={Constants.Colors.primaryBackground}
             icon={{ name: arrow, class: 'ionicon' }}
-            subtitleCallback={this._switchDirection.bind(this)}
+            subtitleCallback={this._toggleDirection}
             subtitleIcon={{ name: 'compare-arrows', class: 'material' }}
             title={directionName} />
-        {this._renderRoute(direction)}
-        <ScrollableTabView
-            initialPage={this.state.initialPage}
-            tabBarActiveTextColor={Constants.Colors.primaryWhiteText}
-            tabBarBackgroundColor={Constants.Colors.darkGrey}
-            tabBarInactiveTextColor={Constants.Colors.secondaryWhiteText}
-            tabBarPosition='top'
-            tabBarUnderlineStyle={{ backgroundColor: Constants.Colors.polarGrey }}
-            onChangeTab={(newTab: { i: number }): void => this.setState({ schedule: newTab.i })}>
-          {(shuttle.schedules.map((schedule: ShuttleSchedule): JSX.Element => {
-            const name = Translations.getName(schedule);
-
-            return (
-              <ShuttleTable
-                  direction={this.state.direction}
-                  key={name}
-                  language={this.props.language}
-                  schedule={schedule}
-                  tabLabel={name}
-                  timeFormat={this.props.timeFormat} />
-            );
-          }))}
-        </ScrollableTabView>
+        <View style={_styles.separator} />
+        <Header
+            icon={Display.getPlatformIcon(Platform.OS, currentSchedule)}
+            subtitleCallback={this._toggleSchedule}
+            subtitleIcon={{ name: 'compare-arrows', class: 'material' }}
+            title={currentScheduleName} />
+        <View style={_styles.separator} />
+        <ShuttleTable
+            direction={this.state.direction}
+            language={this.props.language}
+            schedule={currentSchedule}
+            stops={shuttle.stops}
+            timeFormat={this.props.timeFormat} />
       </View>
     );
   }
@@ -222,16 +164,9 @@ const _styles = StyleSheet.create({
     backgroundColor: Constants.Colors.primaryBackground,
     flex: 1,
   },
-  dark: {
-    backgroundColor: Constants.Colors.secondaryBackground,
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  routeText: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
-    margin: Constants.Sizes.Margins.Expanded,
+  separator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
   },
 });
 

@@ -34,33 +34,48 @@ import {
 } from 'react-native';
 
 // Imports
+import Header from './Header';
+import MapView from 'react-native-maps';
 import moment from 'moment';
 import * as Constants from '../constants';
 import * as TextUtils from '../util/TextUtils';
 import * as Translations from '../util/Translations';
+import { NavbarHeight } from './AppHeader';
+import { HeaderHeight } from './Header';
 
 // Types
 import { Language } from '../util/Translations';
-import { TimeFormat } from '../../typings/global';
-import { ShuttleSchedule } from '../../typings/transit';
+import { LatLong, LatLongDelta, TimeFormat } from '../../typings/global';
+import { ShuttleDirection, ShuttleSchedule, ShuttleStop } from '../../typings/transit';
 
 interface Props {
   direction: number;          // Which direction of the schedule
   language: Language;         // The user's currently selected language
   schedule: ShuttleSchedule;  // The schedule to render
+  stops: ShuttleStop[];       // Stops which the shuttle makes
   tabLabel?: string;          // Tab label
   timeFormat: TimeFormat;     // The user's preferred time format
 }
 
 interface State {
-  dataSource: any;      // List of times for the shuttle and days they occur
-  screenWidth: number;  // Active width of the screen
+  dataSource: any;                // List of times for the shuttle and days they occur
+  region: LatLong & LatLongDelta; // Latitude and longitude for map to display
+  screenHeight: number;           // Active height of the screen
+  screenWidth: number;            // Active width of the screen
 }
 
 // Max number of shuttle times to display in a single row
 const TIMES_PER_ROW = 2;
 
+// tslint:disable no-magic-numbers
+// Number of Headers which are rendered around the map
+const CONTENT_SPACE = HeaderHeight * 6 + NavbarHeight;
+// tslint:enable no-magic-numbers
+
 export default class ShuttleTable extends React.PureComponent<Props, State> {
+
+  /** Starting region to display on map. */
+  _initialRegion: LatLong & LatLongDelta;
 
   /**
    * Update the screen width, and rerender component.
@@ -68,7 +83,7 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
    * @param {ScaledSize} dims the new dimensions
    */
   _dimensionsHandler = (dims: { window: ScaledSize }): void =>
-      this.setState({ screenWidth: dims.window.width })
+      this.setState({ screenWidth: dims.window.width, screenHeight: dims.window.height })
 
   /**
    * Constructor.
@@ -86,10 +101,15 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
     const data: any = { ...props.schedule.directions[props.direction].day_times };
     data.excluded_dates = props.schedule.excluded_dates;
     dataSource = dataSource.cloneWithRowsAndSections(data);
+    const screenSize = Dimensions.get('window');
     this.state = {
       dataSource,
-      screenWidth: Dimensions.get('window').width,
+      region: Constants.Map.InitialRegion,
+      screenHeight: screenSize.height,
+      screenWidth: screenSize.width,
     };
+
+    this._initialRegion = Constants.Map.InitialRegion;
   }
 
   /**
@@ -134,11 +154,68 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
       );
     }
 
+    const currentSchedule = this.props.schedule;
+    const direction = currentSchedule.directions[this.props.direction % currentSchedule.directions.length];
+
     return (
-      <View style={_styles.header}>
-        {dateExcluded}
-        <Text style={_styles.info}>{Translations.get('shuttle_travel_time')}</Text>
-        <Text style={_styles.info}>{Translations.get('shuttle_id_required')}</Text>
+      <View>
+        {this._renderMap()}
+        {this._renderRoute(direction)}
+        <Header
+            backgroundColor={Constants.Colors.tertiaryBackground}
+            title={Translations.get('departure_times')} />
+        <View style={_styles.fullSeparator} />
+        <View style={_styles.header}>
+          {dateExcluded}
+          <Text style={_styles.info}>{Translations.get('shuttle_travel_time')}</Text>
+          <Text style={_styles.info}>{Translations.get('shuttle_id_required')}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  /**
+   * Renders a map of locations which the shuttle makes stops at.
+   *
+   * @returns {JSX.Element} the map component
+   */
+  _renderMap(): JSX.Element {
+    const mapContainer = {
+      height: this.state.screenHeight - CONTENT_SPACE,
+      width: this.state.screenWidth,
+    };
+
+    return (
+      <View style={mapContainer}>
+        <MapView
+            followsUserLocation={true}
+            initialRegion={this._initialRegion}
+            region={this.state.region}
+            showsUserLocation={true}
+            style={_styles.map}
+            onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>
+          {this.props.stops.map((stop: ShuttleStop) => (
+            <MapView.Marker
+                coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
+                identifier={stop.id}
+                key={stop.id}
+                title={Translations.getName(stop)} />
+          ))}
+        </MapView>
+      </View>
+    );
+  }
+
+  /**
+   * Renders details about the route the shuttle takes.
+   *
+   * @param {ShuttleDirection} direction shuttle direction to render
+   * @returns {JSX.Element} the route header and description
+   */
+  _renderRoute(direction: ShuttleDirection): JSX.Element {
+    return (
+      <View style={_styles.routeTextContainer}>
+        <Text style={_styles.routeText}>{Translations.getVariant('route', direction)}</Text>
       </View>
     );
   }
@@ -260,6 +337,11 @@ const _styles = StyleSheet.create({
   evenTimeContainer: {
     marginLeft: Constants.Sizes.Margins.Expanded,
   },
+  fullSeparator: {
+    backgroundColor: Constants.Colors.secondaryBackground,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: 0,
+  },
   header: {
     marginLeft: Constants.Sizes.Margins.Expanded,
     marginRight: Constants.Sizes.Margins.Expanded,
@@ -275,8 +357,19 @@ const _styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
   oddTimeContainer: {
     marginRight: Constants.Sizes.Margins.Expanded,
+  },
+  routeText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    margin: Constants.Sizes.Margins.Expanded,
+  },
+  routeTextContainer: {
+    backgroundColor: Constants.Colors.secondaryBackground,
   },
   sectionHeader: {
     color: Constants.Colors.primaryBlackText,
