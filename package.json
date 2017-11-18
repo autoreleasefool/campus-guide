@@ -16,6 +16,7 @@
     "tscp": "tsc --pretty"
   },
   "dependencies": {
+    "@types/react-native-fabric": "^0.5.0",
     "fastpriorityqueue": "^0.3.1",
     "http-status-codes": "^1.2.0",
     "moment": "^2.19.1",
