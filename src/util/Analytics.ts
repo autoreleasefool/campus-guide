@@ -25,13 +25,12 @@
 import { Answers, Crashlytics } from 'react-native-fabric';
 
 // Types
-import { Building, Course, Destination } from '../../typings/university';
-import { Language } from './Translations';
+import { Destination } from '../../typings/university';
 import { Tab } from 'typings/global';
 
 /** Optional values to send with events. */
 interface EventOptions {
-  [key: string]: string | number | undefined;
+  [key: string]: string | number | boolean | undefined;
 }
 
 // Force analytics on or off, if analyticsOverrideEnabled is tru
@@ -60,45 +59,52 @@ export function setAnalyticsEnabledOverride(enableOverride: boolean, enabled?: b
 }
 
 /**
- * Update user language in analytics.
+ * Update user preferences.
  *
- * @param {Language} language the selected language
+ * @param {string} preferenceName  the preference being updated
+ * @param {string} preferenceValue the value of the preference
  */
-export function setLanguage(language: Language): void {
+export function setPreference(preferenceName: string, preferenceValue: string): void {
   if (isAnalyticsEnabled()) {
-    Crashlytics.setString('language', language);
+    Crashlytics.setString(`preference_${preferenceName}`, preferenceValue);
+  } else {
+    console.log(`Analytics, preference set: ${preferenceName}: ${preferenceValue}`);
   }
 }
 
 /**
  * Indicate user selected a building.
  *
- * @param {Building}     building the selected building
- * @param {EventOptions} options optional event params
+ * @param {string}       shorthand the building id
+ * @param {EventOptions} options   optional event params
  */
-export function buildingSelected(building: Building, options?: EventOptions): void {
+export function buildingSelected(shorthand: string, options?: EventOptions): void {
   if (isAnalyticsEnabled()) {
     Answers.logCustom('Selected building', {
       ...options,
-      shorthand: building.shorthand,
+      shorthand,
     });
+  } else {
+    console.log(`Analytics, selected building: ${shorthand}`);
   }
 }
 
 /**
  * Indicate user selected a room in a building.
  *
- * @param {Building}     building the selected building
- * @param {string}       room     name of the room selected
- * @param {EventOptions} options  optional event params
+ * @param {string}           shorthand the building id
+ * @param {string|undefined} room      name of the room selected
+ * @param {EventOptions}     options   optional event params
  */
-export function roomSelected(building: Building, room: string, options?: EventOptions): void {
+export function roomSelected(shorthand: string, room: string | undefined, options?: EventOptions): void {
   if (isAnalyticsEnabled()) {
     Answers.logCustom('Selected room', {
       ...options,
       room,
-      shorthand: building.shorthand,
+      shorthand,
     });
+  } else {
+    console.log(`Analytics, selected room: ${shorthand} ${room}`);
   }
 }
 
@@ -116,6 +122,8 @@ export function startNavigation(startingPoint: Destination, target: Destination,
       startingPoint,
       target,
     });
+  } else {
+    console.log(`Analytics, started navigating: ${JSON.stringify(startingPoint)} to ${JSON.stringify(target)}`);
   }
 }
 
@@ -139,36 +147,42 @@ export function failedNavigation(
       startingPoint,
       target,
     });
+  } else {
+    console.log(`Analytics, failed navigation: ${JSON.stringify(startingPoint)} to ${JSON.stringify(target)}`);
   }
 }
 
 /**
  * Indicate user has added a course to their schedule.
  *
- * @param {Course}       course  details of the added course
- * @param {EventOptions} options optional event params
+ * @param {string}       courseCode details of the added course
+ * @param {EventOptions} options    optional event params
  */
-export function addCourse(course: Course, options?: EventOptions): void {
+export function addCourse(courseCode: string, options?: EventOptions): void {
   if (isAnalyticsEnabled()) {
     Answers.logCustom('Added course to schedule', {
       ...options,
-      courseCode: course.code,
+      courseCode,
     });
+  } else {
+    console.log(`Analytics, added course: ${courseCode}`);
   }
 }
 
 /**
  * Indicate user has removed a course from their schedule.
  *
- * @param {Course}       course  details of the removed course
- * @param {EventOptions} options optional event params
+ * @param {string}       courseCode details of the removed course
+ * @param {EventOptions} options    optional event params
  */
-export function removeCourse(course: Course, options?: EventOptions): void {
+export function removeCourse(courseCode: string, options?: EventOptions): void {
   if (isAnalyticsEnabled()) {
     Answers.logCustom('Removed course from schedule', {
       ...options,
-      courseCode: course.code,
+      courseCode,
     });
+  } else {
+    console.log(`Analytics, removed course: ${courseCode}`);
   }
 }
 
@@ -183,6 +197,8 @@ export function removeCourse(course: Course, options?: EventOptions): void {
 export function menuItemSelected(menuName: string, itemName: string, itemId: string, options?: EventOptions): void {
   if (isAnalyticsEnabled()) {
     Answers.logContentView(itemName, menuName, itemId, options);
+  } else {
+    console.log(`Analytics, viewed menu item: ${menuName}.${itemName}.${itemId}`);
   }
 }
 
@@ -195,6 +211,8 @@ export function menuItemSelected(menuName: string, itemName: string, itemId: str
 export function performSearch(text: string, options?: EventOptions): void {
   if (isAnalyticsEnabled()) {
     Answers.logSearch(text, options);
+  } else {
+    console.log(`Analytics, performed search: ${text}`);
   }
 }
 
@@ -212,6 +230,8 @@ export function selectedSearchResult(itemName: string, itemId: string, query: st
       ...options,
       query,
     });
+  } else {
+    console.log(`Analytics, selected search result: ${query}.${itemName}.${itemId}`);
   }
 }
 
@@ -229,6 +249,8 @@ export function editSetting(settingName: string, newValue: any, options?: EventO
       newValue,
       settingName,
     });
+  } else {
+    console.log(`Analytics, edited setting: ${settingName} - ${newValue}`);
   }
 }
 
@@ -248,5 +270,7 @@ export function switchTab(newTab: Tab, oldTab: Tab, timeSpent: number, options?:
       oldTab,
       timeSpent,
     });
+  } else {
+    console.log(`Analytics, switched tab: ${oldTab} to ${newTab}, spent ${timeSpent}`);
   }
 }
