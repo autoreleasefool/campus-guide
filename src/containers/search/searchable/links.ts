@@ -74,7 +74,11 @@ async function _getResults(
 
   let sectionsToSearch = linkSections;
 
-  for (const section of sectionsToSearch) {
+  // tslint:disable prefer-for-of
+  // for-of does not account for sections added on at the end of an iteration
+
+  for (let i = 0; i < sectionsToSearch.length; i++) {
+    const section = sectionsToSearch[i];
     let sectionMatches = false;
     const sectionName: string = Translations.getName(section) || '';
     if (sectionName.toUpperCase().indexOf(searchTerms) >= 0) {
@@ -116,6 +120,8 @@ async function _getResults(
       sectionsToSearch = sectionsToSearch.concat(section.categories);
     }
   }
+
+  // tslint:enable prefer-for-of
 
   const results = [{
     data: links,
