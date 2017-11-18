@@ -52,6 +52,7 @@ import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { Name, Route, SingleMenuSection, Tab, TimeFormat } from '../../../typings/global';
 import { TransitInfo } from '../../../typings/transit';
@@ -281,7 +282,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,

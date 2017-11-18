@@ -60,6 +60,7 @@ import * as Translations from '../../util/Translations';
 import { default as PaddedIcon, DefaultWidth as PaddedIconWidth } from '../../components/PaddedIcon';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { Name, Route, Section, Tab } from '../../../typings/global';
 import { BuildingProperty, HousingInfo, Residence, ResidenceProperty } from '../../../typings/university';
@@ -743,7 +744,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,

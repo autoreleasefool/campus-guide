@@ -58,6 +58,7 @@ import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { SearchSupport } from '../../util/Search';
 import { Language } from '../../util/Translations';
 import { BasicIcon, Route, Section } from '../../../typings/global';
@@ -593,7 +594,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     filter: store.search.tabTerms.search,
     language: store.config.options.language,

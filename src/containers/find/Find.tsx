@@ -41,6 +41,7 @@ import { default as StartingPointScreen } from './StartingPoint';
 import { default as StepsScreen } from './Steps';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Route, Tab } from '../../../typings/global';
 import { Building } from '../../../typings/university';
 
@@ -168,7 +169,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,

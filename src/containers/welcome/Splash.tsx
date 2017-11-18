@@ -44,6 +44,7 @@ import * as Translations from '../../util/Translations';
 const CoreTranslations = require('../../../assets/json/CoreTranslations');
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 
 interface Props {
@@ -177,7 +178,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     language: store.config.options.language,
   };

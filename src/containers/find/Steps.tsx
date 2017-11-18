@@ -53,6 +53,7 @@ import * as Translations from '../../util/Translations';
 import * as Directions from '../../util/graph/Directions';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { Destination } from '../../../typings/university';
 
@@ -293,7 +294,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     accessible: store.config.options.prefersWheelchair,
     destination: store.directions.destination,

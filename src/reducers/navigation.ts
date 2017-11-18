@@ -37,10 +37,14 @@ interface TabTitleMap {
   [ index: string ]: TabTitle;
 }
 
+interface CanBack {
+  [key: string]: boolean;
+}
+
 /** Navigation reducer state. */
 export interface State {
   backNavigations: number;              // Count of the times the user has navigated back in the app
-  canBack: object;                      // Indicates which subsections of the app can navigate backwards
+  canBack: CanBack;                     // Indicates which subsections of the app can navigate backwards
   tab: Tab;                             // Current tab in the root navigation of the app
 
   findView: number;                     // The current view to display in the find tab

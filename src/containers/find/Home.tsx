@@ -38,6 +38,7 @@ import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { Name } from '../../../typings/global';
 import { Building } from '../../../typings/university';
@@ -112,7 +113,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     filter: store.search.tabTerms.find,
     language: store.config.options.language,

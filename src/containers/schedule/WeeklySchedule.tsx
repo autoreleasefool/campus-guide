@@ -40,6 +40,8 @@ import * as Arrays from '../../util/Arrays';
 import * as Constants from '../../constants';
 import * as TextUtils from '../../util/TextUtils';
 
+// Types
+import { Store } from '../../store/configureStore';
 import { Language, getLanguage } from '../../util/Translations';
 import { TimeFormat } from '../../../typings/global';
 import { Course, Destination, LectureFormat, Semester } from '../../../typings/university';
@@ -221,7 +223,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     currentSemester: store.config.options.currentSemester,
     language: store.config.options.language,

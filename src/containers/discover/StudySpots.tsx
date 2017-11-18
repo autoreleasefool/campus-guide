@@ -54,6 +54,7 @@ import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { Icon, TimeFormat } from '../../../typings/global';
 import { StudySpot, StudySpotInfo } from '../../../typings/university';
@@ -378,7 +379,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     activeFilters: store.search.studyFilters,
     filter: store.search.tabTerms.discover,

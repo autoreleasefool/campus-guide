@@ -49,6 +49,7 @@ import * as Preferences from '../util/Preferences';
 import * as Translations from '../util/Translations';
 
 // Types
+import { Store } from '../store/configureStore';
 import { Language } from '../util/Translations';
 import { TransitInfo } from '../../typings/transit';
 
@@ -273,7 +274,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): object => {
+const mapStateToProps = (store: Store): object => {
   return {
     language: store.config.options.language,
   };

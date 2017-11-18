@@ -40,6 +40,7 @@ import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { LinkSection, Name, Tab, Route } from '../../../typings/global';
 
@@ -285,7 +286,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,

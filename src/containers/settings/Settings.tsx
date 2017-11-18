@@ -58,6 +58,7 @@ import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { Icon, Link, Name, Section, TimeFormat } from '../../../typings/global';
 import { Semester } from '../../../typings/university';
@@ -485,7 +486,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     currentSemester: store.config.options.currentSemester,
     language: store.config.options.language,

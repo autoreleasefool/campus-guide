@@ -49,6 +49,7 @@ import * as Translations from '../../util/Translations';
 const CoreTranslations = require('../../../assets/json/CoreTranslations');
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { TransitInfo } from '../../../typings/transit';
 
@@ -642,12 +643,11 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     filesDownloaded: store.config.update.filesDownloaded,
     intermediateProgress: store.config.update.intermediateProgress,
     language: store.config.options.language,
-    showRetry: store.config.update.showRetry,
     totalProgress: store.config.update.totalProgress,
     totalSize: store.config.update.totalSize,
     updateConfirmed: store.config.updateConfirmed,

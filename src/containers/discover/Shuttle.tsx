@@ -43,6 +43,7 @@ import * as Display from '../../util/Display';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { TimeFormat } from '../../../typings/global';
 import { ShuttleInfo } from '../../../typings/transit';
@@ -170,7 +171,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     language: store.config.options.language,
     timeFormat: store.config.options.preferredTimeFormat,

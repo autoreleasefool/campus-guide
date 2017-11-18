@@ -37,6 +37,7 @@ import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 import { MenuSection } from '../../../typings/global';
 
@@ -109,7 +110,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     language: store.config.options.language,
   };

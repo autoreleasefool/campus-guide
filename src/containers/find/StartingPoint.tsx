@@ -53,6 +53,7 @@ import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { AlertButton } from 'react-native';
 import { Language } from '../../util/Translations';
 import { LatLong, LatLongDelta, Name, Route } from '../../../typings/global';
@@ -526,7 +527,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     destination: store.directions.destination,
     filter: store.search.tabTerms.find,

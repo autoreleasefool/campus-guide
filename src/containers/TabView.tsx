@@ -42,6 +42,7 @@ import Search from './search/SearchView';
 import Settings from './settings/Settings';
 
 // Types
+import { Store } from '../store/configureStore';
 import { Tab } from '../../typings/global';
 
 interface Props {
@@ -126,7 +127,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): object => {
+const mapStateToProps = (store: Store): object => {
   return {
     tab: store.navigation.tab,
   };

@@ -43,6 +43,7 @@ import StudySpots from './StudySpots';
 import Transit from './Transit';
 
 // Types
+import { Store } from '../../store/configureStore';
 import { Route, Tab } from '../../../typings/global';
 
 interface Props {
@@ -183,7 +184,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     appTab: store.navigation.tab,
     backCount: store.navigation.backNavigations,

@@ -48,6 +48,7 @@ import * as Constants from '../constants';
 import * as Translations from '../util/Translations';
 
 // Types
+import { Store } from '../store/configureStore';
 import { Language } from '../util/Translations';
 import { Name, Tab, TabSet } from '../../typings/global';
 
@@ -428,7 +429,7 @@ const _styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (store: any): any => {
+const mapStateToProps = (store: Store): any => {
   return {
     appTitle: store.navigation.title,
     language: store.config.options.language,
