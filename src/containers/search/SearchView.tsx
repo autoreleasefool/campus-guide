@@ -633,8 +633,7 @@ const mapDispatchToProps = (dispatch: any): any => {
           dispatch(actions.switchTab('find'));
           break;
         case 'uO Info':
-          // FIXME: figure out proper title here
-          dispatch(actions.setHeaderTitle('uo_info', 'discover', Constants.Views.Discover.Links));
+          dispatch(actions.setHeaderTitle({ name: result.title }, 'discover', Constants.Views.Discover.Links));
           dispatch(actions.switchLinkCategory(result.data));
           dispatch(actions.switchDiscoverView(Constants.Views.Discover.Links));
           dispatch(actions.switchTab('discover'));
