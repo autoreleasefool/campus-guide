@@ -32,6 +32,7 @@ import * as actions from '../../actions';
 
 // Imports
 import Menu from '../../components/Menu';
+import * as Analytics from '../../util/Analytics';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 
@@ -147,6 +148,7 @@ const mapDispatchToProps = (dispatch: any): any => {
           // Return to default view, Views.Home
       }
 
+      Analytics.menuItemSelected('Discover sections', title, section);
       dispatch(actions.setHeaderTitle(title, 'discover', view));
       dispatch(actions.switchDiscoverView(view));
     },

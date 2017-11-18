@@ -33,6 +33,7 @@ import * as actions from '../../actions';
 // Imports
 import ImageGrid from '../../components/ImageGrid';
 import Header from '../../components/Header';
+import * as Analytics from '../../util/Analytics';
 import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
 
@@ -66,6 +67,9 @@ class FindHome extends React.PureComponent<Props, State> {
         name_en: Translations.getEnglishName(building) || '',
         name_fr: Translations.getFrenchName(building) || '',
       };
+
+      const index = this.props.buildingList.indexOf(building);
+      Analytics.buildingSelected(building.shorthand, { index });
 
       this.props.onBuildingSelect(building, name);
     }

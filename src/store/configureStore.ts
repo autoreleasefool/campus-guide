@@ -23,16 +23,26 @@
 'use strict';
 
 // Redux imports
-import { applyMiddleware, combineReducers, createStore, Middleware, Reducer } from 'redux';
+import { applyMiddleware, combineReducers, createStore, Reducer } from 'redux';
 import thunk from 'redux-thunk';
 
 // Imports
-import config from '../reducers/config';
-import directions from '../reducers/directions';
-import navigation from '../reducers/navigation';
-import schedule from '../reducers/schedule';
-import search from '../reducers/search';
+import { default as config, State as ConfigState } from '../reducers/config';
+import { default as directions, State as DirectionsState } from '../reducers/directions';
+import { default as navigation, State as NavigationState } from '../reducers/navigation';
+import { default as schedule, State as ScheduleState } from '../reducers/schedule';
+import { default as search, State as SearchState } from '../reducers/search';
 import { persist } from './persist';
+import { analytics } from './analytics';
+
+// Store state
+export interface Store {
+  config: ConfigState;
+  directions: DirectionsState;
+  navigation: NavigationState;
+  schedule: ScheduleState;
+  search: SearchState;
+}
 
 /**
  * Creates a redux store from the reducers and returns it.
@@ -49,7 +59,7 @@ export default function configureStore(onComplete?: () => void | undefined): any
     search,
   });
 
-  const store = createStore(reducers as Reducer<any>, applyMiddleware(thunk, persist as Middleware));
+  const store = createStore(reducers as Reducer<any>, applyMiddleware(thunk, persist, analytics));
   if (onComplete != undefined) {
     onComplete();
   }

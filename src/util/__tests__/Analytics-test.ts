@@ -68,13 +68,13 @@ describe('Analytics-test', () => {
 
   it('tests if analytics get disabled', () => {
     Analytics.setAnalyticsEnabledOverride(false);
-    Analytics.setLanguage('en');
-    Analytics.buildingSelected(building);
-    Analytics.roomSelected(building, '123');
+    Analytics.setPreference('language', 'en');
+    Analytics.buildingSelected(building.shorthand);
+    Analytics.roomSelected(building.shorthand, '123');
     Analytics.startNavigation(startingPoint, target);
     Analytics.failedNavigation(startingPoint, target, true);
-    Analytics.addCourse(course);
-    Analytics.removeCourse(course);
+    Analytics.addCourse(course.code);
+    Analytics.removeCourse(course.code);
     Analytics.menuItemSelected('menu', 'item', 'id');
     Analytics.performSearch('query');
     Analytics.selectedSearchResult('item', 'id', 'query');
@@ -94,13 +94,13 @@ describe('Analytics-test', () => {
   });
 
   it('tests setting the profile language', () => {
-    Analytics.setLanguage('en');
+    Analytics.setPreference('language', 'en');
     expect(Fabric.__getDatastore()).toEqual({ language: 'en' });
   });
 
   it('tests selecting a building', () => {
-    Analytics.buildingSelected(building);
-    Analytics.buildingSelected(building, { test: 0 });
+    Analytics.buildingSelected(building.shorthand);
+    Analytics.buildingSelected(building.shorthand, { test: 0 });
 
     expect(Fabric.__getEvents()).toEqual({
       'Selected building': [
@@ -111,8 +111,8 @@ describe('Analytics-test', () => {
   });
 
   it('tests selecting a room', () => {
-    Analytics.roomSelected(building, '123');
-    Analytics.roomSelected(building, '456', { test: 0 });
+    Analytics.roomSelected(building.shorthand, '123');
+    Analytics.roomSelected(building.shorthand, '456', { test: 0 });
 
     expect(Fabric.__getEvents()).toEqual({
       'Selected room': [
@@ -147,8 +147,8 @@ describe('Analytics-test', () => {
   });
 
   it('tests adding a course', () => {
-    Analytics.addCourse(course);
-    Analytics.addCourse(course, { test: 0 });
+    Analytics.addCourse(course.code);
+    Analytics.addCourse(course.code, { test: 0 });
 
     expect(Fabric.__getEvents()).toEqual({
       'Added course to schedule': [
@@ -159,8 +159,8 @@ describe('Analytics-test', () => {
   });
 
   it('tests removing a course', () => {
-    Analytics.removeCourse(course);
-    Analytics.removeCourse(course, { test: 0 });
+    Analytics.removeCourse(course.code);
+    Analytics.removeCourse(course.code, { test: 0 });
 
     expect(Fabric.__getEvents()).toEqual({
       'Removed course from schedule': [

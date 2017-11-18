@@ -43,6 +43,7 @@ import * as actions from '../../actions';
 import TransitCampusMap from '../../components/TransitCampusMap';
 import Header from '../../components/Header';
 import Menu from '../../components/Menu';
+import * as Analytics from '../../util/Analytics';
 import * as Arrays from '../../util/Arrays';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
@@ -186,6 +187,7 @@ class Transit extends React.PureComponent<Props, State> {
   _onCampusSelected(id: string): void {
     const index = Arrays.linearSearchObjectArrayByKeyValue(this.state.campuses, 'id', id);
     const campus = this.state.campuses[index];
+    Analytics.menuItemSelected('Transit campuses', Translations.getEnglishName(campus) || '', id);
     this.props.onCampusSelected(campus);
     this.props.setHeaderTitle({
       name_en: Translations.getEnglishName(campus) || '',

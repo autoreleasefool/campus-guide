@@ -39,6 +39,8 @@ import * as actions from '../../actions';
 import BuildingHeader from '../../components/BuildingHeader';
 import Header from '../../components/Header';
 import RoomGrid from '../../components/RoomGrid';
+import * as Analytics from '../../util/Analytics';
+import * as Arrays from '../../util/Arrays';
 import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
 
@@ -111,6 +113,10 @@ class BuildingComponent extends React.PureComponent<Props, State> {
    * @param {string|undefined} roomName name of the room selected, or undefined if a building was selected
    */
   _onDestinationSelected(shorthand: string, roomName?: string): void {
+    const index = (roomName == undefined)
+        ? -1
+        : Arrays.linearSearchObjectArrayByKeyValue(this.props.building.rooms, 'name', roomName);
+    Analytics.roomSelected(this.props.building.shorthand, roomName, { index });
     this.props.onDestinationSelected(shorthand, roomName);
   }
 

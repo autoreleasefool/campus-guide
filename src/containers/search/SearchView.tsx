@@ -47,6 +47,7 @@ import * as actions from '../../actions';
 // Imports
 import Header from '../../components/Header';
 import PaddedIcon from '../../components/PaddedIcon';
+import * as Analytics from '../../util/Analytics';
 import * as Arrays from '../../util/Arrays';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
@@ -64,7 +65,8 @@ import { BasicIcon, Route, Section } from '../../../typings/global';
 interface Props {
   filter: string;                                                   // Search terms
   language: Language;                                               // The current language, selected by the user
-  onResultSelect(sectionKey: string | undefined, data: any): void;  // Callback for when result is selected
+  onResultSelect(sectionKey: string | undefined, data: Searchable.SearchResult): void;
+                                                                    // Callback for when result is selected
 }
 
 interface State {
@@ -249,9 +251,11 @@ class SearchView extends React.PureComponent<Props, State> {
   _onResultSelect(result: Searchable.SearchResult): void {
     const routes = (this.refs.Navigator as any).getCurrentRoutes();
     if (routes != undefined && routes[routes.length - 1].id === SINGLE) {
-      this.props.onResultSelect(this.state.singleResultTitle, result.data);
+      Analytics.selectedSearchResult(this.state.singleResultTitle, result.title, this.props.filter);
+      this.props.onResultSelect(this.state.singleResultTitle, result);
     } else {
-      this.props.onResultSelect(result.key, result.data);
+      Analytics.selectedSearchResult(result.key, result.title, this.props.filter);
+      this.props.onResultSelect(result.key, result);
     }
     (this.refs.Navigator as any).pop();
   }
@@ -598,7 +602,7 @@ const mapStateToProps = (store: any): any => {
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
-    onResultSelect: (sectionKey: string | undefined, data: any): any => {
+    onResultSelect: (sectionKey: string | undefined, result: Searchable.SearchResult): any => {
       if (sectionKey == undefined) {
         return;
       }
@@ -607,38 +611,38 @@ const mapDispatchToProps = (dispatch: any): any => {
         case 'Buildings':
         case 'Bâtiments': {
           const name = {
-            name_en: Translations.getEnglishName(data) || '',
-            name_fr: Translations.getFrenchName(data) || '',
+            name_en: Translations.getEnglishName(result.data) || '',
+            name_fr: Translations.getFrenchName(result.data) || '',
           };
 
           dispatch(actions.setHeaderTitle(name, 'find', Constants.Views.Find.Building));
-          dispatch(actions.viewBuilding(data));
+          dispatch(actions.viewBuilding(result.data));
           dispatch(actions.switchFindView(Constants.Views.Find.Building));
           dispatch(actions.switchTab('find'));
           break;
         }
         case 'External links':
         case 'Liens externes':
-          External.openLink(data.link, Linking, Alert, Clipboard, TextUtils);
+          External.openLink(result.data.link, Linking, Alert, Clipboard, TextUtils);
           break;
         case 'Rooms':
         case 'Chambres':
           dispatch(actions.setHeaderTitle('directions', 'find', Constants.Views.Find.StartingPoint));
-          dispatch(actions.setDestination({ shorthand: data.shorthand, room: data.room }));
+          dispatch(actions.setDestination({ shorthand: result.data.shorthand, room: result.data.room }));
           dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
           dispatch(actions.switchTab('find'));
           break;
         case 'uO Info':
           // FIXME: figure out proper title here
           dispatch(actions.setHeaderTitle('uo_info', 'discover', Constants.Views.Discover.Links));
-          dispatch(actions.switchLinkCategory(data));
+          dispatch(actions.switchLinkCategory(result.data));
           dispatch(actions.switchDiscoverView(Constants.Views.Discover.Links));
           dispatch(actions.switchTab('discover'));
           break;
         case 'Study spots':
         case 'Taches d\'étude':
           dispatch(actions.setHeaderTitle('directions', 'find', Constants.Views.Find.StartingPoint));
-          dispatch(actions.setDestination({ shorthand: data.shorthand, room: data.room }));
+          dispatch(actions.setDestination({ shorthand: result.data.shorthand, room: result.data.room }));
           dispatch(actions.switchFindView(Constants.Views.Find.StartingPoint));
           dispatch(actions.switchTab('find'));
           break;

@@ -44,6 +44,7 @@ import { connect } from 'react-redux';
 // import ActionButton from 'react-native-action-button';
 import Header from '../../components/Header';
 import PaddedIcon from '../../components/PaddedIcon';
+import * as Analytics from '../../util/Analytics';
 import * as Constants from '../../constants';
 import * as Display from '../../util/Display';
 import * as External from '../../util/External';
@@ -90,6 +91,11 @@ class Steps extends React.PureComponent<Props, State> {
   async _loadDirections(): Promise<void> {
     const { accessible, destination, startingPoint }: Props = this.props;
     const directionResults = await Directions.getDirectionsBetween(startingPoint, destination, accessible);
+
+    if (directionResults.showReport) {
+      Analytics.failedNavigation(startingPoint, destination, accessible);
+    }
+
     this.setState({
       showReport: directionResults.showReport,
       steps: directionResults.steps,

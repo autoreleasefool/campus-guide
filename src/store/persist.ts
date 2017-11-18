@@ -31,9 +31,13 @@ import * as Preferences from '../util/Preferences';
 
 import * as Actions from '../actionTypes';
 
-export const persist = ({ getState }: any): any => (next: any): any => (action: any): any => {
-  next(action);
-  const store = getState();
+// Types
+import { Middleware } from 'redux';
+import { Store } from './configureStore';
+
+export const persist: Middleware = ({ getState }: any): any => (next: any): any => (action: any): any => {
+  const result = next(action);
+  const store: Store = getState();
 
   switch (action.type) {
     case Actions.Config.ConfigUpdate:
@@ -71,4 +75,6 @@ export const persist = ({ getState }: any): any => (next: any): any => (action: 
     default:
       // does nothing
   }
+
+  return result;
 };

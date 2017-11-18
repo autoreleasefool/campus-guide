@@ -34,6 +34,7 @@ import * as actions from '../../actions';
 // Imports
 import LinkCategoryView from '../../components/LinkCategoryView';
 import Menu from '../../components/Menu';
+import * as Analytics from '../../util/Analytics';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
@@ -207,6 +208,8 @@ class Links extends React.PureComponent<Props, State> {
       name_en: Translations.getEnglishName(newSection) || '',
       name_fr: Translations.getFrenchName(newSection) || '',
     };
+
+    Analytics.menuItemSelected('uO Info', title.name_en, id);
     this.props.setHeaderTitle(title, sectionId);
     this.props.showCategory(sectionId);
   }

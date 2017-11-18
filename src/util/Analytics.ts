@@ -85,7 +85,7 @@ export function buildingSelected(shorthand: string, options?: EventOptions): voi
       shorthand,
     });
   } else {
-    console.log(`Analytics, selected building: ${shorthand}`);
+    console.log(`Analytics, selected building: ${shorthand}\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -104,7 +104,7 @@ export function roomSelected(shorthand: string, room: string | undefined, option
       shorthand,
     });
   } else {
-    console.log(`Analytics, selected room: ${shorthand} ${room}`);
+    console.log(`Analytics, selected room: ${shorthand} ${room}\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -123,7 +123,8 @@ export function startNavigation(startingPoint: Destination, target: Destination,
       target,
     });
   } else {
-    console.log(`Analytics, started navigating: ${JSON.stringify(startingPoint)} to ${JSON.stringify(target)}`);
+    console.log(`Analytics, started navigating: ${JSON.stringify(startingPoint)} to ${JSON.stringify(target)}`
+        + `\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -148,7 +149,8 @@ export function failedNavigation(
       target,
     });
   } else {
-    console.log(`Analytics, failed navigation: ${JSON.stringify(startingPoint)} to ${JSON.stringify(target)}`);
+    console.log(`Analytics, failed navigation: ${JSON.stringify(startingPoint)} to ${JSON.stringify(target)}`
+        + `\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -165,7 +167,7 @@ export function addCourse(courseCode: string, options?: EventOptions): void {
       courseCode,
     });
   } else {
-    console.log(`Analytics, added course: ${courseCode}`);
+    console.log(`Analytics, added course: ${courseCode}\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -182,7 +184,7 @@ export function removeCourse(courseCode: string, options?: EventOptions): void {
       courseCode,
     });
   } else {
-    console.log(`Analytics, removed course: ${courseCode}`);
+    console.log(`Analytics, removed course: ${courseCode}\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -198,7 +200,8 @@ export function menuItemSelected(menuName: string, itemName: string, itemId: str
   if (isAnalyticsEnabled()) {
     Answers.logContentView(itemName, menuName, itemId, options);
   } else {
-    console.log(`Analytics, viewed menu item: ${menuName}.${itemName}.${itemId}`);
+    console.log(`Analytics, viewed menu item: ${menuName}.${itemName}.${itemId}`
+        + `\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -212,7 +215,7 @@ export function performSearch(text: string, options?: EventOptions): void {
   if (isAnalyticsEnabled()) {
     Answers.logSearch(text, options);
   } else {
-    console.log(`Analytics, performed search: ${text}`);
+    console.log(`Analytics, performed search: ${text}\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -231,7 +234,8 @@ export function selectedSearchResult(itemName: string, itemId: string, query: st
       query,
     });
   } else {
-    console.log(`Analytics, selected search result: ${query}.${itemName}.${itemId}`);
+    console.log(`Analytics, selected search result: ${query}.${itemName}.${itemId}`
+        + `\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -250,7 +254,7 @@ export function editSetting(settingName: string, newValue: any, options?: EventO
       settingName,
     });
   } else {
-    console.log(`Analytics, edited setting: ${settingName} - ${newValue}`);
+    console.log(`Analytics, edited setting: ${settingName} - ${newValue}\nOptions: ${JSON.stringify(options)}`);
   }
 }
 
@@ -271,6 +275,7 @@ export function switchTab(newTab: Tab, oldTab: Tab, timeSpent: number, options?:
       timeSpent,
     });
   } else {
-    console.log(`Analytics, switched tab: ${oldTab} to ${newTab}, spent ${timeSpent}`);
+    console.log(`Analytics, switched tab: ${oldTab} to ${newTab}, spent ${timeSpent}`
+        + `\nOptions: ${JSON.stringify(options)}`);
   }
 }

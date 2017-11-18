@@ -48,6 +48,7 @@ import ModalHeader from '../../components/ModalHeader';
 import Snackbar from 'react-native-snackbar';
 import StudyFilters from '../../components/StudyFilters';
 import StudySpotList from '../../components/StudySpotList';
+import * as Analytics from '../../util/Analytics';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
@@ -206,6 +207,8 @@ class StudySpots extends React.PureComponent<Props, State> {
    * @param {StudySpot} spot the spot selected by the user
    */
   _onSpotSelected(spot: StudySpot): void {
+    const index = this.state.studySpots.spots.indexOf(spot);
+    Analytics.roomSelected(spot.building, spot.room, { studySpot: true, index });
     this.props.navigateToStudySpot(spot);
   }
 

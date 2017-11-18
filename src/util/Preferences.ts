@@ -22,6 +22,9 @@
  */
 'use strict';
 
+// Imports
+import * as Analytics from '../util/Analytics';
+
 // Type imports
 import { AsyncStorageStatic } from 'react-native';
 import { Language } from './Translations';
@@ -77,6 +80,7 @@ export async function getSelectedLanguage(asyncStorage: AsyncStorageStatic): Pro
 export function setSelectedLanguage(asyncStorage: AsyncStorageStatic, language: any): void {
   if (language === 'en' || language === 'fr') {
     asyncStorage.setItem(SELECTED_LANGUAGE, language);
+    Analytics.setPreference(SELECTED_LANGUAGE, language);
   }
 }
 
@@ -103,6 +107,7 @@ export async function getCurrentSemester(asyncStorage: AsyncStorageStatic): Prom
 export function setCurrentSemester(asyncStorage: AsyncStorageStatic, semester: any): void {
   if (typeof (semester) === 'number' && semester >= 0) {
     asyncStorage.setItem(CURRENT_SEMESTER, semester.toString());
+    Analytics.setPreference(CURRENT_SEMESTER, semester.toString());
   }
 }
 
@@ -129,6 +134,7 @@ export async function getPrefersWheelchair(asyncStorage: AsyncStorageStatic): Pr
 export function setPrefersWheelchair(asyncStorage: AsyncStorageStatic, prefer: any): void {
   if (prefer === true || prefer === false) {
     asyncStorage.setItem(PREFER_WHEELCHAIR, prefer.toString());
+    Analytics.setPreference(PREFER_WHEELCHAIR, prefer.toString());
   }
 }
 
@@ -155,6 +161,7 @@ export async function getPreferredTimeFormat(asyncStorage: AsyncStorageStatic): 
 export function setPreferredTimeFormat(asyncStorage: AsyncStorageStatic, format: any): void {
   if (format === '12h' || format === '24h') {
     asyncStorage.setItem(PREFERRED_TIME_FORMAT, format);
+    Analytics.setPreference(PREFERRED_TIME_FORMAT, format);
   }
 }
 
@@ -181,5 +188,6 @@ export async function getPreferScheduleByCourse(asyncStorage: AsyncStorageStatic
 export function setPreferScheduleByCourse(asyncStorage: AsyncStorageStatic, prefer: any): void {
   if (prefer === true || prefer === false) {
     asyncStorage.setItem(PREFER_BY_COURSE, prefer.toString());
+    Analytics.setPreference(PREFER_BY_COURSE, prefer.toString());
   }
 }

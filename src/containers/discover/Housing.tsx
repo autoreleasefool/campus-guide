@@ -51,6 +51,7 @@ import ImageGrid from '../../components/ImageGrid';
 import LinkCategoryView from '../../components/LinkCategoryView';
 import Menu from '../../components/Menu';
 import Snackbar from 'react-native-snackbar';
+import * as Analytics from '../../util/Analytics';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 import * as External from '../../util/External';
@@ -366,6 +367,7 @@ class Housing extends React.PureComponent<Props, State> {
    */
   _onSectionSelected(section: string): void {
     if (section === 'off') {
+      Analytics.menuItemSelected('Housing sections', 'off_campus_housing', section);
       const translatedLink = Translations.getLink(this.state.housingInfo.offCampusHousing)
           || External.getDefaultLink();
       External.openLink(translatedLink, Linking, Alert, Clipboard, TextUtils);
@@ -757,19 +759,26 @@ const mapDispatchToProps = (dispatch: any): any => {
     canNavigateBack: (can: boolean): void => dispatch(actions.canNavigateBack('housing', can)),
     onSectionSelected: (section: string | undefined): void => {
       let view = Constants.Views.Housing.Menu;
+      let title: string | undefined;
 
       switch (section) {
         case 'res':
           view = Constants.Views.Housing.Residences;
+          title = 'university_residences';
           dispatch(actions.setHeaderTitle('university_residences', 'discover', view));
           break;
         case 'oth':
           view = Constants.Views.Housing.Resources;
+          title = 'other_resources';
           dispatch(actions.setHeaderTitle('other_resources', 'discover', view));
           break;
         default:
           // Does nothing
           // Return to default view, MENU
+      }
+
+      if (section != undefined) {
+        Analytics.menuItemSelected('Housing sections', title, section);
       }
 
       dispatch(actions.switchHousingView(view));
