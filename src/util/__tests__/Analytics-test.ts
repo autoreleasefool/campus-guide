@@ -63,7 +63,7 @@ describe('Analytics-test', () => {
 
   beforeEach(() => {
     Analytics.setAnalyticsEnabledOverride(true, true);
-    Fabric.__clearCache();
+    (Fabric as any).__clearCache();
   });
 
   it('tests if analytics get disabled', () => {
@@ -81,8 +81,8 @@ describe('Analytics-test', () => {
     Analytics.editSetting('setting', 0);
     Analytics.switchTab('find', 'discover', 1);
 
-    expect(Fabric.__getDatastore()).toEqual({});
-    expect(Fabric.__getEvents()).toEqual({});
+    expect((Fabric as any).__getDatastore()).toEqual({});
+    expect((Fabric as any).__getEvents()).toEqual({});
   });
 
   it('tests if analytics are enabled', () => {
@@ -95,14 +95,14 @@ describe('Analytics-test', () => {
 
   it('tests setting the profile language', () => {
     Analytics.setPreference('language', 'en');
-    expect(Fabric.__getDatastore()).toEqual({ language: 'en' });
+    expect((Fabric as any).__getDatastore()).toEqual({ language: 'en' });
   });
 
   it('tests selecting a building', () => {
     Analytics.buildingSelected(building.shorthand);
     Analytics.buildingSelected(building.shorthand, { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Selected building': [
         { shorthand: building.shorthand },
         { shorthand: building.shorthand, test: 0 },
@@ -114,7 +114,7 @@ describe('Analytics-test', () => {
     Analytics.roomSelected(building.shorthand, '123');
     Analytics.roomSelected(building.shorthand, '456', { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Selected room': [
         { shorthand: building.shorthand, room: '123' },
         { shorthand: building.shorthand, room: '456', test: 0 },
@@ -126,7 +126,7 @@ describe('Analytics-test', () => {
     Analytics.startNavigation(startingPoint, target);
     Analytics.startNavigation(startingPoint, target, { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Started navigating': [
         { startingPoint, target },
         { startingPoint, target, test: 0 },
@@ -138,7 +138,7 @@ describe('Analytics-test', () => {
     Analytics.failedNavigation(startingPoint, target, true);
     Analytics.failedNavigation(startingPoint, target, false, { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Failed to find path': [
         { startingPoint, target, accessible: true },
         { startingPoint, target, accessible: false, test: 0 },
@@ -150,7 +150,7 @@ describe('Analytics-test', () => {
     Analytics.addCourse(course.code);
     Analytics.addCourse(course.code, { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Added course to schedule': [
         { courseCode: course.code },
         { courseCode: course.code, test: 0 },
@@ -162,7 +162,7 @@ describe('Analytics-test', () => {
     Analytics.removeCourse(course.code);
     Analytics.removeCourse(course.code, { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Removed course from schedule': [
         { courseCode: course.code },
         { courseCode: course.code, test: 0 },
@@ -174,7 +174,7 @@ describe('Analytics-test', () => {
     Analytics.menuItemSelected('menu', 'item', 'id');
     Analytics.menuItemSelected('menu', 'item', 'id', { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'menu.item.id': [
         undefined,
         { test: 0 },
@@ -186,7 +186,7 @@ describe('Analytics-test', () => {
     Analytics.performSearch('query');
     Analytics.performSearch('query', { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       query: [
         undefined,
         { test: 0 },
@@ -198,7 +198,7 @@ describe('Analytics-test', () => {
     Analytics.selectedSearchResult('item', 'id', 'query');
     Analytics.selectedSearchResult('item', 'id', 'query', { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Search.item.id': [
         { query: 'query' },
         { query: 'query', test: 0 },
@@ -210,7 +210,7 @@ describe('Analytics-test', () => {
     Analytics.editSetting('setting', 0);
     Analytics.editSetting('setting', 'value', { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Edited setting': [
         { settingName: 'setting', newValue: 0 },
         { settingName: 'setting', newValue: 'value', test: 0 },
@@ -222,7 +222,7 @@ describe('Analytics-test', () => {
     Analytics.switchTab('find', 'discover', 1);
     Analytics.switchTab('search', 'settings', 2, { test: 0 });
 
-    expect(Fabric.__getEvents()).toEqual({
+    expect((Fabric as any).__getEvents()).toEqual({
       'Switched tab': [
         { oldTab: 'discover', newTab: 'find', timeSpent: 1 },
         { oldTab: 'settings', newTab: 'search', timeSpent: 2, test: 0 },
