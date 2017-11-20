@@ -440,8 +440,10 @@ class StartingPoint extends React.PureComponent<Props, State> {
       );
     }
 
-    const suggestion = this.state.closestBuilding
-        ? Translations.getName(this.state.closestBuilding)
+    const closestBuilding = this.state.closestBuilding;
+
+    const suggestion = closestBuilding
+        ? Translations.getName(closestBuilding)
         : Translations.get('no_buildings_nearby');
 
     return (
@@ -453,7 +455,20 @@ class StartingPoint extends React.PureComponent<Props, State> {
             showsUserLocation={true}
             style={_styles.map}
             onMapReady={(): void => this.setState({ mapReady: true })}
-            onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })} />
+            onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>
+          {closestBuilding
+              ? (
+                <MapView.Marker
+                    coordinate={{
+                      latitude: closestBuilding.location.latitude,
+                      longitude: closestBuilding.location.longitude,
+                    }}
+                    identifier={closestBuilding.shorthand}
+                    key={closestBuilding.shorthand}
+                    title={Translations.getName(closestBuilding)} />
+              )
+              : undefined}
+        </MapView>
         <Suggestion
             backgroundColor={Constants.Colors.secondaryBackground}
             language={this.props.language}
