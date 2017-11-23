@@ -46,7 +46,6 @@ import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 import * as RNFS from 'react-native-fs';
 import * as Translations from '../../util/Translations';
-const CoreTranslations = require('../../../assets/json/CoreTranslations');
 
 // Types
 import { Store } from '../../store/configureStore';
@@ -243,8 +242,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * Displays a prompt to user indicating the server could not be reached and their options.
    */
   async _notifyServerFailed(): Promise<void> {
-    const language = Translations.getLanguage();
-
     try {
       await Configuration.init();
       await Configuration.getConfig('/university.json');
@@ -257,16 +254,16 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       const onCancel = (): Promise<void> => this._returnToMain();
 
       Alert.alert(
-        CoreTranslations[language].server_unavailable,
-        CoreTranslations[language].server_unavailable_config_available,
+        Translations.get('server_unavailable'),
+        Translations.get('server_unavailable_config_available'),
         [
           {
             onPress: onCancel,
-            text: CoreTranslations[language].later,
+            text: Translations.get('later'),
           },
           {
             onPress: (): void => this._checkConnection(),
-            text: CoreTranslations[language].retry,
+            text: Translations.get('retry'),
           },
         ],
         { onDismiss: onCancel }
@@ -280,17 +277,17 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       const onCancel = (): void => this.setState({ showRetry: true });
 
       Alert.alert(
-        CoreTranslations[language].server_unavailable,
-        CoreTranslations[language].server_unavailable_config_unavailable,
+        Translations.get('server_unavailable'),
+        Translations.get('server_unavailable_config_unavailable'),
         [
           {
             onPress: onCancel,
             style: 'cancel',
-            text: CoreTranslations[language].cancel,
+            text: Translations.get('cancel'),
           },
           {
             onPress: (): void => this._checkConnection(),
-            text: CoreTranslations[language].retry,
+            text: Translations.get('retry'),
           },
         ],
         { onDismiss: onCancel }
@@ -307,8 +304,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       console.log(err);
     }
 
-    const language = this.props.language;
-
     try {
       await Configuration.init();
       await Configuration.getConfig('/university.json');
@@ -321,16 +316,16 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       const onCancel = (): Promise<void> => this._returnToMain();
 
       Alert.alert(
-        CoreTranslations[language].no_internet,
-        CoreTranslations[language].no_internet_config_available,
+        Translations.get('no_internet'),
+        Translations.get('no_internet_config_available'),
         [
           {
             onPress: onCancel,
-            text: CoreTranslations[language].later,
+            text: Translations.get('later'),
           },
           {
             onPress: (): void => this._checkConnection(),
-            text: CoreTranslations[language].retry,
+            text: Translations.get('retry'),
           },
         ],
         { onDismiss: onCancel }
@@ -344,17 +339,17 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       const onCancel = (): void => this.setState({ showRetry: true });
 
       Alert.alert(
-        CoreTranslations[language].no_internet,
-        CoreTranslations[language].no_internet_config_unavailable,
+        Translations.get('no_internet'),
+        Translations.get('no_internet_config_unavailable'),
         [
           {
             onPress: onCancel,
             style: 'cancel',
-            text: CoreTranslations[language].cancel,
+            text: Translations.get('cancel'),
           },
           {
             onPress: (): void => this._checkConnection(),
-            text: CoreTranslations[language].retry,
+            text: Translations.get('retry'),
           },
         ],
         { onDismiss: onCancel }
@@ -367,8 +362,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * their current configuration, if available.
    */
   async _updateRejected(): Promise<void> {
-    const language = this.props.language;
-
     try {
       await Configuration.init();
       this._returnToMain();
@@ -381,17 +374,17 @@ class UpdateScreen extends React.PureComponent<Props, State> {
       const onCancel = (): void => this.setState({ showRetry: true });
 
       Alert.alert(
-        CoreTranslations[language].update_rejected,
-        CoreTranslations[language].update_rejected_config_unavailable,
+        Translations.get('update_rejected'),
+        Translations.get('update_rejected_config_unavailable'),
         [
           {
             onPress: onCancel,
             style: 'cancel',
-            text: CoreTranslations[language].cancel,
+            text: Translations.get('cancel'),
           },
           {
             onPress: (): void => this._checkConnection(),
-            text: CoreTranslations[language].retry,
+            text: Translations.get('retry'),
           },
         ],
         { onDismiss: onCancel }
@@ -486,10 +479,8 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the hierarchy of views to render
    */
   _renderErrorScreen(): JSX.Element {
-    const language = this.props.language;
-
-    const errorTitle = CoreTranslations[language][this.state.coreErrorTitle];
-    const errorMessage = CoreTranslations[language][this.state.coreErrorMessage];
+    const errorTitle = Translations.get(this.state.coreErrorTitle);
+    const errorMessage = Translations.get(this.state.coreErrorMessage);
 
     return (
       <View style={_styles.buttonContainer}>
@@ -497,7 +488,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
         <Text style={_styles.errorMessage}>{errorMessage}</Text>
         <TouchableOpacity onPress={(): void => this._retryUpdate()}>
           <View style={_styles.retryContainer}>
-            <Text style={_styles.retryText}>{CoreTranslations[language].retry_update}</Text>
+            <Text style={_styles.retryText}>{Translations.get('retry_update')}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -510,7 +501,6 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the hierarchy of views to render
    */
   _renderStatusMessages(): JSX.Element {
-    const language = this.props.language;
     const filesDownloaded = (this.props.filesDownloaded == undefined)
       ? undefined
       : (
@@ -520,7 +510,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
                 key={index}
                 style={_styles.downloadingContainer}>
               <Text style={_styles.downloadedText}>
-                {CoreTranslations[language].downloaded} <Text style={_styles.fileText}>{filename}</Text>
+                {Translations.get('downloaded')} <Text style={_styles.fileText}>{filename}</Text>
               </Text>
             </View>
           ))}
@@ -543,12 +533,10 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the hierarchy of views to render
    */
   render(): JSX.Element {
-    const language = Translations.getLanguage();
-
     // Get background color for screen, and color for progress bar
     let backgroundColor = Constants.Colors.primaryBackground;
     let foregroundColor = Constants.Colors.secondaryBackground;
-    if (language === 'fr') {
+    if (this.props.language === 'fr') {
       backgroundColor = Constants.Colors.secondaryBackground;
       foregroundColor = Constants.Colors.primaryBackground;
     }
