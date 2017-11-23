@@ -41,8 +41,6 @@ import * as actions from '../../actions';
 import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
 
-const CoreTranslations = require('../../../assets/json/CoreTranslations');
-
 // Types
 import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
@@ -110,11 +108,11 @@ class Splash extends React.PureComponent<Props, State> {
           <View style={_styles.englishContainer}>
             <View style={_styles.languageContainer}>
               <Text style={_styles.languageSubtitle}>
-                {CoreTranslations.en.continue_in}
+                {Translations.get('continue_in', 'en')}
               </Text>
               <View style={_styles.languageTextContainer}>
                 <Text style={_styles.languageTitle}>
-                  {CoreTranslations.en.language}
+                  {Translations.get('language', 'en')}
                 </Text>
               </View>
             </View>
@@ -126,11 +124,11 @@ class Splash extends React.PureComponent<Props, State> {
           <View style={_styles.frenchContainer}>
             <View style={_styles.languageContainer}>
               <Text style={_styles.languageSubtitle}>
-                {CoreTranslations.fr.continue_in}
+                {Translations.get('continue_in', 'fr')}
               </Text>
               <View style={_styles.languageTextContainer}>
                 <Text style={_styles.languageTitle}>
-                  {CoreTranslations.fr.language}
+                  {Translations.get('language', 'fr')}
                 </Text>
               </View>
             </View>
