@@ -62,6 +62,8 @@ export interface State {
   showSearch: boolean;            // True to show a search field in the header, false to hide
   showSearchDisableCount: number; // Incremented when the next showSearch animation should be disabled
   tabShowSearch: TabSet<boolean>; // Whether the tab should show a search button
+
+  showIntroTour: boolean;         // True to request the intro tour be shown
 }
 
 /** Default title to use for the header. */
@@ -85,6 +87,8 @@ const initialState: State = {
   linkId: 0,
   campus: undefined,
   residence: undefined,
+
+  showIntroTour: false,
 
   showBack: false,
   showBackDisableCount: 0,
@@ -194,6 +198,11 @@ function getTabTitle(state: State, tab: Tab): TabTitle {
  */
 export default function navigation(state: State = initialState, action: Actions.ActionType): State {
   switch (action.type) {
+    case Actions.Navigation.ShowIntroTour:
+      return {
+        ...state,
+        showIntroTour: action.show,
+      };
     case Actions.Navigation.NavigateBack:
       return {
         ...state,

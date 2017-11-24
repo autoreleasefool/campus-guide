@@ -27,6 +27,9 @@ import React from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { Navigator } from 'react-native-deprecated-custom-components';
 
+// Redux imports
+import { connect } from 'react-redux';
+
 // Imports
 import * as Constants from '../constants';
 import Main from './Main';
@@ -35,9 +38,13 @@ import Splash from './welcome/Splash';
 import Update from './welcome/Update';
 
 // Types
+import { Store } from '../store/configureStore';
 import { WelcomeTab } from '../../typings/global';
 
-interface Props {}
+interface Props {
+  showIntroTour: boolean;   // When true, the onboarding tour should be opened
+}
+
 interface State {}
 
 // Route to describe which view the Navigator should display.
@@ -46,7 +53,18 @@ interface AppRoute {
   data: any;      // Additional data for the view
 }
 
-export default class CampusGuideApp extends React.PureComponent<Props, State> {
+class CampusGuideApp extends React.PureComponent<Props, State> {
+
+  /**
+   * Show the intro tour, if requested.
+   *
+   * @param {Props} nextProps the new props being received
+   */
+  componentWillReceiveProps(nextProps: Props): void {
+    if (nextProps.showIntroTour && nextProps.showIntroTour !== this.props.showIntroTour) {
+      (this.refs.Navigator as any).push({ id: 'onboarding' });
+    }
+  }
 
   /**
    * Defines the transition between views.
@@ -120,8 +138,17 @@ export default class CampusGuideApp extends React.PureComponent<Props, State> {
       <Navigator
           configureScene={this._configureScene}
           initialRoute={{ id: 'main' }}
+          ref='Navigator'
           renderScene={this._renderScene}
           style={{ flex: 1, backgroundColor: Constants.Colors.primaryBackground }} />
     );
   }
 }
+
+const mapStateToProps = (store: Store): any => {
+  return {
+    showIntroTour: store.navigation.showIntroTour,
+  };
+};
+
+export default connect(mapStateToProps)(CampusGuideApp) as any;

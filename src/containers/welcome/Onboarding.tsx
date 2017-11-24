@@ -38,6 +38,7 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
+import * as actions from '../../actions';
 
 // Imports
 import * as Constants from '../../constants';
@@ -48,8 +49,9 @@ import { Store } from '../../store/configureStore';
 import { Language } from '../../util/Translations';
 
 interface Props {
-  language: Language; // Language currently selected by user
-  navigator: any;     // Parent navigator
+  language: Language;                       // Language currently selected by user
+  navigator: any;                           // Parent navigator
+  finishIntroTour(skipped: boolean): void;  // Finished showing the intro tour, so it can be shown again
 }
 
 interface State {
@@ -133,7 +135,7 @@ class Onboarding extends React.PureComponent<Props, State> {
   /** Scroll to next screen. */
   _nextScreen = (): void => {
     if (this.state.currentPage === this._onboardingPages.length - 1) {
-      this._popOrPushToMain();
+      this._popOrPushToMain(false);
     } else {
       if (this._ignoreButtons) {
         return;
@@ -149,7 +151,7 @@ class Onboarding extends React.PureComponent<Props, State> {
   }
 
   /** End onboarding prematurely. */
-  _skipOnboarding = (): void => this._popOrPushToMain();
+  _skipOnboarding = (): void => this._popOrPushToMain(true);
 
   /** When user manually changes the page, or when page change finishes. */
   _handlePageChange = (scrollEvent: NativeSyntheticEvent<NativeScrollEvent>): void => {
@@ -193,8 +195,12 @@ class Onboarding extends React.PureComponent<Props, State> {
   /**
    * Check if a 'main' route already exists on the navigator and pop to it if so.
    * Otherwise, push a new one.
+   *
+   * @param {boolean} skipped true if the user skipped the tour, false otherwise
    */
-  _popOrPushToMain(): void {
+  _popOrPushToMain(skipped: boolean): void {
+    this.props.finishIntroTour(skipped);
+
     const routes = this.props.navigator.getCurrentRoutes();
     for (const route of routes) {
       if (route.id === 'main') {
@@ -256,7 +262,9 @@ class Onboarding extends React.PureComponent<Props, State> {
         </View>
         <View style={_styles.buttonContainer}>
           <TouchableOpacity onPress={this._previousScreen}>
-            <Text style={_styles.button}>{Translations.get('prev')}</Text>
+            <Text style={[ _styles.button, { opacity: this.state.currentPage !== 0 ? 1 : 0 }]}>
+              {Translations.get('prev')}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._skipOnboarding}>
             <Text style={[ _styles.button, _styles.transparent ]}>{Translations.get('skip')}</Text>
@@ -372,4 +380,10 @@ const mapStateToProps = (store: Store): any => {
   };
 };
 
-export default connect(mapStateToProps)(Onboarding) as any;
+const mapDispatchToProps = (dispatch: any): any => {
+  return {
+    finishIntroTour: (skipped: boolean): any => dispatch(actions.showIntroTour(false, skipped)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Onboarding) as any;

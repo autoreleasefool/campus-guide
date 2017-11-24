@@ -32,6 +32,11 @@ import * as Actions from '../../actionTypes';
 
 describe('navigation actions', () => {
 
+  it('should create an action to show the intro tour', () => {
+    const expectedAction = { type: Actions.Navigation.ShowIntroTour, show: true, skipped: false };
+    expect(navigation.showIntroTour()).toEqual(expectedAction);
+  });
+
   it('should create an action to switch the tabs', () => {
     const tab: Tab = 'find';
     const expectedAction = { type: Actions.Navigation.SwitchTab, tab };

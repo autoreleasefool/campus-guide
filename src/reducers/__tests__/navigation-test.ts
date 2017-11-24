@@ -72,6 +72,8 @@ const initialState: State = {
   campus: undefined,
   residence: undefined,
 
+  showIntroTour: false,
+
   showBack: false,
   showBackDisableCount: 0,
   showSearch: true,
@@ -128,6 +130,14 @@ describe('navigation reducer', () => {
 
   it('should return the initial state', () => {
     expect(reducer(undefined, { type: Actions.Other.Invalid })).toEqual(initialState);
+  });
+
+  it('should show the intro tour', () => {
+    expect(reducer(initialState, { type: Actions.Navigation.ShowIntroTour, show: true }))
+        .toEqual({
+          ...initialState,
+          showIntroTour: true,
+        });
   });
 
   it('should switch to a new tab', () => {

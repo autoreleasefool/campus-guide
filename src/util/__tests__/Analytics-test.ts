@@ -80,6 +80,7 @@ describe('Analytics-test', () => {
     Analytics.selectedSearchResult('item', 'id', 'query');
     Analytics.editSetting('setting', 0);
     Analytics.switchTab('find', 'discover', 1);
+    Analytics.finishedIntroTour(true);
 
     expect((Fabric as any).__getDatastore()).toEqual({});
     expect((Fabric as any).__getEvents()).toEqual({});
@@ -226,6 +227,18 @@ describe('Analytics-test', () => {
       'Switched tab': [
         { oldTab: 'discover', newTab: 'find', timeSpent: 1 },
         { oldTab: 'settings', newTab: 'search', timeSpent: 2, test: 0 },
+      ],
+    });
+  });
+
+  it('tests finishing the intro tour', () => {
+    Analytics.finishedIntroTour(true);
+    Analytics.finishedIntroTour(false, { test: 0 });
+
+    expect((Fabric as any).__getEvents()).toEqual({
+      'Finished intro tour': [
+        { skipped: true },
+        { skipped: false, test: 0 },
       ],
     });
   });

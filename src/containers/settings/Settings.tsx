@@ -70,6 +70,7 @@ interface Props {
   semesters: Semester[];                                // Semesters available at the university
   timeFormat: TimeFormat;                               // The user's preferred time format
   updateConfiguration(o: Configuration.Options): void;  // Update the global configuration state
+  showIntroTour(): void;                                // Show the app intro tour
 }
 
 interface State {
@@ -220,7 +221,7 @@ class Settings extends React.PureComponent<Props, State> {
     if (setting.type === 'boolean' && tappedRow) {
       // Ignore boolean settings, they can only be manipulated by switch
       return;
-    } else if (setting.type === 'link' && setting.key !== 'app_open_source') {
+    } else if (setting.type === 'link') {
       // Open the provided link
       const link = Translations.getLink(setting);
       External.openLink(
@@ -258,6 +259,9 @@ class Settings extends React.PureComponent<Props, State> {
           listModalTitle: Translations.getName(setting) || '',
           listModalVisible: true,
         });
+        break;
+      case 'app_help_tour':
+        this.props.showIntroTour();
         break;
       default:
         // Does nothing
@@ -339,6 +343,7 @@ class Settings extends React.PureComponent<Props, State> {
           </View>
         );
         break;
+      case 'custom':
       case 'link':
         const icon = Display.getPlatformIcon(Platform.OS, item);
         const iconColor = Constants.Colors.primaryBlackIcon;
@@ -498,6 +503,7 @@ const mapStateToProps = (store: Store): any => {
 
 const mapDispatchToProps = (dispatch: any): any => {
   return {
+    showIntroTour: (): any => dispatch(actions.showIntroTour()),
     updateConfiguration: (options: Configuration.Options): any => dispatch(actions.updateConfiguration(options)),
   };
 };

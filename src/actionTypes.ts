@@ -32,6 +32,7 @@ export enum Navigation {
   NavigateBack = 'NAV_NAVIGATE_BACK',
   SetTitle = 'NAV_SET_TITLE',
   ShowBack = 'NAV_SHOW_BACK',
+  ShowIntroTour = 'NAV_SHOW_INTRO_TOUR',
   ShowSearch = 'NAV_SHOW_SEARCH',
   SwitchDiscoverView = 'NAV_SWITCH_DISCOVER_VIEW',
   SwitchDiscoverLink = 'NAV_SWITCH_DISCOVER_LINK',
@@ -40,6 +41,12 @@ export enum Navigation {
   SwitchHousingView = 'NAV_SWITCH_HOUSING_VIEW',
   SwitchHousingResidence = 'NAV_SWITCH_HOUSING_RESIDENCE',
   SwitchTab = 'NAV_SWITCH_TAB',
+}
+
+interface ShowIntroTourAction {
+  type: Navigation.ShowIntroTour;
+  show: boolean;
+  skipped: boolean;
 }
 
 interface CanBackAction {
@@ -249,4 +256,5 @@ export type ActionType =
   | ActivateStudyFilterAction
   | DeactivateStudyFilterAction
   | SetStudyFiltersAction
+  | ShowIntroTourAction
   ;

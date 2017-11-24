@@ -279,3 +279,21 @@ export function switchTab(newTab: Tab, oldTab: Tab, timeSpent: number, options?:
         + `\nOptions: ${JSON.stringify(options)}`);
   }
 }
+
+/**
+ * Record user's interactionn with the intro tour.
+ *
+ * @param {boolean}      skipped true if the user skipped the tour, false if they completed it
+ * @param {EventOptions} options optional event params
+ */
+export function finishedIntroTour(skipped: boolean, options?: EventOptions): void {
+  if (isAnalyticsEnabled()) {
+    Answers.logCustom('Finished intro tour', {
+      ...options,
+      skipped,
+    });
+  } else {
+    console.log(`Analytics, finished intro tour. Skipped? ${skipped}`
+        + `\nOptions: ${JSON.stringify(options)}`);
+  }
+}

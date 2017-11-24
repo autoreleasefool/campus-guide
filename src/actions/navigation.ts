@@ -121,3 +121,11 @@ export function switchTransitCampus(campus: SingleMenuSection | undefined): Acti
     type: Actions.Navigation.SwitchDiscoverTransitCampus,
   };
 }
+
+export function showIntroTour(show: boolean = true, skipped: boolean = false): Actions.ActionType {
+  return {
+    show,
+    skipped,
+    type: Actions.Navigation.ShowIntroTour,
+  };
+}

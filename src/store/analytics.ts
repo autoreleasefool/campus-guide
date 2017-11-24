@@ -93,6 +93,11 @@ export const analytics: Middleware = ({ getState }: any): any => (next: any): an
   const curState: Store = getState();
 
   switch (action.type) {
+    case Actions.Navigation.ShowIntroTour:
+      if (!action.show) {
+        Analytics.finishedIntroTour(action.skipped);
+      }
+      break;
     case Actions.Navigation.SwitchTab:
       Analytics.switchTab(curState.navigation.tab, prevState.navigation.tab, getLastTabDuration());
       break;
