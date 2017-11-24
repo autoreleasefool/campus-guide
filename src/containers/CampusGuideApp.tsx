@@ -24,12 +24,13 @@
 
 // React imports
 import React from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { Navigator } from 'react-native-deprecated-custom-components';
 
 // Imports
 import * as Constants from '../constants';
 import Main from './Main';
+import Onboarding from './welcome/Onboarding';
 import Splash from './welcome/Splash';
 import Update from './welcome/Update';
 
@@ -67,26 +68,46 @@ export default class CampusGuideApp extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} the view to render, based on {route}
    */
   _renderScene(route: AppRoute, navigator: any): JSX.Element {
+    let scene: JSX.Element;
+    const safeAreaStyle = { flex: 1, backgroundColor: Constants.Colors.tertiaryBackground };
+
     switch (route.id) {
       case 'splash':
-        return (
+        safeAreaStyle.backgroundColor = Constants.Colors.secondaryBackground;
+        scene = (
           <Splash navigator={navigator} />
         );
+        break;
+      case 'onboarding':
+        safeAreaStyle.backgroundColor = Constants.Colors.primaryBackground;
+        scene = (
+          <Onboarding navigator={navigator} />
+        );
+        break;
       case 'main':
-        return (
+        scene = (
           <Main navigator={navigator} />
         );
+        break;
       case 'update':
-        return (
+        safeAreaStyle.backgroundColor = Constants.Colors.primaryBackground;
+        scene = (
           <Update
               navigator={navigator}
               available={route.data ? route.data.available : undefined} />
         );
+        break;
       default:
-        return (
+        scene = (
           <View />
         );
     }
+
+    return (
+      <SafeAreaView style={safeAreaStyle}>
+        {scene}
+      </SafeAreaView>
+    );
   }
 
   /**

@@ -157,6 +157,7 @@ export interface LinkSection extends SingleMenuSection {
 /** Describes the tabs available in the app initial state. */
 export type WelcomeTab =
   | 'splash'
+  | 'onboarding'
   | 'update'
   | 'main'
   ;

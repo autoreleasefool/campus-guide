@@ -64,7 +64,7 @@ class Splash extends React.PureComponent<Props, State> {
     this.props.onLanguageSelect(language);
 
     const onAction = (): void => {
-      this._popOrPushToMain();
+      this._goToOnboarding();
     };
 
     Alert.alert(
@@ -79,19 +79,10 @@ class Splash extends React.PureComponent<Props, State> {
   }
 
   /**
-   * Check if a 'main' route already exists on the navigator and pop to it if so.
-   * Otherwise, push a new one.
+   * Show the user an onboarding menu in their selected language.
    */
-  _popOrPushToMain(): void {
-    const routes = this.props.navigator.getCurrentRoutes();
-    for (const route of routes) {
-      if (route.id === 'main') {
-        this.props.navigator.popToRoute(route);
-
-        return;
-      }
-    }
-    this.props.navigator.push({ id: 'main' });
+  _goToOnboarding(): void {
+    this.props.navigator.push({ id: 'onboarding' });
   }
 
   /**

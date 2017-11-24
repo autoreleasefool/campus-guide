@@ -26,7 +26,7 @@ declare var process: any;
 
 // React imports
 import React from 'react';
-import { Platform, SafeAreaView, StyleSheet, UIManager } from 'react-native';
+import { Platform, UIManager } from 'react-native';
 
 // Redux imports
 import { Provider } from 'react-redux';
@@ -34,7 +34,6 @@ import configureStore from './store/configureStore';
 
 // Imports
 import CampusGuideApp from './containers/CampusGuideApp';
-import * as Constants from './constants';
 
 // Types
 interface Props {}
@@ -69,9 +68,7 @@ export default function setup(): React.ComponentClass<Props> {
     render(): JSX.Element {
       return (
         <Provider store={store}>
-          <SafeAreaView style={_styles.container}>
-            <CampusGuideApp />
-          </SafeAreaView>
+          <CampusGuideApp />
         </Provider>
       );
     }
@@ -79,11 +76,3 @@ export default function setup(): React.ComponentClass<Props> {
 
   return Root;
 }
-
-// Private styles for component
-const _styles = StyleSheet.create({
-  container: {
-    backgroundColor: Constants.Colors.tertiaryBackground,
-    flex: 1,
-  },
-});
