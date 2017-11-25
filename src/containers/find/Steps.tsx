@@ -108,7 +108,7 @@ class Steps extends React.PureComponent<Props, State> {
    */
   _reportError(): void {
     External.openLink(
-      'mailto:contact@josephroque.ca?subject=Nav Error:%20Ottawa%20Campus%20Guide',
+      'mailto:contact@josephroque.ca?subject=Nav%20Error:%20Ottawa%20Campus%20Guide',
       Linking,
       Alert,
       Clipboard,
