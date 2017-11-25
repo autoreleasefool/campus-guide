@@ -28,6 +28,7 @@ import {
   Dimensions,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  Platform,
   ScaledSize,
   ScrollView,
   StyleSheet,
@@ -107,6 +108,9 @@ const SETTING_ROWS = [
   'onboarding_accessible',
   'onboarding_support',
 ];
+
+// Stop the animation from running indefinitely
+const MAX_ANIMATION_FRAMES = NAVIGATION_ROWS.length * totalDiscoverIcons * SETTING_ROWS.length;
 
 class Onboarding extends React.PureComponent<Props, State> {
 
@@ -225,7 +229,7 @@ class Onboarding extends React.PureComponent<Props, State> {
     if (prevPage !== this.state.currentPage) {
       this._animateScrollViewToPage(prevPage);
       this.setState({ currentPage: prevPage });
-      this._ignoreButtons = true;
+      this._ignoreButtons = Platform.OS !== 'android'; // TODO: only works for iOS
     }
   }
 
@@ -242,7 +246,7 @@ class Onboarding extends React.PureComponent<Props, State> {
       if (nextPage !== this.state.currentPage) {
         this._animateScrollViewToPage(nextPage);
         this.setState({ currentPage: nextPage });
-        this._ignoreButtons = true;
+        this._ignoreButtons = Platform.OS !== 'android'; // TODO: only works for iOS
       }
     }
   }
@@ -257,6 +261,7 @@ class Onboarding extends React.PureComponent<Props, State> {
     const offset = scrollEvent.nativeEvent.contentOffset;
     if (offset) {
       const page = Math.round(offset.x / this.state.screenWidth);
+      console.log(`Handled page change to: ${page}`);
       if (this.state.currentPage !== page) {
         this._animateScrollViewToPage(page);
         this.setState({ currentPage: page });
@@ -268,8 +273,11 @@ class Onboarding extends React.PureComponent<Props, State> {
    * Advance the animation.
    */
   _nextAnimationFrame = (): void => {
-    this.setState({ animationFrame: this.state.animationFrame + 1 });
-    this._animationTimer = setTimeout(this._nextAnimationFrame, Constants.Time.MILLISECONDS_IN_SECOND / 2);
+    const nextFrame = this.state.animationFrame + 1;
+    if (nextFrame <= MAX_ANIMATION_FRAMES) {
+      this.setState({ animationFrame: this.state.animationFrame + 1 });
+      this._animationTimer = setTimeout(this._nextAnimationFrame, Constants.Time.MILLISECONDS_IN_SECOND / 2);
+    }
   }
 
   /**
@@ -344,6 +352,8 @@ class Onboarding extends React.PureComponent<Props, State> {
           pagingEnabled={true}
           onMomentumScrollEnd={this._handlePageChange}
           ref='ScrollView'
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           style={_styles.fullScreen}>
         {this._onboardingPages.map((page: OnboardingPage) => (
           <View key={page.title} style={{ height: this.state.screenHeight, width: this.state.screenWidth }}>
