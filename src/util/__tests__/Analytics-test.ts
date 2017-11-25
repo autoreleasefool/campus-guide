@@ -96,7 +96,7 @@ describe('Analytics-test', () => {
 
   it('tests setting the profile language', () => {
     Analytics.setPreference('language', 'en');
-    expect((Fabric as any).__getDatastore()).toEqual({ language: 'en' });
+    expect((Fabric as any).__getDatastore()).toEqual({ preference_language: 'en' });
   });
 
   it('tests selecting a building', () => {
