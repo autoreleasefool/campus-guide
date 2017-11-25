@@ -133,7 +133,7 @@ describe('navigation reducer', () => {
   });
 
   it('should show the intro tour', () => {
-    expect(reducer(initialState, { type: Actions.Navigation.ShowIntroTour, show: true }))
+    expect(reducer(initialState, { type: Actions.Navigation.ShowIntroTour, show: true, skipped: false }))
         .toEqual({
           ...initialState,
           showIntroTour: true,
