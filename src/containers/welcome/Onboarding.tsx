@@ -31,6 +31,7 @@ import {
   ScaledSize,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -71,10 +72,41 @@ interface OnboardingPage {
 }
 
 // Active opacity for onboarding pages
-const activePageOpacity = 1;
+const ACTIVE_PAGE_OPACITY = 1;
 
 // Inactive opacity for onboarding pages
-const inactivePageOpacity = 0.4;
+const INACTIVE_PAGE_OPACITY = 0.4;
+
+// Onboarding navigation row details
+const NAVIGATION_ROWS = [
+  {
+    icon: 'my-location',
+    text: 'onboarding_start_here',
+  },
+  {
+    icon: 'directions',
+    text: 'onboarding_follow_the_directions',
+  },
+  {
+    icon: 'place',
+    text: 'onboarding_arrive',
+  },
+];
+
+// Discover icons
+const DISCOVER_ICON_ROWS = [
+  [ 'book', 'hotel', 'computer' ],
+  [ 'link', 'local-library', 'error' ],
+  [ 'directions-bus', 'store', 'group'],
+];
+const totalDiscoverIcons = DISCOVER_ICON_ROWS.length * DISCOVER_ICON_ROWS[0].length;
+
+// Settings
+const SETTING_ROWS = [
+  'onboarding_bilingual',
+  'onboarding_accessible',
+  'onboarding_support',
+];
 
 class Onboarding extends React.PureComponent<Props, State> {
 
@@ -97,46 +129,26 @@ class Onboarding extends React.PureComponent<Props, State> {
       description: 'onboarding_navigation_description',
       title: 'onboarding_navigation_title',
       view: (): JSX.Element => {
-        const NavigationRows = 3;
         const textWidth = { width: this.state.screenWidth };
 
         return (
           <View>
-            <View style={[
-                _styles.navigationRow,
-                textWidth,
-                this.state.animationFrame % NavigationRows === 0 ? _styles.highlightedRow : {},
-              ]}>
-              <MaterialIcons
-                  color={Constants.Colors.primaryWhiteIcon}
-                  name={'my-location'}
-                  size={Constants.Sizes.Icons.Medium} />
-              <Text style={_styles.navigationText}>{'Start here'}</Text>
-            </View>
-            <View style={_styles.navigationDivider} />
-            <View style={[
-                _styles.navigationRow,
-                textWidth,
-                this.state.animationFrame % NavigationRows === 1 ? _styles.highlightedRow : {},
-              ]}>
-              <MaterialIcons
-                  color={Constants.Colors.primaryWhiteIcon}
-                  name={'directions'}
-                  size={Constants.Sizes.Icons.Medium} />
-              <Text style={_styles.navigationText}>{'Follow the directions'}</Text>
-            </View>
-            <View style={_styles.navigationDivider} />
-            <View style={[
-                _styles.navigationRow,
-                textWidth,
-                this.state.animationFrame % NavigationRows === 2 ? _styles.highlightedRow : {},
-              ]}>
-              <MaterialIcons
-                  color={Constants.Colors.primaryWhiteIcon}
-                  name={'place'}
-                  size={Constants.Sizes.Icons.Medium} />
-              <Text style={_styles.navigationText}>{'Arrive!'}</Text>
-            </View>
+            {NAVIGATION_ROWS.map((row: { icon: string; text: string}, index: number) => (
+              <View key={row.text}>
+                <View style={[
+                    _styles.navigationRow,
+                    textWidth,
+                    this.state.animationFrame % NAVIGATION_ROWS.length === index ? _styles.highlightedRow : {},
+                  ]}>
+                  <MaterialIcons
+                      color={Constants.Colors.primaryWhiteIcon}
+                      name={row.icon}
+                      size={Constants.Sizes.Icons.Medium} />
+                  <Text style={_styles.navigationText}>{Translations.get(row.text)}</Text>
+                </View>
+                { index !== NAVIGATION_ROWS.length - 1 ? <View style={_styles.navigationDivider} /> : undefined}
+              </View>
+            ))}
           </View>
         );
       },
@@ -145,15 +157,53 @@ class Onboarding extends React.PureComponent<Props, State> {
       description: 'onboarding_discover_description',
       title: 'onboarding_discover_title',
       view: (): JSX.Element => (
-        <View style={{ backgroundColor: Constants.Colors.arts, flex: 1 }} />
+        <View>
+          {DISCOVER_ICON_ROWS.map((row: string[], rowIndex: number) => (
+            <View key={row.join()} style={_styles.discoverRow}>
+              {row.map((icon: string, iconIndex: number) => (
+                <MaterialIcons
+                    color={this.state.animationFrame % totalDiscoverIcons === rowIndex * row.length + iconIndex
+                        ? Constants.Colors.primaryWhiteIcon
+                        : Constants.Colors.secondaryWhiteIcon}
+                    key={icon}
+                    name={icon}
+                    size={Constants.Sizes.Icons.Large}
+                    style={_styles.discoverIcon} />
+              ))}
+            </View>
+          ))}
+        </View>
       ),
     },
     {
       description: 'onboarding_settings_description',
       title: 'onboarding_settings_title',
-      view: (): JSX.Element => (
-        <View style={{ backgroundColor: Constants.Colors.socialSciences, flex: 1 }} />
-      ),
+      view: (): JSX.Element => {
+        const rowWidth = { width: this.state.screenWidth };
+
+        return (
+          <View>
+            {SETTING_ROWS.map((setting: string, index: number) => {
+
+              return (
+                <View key={setting}>
+                  <View style={[
+                      _styles.settingRow,
+                      rowWidth,
+                      this.state.animationFrame % SETTING_ROWS.length === index ? _styles.highlightedRow : {},
+                    ]}>
+                    <Text style={_styles.settingText}>{Translations.get(setting)}</Text>
+                    <Switch
+                        disabled={true}
+                        value={true} />
+                  </View>
+                  { index !== SETTING_ROWS.length - 1 ? <View style={_styles.settingDivider} /> : undefined}
+                </View>
+              );
+            })}
+          </View>
+        );
+      },
     },
   ];
 
@@ -325,7 +375,7 @@ class Onboarding extends React.PureComponent<Props, State> {
                   key={page.title}
                   style={[
                     _styles.positionIndicatorDot,
-                    { opacity: index === this.state.currentPage ? activePageOpacity : inactivePageOpacity },
+                    { opacity: index === this.state.currentPage ? ACTIVE_PAGE_OPACITY : INACTIVE_PAGE_OPACITY },
                   ]} />
             ))}
           </View>
@@ -400,6 +450,14 @@ const _styles = StyleSheet.create({
   controlContainer: {
     flexDirection: 'column',
   },
+  discoverIcon: {
+    margin: Constants.Sizes.Margins.Expanded,
+  },
+  discoverRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
   fullScreen: {
     ...StyleSheet.absoluteFillObject,
   },
@@ -420,7 +478,7 @@ const _styles = StyleSheet.create({
   },
   navigationText: {
     backgroundColor: 'transparent',
-    color: Constants.Colors.white,
+    color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Subtitle,
     marginBottom: Constants.Sizes.Margins.Expanded,
     marginLeft: Constants.Sizes.Margins.Regular,
@@ -457,6 +515,28 @@ const _styles = StyleSheet.create({
     height: Constants.Sizes.Margins.Regular,
     margin: Constants.Sizes.Margins.Regular,
     width: Constants.Sizes.Margins.Regular,
+  },
+  settingDivider: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+  },
+  settingRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: Constants.Sizes.Margins.Expanded,
+    paddingRight: Constants.Sizes.Margins.Expanded,
+  },
+  settingSwitch: {
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
+  },
+  settingText: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Subtitle,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
   },
   tipSpace: {
     alignItems: 'center',
