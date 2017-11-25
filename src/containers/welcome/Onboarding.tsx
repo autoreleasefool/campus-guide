@@ -41,6 +41,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 // Imports
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import TabBar from '../../components/TabBar';
 import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
@@ -95,9 +96,50 @@ class Onboarding extends React.PureComponent<Props, State> {
     {
       description: 'onboarding_navigation_description',
       title: 'onboarding_navigation_title',
-      view: (): JSX.Element => (
-        <View style={{ backgroundColor: Constants.Colors.engineering, flex: 1 }} />
-      ),
+      view: (): JSX.Element => {
+        const NavigationRows = 3;
+        const textWidth = { width: this.state.screenWidth };
+
+        return (
+          <View>
+            <View style={[
+                _styles.navigationRow,
+                textWidth,
+                this.state.animationFrame % NavigationRows === 0 ? _styles.highlightedRow : {},
+              ]}>
+              <MaterialIcons
+                  color={Constants.Colors.primaryWhiteIcon}
+                  name={'my-location'}
+                  size={Constants.Sizes.Icons.Medium} />
+              <Text style={_styles.navigationText}>{'Start here'}</Text>
+            </View>
+            <View style={_styles.navigationDivider} />
+            <View style={[
+                _styles.navigationRow,
+                textWidth,
+                this.state.animationFrame % NavigationRows === 1 ? _styles.highlightedRow : {},
+              ]}>
+              <MaterialIcons
+                  color={Constants.Colors.primaryWhiteIcon}
+                  name={'directions'}
+                  size={Constants.Sizes.Icons.Medium} />
+              <Text style={_styles.navigationText}>{'Follow the directions'}</Text>
+            </View>
+            <View style={_styles.navigationDivider} />
+            <View style={[
+                _styles.navigationRow,
+                textWidth,
+                this.state.animationFrame % NavigationRows === 2 ? _styles.highlightedRow : {},
+              ]}>
+              <MaterialIcons
+                  color={Constants.Colors.primaryWhiteIcon}
+                  name={'place'}
+                  size={Constants.Sizes.Icons.Medium} />
+              <Text style={_styles.navigationText}>{'Arrive!'}</Text>
+            </View>
+          </View>
+        );
+      },
     },
     {
       description: 'onboarding_discover_description',
@@ -177,7 +219,7 @@ class Onboarding extends React.PureComponent<Props, State> {
    */
   _nextAnimationFrame = (): void => {
     this.setState({ animationFrame: this.state.animationFrame + 1 });
-    this._animationTimer = setTimeout(this._nextAnimationFrame, Constants.Time.MILLISECONDS_IN_SECOND);
+    this._animationTimer = setTimeout(this._nextAnimationFrame, Constants.Time.MILLISECONDS_IN_SECOND / 2);
   }
 
   /**
@@ -201,7 +243,7 @@ class Onboarding extends React.PureComponent<Props, State> {
    * Start an animation timer.
    */
   componentDidMount(): void {
-    this._animationTimer = setTimeout(this._nextAnimationFrame, Constants.Time.MILLISECONDS_IN_SECOND);
+    this._animationTimer = setTimeout(this._nextAnimationFrame, Constants.Time.MILLISECONDS_IN_SECOND / 2);
   }
 
   /**
@@ -334,12 +376,12 @@ const _styles = StyleSheet.create({
     flex: 1,
   },
   button: {
+    backgroundColor: 'transparent',
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     margin: Constants.Sizes.Margins.Expanded,
   },
   buttonContainer: {
-    backgroundColor: Constants.Colors.black,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -360,6 +402,29 @@ const _styles = StyleSheet.create({
   },
   fullScreen: {
     ...StyleSheet.absoluteFillObject,
+  },
+  highlightedRow: {
+    backgroundColor: Constants.Colors.darkMoreTransparentBackground,
+  },
+  navigationDivider: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
+    marginLeft: Constants.Sizes.Margins.Expanded,
+  },
+  navigationRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingLeft: Constants.Sizes.Margins.Expanded,
+    paddingRight: Constants.Sizes.Margins.Expanded,
+  },
+  navigationText: {
+    backgroundColor: 'transparent',
+    color: Constants.Colors.white,
+    fontSize: Constants.Sizes.Text.Subtitle,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginLeft: Constants.Sizes.Margins.Regular,
+    marginTop: Constants.Sizes.Margins.Expanded,
   },
   pageDescription: {
     backgroundColor: 'transparent',
