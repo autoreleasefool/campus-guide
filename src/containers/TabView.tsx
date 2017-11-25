@@ -28,6 +28,7 @@ import { StyleSheet, View } from 'react-native';
 
 // Redux imports
 import { connect } from 'react-redux';
+import * as actions from '../actions';
 
 // Imports
 import * as Constants from '../constants';
@@ -47,11 +48,21 @@ import { Tab } from '../../typings/global';
 
 interface Props {
   tab: Tab; // The current tab
+  switchTab(tab: Tab): void;  // Switches the current tab
 }
 
 interface State {}
 
 class TabView extends React.PureComponent<Props, State> {
+
+  /**
+   * Switch to a new tab.
+   *
+   * @param {Tab} tab new tab
+   */
+  _switchTab = (tab: Tab): void => {
+    this.props.switchTab(tab);
+  }
 
   /**
    * Renders the app tabs and icons, an indicator to show the current tab, and a navigator with the tab contents.
@@ -108,7 +119,9 @@ class TabView extends React.PureComponent<Props, State> {
         <ScrollableTabView
             locked={true}
             page={Constants.Tabs.indexOf(this.props.tab)}
-            renderTabBar={(): JSX.Element => <TabBar />}
+            renderTabBar={(): JSX.Element =>
+              <TabBar switchTab={this._switchTab} />
+            }
             scrollWithoutAnimation={true}
             tabBarPosition='bottom'>
           {tabs.map((tab: JSX.Element) => tab)}
@@ -133,4 +146,10 @@ const mapStateToProps = (store: Store): object => {
   };
 };
 
-export default connect(mapStateToProps, undefined)(TabView) as any;
+const mapDispatchToProps = (dispatch: any): any => {
+  return {
+    switchTab: (tab: Tab): void => dispatch(actions.switchTab(tab)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabView) as any;

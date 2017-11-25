@@ -34,7 +34,6 @@ import {
 
 // Redux imports
 import { connect } from 'react-redux';
-import * as actions from '../actions';
 
 // Imports
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -51,8 +50,7 @@ import { Icon, Tab, TabSet } from '../../typings/global';
 interface Props {
   activeTab: number;          // Current active tab
   language: Language;         // The user's currently selected language
-  tabs: any[];                // Array of tabs to render
-  switchTab(tab: Tab): void;  // Switches the current tab
+  switchTab?(tab: Tab): void; // Switches the current tab
 }
 
 interface State {}
@@ -175,15 +173,6 @@ const inactiveTabIcons: TabSet<{ icon: Icon }> = {
 class TabBar extends React.PureComponent<Props, State> {
 
   /**
-   * Switches the active tab.
-   *
-   * @param {number} tab the selected tab
-   */
-  _switchTab(tab: number): void {
-    this.props.switchTab(Constants.Tabs[tab]);
-  }
-
-  /**
    * Renders an icon and name for each available tab in the bar.
    *
    * @returns {JSX.Element} the hierarchy of views to render
@@ -191,9 +180,9 @@ class TabBar extends React.PureComponent<Props, State> {
   render(): JSX.Element {
     return (
       <View style={_styles.tabContainer}>
-        {this.props.tabs.map((_: any, i: number) => {
+        {Constants.Tabs.map((tab: Tab, i: number) => {
           const iconSet = this.props.activeTab === i ? activeTabIcons : inactiveTabIcons;
-          const icon = Display.getPlatformIcon(Platform.OS, iconSet[Constants.Tabs[i]]);
+          const icon = Display.getPlatformIcon(Platform.OS, iconSet[tab]);
           const color = this.props.activeTab === i
               ? Constants.Colors.primaryBackground
               : Constants.Colors.secondaryBackground;
@@ -220,12 +209,12 @@ class TabBar extends React.PureComponent<Props, State> {
           return (
             <TouchableOpacity
                 activeOpacity={1}
-                key={Constants.Tabs[i]}
+                key={tab}
                 style={_styles.tab}
-                onPress={this._switchTab.bind(this, i)}>
+                onPress={(): void => this.props.switchTab && this.props.switchTab(tab)}>
               {iconView}
               <Text style={[ _styles.caption, { color }]}>
-                {Translations.get(Constants.Tabs[i])}
+                {Translations.get(tab)}
               </Text>
             </TouchableOpacity>
           );
@@ -262,10 +251,4 @@ const mapStateToProps = (store: Store): any => {
   };
 };
 
-const mapDispatchToProps = (dispatch: any): any => {
-  return {
-    switchTab: (tab: Tab): void => dispatch(actions.switchTab(tab)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TabBar) as any;
+export default connect(mapStateToProps)(TabBar) as any;

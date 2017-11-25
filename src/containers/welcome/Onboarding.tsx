@@ -41,6 +41,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 // Imports
+import TabBar from '../../components/TabBar';
 import * as Constants from '../../constants';
 import * as Translations from '../../util/Translations';
 
@@ -55,9 +56,10 @@ interface Props {
 }
 
 interface State {
-  currentPage: number;  // Active onboarding page
-  screenHeight: number; // Active width of the screen
-  screenWidth: number;  // Active width of the screen
+  animationFrame: number; // Frame of the animation
+  currentPage: number;    // Active onboarding page
+  screenHeight: number;   // Active width of the screen
+  screenWidth: number;    // Active width of the screen
 }
 
 // A page for onboarding
@@ -75,6 +77,9 @@ const inactivePageOpacity = 0.4;
 
 class Onboarding extends React.PureComponent<Props, State> {
 
+  /** ID of animation timer. */
+  _animationTimer: number = 0;
+
   /** When true, Prev and Next button presses should be ignored. */
   _ignoreButtons: boolean = false;
 
@@ -84,7 +89,7 @@ class Onboarding extends React.PureComponent<Props, State> {
       description: 'onboarding_general_description',
       title: 'onboarding_general_title',
       view: (): JSX.Element => (
-        <View style={{ backgroundColor: Constants.Colors.law, flex: 1 }} />
+        <TabBar activeTab={this.state.animationFrame % Constants.Tabs.length} />
       ),
     },
     {
@@ -168,6 +173,14 @@ class Onboarding extends React.PureComponent<Props, State> {
   }
 
   /**
+   * Advance the animation.
+   */
+  _nextAnimationFrame = (): void => {
+    this.setState({ animationFrame: this.state.animationFrame + 1 });
+    this._animationTimer = setTimeout(this._nextAnimationFrame, Constants.Time.MILLISECONDS_IN_SECOND);
+  }
+
+  /**
    * Constructor.
    *
    * @param {props} props component props
@@ -177,10 +190,25 @@ class Onboarding extends React.PureComponent<Props, State> {
 
     const screenDimensions = Dimensions.get('window');
     this.state = {
+      animationFrame: 0,
       currentPage: 0,
       screenHeight: screenDimensions.height,
       screenWidth: screenDimensions.width,
     };
+  }
+
+  /**
+   * Start an animation timer.
+   */
+  componentDidMount(): void {
+    this._animationTimer = setTimeout(this._nextAnimationFrame, Constants.Time.MILLISECONDS_IN_SECOND);
+  }
+
+  /**
+   * Clear the animation timer.
+   */
+  componentWillUnmount(): void {
+    clearTimeout(this._animationTimer);
   }
 
   /**
@@ -325,6 +353,7 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     flex: 2,
     justifyContent: 'center',
+    margin: Constants.Sizes.Margins.Regular,
   },
   controlContainer: {
     flexDirection: 'column',
@@ -336,7 +365,6 @@ const _styles = StyleSheet.create({
     backgroundColor: 'transparent',
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
-    marginBottom: Constants.Sizes.Margins.Regular,
     marginLeft: Constants.Sizes.Margins.Regular,
     marginRight: Constants.Sizes.Margins.Regular,
     textAlign: 'center',
@@ -345,7 +373,9 @@ const _styles = StyleSheet.create({
     backgroundColor: 'transparent',
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Subtitle,
-    margin: Constants.Sizes.Margins.Regular,
+    marginBottom: Constants.Sizes.Margins.Regular,
+    marginLeft: Constants.Sizes.Margins.Regular,
+    marginRight: Constants.Sizes.Margins.Regular,
     textAlign: 'center',
   },
   positionIndicator: {
@@ -368,6 +398,7 @@ const _styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    margin: Constants.Sizes.Margins.Regular,
   },
   transparent: {
     color: Constants.Colors.secondaryWhiteText,
