@@ -69,6 +69,7 @@ interface Props {
   prefersWheelchair: boolean;                           // Whether the user prefers wheelchair accessible routes
   semesters: Semester[];                                // Semesters available at the university
   timeFormat: TimeFormat;                               // The user's preferred time format
+  universityName: Name;                                 // Name of the university
   updateConfiguration(o: Configuration.Options): void;  // Update the global configuration state
   showIntroTour(): void;                                // Show the app intro tour
 }
@@ -404,6 +405,23 @@ class Settings extends React.PureComponent<Props, State> {
   }
 
   /**
+   * Render an affiliation footer.
+   *
+   * @returns {JSX.Element} a styled text view
+   */
+  _renderFooter(): JSX.Element {
+    const universityName = Translations.getName(this.props.universityName);
+    const affiliation = Translations.get('not_affiliated_with');
+
+    return (
+      <View>
+        {this._renderSeparator()}
+        <Text style={_styles.footerText}>{`${affiliation}${universityName}`}</Text>
+      </View>
+    );
+  }
+
+  /**
    * Renders row separator.
    *
    * @returns {JSX.Element} a separator styled view
@@ -431,6 +449,7 @@ class Settings extends React.PureComponent<Props, State> {
         </Modal>
         <SectionList
             ItemSeparatorComponent={this._renderSeparator.bind(this)}
+            ListFooterComponent={this._renderFooter.bind(this)}
             renderItem={this._renderItem.bind(this)}
             renderSectionHeader={this._renderSectionHeader.bind(this)}
             sections={this._settingSections} />
@@ -444,6 +463,12 @@ const _styles = StyleSheet.create({
   container: {
     backgroundColor: Constants.Colors.tertiaryBackground,
     flex: 1,
+  },
+  footerText: {
+    color: Constants.Colors.primaryBlackText,
+    fontSize: Constants.Sizes.Text.Caption,
+    margin: Constants.Sizes.Margins.Expanded,
+    textAlign: 'center',
   },
   modalList: {
     backgroundColor: Constants.Colors.secondaryBackground,
@@ -498,6 +523,7 @@ const mapStateToProps = (store: Store): any => {
     prefersWheelchair: store.config.options.prefersWheelchair,
     semesters: store.config.options.semesters,
     timeFormat: store.config.options.preferredTimeFormat,
+    universityName: store.config.options.universityName,
   };
 };
 
