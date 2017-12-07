@@ -27,6 +27,7 @@ import React from 'react';
 import {
   Platform,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -145,21 +146,42 @@ class BuildingComponent extends React.PureComponent<Props, State> {
   /**
    * Renders a view with various specifics of the building, as well as an image.
    *
+   * @param {boolean} alone true to render a full size header alone
    * @returns {JSX.Element} the hierarchy of views to render
    */
-  _renderHeader(): JSX.Element {
+  _renderHeader = (alone?: boolean): JSX.Element => {
     const building: Building = this.props.building;
 
     return (
-      <View>
+      <View style={alone ? { flex: 1 } : {}}>
         <BuildingHeader
             facilities={building.facilities}
             hideTitle={true}
             image={building.image}
             language={this.props.language}
             properties={this.state.properties}
+            large={alone}
             shorthand={building.shorthand} />
-        {this._renderBuildingDirections()}
+        {alone
+          ? (
+            <View>
+              <View style={_styles.separator} />
+              <Text style={_styles.navigationTip}>
+                {Translations.get('no_additional_rooms')}
+              </Text>
+              <View style={_styles.separator} />
+            </View>
+          )
+          : (
+            <View>
+              <View style={_styles.separator} />
+              <Text style={_styles.navigationTip}>
+                {Translations.get('choose_rooms_to_navigate')}
+              </Text>
+              <View style={_styles.separator} />
+            </View>
+          )
+        }
       </View>
     );
   }
@@ -174,13 +196,17 @@ class BuildingComponent extends React.PureComponent<Props, State> {
 
     return (
       <View style={_styles.container}>
-        {this._renderHeader()}
-        <RoomGrid
-            filter={this.props.filter}
-            language={this.props.language}
-            rooms={building.rooms}
-            shorthand={building.shorthand}
-            onSelect={this._onDestinationSelected.bind(this)} />
+        {building.rooms.length > 0
+          ? (
+            <RoomGrid
+                filter={this.props.filter}
+                language={this.props.language}
+                renderHeader={this._renderHeader}
+                rooms={building.rooms}
+                shorthand={building.shorthand}
+                onSelect={this._onDestinationSelected.bind(this)} />
+          ) : this._renderHeader(true)}
+        {this._renderBuildingDirections()}
       </View>
     );
   }
@@ -191,6 +217,15 @@ const _styles = StyleSheet.create({
   container: {
     backgroundColor: Constants.Colors.primaryBackground,
     flex: 1,
+  },
+  navigationTip: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    margin: Constants.Sizes.Margins.Expanded,
+  },
+  separator: {
+    backgroundColor: Constants.Colors.tertiaryBackground,
+    height: StyleSheet.hairlineWidth,
   },
 });
 

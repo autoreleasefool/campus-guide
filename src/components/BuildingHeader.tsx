@@ -55,6 +55,7 @@ interface Props {
   hideTitle?: boolean;                        // True to hide the title
   image: any;                                 // An image of the building
   language: Language;                         // The user's currently selected language
+  large?: boolean;                            // True for a large header, false for a condensed one
   name?: string;                              // Name of the building
   properties: BuildingProperty[] | undefined; // List of properties to display about the building
   shorthand?: string;                         // Unique shorthand identifier for the building
@@ -136,10 +137,12 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
     // Clear the swap banner timer, if the user manually swipes the banner
     clearTimeout(this._swapBannerTimer);
 
-    LayoutAnimation.easeInEaseOut();
-    this.setState({
-      bannerPosition: (this.state.bannerPosition === 0) ? 1 : 0,
-    });
+    if (!this.props.large) {
+      LayoutAnimation.easeInEaseOut();
+      this.setState({
+        bannerPosition: (this.state.bannerPosition === 0) ? 1 : 0,
+      });
+    }
   }
 
   /**
@@ -228,25 +231,44 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
       );
     }
 
-    return (
-      <View style={_styles.banner}>
-        <TouchableWithoutFeedback onPress={(): void => this._swapBanner()}>
-          {image}
-        </TouchableWithoutFeedback>
-        <View style={[ _styles.textContainer, textContainerStyle ]}>
-          <ScrollView>
-            {this._renderFacilityIcons()}
-            {propertiesView}
-          </ScrollView>
+    if (this.props.large) {
+      return (
+        <View style={_styles.bannerLarge}>
+          <View style={_styles.bannerLarge}>
+            {image}
+          </View>
+          <View style={_styles.bannerLarge}>
+            <View style={_styles.largeTextContainer}>
+              <ScrollView>
+                {this._renderFacilityIcons()}
+                {propertiesView}
+              </ScrollView>
+            </View>
+          </View>
         </View>
-        {this.props.hideTitle || !this.props.name
-          ? undefined
-          : <Header
-              style={_styles.header}
-              subtitle={this.props.shorthand}
-              title={this.props.name} />}
-      </View>
-    );
+      );
+    } else {
+      return (
+        <View style={_styles.banner}>
+          <TouchableWithoutFeedback onPress={(): void => this._swapBanner()}>
+            {image}
+          </TouchableWithoutFeedback>
+          <View style={[ _styles.textContainer, textContainerStyle ]}>
+            <ScrollView>
+              {this._renderFacilityIcons()}
+              {propertiesView}
+            </ScrollView>
+          </View>
+          {this.props.hideTitle || !this.props.name
+            ? undefined
+            : <Header
+                style={_styles.header}
+                subtitle={this.props.shorthand}
+                title={this.props.name} />}
+        </View>
+      );
+    }
+
   }
 }
 
@@ -255,6 +277,10 @@ const _styles = StyleSheet.create({
   banner: {
     backgroundColor: Constants.Colors.secondaryBackground,
     height: 175,
+  },
+  bannerLarge: {
+    backgroundColor: Constants.Colors.secondaryBackground,
+    flex: 1,
   },
   body: {
     color: Constants.Colors.primaryWhiteText,
@@ -285,6 +311,10 @@ const _styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: undefined,
+  },
+  largeTextContainer: {
+    flex: 1,
+    margin: Constants.Sizes.Margins.Regular,
   },
   textContainer: {
     bottom: 0,
