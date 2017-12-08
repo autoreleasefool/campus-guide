@@ -126,7 +126,7 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
   _openFacilityDescription(facility: Facility): void {
     Alert.alert(
       Translations.get('whats_this_icon'),
-      Translations.get(facility)
+      Translations.get(`facility_${facility}`)
     );
   }
 

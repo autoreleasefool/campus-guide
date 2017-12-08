@@ -102,20 +102,23 @@ export interface BuildingProperty extends Description {
 
 /** Types of facilities that a certain building on campus may offer. */
 export type Facility =
-  | 'atm'
-  | 'food'
-  | 'printer'
-  | 'store'
-  | 'bed'
   | 'alcohol'
+  | 'atm'
+  | 'bed'
+  | 'class'
+  | 'food'
+  | 'gym'
+  | 'invalid'
+  | 'lab'
   | 'laundry'
   | 'library'
-  | 'parking'
   | 'mail'
+  | 'parking'
   | 'pharmacy'
-  | 'gym'
   | 'pool'
-  | 'invalid'
+  | 'printer'
+  | 'service'
+  | 'store'
   ;
 
 //-----------------------------------------------------------------------------

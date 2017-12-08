@@ -67,6 +67,9 @@ export function getFacilityIconClass(facility: Facility): string | undefined {
     case 'pharmacy':
     case 'gym':
     case 'pool':
+    case 'service':
+    case 'class':
+    case 'lab':
       return 'material';
     default:
       return undefined;
@@ -107,6 +110,12 @@ export function getFacilityIconName(facility: Facility): string | undefined {
       return 'fitness-center';
     case 'pool':
       return 'pool';
+    case 'service':
+      return 'school';
+    case 'class':
+      return 'class';
+    case 'lab':
+      return 'find-in-page';
     default:
       return undefined;
   }

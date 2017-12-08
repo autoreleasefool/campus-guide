@@ -160,20 +160,23 @@ export const Tabs: Tab[] = [
  * List of available building facilities
  */
 export const Facilities: Facility[] = [
-  'atm',
-  'food',
-  'printer',
-  'store',
-  'bed',
   'alcohol',
+  'atm',
+  'bed',
+  'class',
+  'food',
+  'gym',
+  'invalid',
+  'lab',
   'laundry',
   'library',
-  'parking',
   'mail',
+  'parking',
   'pharmacy',
-  'gym',
   'pool',
-  'invalid',
+  'printer',
+  'service',
+  'store',
 ];
 
 /**
