@@ -299,7 +299,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    * Displays a prompt to user indicating an internet connection could not be reached and their options.
    */
   async _notifyConnectionFailed(err?: any): Promise<void> {
-    // FIXME: use error and act according to the actual issue
+    // TODO: use error and act according to the actual issue
     if (err != undefined && __DEV__) {
       console.log(err);
     }
