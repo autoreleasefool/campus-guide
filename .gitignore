@@ -55,8 +55,6 @@ buck-out/
 # Assets
 /assets/
 **/ios/**/assets/**
-/scraper/
-strings_secret.xml
 
 # Config
 **/android/**/assets/config/**
@@ -70,10 +68,6 @@ release/
 
 # Keystores
 */keystores/*
-
-# Environment
-*/env.js
-*/env.ts
 
 # Typescript output
 artifacts/

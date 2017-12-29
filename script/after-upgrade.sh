@@ -3,9 +3,12 @@
 # Append additional files and directories to ignore
 echo "
 # Assets
-**/assets/**
-/scraper/
-strings_secret.xml
+/assets/
+**/ios/**/assets/**
+
+# Config
+**/android/**/assets/config/**
+**/ios/**/config.bundle/**
 
 # Code coverage
 coverage/
@@ -16,12 +19,9 @@ release/
 # Keystores
 */keystores/*
 
-# Environment
-*/env.js
-*/env.ts
-
 # Typescript output
-artifacts/" >> .gitignore
+artifacts/
+" >> .gitignore
 
 # Update the package name of the app
 sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/build.gradle
