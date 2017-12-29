@@ -97,7 +97,7 @@ class CampusGuideApp extends React.PureComponent<Props, State> {
         );
         break;
       case 'onboarding':
-        safeAreaStyle.backgroundColor = Constants.Colors.primaryBackground;
+        safeAreaStyle.backgroundColor = Constants.Colors.tutorialSafeArea;
         scene = (
           <Onboarding navigator={navigator} />
         );

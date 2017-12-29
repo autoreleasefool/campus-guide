@@ -79,6 +79,12 @@ const baseColors = {
   medicine: '#2F1A45',
   sciences: '#FFDA00',
   socialSciences: '#009D93',
+
+  /**
+   * Custom colors
+   */
+  tutorialSafeArea: '#720015',
+
 };
 
 /**
