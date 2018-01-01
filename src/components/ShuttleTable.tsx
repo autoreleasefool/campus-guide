@@ -159,7 +159,7 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
 
     return (
       <View>
-        {this._renderMap()}
+        {this._renderMap(direction)}
         {this._renderRoute(direction)}
         <Header
             backgroundColor={Constants.Colors.tertiaryBackground}
@@ -177,9 +177,10 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
   /**
    * Renders a map of locations which the shuttle makes stops at.
    *
+   * @param {ShuttleDirection} direction shuttle direction to render
    * @returns {JSX.Element} the map component
    */
-  _renderMap(): JSX.Element {
+  _renderMap(direction: ShuttleDirection): JSX.Element {
     const mapContainer = {
       height: this.state.screenHeight - CONTENT_SPACE,
       width: this.state.screenWidth,
@@ -196,7 +197,7 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
             onRegionChange={(region: LatLong & LatLongDelta): void => this.setState({ region })}>
           {this.props.stops.map((stop: ShuttleStop) => (
             <MapView.Marker
-                coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
+                coordinate={{ latitude: stop[direction.id].latitude, longitude: stop[direction.id].longitude }}
                 identifier={stop.id}
                 key={stop.id}
                 title={Translations.getName(stop)} />

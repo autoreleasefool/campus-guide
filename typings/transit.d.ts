@@ -61,8 +61,10 @@ export type TransitInfo = NamedLink;
 //-----------------------------------------------------------------------------
 
 /** A stop the shuttle makes. */
-export interface ShuttleStop extends LatLong, Name {
-  id: string; // Unique stop id
+export interface ShuttleStop extends Name {
+  id: string;         // Unique stop id
+  incoming: LatLong,  // Location of the stop on the incoming route
+  outgoing: LatLong,  // Location of the stop on the outgoing route
 }
 
 /** A shuttle's schedule for a certain time of year. */
@@ -75,10 +77,11 @@ export interface ShuttleSchedule extends Name {
 
 /** Describes a direction of the shuttle and when it departs in that direction. */
 export interface ShuttleDirection extends Name {
-  route?: string;     // Description of the route the shuttle takes
-  route_en?: string;  // Description of the route the shuttle takes, in English
-  route_fr?: string;  // Description of the route the shuttle takes, in French
-  day_times: any;     // Days and times which the shuttle departs
+  id: 'incoming' | 'outgoing';  // Indicates if the direction is incoming or outgoing
+  route?: string;               // Description of the route the shuttle takes
+  route_en?: string;            // Description of the route the shuttle takes, in English
+  route_fr?: string;            // Description of the route the shuttle takes, in French
+  day_times: any;               // Days and times which the shuttle departs
 }
 
 /** Information about the university shuttle. */
