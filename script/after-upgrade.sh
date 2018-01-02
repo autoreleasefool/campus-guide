@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Script to run after upgrading React Native
+
 # Append additional files and directories to ignore
 echo "
 # Assets
@@ -28,9 +30,6 @@ sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/build.
 sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/src/main/AndroidManifest.xml
 sed -i '' 's/com\.campusguide/ca.josephroque.campusguide/g' ./android/app/BUCK
 
-# Fix broken library
-sed -i '' 's/domain = require/\/\/domain = require/g' ./node_modules/asap/raw.js
-
 # Remove the MainActivity files added in the new package
 rm -r ./android/app/src/main/java/com/
 
@@ -42,3 +41,5 @@ react-native link react-native-fs
 react-native link react-native-snackbar
 react-native link react-native-zip-archive
 react-native link react-native-fabric
+
+sh ./script/after-yarn.sh
