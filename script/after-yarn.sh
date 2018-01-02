@@ -6,7 +6,7 @@ unamestr=$(uname)
 if [ "$unamestr" = 'Linux' ]; then
     # Remove conflicting global node typings
     sed -i -e '/declare module "timers"/,+15d' ./node_modules/@types/node/index.d.ts
-    sed -i -e '/declare namespace set(Timeout|Immediate)/,+15d' ./node_modules/@types/node/index.d.ts
+    sed -i -e '/declare namespace set(Timeout|Immediate)/,+3d' ./node_modules/@types/node/index.d.ts
     sed -i -e '/setTimeout/d' ./node_modules/@types/node/index.d.ts
     sed -i -e '/clearTimeout/d' ./node_modules/@types/node/index.d.ts
     sed -i -e '/setInterval/d' ./node_modules/@types/node/index.d.ts
