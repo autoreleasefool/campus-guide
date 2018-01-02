@@ -4,6 +4,7 @@ node_js:
   - "node"
 
 script:
+  - ./script/after-yarn.sh
   - yarn run lint
   - yarn run test
 
