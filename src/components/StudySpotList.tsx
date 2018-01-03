@@ -134,7 +134,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
    * @param {StudySpot}   spot          details about the study spot
    * @returns {boolean} true iff the spot contains all the active filters, false otherwise
    */
-  _spotMatchesAllFilters(activeFilters: Set < string >, spot: StudySpot): boolean {
+  _spotMatchesAllFilters(activeFilters: Set<string>, spot: StudySpot): boolean {
     if (activeFilters.size === 0) {
       return true;
     }

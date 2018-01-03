@@ -298,7 +298,7 @@ function setConfigLastUpdatedAt(lastUpdatedAt: number): Promise<void> {
 async function _updateConfig(
     configDetails: ConfigurationDetails,
     callbacks: UpdateCallbacks,
-    os: PlatformOSType): Promise < void > {
+    os: PlatformOSType): Promise<void> {
   if (configDetails.files.length === 0) {
     // If there are no updates, exit
     return;

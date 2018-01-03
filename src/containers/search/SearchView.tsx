@@ -357,7 +357,7 @@ class SearchView extends React.PureComponent<Props, State> {
    * @param {boolean|undefined} nonExpandable indicates if an "expand" icon should be shown
    * @returns {JSX.Element} a {Header} with the name of the source
    */
-  _renderSource({ section }: { section: Section < any > }, nonExpandable: boolean | undefined): JSX.Element {
+  _renderSource({ section }: { section: Section<any> }, nonExpandable: boolean | undefined): JSX.Element {
     const resultPosition = Arrays.linearSearchObjectArrayByKeyValue(this._searchResults, 'key', section.key);
     const numberOfResults = this._searchResults[resultPosition].data.length;
     if (nonExpandable) {

@@ -94,7 +94,7 @@ const DEFAULT_OPACITY = 0.4;
 class Settings extends React.PureComponent<Props, State> {
 
   /** List of sections of settings to render. */
-  _settingSections: Section < Setting >[] = [];
+  _settingSections: Section<Setting>[] = [];
 
   /** Cache of settings values to retrieve and update them quickly. */
   _settingsCache: any = {};
@@ -388,7 +388,7 @@ class Settings extends React.PureComponent<Props, State> {
    * @param {Section<any>} section section contents
    * @returns {JSX.Element} a {Header} with the name of the section
    */
-  _renderSectionHeader({ section }: { section: Section <any> }): JSX.Element {
+  _renderSectionHeader({ section }: { section: Section<any> }): JSX.Element {
     const colonIndex: number = section.key.indexOf(':');
     let sectionNameTranslated = section.key;
     if (colonIndex > -1) {

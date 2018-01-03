@@ -58,7 +58,7 @@ interface Props {
 }
 
 interface State {
-  stops: Section < RouteDetails >[];   // List of transit stops near the campus
+  stops: Section<RouteDetails>[];   // List of transit stops near the campus
   times: RouteDetails[];              // List of times that buses visit the stops
   selectedStopId: string | undefined; // Currently selected stop to display details for
 }
@@ -355,7 +355,7 @@ export default class TransitStops extends React.PureComponent<Props, State> {
    * @param {Section<RouteDetails>} section the section to render a header for
    * @returns {JSX.Element} details of the stop and its code
    */
-  _renderStopHeader({ section }: { section: Section <RouteDetails> }): JSX.Element {
+  _renderStopHeader({ section }: { section: Section<RouteDetails> }): JSX.Element {
     const stop = this.props.stops[section.key];
 
     return (

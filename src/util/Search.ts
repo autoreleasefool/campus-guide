@@ -120,7 +120,7 @@ export function filterStudySpot(filter: string, studySpot: StudySpot): SearchRes
  */
 export function filterRoom(
     filter: string,
-    matchingRoomTypes: Set < string >,
+    matchingRoomTypes: Set<string>,
     shorthand: string,
     room: BuildingRoom): SearchResult {
   const matches = [];

@@ -47,7 +47,7 @@ const PREFER_BY_COURSE = 'app_by_course';
  * @param {string}             key          key to retrieve value for
  * @returns {any} the value, if found, or undefined
  */
-async function retrieveFromAsyncStorage(asyncStorage: AsyncStorageStatic, key: string): Promise < any > {
+async function retrieveFromAsyncStorage(asyncStorage: AsyncStorageStatic, key: string): Promise<any> {
   try {
     const value = await asyncStorage.getItem(key);
 
@@ -65,7 +65,7 @@ async function retrieveFromAsyncStorage(asyncStorage: AsyncStorageStatic, key: s
  * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {string} 'en', 'fr' or undefined
  */
-export async function getSelectedLanguage(asyncStorage: AsyncStorageStatic): Promise < Language | undefined > {
+export async function getSelectedLanguage(asyncStorage: AsyncStorageStatic): Promise<Language|undefined> {
   const value = await retrieveFromAsyncStorage(asyncStorage, SELECTED_LANGUAGE);
 
   return value;
@@ -90,7 +90,7 @@ export function setSelectedLanguage(asyncStorage: AsyncStorageStatic, language: 
  * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {number} the current semester, or 0 by default
  */
-export async function getCurrentSemester(asyncStorage: AsyncStorageStatic): Promise < number > {
+export async function getCurrentSemester(asyncStorage: AsyncStorageStatic): Promise<number> {
   const value = await retrieveFromAsyncStorage(asyncStorage, CURRENT_SEMESTER);
 
   return (value == undefined)
@@ -117,7 +117,7 @@ export function setCurrentSemester(asyncStorage: AsyncStorageStatic, semester: a
  * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {boolean} true if the user prefers wheelchair routes, false by default
  */
-export async function getPrefersWheelchair(asyncStorage: AsyncStorageStatic): Promise < boolean > {
+export async function getPrefersWheelchair(asyncStorage: AsyncStorageStatic): Promise<boolean> {
   const value = await retrieveFromAsyncStorage(asyncStorage, PREFER_WHEELCHAIR);
 
   return (value == undefined)
@@ -144,7 +144,7 @@ export function setPrefersWheelchair(asyncStorage: AsyncStorageStatic, prefer: a
  * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {string} 12h or 24h, 12h by default
  */
-export async function getPreferredTimeFormat(asyncStorage: AsyncStorageStatic): Promise < string > {
+export async function getPreferredTimeFormat(asyncStorage: AsyncStorageStatic): Promise<string> {
   const value = await retrieveFromAsyncStorage(asyncStorage, PREFERRED_TIME_FORMAT);
 
   return (value == undefined)
@@ -171,7 +171,7 @@ export function setPreferredTimeFormat(asyncStorage: AsyncStorageStatic, format:
  * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
  * @returns {boolean} true to view schedule by course, false to view by week
  */
-export async function getPreferScheduleByCourse(asyncStorage: AsyncStorageStatic): Promise < boolean > {
+export async function getPreferScheduleByCourse(asyncStorage: AsyncStorageStatic): Promise<boolean> {
   const value = await retrieveFromAsyncStorage(asyncStorage, PREFER_BY_COURSE);
 
   return (value == undefined)

@@ -144,7 +144,7 @@ async function _getResults(
  */
 export async function getResults(
     searchTerms: string,
-    data: SearchSupport | undefined): Promise <Section<SearchResult>[]> {
+    data: SearchSupport | undefined): Promise<Section<SearchResult>[]> {
   if (searchTerms.length === 0) {
       return [];
   }

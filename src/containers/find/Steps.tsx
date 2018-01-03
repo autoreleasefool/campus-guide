@@ -89,6 +89,9 @@ class Steps extends React.PureComponent<Props, State> {
     InteractionManager.runAfterInteractions(() => this._loadDirections());
   }
 
+  /**
+   * Get directions between the starting point and destination.
+   */
   async _loadDirections(): Promise<void> {
     const { accessible, destination, startingPoint }: Props = this.props;
     const directionResults = await Directions.getDirectionsBetween(startingPoint, destination, accessible);

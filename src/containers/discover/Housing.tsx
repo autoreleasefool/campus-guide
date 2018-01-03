@@ -504,7 +504,7 @@ class Housing extends React.PureComponent<Props, State> {
    * @param {Section<any>} section section contents
    * @returns {JSX.Element} a {Header} with the name of the section
    */
-  _renderResidencePropertyCategory({ section }: { section: Section < any > }): JSX.Element {
+  _renderResidencePropertyCategory({ section }: { section: Section<any> }): JSX.Element {
     const description = Translations.getDescription(section);
 
     return (
