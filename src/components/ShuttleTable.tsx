@@ -69,7 +69,7 @@ const TIMES_PER_ROW = 2;
 
 // tslint:disable no-magic-numbers
 // Number of Headers which are rendered around the map
-const CONTENT_SPACE = HeaderHeight * 6 + NavbarHeight;
+const CONTENT_SPACE = NavbarHeight + HeaderHeight * 6;
 // tslint:enable no-magic-numbers
 
 export default class ShuttleTable extends React.PureComponent<Props, State> {
@@ -145,12 +145,19 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a set of text views with information
    */
   _renderHeader(): JSX.Element {
-    // Warning to notify users if current date is excluded from schedule
-    let dateExcluded: JSX.Element | undefined;
+    const textInfo: JSX.Element[] = [
+      <Text key={'travel_time'} style={_styles.info}>{Translations.get('shuttle_travel_time')}</Text>,
+      <Text key={'id_required'} style={_styles.info}>{Translations.get('shuttle_id_required')}</Text>,
+      <Text key={'approx_times'} style={_styles.info}>{Translations.get('transit_approximate_times')}</Text>,
+    ];
+
     const currentDate: string = moment().format('YYYY-MM-DD');
     if (this.props.schedule.excluded_dates.indexOf(currentDate) >= 0) {
-      dateExcluded = (
-        <Text style={_styles.info}>{Translations.get('shuttle_not_in_service')}</Text>
+      // Warning to notify users if current date is excluded from schedule
+      textInfo.unshift(
+        <Text key={'date_excluded'} style={[_styles.info, _styles.warning]}>
+          {Translations.get('shuttle_not_in_service')}
+        </Text>
       );
     }
 
@@ -166,9 +173,7 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
             title={Translations.get('departure_times')} />
         <View style={_styles.fullSeparator} />
         <View style={_styles.header}>
-          {dateExcluded}
-          <Text style={_styles.info}>{Translations.get('shuttle_travel_time')}</Text>
-          <Text style={_styles.info}>{Translations.get('shuttle_id_required')}</Text>
+          {(textInfo.map((text: JSX.Element) => text))}
         </View>
       </View>
     );
@@ -401,5 +406,9 @@ const _styles = StyleSheet.create({
     borderRightWidth: StyleSheet.hairlineWidth,
     paddingBottom: Constants.Sizes.Margins.Regular,
     paddingTop: Constants.Sizes.Margins.Regular,
+  },
+  warning: {
+    color: Constants.Colors.primaryBackground,
+    fontSize: Constants.Sizes.Text.Subtitle,
   },
 });
