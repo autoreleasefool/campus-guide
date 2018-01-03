@@ -32,6 +32,7 @@ interface PreferenceOptions {
   wheelchair: boolean;
   timeFormat: string;
   byCourse: boolean;
+  shortest: boolean;
 }
 
 // Initial AsyncStorage data store
@@ -67,6 +68,7 @@ async function setPreferences(preferences: PreferenceOptions): Promise<void> {
   Preferences.setSelectedLanguage(AsyncStorage, preferences.language);
   Preferences.setCurrentSemester(AsyncStorage, preferences.semester);
   Preferences.setPrefersWheelchair(AsyncStorage, preferences.wheelchair);
+  Preferences.setPrefersShortestRoute(AsyncStorage, preferences.shortest);
   Preferences.setPreferredTimeFormat(AsyncStorage, preferences.timeFormat);
   Preferences.setPreferScheduleByCourse(AsyncStorage, preferences.byCourse);
 }
@@ -91,6 +93,9 @@ describe('Preferences-test', () => {
     const prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
     expect(prefersWheelchair).toBeFalsy();
 
+    const prefersShortest = await Preferences.getPrefersShortestRoute(AsyncStorage);
+    expect(prefersShortest).toBeFalsy();
+
     const preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
     expect(preferredTime).toEqual('12h');
 
@@ -103,6 +108,7 @@ describe('Preferences-test', () => {
       byCourse: true,
       language: 'fr',
       semester: 2,
+      shortest: true,
       timeFormat: '24h',
       wheelchair: false,
     };
@@ -118,6 +124,9 @@ describe('Preferences-test', () => {
     const prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
     expect(prefersWheelchair).toBeFalsy();
 
+    const prefersShortest = await Preferences.getPrefersShortestRoute(AsyncStorage);
+    expect(prefersShortest).toBeTruthy();
+
     const preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
     expect(preferredTime).toEqual('24h');
 
@@ -130,6 +139,7 @@ describe('Preferences-test', () => {
     dataStore = {
       app_by_course: 'true',
       app_current_semester: '0',
+      app_pref_shortest_route: 'true',
       app_pref_wheel: 'true',
       app_selected_language: 'en',
       app_time_format: '12h',
@@ -140,6 +150,7 @@ describe('Preferences-test', () => {
       byCourse: 'flase',
       language: 'invalid_lang',
       semester: -1,
+      shortest: 'sjkdlsa',
       timeFormat: 'twenty four',
       wheelchair: 'true',
     };
@@ -155,31 +166,8 @@ describe('Preferences-test', () => {
     const prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
     expect(prefersWheelchair).toBeTruthy();
 
-    const preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
-    expect(preferredTime).toEqual('12h');
-
-    const prefersByCourse = await Preferences.getPreferScheduleByCourse(AsyncStorage);
-    expect(prefersByCourse).toBeTruthy();
-  });
-
-  it('tests the retrieval of non-default preferences', async() => {
-    // Set defaults for the app to load
-    dataStore = {
-      app_by_course: 'true',
-      app_current_semester: '0',
-      app_pref_wheel: 'true',
-      app_selected_language: 'en',
-      app_time_format: '12h',
-    };
-
-    const language = await Preferences.getSelectedLanguage(AsyncStorage);
-    expect(language).toEqual('en');
-
-    const currentSemester = await Preferences.getCurrentSemester(AsyncStorage);
-    expect(currentSemester).toEqual(0);
-
-    const prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
-    expect(prefersWheelchair).toBeTruthy();
+    const prefersShortest = await Preferences.getPrefersShortestRoute(AsyncStorage);
+    expect(prefersShortest).toBeTruthy();
 
     const preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
     expect(preferredTime).toEqual('12h');
@@ -194,6 +182,7 @@ describe('Preferences-test', () => {
       byCourse: true,
       language: 'fr',
       semester: 2,
+      shortest: true,
       timeFormat: '24h',
       wheelchair: false,
     };
@@ -217,6 +206,9 @@ describe('Preferences-test', () => {
     let prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
     expect(prefersWheelchair).toBeFalsy();
 
+    let prefersShortest = await Preferences.getPrefersShortestRoute(AsyncStorage);
+    expect(prefersShortest).toBeFalsy();
+
     let preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
     expect(preferredTime).toEqual('12h');
 
@@ -229,6 +221,7 @@ describe('Preferences-test', () => {
       byCourse: false,
       language: 'en',
       semester: 0,
+      shortest: false,
       timeFormat: '12h',
       wheelchair: false,
     };
@@ -246,6 +239,9 @@ describe('Preferences-test', () => {
 
     prefersWheelchair = await Preferences.getPrefersWheelchair(AsyncStorage);
     expect(prefersWheelchair).toBeFalsy();
+
+    prefersShortest = await Preferences.getPrefersShortestRoute(AsyncStorage);
+    expect(prefersShortest).toBeFalsy();
 
     preferredTime = await Preferences.getPreferredTimeFormat(AsyncStorage);
     expect(preferredTime).toEqual('12h');

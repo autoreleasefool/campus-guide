@@ -659,13 +659,14 @@ function directionsError(
  * @param {Destination} start      the starting point for directions
  * @param {Destination} target     the ending point for directions
  * @param {boolean}     accessible true to force accessible paths, false for any path
- * @param {Language}    language   the language to return directions in
+ * @param {boolean}     shortest   true to get shortest possible route, false for easiest
  * @returns {Promise<DirectionResults>} a list of directions between the destinations
  */
 export async function getDirectionsBetween(
     start: Destination,
     target: Destination,
-    accessible: boolean): Promise<DirectionResults> {
+    accessible: boolean,
+    shortest: boolean): Promise<DirectionResults> {
   // Get set of building graphs to request
   const buildingGraphRequests: Set<string> = new Set();
   buildingGraphRequests.add(start.shorthand);

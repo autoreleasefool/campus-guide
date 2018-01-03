@@ -56,6 +56,9 @@ export const persist: Middleware = ({ getState }: any): any => (next: any): any 
             case 'prefersWheelchair':
               Preferences.setPrefersWheelchair(AsyncStorage, action.options[option]);
               break;
+            case 'prefersShortestRoute':
+              Preferences.setPrefersShortestRoute(AsyncStorage, action.options[option]);
+              break;
             case 'scheduleByCourse':
               Preferences.setPreferScheduleByCourse(AsyncStorage, action.options[option]);
               break;

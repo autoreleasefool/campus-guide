@@ -35,6 +35,8 @@ const SELECTED_LANGUAGE = 'app_selected_language';
 const CURRENT_SEMESTER = 'app_current_semester';
 // Represents if the user prefers routes with wheelchair access
 const PREFER_WHEELCHAIR = 'app_pref_wheel';
+// Represents if the user prefers shorter routes
+const PREFER_SHORTEST_ROUTE = 'app_pref_shortest_route';
 // Represents the user's preferred time format, 12 or 24 hour
 const PREFERRED_TIME_FORMAT = 'app_time_format';
 // Represents the user's preference to view their schedule by week or by course
@@ -135,6 +137,33 @@ export function setPrefersWheelchair(asyncStorage: AsyncStorageStatic, prefer: a
   if (prefer === true || prefer === false) {
     asyncStorage.setItem(PREFER_WHEELCHAIR, prefer.toString());
     Analytics.setPreference(PREFER_WHEELCHAIR, prefer.toString());
+  }
+}
+
+/**
+ * Gets whether the user prefers the shortest routes over the easiest.
+ *
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @returns {boolean} true if the user prefers shorter routes, false by default
+ */
+export async function getPrefersShortestRoute(asyncStorage: AsyncStorageStatic): Promise<boolean> {
+  const value = await retrieveFromAsyncStorage(asyncStorage, PREFER_SHORTEST_ROUTE);
+
+  return (value == undefined)
+      ? false
+      : (value === 'true');
+}
+
+/**
+ * Updates the user's preference for shorter routes.
+ *
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @param {boolean}            prefer       true to prefer shorter routes, false for any routes
+ */
+export function setPrefersShortestRoute(asyncStorage: AsyncStorageStatic, prefer: any): void {
+  if (prefer === true || prefer === false) {
+    asyncStorage.setItem(PREFER_SHORTEST_ROUTE, prefer.toString());
+    Analytics.setPreference(PREFER_SHORTEST_ROUTE, prefer.toString());
   }
 }
 

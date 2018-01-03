@@ -44,6 +44,7 @@ export interface Options {
   lastUpdatedAt?: number;                   // Time the config was last updated from the server
   preferredTimeFormat?: TimeFormat;         // Either 12 or 24h time
   prefersWheelchair?: boolean;              // Only provide wheelchair accessible routes
+  prefersShortestRoute?: boolean;           // Find the shortest route
   preferByCourse?: boolean;                 // True to default schedule view by course, false for by week
   scheduleByCourse?: boolean;               // True to sort classes by course, false to sort by week
   semesters?: Semester[];                   // List of semesters currently available

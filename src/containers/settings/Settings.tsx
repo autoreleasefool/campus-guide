@@ -67,6 +67,7 @@ interface Props {
   currentSemester: number;                              // The current semester, selected by the user
   language: Language;                                   // The current language, selected by the user
   prefersWheelchair: boolean;                           // Whether the user prefers wheelchair accessible routes
+  prefersShortestRoute: boolean;                        // Whether the user prefers shortest routes
   semesters: Semester[];                                // Semesters available at the university
   timeFormat: TimeFormat;                               // The user's preferred time format
   universityName: Name;                                 // Name of the university
@@ -198,6 +199,8 @@ class Settings extends React.PureComponent<Props, State> {
           : 'Français';
       case 'pref_wheel':
         return this.props.prefersWheelchair;
+      case 'pref_shortest_route':
+        return this.props.prefersShortestRoute;
       case 'pref_semester': {
         const semester = this.props.semesters[this.props.currentSemester];
 
@@ -242,6 +245,9 @@ class Settings extends React.PureComponent<Props, State> {
         break;
       case 'pref_wheel':
         this.props.updateConfiguration({ prefersWheelchair: !this.props.prefersWheelchair });
+        break;
+      case 'pref_shortest_route':
+        this.props.updateConfiguration({ prefersShortestRoute: !this.props.prefersShortestRoute });
         break;
       case 'pref_semester':
         let nextSemester = this.props.currentSemester + 1;
@@ -520,6 +526,7 @@ const mapStateToProps = (store: Store): any => {
   return {
     currentSemester: store.config.options.currentSemester,
     language: store.config.options.language,
+    prefersShortestRoute: store.config.options.prefersShortestRoute,
     prefersWheelchair: store.config.options.prefersWheelchair,
     semesters: store.config.options.semesters,
     timeFormat: store.config.options.preferredTimeFormat,

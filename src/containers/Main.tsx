@@ -208,12 +208,13 @@ class Main extends React.PureComponent<Props, State> {
    * Loads the user's saved preferences and updates the redux store.
    */
   _loadPreferences(): void {
-    const SCHEDULE = 5; // Corresponds to index of Database.getSchedule() below
+    const SCHEDULE = 6; // Corresponds to index of Database.getSchedule() below
 
     Promise.all([
       Preferences.getSelectedLanguage(AsyncStorage),
       Preferences.getCurrentSemester(AsyncStorage),
       Preferences.getPrefersWheelchair(AsyncStorage),
+      Preferences.getPrefersShortestRoute(AsyncStorage),
       Preferences.getPreferredTimeFormat(AsyncStorage),
       Preferences.getPreferScheduleByCourse(AsyncStorage),
       Database.getSchedule(),
@@ -308,9 +309,10 @@ const mapDispatchToProps = (dispatch: any): object => {
       dispatch(actions.updateConfiguration({
         currentSemester: preferences[1],
         language: preferences[0],
-        preferredTimeFormat: preferences[3],
+        preferredTimeFormat: preferences[4],
+        prefersShortestRoute: preferences[3],
         prefersWheelchair: preferences[2],
-        scheduleByCourse: preferences[4],
+        scheduleByCourse: preferences[5],
       }));
 
       /* tslint:enable no-magic-numbers */

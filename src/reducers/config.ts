@@ -41,6 +41,7 @@ const initialState: State = {
     currentSemester: 0,
     language: undefined,
     preferredTimeFormat: '12h',
+    prefersShortestRoute: false,
     prefersWheelchair: false,
     scheduleByCourse: false,
     semesters: [],

@@ -61,6 +61,7 @@ interface Props {
   accessible: boolean;                    // Indicates if the user wants wheelchair accessible routes only
   destination: Destination | undefined;   // The user's selected destination
   language: Language;                     // The current language, selected by the user
+  shortestRoute: boolean;                 // Indicates if the user wants the shortest available route
   startingPoint: Destination | undefined; // The user's selected starting point for navigation
 }
 
@@ -93,8 +94,12 @@ class Steps extends React.PureComponent<Props, State> {
    * Get directions between the starting point and destination.
    */
   async _loadDirections(): Promise<void> {
-    const { accessible, destination, startingPoint }: Props = this.props;
-    const directionResults = await Directions.getDirectionsBetween(startingPoint, destination, accessible);
+    const { accessible, destination, shortestRoute, startingPoint }: Props = this.props;
+    const directionResults = await Directions.getDirectionsBetween(
+        startingPoint,
+        destination,
+        accessible,
+        shortestRoute);
 
     if (directionResults.showReport) {
       Analytics.failedNavigation(startingPoint, destination, accessible);
@@ -302,6 +307,7 @@ const mapStateToProps = (store: Store): any => {
     accessible: store.config.options.prefersWheelchair,
     destination: store.directions.destination,
     language: store.config.options.language,
+    shortestRoute: store.config.options.prefersShortestRoute,
     startingPoint: store.directions.startingPoint,
   };
 };
