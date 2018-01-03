@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "CampusGuide.app"
-               BlueprintName = "CampusGuide"
+               BuildableName = "campusguide.app"
+               BlueprintName = "campusguide"
                ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,8 +43,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "CampusGuideTests.xctest"
-               BlueprintName = "CampusGuideTests"
+               BuildableName = "campusguideTests.xctest"
+               BlueprintName = "campusguideTests"
                ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -62,8 +62,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "CampusGuideTests.xctest"
-               BlueprintName = "CampusGuideTests"
+               BuildableName = "campusguideTests.xctest"
+               BlueprintName = "campusguideTests"
                ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -72,8 +72,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CampusGuide.app"
-            BlueprintName = "CampusGuide"
+            BuildableName = "campusguide.app"
+            BlueprintName = "campusguide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -96,8 +96,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CampusGuide.app"
-            BlueprintName = "CampusGuide"
+            BuildableName = "campusguide.app"
+            BlueprintName = "campusguide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -122,8 +122,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "CampusGuide.app"
-            BlueprintName = "CampusGuide"
+            BuildableName = "campusguide.app"
+            BlueprintName = "campusguide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
