@@ -27,15 +27,13 @@
 import React from 'react';
 import {
   InteractionManager,
-  LayoutAnimation,
   StyleSheet,
-  TouchableOpacity,
+  Text,
   View,
 } from 'react-native';
 
 // Imports
 import TransitStops from './TransitStops';
-import Header from './Header';
 import MapView from 'react-native-maps';
 import * as Configuration from '../util/Configuration';
 import * as Constants from '../constants';
@@ -57,7 +55,6 @@ interface Props {
 interface State {
   campus: TransitCampus | undefined;          // Name and routes that visit the campus
   region: LatLong & LatLongDelta | undefined; // Current region displayed by map
-  routesExpanded: boolean;                    // True to indicate the routes and times are expanded
   stops: any;                                 // Set of stop details
 }
 
@@ -77,7 +74,6 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
     this.state = {
       campus: undefined,
       region: Constants.Map.InitialRegion,
-      routesExpanded: false,
       stops: {},
     };
 
@@ -159,16 +155,6 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
   }
 
   /**
-   * Toggles whether the route/stop container is expanded or not.
-   */
-  _toggleRoutesExpanded(): void {
-    LayoutAnimation.easeInEaseOut();
-    this.setState({
-      routesExpanded: !this.state.routesExpanded,
-    });
-  }
-
-  /**
    * Renders a map with a list of markers to denote transit stops near the campus.
    *
    * @returns {JSX.Element} a {MapView} with a list of markers placed at the stops on the campus
@@ -223,29 +209,15 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
       );
     }
 
-    let expandIcon = 'expand-less';
-    let routeStyle: any = { flexShrink: 0 };
-    let stopStyle: any = { height: 0 };
-    if (this.state.routesExpanded) {
-      expandIcon = 'expand-more';
-      routeStyle = { flex: 3 };
-      stopStyle = _styles.container;
-    }
-
     return (
-      <View style={routeStyle}>
-        <TouchableOpacity onPress={this._toggleRoutesExpanded.bind(this)}>
-          <Header
-              icon={{ name: 'md-time', class: 'ionicon' }}
-              subtitleIcon={{ name: expandIcon, class: 'material' }}
-              title={Translations.get('routes_and_times')} />
-        </TouchableOpacity>
+      <View style={{ flex: 1 }}>
+        <Text style={_styles.approximateTimes}>{Translations.get('transit_approximate_times')}</Text>
         <TransitStops
             campus={campus}
             filter={this.props.filter}
             language={this.props.language}
             stops={stops}
-            style={stopStyle}
+            style={{ flex: 1 }}
             timeFormat={this.props.timeFormat}
             onSelect={this._stopSelected.bind(this)} />
       </View>
@@ -263,7 +235,9 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
         <View style={_styles.container}>
           {this._renderCampusMap()}
         </View>
-        {this._renderCampusStops()}
+        <View style={_styles.container}>
+          {this._renderCampusStops()}
+        </View>
       </View>
     );
   }
@@ -271,6 +245,12 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
 
 // Private styles for the component
 const _styles = StyleSheet.create({
+  approximateTimes: {
+    backgroundColor: Constants.Colors.darkTransparentBackground,
+    color: Constants.Colors.primaryWhiteText,
+    padding: Constants.Sizes.Margins.Regular,
+    textAlign: 'center',
+  },
   container: {
     flex: 2,
   },
