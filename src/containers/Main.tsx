@@ -176,7 +176,12 @@ class Main extends React.PureComponent<Props, State> {
 
         Alert.alert(
           Translations.get('update_available_title'),
-          Configuration.constructUpdateMessage(Translations.get('update_available_msg'), totalSize),
+          Configuration.constructUpdateMessage(
+            Translations.get('update_available_msg'),
+            totalSize,
+            Translations.getDescription(available.whatsNew),
+            Translations.get('default_update_msg')
+          ),
           [
             { text: Translations.get('cancel'), style: 'cancel' },
             { text: Translations.get('update'), onPress: (): void => this._updateConfiguration(available) },

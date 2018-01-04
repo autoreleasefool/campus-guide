@@ -31,7 +31,7 @@ import * as RNFS from 'react-native-fs';
 // Types
 import { AsyncStorageStatic, PlatformOSType } from 'react-native';
 import { Language } from './Translations';
-import { LatLong, Name, TimeFormat } from '../../typings/global';
+import { Description, LatLong, Name, TimeFormat } from '../../typings/global';
 import { TransitInfo } from '../../typings/transit';
 import { Semester } from '../../typings/university';
 
@@ -77,6 +77,7 @@ export interface ConfigFile {
 export interface ConfigurationDetails {
   lastUpdatedAt: number;  // Milliseconds since epoch for time the file was last updated
   files: ConfigFile[];    // List of files in app configuration
+  whatsNew: Description;  // Indicates new features/info in the update
 }
 
 /** Callback methods that can be provided to the configuration update */
@@ -433,6 +434,7 @@ async function _getAvailableConfigUpdates(os: PlatformOSType): Promise<Configura
     const appConfigToUpdate: ConfigurationDetails = {
       files: [],
       lastUpdatedAt: appConfig.lastUpdatedAt,
+      whatsNew: appConfig.whatsNew,
     };
 
     const lastUpdatedAt = await getConfigLastUpdatedAt();
@@ -652,18 +654,20 @@ const MEGABYTE = 1000000;
 const KILOBYTE = 1000;
 
 /**
- * Inject update size into a message.
+ * Create a message about a config update from different elements.
  *
- * @param {string} message    the translated message
- * @param {number} updateSize size of the update, in bytes
+ * @param {string} message         the translated message
+ * @param {number} updateSize      size of the update, in bytes
+ * @param {string} whatsNew        details of new features/info in the update
+ * @param {string} defaultWhatsNew backup default message for what's new
  * @returns {string} the message with the update size
  */
-export function constructUpdateMessage(message: string, updateSize: number): string {
-  let breakPoint = message.indexOf('{');
-  const firstPart = message.substring(0, breakPoint);
-  breakPoint = message.indexOf('}', breakPoint);
-  const secondPart = message.substring(breakPoint + 1);
-
+export function constructUpdateMessage(
+    message: string,
+    updateSize: number,
+    whatsNew: string,
+    defaultWhatsNew: string): string {
+  // Form text with size of update
   let updateText = `${updateSize} B`;
   if (updateSize > MEGABYTE) {
     updateText = `${(updateSize / MEGABYTE).toFixed(2)} MB`;
@@ -671,5 +675,13 @@ export function constructUpdateMessage(message: string, updateSize: number): str
     updateText = `${(updateSize / KILOBYTE).toFixed(2)} KB`;
   }
 
-  return `${firstPart}${updateText}${secondPart}`;
+  // Replace "What's new" message with default if empty
+  if (whatsNew.length === 0) {
+    whatsNew = defaultWhatsNew;
+  }
+
+  let updateMessage = message.replace('{1}', updateText);
+  updateMessage = updateMessage.replace('{2}', ` ${whatsNew}`);
+
+  return updateMessage;
 }
