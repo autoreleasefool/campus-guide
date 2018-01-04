@@ -51,7 +51,7 @@ Travis CI runs the following commands, which must succeed in order for your chan
 ## License
 
 ```
-Copyright 2016-2017 Joseph Roque
+Copyright 2016-2018 Joseph Roque
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
