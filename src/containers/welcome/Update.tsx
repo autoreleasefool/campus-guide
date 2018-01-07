@@ -173,7 +173,12 @@ class UpdateScreen extends React.PureComponent<Props, State> {
 
           Alert.alert(
             Translations.get('update_available_title'),
-            Configuration.constructUpdateMessage(Translations.get('update_available_msg'), totalSize),
+            Configuration.constructUpdateMessage(
+              Translations.get('update_available_msg'),
+              totalSize,
+              Translations.getDescription(available.whatsNew),
+              Translations.get('default_update_msg')
+            ),
             [
               {
                 onPress: onCancel,
