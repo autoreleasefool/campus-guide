@@ -25,12 +25,14 @@ import * as DirectionTranslations from './DirectionTranslations';
 import * as Navigation from './Navigation';
 import * as Translations from '../Translations';
 import * as TextUtils from '../TextUtils';
+import * as CampusGraph from './CampusGraph';
 
 // Types
 import { Description, Icon } from '../../../typings/global';
 import { Destination } from '../../../typings/university';
-import { BuildingGraph, Edge, EdgeDirection, Path } from './Navigation';
+import { Path } from './Navigation';
 import { default as Node, Type as NodeType } from './Node';
+import { Graph, Edge, EdgeDirection } from './CampusGraph';
 
 /** Information on step by step navigation. */
 export interface Step extends Description {
@@ -38,6 +40,7 @@ export interface Step extends Description {
   icon?: Icon;  // Icon to represent the step
 }
 
+/** Container for results of requesting directions between two destinations. */
 export interface DirectionResults {
   showReport: boolean;  // True indicates an error was encountered and an option to report should appear
   steps: Step[];        // Steps to between two destinations.
@@ -48,6 +51,19 @@ export enum Direction {
   Left = 0,
   Right = 1,
   Straight = 2,
+}
+
+/** Number of missed halls between two points. */
+interface MissedHalls {
+  left: number;     // Number of missed hallways on the left
+  right: number;    // Number of missed hallways on the right
+  straight: number; // Number of straight ahead missed halls
+}
+
+/** Properties on a part of a path */
+interface PathProps extends MissedHalls {
+  distance: number;       // Distance travelled on the current straight path
+  intersection: boolean;  // True if passing through an intersection, false otherwise
 }
 
 /** Constant for 10 metres. */
@@ -63,7 +79,7 @@ export const REPORT_STEP_KEY = 'report';
  * @returns {number} distance in metres
  */
 function _distanceToMetres(distance: number): number {
-  return Math.min(Math.floor(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES), 1) * TEN_METRES;
+  return Math.max(Math.floor(distance * Navigation.OUTER_UNIT_TO_M / TEN_METRES), 1) * TEN_METRES;
 }
 
 /**
@@ -103,9 +119,9 @@ function _getTurningDirection(firstDirection: EdgeDirection, secondDirection: Ed
  *
  * @param {Edge[]}        adjacentEdges the edges being passed
  * @param {EdgeDirection} direction     the current travelling direction
- * @returns {object} l, r, and s, representing the number of missed left, right and straight hallways
+ * @returns {MissedHalls} the number of missed left, right and straight hallways
  */
-function _countMissedHalls(adjacentEdges: Edge[], direction: EdgeDirection): { l: number; r: number; s: number } {
+function _countMissedHalls(adjacentEdges: Edge[], direction: EdgeDirection): MissedHalls {
   let left = 0;
   let right = 0;
   let straight = 0;
@@ -154,7 +170,7 @@ function _countMissedHalls(adjacentEdges: Edge[], direction: EdgeDirection): { l
     }
   }
 
-  return { l: left, r: right, s: straight };
+  return { left, right, straight };
 }
 
 /**
@@ -165,10 +181,7 @@ function _countMissedHalls(adjacentEdges: Edge[], direction: EdgeDirection): { l
  * @param {EdgeDirection} nextDirection the desired continuing direction
  * @returns {Step} directions to exit the room
  */
-function _exitRoom(
-    room: Node,
-    exitDirection: EdgeDirection,
-    nextDirection: EdgeDirection): Step {
+function _exitRoom(room: Node, exitDirection: EdgeDirection, nextDirection: EdgeDirection): Step {
   const turningDirection = _getTurningDirection(exitDirection, nextDirection);
   const translations = DirectionTranslations.translateExitRoom(room, turningDirection);
 
@@ -180,30 +193,67 @@ function _exitRoom(
 }
 
 /**
+ * Provides translated directions to exit a building.
+ *
+ * @param {Node} door the door of the building to exit
+ * @returns {Step} steps to exit the building
+ */
+function _exitBuilding(door: Node): Step {
+  const translations = DirectionTranslations.translateExitBuilding(door);
+
+  return {
+    description_en: Translations.getDescription(translations, 'en'),
+    description_fr: Translations.getDescription(translations, 'fr'),
+    key: `exitBuilding_${door}`,
+  };
+}
+
+/**
+ * Provides translated directions to enter a room.
+ *
+ * @param {Edge}    currentEdge      the last edge before the room
+ * @param {Edge}    nextEdge         the edge to enter the room
+ * @param {boolean} overrideStraight force the text to indicate the door is directly ahead
+ * @returns {Step} instruction to enter a room
+ */
+function _enterRoom(currentEdge: Edge, nextEdge: Edge, overrideStraight: boolean): Step {
+  const turningDirection = overrideStraight
+      ? Direction.Straight
+      : _getTurningDirection(currentEdge.direction, nextEdge.direction);
+  const translations = DirectionTranslations.translateEnterRoom(nextEdge.node, turningDirection);
+
+  return {
+    description_en: Translations.getDescription(translations, 'en'),
+    description_fr: Translations.getDescription(translations, 'fr'),
+    key: `enterRoom_${nextEdge.node}`,
+  };
+}
+
+/**
  * Provides translated directions to enter a building.
  *
+ * @param {PathProps}     pathProps            path properties to use and update
  * @param {Node}          outdoorNode          node which building is being entered from
  * @param {Node}          door                 the door of the building to enter
  * @param {EdgeDirection} approachingDirection direction the user is walking past the building
  * @param {EdgeDirection} doorDirection        direction the user must turn to enter the building
  * @param {EdgeDirection} enteredDirection     direction the user is facing upon entering the building
  * @param {EdgeDirection} continuingDirection  direction the user must turn to proceed to their destination
- * @param {number}        distance             total distance travelled along the preceding path/street
- * @param {BuildingGraph} graph                building graph
+ * @param {Graph}         graph                building graph
  * @returns {Step[]} steps to enter a building from the street
  */
 function _enterBuilding(
+    pathProps: PathProps,
     outdoorNode: Node,
     door: Node,
     approachingDirection: EdgeDirection,
     doorDirection: EdgeDirection,
     enteredDirection: EdgeDirection,
     continuingDirection: EdgeDirection,
-    distance: number,
-    graph: BuildingGraph): Step[] {
+    graph: Graph): Step[] {
   const passingDirection = _getTurningDirection(approachingDirection, doorDirection);
   const turningDirection = _getTurningDirection(enteredDirection, continuingDirection);
-  const distanceInMetres = _distanceToMetres(distance);
+  const distanceInMetres = _distanceToMetres(pathProps.distance);
 
   const translations = DirectionTranslations.translateEnterBuilding(
     passingDirection,
@@ -223,28 +273,38 @@ function _enterBuilding(
     });
   }
 
+  pathProps.distance = 0;
+
   return steps;
 }
 
 /**
- * Provides translated directions to exit a building.
+ * Provides translated directions to enter a building, or its lobby.
  *
- * @param {Node}          door          the door of the building to exit
- * @param {EdgeDirection} exitDirection the facing direction from exiting the door
- * @param {EdgeDirection} nextDirection the desired continuing direction
- * @returns {Step} steps to exit the building
+ * @param {Edge}    currentEdge      the last edge before the room
+ * @param {Edge}    nextEdge         the edge to enter the room
+ * @param {boolean} overrideStraight force the text to indicate the door is directly ahead
+ * @returns {Step} instruction to enter a building or lobby
  */
-function _exitBuilding(
-    door: Node,
-    exitDirection: EdgeDirection,
-    nextDirection: EdgeDirection): Step {
-  const turningDirection = _getTurningDirection(exitDirection, nextDirection);
-  const translations = DirectionTranslations.translateExitBuilding(door, turningDirection);
+function _arriveBuildingDestination(currentEdge: Edge, nextEdge: Edge, overrideStraight: boolean): Step {
+  const turningDirection = overrideStraight
+      ? Direction.Straight
+      : _getTurningDirection(currentEdge.direction, nextEdge.direction);
+
+  const translations = currentEdge.node.isOutside()
+      ? DirectionTranslations.translateEnterBuildingDestination(
+        nextEdge.node,
+        turningDirection
+      )
+      : DirectionTranslations.translateBuildingLobbyDestination(
+        nextEdge.node,
+        turningDirection
+      );
 
   return {
     description_en: Translations.getDescription(translations, 'en'),
     description_fr: Translations.getDescription(translations, 'fr'),
-    key: `exitBuilding_${door}`,
+    key: `enterBuilding_${nextEdge.node}`,
   };
 }
 
@@ -260,7 +320,6 @@ function _changeFloors(
     node: Node,
     exitEdge: Edge,
     nextEdge: Edge): Step[] {
-
   const turningDirection = _getTurningDirection(exitEdge.direction, nextEdge.direction);
   const translations = DirectionTranslations.translateChangingFloors(node, exitEdge.node, turningDirection);
 
@@ -277,24 +336,6 @@ function _changeFloors(
 }
 
 /**
- * Provides translated directions to enter a room.
- *
- * @param {Edge}     previousEdge the last edge before the room
- * @param {Edge}     roomEdge     the edge to enter the room
- * @returns {Step} instruction to enter a room
- */
-function _enterRoom(previousEdge: Edge, roomEdge: Edge): Step {
-  const turningDirection = _getTurningDirection(previousEdge.direction, roomEdge.direction);
-  const translations = DirectionTranslations.translateEnterRoom(roomEdge.node, turningDirection);
-
-  return {
-    description_en: Translations.getDescription(translations, 'en'),
-    description_fr: Translations.getDescription(translations, 'fr'),
-    key: `enterRoom_${roomEdge.node}`,
-  };
-}
-
-/**
  * Creates directions to turn down a hallway.
  *
  * @param {Node}      hallNode            node of hall to turn at
@@ -304,10 +345,10 @@ function _enterRoom(previousEdge: Edge, roomEdge: Edge): Step {
  * @returns {Step} the directions for a user to turn down a hall
  */
 function _turnDownNthHall(
-      hallNode: Node,
-      direction: Direction,
-      missedHalls: number,
-      missedStraightHalls: number): Step {
+    hallNode: Node,
+    direction: Direction,
+    missedHalls: number,
+    missedStraightHalls: number): Step {
   if (direction !== Direction.Left && direction !== Direction.Right) {
     throw new Error(`Invalid turning direction: ${direction}`);
   }
@@ -328,23 +369,23 @@ function _turnDownNthHall(
 /**
  * Creates directions to turn down a street outside.
  *
+ * @param {PathProps}     pathProps        path properties to use and update
  * @param {Node}          currentNode      the current path/street being travelled down
  * @param {Node}          nextNode         the path/street to turn onto
  * @param {EdgeDirection} currentDirection the direction of the last path/street
  * @param {EdgeDirection} nextDirection    the direction of the next path/street
- * @param {number}        distance         distance to walk down the street before turning
  * @param {BuildingGraph} graph            building graph
  * @returns {Step} the directions for a user to turn down a street
  */
 function _turnDownStreet(
+    pathProps: PathProps,
     currentNode: Node,
     nextNode: Node,
     currentDirection: EdgeDirection,
     nextDirection: EdgeDirection,
-    distance: number,
-    graph: BuildingGraph): Step {
+    graph: Graph): Step {
   const turningDirection = _getTurningDirection(currentDirection, nextDirection);
-  const distanceInMetres = _distanceToMetres(distance);
+  const distanceInMetres = _distanceToMetres(pathProps.distance);
   const translations = DirectionTranslations.translateTurnDownStreet(
     currentNode,
     nextNode,
@@ -352,6 +393,8 @@ function _turnDownStreet(
     distanceInMetres,
     graph
   );
+
+  pathProps.distance = 0;
 
   return {
     description_en: Translations.getDescription(translations, 'en'),
@@ -363,20 +406,21 @@ function _turnDownStreet(
 /**
  * Provides directions for a user to cross an intersection.
  *
- * @param {Node}          previousEdge     the current path/street being travelled down
- * @param {Node}          intersectionNode the intersection to cross
- * @param {Node}          nextEdge         the street/path after the intersection
- * @param {number}        distance         distance travelled on current path to reach intersection
- * @param {BuildingGraph} graph            the graph, for retrieving street names
- * @returns {string[]} instructions for crossing an intersection
+ * @param {PathProps} pathProps        path properties to use and update
+ * @param {Node}      previousEdge     the current path/street being travelled down
+ * @param {Node}      intersectionNode the intersection to cross
+ * @param {Node}      nextEdge         the street/path after the intersection
+ * @param {number}    distance         distance travelled on current path to reach intersection
+ * @param {Graph}     graph            the graph, for retrieving street names
+ * @returns {Step[]} instructions for crossing an intersection
  */
 function _crossIntersection(
+    pathProps: PathProps,
     previousEdge: Edge,
     intersectionEdge: Edge,
     nextEdge: Edge,
-    distance: number,
-    graph: BuildingGraph): Step[] {
-  const distanceInMetres = _distanceToMetres(distance);
+    graph: Graph): Step[] {
+  const distanceInMetres = _distanceToMetres(pathProps.distance);
   const turningDirection = _getTurningDirection(previousEdge.direction, intersectionEdge.direction);
   const nextDirection = _getTurningDirection(intersectionEdge.direction, nextEdge.direction);
   const translations = DirectionTranslations.translateCrossIntersection(
@@ -388,6 +432,8 @@ function _crossIntersection(
     distanceInMetres,
     graph
   );
+
+  pathProps.distance = 0;
 
   const steps: Step[] = [];
   for (let i = 0; i < translations.length; i++) {
@@ -402,214 +448,324 @@ function _crossIntersection(
 }
 
 /**
+ * Provides directions for user to take a set of stairs outside.
+ *
+ * @param {PathProps} pathProps   path properties to use and update
+ * @param {Node}      currentNode the node before the steps
+ * @param {Edge}      currentEdge the current path/street being travelled down
+ * @param {}
+ * @returns {Step} instructions for taking steps outside
+ */
+function _takeOutdoorSteps(pathProps: PathProps, currentNode: Node, currentEdge: Edge, graph: Graph): Step {
+  const distanceInMetres = _distanceToMetres(pathProps.distance);
+  const translations = DirectionTranslations.translateTakeOutdoorSteps(
+    currentNode,
+    currentEdge,
+    distanceInMetres,
+    graph
+  );
+
+  pathProps.distance = 0;
+
+  return {
+    description_en: Translations.getDescription(translations, 'en'),
+    description_fr: Translations.getDescription(translations, 'fr'),
+    key: `takeOutdoorSteps_${currentEdge.node}`,
+  };
+}
+
+/**
+ * Parse first node and edges for the first step between two points.
+ *
+ * @param {Node}   node        starting node
+ * @param {Edge}   currentEdge outgoing edge from starting node
+ * @param {Edge}   nextEdge    following edge
+ * @param {Step[]} directions  list of directions
+ */
+function _pushFirstStep(node: Node, currentEdge: Edge, nextEdge: Edge, directions: Step[]): void {
+  switch (node.getType()) {
+    case NodeType.Room:
+      directions.push(_exitRoom(node, currentEdge.direction, nextEdge.direction));
+      break;
+    case NodeType.Door:
+      directions.push(_exitBuilding(node));
+      break;
+    default:
+      throw new Error('Cannot provide directions from nodes which are not doors or rooms');
+  }
+}
+
+/**
+ * Update path properties along the path.
+ *
+ * @param {PathProps}          pathProps   path properties to use and update
+ * @param {Path}               path        the path being traversed
+ * @param {number}             pathIndex   current index in the path
+ * @param {Node}               currentNode current node in the path
+ * @param {Edge}               currentEdge current edge in the path
+ * @param {Edge}               nextEdge    next edge in the path
+ * @param {Map<string, Graph>} graphs      graphs which the path was built from
+ * @returns {Step[]} steps to add to the final directions
+ */
+function _extendPath(
+    pathProps: PathProps,
+    path: Path,
+    pathIndex: number,
+    currentNode: Node,
+    currentEdge: Edge,
+    nextEdge: Edge,
+    graphs: Map<string, Graph>): Step[] {
+  const steps: Step[] = [];
+
+  const nextDirection = _getTurningDirection(currentEdge.direction, nextEdge.direction);
+
+  switch (currentNode.getType()) {
+    case NodeType.Hallway:
+      if (nextDirection === Direction.Straight) {
+        const skippedNode = currentEdge.node;
+        const adjacentEdges = graphs.get(skippedNode.getBuilding()).adjacencies.get(skippedNode);
+        const missedHalls = _countMissedHalls(adjacentEdges, currentEdge.direction);
+
+        pathProps.left += missedHalls.left;
+        pathProps.right += missedHalls.right;
+      } else {
+        const skippedNode = currentEdge.node;
+        const adjacentEdges = graphs.get(skippedNode.getBuilding()).adjacencies.get(skippedNode);
+        const missedHalls = _countMissedHalls(adjacentEdges, currentEdge.direction);
+
+        pathProps.straight += missedHalls.straight;
+
+        let missed: number;
+        switch (nextDirection) {
+          case Direction.Left: missed = pathProps.left; break;
+          case Direction.Right: missed = pathProps.right; break;
+          default: throw new Error(`Invalid direction for turn: ${nextDirection}`);
+        }
+
+        steps.push(_turnDownNthHall(currentEdge.node, nextDirection, missed, pathProps.straight));
+
+        pathProps.left = 0;
+        pathProps.right = 0;
+        pathProps.straight = 0;
+      }
+      break;
+    case NodeType.Path:
+    case NodeType.Street:
+      if (nextEdge.node.getType() === NodeType.Door) {
+        pathProps.distance += currentEdge.distance;
+        // FIXME: distance
+        break;
+      }
+
+      if (nextDirection !== Direction.Straight) {
+        steps.push(
+          _turnDownStreet(
+            pathProps,
+            currentNode,
+            currentEdge.node,
+            currentEdge.direction,
+            nextEdge.direction,
+            graphs.get('OUT')
+          )
+        );
+      }
+
+      // FIXME: check this
+      pathProps.distance += currentEdge.distance;
+      break;
+    case NodeType.Intersection:
+      // FIXME: distance
+      pathProps.distance += currentEdge.distance;
+      for (const step of _crossIntersection(
+        pathProps,
+        path.edges[pathIndex - 1],
+        currentEdge,
+        nextEdge,
+        graphs.get('OUT')
+      )) {
+        steps.push(step);
+      }
+      break;
+    default:
+      // Does nothing
+  }
+
+  return steps;
+}
+
+/**
+ * Update path properties and describe steps to enter a new path.
+ *
+ * @param {PathProps}          pathProps   path properties to use and update
+ * @param {Path}               path        the path being traversed
+ * @param {number}             pathIndex   current index in the path
+ * @param {Node}               currentNode current node in the path
+ * @param {Edge}               currentEdge current edge in the path
+ * @param {Edge}               nextEdge    next edge in the path
+ * @param {Map<string, Graph>} graphs      graphs which the path was built from
+ * @returns {Step[]} steps to add to the final directions
+ */
+function _startNewPath(
+    pathProps: PathProps,
+    path: Path,
+    pathIndex: number,
+    currentNode: Node,
+    currentEdge: Edge,
+    nextEdge: Edge,
+    graphs: Map<string, Graph>): Step[] {
+  const steps: Step[] = [];
+
+  switch (currentEdge.node.getType()) {
+    case NodeType.Door:
+      if (currentNode.isOutside()) {
+        // FIXME: distance
+        pathProps.distance += currentEdge.distance;
+        for (const step of _enterBuilding(
+          pathProps,
+          currentNode,
+          currentEdge.node,
+          path.edges[pathIndex - 1].direction,
+          path.edges[pathIndex].direction,
+          path.edges[pathIndex + 1].direction,
+          path.edges[pathIndex + 2].direction,
+          graphs.get('OUT')
+        )) {
+          steps.push(step);
+        }
+      } else {
+        steps.push(_exitBuilding(currentEdge.node));
+      }
+      break;
+    case NodeType.Elevator:
+    case NodeType.Stairs:
+        for (const step of _changeFloors(
+          currentEdge.node,
+          path.edges[pathIndex + 1],
+          path.edges[pathIndex + 2])) {
+        steps.push(step);
+      }
+      break;
+    case NodeType.Path:
+    case NodeType.Street:
+      if (nextEdge.node.getType() === NodeType.Door) {
+        // FIXME: add distance
+        pathProps.distance += currentEdge.distance;
+        break;
+      }
+
+      // FIXME: going from outdoor steps to here should do nothing, probably
+      if (currentNode.getType() === NodeType.OutdoorSteps) {
+        break;
+      }
+
+      // FIXME: distance
+      pathProps.distance += currentEdge.distance;
+      steps.push(
+        _turnDownStreet(
+          pathProps,
+          currentNode,
+          currentEdge.node,
+          currentEdge.direction,
+          nextEdge.direction,
+          graphs.get('OUT')
+        )
+      );
+      break;
+    case NodeType.Intersection:
+      // FIXME: distance
+      pathProps.distance += currentEdge.distance;
+      pathProps.intersection = true;
+      break;
+    case NodeType.OutdoorSteps:
+      pathProps.distance += currentEdge.distance;
+      steps.push(
+        _takeOutdoorSteps(
+          pathProps,
+          currentNode,
+          currentEdge,
+          graphs.get('OUT')
+        )
+      );
+      break;
+    default:
+      // Does nothing
+  }
+
+  return steps;
+}
+
+/**
  * Build step-by-step directions to travel along a path.
  *
- * @param {Path|undefined}            path     the path to follow
- * @param {Map<string, BuildingGraph} graphs   graphs which the path was built from
+ * @param {Path|undefined}     path     the path to follow
+ * @param {Map<string, Graph>} graphs   graphs which the path was built from
  * @returns {Step[]} a list of directions
  */
-function _buildDirectionsFromPath(
-    path: Path | undefined,
-    graphs: Map<string, BuildingGraph>): Step[] {
-  if (path == undefined) {
-    throw new Error('Path is not defined');
+function _buildDirectionsFromPath(path: Path | undefined, graphs: Map<string, Graph>): Step[] {
+  if (path == undefined || path.edges.length < 2) {
+    throw new Error('Path is not properly defined');
   }
 
   const directions: Step[] = [];
   const totalEdges = path.edges.length;
 
-  let missedLeftHalls = 0;
-  let missedRightHalls = 0;
-  let missedStraightHalls = 0;
-  let distanceToTravel = 0;
-  let passingThroughIntersection = false;
-
   let currentNode = path.source;
-  let nextPath = path.edges[0];
-  let nextNextPath = path.edges[1];
+  let currentEdge = path.edges[0];
+  let nextEdge = path.edges[1];
 
-  // Initial directions, to exit starting room/building
-  switch (currentNode.getType()) {
-    case NodeType.Room:
-      directions.push(_exitRoom(currentNode, nextPath.direction, nextNextPath.direction));
-      break;
-    case NodeType.Door:
-      directions.push(_exitBuilding(currentNode, nextPath.direction, nextNextPath.direction));
-      break;
-    default:
-      throw new Error('Cannot provide directions from nodes which are not doors or rooms');
-  }
+  const pathProps: PathProps = {
+    distance: 0,
+    intersection: false,
+    left: 0,
+    right: 0,
+    straight: 0,
+  };
 
-  currentNode = nextPath.node;
+  _pushFirstStep(currentNode, currentEdge, nextEdge, directions);
+
   for (let i = 1; i < totalEdges - 1; i++) {
     currentNode = path.edges[i - 1].node;
-    nextPath = path.edges[i];
-    nextNextPath = path.edges[i + 1];
+    currentEdge = path.edges[i];
+    nextEdge = path.edges[i + 1];
 
-    const nextDirection = _getTurningDirection(nextPath.direction, nextNextPath.direction);
-
-    if (nextNextPath.node.getType() === NodeType.Room) {
-      directions.push(_enterRoom(nextPath, nextNextPath));
-      break;
+    // Two nodes away from the target is when the final step is taken
+    if (nextEdge === path.edges[totalEdges - 1]) {
+      if (nextEdge.node.getType() === NodeType.Room) {
+        directions.push(_enterRoom(currentEdge, nextEdge, currentNode.getType() !== NodeType.Hallway));
+        break;
+      } else if (nextEdge.node.getType() === NodeType.Door) {
+        directions.push(_arriveBuildingDestination(
+          currentEdge,
+          nextEdge,
+          currentNode.getType() !== NodeType.Hallway
+              && currentNode.getType() !== NodeType.Street
+              && currentNode.getType() !== NodeType.Path
+        ));
+        break;
+      }
     }
 
-    // When going to the same node type, count various properties to report when changing directions
-    // or buildings/nodes
-    if (currentNode.getType() === nextPath.node.getType() || passingThroughIntersection) {
-      passingThroughIntersection = false;
-      switch (currentNode.getType()) {
-
-        case NodeType.Hallway:
-          if (nextDirection === Direction.Straight) {
-            const skippedNode = nextPath.node;
-            const adjacentEdges = graphs.get(skippedNode.getBuilding()).adjacencies.get(skippedNode);
-            const missedHalls = _countMissedHalls(adjacentEdges, nextPath.direction);
-            missedLeftHalls += missedHalls.l;
-            missedRightHalls += missedHalls.r;
-          } else {
-            const skippedNode = nextPath.node;
-            const adjacentEdges = graphs.get(skippedNode.getBuilding()).adjacencies.get(skippedNode);
-            const missedHalls = _countMissedHalls(adjacentEdges, nextPath.direction);
-            missedStraightHalls += missedHalls.s;
-
-            let relevantMissedHalls: number;
-            switch (nextDirection) {
-              case Direction.Left: relevantMissedHalls = missedLeftHalls; break;
-              case Direction.Right: relevantMissedHalls = missedRightHalls; break;
-              default: throw new Error(`Invalid direction for turn: ${nextDirection}`);
-            }
-
-            directions.push(_turnDownNthHall(nextPath.node, nextDirection, relevantMissedHalls, missedStraightHalls));
-            missedLeftHalls = 0;
-            missedRightHalls = 0;
-            missedStraightHalls = 0;
-          }
-          break;
-
-        case NodeType.Path:
-        case NodeType.Street:
-          if (nextNextPath.node.getType() === NodeType.Door) {
-            distanceToTravel += nextPath.distance;
-            break;
-          }
-
-          let previousNode = currentNode;
-          if (currentNode.getType() === NodeType.Intersection) {
-            previousNode = path.edges[i - 2].node;
-          }
-          if (nextDirection !== Direction.Straight) {
-            directions.push(
-              _turnDownStreet(
-                previousNode,
-                nextPath.node,
-                nextPath.direction,
-                nextNextPath.direction,
-                distanceToTravel + nextPath.distance,
-                graphs.get('OUT')
-              )
-            );
-            distanceToTravel = 0;
-          }
-          distanceToTravel += nextPath.distance;
-          break;
-
-        case NodeType.Intersection:
-          for (const dir of _crossIntersection(
-              path.edges[i - 1],
-              nextPath,
-              nextNextPath,
-              distanceToTravel + nextPath.distance,
-              graphs.get('OUT'))) {
-            directions.push(dir);
-          }
-          distanceToTravel = 0;
-          break;
-
-        default:
-          // Does nothing
+    // When going to the same node type, count various properties
+    if (currentNode.getType() === currentEdge.node.getType() || pathProps.intersection) {
+      pathProps.intersection = false;
+      for (const step of _extendPath(pathProps, path, i, currentNode, currentEdge, nextEdge, graphs)) {
+        directions.push(step);
       }
     } else {
       // When entering a new node type, report the steps
-      switch (nextPath.node.getType()) {
+      for (const step of _startNewPath(pathProps, path, i, currentNode, currentEdge, nextEdge, graphs)) {
+        directions.push(step);
+      }
+    }
+  }
 
-        case NodeType.Street:
-        case NodeType.Path:
-          if (nextNextPath.node.getType() === NodeType.Door) {
-            distanceToTravel += nextPath.distance;
-            break;
-          }
-
-          // When entering a street or path, from a path or street, respectively
-          if (currentNode.getType() === NodeType.Street || currentNode.getType() === NodeType.Path) {
-            directions.push(
-              _turnDownStreet(
-                currentNode,
-                nextPath.node,
-                nextPath.direction,
-                nextNextPath.direction,
-                distanceToTravel + nextPath.distance,
-                graphs.get('OUT')
-              )
-            );
-            distanceToTravel = 0;
-          } else if (currentNode.getType() === NodeType.Door) {
-            directions.push(
-              _turnDownStreet(
-                currentNode,
-                nextPath.node,
-                nextPath.direction,
-                nextNextPath.direction,
-                nextPath.distance,
-                graphs.get('OUT')
-              )
-            );
-          } else {
-            distanceToTravel += nextPath.distance;
-          }
-          break;
-
-        case NodeType.Intersection:
-          distanceToTravel += nextPath.distance;
-          passingThroughIntersection = true;
-          break;
-
-        case NodeType.Door:
-          if (currentNode.isOutside()) {
-            for (const dir of _enterBuilding(
-                currentNode,
-                nextPath.node,
-                path.edges[i - 1].direction,
-                path.edges[i].direction,
-                path.edges[i + 1].direction,
-                path.edges[i + 2].direction,
-                distanceToTravel + nextPath.distance,
-                graphs.get('OUT'))) {
-              directions.push(dir);
-            }
-            distanceToTravel = 0;
-          } else {
-            directions.push(
-              _exitBuilding(
-                nextPath.node,
-                path.edges[i + 1].direction,
-                path.edges[i + 2].direction
-              )
-            );
-          }
-          break;
-
-        case NodeType.Elevator:
-        case NodeType.Stairs:
-          for (const dir of _changeFloors(
-              nextPath.node,
-              path.edges[i + 1],
-              path.edges[i + 2])) {
-            directions.push(dir);
-          }
-          break;
-
-        default:
-          // Does nothing
+  // Special case when leaving room, then entering room/door right beside
+  if (totalEdges === 2) {
+    if (nextEdge === path.edges[totalEdges - 1]) {
+      if (path.edges[totalEdges - 1].node.getType() === NodeType.Room) {
+        directions.push(_enterRoom(undefined, undefined, true));
+      } else if (path.edges[totalEdges - 1].node.getType() === NodeType.Door) {
+        directions.push(_arriveBuildingDestination(undefined, undefined, true));
       }
     }
   }
@@ -624,15 +780,18 @@ function _buildDirectionsFromPath(
  * @param {Destination} target     the ending point for directions
  * @param {boolean} accessible true for accessible paths, false for any path
  * @param {any}     err        the error that occurred
- * @returns {DirectionSteps} an error return state
+ * @returns {DirectionResults} an error return state
  */
-function directionsError(
+function _directionsError(
     start: Destination,
     target: Destination,
     accessible: boolean,
+    differentCampuses: boolean,
     err: any): DirectionResults {
   console.log(`Error while getting directions between ${start} and ${target}`, err);
-  const errorMessage = accessible ? 'no_accessible_path_found' : 'no_path_found';
+  const errorMessage = differentCampuses
+    ? 'no_path_between_campuses'
+    : accessible ? 'no_accessible_path_found' : 'no_path_found';
 
   return {
     showReport: true,
@@ -654,83 +813,156 @@ function directionsError(
 }
 
 /**
- * Get a list of steps to travel between two destinations.
+ * Find the best path between two points in different buildings.
  *
- * @param {Destination} start      the starting point for directions
- * @param {Destination} target     the ending point for directions
- * @param {boolean}     accessible true to force accessible paths, false for any path
- * @param {boolean}     shortest   true to get shortest possible route, false for easiest
- * @returns {Promise<DirectionResults>} a list of directions between the destinations
+ * @param {Destination}       start      the starting point for directions
+ * @param {Destination}       target     the ending point for directions
+ * @param {Map<string,Graph>} graphs     graphs of the buildings
+ * @param {boolean}           accessible true to force accessible paths, false for any path
+ * @param {boolean}           shortest   true to get the shortest path, false for the most easily followable
+ * @returns {Path|undefined} the path between the points, or undefined if path could not be found
  */
-export async function getDirectionsBetween(
+function _getBestPathAcrossBuildings(
     start: Destination,
     target: Destination,
+    graphs: Map<string, Graph>,
     accessible: boolean,
-    shortest: boolean): Promise<DirectionResults> {
-  // Get set of building graphs to request
-  const buildingGraphRequests: Set<string> = new Set();
-  buildingGraphRequests.add(start.shorthand);
-  buildingGraphRequests.add(target.shorthand);
-  if (start.shorthand !== target.shorthand) {
-    buildingGraphRequests.add('OUT');
-  }
-
-  let graphs: Map<string, BuildingGraph>;
-
-  try {
-    graphs = await Navigation.getBuildingGraphs(buildingGraphRequests);
-  } catch (err) {
-    return directionsError(start, target, accessible, err);
-  }
-
+    shortest: boolean): Path | undefined {
   const startGraph = graphs.get(start.shorthand);
   const targetGraph = graphs.get(target.shorthand);
   const outdoorGraph = graphs.get('OUT');
 
-  // FIXME: don't just use door 1, check all the doors
-  const startNode = Navigation.getCachedNodeOrBuild(
-    start.room ? `R${start.room}` : `D1`,
-    start.shorthand, startGraph.format
-  );
-  const targetNode = Navigation.getCachedNodeOrBuild(
-    target.room ? `R${target.room}` : `D1`,
-    target.shorthand, targetGraph.format
-  );
+  const startDoors = new Set(startGraph.exits.keys());
+  const targetDoors = new Set(targetGraph.exits.keys());
 
-  let path: Path;
-  if (start.shorthand === target.shorthand) {
-    if (start.room != undefined) {
-      path = Navigation.findShortestPathBetween(startNode, targetNode, startGraph, accessible, false);
-    }
+  const exitDistances = Navigation.findDistancesBetweenDoors(startDoors, targetDoors, outdoorGraph);
+
+  let startNodes: Node[] = [];
+  let targetNodes: Node[] = [];
+
+  // Either get the starting node (if a room is specified), or all of the doors of the building as starting nodes
+  if (start.room) {
+    startNodes.push(Navigation.getCachedNodeOrBuild(
+      `R${start.room}`,
+      start.shorthand,
+      startGraph.formattingRules
+    ));
   } else {
+    startNodes = [...startDoors];
+    startNodes.sort();
+  }
+
+  // Either get the target node (if a room is specified), or all of the doors of the building as target nodes
+  if (target.room) {
+    targetNodes.push(Navigation.getCachedNodeOrBuild(
+      `R${target.room}`,
+      target.shorthand,
+      targetGraph.formattingRules
+    ));
+  } else {
+    targetNodes = [...targetDoors];
+    targetNodes.sort();
+  }
+
+  if (startNodes.length === 1 && targetNodes.length === 1) {
+    // Find the shortest/bet path between two rooms and return
     const startToExits = Navigation.findShortestPathsBetween(
-      startNode,
-      startGraph.exits,
+      startNodes[0],
+      startDoors,
       startGraph,
       accessible,
       false
     );
-
     const exitsToTarget = Navigation.findShortestPathsBetween(
-      targetNode,
-      targetGraph.exits,
+      targetNodes[0],
+      targetDoors,
       targetGraph,
       accessible,
       true
     );
 
-    const exitDistances = Navigation.findDistancesBetweenDoors(startGraph.exits, targetGraph.exits, outdoorGraph);
-    path = Navigation.getShortestPathAcross(startToExits, exitsToTarget, exitDistances, graphs, accessible);
-  }
+    return Navigation.getBestPathAcross(startToExits, exitsToTarget, exitDistances, graphs, accessible, shortest);
+  } else {
+    // Find the best path, when there are multiple possible starting points (doors)
+    let startNodeIdx = 0;
+    let targetNodeIdx = 0;
 
+    let path: Path|undefined;
+
+    while (path == undefined && startNodeIdx < startNodes.length && targetNodeIdx < targetNodes.length) {
+      const startToExits = Navigation.findShortestPathsBetween(
+        startNodes[startNodeIdx],
+        startDoors,
+        startGraph,
+        accessible,
+        false
+      );
+      const exitsToTarget = Navigation.findShortestPathsBetween(
+        targetNodes[targetNodeIdx],
+        targetDoors,
+        targetGraph,
+        accessible,
+        true
+      );
+
+      path = Navigation.getBestPathAcross(startToExits, exitsToTarget, exitDistances, graphs, accessible, shortest);
+
+      if (path == undefined) {
+        if ((startNodeIdx <= targetNodeIdx || targetNodeIdx >= targetNodes.length - 1)
+            && startNodeIdx < startNodes.length - 1) {
+          startNodeIdx += 1;
+        } else {
+          targetNodeIdx += 1;
+        }
+      }
+    }
+
+    return path;
+  }
+}
+
+/**
+ * Find the shortest path between two points in the same building.
+ *
+ * @param {Destination} start      the starting point for directions
+ * @param {Destination} target     the ending point for directions
+ * @param {Graph}       graph      graph of the building which the path is in
+ * @param {boolean}     accessible true to force accessible paths, false for any path
+ * @returns {Path|undefined} the path between the points, or undefined if path could not be found
+ */
+function _getPathInBuilding(
+    start: Destination,
+    target: Destination,
+    graph: Graph,
+    accessible: boolean): Path | undefined {
+  let path: Path | undefined;
+
+  const startNode = Navigation.getCachedNodeOrBuild(
+    start.room ? `R${start.room}` : `D1`,
+    start.shorthand,
+    graph.formattingRules
+  );
+
+  const targetNode = Navigation.getCachedNodeOrBuild(
+    target.room ? `R${target.room}` : `D1`,
+    target.shorthand,
+    graph.formattingRules
+  );
+
+  path = Navigation.findShortestPathBetween(startNode, targetNode, graph, accessible, false);
+
+  return path;
+}
+
+/**
+ * Add the starting point and destination to the steps, with appropriate formatting.
+ *
+ * @param {Step[]}      steps  List of directions between start and target
+ * @param {Destination} start  the starting point for directions
+ * @param {Destination} target the ending point for directions
+ */
+function _padStepsWithStartAndTarget(steps: Step[], start: Destination, target: Destination): void {
   // Get English/French directions from the given path
-  let steps: Step[];
-  try {
-    steps = _buildDirectionsFromPath(path, graphs);
-  } catch (err) {
-    return directionsError(start, target, accessible, err);
-  }
-
   const startString = TextUtils.destinationToString(start);
   const targetString = TextUtils.destinationToString(target);
 
@@ -753,6 +985,57 @@ export async function getDirectionsBetween(
     },
     key: `target_${targetString}`,
   });
+}
+
+/**
+ * Get a list of steps to travel between two destinations.
+ *
+ * @param {Destination} start      the starting point for directions
+ * @param {Destination} target     the ending point for directions
+ * @param {boolean}     accessible true to force accessible paths, false for any path
+ * @param {boolean}     shortest   true to get shortest possible route, false for easiest
+ * @returns {Promise<DirectionResults>} a list of directions between the destinations
+ */
+export async function getDirectionsBetween(
+    start: Destination,
+    target: Destination,
+    accessible: boolean,
+    shortest: boolean): Promise<DirectionResults> {
+  const inSingleBuilding = start.shorthand === target.shorthand;
+
+  // Get set of building graphs to request
+  const graphRequests: Set<string> = new Set();
+  graphRequests.add(start.shorthand);
+  graphRequests.add(target.shorthand);
+
+  if (!inSingleBuilding) {
+    graphRequests.add('OUT');
+  }
+
+  let graphs: Map<string, Graph>;
+  try {
+    graphs = await CampusGraph.getGraphs(graphRequests);
+  } catch (err) {
+    return _directionsError(start, target, accessible, false, err);
+  }
+
+  // TODO: remove when directions can be done between campuses
+  if (graphs.get(start.shorthand).campus !== graphs.get(target.shorthand).campus) {
+    return _directionsError(start, target, accessible, true, undefined);
+  }
+
+  const path: Path = inSingleBuilding
+      ? _getPathInBuilding(start, target, graphs.get(start.shorthand), accessible)
+      : _getBestPathAcrossBuildings(start, target, graphs, accessible, shortest);
+
+  let steps: Step[];
+  try {
+    steps = _buildDirectionsFromPath(path, graphs);
+  } catch (err) {
+    return _directionsError(start, target, accessible, false, err);
+  }
+
+  _padStepsWithStartAndTarget(steps, start, target);
 
   return {
     showReport: false,

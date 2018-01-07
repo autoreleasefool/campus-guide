@@ -80,6 +80,12 @@ export interface Section<T> extends Name, SectionListData<T> {}
 //  Maps
 //-----------------------------------------------------------------------------
 
+/** X and Y coordinate. */
+export interface Coordinate {
+  x: number;  // Horizontal position
+  y: number;  // Vertical position
+}
+
 /** Latitude and longitude of a location. */
 export interface LatLong {
   latitude: number;   // Latitude of the location

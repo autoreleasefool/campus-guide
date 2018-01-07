@@ -107,6 +107,17 @@ export default class Node {
   }
 
   /**
+   * Gets the floor this room is on, as an integer, where 00 is -1.
+   */
+  getFloorInt(): number {
+    if (this._floor.length > 1 && this._floor.charAt(0) === '0') {
+      return 1 - this._floor.length;
+    } else {
+      return parseInt(this._floor);
+    }
+  }
+
+  /**
    * Returns the ID to use for unique identification purposes.
    */
   getId(): string {
