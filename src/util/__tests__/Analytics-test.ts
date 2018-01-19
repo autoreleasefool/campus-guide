@@ -72,7 +72,7 @@ describe('Analytics-test', () => {
     Analytics.buildingSelected(building.shorthand);
     Analytics.roomSelected(building.shorthand, '123');
     Analytics.startNavigation(startingPoint, target);
-    Analytics.failedNavigation(startingPoint, target, true);
+    Analytics.failedNavigation(startingPoint, target, true, true);
     Analytics.addCourse(course.code);
     Analytics.removeCourse(course.code);
     Analytics.menuItemSelected('menu', 'item', 'id');
@@ -136,13 +136,13 @@ describe('Analytics-test', () => {
   });
 
   it('tests failed navigation', () => {
-    Analytics.failedNavigation(startingPoint, target, true);
-    Analytics.failedNavigation(startingPoint, target, false, { test: 0 });
+    Analytics.failedNavigation(startingPoint, target, true, true);
+    Analytics.failedNavigation(startingPoint, target, false, false, { test: 0 });
 
     expect((Fabric as any).__getEvents()).toEqual({
       'Failed to find path': [
-        { startingPoint, target, accessible: true },
-        { startingPoint, target, accessible: false, test: 0 },
+        { startingPoint, target, accessible: true, shortestRoute: true },
+        { startingPoint, target, accessible: false, shortestRoute: false, test: 0 },
       ],
     });
   });

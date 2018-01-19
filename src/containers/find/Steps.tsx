@@ -102,7 +102,7 @@ class Steps extends React.PureComponent<Props, State> {
         shortestRoute);
 
     if (directionResults.showReport) {
-      Analytics.failedNavigation(startingPoint, destination, accessible);
+      Analytics.failedNavigation(startingPoint, destination, accessible, shortestRoute);
     }
 
     this.setState({

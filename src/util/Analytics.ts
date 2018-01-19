@@ -134,17 +134,20 @@ export function startNavigation(startingPoint: Destination, target: Destination,
  * @param {Destination}  startingPoint building/room on campus which navigation started from
  * @param {Destination}  target        building/room on campus to which the user is going
  * @param {boolean}      accessible    true if the navigation was meant to be accessible, false otherwise
+ * @param {boolean}      shortestRoute true if the user wants the shortest available route, false otherwise
  * @param {EventOptions} options       optional event params
  */
 export function failedNavigation(
     startingPoint: Destination,
     target: Destination,
     accessible: boolean,
+    shortestRoute: boolean,
     options?: EventOptions): void {
   if (isAnalyticsEnabled()) {
     Answers.logCustom('Failed to find path', {
       ...options,
       accessible,
+      shortestRoute,
       startingPoint,
       target,
     });
