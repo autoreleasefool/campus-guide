@@ -55,7 +55,7 @@ export default class Node {
   _building: string;
 
   /** Floor which the node is on. */
-  _floor: string;
+  _floor: string | undefined;
 
   /**
    * Construct a node ID.
@@ -64,16 +64,18 @@ export default class Node {
    * @param building building the node is in
    */
   static buildId(id: string, building: string): string {
-    return id.startsWith('B') ? id : `B${building}-${id}`;
+    return id.startsWith('B') ? id : `B${building}#${id}`;
   }
 
   constructor(id: string, building: string, formats: Map<string, string>) {
     // Parse node properties
+    this._building = id.startsWith('B')
+        ? id.substring(1, id.indexOf('#'))
+        : building;
     this._originalId = id;
-    this._formattedId = Node.buildId(id, building);
-    this._type = this._formattedId.charAt(this._formattedId.indexOf('-') + 1) as Type;
-    this._name = this._formattedId.substr(this._formattedId.indexOf('-') + 2);
-    this._building = building;
+    this._formattedId = Node.buildId(id, this._building);
+    this._type = this._formattedId.charAt(this._formattedId.indexOf('#') + 1) as Type;
+    this._name = this._formattedId.substr(this._formattedId.indexOf('#') + 2);
 
     // Get floor of the node by comparing it to available floors
     if (this._type === Type.Room || this._type === Type.Hallway) {
@@ -110,6 +112,10 @@ export default class Node {
    * Gets the floor this room is on, as an integer, where 00 is -1.
    */
   getFloorInt(): number {
+    if (this._floor == undefined) {
+      throw new Error('Attempting to access floor on non Hallway/Room node');
+    }
+
     if (this._floor.length > 1 && this._floor.charAt(0) === '0') {
       return 1 - this._floor.length;
     } else {

@@ -67,7 +67,7 @@ export function getNodeStreetName(node: Node, graph: Graph, language: Language):
   }
 
   const translationIndex = language === 'en' ? 0 : 1;
-  const nameId = graph.streets.get(node).split(',')[translationIndex];
+  const nameId = graph.streets.get(node).split(':')[translationIndex];
 
   return graph.streetNames.get(nameId);
 }
@@ -356,15 +356,25 @@ export function translateEnterBuilding(
 /**
  * Get translations for all languages to exit a building.
  *
- * @param {Node} door door to exit
+ * @param {Node}      door      door to exit
+ * @param {Direction} direction direction to turn after exist
  * @returns {Description} directions to exit the building, in all languages
  */
-export function translateExitBuilding(door: Node): Description {
+export function translateExitBuilding(door: Node, direction: Direction): Description {
+  let turnEn: string;
+  let turnFr: string;
+  switch (direction) {
+    case Direction.Left: turnEn = _turnLeft('en'); turnFr = _turnLeft('fr'); break;
+    case Direction.Right: turnEn = _turnRight('en'); turnFr = _turnRight('fr'); break;
+    case Direction.Straight: turnEn = _proceedStraight('en'); turnFr = _proceedStraight('fr'); break;
+    default: throw new Error(`Invalid direction: ${direction}`);
+  }
+
   return {
     description_en: `Exit ${door.getBuilding()} (through ${getNodeTypeName(door.getType(), 'en')}`
-        + ` ${door.getName()}) and ${_proceedStraight('en').toLowerCase()}`,
+        + ` ${door.getName()}) and ${turnEn.toLowerCase()}`,
     description_fr: `Sortie ${door.getBuilding()} (à travers la ${getNodeTypeName(door.getType(), 'fr').toLowerCase()}`
-        + ` ${door.getName()}) et ${_proceedStraight('fr').toLowerCase()}`,
+        + ` ${door.getName()}) et ${turnFr.toLowerCase()}`,
   };
 }
 
@@ -533,8 +543,8 @@ export function translateCrossIntersection(
   );
 
   translations.push({
-    description_en: `${turnEn.toLowerCase()} and cross ${streetNameEn}`,
-    description_fr: `${turnFr.toLowerCase()} et traversez ${streetNameFr}`,
+    description_en: `${turnEn} and cross ${streetNameEn}`,
+    description_fr: `${turnFr} et traversez ${streetNameFr}`,
   });
 
   // Determine which direction to turn onto the following path/street, or skip if the next node is an intersection

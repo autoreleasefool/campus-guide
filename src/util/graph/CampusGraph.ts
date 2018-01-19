@@ -144,7 +144,7 @@ function _parseAndAppendEdges(node: Node, building: string, graph: Graph, rawEdg
     graph.exits.set(node, { x: 0, y: 0 });
   }
 
-  const edges = rawEdges.split(',');
+  const edges = rawEdges.split('%');
   for (const edge of edges) {
     const edgeElements = edge.split(':');
 
@@ -291,4 +291,27 @@ export async function getGraphs(buildings: Set<string>): Promise<Map<string, Gra
   }
 
   return graphs;
+}
+
+/**
+ * Get all the doors to a set of buildings from a graph.
+ *
+ * @param {Graph}       graph     graph with doors
+ * @param {Set<string>} buildings building shorthands to look for
+ * @returns {Map<string, Set<Node>>} map of building shorthands to their exits
+ */
+export function getDoorsForBuildings(graph: Graph, buildings: Set<string>): Map<string, Set<Node>> {
+  const doors: Map<string, Set<Node>> = new Map();
+
+  graph.exits.forEach((_: Coordinate, key: Node) => {
+    if (buildings.has(key.getBuilding())) {
+      if (!doors.has(key.getBuilding())) {
+        doors.set(key.getBuilding(), new Set());
+      }
+
+      doors.get(key.getBuilding()).add(key);
+    }
+  });
+
+  return doors;
 }

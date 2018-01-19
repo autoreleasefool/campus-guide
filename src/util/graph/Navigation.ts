@@ -176,7 +176,7 @@ export function findShortestPathBetween(
  */
 function _pathContainsPreviousFloorChange(building: string, previous: Map<Node, Node>, start: Node): boolean {
   let currentNode = start;
-  while (building === currentNode.getBuilding()) {
+  while (currentNode && building === currentNode.getBuilding()) {
     if (currentNode.getType() === NodeType.Elevator || currentNode.getType() === NodeType.Stairs) {
       return true;
     }
@@ -220,7 +220,9 @@ export function findShortestPathsBetween(
     }
   }
 
-  if (startNode.getType() === NodeType.Door) {
+  const firstTargetNode = targetNodes.values().next().value;
+
+  if (startNode.getType() === NodeType.Door && firstTargetNode.getBuilding() === startNode.getBuilding()) {
     targetNodes = new Set();
     targetNodes.add(startNode);
     targetsFound.add(startNode);

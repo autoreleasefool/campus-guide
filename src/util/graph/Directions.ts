@@ -66,6 +66,11 @@ interface PathProps extends MissedHalls {
   intersection: boolean;  // True if passing through an intersection, false otherwise
 }
 
+interface PathExtension {
+  steps: Step[];      // Steps to take
+  nodeSkips: number;  // Number of nodes to skip
+}
+
 /** Constant for 10 metres. */
 const TEN_METRES = 10;
 
@@ -195,11 +200,14 @@ function _exitRoom(room: Node, exitDirection: EdgeDirection, nextDirection: Edge
 /**
  * Provides translated directions to exit a building.
  *
- * @param {Node} door the door of the building to exit
+ * @param {Node}          door          the door of the building to exit
+ * @param {EdgeDirection} exitDirection the facing direction from exiting the building
+ * @param {EdgeDirection} nextDirection the desired continuing direction
  * @returns {Step} steps to exit the building
  */
-function _exitBuilding(door: Node): Step {
-  const translations = DirectionTranslations.translateExitBuilding(door);
+function _exitBuilding(door: Node, exitDirection: EdgeDirection, nextDirection: EdgeDirection): Step {
+  const turningDirection = _getTurningDirection(exitDirection, nextDirection);
+  const translations = DirectionTranslations.translateExitBuilding(door, turningDirection);
 
   return {
     description_en: Translations.getDescription(translations, 'en'),
@@ -488,7 +496,7 @@ function _pushFirstStep(node: Node, currentEdge: Edge, nextEdge: Edge, direction
       directions.push(_exitRoom(node, currentEdge.direction, nextEdge.direction));
       break;
     case NodeType.Door:
-      directions.push(_exitBuilding(node));
+      directions.push(_exitBuilding(node, currentEdge.direction, nextEdge.direction));
       break;
     default:
       throw new Error('Cannot provide directions from nodes which are not doors or rooms');
@@ -505,7 +513,7 @@ function _pushFirstStep(node: Node, currentEdge: Edge, nextEdge: Edge, direction
  * @param {Edge}               currentEdge current edge in the path
  * @param {Edge}               nextEdge    next edge in the path
  * @param {Map<string, Graph>} graphs      graphs which the path was built from
- * @returns {Step[]} steps to add to the final directions
+ * @returns {PathExtension} steps to add to the final directions
  */
 function _extendPath(
     pathProps: PathProps,
@@ -514,8 +522,9 @@ function _extendPath(
     currentNode: Node,
     currentEdge: Edge,
     nextEdge: Edge,
-    graphs: Map<string, Graph>): Step[] {
+    graphs: Map<string, Graph>): PathExtension {
   const steps: Step[] = [];
+  let nodeSkips = 0;
 
   const nextDirection = _getTurningDirection(currentEdge.direction, nextEdge.direction);
 
@@ -568,6 +577,12 @@ function _extendPath(
             graphs.get('OUT')
           )
         );
+
+        if (currentEdge.node.getType() !== nextEdge.node.getType()) {
+          nodeSkips += 1;
+          // FIXME: distance
+          pathProps.distance += nextEdge.distance;
+        }
       }
 
       // FIXME: check this
@@ -578,8 +593,8 @@ function _extendPath(
       pathProps.distance += currentEdge.distance;
       for (const step of _crossIntersection(
         pathProps,
+        path.edges[pathIndex - 2],
         path.edges[pathIndex - 1],
-        currentEdge,
         nextEdge,
         graphs.get('OUT')
       )) {
@@ -590,7 +605,7 @@ function _extendPath(
       // Does nothing
   }
 
-  return steps;
+  return { steps, nodeSkips };
 }
 
 /**
@@ -603,7 +618,7 @@ function _extendPath(
  * @param {Edge}               currentEdge current edge in the path
  * @param {Edge}               nextEdge    next edge in the path
  * @param {Map<string, Graph>} graphs      graphs which the path was built from
- * @returns {Step[]} steps to add to the final directions
+ * @returns {PathExtension} steps to add to the final directions
  */
 function _startNewPath(
     pathProps: PathProps,
@@ -612,8 +627,9 @@ function _startNewPath(
     currentNode: Node,
     currentEdge: Edge,
     nextEdge: Edge,
-    graphs: Map<string, Graph>): Step[] {
+    graphs: Map<string, Graph>): PathExtension {
   const steps: Step[] = [];
+  let nodeSkips = 0;
 
   switch (currentEdge.node.getType()) {
     case NodeType.Door:
@@ -633,7 +649,7 @@ function _startNewPath(
           steps.push(step);
         }
       } else {
-        steps.push(_exitBuilding(currentEdge.node));
+        steps.push(_exitBuilding(currentEdge.node, nextEdge.direction, path.edges[pathIndex + 2].direction));
       }
       break;
     case NodeType.Elevator:
@@ -663,13 +679,19 @@ function _startNewPath(
       steps.push(
         _turnDownStreet(
           pathProps,
-          currentNode,
           currentEdge.node,
+          nextEdge.node,
           currentEdge.direction,
           nextEdge.direction,
           graphs.get('OUT')
         )
       );
+
+      if (currentEdge.node.getType() !== nextEdge.node.getType()) {
+        nodeSkips += 1;
+        // FIXME: distance
+        pathProps.distance += nextEdge.distance;
+      }
       break;
     case NodeType.Intersection:
       // FIXME: distance
@@ -691,7 +713,7 @@ function _startNewPath(
       // Does nothing
   }
 
-  return steps;
+  return { steps, nodeSkips };
 }
 
 /**
@@ -748,12 +770,16 @@ function _buildDirectionsFromPath(path: Path | undefined, graphs: Map<string, Gr
     // When going to the same node type, count various properties
     if (currentNode.getType() === currentEdge.node.getType() || pathProps.intersection) {
       pathProps.intersection = false;
-      for (const step of _extendPath(pathProps, path, i, currentNode, currentEdge, nextEdge, graphs)) {
+      const extendedPath = _extendPath(pathProps, path, i, currentNode, currentEdge, nextEdge, graphs);
+      i += extendedPath.nodeSkips;
+      for (const step of extendedPath.steps) {
         directions.push(step);
       }
     } else {
       // When entering a new node type, report the steps
-      for (const step of _startNewPath(pathProps, path, i, currentNode, currentEdge, nextEdge, graphs)) {
+      const newPath = _startNewPath(pathProps, path, i, currentNode, currentEdge, nextEdge, graphs);
+      i += newPath.nodeSkips;
+      for (const step of newPath.steps) {
         directions.push(step);
       }
     }
@@ -788,7 +814,6 @@ function _directionsError(
     accessible: boolean,
     differentCampuses: boolean,
     err: any): DirectionResults {
-  console.log(`Error while getting directions between ${start} and ${target}`, err);
   const errorMessage = differentCampuses
     ? 'no_path_between_campuses'
     : accessible ? 'no_accessible_path_found' : 'no_path_found';
@@ -832,9 +857,9 @@ function _getBestPathAcrossBuildings(
   const targetGraph = graphs.get(target.shorthand);
   const outdoorGraph = graphs.get('OUT');
 
-  const startDoors = new Set(startGraph.exits.keys());
-  const targetDoors = new Set(targetGraph.exits.keys());
-
+  const doors = CampusGraph.getDoorsForBuildings(outdoorGraph, new Set([start.shorthand, target.shorthand]));
+  const startDoors = doors.get(start.shorthand);
+  const targetDoors = doors.get(target.shorthand);
   const exitDistances = Navigation.findDistancesBetweenDoors(startDoors, targetDoors, outdoorGraph);
 
   let startNodes: Node[] = [];
