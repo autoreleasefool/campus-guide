@@ -562,7 +562,6 @@ function _extendPath(
     case NodeType.Street:
       if (nextEdge.node.getType() === NodeType.Door) {
         pathProps.distance += currentEdge.distance;
-        // FIXME: distance
         break;
       }
 
@@ -580,16 +579,13 @@ function _extendPath(
 
         if (currentEdge.node.getType() !== nextEdge.node.getType()) {
           nodeSkips += 1;
-          // FIXME: distance
           pathProps.distance += nextEdge.distance;
         }
       }
 
-      // FIXME: check this
       pathProps.distance += currentEdge.distance;
       break;
     case NodeType.Intersection:
-      // FIXME: distance
       pathProps.distance += currentEdge.distance;
       for (const step of _crossIntersection(
         pathProps,
@@ -634,7 +630,6 @@ function _startNewPath(
   switch (currentEdge.node.getType()) {
     case NodeType.Door:
       if (currentNode.isOutside()) {
-        // FIXME: distance
         pathProps.distance += currentEdge.distance;
         for (const step of _enterBuilding(
           pathProps,
@@ -664,17 +659,14 @@ function _startNewPath(
     case NodeType.Path:
     case NodeType.Street:
       if (nextEdge.node.getType() === NodeType.Door) {
-        // FIXME: add distance
         pathProps.distance += currentEdge.distance;
         break;
       }
 
-      // FIXME: going from outdoor steps to here should do nothing, probably
       if (currentNode.getType() === NodeType.OutdoorSteps) {
         break;
       }
 
-      // FIXME: distance
       pathProps.distance += currentEdge.distance;
       steps.push(
         _turnDownStreet(
@@ -689,12 +681,10 @@ function _startNewPath(
 
       if (currentEdge.node.getType() !== nextEdge.node.getType()) {
         nodeSkips += 1;
-        // FIXME: distance
         pathProps.distance += nextEdge.distance;
       }
       break;
     case NodeType.Intersection:
-      // FIXME: distance
       pathProps.distance += currentEdge.distance;
       pathProps.intersection = true;
       break;
