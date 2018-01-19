@@ -804,6 +804,7 @@ function _directionsError(
     accessible: boolean,
     differentCampuses: boolean,
     err: any): DirectionResults {
+  console.log(`Error while getting directions between ${start} and ${target}`, err);
   const errorMessage = differentCampuses
     ? 'no_path_between_campuses'
     : accessible ? 'no_accessible_path_found' : 'no_path_found';

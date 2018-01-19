@@ -261,7 +261,6 @@ class Onboarding extends React.PureComponent<Props, State> {
     const offset = scrollEvent.nativeEvent.contentOffset;
     if (offset) {
       const page = Math.round(offset.x / this.state.screenWidth);
-      console.log(`Handled page change to: ${page}`);
       if (this.state.currentPage !== page) {
         this._animateScrollViewToPage(page);
         this.setState({ currentPage: page });
