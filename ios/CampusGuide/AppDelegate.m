@@ -20,6 +20,7 @@
 {
   NSURL *jsCodeLocation;
 
+  // jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"artifacts/index.ios" fallbackResource:nil];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
@@ -34,6 +35,11 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   [Fabric with:@[[Crashlytics class]]];
+
+  UIView* launchScreenView = [[[NSBundle mainBundle] loadNibNamed:@"LaunchScreen" owner:self options:nil] objectAtIndex:0];
+  launchScreenView.frame = self.window.bounds;
+  rootView.loadingView = launchScreenView;
+
   return YES;
 }
 
