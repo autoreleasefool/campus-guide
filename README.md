@@ -26,27 +26,30 @@ Travis CI runs the following commands, which must succeed in order for your chan
 - `yarn run lint`
 - `yarn run test`
 
-## Design
+## Screenshots
+
+*As of January 20, 2018*
+
+### Android
 
 | Splash Screen | Finding a class | Your schedule |
 |:-------------:|:---------------:|:-------------:|
-| <img src='./screenshots/design_splash.png' width='220' alt='Splash design'/> | <img src='./screenshots/design_find.png' width='220' alt='Find design'/> | <img src='./screenshots/design_schedule.png' width='220' alt='Schedule design'/> |
+| <img src='./screenshots/android/language.png' width='220' alt='Android language selection'/> | <img src='./screenshots/android/find.png' width='220' alt='Android find screen'/> | <img src='./screenshots/android/schedule.png' width='220' alt='Android schedule screen'/> |
 
 | Discover | Search | Settings |
 |:--------:|:------:|:--------:|
-| <img src='./screenshots/design_discover.png' width='220' alt='Discover design'/> | <img src='./screenshots/design_search.png' width='220' alt='Search design'/> | <img src='./screenshots/design_settings.png' width='220' alt='Settings design'/> |
+| <img src='./screenshots/android/discover.png' width='220' alt='Android discover screen'/> | <img src='./screenshots/android/search.png' width='220' alt='Android search screen'/> | <img src='./screenshots/android/settings.png' width='220' alt='Android settings screen'/> |
 
-## Current screenshots
+### iOS
 
-*As of March 21, 2017*
 
 | Splash Screen | Finding a class | Your schedule |
 |:-------------:|:---------------:|:-------------:|
-| <img src='./screenshots/screen_pre_splash.png' width='220' alt='Prerelease splash'/> | <img src='./screenshots/screen_pre_find.png' width='220' alt='Prerelease find'/> | <img src='./screenshots/screen_pre_schedule.png' width='220' alt='Prerelease schedule'/> |
+| <img src='./screenshots/ios/language.png' width='220' alt='iOS language selection'/> | <img src='./screenshots/ios/find.png' width='220' alt='iOS find screen'/> | <img src='./screenshots/ios/schedule.png' width='220' alt='iOS schedule screen'/> |
 
 | Discover | Search | Settings |
 |:--------:|:------:|:--------:|
-| <img src='./screenshots/screen_pre_discover.png' width='220' alt='Prerelease discover'/> | <img src='./screenshots/screen_pre_search.png' width='220' alt='Prerelease search'/> | <img src='./screenshots/screen_pre_settings.png' width='220' alt='Prerelease settings'/> |
+| <img src='./screenshots/ios/discover.png' width='220' alt='iOS discover screen'/> | <img src='./screenshots/ios/search.png' width='220' alt='iOS search screen'/> | <img src='./screenshots/ios/settings.png' width='220' alt='iOS settings screen'/> |
 
 ## License
 
