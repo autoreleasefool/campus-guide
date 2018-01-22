@@ -64,7 +64,7 @@ buck-out/
 coverage/
 
 # Build/bundle
-release/
+/release/
 
 # Keystores
 */keystores/*
