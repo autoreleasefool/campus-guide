@@ -28,6 +28,7 @@ import {
   Alert,
   Dimensions,
   Image,
+  InteractionManager,
   LayoutAnimation,
   ScaledSize,
   ScrollView,
@@ -104,9 +105,11 @@ export default class BuildingHeader extends React.PureComponent<Props, State> {
    * Sets up timer to swap banner, display additional info on load. Add listener to screen dimensions.
    */
   componentDidMount(): void {
-    this._swapBannerTimer = setTimeout(() => {
-      this._swapBanner();
-    }, BANNER_SWAP_TIME);
+    InteractionManager.runAfterInteractions(() => {
+        this._swapBannerTimer = setTimeout(() => {
+        this._swapBanner();
+      }, BANNER_SWAP_TIME);
+    });
     Dimensions.addEventListener('change', this._dimensionsHandler as any);
   }
 

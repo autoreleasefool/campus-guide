@@ -27,18 +27,14 @@ import React from 'react';
 import {
   FlatList,
   InteractionManager,
-  Platform,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
 // Imports
-import PaddedIcon from './PaddedIcon';
+import RoomRow from './listRows/RoomRow';
 import * as Configuration from '../util/Configuration';
 import * as Constants from '../constants';
-import * as Display from '../util/Display';
 import * as Translations from '../util/Translations';
 import { filterRoom } from '../util/Search';
 
@@ -189,32 +185,12 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a view describing a set of room
    */
   _renderRow({ item }: { item: BuildingRoom }): JSX.Element {
-    const roomType = this._roomTypes[item.type || Constants.DefaultRoomType];
-    const icon = Display.getPlatformIcon(Platform.OS, roomType);
-    let rowIcon: JSX.Element | undefined;
-    if (icon) {
-      rowIcon = (
-        <PaddedIcon
-            color={Constants.Colors.primaryWhiteText}
-            icon={icon} />
-      );
-    }
-
-    const altName = Translations.getVariant('alt_name', item);
-
     return (
-      <TouchableOpacity onPress={(): void => this.props.onSelect(this.props.shorthand, item.name)}>
-        <View style={_styles.room}>
-          {rowIcon}
-          <View style={_styles.roomDescription}>
-            {altName ? <Text style={_styles.roomType}>{altName}</Text> : undefined}
-            <Text style={_styles.roomName}>{`${this.props.shorthand} ${item.name}`}</Text>
-            <Text style={_styles.roomType}>
-              {Translations.getName(roomType)}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <RoomRow
+          room={item}
+          roomType={this._roomTypes[item.type || Constants.DefaultRoomType]}
+          shorthand={this.props.shorthand}
+          onSelect={this.props.onSelect} />
     );
   }
 
@@ -253,27 +229,6 @@ const _styles = StyleSheet.create({
   container: {
     backgroundColor: Constants.Colors.primaryBackground,
     flex: 1,
-  },
-  room: {
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    marginBottom: Constants.Sizes.Margins.Expanded,
-    marginRight: Constants.Sizes.Margins.Expanded,
-    marginTop: Constants.Sizes.Margins.Expanded,
-  },
-  roomDescription: {
-    flex: 1,
-  },
-  roomName: {
-    color: Constants.Colors.primaryWhiteText,
-    fontSize: Constants.Sizes.Text.Body,
-    marginBottom: Constants.Sizes.Margins.Condensed,
-    marginTop: Constants.Sizes.Margins.Condensed,
-  },
-  roomType: {
-    color: Constants.Colors.secondaryWhiteText,
-    fontSize: Constants.Sizes.Text.Caption,
   },
   separator: {
     backgroundColor: Constants.Colors.primaryWhiteText,
