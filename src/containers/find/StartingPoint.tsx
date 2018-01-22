@@ -352,15 +352,25 @@ class StartingPoint extends React.PureComponent<Props, State> {
       subtitleIcon = { name: 'map', class: 'material' };
     }
 
-    return (
-      <Header
-          backgroundColor={Constants.Colors.tertiaryBackground}
-          icon={{ name: 'place', class: 'material' }}
-          subtitle={subtitleText}
-          subtitleCallback={this._toggleViewingMap.bind(this)}
-          subtitleIcon={subtitleIcon}
-          title={Translations.get('starting_point')} />
-    );
+    if (Platform.OS === 'ios') {
+      return (
+        <Header
+            backgroundColor={Constants.Colors.tertiaryBackground}
+            icon={{ name: 'place', class: 'material' }}
+            subtitle={subtitleText}
+            subtitleCallback={this._toggleViewingMap.bind(this)}
+            subtitleIcon={subtitleIcon}
+            title={Translations.get('starting_point')} />
+      );
+    } else {
+      return (
+        <Header
+            backgroundColor={Constants.Colors.tertiaryBackground}
+            icon={{ name: 'place', class: 'material' }}
+            title={Translations.get('starting_point')} />
+      );
+    }
+
   }
 
   /**
