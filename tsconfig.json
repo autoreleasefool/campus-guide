@@ -21,11 +21,17 @@
     }
   },
   "exclude": [
+    ".idea",
+    ".vscode",
     "android",
-    "ios",
     "artifacts",
+    "assets",
+    "coverage",
+    "ios",
     "node_modules",
-    "coverage"
+    "release",
+    "screenshots",
+    "script"
   ],
   "filesGlob": [
     "typings/*.d.ts",
