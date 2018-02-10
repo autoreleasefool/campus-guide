@@ -3,6 +3,7 @@ package ca.josephroque.campusguide;
 import android.app.Application;
 import android.util.Log;
 
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.facebook.react.ReactApplication;
 import com.smixx.fabric.FabricPackage;
 import com.rnziparchive.RNZipArchivePackage;
@@ -43,7 +44,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFSPackage(),
           new RNDeviceInfo(),
           new MapsPackage(),
-          new VectorIconsPackage()
+          new VectorIconsPackage(),
+          new RNFusedLocationPackage()
       );
     }
   };

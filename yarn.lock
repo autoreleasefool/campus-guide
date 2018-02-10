@@ -3816,6 +3816,10 @@ react-native-fs@^2.9.6:
     base-64 "^0.1.0"
     utf8 "^2.1.1"
 
+react-native-geolocation-service@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-geolocation-service/-/react-native-geolocation-service-1.0.0.tgz#73eeeb81bed51a571fb165da7c1e90170629c9b2"
+
 react-native-maps@^0.19.0:
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.19.0.tgz#ce94fad1cf360e335cb4338a68c95f791e869074"

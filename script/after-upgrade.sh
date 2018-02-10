@@ -41,5 +41,6 @@ react-native link react-native-fs
 react-native link react-native-snackbar
 react-native link react-native-zip-archive
 react-native link react-native-fabric
+react-native link react-native-geolocation-service
 
 sh ./script/after-yarn.sh

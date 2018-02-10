@@ -41,6 +41,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 // Imports
+import Geolocation from 'react-native-geolocation-service';
 import Header from '../../components/Header';
 import ImageGrid from '../../components/ImageGrid';
 import MapView from 'react-native-maps';
@@ -49,6 +50,7 @@ import RoomGrid from '../../components/RoomGrid';
 import Suggestion from '../../components/Suggestion';
 import * as Constants from '../../constants';
 import * as Navigation from '../../util/Navigation';
+import * as Permissions from '../../util/Permissions';
 import * as TextUtils from '../../util/TextUtils';
 import * as Translations from '../../util/Translations';
 
@@ -153,19 +155,23 @@ class StartingPoint extends React.PureComponent<Props, State> {
   /**
    * Finds and displays the closest building.
    */
-  _findClosestBuilding(): void {
+  async _findClosestBuilding(): Promise<void> {
     this.setState({ locating: true });
-    navigator.geolocation.getCurrentPosition((position: any) => {
-      const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
-      this.setState({
-        closestBuilding: Navigation.findClosestBuilding(location, this.props.buildingList, MAXIMUM_DISTANCE),
-        locating: false,
-        locationError: undefined,
-      });
-    },
-      (err: any) => this._showLocationErrorMessage(err),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
+
+    const locationPermissionGranted = await Permissions.requestLocationPermission(Platform.OS);
+    if (locationPermissionGranted) {
+      Geolocation.getCurrentPosition((position: any) => {
+        const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
+        this.setState({
+          closestBuilding: Navigation.findClosestBuilding(location, this.props.buildingList, MAXIMUM_DISTANCE),
+          locating: false,
+          locationError: undefined,
+        });
+      },
+        (err: any) => this._showLocationErrorMessage(err),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      );
+    }
   }
 
   /**
@@ -203,12 +209,12 @@ class StartingPoint extends React.PureComponent<Props, State> {
     } else if (error.code === error.TIMEOUT) {
       locationError = {
         message: 'location_timeout',
-        onPress: (): void => this._findClosestBuilding(),
+        onPress: (): Promise<void> => this._findClosestBuilding(),
       };
     } else if (error.code === error.POSITION_UNAVAILABLE) {
       locationError = {
         message: 'location_position_unavailable',
-        onPress: (): void => this._findClosestBuilding(),
+        onPress: (): Promise<void> => this._findClosestBuilding(),
       };
     }
 
