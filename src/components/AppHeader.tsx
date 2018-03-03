@@ -83,7 +83,7 @@ const ICON_SIZE = 50;
 const HEADER_Z_INDEX = 1000;
 
 // Time to delay searches by while user types
-const SEARCH_DELAY_TIME = 800;
+const SEARCH_DELAY_TIME = 1000;
 
 class AppHeader extends React.PureComponent<Props, State> {
 
