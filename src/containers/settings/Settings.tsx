@@ -267,6 +267,14 @@ class Settings extends React.PureComponent<Props, State> {
           listModalVisible: true,
         });
         break;
+      case 'app_special_thanks':
+        const specialThanks = require('../../../assets/json/special_thanks.json');
+        this.setState({
+          listModalSections: specialThanks,
+          listModalTitle: Translations.getName(setting) || '',
+          listModalVisible: true,
+        });
+        break;
       case 'app_help_tour':
         this.props.showIntroTour();
         break;
@@ -290,6 +298,7 @@ class Settings extends React.PureComponent<Props, State> {
             title={this.state.listModalTitle}
             onRightAction={this._closeModal.bind(this)} />
         <SectionList
+            ItemSeparatorComponent={this._renderSeparator.bind(this)}
             renderItem={this._renderListModalRow.bind(this)}
             renderSectionHeader={this._renderListModalSectionHeader.bind(this)}
             sections={this.state.listModalSections}
@@ -317,9 +326,11 @@ class Settings extends React.PureComponent<Props, State> {
    * @returns {JSX.Element} a {Header} with the name of the section
    */
   _renderListModalSectionHeader({ section }: { section: Section<any> }): JSX.Element {
+    const name = Translations.getName(section);
+
     return (
       <View style={_styles.modalListHeader}>
-        <Header title={section.key} />
+        <Header title={(name && name !== '') ? name : section.key} />
       </View>
     );
   }
