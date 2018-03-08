@@ -36,10 +36,10 @@ import * as Translations from './Translations';
  * @returns {Promise<void>} a promise indicating the result of whether the link was opened
  */
 export async function openLink(url: string | undefined,
-                         Linking: any,
-                         Alert: any,
-                         Clipboard: any,
-                         TextUtils: any): Promise<void> {
+                               Linking: any,
+                               Alert: any,
+                               Clipboard: any,
+                               TextUtils: any): Promise<void> {
   const formattedUrl = TextUtils.formatLink(url);
   const supported = await Linking.canOpenURL(url);
 
@@ -58,6 +58,41 @@ export async function openLink(url: string | undefined,
       ]
     );
   }
+}
+
+/**
+ * Prompt user to open a mailing app to send an email.
+ *
+ * @param {string}           recipient intended receiver of the email
+ * @param {string|undefined} subject   subject of the email
+ * @param {string|undefined} body      body of the email
+ * @param {any}              Linking   an instance of the React Native Linking class
+ * @param {any}              Alert     an instance of the React Native Alert class
+ * @param {any}              Clipboard an instance of the React Native Clipboard class
+ * @param {any}              TextUtils an instance of the TextUtils utility class
+ * @returns {Promise<void>} a promise indicating the result of whether the link was opened
+ */
+export async function sendEmail(recipient: string,
+                                subject: string | undefined,
+                                body: string | undefined,
+                                Linking: any,
+                                Alert: any,
+                                Clipboard: any,
+                                TextUtils: any): Promise<void> {
+  let url = `mailto:${recipient}`;
+  if (subject || body) {
+    url += `?`;
+  }
+
+  if (subject) {
+    url += `subject=${subject}`;
+  }
+
+  if (body) {
+    url += `${subject ? '&' : ''}body=${body}`;
+  }
+
+  await openLink(url, Linking, Alert, Clipboard, TextUtils);
 }
 
 /**

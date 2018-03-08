@@ -278,6 +278,17 @@ class Settings extends React.PureComponent<Props, State> {
       case 'app_help_tour':
         this.props.showIntroTour();
         break;
+      case 'app_feedback':
+        External.sendEmail(
+          'contact@josephroque.ca',
+          `Comm/Sug: Campus Guide - Ottawa (v${DeviceInfo.getVersion()})`,
+          undefined,
+          Linking,
+          Alert,
+          Clipboard,
+          TextUtils
+        );
+        break;
       default:
         // Does nothing
     }
