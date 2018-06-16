@@ -43,12 +43,13 @@ let defaultLanguage: Language;
 /**
  * Loads and parses a set of translations from the downloaded configuration.
  *
- * @param {Language} lang the set of translations to load
+ * @param {Language} lang        the set of translations to load
+ * @param {boolean}  forceReload force the language to be reloaded
  * @returns {Promise<any>} a promise that resolves with the translations when they have been loaded
  */
-async function _loadTranslations(lang: Language): Promise<any> {
+async function _loadTranslations(lang: Language, forceReload: boolean): Promise<any> {
   // If the language is already loaded,
-  if (translations[lang] != undefined) {
+  if (translations[lang] != undefined && !forceReload) {
     return translations[lang];
   }
 
@@ -273,11 +274,12 @@ export function get(property: string, language: Language = defaultLanguage): str
 /**
  * Loads and parses a set of translations from the downloaded configuration.
  *
- * @param {Language} lang the set of translations to load
+ * @param {Language} lang        the set of translations to load
+ * @param {boolean}  forceReload force the language to be reloaded
  * @returns {Promise<any>} a promise that resolves with the translations when they have been loaded
  */
-export function loadTranslations(lang: Language): Promise<any> {
-  return _loadTranslations(lang);
+export function loadTranslations(lang: Language, forceReload: boolean = false): Promise<any> {
+  return _loadTranslations(lang, forceReload);
 }
 
 /**

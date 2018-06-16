@@ -402,7 +402,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   async _returnToMain(): Promise<void> {
     try {
-      await Translations.loadTranslations(Translations.getLanguage());
+      await Translations.loadTranslations(Translations.getLanguage(), true);
       this._popOrPushToMain();
     } catch (err) {
       console.error('Unable to initialize configuration for Update.', err);
