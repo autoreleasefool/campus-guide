@@ -211,7 +211,8 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
 
     return (
       <View style={{ flex: 1 }}>
-        <Text style={_styles.approximateTimes}>{Translations.get('transit_approximate_times')}</Text>
+        <Text style={_styles.approximateTime}>{Translations.get('transit_approximate_times')}</Text>
+        <Text style={_styles.easternTime}>{Translations.get('transit_eastern_times')}</Text>
         <TransitStops
             campus={campus}
             filter={this.props.filter}
@@ -245,14 +246,22 @@ export default class TransitCampusMap extends React.PureComponent<Props, State> 
 
 // Private styles for the component
 const _styles = StyleSheet.create({
-  approximateTimes: {
+  approximateTime: {
     backgroundColor: Constants.Colors.darkTransparentBackground,
     color: Constants.Colors.primaryWhiteText,
     padding: Constants.Sizes.Margins.Regular,
+    paddingBottom: Constants.Sizes.Margins.Condensed,
     textAlign: 'center',
   },
   container: {
     flex: 2,
+  },
+  easternTime: {
+    backgroundColor: Constants.Colors.darkTransparentBackground,
+    color: Constants.Colors.primaryWhiteText,
+    padding: Constants.Sizes.Margins.Regular,
+    paddingTop: Constants.Sizes.Margins.Condensed,
+    textAlign: 'center',
   },
   map: {
     ...StyleSheet.absoluteFillObject,

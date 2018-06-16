@@ -149,6 +149,7 @@ export default class ShuttleTable extends React.PureComponent<Props, State> {
       <Text key={'travel_time'} style={_styles.info}>{Translations.get('shuttle_travel_time')}</Text>,
       <Text key={'id_required'} style={_styles.info}>{Translations.get('shuttle_id_required')}</Text>,
       <Text key={'approx_times'} style={_styles.info}>{Translations.get('transit_approximate_times')}</Text>,
+      <Text key={'et_times'} style={_styles.info}>{Translations.get('transit_eastern_times')}</Text>,
     ];
 
     const currentDate: string = moment().format('YYYY-MM-DD');
