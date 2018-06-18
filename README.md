@@ -12,7 +12,7 @@ A mobile app, developed with React Native, to help students of the University of
 
 ### Setup
 
-1. Clone the repository: `git clone https://github.com/josephroqueca/campus-guide``
+1. Clone the repository: `git clone https://github.com/josephroqueca/campus-guide`
 2. Make your changes.
 3. Ensure the following requirements for a contribution are met when running these commands:
     - `yarn run lint`: There should be no errors (warnings are OK).
