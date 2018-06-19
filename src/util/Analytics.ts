@@ -59,6 +59,19 @@ export function setAnalyticsEnabledOverride(enableOverride: boolean, enabled?: b
 }
 
 /**
+ * Log a message to be sent with any Crashlytics reports
+ *
+ * @param {string} msg the message to log
+ */
+export function log(msg: string): void {
+  if (isAnalyticsEnabled()) {
+    Crashlytics.log(msg);
+  } else {
+    console.log(`Analytics log: ${msg}`);
+  }
+}
+
+/**
  * Update user preferences.
  *
  * @param {string} preferenceName  the preference being updated

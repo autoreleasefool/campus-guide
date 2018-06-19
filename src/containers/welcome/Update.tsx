@@ -42,6 +42,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 // Imports
+import * as Analytics from '../../util/Analytics';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 import * as RNFS from 'react-native-fs';
@@ -142,9 +143,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
     try {
       await Configuration.updateConfig(availableUpdates, callbacks, Platform.OS);
     } catch (err) {
-      if (__DEV__) {
-        console.log('Failed configuration update check.', err);
-      }
+      Analytics.log(`Failed configuration update check: ${JSON.stringify(err)}`);
       this._notifyServerFailed();
 
       return;
@@ -205,9 +204,7 @@ class UpdateScreen extends React.PureComponent<Props, State> {
 
       this._beginUpdate(available);
     } catch (err) {
-      if (__DEV__) {
-        console.log('Error confirming configuration update.', err);
-      }
+      Analytics.log(`Error confirming configuration update: ${JSON.stringify(err)}`);
       this._notifyServerFailed();
     }
   }
@@ -305,8 +302,8 @@ class UpdateScreen extends React.PureComponent<Props, State> {
    */
   async _notifyConnectionFailed(err?: any): Promise<void> {
     // TODO: use error and act according to the actual issue
-    if (err != undefined && __DEV__) {
-      console.log(err);
+    if (err != undefined) {
+      Analytics.log(`Connection failed: ${JSON.stringify(err)}`);
     }
 
     try {

@@ -41,6 +41,7 @@ import { connect } from 'react-redux';
 // Imports
 import AppHeader from '../components/AppHeader';
 import TabView from './TabView';
+import * as Analytics from '../util/Analytics';
 import * as Configuration from '../util/Configuration';
 import * as Constants from '../constants';
 import * as Database from '../util/Database';
@@ -139,9 +140,7 @@ class Main extends React.PureComponent<Props, State> {
       this.setState({ loading: false });
       this._checkConfigurationUpdate();
     } catch (err) {
-      if (__DEV__) {
-        console.log('Assuming configuration is not available.', err);
-      }
+      Analytics.log(`Assuming configuration is not available: ${JSON.stringify(err)}`);
 
       // Load the base configuration when the full configuration is not available.
       await Configuration.setupDefaultConfiguration(Platform.OS);

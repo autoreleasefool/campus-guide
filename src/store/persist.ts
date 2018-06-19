@@ -27,6 +27,7 @@ import { AsyncStorage } from 'react-native';
 
 // Imports
 import { saveSchedule } from '../util/Database';
+import * as Analytics from '../util/Analytics';
 import * as Preferences from '../util/Preferences';
 
 import * as Actions from '../actionTypes';
@@ -63,9 +64,7 @@ export const persist: Middleware = ({ getState }: any): any => (next: any): any 
               Preferences.setPreferScheduleByCourse(AsyncStorage, action.options[option]);
               break;
             default:
-              if (__DEV__) {
-                console.log(`Configuration update not saved: ${option}`);
-              }
+              Analytics.log(`Configuration update not saved: ${option}`);
           }
         }
       }

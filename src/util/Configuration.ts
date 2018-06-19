@@ -24,6 +24,7 @@
 // Imports
 import DeviceInfo from 'react-native-device-info';
 import moment from 'moment';
+import * as Analytics from '../util/Analytics';
 import * as Database from './Database';
 import * as HttpStatus from 'http-status-codes';
 import * as RNFS from 'react-native-fs';
@@ -155,8 +156,8 @@ async function _initializeConfiguration(): Promise<void> {
         const dir = CONFIG_SUBDIRECTORIES[file.type];
         const exists = await RNFS.exists(CONFIG_DIRECTORY + dir + file.name);
         configAvailable = configAvailable && exists;
-        if (!exists && __DEV__) {
-          console.log(`Could not find configuration file: ${file.name}`);
+        if (!exists) {
+          Analytics.log(`Could not find configuration file: ${file.name}`);
         }
       } catch (err) {
         throw err;
@@ -188,9 +189,7 @@ function _initSuccess(): void {
  * @param {any} err error encountered while getting configuration
  */
 function _initError(err: any): void {
-  if (__DEV__) {
-    console.log('Error while getting configuration', err);
-  }
+  Analytics.log(`Error while getting configuration: ${JSON.stringify(err)}`);
 
   configInitializing = false;
   for (const promise of initPromises) {
@@ -530,7 +529,6 @@ export async function setupDefaultConfiguration(os: PlatformOSType): Promise<voi
       const sourcePath = asset.path;
       const fileName = asset.path.substr(asset.path.lastIndexOf('/'));
       const destPath = `${CONFIG_DIRECTORY}${CONFIG_SUBDIRECTORIES[type.name]}${fileName}`;
-      console.log(`Copying config file from ${sourcePath} to ${destPath}`);
       await copyFile(sourcePath, destPath);
     }
   }

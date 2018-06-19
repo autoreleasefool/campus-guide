@@ -21,6 +21,7 @@
  * @description Generate directions between points in graphs.
  */
 
+import * as Analytics from '../Analytics';
 import * as DirectionTranslations from './DirectionTranslations';
 import * as Navigation from './Navigation';
 import * as Translations from '../Translations';
@@ -804,7 +805,7 @@ function _directionsError(
     accessible: boolean,
     differentCampuses: boolean,
     err: any): DirectionResults {
-  console.log(`Error while getting directions between ${start} and ${target}`, err);
+  Analytics.log(`Error while getting directions between ${start} and ${target}: ${JSON.stringify(err)}`);
   const errorMessage = differentCampuses
     ? 'no_path_between_campuses'
     : accessible ? 'no_accessible_path_found' : 'no_path_found';

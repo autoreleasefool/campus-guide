@@ -124,10 +124,6 @@ class Steps extends React.PureComponent<Props, State> {
     );
   }
 
-  // _toggleActionOptions(): void {
-  //   console.log('Action options');
-  // }
-
   /**
    * Renders a title and text for the user's destination.
    *

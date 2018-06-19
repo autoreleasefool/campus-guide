@@ -48,6 +48,7 @@ import MapView from 'react-native-maps';
 import PaddedIcon from '../../components/PaddedIcon';
 import RoomGrid from '../../components/RoomGrid';
 import Suggestion from '../../components/Suggestion';
+import * as Analytics from '../../util/Analytics';
 import * as Constants from '../../constants';
 import * as Navigation from '../../util/Navigation';
 import * as Permissions from '../../util/Permissions';
@@ -194,7 +195,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
    * @param {Error} error the error thrown when requesting user location.
    */
   _showLocationErrorMessage(error: any): void {
-    console.log('Could not get user location', error);
+    Analytics.log(`Could not get user location: ${JSON.stringify(error)}`);
     let locationError: LocationError = {
       message: error.message,
     };
