@@ -333,7 +333,10 @@ class Housing extends React.PureComponent<Props, State> {
           // then, add only properties that match the filter
           for (const property of unfilteredProperty.data) {
             const propertyName = Translations.getName(property) || '';
-            if (adjustedFilter.length === 0 || propertyName.toUpperCase().indexOf(adjustedFilter) >= 0) {
+            const propertyDescription = Translations.getDescription(property) || '';
+            if (adjustedFilter.length === 0
+                || propertyName.toUpperCase().indexOf(adjustedFilter) >= 0
+                || propertyDescription.toUpperCase().indexOf(adjustedFilter) >= 0) {
               if (!categoryAdded) {
                 filteredProperties.push({ ...unfilteredProperty });
                 filteredProperties[filteredProperties.length - 1].data = [];
@@ -453,6 +456,8 @@ class Housing extends React.PureComponent<Props, State> {
       return <View />;
     }
     const value = this.props.residence.props[item.key];
+    const description = Translations.getDescription(item);
+    const descriptionExists = description !== undefined && description.length > 0;
 
     return (
       <View style={_styles.propertyContainer}>
@@ -460,12 +465,23 @@ class Housing extends React.PureComponent<Props, State> {
             color={Constants.Colors.tertiaryBackground}
             icon={{ class: 'material', name: value ? 'check-box' : 'check-box-outline-blank' }}
             size={Constants.Sizes.Icons.Medium} />
-        <Text
-            ellipsizeMode={'tail'}
-            numberOfLines={1}
-            style={_styles.propertyText}>
-          {Translations.getName(item)}
-        </Text>
+        <View style={_styles.propertyDetailsContainer}>
+          <Text
+              ellipsizeMode={'tail'}
+              numberOfLines={1}
+              style={descriptionExists ? _styles.propertyTextCompact : _styles.propertyText}>
+            {Translations.getName(item)}
+          </Text>
+          {descriptionExists
+            ? (
+              <Text
+                  ellipsizeMode={'tail'}
+                  numberOfLines={1}
+                  style={_styles.propertyDescription}>
+                {description}
+              </Text>
+            ) : undefined}
+          </View>
       </View>
     );
   }
@@ -730,10 +746,27 @@ const _styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+  propertyDescription: {
+    color: Constants.Colors.secondaryWhiteText,
+    fontSize: Constants.Sizes.Text.Caption,
+    marginBottom: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Condensed,
+  },
+  propertyDetailsContainer: {
+    flexDirection: 'column',
+  },
   propertyText: {
     color: Constants.Colors.primaryWhiteText,
     fontSize: Constants.Sizes.Text.Body,
     marginBottom: Constants.Sizes.Margins.Expanded,
+    marginRight: Constants.Sizes.Margins.Expanded,
+    marginTop: Constants.Sizes.Margins.Expanded,
+  },
+  propertyTextCompact: {
+    color: Constants.Colors.primaryWhiteText,
+    fontSize: Constants.Sizes.Text.Body,
+    marginBottom: Constants.Sizes.Margins.Condensed,
     marginRight: Constants.Sizes.Margins.Expanded,
     marginTop: Constants.Sizes.Margins.Expanded,
   },
