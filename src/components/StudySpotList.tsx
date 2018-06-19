@@ -41,6 +41,7 @@ import {
 import Header from './Header';
 import moment from 'moment';
 import PaddedIcon from './PaddedIcon';
+import * as Analytics from '../util/Analytics';
 import * as Configuration from '../util/Configuration';
 import * as Constants from '../constants';
 import * as Display from '../util/Display';
@@ -217,6 +218,12 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
       height: this.state.screenWidth * IMAGE_SIZE_RATIO,
       width: this.state.screenWidth,
     };
+
+    // TODO: Remove when source of https://github.com/josephroqueca/campus-guide/issues/56 is found
+    Analytics.log(`(StudySpotList) Rendering study spot ${name}.`);
+    Analytics.log(`(StudySpotList) Platform: ${Platform.OS}`);
+    Analytics.log(`(StudySpotList) Spot filters: ${item.filters.join()}`);
+    Analytics.log(`(StudySpotList) Filters: ${JSON.stringify(this.props.studyFilters)}`);
 
     return (
       <View style={_styles.spot}>

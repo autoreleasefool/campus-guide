@@ -34,6 +34,7 @@ import {
 
 // Imports
 import PaddedIcon from '../../../components/PaddedIcon';
+import * as Analytics from '../../../util/Analytics';
 import * as Constants from '../../../constants';
 import * as Display from '../../../util/Display';
 import * as Translations from '../../../util/Translations';
@@ -61,6 +62,12 @@ export default class StudySpots extends React.PureComponent<Props, State> {
     const filter = this.props.descriptions[item];
     const name = Translations.getName(filter) || '';
     const description = Translations.getDescription(filter) || '';
+
+    // TODO: Remove when source of https://github.com/josephroqueca/campus-guide/issues/56 is found
+    Analytics.log(`(FilterDescriptions) Rendering filter ${name}.`);
+    Analytics.log(`(FilterDescriptions) Platform: ${Platform.OS}`);
+    Analytics.log(`(FilterDescriptions) Filter: ${JSON.stringify(item)}`);
+
     const icon = Display.getPlatformIcon(Platform.OS, filter);
 
     return (

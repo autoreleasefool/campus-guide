@@ -50,6 +50,7 @@ import Header from '../../components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ModalHeader from '../../components/ModalHeader';
+import * as Analytics from '../../util/Analytics';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
 import * as Display from '../../util/Display';
@@ -376,6 +377,12 @@ class Settings extends React.PureComponent<Props, State> {
       case 'link':
         const icon = Display.getPlatformIcon(Platform.OS, item);
         const iconColor = Constants.Colors.primaryBlackIcon;
+
+        // TODO: Remove when source of https://github.com/josephroqueca/campus-guide/issues/56 is found
+        Analytics.log(`(Settings) Rendering setting ${item.key}.`);
+        Analytics.log(`(Settings) Platform: ${Platform.OS}`);
+        Analytics.log(`(Settings) Setting: ${JSON.stringify(item)}`);
+
         if (icon != undefined) {
           content = (
             <View style={_styles.settingContent}>
