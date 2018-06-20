@@ -178,6 +178,36 @@ export function failedNavigation(
 }
 
 /**
+ * Indicate a user's request for navigation was fulfilled between two destinations.
+ *
+ * @param {Destination}  startingPoint building/room on campus which navigation started from
+ * @param {Destination}  target        building/room on campus to which the user is going
+ * @param {boolean}      accessible    true if the navigation was meant to be accessible, false otherwise
+ * @param {boolean}      shortestRoute true if the user wants the shortest available route, false otherwise
+ * @param {EventOptions} options       optional event params
+ */
+export function successfulNavigation(
+    startingPoint: Destination,
+    target: Destination,
+    accessible: boolean,
+    shortestRoute: boolean,
+    options?: EventOptions): void {
+  const details = {
+    ...options,
+    accessible,
+    shortestRoute,
+    startingPoint: TextUtils.destinationToString(startingPoint),
+    target: TextUtils.destinationToString(target),
+  };
+
+  if (isAnalyticsEnabled()) {
+    Answers.logCustom('Successful navigation.', details);
+  } else {
+    console.log(`Analytics, successful navigation: ${JSON.stringify(details)}`);
+  }
+}
+
+/**
  * Indicate user has added a course to their schedule.
  *
  * @param {string}       courseCode details of the added course
