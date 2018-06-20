@@ -92,13 +92,15 @@ export function setPreference(preferenceName: string, preferenceValue: string): 
  * @param {EventOptions} options   optional event params
  */
 export function buildingSelected(shorthand: string, options?: EventOptions): void {
+  const details = {
+    ...options,
+    shorthand,
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Selected building', {
-      ...options,
-      shorthand,
-    });
+    Answers.logCustom('Selected building', details);
   } else {
-    console.log(`Analytics, selected building: ${shorthand}\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, selected building: ${JSON.stringify(details)}`);
   }
 }
 
@@ -110,14 +112,16 @@ export function buildingSelected(shorthand: string, options?: EventOptions): voi
  * @param {EventOptions}     options   optional event params
  */
 export function roomSelected(shorthand: string, room: string | undefined, options?: EventOptions): void {
+  const details = {
+    ...options,
+    room,
+    shorthand,
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Selected room', {
-      ...options,
-      room,
-      shorthand,
-    });
+    Answers.logCustom('Selected room', details);
   } else {
-    console.log(`Analytics, selected room: ${shorthand} ${room}\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, selected room: ${JSON.stringify(details)}`);
   }
 }
 
@@ -177,13 +181,15 @@ export function failedNavigation(
  * @param {EventOptions} options    optional event params
  */
 export function addCourse(courseCode: string, options?: EventOptions): void {
+  const details = {
+    ...options,
+    courseCode,
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Added course to schedule', {
-      ...options,
-      courseCode,
-    });
+    Answers.logCustom('Added course to schedule', details);
   } else {
-    console.log(`Analytics, added course: ${courseCode}\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, added course: ${JSON.stringify(details)}`);
   }
 }
 
@@ -194,13 +200,15 @@ export function addCourse(courseCode: string, options?: EventOptions): void {
  * @param {EventOptions} options    optional event params
  */
 export function removeCourse(courseCode: string, options?: EventOptions): void {
+  const details = {
+    ...options,
+    courseCode,
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Removed course from schedule', {
-      ...options,
-      courseCode,
-    });
+    Answers.logCustom('Removed course from schedule', details);
   } else {
-    console.log(`Analytics, removed course: ${courseCode}\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, removed course: ${JSON.stringify(details)}`);
   }
 }
 
@@ -263,14 +271,16 @@ export function selectedSearchResult(itemName: string, itemId: string, query: st
  * @param {EventOptions} options     optional event params
  */
 export function editSetting(settingName: string, newValue: any, options?: EventOptions): void {
+  const details = {
+    ...options,
+    newValue,
+    settingName,
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Edited setting', {
-      ...options,
-      newValue,
-      settingName,
-    });
+    Answers.logCustom('Edited setting', details);
   } else {
-    console.log(`Analytics, edited setting: ${settingName} - ${newValue}\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, edited setting: ${JSON.stringify(details)}`);
   }
 }
 
@@ -283,33 +293,35 @@ export function editSetting(settingName: string, newValue: any, options?: EventO
  * @param {EventOptions} options   optional event params
  */
 export function switchTab(newTab: Tab, oldTab: Tab, timeSpent: number, options?: EventOptions): void {
+  const details = {
+    ...options,
+    newTab,
+    oldTab,
+    timeSpent,
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Switched tab', {
-      ...options,
-      newTab,
-      oldTab,
-      timeSpent,
-    });
+    Answers.logCustom('Switched tab', details);
   } else {
-    console.log(`Analytics, switched tab: ${oldTab} to ${newTab}, spent ${timeSpent}`
-        + `\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, switched tab: ${JSON.stringify(details)}`);
   }
 }
 
 /**
- * Record user's interactionn with the intro tour.
+ * Record user's interaction with the intro tour.
  *
  * @param {boolean}      skipped true if the user skipped the tour, false if they completed it
  * @param {EventOptions} options optional event params
  */
 export function finishedIntroTour(skipped: boolean, options?: EventOptions): void {
+  const details = {
+    ...options,
+    skipped,
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Finished intro tour', {
-      ...options,
-      skipped,
-    });
+    Answers.logCustom('Finished intro tour', details);
   } else {
-    console.log(`Analytics, finished intro tour. Skipped? ${skipped}`
-        + `\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, finished intro tour: ${JSON.stringify(details)}`);
   }
 }
