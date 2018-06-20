@@ -201,7 +201,7 @@ export function successfulNavigation(
   };
 
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Successful navigation.', details);
+    Answers.logCustom('Successful navigation', details);
   } else {
     console.log(`Analytics, successful navigation: ${JSON.stringify(details)}`);
   }
