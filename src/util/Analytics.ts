@@ -23,6 +23,7 @@
 
 // Imports
 import { Answers, Crashlytics } from 'react-native-fabric';
+import * as TextUtils from './TextUtils';
 
 // Types
 import { Destination } from '../../typings/university';
@@ -30,7 +31,7 @@ import { Tab } from 'typings/global';
 
 /** Optional values to send with events. */
 interface EventOptions {
-  [key: string]: string | number | boolean | undefined;
+  [key: string]: string | number | boolean;
 }
 
 // Force analytics on or off, if analyticsOverrideEnabled is tru
@@ -133,15 +134,16 @@ export function roomSelected(shorthand: string, room: string | undefined, option
  * @param {EventOptions} options       optional event params
  */
 export function startNavigation(startingPoint: Destination, target: Destination, options?: EventOptions): void {
+  const details = {
+    ...options,
+    startingPoint: TextUtils.destinationToString(startingPoint),
+    target: TextUtils.destinationToString(target),
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Started navigating', {
-      ...options,
-      startingPoint,
-      target,
-    });
+    Answers.logCustom('Started navigating', details);
   } else {
-    console.log(`Analytics, started navigating: ${JSON.stringify(startingPoint)} to ${JSON.stringify(target)}`
-        + `\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, started navigating: ${JSON.stringify(details)}`);
   }
 }
 
@@ -160,17 +162,18 @@ export function failedNavigation(
     accessible: boolean,
     shortestRoute: boolean,
     options?: EventOptions): void {
+  const details = {
+    ...options,
+    accessible,
+    shortestRoute,
+    startingPoint: TextUtils.destinationToString(startingPoint),
+    target: TextUtils.destinationToString(target),
+  };
+
   if (isAnalyticsEnabled()) {
-    Answers.logCustom('Failed to find path', {
-      ...options,
-      accessible,
-      shortestRoute,
-      startingPoint,
-      target,
-    });
+    Answers.logCustom('Failed to find path', details);
   } else {
-    console.log(`Analytics, failed navigation: ${JSON.stringify(startingPoint)} to ${JSON.stringify(target)}`
-        + `\nOptions: ${JSON.stringify(options)}`);
+    console.log(`Analytics, failed navigation: ${JSON.stringify(details)}`);
   }
 }
 
