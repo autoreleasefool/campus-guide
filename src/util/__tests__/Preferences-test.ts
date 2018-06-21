@@ -25,6 +25,28 @@
 
 import * as Preferences from '../Preferences';
 
+// Mock translations for days
+jest.mock('../../../assets/json/CoreTranslations.json', () => ({
+  en: {
+    friday: 'Day',
+    monday: 'Day',
+    saturday: 'Day',
+    sunday: 'Day',
+    thursday: 'Day',
+    tuesday: 'Day',
+    wednesday: 'Day',
+  },
+  fr: {
+    friday: 'Jour',
+    monday: 'Jour',
+    saturday: 'Jour',
+    sunday: 'Jour',
+    thursday: 'Jour',
+    tuesday: 'Jour',
+    wednesday: 'Jour',
+  },
+}));
+
 /** Required parameters for setting preferences. */
 interface PreferenceOptions {
   language: string;

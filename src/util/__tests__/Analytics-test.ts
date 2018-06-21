@@ -30,6 +30,7 @@ import { Building, Course } from '../../../typings/university';
 
 // Imports
 import * as Analytics from '../Analytics';
+import * as TextUtils from '../TextUtils';
 import { default as Fabric } from 'react-native-fabric';
 
 const building: Building = {
@@ -58,6 +59,28 @@ const course: Course = {
   code: 'COURSE_CODE',
   lectures: [],
 };
+
+// Mock translations for days
+jest.mock('../../../assets/json/CoreTranslations.json', () => ({
+  en: {
+    friday: 'Day',
+    monday: 'Day',
+    saturday: 'Day',
+    sunday: 'Day',
+    thursday: 'Day',
+    tuesday: 'Day',
+    wednesday: 'Day',
+  },
+  fr: {
+    friday: 'Jour',
+    monday: 'Jour',
+    saturday: 'Jour',
+    sunday: 'Jour',
+    thursday: 'Jour',
+    tuesday: 'Jour',
+    wednesday: 'Jour',
+  },
+}));
 
 describe('Analytics-test', () => {
 
