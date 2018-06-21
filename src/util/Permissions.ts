@@ -46,7 +46,7 @@ export async function requestLocationPermission(
   try {
     if (PermissionsAndroid !== undefined) {
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           message: Translations.get('location_permission_msg'),
           title: Translations.get('location_permission_title'),
