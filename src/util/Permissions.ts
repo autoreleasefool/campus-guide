@@ -24,7 +24,7 @@
 
 // Imports
 import {
-  PermissionsAndroid,
+  PermissionsAndroidStatic,
   PlatformOSType,
 } from 'react-native';
 
@@ -36,21 +36,27 @@ import * as Translations from './Translations';
  * @param {PlatformOSType} os the user's OS
  * @returns {Promise<boolean>} true if the permission was granted, false otherwise
  */
-export async function requestLocationPermission(os: PlatformOSType): Promise<boolean> {
+export async function requestLocationPermission(
+    os: PlatformOSType,
+    PermissionsAndroid: PermissionsAndroidStatic | undefined): Promise<boolean> {
   if (os === 'ios') {
     return true;
   }
 
   try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.CAMERA,
-      {
-        message: Translations.get('location_permission_msg'),
-        title: Translations.get('location_permission_title'),
-      }
-    );
+    if (PermissionsAndroid !== undefined) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          message: Translations.get('location_permission_msg'),
+          title: Translations.get('location_permission_title'),
+        }
+      );
 
-    return granted === PermissionsAndroid.RESULTS.GRANTED;
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } else {
+      throw new Error('PermissionsAndroid not available.');
+    }
   } catch (err) {
     throw err;
   }

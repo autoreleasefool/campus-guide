@@ -28,6 +28,7 @@ import {
   Alert,
   InteractionManager,
   Linking,
+  PermissionsAndroid,
   Platform,
   StyleSheet,
   Text,
@@ -159,7 +160,7 @@ class StartingPoint extends React.PureComponent<Props, State> {
   async _findClosestBuilding(): Promise<void> {
     this.setState({ locating: true });
 
-    const locationPermissionGranted = await Permissions.requestLocationPermission(Platform.OS);
+    const locationPermissionGranted = await Permissions.requestLocationPermission(Platform.OS, PermissionsAndroid);
     if (locationPermissionGranted) {
       Geolocation.getCurrentPosition((position: any) => {
         const location = { latitude: position.coords.latitude, longitude: position.coords.longitude };
