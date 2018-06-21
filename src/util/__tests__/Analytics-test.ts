@@ -152,8 +152,15 @@ describe('Analytics-test', () => {
 
     expect((Fabric as any).__getEvents()).toEqual({
       'Started navigating': [
-        { startingPoint, target },
-        { startingPoint, target, test: 0 },
+        {
+          startingPoint: TextUtils.destinationToString(startingPoint),
+          target: TextUtils.destinationToString(target),
+        },
+        {
+          startingPoint: TextUtils.destinationToString(startingPoint),
+          target: TextUtils.destinationToString(target),
+          test: 0,
+        },
       ],
     });
   });
@@ -164,8 +171,42 @@ describe('Analytics-test', () => {
 
     expect((Fabric as any).__getEvents()).toEqual({
       'Failed to find path': [
-        { startingPoint, target, accessible: true, shortestRoute: true },
-        { startingPoint, target, accessible: false, shortestRoute: false, test: 0 },
+        {
+          accessible: true,
+          shortestRoute: true,
+          startingPoint: TextUtils.destinationToString(startingPoint),
+          target: TextUtils.destinationToString(target),
+        },
+        {
+          accessible: false,
+          shortestRoute: false,
+          startingPoint: TextUtils.destinationToString(startingPoint),
+          target: TextUtils.destinationToString(target),
+          test: 0,
+        },
+      ],
+    });
+  });
+
+  it('tests successful navigation', () => {
+    Analytics.successfulNavigation(startingPoint, target, true, true);
+    Analytics.successfulNavigation(startingPoint, target, false, false, { test: 0 });
+
+    expect((Fabric as any).__getEvents()).toEqual({
+      'Successful navigation': [
+        {
+          accessible: true,
+          shortestRoute: true,
+          startingPoint: TextUtils.destinationToString(startingPoint),
+          target: TextUtils.destinationToString(target),
+        },
+        {
+          accessible: false,
+          shortestRoute: false,
+          startingPoint: TextUtils.destinationToString(startingPoint),
+          target: TextUtils.destinationToString(target),
+          test: 0,
+        },
       ],
     });
   });
