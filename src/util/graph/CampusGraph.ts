@@ -22,7 +22,6 @@
  */
 
 // Imports
-import * as Configuration from '../Configuration';
 import { getCachedNodeOrBuild } from './Navigation';
 
 // Types
@@ -217,6 +216,7 @@ function _parseAndAppendStreet(id: string, streetName: string, graph: Graph): vo
  * @returns {Promise<Map<Graph>>} map of building shorthands to Graphs
  */
 export async function getGraphs(buildings: Set<string>): Promise<Map<string, Graph>> {
+  const Configuration = require('../Configuration');
   const graphs: Map<string, Graph> = new Map();
   for (const building of buildings) {
     const buildingAsGraph = building.replace(/[\s/]+/g, '');

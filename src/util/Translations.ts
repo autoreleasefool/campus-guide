@@ -75,8 +75,8 @@ async function _loadTranslations(lang: Language, forceReload: boolean): Promise<
  * Gets the French variant of a property from an object, or returns the default of the variant. If neither is
  * available, returns undefined.
  *
- * @param {string}            property the prefix of the property to look for
- * @param {oject | undefined} obj      the object to look in for the property
+ * @param {string}             property the prefix of the property to look for
+ * @param {object | undefined} obj      the object to look in for the property
  * @returns {string|undefined} the French property in obj, the default property in obj, or undefined
  */
 export function getFrenchVariant(property: string, obj: object | undefined): string | undefined {
