@@ -71,4 +71,4 @@ coverage/
 
 # Typescript output
 artifacts/
-test-artifacts/
+artifacts-test/

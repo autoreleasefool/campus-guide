@@ -9,12 +9,12 @@ gulp.task('build.ts', function() {
   return gulp.src('./src/**/*.ts')
       .pipe(tsProject())
       .js
-      .pipe(gulp.dest('test-artifacts'));
+      .pipe(gulp.dest('artifacts-test'));
 });
 
 gulp.task('build.copy-assets', function() {
   return gulp.src(['./src/**/*', '!./**/*.ts'])
-      .pipe(gulp.dest('test-artifacts'));
+      .pipe(gulp.dest('artifacts-test'));
 });
 
 gulp.task('default', ['build.ts', 'build.copy-assets']);

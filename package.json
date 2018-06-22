@@ -7,7 +7,7 @@
     "build:ios": "react-native bundle --entry-file='artifacts/index.ios.js' --bundle-output='./release/main.jsbundle' --dev=false --platform='ios' --assets-dest='./release'",
     "clean": "rimraf artifacts",
     "gulp-build": "yarn run gulp-clean && gulp",
-    "gulp-clean": "rimraf test-artifacts",
+    "gulp-clean": "rimraf artifacts-test",
     "lint": "tslint 'src/**/*.ts?(x)'",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start:build": "yarn run build -w",
@@ -67,13 +67,13 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "test-artifacts/util/*.js",
-      "test-artifacts/actions/*.js",
-      "test-artifacts/reducers/*.js",
-      "!test-artifacts/**/*.spec.js",
-      "!test-artifacts/**/*.index.js",
-      "!test-artifacts/actions/index.js",
-      "!test-artifacts/util/Configuration.js"
+      "artifacts-test/util/*.js",
+      "artifacts-test/actions/*.js",
+      "artifacts-test/reducers/*.js",
+      "!artifacts-test/**/*.spec.js",
+      "!artifacts-test/**/*.index.js",
+      "!artifacts-test/actions/index.js",
+      "!artifacts-test/util/Configuration.js"
     ],
     "coverageDirectory": "coverage",
     "coverageThreshold": {
@@ -89,7 +89,7 @@
       "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
     },
     "preset": "react-native",
-    "testRegex": "test-artifacts/.+[-.](test|spec).js$",
+    "testRegex": "artifacts-test/.+[-.](test|spec).js$",
     "transform": {
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
