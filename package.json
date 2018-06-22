@@ -6,12 +6,14 @@
     "build": "yarn run clean && yarn run tsc",
     "build:ios": "react-native bundle --entry-file='artifacts/index.ios.js' --bundle-output='./release/main.jsbundle' --dev=false --platform='ios' --assets-dest='./release'",
     "clean": "rimraf artifacts",
+    "gulp-build": "yarn run gulp-clean && gulp",
+    "gulp-clean": "rimraf test-artifacts",
     "lint": "tslint 'src/**/*.ts?(x)'",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start:build": "yarn run build -w",
     "start:android": "react-native run-android",
     "start:ios": "react-native run-ios",
-    "test": "yarn run build && jest --coverage",
+    "test": "yarn run gulp-build && jest --coverage",
     "tsc": "tsc",
     "tscp": "tsc --pretty"
   },
@@ -49,6 +51,8 @@
     "babel-preset-react-native": "^4.0.0",
     "concurrently": "^3.5.1",
     "empty": "^0.10.1",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^5.0.0-alpha.2",
     "jest": "^22.0.4",
     "jest-cli": "^22.0.4",
     "jest-react-native": "^18.0.0",
@@ -63,13 +67,13 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "artifacts/util/*.js",
-      "artifacts/actions/*.js",
-      "artifacts/reducers/*.js",
-      "!artifacts/**/*.spec.js",
-      "!artifacts/**/*.index.js",
-      "!artifacts/actions/index.js",
-      "!artifacts/util/Configuration.js"
+      "test-artifacts/util/*.js",
+      "test-artifacts/actions/*.js",
+      "test-artifacts/reducers/*.js",
+      "!test-artifacts/**/*.spec.js",
+      "!test-artifacts/**/*.index.js",
+      "!test-artifacts/actions/index.js",
+      "!test-artifacts/util/Configuration.js"
     ],
     "coverageDirectory": "coverage",
     "coverageThreshold": {
@@ -85,7 +89,7 @@
       "^[./]*assets[a-zA-Z0-9./]*/([a-zA-Z.]+)$": "empty/object"
     },
     "preset": "react-native",
-    "testRegex": "artifacts/.+[-.](test|spec).js$",
+    "testRegex": "test-artifacts/.+[-.](test|spec).js$",
     "transform": {
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"

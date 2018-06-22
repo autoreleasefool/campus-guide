@@ -23,6 +23,7 @@ release/
 
 # Typescript output
 artifacts/
+test-artifacts/
 " >> .gitignore
 
 # Update the package name of the app
