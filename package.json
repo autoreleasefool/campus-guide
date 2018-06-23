@@ -77,8 +77,7 @@
       "!artifacts-test/util/Configuration.js",
       "!artifacts-test/util/graph/Directions.js",
       "!artifacts-test/util/graph/DirectionTranslations.js",
-      "!artifacts-test/util/graph/Navigation.js",
-      "!artifacts-test/util/graph/Node.js"
+      "!artifacts-test/util/graph/Navigation.js"
     ],
     "coverageDirectory": "coverage",
     "coverageThreshold": {
