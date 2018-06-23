@@ -1,0 +1,515 @@
+{
+  "floors": [
+    {
+      "name": "1",
+      "img": null,
+      "imgName": "",
+      "nodes": [
+        {
+          "x": 51,
+          "y": 200,
+          "type": 0,
+          "additional": "",
+          "name": "1",
+          "bid": "",
+          "assignedName": false
+        },
+        {
+          "x": 111,
+          "y": 200,
+          "type": 3,
+          "additional": "",
+          "name": "1h1",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 109,
+          "y": 148,
+          "type": 3,
+          "additional": "",
+          "name": "1h2",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 174,
+          "y": 202,
+          "type": 3,
+          "additional": "",
+          "name": "1h3",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 241,
+          "y": 203,
+          "type": 3,
+          "additional": "",
+          "name": "1h4",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 174,
+          "y": 146,
+          "type": 3,
+          "additional": "",
+          "name": "1h5",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 173,
+          "y": 255,
+          "type": 3,
+          "additional": "",
+          "name": "1h6",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 242,
+          "y": 265,
+          "type": 3,
+          "additional": "",
+          "name": "1h7",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 241,
+          "y": 149,
+          "type": 3,
+          "additional": "",
+          "name": "1h8",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 298,
+          "y": 201,
+          "type": 3,
+          "additional": "",
+          "name": "1h9",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 347,
+          "y": 200,
+          "type": 3,
+          "additional": "",
+          "name": "1h10",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 294,
+          "y": 150,
+          "type": 3,
+          "additional": "",
+          "name": "1h11",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 240,
+          "y": 95,
+          "type": 2,
+          "additional": "",
+          "name": "A",
+          "bid": "",
+          "assignedName": false
+        },
+        {
+          "x": 113,
+          "y": 254,
+          "type": 3,
+          "additional": "",
+          "name": "1h12",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 113,
+          "y": 302,
+          "type": 3,
+          "additional": "",
+          "name": "1h13",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 112,
+          "y": 347,
+          "type": 0,
+          "additional": "",
+          "name": "2",
+          "bid": "",
+          "assignedName": false
+        }
+      ],
+      "edges": [
+        {
+          "nodeA": "D1",
+          "nodeB": "H1h1",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h1",
+          "nodeB": "H1h3",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h3",
+          "nodeB": "H1h4",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h4",
+          "nodeB": "H1h9",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h10",
+          "nodeB": "H1h9",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h11",
+          "nodeB": "H1h9",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "EA",
+          "nodeB": "H1h8",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h4",
+          "nodeB": "H1h8",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h4",
+          "nodeB": "H1h7",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h3",
+          "nodeB": "H1h6",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h3",
+          "nodeB": "H1h5",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h1",
+          "nodeB": "H1h2",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "D2",
+          "nodeB": "H1h13",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h12",
+          "nodeB": "H1h13",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h1",
+          "nodeB": "H1h12",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        }
+      ],
+      "imgWidth": -1,
+      "imgHeight": -1
+    },
+    {
+      "name": "2",
+      "img": null,
+      "imgName": "",
+      "nodes": [
+        {
+          "x": 66,
+          "y": 154,
+          "type": 2,
+          "additional": "",
+          "name": "A",
+          "bid": "",
+          "assignedName": false
+        },
+        {
+          "x": 110,
+          "y": 154,
+          "type": 3,
+          "additional": "",
+          "name": "2h12",
+          "bid": "",
+          "assignedName": true
+        }
+      ],
+      "edges": [
+        {
+          "nodeA": "EA",
+          "nodeB": "H2h12",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        }
+      ],
+      "imgWidth": -1,
+      "imgHeight": -1
+    },
+    {
+      "name": "3",
+      "img": null,
+      "imgName": "",
+      "nodes": [
+        {
+          "x": 40,
+          "y": 170,
+          "type": 2,
+          "additional": "",
+          "name": "A",
+          "bid": "",
+          "assignedName": false
+        },
+        {
+          "x": 84,
+          "y": 170,
+          "type": 3,
+          "additional": "",
+          "name": "3h13",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 138,
+          "y": 171,
+          "type": 3,
+          "additional": "",
+          "name": "3h14",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 192,
+          "y": 172,
+          "type": 3,
+          "additional": "",
+          "name": "3h15",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 191,
+          "y": 126,
+          "type": 3,
+          "additional": "",
+          "name": "3h16",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 245,
+          "y": 126,
+          "type": 3,
+          "additional": "",
+          "name": "3h17",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 245,
+          "y": 80,
+          "type": 4,
+          "additional": "",
+          "name": "300",
+          "bid": "",
+          "assignedName": false
+        }
+      ],
+      "edges": [
+        {
+          "nodeA": "EA",
+          "nodeB": "H3h13",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h13",
+          "nodeB": "H3h14",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h14",
+          "nodeB": "H3h15",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h15",
+          "nodeB": "H3h16",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h16",
+          "nodeB": "H3h17",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h17",
+          "nodeB": "R300",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        }
+      ],
+      "imgWidth": -1,
+      "imgHeight": -1
+    }
+  ],
+  "projectName": "STE ",
+  "projectFormat": "floor*=^(\d).*$",
+  "nodeTypeColors": [
+    {
+      "r": 0,
+      "g": 255,
+      "b": 0
+    },
+    {
+      "r": 255,
+      "g": 0,
+      "b": 0
+    },
+    {
+      "r": 255,
+      "g": 255,
+      "b": 0
+    },
+    {
+      "r": 0,
+      "g": 0,
+      "b": 255
+    },
+    {
+      "r": 0,
+      "g": 0,
+      "b": 0
+    },
+    {
+      "r": 0,
+      "g": 255,
+      "b": 255
+    },
+    {
+      "r": 255,
+      "g": 0,
+      "b": 255
+    },
+    {
+      "r": 128,
+      "g": 128,
+      "b": 128
+    },
+    {
+      "r": 255,
+      "g": 128,
+      "b": 0
+    },
+    {
+      "r": 128,
+      "g": 128,
+      "b": 255
+    }
+  ],
+  "nodeSize": 4
+}

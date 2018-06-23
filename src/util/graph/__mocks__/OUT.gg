@@ -1,0 +1,610 @@
+{
+  "floors": [
+    {
+      "name": "First",
+      "img": null,
+      "imgName": "",
+      "nodes": [
+        {
+          "x": 56,
+          "y": 124,
+          "type": 0,
+          "additional": "",
+          "name": "1",
+          "bid": "GSD",
+          "assignedName": false
+        },
+        {
+          "x": 310,
+          "y": 227,
+          "type": 0,
+          "additional": "",
+          "name": "1",
+          "bid": "STE",
+          "assignedName": false
+        },
+        {
+          "x": 430,
+          "y": 228,
+          "type": 0,
+          "additional": "",
+          "name": "2",
+          "bid": "STE",
+          "assignedName": false
+        },
+        {
+          "x": 92,
+          "y": 125,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "3",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 124,
+          "y": 124,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "4",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 159,
+          "y": 124,
+          "type": 7,
+          "additional": ",,English2:French2,English1:French1",
+          "name": "5",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 194,
+          "y": 124,
+          "type": 7,
+          "additional": "English2:French2,,,English1:French1",
+          "name": "6",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 158,
+          "y": 154,
+          "type": 7,
+          "additional": ",English1:French1,English2:French2,",
+          "name": "7",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 198,
+          "y": 155,
+          "type": 7,
+          "additional": "English2:French2,English1:French1,,",
+          "name": "8",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 157,
+          "y": 94,
+          "type": 5,
+          "additional": "English2:French2",
+          "name": "9",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 198,
+          "y": 91,
+          "type": 5,
+          "additional": "English2:French2",
+          "name": "10",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 225,
+          "y": 127,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "11",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 223,
+          "y": 157,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "12",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 157,
+          "y": 180,
+          "type": 5,
+          "additional": "English2:French2",
+          "name": "13",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 196,
+          "y": 180,
+          "type": 5,
+          "additional": "English2:French2",
+          "name": "14",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 125,
+          "y": 150,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "15",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 198,
+          "y": 223,
+          "type": 5,
+          "additional": "English2:French2",
+          "name": "16",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 198,
+          "y": 255,
+          "type": 6,
+          "additional": "",
+          "name": "17",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 198,
+          "y": 326,
+          "type": 6,
+          "additional": "",
+          "name": "18",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 313,
+          "y": 329,
+          "type": 6,
+          "additional": "",
+          "name": "19",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 238,
+          "y": 329,
+          "type": 6,
+          "additional": "",
+          "name": "20",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 265,
+          "y": 328,
+          "type": 6,
+          "additional": "",
+          "name": "21",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 249,
+          "y": 329,
+          "type": 8,
+          "additional": "",
+          "name": "22",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 310,
+          "y": 297,
+          "type": 5,
+          "additional": "English3:French3",
+          "name": "23",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 309,
+          "y": 256,
+          "type": 5,
+          "additional": "English3:French3",
+          "name": "24",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 306,
+          "y": 126,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "25",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 429,
+          "y": 126,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "26",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 557,
+          "y": 126,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "27",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 562,
+          "y": 228,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "28",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 491,
+          "y": 227,
+          "type": 5,
+          "additional": "English1:French1",
+          "name": "29",
+          "bid": "",
+          "assignedName": true
+        }
+      ],
+      "edges": [
+        {
+          "nodeA": "BGSD#D1",
+          "nodeB": "T3",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "T3",
+          "nodeB": "T4",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I5",
+          "nodeB": "T4",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I5",
+          "nodeB": "I6",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I6",
+          "nodeB": "T11",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I6",
+          "nodeB": "T10",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I5",
+          "nodeB": "T9",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I7",
+          "nodeB": "T15",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I7",
+          "nodeB": "I8",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I8",
+          "nodeB": "T12",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "BSTE#D2",
+          "nodeB": "T29",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "T29",
+          "nodeB": "T28",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "T27",
+          "nodeB": "T28",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "T27",
+          "nodeB": "T26",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "T26",
+          "nodeB": "T25",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "T11",
+          "nodeB": "T25",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I7",
+          "nodeB": "I5",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I8",
+          "nodeB": "I6",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I7",
+          "nodeB": "T13",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "I8",
+          "nodeB": "T14",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "T14",
+          "nodeB": "T16",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "P17",
+          "nodeB": "T16",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "P17",
+          "nodeB": "P18",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "P18",
+          "nodeB": "P20",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "O22",
+          "nodeB": "P20",
+          "accessible": false,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "O22",
+          "nodeB": "P21",
+          "accessible": false,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "P21",
+          "nodeB": "P19",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "P19",
+          "nodeB": "T23",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "T23",
+          "nodeB": "T24",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "BSTE#D1",
+          "nodeB": "T24",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        }
+      ],
+      "imgWidth": -1,
+      "imgHeight": -1
+    }
+  ],
+  "projectName": "OUT",
+  "projectFormat": "floor*=^(\d).*$",
+  "nodeTypeColors": [
+    {
+      "r": 0,
+      "g": 255,
+      "b": 0
+    },
+    {
+      "r": 255,
+      "g": 0,
+      "b": 0
+    },
+    {
+      "r": 255,
+      "g": 255,
+      "b": 0
+    },
+    {
+      "r": 0,
+      "g": 0,
+      "b": 255
+    },
+    {
+      "r": 0,
+      "g": 0,
+      "b": 0
+    },
+    {
+      "r": 0,
+      "g": 255,
+      "b": 255
+    },
+    {
+      "r": 255,
+      "g": 0,
+      "b": 255
+    },
+    {
+      "r": 128,
+      "g": 128,
+      "b": 128
+    },
+    {
+      "r": 255,
+      "g": 128,
+      "b": 0
+    },
+    {
+      "r": 128,
+      "g": 128,
+      "b": 255
+    }
+  ],
+  "nodeSize": 4
+}

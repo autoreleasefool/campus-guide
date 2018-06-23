@@ -68,12 +68,17 @@
     "collectCoverage": true,
     "collectCoverageFrom": [
       "artifacts-test/util/*.js",
+      "artifacts-test/util/graph/*.js",
       "artifacts-test/actions/*.js",
       "artifacts-test/reducers/*.js",
       "!artifacts-test/**/*.spec.js",
       "!artifacts-test/**/*.index.js",
       "!artifacts-test/actions/index.js",
-      "!artifacts-test/util/Configuration.js"
+      "!artifacts-test/util/Configuration.js",
+      "!artifacts-test/util/graph/Directions.js",
+      "!artifacts-test/util/graph/DirectionTranslations.js",
+      "!artifacts-test/util/graph/Navigation.js",
+      "!artifacts-test/util/graph/Node.js"
     ],
     "coverageDirectory": "coverage",
     "coverageThreshold": {
