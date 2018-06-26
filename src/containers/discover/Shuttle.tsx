@@ -36,6 +36,7 @@ import { connect } from 'react-redux';
 
 // Imports
 import Header from '../../components/Header';
+import moment from 'moment';
 import ShuttleTable from '../../components/ShuttleTable';
 import * as Configuration from '../../util/Configuration';
 import * as Constants from '../../constants';
@@ -109,7 +110,18 @@ class Shuttle extends React.PureComponent<Props, State> {
   async loadConfiguration(): Promise<void> {
     try {
       const shuttle = await Configuration.getConfig('/shuttle.json');
-      this.setState({ shuttle });
+      let schedule = 0;
+      for (let i = 0; i < shuttle.schedules.length; i++) {
+        const startDate = moment(shuttle.schedules[i].start_date, 'YYYY-MM-DD');
+        const endDate = moment(shuttle.schedules[i].end_date, 'YYYY-MM-DD');
+        const currentDate = moment();
+        if (currentDate.isBetween(startDate, endDate, 'days', '[]')) {
+          schedule = i;
+          break;
+        }
+      }
+
+      this.setState({ shuttle, schedule });
     } catch (err) {
       console.error('Configuration could not be initialized for shuttle.', err);
     }
