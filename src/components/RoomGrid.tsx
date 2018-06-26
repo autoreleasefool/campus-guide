@@ -213,12 +213,18 @@ export default class RoomGrid extends React.PureComponent<Props, State> {
 
     return (
       <View style={[_styles.container, background]}>
-        <FlatList
-            ItemSeparatorComponent={this._renderSeparator.bind(this)}
-            ListHeaderComponent={this._renderHeader.bind(this)}
-            data={this.state.rooms}
-            keyExtractor={(room: BuildingRoom): string => room.name}
-            renderItem={this._renderRow.bind(this)} />
+        {(this.props.filter != undefined && this.props.filter.length > 0 && this.state.rooms.length > 0)
+          ? <FlatList
+              ItemSeparatorComponent={this._renderSeparator.bind(this)}
+              data={this.state.rooms}
+              keyExtractor={(room: BuildingRoom): string => room.name}
+              renderItem={this._renderRow.bind(this)} />
+          : <FlatList
+              ItemSeparatorComponent={this._renderSeparator.bind(this)}
+              ListHeaderComponent={this._renderHeader.bind(this)}
+              data={this.state.rooms}
+              keyExtractor={(room: BuildingRoom): string => room.name}
+              renderItem={this._renderRow.bind(this)} />}
       </View>
     );
   }
