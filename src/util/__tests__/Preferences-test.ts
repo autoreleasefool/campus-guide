@@ -210,13 +210,7 @@ describe('Preferences-test', () => {
     };
 
     shouldThrowError = true;
-    let errorThrown = false;
-    try {
-      await setPreferences(preferences);
-    } catch (e) {
-      errorThrown = true;
-    }
-    expect(errorThrown).toBeTruthy();
+    (await expect(async() => await setPreferences(preferences))).rejects.toThrow();
 
     // Expect defaults
     let language = await Preferences.getSelectedLanguage(AsyncStorage);

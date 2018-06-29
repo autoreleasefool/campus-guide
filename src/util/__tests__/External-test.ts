@@ -107,14 +107,11 @@ describe('External-test', () => {
   });
 
   it('tests that errors in links are handled.', async() => {
-    try {
-      await External.openLink(exceptionURL, Linking, Alert, Clipboard, TextUtils);
-      expect(false).toBeTruthy();
-    } catch (err) {
-      console.error('An error was expected to be thrown.', err);
-      expect(Alert.alert).not.toHaveBeenCalled();
-      expect(Clipboard.setString).not.toHaveBeenCalled();
-      expect(Linking.openURL).not.toHaveBeenCalled();
-    }
+    (await expect(async() => await External.openLink(exceptionURL, Linking, Alert, Clipboard, TextUtils)))
+        .rejects
+        .toThrow();
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(Clipboard.setString).not.toHaveBeenCalled();
+    expect(Linking.openURL).not.toHaveBeenCalled();
   });
 });

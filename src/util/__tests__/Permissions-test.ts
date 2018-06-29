@@ -71,12 +71,6 @@ describe('Permissions-test', () => {
   });
 
   it('tests that invalid PermissionsAndroid is handled', async() => {
-    try {
-      await Permissions.requestLocationPermission('android', undefined);
-      expect(false).toBeTruthy();
-    } catch (err) {
-      console.error('An error was expected to be thrown.', err);
-      expect(true).toBeTruthy();
-    }
+    (await expect(async() => await Permissions.requestLocationPermission('android', undefined))).rejects.toThrow();
   });
 });

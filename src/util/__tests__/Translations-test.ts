@@ -29,7 +29,7 @@ import * as Translations from '../Translations';
 jest.setMock('../Configuration', {
   getConfig: async(config: string): Promise<any> => {
     if (getConfigShouldThrowError) {
-      throw new Error(getConfigErrorMessage);
+      throw new Error('Expected error');
     }
 
     if (config.indexOf('.en') >= 0) {
@@ -46,7 +46,7 @@ jest.setMock('../Configuration', {
   },
   init: async(): Promise<void> => {
     if (initShouldThrowError) {
-      throw new Error(initErrorMessage);
+      throw new Error('Expected error');
     }
   },
 });
@@ -90,11 +90,6 @@ const invalidObject = {
 /* Invalid language for testing. */
 const invalidLanguage: any = 'invalid_language';
 
-// Error message for when Configuration.init fails
-const initErrorMessage = 'Init error. This error is being thrown for testing purposes.';
-// Error message for when Configuration.getConfig fails
-const getConfigErrorMessage = 'getConfig error. This error is being thrown for testing purposes.';
-
 // Indicates if Configuration.init should throw an error
 let initShouldThrowError = false;
 // Indicates if Configuration.getConfig should throw an error
@@ -109,32 +104,12 @@ describe('Translations-test', () => {
 
   it('tests invalid configuration while loading translations', async() => {
     initShouldThrowError = true;
-    let errorMessage;
-
-    // Load the English translation
-    try {
-      await Translations.loadTranslations('en');
-    } catch (e) {
-      errorMessage = e.message;
-    }
-
-    // Check the error message
-    expect(errorMessage).toBe(initErrorMessage);
+    (await expect(async() => await Translations.loadTranslations('en'))).rejects.toThrow();
   });
 
   it('tests invalid configuration retrieval while loading translations', async() => {
     getConfigShouldThrowError = true;
-    let errorMessage;
-
-    // Load the English translation
-    try {
-      await Translations.loadTranslations('en');
-    } catch (e) {
-      errorMessage = e.message;
-    }
-
-    // Check the error message
-    expect(errorMessage).toBe(getConfigErrorMessage);
+    (await expect(async() => await Translations.loadTranslations('en'))).rejects.toThrow();
   });
 
   it('tests loading and unloading English translations', async() => {

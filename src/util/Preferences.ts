@@ -54,8 +54,8 @@ async function retrieveFromAsyncStorage(asyncStorage: AsyncStorageStatic, key: s
     const value = await asyncStorage.getItem(key);
 
     return value;
-  } catch (e) {
-    console.error(`Caught error retrieving pref from async: ${key}`, e);
+  } catch (err) {
+    console.log(`Caught error retrieving pref from async: ${key}, error: ${JSON.stringify(err)}`);
   }
 
   return undefined;
