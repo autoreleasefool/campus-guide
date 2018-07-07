@@ -553,7 +553,7 @@
     }
   ],
   "projectName": "OUT",
-  "projectFormat": "floor*=^(\d).*$",
+  "projectFormat": "floor*=^(\\d).*$",
   "nodeTypeColors": [
     {
       "r": 0,

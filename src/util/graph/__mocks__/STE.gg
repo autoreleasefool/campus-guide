@@ -148,6 +148,24 @@
           "name": "2",
           "bid": "",
           "assignedName": false
+        },
+        {
+          "x": 107,
+          "y": 64,
+          "type": 3,
+          "additional": "",
+          "name": "1h14",
+          "bid": "",
+          "assignedName": true
+        },
+        {
+          "x": 289,
+          "y": 61,
+          "type": 3,
+          "additional": "",
+          "name": "1h15",
+          "bid": "",
+          "assignedName": true
         }
       ],
       "edges": [
@@ -285,6 +303,33 @@
           "closed": false,
           "aToB": true,
           "bToA": true
+        },
+        {
+          "nodeA": "H1h14",
+          "nodeB": "H1h2",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h14",
+          "nodeB": "H1h15",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H1h15",
+          "nodeB": "H1h11",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
         }
       ],
       "imgWidth": -1,
@@ -309,7 +354,7 @@
           "y": 154,
           "type": 3,
           "additional": "",
-          "name": "2h12",
+          "name": "2h16",
           "bid": "",
           "assignedName": true
         }
@@ -317,7 +362,7 @@
       "edges": [
         {
           "nodeA": "EA",
-          "nodeB": "H2h12",
+          "nodeB": "H2h16",
           "accessible": true,
           "direction": "LR",
           "closed": false,
@@ -347,7 +392,7 @@
           "y": 170,
           "type": 3,
           "additional": "",
-          "name": "3h13",
+          "name": "3h17",
           "bid": "",
           "assignedName": true
         },
@@ -356,7 +401,7 @@
           "y": 171,
           "type": 3,
           "additional": "",
-          "name": "3h14",
+          "name": "3h18",
           "bid": "",
           "assignedName": true
         },
@@ -365,7 +410,7 @@
           "y": 172,
           "type": 3,
           "additional": "",
-          "name": "3h15",
+          "name": "3h19",
           "bid": "",
           "assignedName": true
         },
@@ -374,7 +419,7 @@
           "y": 126,
           "type": 3,
           "additional": "",
-          "name": "3h16",
+          "name": "3h20",
           "bid": "",
           "assignedName": true
         },
@@ -383,7 +428,7 @@
           "y": 126,
           "type": 3,
           "additional": "",
-          "name": "3h17",
+          "name": "3h21",
           "bid": "",
           "assignedName": true
         },
@@ -400,42 +445,6 @@
       "edges": [
         {
           "nodeA": "EA",
-          "nodeB": "H3h13",
-          "accessible": true,
-          "direction": "LR",
-          "closed": false,
-          "aToB": true,
-          "bToA": true
-        },
-        {
-          "nodeA": "H3h13",
-          "nodeB": "H3h14",
-          "accessible": true,
-          "direction": "LR",
-          "closed": false,
-          "aToB": true,
-          "bToA": true
-        },
-        {
-          "nodeA": "H3h14",
-          "nodeB": "H3h15",
-          "accessible": true,
-          "direction": "LR",
-          "closed": false,
-          "aToB": true,
-          "bToA": true
-        },
-        {
-          "nodeA": "H3h15",
-          "nodeB": "H3h16",
-          "accessible": true,
-          "direction": "UD",
-          "closed": false,
-          "aToB": true,
-          "bToA": true
-        },
-        {
-          "nodeA": "H3h16",
           "nodeB": "H3h17",
           "accessible": true,
           "direction": "LR",
@@ -445,6 +454,42 @@
         },
         {
           "nodeA": "H3h17",
+          "nodeB": "H3h18",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h18",
+          "nodeB": "H3h19",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h19",
+          "nodeB": "H3h20",
+          "accessible": true,
+          "direction": "UD",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h20",
+          "nodeB": "H3h21",
+          "accessible": true,
+          "direction": "LR",
+          "closed": false,
+          "aToB": true,
+          "bToA": true
+        },
+        {
+          "nodeA": "H3h21",
           "nodeB": "R300",
           "accessible": true,
           "direction": "UD",
@@ -457,8 +502,8 @@
       "imgHeight": -1
     }
   ],
-  "projectName": "STE ",
-  "projectFormat": "floor*=^(\d).*$",
+  "projectName": "STE",
+  "projectFormat": "floor*=^(\\d).*$",
   "nodeTypeColors": [
     {
       "r": 0,
