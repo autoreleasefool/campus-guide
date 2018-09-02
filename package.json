@@ -5,7 +5,7 @@
   "scripts": {
     "build": "yarn run clean && yarn run tsc",
     "build:ios": "react-native bundle --entry-file='artifacts/index.ios.js' --bundle-output='./release/main.jsbundle' --dev=false --platform='ios' --assets-dest='./release'",
-    "clean": "rimraf artifacts",
+    "clean": "rimraf artifacts && rimraf artifacts-test",
     "gulp-build": "yarn run gulp-clean && gulp",
     "gulp-clean": "rimraf artifacts-test",
     "lint": "tslint 'src/**/*.ts?(x)'",
