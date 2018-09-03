@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "campusguide.app"
-               BlueprintName = "campusguide"
+               BuildableName = "CampusGuide.app"
+               BlueprintName = "CampusGuide"
                ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,8 +43,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "campusguideTests.xctest"
-               BlueprintName = "campusguideTests"
+               BuildableName = "CampusGuideTests.xctest"
+               BlueprintName = "CampusGuideTests"
                ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -54,7 +54,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
@@ -62,8 +61,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "campusguideTests.xctest"
-               BlueprintName = "campusguideTests"
+               BuildableName = "CampusGuideTests.xctest"
+               BlueprintName = "CampusGuideTests"
                ReferencedContainer = "container:CampusGuide.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -72,8 +71,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "campusguide.app"
-            BlueprintName = "campusguide"
+            BuildableName = "CampusGuide.app"
+            BlueprintName = "CampusGuide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -84,7 +83,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -96,18 +94,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "campusguide.app"
-            BlueprintName = "campusguide"
+            BuildableName = "CampusGuide.app"
+            BlueprintName = "CampusGuide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "OS_ACTIVITY_MODE"
-            value = "disable"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -122,8 +113,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "campusguide.app"
-            BlueprintName = "campusguide"
+            BuildableName = "CampusGuide.app"
+            BlueprintName = "CampusGuide"
             ReferencedContainer = "container:CampusGuide.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

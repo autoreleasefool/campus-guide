@@ -17,26 +17,40 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.0</string>
+	<string>1.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>35</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string></string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-		</dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your location is required to find the closest available starting point for navigation.</string>
+	<key>NSMainNibFile</key>
+	<string>LaunchScreen</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
@@ -51,20 +65,6 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
-  <key>Fabric</key>
-  <dict>
-    <key>APIKey</key>
-    <string>FABRIC_API_GOES_HERE</string>
-    <key>Kits</key>
-    <array>
-      <dict>
-        <key>KitInfo</key>
-        <dict/>
-        <key>KitName</key>
-        <string>Crashlytics</string>
-      </dict>
-    </array>
-  </dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
