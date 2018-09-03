@@ -40,6 +40,7 @@ import { connect } from 'react-redux';
 
 // Imports
 import AppHeader from '../components/AppHeader';
+import DeviceInfo from 'react-native-device-info';
 import TabView from './TabView';
 import * as Analytics from '../util/Analytics';
 import * as Configuration from '../util/Configuration';
@@ -129,6 +130,13 @@ class Main extends React.PureComponent<Props, State> {
    */
   async _checkConfiguration(fallbackToUpdate: boolean): Promise<void> {
     try {
+      const previousVersion = await Preferences.getPreviousAppVersion(AsyncStorage);
+      const currentVersion = parseInt(DeviceInfo.getBuildNumber());
+      if (previousVersion < currentVersion) {
+        await Configuration.setupDefaultConfiguration(Platform.OS);
+      }
+
+      Preferences.setPreviousAppVersion(AsyncStorage, currentVersion);
       await Configuration.init();
       const university = await Configuration.getConfig('/university.json');
       this.props.setUniversity(university);

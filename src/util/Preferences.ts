@@ -41,6 +41,8 @@ const PREFER_SHORTEST_ROUTE = 'app_pref_shortest_route';
 const PREFERRED_TIME_FORMAT = 'app_time_format';
 // Represents the user's preference to view their schedule by week or by course
 const PREFER_BY_COURSE = 'app_by_course';
+// Represents the version of the app the user had installed the last time they opened it
+const PREVIOUS_APP_VERSION = 'app_previous_version';
 
 /**
  * Retrieves the value of a key from AsyncStorage.
@@ -218,5 +220,32 @@ export function setPreferScheduleByCourse(asyncStorage: AsyncStorageStatic, pref
   if (prefer === true || prefer === false) {
     asyncStorage.setItem(PREFER_BY_COURSE, prefer.toString());
     Analytics.setPreference(PREFER_BY_COURSE, prefer.toString());
+  }
+}
+
+/**
+ * Gets the version of the app that was installed when the user last opened the app.
+ *
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @returns {number} the version code of the app the last time it was opened
+ */
+export async function getPreviousAppVersion(asyncStorage: AsyncStorageStatic): Promise<number> {
+  const value = await retrieveFromAsyncStorage(asyncStorage, PREVIOUS_APP_VERSION);
+
+  return (value == undefined)
+      ? 0
+      : parseInt(value);
+}
+
+/**
+ * Updates the version of the app.
+ *
+ * @param {AsyncStorageStatic} asyncStorage instance of React Native AsyncStorage
+ * @param {boolean}            versionCode  version of the app the user is using
+ */
+export function setPreviousAppVersion(asyncStorage: AsyncStorageStatic, versionCode: any): void {
+  if (typeof (versionCode) === 'number' && versionCode >= 0) {
+    asyncStorage.setItem(PREVIOUS_APP_VERSION, versionCode.toString());
+    Analytics.setPreference(PREVIOUS_APP_VERSION, versionCode.toString());
   }
 }
