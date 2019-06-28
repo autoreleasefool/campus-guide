@@ -1,9 +1,9 @@
 # Campus Guide
 
-[![Build status](https://travis-ci.org/josephroqueca/campus-guide.svg?branch=master)](https://travis-ci.org/josephroqueca/campus-guide)
-[![Dependency Status](https://david-dm.org/josephroqueca/campus-guide.svg)](https://david-dm.org/josephroqueca/campus-guide)
-[![devDependency Status](https://david-dm.org/josephroqueca/campus-guide/dev-status.svg)](https://david-dm.org/josephroqueca/campus-guide?type=dev)
-[![codecov](https://codecov.io/gh/josephroqueca/campus-guide/branch/master/graph/badge.svg)](https://codecov.io/gh/josephroqueca/campus-guide)
+[![Build status](https://travis-ci.org/josephroquedev/campus-guide.svg?branch=master)](https://travis-ci.org/josephroquedev/campus-guide)
+[![Dependency Status](https://david-dm.org/josephroquedev/campus-guide.svg)](https://david-dm.org/josephroquedev/campus-guide)
+[![devDependency Status](https://david-dm.org/josephroquedev/campus-guide/dev-status.svg)](https://david-dm.org/josephroquedev/campus-guide?type=dev)
+[![codecov](https://codecov.io/gh/josephroquedev/campus-guide/branch/master/graph/badge.svg)](https://codecov.io/gh/josephroquedev/campus-guide)
 
 
 A mobile app, developed with React Native, to help students of the University of Ottawa find their classes on campus.
@@ -12,7 +12,7 @@ A mobile app, developed with React Native, to help students of the University of
 
 ### Setup
 
-1. Clone the repository: `git clone https://github.com/josephroqueca/campus-guide`
+1. Clone the repository: `git clone https://github.com/josephroquedev/campus-guide`
 2. Make your changes.
 3. Ensure the following requirements for a contribution are met when running these commands:
     - `yarn run lint`: There should be no errors (warnings are OK).
