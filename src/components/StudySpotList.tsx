@@ -219,7 +219,7 @@ export default class StudySpotList extends React.PureComponent<Props, State> {
       width: this.state.screenWidth,
     };
 
-    // TODO: Remove when source of https://github.com/josephroqueca/campus-guide/issues/56 is found
+    // TODO: Remove when source of https://github.com/autoreleasefool/campus-guide/issues/56 is found
     Analytics.log(`(StudySpotList) Rendering study spot ${name}.`);
     Analytics.log(`(StudySpotList) Platform: ${Platform.OS}`);
     Analytics.log(`(StudySpotList) Spot filters: ${item.filters.join()}`);

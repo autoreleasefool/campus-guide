@@ -63,7 +63,7 @@ export default class StudySpots extends React.PureComponent<Props, State> {
     const name = Translations.getName(filter) || '';
     const description = Translations.getDescription(filter) || '';
 
-    // TODO: Remove when source of https://github.com/josephroqueca/campus-guide/issues/56 is found
+    // TODO: Remove when source of https://github.com/autoreleasefool/campus-guide/issues/56 is found
     Analytics.log(`(FilterDescriptions) Rendering filter ${name}.`);
     Analytics.log(`(FilterDescriptions) Platform: ${Platform.OS}`);
     Analytics.log(`(FilterDescriptions) Filter: ${JSON.stringify(item)}`);

@@ -281,7 +281,7 @@ class Settings extends React.PureComponent<Props, State> {
         break;
       case 'app_feedback':
         External.sendEmail(
-          'contact@josephroque.ca',
+          'campusguide@josephroque.ca',
           `Comm/Sug: Campus Guide - Ottawa (v${DeviceInfo.getVersion()})`,
           undefined,
           Linking,
@@ -378,7 +378,7 @@ class Settings extends React.PureComponent<Props, State> {
         const icon = Display.getPlatformIcon(Platform.OS, item);
         const iconColor = Constants.Colors.primaryBlackIcon;
 
-        // TODO: Remove when source of https://github.com/josephroqueca/campus-guide/issues/56 is found
+        // TODO: Remove when source of https://github.com/autoreleasefool/campus-guide/issues/56 is found
         Analytics.log(`(Settings) Rendering setting ${item.key}.`);
         Analytics.log(`(Settings) Platform: ${Platform.OS}`);
         Analytics.log(`(Settings) Setting: ${JSON.stringify(item)}`);
